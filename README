@@ -1,0 +1,33 @@
+A projekt célja egy távirányítós autó vezérlése interneten át.
+
+Az autó vezérlése Android operációs rendszerrel futó mobiltelefon segítségével valósul meg.
+
+A telefon felhasznált eszközkészlete:
+- hátsó kamera, ami segítségével lehet látni, mi van az autó előtt
+- giroszkóp, ami segítségével meg lehet tudni a gyorsulás és kanyarodás mértékét valamint az út lejtését
+- GPS vevőt, ami segítségével megbecsülhető a pillanatnyi sebesség és megtudható a kellően pontos tartózkodási hely
+- USB port, ami segítségével - egy SparkFun által gyártott mikrovezérlő - az IOIO for Android (DEV-10748) köthető össze a telefonnal. A mikrovezérlőhöz tartozik egy Java nyelvre írt API, ami segítségével ADB (Android Debug Bridge) vagy ADK (Accessory Development Kit) kapcsolaton keresztül a telefon képes kommunikálni a külvilággal. Az API automatikusan kapcsolódik az eszközhöz, nem fontos, melyik kapcsolaton keresztül, de az ADB van előnyben részesítve.
+- mobilhálózat, ami segítségével HSPA vagy 3G mobilinternetet használva elküldhető a videó jel, a statisztika és foghatóak a vezérlő jelek
+
+A mikrovezérlő célja:
+- vezérelni az autót a telefonnal
+- az autó akkumulátorának töltöttségi szintjének megszerzése
+
+Egyéb eszközök:
+- kézzel állítható, kétállású kapcsoló, ami eldönti, hogy a beépített mikrovezérlő (ami a gyári távirányító jelének segítségével vezérli az autót) vagy a telefon mikrovezérlője (ami az internetről kapott utasításokkal vezérli az autót) legyen aktív. Erre azért van szükség, hogy ne történhessen meg az, hogy mindkét mikrovezérlő egyazon időben jelzést adjon le és túlfeszültséget okozzon az autó áramkörében
+- a lista még bővülni fog olyan dolgokkal mint pl. ellenállás
+
+A hálózati kommunikáció terve:
+
+A kommunikáció SSL titkosítást használva socket alapú.
+
+Az alap kapcsolatok:
+Host <-> Bridge <*> Controller
+
+Jelmagyarázat:
+<-> egy-egy kapcsolat
+<*> egy-sok kapcsolat
+Host: a mobiltelefon által indított kliens socket
+Bridge: egy olyan socket szerver, ami kliens socketek kapcsolódására vár
+Controller: azok a kliens programok, amik segítségével vezérelhető az autó
+

@@ -1,3 +1,6 @@
+Bevezetés
+---------
+
 A projekt célja egy távirányítós autó vezérlése interneten át.
 
 Az autó vezérlése Android operációs rendszerrel futó mobiltelefon segítségével valósul meg.
@@ -18,10 +21,21 @@ Egyéb eszközök:
 - a lista még bővülni fog olyan dolgokkal mint pl. ellenállás
 
 A hálózati kommunikáció terve:
+------------------------------
 
 A kommunikáció SSL titkosítást használva socket alapú.
+A tanusítványokban szereplő CN (Common Name) mező alapján történik a felhasználók azonosítása, tehát nincsenek felhasználónevek és jelszavak.
+Az összes tanusítvány egyetlen kiállítótól (CA) származik és mind a socket szerver, mind a socket kliensek csakis ebben az egy kiállítóban bízik meg.
+Ez azt eredményezi, hogy az összes olyan tanusítványt elfogadják, amiket a konkrét CA állított ki, de az összes többit elutasítják.
+Az SSL többféle próbának is aláveti a klienseket mielőtt létrejönne a kapcsolat:
+- megnézi, hogy megbízható-e a tanusítvány (vagyis inkább a CA)
+- megnézi, hogy nem járt-e le a tanusítvány
+- ellenőrzi a hostnevet
 
-Az alap kapcsolatok:
+A hostnév-ellenőrzés ki van kapcsolva, mert a szabvány szerint a szerver hostnevének és a tanusítványában szereplő CA mezőnek meg kell egyeznie.
+Fentebb írtam, hogy a CA mezőt én a felhasználók azonosítására használom (amolyan felhasználónév szerűség), másrészt a szervernek nem feltétlenül van hostneve (pl. IP cím alapján is lehet szerverhez kapcsolódni).
+
+Az egyszerűsített kapcsolati ábra:
 Host <-> Bridge <*> Controller
 
 Jelmagyarázat:
@@ -30,4 +44,13 @@ Jelmagyarázat:
 Host: a mobiltelefon által indított kliens socket
 Bridge: egy olyan socket szerver, ami kliens socketek kapcsolódására vár
 Controller: azok a kliens programok, amik segítségével vezérelhető az autó
+
+Host:
+[...]
+
+Bridge:
+[...]
+
+Controller:
+[...]
 

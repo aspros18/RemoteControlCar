@@ -162,4 +162,7 @@ Továbbfejlesztés
 További két socket kapcsolat segítségével megoldható lenne, hogy a telefon mikrofonjából megkapjuk a hangot is a kép mellé és a vezérlő számítógép mikrofonjából meg a telefonon játsszunk le hangot.
 A telefonból érkező hang stream ki/be kapcsolható lenne, alapértelmezetten ki lenne kapcsolva takarékosság miatt.
 Az autót vezérlő kliens tudná csak ki/be kapcsolni a streamet és csakis ő tudna hang streamet küldeni a telefonnak.
+A sávszélesség kímélése érdekében a Javara írt Tritonus API-t használva lehetne tömöríteni GSM vagy MP3 formátumba a mono 16 bites PCM-ről.
+Egyéb pluginek: http://www.tritonus.org/plugins.html
+Példa: http://www.jsresources.org/examples/GSMEncoder.java.html
 

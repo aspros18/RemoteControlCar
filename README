@@ -166,4 +166,5 @@ A sávszélesség kímélése érdekében a Javara írt Tritonus API-t használv
 Egyéb pluginek: http://www.tritonus.org/plugins.html
 Példa: http://www.jsresources.org/examples/GSMEncoder.java.html
 Ha a Tritonus még sem használható út, marad a GZipInputStream és társa a GZipOutputStream.
+Vagy egy másik út: http://www.jsresources.org/apps/9159_TimeTurner.pdf
 

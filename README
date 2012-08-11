@@ -7,7 +7,7 @@ Az autó vezérlése Android operációs rendszerrel futó mobiltelefon segíts�
 
 A telefon felhasznált eszközkészlete:
 - hátsó kamera, ami segítségével lehet látni, mi van az autó előtt
-- giroszkóp, ami segítségével meg lehet tudni a gyorsulás és kanyarodás mértékét valamint az út lejtését
+- giroszkóp, ami segítségével meg lehet tudni a gyorsulás és kanyarodás mértékét valamint az út lejtését (ha nincs fék az autón, az emelkedő/lejtő adat alapján megoldható, hogy egy helyben álljon az autó bármikor, ha azt akarjuk)
 - GPS vevőt, ami segítségével megbecsülhető a pillanatnyi sebesség és megtudható a kellően pontos tartózkodási hely
 - USB port, ami segítségével - egy SparkFun által gyártott mikrovezérlő - az IOIO for Android (DEV-10748) köthető össze a telefonnal. A mikrovezérlőhöz tartozik egy Java nyelvre írt API, ami segítségével ADB (Android Debug Bridge) vagy ADK (Accessory Development Kit) kapcsolaton keresztül a telefon képes kommunikálni a külvilággal. Az API automatikusan kapcsolódik az eszközhöz, nem fontos, melyik kapcsolaton keresztül, de az ADB van előnyben részesítve.
 - mobilhálózat, ami segítségével HSPA vagy 3G mobilinternetet használva elküldhető a videó jel, a statisztika és foghatóak a vezérlő jelek

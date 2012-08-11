@@ -145,3 +145,14 @@ Ez egy PC-n futó java alapú desktop alkalmazás lényegében, ami szintén a h
 A felületen lehetőség van - és kötelező is első induláskor - beállítani a híd címét és portját valamint a tanusítvány publikus és titkos kulcsát és a kiállító publikus kulcsát.
 A kiállító kulcsára azért van szükség mert kliens oldalon is ellenőrizve van a szerver tanusítvány megbízhatósága, nem csak szerver oldalon, hogy a man-in-middle támadás lehetetlen legyen.
 
+
+Egy kis trükk:
+--------------
+
+Egyes mobilszolgáltató csomagjaiban a webböngészés nem számít bele a forgalomkorlátba.
+
+Ez esetben socketek helyett mondjuk Tomcat webszervert lehetne használni.
+- A terv lényege ugyan az, csak a kapcsolatazonosítók helyett HTTP címzés lenne használva.
+- Az MJPEG stream HTTP POST-tal streamelhető a hídnak - ami a Tomcat webszerver.
+- A vezérlő utasítások JSON-nal objektummá alakíthatók Stringből és objektumból Stringre, és a HTTP tartalom is gond nélkül használható streamelés céljára.
+

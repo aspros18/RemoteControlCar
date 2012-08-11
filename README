@@ -11,6 +11,7 @@ A telefon felhasznált eszközkészlete:
 - GPS vevőt, ami segítségével megbecsülhető a pillanatnyi sebesség és megtudható a kellően pontos tartózkodási hely
 - USB port, ami segítségével - egy SparkFun által gyártott mikrovezérlő - az IOIO for Android (DEV-10748) köthető össze a telefonnal. A mikrovezérlőhöz tartozik egy Java nyelvre írt API, ami segítségével ADB (Android Debug Bridge) vagy ADK (Accessory Development Kit) kapcsolaton keresztül a telefon képes kommunikálni a külvilággal. Az API automatikusan kapcsolódik az eszközhöz, nem fontos, melyik kapcsolaton keresztül, de az ADB van előnyben részesítve.
 - mobilhálózat, ami segítségével HSPA vagy 3G mobilinternetet használva elküldhető a videó jel, a statisztika és foghatóak a vezérlő jelek
+- mobilakku, ami ellátja a mobiltelefont árammal. Azt is jó látni interneten keresztül, hány %-on áll az aksi.
 
 A mikrovezérlő célja:
 - vezérelni az autót a telefonnal
@@ -97,7 +98,12 @@ Vezérlő felőli kapcsolatok:
 2. Statisztika adatok (a hostról és a hídról): objektumos stream, hídnak feltöltés, vezérlőnek letöltés
 3. Vezérlő parancsok a vezérlőtől (a hostnak és a hídnak): objektumos stream, hídnak letöltés, vezérlőnek feltöltés
 
-A kapcsolatok előtt a számozás kapcsolatazonosítót és priorítási sorrendet is jelent.
+Bővebb magyarázat:
+- A kapcsolatok előtt a számozás kapcsolatazonosítót és priorítási sorrendet is jelent.
+- A híd a hostnak főként autóvezérlő utasításokat közöl (a 3-mas kapcsolaton át), de a telefonnak közölheti azt is,
+  hogy hagyja abba az MJPEG streamelést vagy éppen kezdje el.
+- A vezérlő a hídnak főként autóvezérlő utasításokat ad, de üzenhet a hídnak is, hogy szeretné átvenni az autó irányítását.
+- A híd is üzenhet a vezérlőnek, ha éppen elvették tőle az irányítást, jelezze a felületen.
 
 A kapcsolat kialakítása a következő módon valósul meg:
 A kliens három kapcsolatot alakít ki ugyan azzal a sockettel, a kapcsolat létrejötte után új szálban kezdődik meg a feldolgozás.

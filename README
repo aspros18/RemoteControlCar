@@ -156,3 +156,10 @@ Ez esetben socketek helyett mondjuk Tomcat webszervert lehetne használni.
 - Az MJPEG stream HTTP POST-tal streamelhető a hídnak - ami a Tomcat webszerver.
 - A vezérlő utasítások JSON-nal objektummá alakíthatók Stringből és objektumból Stringre, és a HTTP tartalom is gond nélkül használható streamelés céljára.
 
+Továbbfejlesztés
+----------------
+
+További két socket kapcsolat segítségével megoldható lenne, hogy a telefon mikrofonjából megkapjuk a hangot is a kép mellé és a vezérlő számítógép mikrofonjából meg a telefonon játsszunk le hangot.
+A telefonból érkező hang stream ki/be kapcsolható lenne, alapértelmezetten ki lenne kapcsolva takarékosság miatt.
+Az autót vezérlő kliens tudná csak ki/be kapcsolni a streamet és csakis ő tudna hang streamet küldeni a telefonnak.
+

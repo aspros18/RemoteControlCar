@@ -67,6 +67,7 @@ Ha a telefon újraindulna miközben a service fut (pl. SD kártyáról fut vagy 
 A service az elindulása után azonnal kapcsolódni próbál a hídhoz, ha nem sikerül percenként próbálkozik.
 Ha a kapcsolat megszakad, azonnal elindul a kapcsolódás folyamata.
 Ezzel minden nem várt hibára megtörtént az óvintézkedés.
+A service elindulásakor, ha nem fut az IP Webcam program, akkor az API-ja segítségével a service elindítja azt. (Az ip-webcam könyvtárban további infó.)
 A service elindítása előtt a felületen a menüből kezdeményezhető további beállítás.
 Itt kell megadni:
 - a híd címét (host vagy ip) és portját (amin a socket servlet figyel)
@@ -136,6 +137,7 @@ A hídba be van téve egy olyan sávszélesség csökkentő funkció is, hogy cs
 
 Konfig fájl:
 A híd esetén is meg kell adni a tanusítvány publikus és titkos kulcsának az elérhetőségét és a kiállító publikus kulcsának az elérhetőségét.
+A tanusítvány priorításokat is itt kell megadni, de ha bevezetésre kerül egy webes felület, átkerül adatbázisba.
 
 Controller:
 -----------
@@ -144,6 +146,10 @@ A vezérlő az a program, ami megjeleníti az autó adatait és ha van lehetős�
 Ez egy PC-n futó java alapú desktop alkalmazás lényegében, ami szintén a hídhoz kapcsolódik socket kliensként.
 A felületen lehetőség van - és kötelező is első induláskor - beállítani a híd címét és portját valamint a tanusítvány publikus és titkos kulcsát és a kiállító publikus kulcsát.
 A kiállító kulcsára azért van szükség mert kliens oldalon is ellenőrizve van a szerver tanusítvány megbízhatósága, nem csak szerver oldalon, hogy a man-in-middle támadás lehetetlen legyen.
+A vezérlés billentyűzet és egér segítségével történik.
+Az egérrel pontos utasítást lehet adni mind sebesség, mind irány terén.
+A billentyűzettel egyszerűbb, de dúrvább irányítást érhet el a felhasználó és több vezérlés mód közül választhat.
+(A vezérlési módok a dúrvaságot szabályozzák pl. előre nyílra egyenletesen gyorsuljon fel vagy földkaparással max grafttal induljon el)
 
 
 Egy kis trükk:

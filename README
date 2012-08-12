@@ -177,3 +177,8 @@ Vagy egy másik út: http://www.jsresources.org/apps/9159_TimeTurner.pdf
 Az autón lévő tartó, amiben a mobil lesz, lehetne motor által vezérelhető, hogy a kereszteződéseket be lehessen látni és igény szerint hátra is lehessen tekinteni.
 A giroszkóp adatait a telefon programja csak az alapállásban adná le a megbízhatóság miatt. (Vagy ha szükség van rá, akkor csak a motor mozgása közben lenne inaktív és az algoritmus meg lenne írva úgy, hogy több helyzetből is jó adatokat közöljön.)
 
+A telefont tartó eszköz lehetőleg védje a telefont a külső támadások ellen és az eső ellen, kulccsal zárható legyen.
+Ha ez meg lett oldva, a kábeleket is jó lenne biztonságosan elvezetni szintén védve és a kapcsolót, ami átkapcsolhat internetes vezérlésről, azt is a kulccsal
+zárt, védett helyen belülre kéne elhelyezni.
+
+

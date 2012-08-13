@@ -25,16 +25,16 @@ A hálózati kommunikáció terve:
 ------------------------------
 
 A kommunikáció SSL titkosítást használva socketek segítségével történik.
-A tanusítványokban szereplő CN (Common Name) mező alapján történik a felhasználó számítógépek és emberek azonosítása, tehát nincsenek felhasználónevek és jelszavak.
-Az összes tanusítvány egyetlen kiállítótól (CA) származik és mind a socket szerver, mind a socket kliensek csakis ebben az egy kiállítóban bízik meg.
-Ez azt eredményezi, hogy az összes olyan tanusítványt elfogadják, amiket a konkrét CA állított ki, de az összes többit elutasítják.
+A tanúsítványokban szereplő CN (Common Name) mező alapján történik a felhasználó számítógépek és emberek azonosítása, tehát nincsenek felhasználónevek és jelszavak.
+Az összes tanúsítvány egyetlen kiállítótól (CA) származik és mind a socket szerver, mind a socket kliensek csakis ebben az egy kiállítóban bízik meg.
+Ez azt eredményezi, hogy az összes olyan tanúsítványt elfogadják, amiket a konkrét CA állított ki, de az összes többit elutasítják.
 
 Az SSL többféle próbának is aláveti a socketeket mielőtt létrejönne a kapcsolat:
-- megnézi, hogy megbízható-e a tanusítvány (vagyis inkább a CA)
-- megnézi, hogy nem járt-e le a tanusítvány
+- megnézi, hogy megbízható-e a tanúsítvány (vagyis inkább a CA)
+- megnézi, hogy nem járt-e le a tanúsítvány
 - ellenőrzi a hostnevet
 
-A hostnév-ellenőrzés ki van kapcsolva, mert a szabvány szerint a szerver hostnevének és a tanusítványában szereplő CA mezőnek meg kell egyeznie.
+A hostnév-ellenőrzés ki van kapcsolva, mert a szabvány szerint a szerver hostnevének és a tanúsítványában szereplő CA mezőnek meg kell egyeznie.
 Fentebb írtam, hogy a CA mezőt én a felhasználók azonosítására használom (amolyan felhasználónév szerűség), másrészt a szervernek nem feltétlenül van hostneve vagy a hostnév változó (Pl. IP cím alapján is lehet szerverhez kapcsolódni).
 
 Az egyszerűsített kapcsolati ábra:
@@ -57,7 +57,7 @@ A kamera elérése:
 A telefon kamerájának képkockái MJPEG streameléssel jutnak el a hídhoz.
 Eredeti elképzelésem szerint saját magam olvastam volna a kamera képét és küldtem volna a socket servernek.
 A probléma ott kezdődött, hogy az android API nem éppen programozóbarát ha médiáról van szó.
-Egyrészt csak akkor hajlandó képkockákat adni, ha azt felületen is megjelenítem (és ennek nem sok értelme van) valamint az eseménykezelőben egy bájt tömböt kapok, amiben YUV formátumú kép van. Ezzel még nem is lenne gond, mert ha valakinek cska a fekete-fehér tartomány kell, akkor még örül is neki, de ha színes képet szeretne az én telefonom kb. 800 ezredmásodpercig dolgozik rajta és akkor még nem is méreteztem át, nem is tömörítettem JPEG formátumba. Olyan 0.7 FPS érhető el így összességében. Gondoltam utánanézek már kész androidos programoknak, amik tudnak videót streamelni. A sok androidos program közül egy megfelelően működőt találtam is, aminek a neve IP Webcam. Java csomag alapján keresve "com.pas.webcam". Ez volt az egyetlen olyan program, ami már megfelelő FPS-t tudott és nem észleltem késést sem. Meg is néztem az okát (hogy hogyan, az már más kérdés). Natív kódot használtak fel, amit C nyelven írtak meg. (Az Android is támogatja a natív kódokat. Bővebben: NDK - Native Development Kit)
+Egyrészt csak akkor hajlandó képkockákat adni, ha azt felületen is megjelenítem (és ennek nem sok értelme van) valamint az eseménykezelőben egy bájt tömböt kapok, amiben YUV formátumú kép van. Ezzel még nem is lenne gond, mert ha valakinek csak a fekete-fehér tartomány kell, akkor még örül is neki, de ha színes képet szeretne az én telefonom kb. 800 ezredmásodpercig dolgozik rajta és akkor még nem is méreteztem át, nem is tömörítettem JPEG formátumba. Olyan 0.7 FPS érhető el így összességében. Gondoltam utánanézek már kész androidos programoknak, amik tudnak videót streamelni. A sok androidos program közül egy megfelelően működőt találtam is, aminek a neve IP Webcam. Java csomag alapján keresve "com.pas.webcam". Ez volt az egyetlen olyan program, ami már megfelelő FPS-t tudott és nem észleltem késést sem. Meg is néztem az okát (hogy hogyan, az már más kérdés). Natív kódot használtak fel, amit C nyelven írtak meg. (Az Android is támogatja a natív kódokat. Bővebben: NDK - Native Development Kit)
 Az IP Webcam program HTTP szervert használ és lehetőség van felhasználónév és jelszó beállítására, valamint megadhatjuk a szerver portját, a JPEG képek paramétereit (felbontás, FPS, képminőség) és hogy induljon-e el a telefon indulásakor a program, hogy bármikor hozzá lehessen férni a kamerához.
 
 A telefonon futó program terve:
@@ -70,11 +70,11 @@ Ezzel minden nem várt hibára megtörtént az óvintézkedés.
 A service elindulásakor, ha nem fut az IP Webcam program, akkor az API-ja segítségével a service elindítja azt. (Az ip-webcam könyvtárban további infó.)
 A service elindítása előtt a felületen a menüből kezdeményezhető további beállítás.
 Itt kell megadni:
-- a híd címét (host vagy ip) és portját (amin a socket servlet figyel)
-- a tanusítvány publikus kulcsát (crt fájl) és privát kulcsát (key fájl), amivel a hídhoz kapcsolódik és titkosít.
-- a tanusítvány kiállítójának publikus kulcsát
-Opcionális beállításként megadható a híd tanusítványának CN mezője, csak a biztonság kedvéért.
-Előfordulhat, hogy rossz címet állítottunk be és nem a híd van címezve. Ez esetben ha a CN mező meg van adva, kiküsszöbölhető a fölösleges kapcsolódás és azonnal egyértelmű hibajelzést kapunk. Ha nincs megadva a CN mező, a program percenként fölöslegesen fog próbálkozni, konkrét hibát nem jelezve.
+- a híd címét (host vagy IP) és portját (amin a socket servlet figyel)
+- a tanúsítvány publikus kulcsát (crt fájl) és privát kulcsát (key fájl), amivel a hídhoz kapcsolódik és titkosít.
+- a tanúsítvány kiállítójának publikus kulcsát
+Opcionális beállításként megadható a híd tanúsítványának CN mezője, csak a biztonság kedvéért.
+Előfordulhat, hogy rossz címet állítottunk be és nem a híd van címezve. Ez esetben ha a CN mező meg van adva, kiküszöbölhető a fölösleges kapcsolódás és azonnal egyértelmű hibajelzést kapunk. Ha nincs megadva a CN mező, a program percenként fölöslegesen fog próbálkozni, konkrét hibát nem jelezve.
 
 Bridge:
 -------
@@ -85,9 +85,9 @@ A hídnak két szerepköre van:
 
 Úgy terveztem meg a socket alapú kommunikációkat, hogy a híd el tudja dönteni, mi célja lesz a kapcsolatnak és egy időben több kapcsolatot kezelhessen.
 A híd esetén a host CN mezőjét kötelező megadni, mert a híd ez alapján tudja, hogy a socket kliens vezérlő-e vagy host. EZ NAGYON FONTOS!!!
-A híd esetében megadható több CN mező is, amik segítségével lehet tudni, mely tanusítványok lesznek a hostok ha esetleg több autó is távvezérelt lesz a jövőben.
+A híd esetében megadható több CN mező is, amik segítségével lehet tudni, mely tanúsítványok lesznek a hostok ha esetleg több autó is távvezérelt lesz a jövőben.
 
-[Opcionális terv: A híd mellé lehetne egy webszervert is tenni. Regisztrálhatnának internetről mások, akiknek el lett adva egy ilyen autó és van hozzá mobiltelefonjuk. A webszerver is SSL-t használna az alapértelmezett 443-as porttal. Itt akár tanusítványt is generáltathatnának (hostjukhoz és vezérlőjeikhez) így a híd socket servere megbízhatónak találná őket és szintén tudná ki a host és ki a vezérlő. A híd szolgáltatása havidíjas is lehetne és azoknak lenne jó, akik nem szeretnének saját híd szervert üzemeltetni. A host mikrovezérlő kódját ez esetben úgy kellene megtervezni, hogy interface alapú legyen és a felületről több autó típust lehessen választani az implementált osztályok alapján. Szép álom lenne, ha a mobilinternetes szolgáltatókkal meg lehetne egyezni, hogy ne mérjék a forgalmat és kapnak a bevételből :-) ]
+[Opcionális terv: A híd mellé lehetne egy webszervert is tenni. Regisztrálhatnának internetről mások, akiknek el lett adva egy ilyen autó és van hozzá mobiltelefonjuk. A webszerver is SSL-t használna az alapértelmezett 443-as porttal. Itt akár tanúsítványt is generáltathatnának (hostjukhoz és vezérlőjeikhez) így a híd socket servere megbízhatónak találná őket és szintén tudná ki a host és ki a vezérlő. A híd szolgáltatása havidíjas is lehetne és azoknak lenne jó, akik nem szeretnének saját híd szervert üzemeltetni. A host mikrovezérlő kódját ez esetben úgy kellene megtervezni, hogy interface alapú legyen és a felületről több autó típust lehessen választani az implementált osztályok alapján. Szép álom lenne, ha a mobilinternetes szolgáltatókkal meg lehetne egyezni, hogy ne mérjék a forgalmat és kapnak a bevételből :-) ]
 
 Host felőli kapcsolatok:
 1. MJPEG stream: hídnak letöltés, hostnak feltöltés
@@ -100,7 +100,7 @@ Vezérlő felőli kapcsolatok:
 3. Vezérlő parancsok a vezérlőtől (a hostnak és a hídnak): objektumos stream, hídnak letöltés, vezérlőnek feltöltés
 
 Bővebb magyarázat:
-- A kapcsolatok előtt a számozás kapcsolatazonosítót és priorítási sorrendet is jelent.
+- A kapcsolatok előtt a számozás kapcsolatazonosítót és prioritási sorrendet is jelent.
 - A híd a hostnak főként autóvezérlő utasításokat közöl (a 3-mas kapcsolaton át), de a telefonnak közölheti azt is,
   hogy hagyja abba az MJPEG streamelést vagy éppen kezdje el.
 - A vezérlő a hídnak főként autóvezérlő utasításokat ad, de üzenhet a hídnak is, hogy szeretné átvenni az autó irányítását.
@@ -112,7 +112,7 @@ A szerver amíg aktívan fut (tehát a Socket server nincs bezárva) cikluson be
 
 A kapcsolat kialakításának lépései: (Szerver alatt a híd socket szerverét értem.)
 0. A kliens socket kapcsolódik a szerver sockethez és sikerül az SSL kézfogás, létrejön a kapcsolat és mindkét oldalon egy SSLSocket objektum.
-1. a) A szerver a kliens-tanusítvány CN mezejének alapján megtudja, hogy a kliens host vagy vezérlő és hogy pontosan kivel is van dolga.
+1. a) A szerver a kliens-tanúsítvány CN mezejének alapján megtudja, hogy a kliens host vagy vezérlő és hogy pontosan kivel is van dolga.
    b) A szerver megnézi, hogy az adott szerepkörben az adott névhez hány kapcsolat van már kialakítva.
    c) A szerver inkrementálja a B pontban kapott számot és így megkapja az aktuális kapcsolat azonosítóját
       és a fenti felsorolás alapján már tudja is, mire lesz használva a kapcsolat.
@@ -120,36 +120,40 @@ A kapcsolat kialakításának lépései: (Szerver alatt a híd socket szerverét
 3. Mindkét oldal a kapcsolatazonosító alapján együttműködve kezeli a kapcsolatot.
 4. Bármelyik oldal lezárhatja a kapcsolatot, ha úgy dönt. Ekkor befejeződik a kommunikáció.
 
-Ha a hídra ugyan azzal a tanusítvánnyal kapcsolódnak több helyről, a híd a régebbi kapcsolatokat bezárja.
+Ha a hídra ugyan azzal a tanúsítvánnyal kapcsolódnak több helyről, a híd a régebbi kapcsolatokat bezárja.
 Így ki van kerülve az, hogy két helyről vezérelhessék az autót ellentmondásos üzenetet leadva mint pl. menj jobbra és balra is.
 
 Jogkezelés:
 Előfordulhat olyan eset, hogy egy autót több vezérlő is szeretne irányítani.
-Erre azt találtam ki, hogy csinálok a hídra egy tanusítvány-prioritás listát.
-A nagyobb priorítású vezérlő bármikor elveheti a vezérlést a kisebb priorítású vezérlőktől, de egyébként minden vezérlő kapcsolódhat a hídhoz és minden
+Erre azt találtam ki, hogy csinálok a hídra egy tanúsítvány-prioritás listát.
+A nagyobb prioritású vezérlő bármikor elveheti a vezérlést a kisebb prioritású vezérlőktől, de egyébként minden vezérlő kapcsolódhat a hídhoz és minden
 információt láthat, csak a vezérléstől vannak megfosztva.
-Amint felszabadul a vezérlés, bárki kérheti az autó vezérlését priorítástól függetlenül.
-Ha nagyobb priorítású kapcsolódik a hídhoz, mint aki vezérli az autót, addig amíg nem kéri a vezérlést, nem veszi el a híd az aktuális vezérlőtől az irányítást.
+Amint felszabadul a vezérlés, bárki kérheti az autó vezérlését prioritástól függetlenül és meg is kapja.
+(Kérni lehet akkor is, ha éppen vezérlik az autót, de az csak kérvényt jelent, semmi többet. Amint felszabadul a vezérlés az első kérvényt benyújtó meg is kapja.)
+(Ha a prioritáslistában egyetlen név szerepel, akkor úgy fog funkcionálni, mint ha root lenne, mivel mindenki felett áll ez esetben.)
+Ha nagyobb prioritású kapcsolódik a hídhoz, mint aki vezérli az autót, addig amíg nem kéri a vezérlést, nem veszi el a híd az aktuális vezérlőtől az irányítást.
+Aki nem szerepel a prioritáslistában, az olyan, mint ha a legutolsó utolsó helyen szerepelne a listában és a többi - listában nem szereplő - felhasználóval egyenrangúnak számít, tehát ők egymástól nem tudják elvenni a vezérlést.
+Ha a vezérlő sokáig nem cselekszik, tehát nincs a gép előtt, a vezérlést elveszi a híd tőle.
 
 Internet sávszélesség:
 A híd létrejöttének fő célja az volt, hogy egyetlen egy kapcsolat (ami valójában három socket kapcsolat) legyen a mobilinternet oldaláról és az is takarékos legyen mivel forgalom- és sebességkorlátos az internet.
 A hídba be van téve egy olyan sávszélesség csökkentő funkció is, hogy csak akkor kéri az MJPEG streamet a hosttól, ha van legalább egy vezérlő kapcsolódva hozzá.
 
 Konfig fájl:
-A híd esetén is meg kell adni a tanusítvány publikus és titkos kulcsának az elérhetőségét és a kiállító publikus kulcsának az elérhetőségét.
-A tanusítvány priorításokat is itt kell megadni, de ha bevezetésre kerül egy webes felület, átkerül adatbázisba.
+A híd esetén is meg kell adni a tanúsítvány publikus és titkos kulcsának az elérhetőségét és a kiállító publikus kulcsának az elérhetőségét.
+A tanúsítvány prioritásokat is itt kell megadni, de ha bevezetésre kerül egy webes felület, átkerül adatbázisba.
 
 Controller:
 -----------
 
 A vezérlő az a program, ami megjeleníti az autó adatait és ha van lehetősége vezérli az autót.
 Ez egy PC-n futó java alapú desktop alkalmazás lényegében, ami szintén a hídhoz kapcsolódik socket kliensként.
-A felületen lehetőség van - és kötelező is első induláskor - beállítani a híd címét és portját valamint a tanusítvány publikus és titkos kulcsát és a kiállító publikus kulcsát.
-A kiállító kulcsára azért van szükség mert kliens oldalon is ellenőrizve van a szerver tanusítvány megbízhatósága, nem csak szerver oldalon, hogy a man-in-middle támadás lehetetlen legyen.
+A felületen lehetőség van - és kötelező is első induláskor - beállítani a híd címét és portját valamint a tanúsítvány publikus és titkos kulcsát és a kiállító publikus kulcsát.
+A kiállító kulcsára azért van szükség mert kliens oldalon is ellenőrizve van a szerver tanúsítvány megbízhatósága, nem csak szerver oldalon, hogy a man-in-middle támadás lehetetlen legyen.
 A vezérlés billentyűzet és egér segítségével történik.
 Az egérrel pontos utasítást lehet adni mind sebesség, mind irány terén.
-A billentyűzettel egyszerűbb, de dúrvább irányítást érhet el a felhasználó és több vezérlés mód közül választhat.
-(A vezérlési módok a dúrvaságot szabályozzák pl. előre nyílra egyenletesen gyorsuljon fel vagy földkaparással max grafttal induljon el)
+A billentyűzettel egyszerűbb, de durvább irányítást érhet el a felhasználó és több vezérlés mód közül választhat.
+(A vezérlési módok a durvaságot szabályozzák pl. előre nyílra egyenletesen gyorsuljon fel vagy földkaparással max grafttal induljon el)
 
 
 Egy kis trükk:
@@ -168,8 +172,8 @@ Továbbfejlesztés
 További két socket kapcsolat segítségével megoldható lenne, hogy a telefon mikrofonjából megkapjuk a hangot is a kép mellé és a vezérlő számítógép mikrofonjából meg a telefonon játsszunk le hangot.
 A telefonból érkező hang stream ki/be kapcsolható lenne, alapértelmezetten ki lenne kapcsolva takarékosság miatt.
 Az autót vezérlő kliens tudná csak ki/be kapcsolni a streamet és csakis ő tudna hang streamet küldeni a telefonnak.
-A sávszélesség kímélése érdekében a Javara írt Tritonus API-t használva lehetne tömöríteni GSM vagy MP3 formátumba a mono 16 bites PCM-ről. (Mondjuk GSMFormatConversionProvider segítségével.)
-Egyéb pluginek: http://www.tritonus.org/plugins.html
+A sávszélesség kímélése érdekében a Javara írt Tritonus API-t használva lehetne tömöríteni GSM vagy MP3 formátumba a monó 16 bites PCM-ről. (Mondjuk GSMFormatConversionProvider segítségével.)
+Egyéb pluginok: http://www.tritonus.org/plugins.html
 Példa: http://www.jsresources.org/examples/GSMEncoder.java.html
 Ha a Tritonus még sem használható út, marad a GZipInputStream és társa a GZipOutputStream.
 Vagy egy másik út: http://www.jsresources.org/apps/9159_TimeTurner.pdf
@@ -181,4 +185,6 @@ A telefont tartó eszköz lehetőleg védje a telefont a külső támadások ell
 Ha ez meg lett oldva, a kábeleket is jó lenne biztonságosan elvezetni szintén védve és a kapcsolót, ami átkapcsolhat internetes vezérlésről, azt is a kulccsal
 zárt, védett helyen belülre kéne elhelyezni.
 
+Nem ártana egy közös chat funkció se. Nem kellene tárolni az üzeneteket, ebből kifolyólag nem lenne offline üzenetküldés.
+Csak annyi célja lenne, hogy az autót vezérlő felhasználók tudjanak beszélgetni egymással.
 

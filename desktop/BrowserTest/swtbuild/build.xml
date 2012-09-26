@@ -1,0 +1,18 @@
+<project name="BrowserTest" basedir="../">
+    <description>Package cross platform SWT Jar</description>
+    <taskdef name="swtjar" classname="org.swtjar.ant.SWTJarTask"
+             classpath="./swtbuild/swtjar.jar"/>
+    <swtjar jarfile="./dist/ui.jar"
+            targetmainclass="org.dyndns.fzoli.mobilerc.Radar"
+            swtversion="3.8">
+        <!-- Application Classes -->
+        <fileset dir="./build/classes" includes="**/*.class" />
+        <!-- Library Classes -->
+        <zipfileset excludes="META-INF/*.MF" src="lib/DJNativeSwing.jar"/>
+        <zipfileset excludes="META-INF/*.MF" src="lib/DJNativeSwing-SWT.jar"/>
+        <zipfileset excludes="META-INF/*.MF" src="lib/jna.jar"/>
+        <zipfileset excludes="META-INF/*.MF" src="lib/platform.jar"/>
+        <!-- SWT Jars -->
+        <fileset dir="./lib/swt" includes="swt-*-3.8.jar" />
+    </swtjar>
+</project>

@@ -2,7 +2,6 @@ package org.dyndns.fzoli.mobilerc;
 
 import chrriis.common.UIUtils;
 import chrriis.dj.nativeswing.NativeComponentWrapper;
-import chrriis.dj.nativeswing.swtimpl.NativeComponent;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserAdapter;
@@ -14,9 +13,8 @@ import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.imageio.ImageIO;
 import javax.swing.JDialog;
 import javax.swing.JLayeredPane;
@@ -28,27 +26,8 @@ import javax.swing.SwingUtilities;
  */
 public class Radar extends JDialog {
     
-    public static class Position {
-        
-        private double latitude, longitude;
-        
-        public Position(double latitude, double longitude) {
-            this.latitude = latitude;
-            this.longitude = longitude;
-        }
-        
-        public double getLatitude() {
-            return latitude;
-        }
-        
-        public double getLongitude() {
-            return longitude;
-        }
-        
-    }
-    
     private double arrowAngle = 0;
-    private Position position = new Position(0, 0);
+    private RadarPosition position = new RadarPosition(0, 0);
     
     private static final String LS = System.getProperty("line.separator");
     
@@ -67,9 +46,9 @@ public class Radar extends JDialog {
             "      html, body { height: 100% }" + LS +
             "      body { margin: 0; padding: 0; }" + LS +
             "      div#map_canvas, #border { width: " + MAP_WIDTH + "px; height: " + MAP_HEIGHT + "px }" + LS +
-            "      div#border, div#arrow { z-index: 10; position: fixed }" + LS +
-            "      div#border { top: 0px; left: 0px }" + LS +
-            "      div#arrow { top: " + ((MAP_HEIGHT / 2) - (ARROW_SIZE / 2)) + "px; left: " + ((MAP_WIDTH / 2) - (ARROW_SIZE / 2)) + "px; width: " + ARROW_SIZE + "px; height: " + ARROW_SIZE + "px }" + LS +
+            "      div#border, div#arrow { position: fixed }" + LS +
+            "      div#border { z-index: 1000003; top: 0px; left: 0px }" + LS +
+            "      div#arrow { z-index: 1000002; top: " + ((MAP_HEIGHT / 2) - (ARROW_SIZE / 2)) + "px; left: " + ((MAP_WIDTH / 2) - (ARROW_SIZE / 2)) + "px; width: " + ARROW_SIZE + "px; height: " + ARROW_SIZE + "px }" + LS +
             "    </style>" + LS +
             "    <script type=\"text/javascript\" src=\"http://maps.googleapis.com/maps/api/js?&sensor=false\"></script>" + LS +
             "  </head>" + LS +
@@ -81,9 +60,22 @@ public class Radar extends JDialog {
             "</html>";
     
     private final JWebBrowser webBrowser;
-    
+
+    public Radar() {
+        this(null, null);
+    }
+
     public Radar(Window owner) {
+        this(owner, null);
+    }
+    
+    public Radar(RadarLoadListener callback) {
+        this(null, callback);
+    }
+    
+    public Radar(final Window owner, final RadarLoadListener callback) {
         super(owner, "Radar");
+        
         if (!TMP_DIR.isDirectory()) TMP_DIR.mkdir();
         
         final JLayeredPane radarPane = new JLayeredPane();
@@ -114,7 +106,8 @@ public class Radar extends JDialog {
                         ;
                     }
                     e.getWebBrowser().executeJavascript(createInitScript());
-                    setVisible(true);
+                    if (callback == null) setVisible(true);
+                    else callback.loadFinished(Radar.this);
                 }
             }
             
@@ -144,7 +137,7 @@ public class Radar extends JDialog {
         pack();
     }
     
-    public Position getPosition() {
+    public RadarPosition getPosition() {
         return position;
     }
     
@@ -153,10 +146,10 @@ public class Radar extends JDialog {
     }
     
     public void setPosition(double latitude, double longitude) {
-        setPosition(new Position(latitude, longitude));
+        setPosition(new RadarPosition(latitude, longitude));
     }
     
-    public void setPosition(Position pos) {
+    public void setPosition(RadarPosition pos) {
         position = pos;
         SwingUtilities.invokeLater(new Runnable() {
             
@@ -177,7 +170,7 @@ public class Radar extends JDialog {
                 try {
                     ARROW.rotate(arrowAngle);
                     ImageIO.write(ARROW, "png", ARROW_FILE);
-                    webBrowser.executeJavascript("document.getElementById('arrow').innerHTML = '<img src=\"" + ARROW_FILE.getPath() + "?nocache=" + Math.random() + "\" />';");
+                    webBrowser.executeJavascript("document.getElementById('arrow').innerHTML = '<img src=\"" + ARROW_FILE.toURI().toURL() + "?nocache=" + Math.random() + "\" />';");
                 }
                 catch(Exception ex) {
                     throw new RuntimeException(ex);
@@ -205,33 +198,6 @@ public class Radar extends JDialog {
         f.delete();
     }
     
-    public static void loadSwtJar(Class clazz) {
-        File swtFile = null;
-        try {
-            String osName = System.getProperty("os.name").toLowerCase();
-            String osArch = System.getProperty("os.arch").toLowerCase();
-            URLClassLoader classLoader = (URLClassLoader) clazz.getClassLoader();
-            Method addUrlMethod = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-            addUrlMethod.setAccessible(true);
-
-            String swtFileNameOsPart = 
-                osName.contains("win") ? "win32" :
-                osName.contains("mac") ? "macosx" :
-                osName.contains("linux") || osName.contains("nix") ? "linux" : "";
-
-            if (swtFileNameOsPart.isEmpty()) {
-                throw new RuntimeException("Unknown OS name: " + osName);
-            }
-            
-            String swtFileName = "swt-" + swtFileNameOsPart + "-" + (osArch.contains("64") ? "x86_64" : "x86") + ".jar";
-            swtFile = new File(new File(System.getProperty("user.dir"), "lib/swt"), swtFileName);
-            addUrlMethod.invoke(classLoader, swtFile.toURL());
-        }
-        catch(Exception e) {
-            throw new RuntimeException("Unable to add the swt jar to the class path: " + swtFile);
-        }
-    }
-    
     public static void main(String[] args) {
         UIUtils.setPreferredLookAndFeel();
         NativeInterface.open();
@@ -239,7 +205,29 @@ public class Radar extends JDialog {
             
             @Override
             public void run() {
-                Radar radar = new Radar(null);
+                
+//                Radar radar = new Radar();
+                
+                Radar radar = new Radar(new RadarLoadListener() {
+
+                    @Override
+                    public void loadFinished(final Radar radar) {
+                        new Timer().schedule(new TimerTask() {
+                            
+                            double angle = 0;
+                            
+                            @Override
+                            public void run() {
+                                angle += 10;
+                                radar.setArrow(angle);
+                            }
+                            
+                        }, 0, 1000);
+                        radar.setVisible(true);
+                    }
+                    
+                });
+                
                 radar.setPosition(47.35021, 19.10237);
                 radar.setArrow(29);
                 radar.addWindowListener(new WindowAdapter() {

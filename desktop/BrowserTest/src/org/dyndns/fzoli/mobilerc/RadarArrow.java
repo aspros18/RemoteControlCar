@@ -54,7 +54,7 @@ public class RadarArrow extends BufferedImage {
         g.setColor(new Color(50, 170, 200));
         g.fill(pol);
         g.setColor(new Color(0, 0, 170));
-        g.setStroke(new BasicStroke(2));
+        g.setStroke(new BasicStroke((int)(size / 20.0)));
         g.draw(pol);
     }
     

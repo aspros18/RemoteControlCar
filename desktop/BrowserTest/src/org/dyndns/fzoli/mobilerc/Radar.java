@@ -206,13 +206,12 @@ public class Radar extends JDialog {
             @Override
             public void run() {
                 
-//                Radar radar = new Radar();
-                
+                final Timer timer = new Timer();
                 Radar radar = new Radar(new RadarLoadListener() {
 
                     @Override
                     public void loadFinished(final Radar radar) {
-                        new Timer().schedule(new TimerTask() {
+                        timer.schedule(new TimerTask() {
                             
                             double angle = 0;
                             
@@ -223,17 +222,17 @@ public class Radar extends JDialog {
                             }
                             
                         }, 0, 1000);
+                        radar.setPosition(47.35021, 19.10237);
                         radar.setVisible(true);
                     }
                     
                 });
                 
-                radar.setPosition(47.35021, 19.10237);
-                radar.setArrow(29);
                 radar.addWindowListener(new WindowAdapter() {
 
                     @Override
                     public void windowClosing(WindowEvent e) {
+                        timer.cancel();
                         System.exit(0);
                     }
                     

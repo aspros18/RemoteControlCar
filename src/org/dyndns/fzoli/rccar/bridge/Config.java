@@ -51,15 +51,15 @@ public class Config {
      * Az alapértelmezett hosts.txt fájl tartalma.
      */
     private static final String DEFAULT_HOSTS =
-            "# Ebben a fájlban kell felsorolni a távirányítós autót vezérlő telefonok tanusítványának Common Name (CN) mezőit." + LS +
+            "# Ebben a fájlban kell felsorolni a távirányítós autókat vezérlő telefonok (host) tanusítványának Common Name (CN) mezőit." + LS +
             "# Soronként csak egy CN mező adható meg!" + LS + LS;
     
     /**
      * Az alapértelmezett bridge.conf fájl tartalma.
      */
     private static final String DEFAULT_CONFIG =
-            "# Ez a fájl a távirányítós autót vezérlő telefonokat a számítógépen futó vezérlő programokkal összekötő szerver konfigurációs állománya." + LS +
-            KEY_PORT + " 8443 # az a TCP port, amin a szerver hallgat" + LS +
+            "# Ez a fájl a távirányítós autókat vezérlő telefonokat (host) és a számítógépen futó vezérlő programokat (controller) összekötő szerver (híd) konfigurációs állománya." + LS +
+            KEY_PORT + " 8443 # az a TCP port, amin a szerver figyel" + LS +
             KEY_CA + " /path/to/ca.crt # a tanusítványokat kiállító CA tanusítvány-fájl" + LS +
             KEY_CERT + " /path/to/name.crt # a szerver tanusítvány-fájl" + LS +
             KEY_KEY + " /path/to/name.key # a szerver titkos kulcsa" + LS;
@@ -231,6 +231,7 @@ public class Config {
      * Ha a fájl nem létezik, vagy nem fájl, akkor NULL értékkel tér vissza.
      */
     private File createFile(String key) {
+        if (getValues() == null) return null;
         String path = getValues().get(key);
         if (path == null) return null;
         File f = new File(path);

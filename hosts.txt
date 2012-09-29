@@ -1,3 +1,3 @@
-# Ebben a fájlban kell felsorolni a távirányítós autót vezérlő telefonok tanusítványának Common Name (CN) mezőit.
+# Ebben a fájlban kell felsorolni a távirányítós autókat vezérlő telefonok (host) tanusítványának Common Name (CN) mezőit.
 # Soronként csak egy CN mező adható meg!
 testclient

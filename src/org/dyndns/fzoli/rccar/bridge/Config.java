@@ -127,13 +127,41 @@ public class Config {
         return hosts;
     }
 
+    /**
+     * @return true, ha minden érték meg van adva és érvényes, valamint legalább egy host létezik
+     */
+    public boolean isCorrect() {
+        return isConfigFileCorrect() && isHostFileCorrect();
+    }
+    
+    /**
+     * @return true, ha minden érték meg van adva és érvényes, egyébként false
+     */
+    public boolean isConfigFileCorrect() {
+        return getPort() != null &&
+               getCAFile() != null &&
+               getCertFile() != null &&
+               getKeyFile() != null;
+    }
+    
+    /**
+     * @return true, ha legalább egy host létezik, egyébként false
+     */
+    public boolean isHostFileCorrect() {
+        return getHosts() != null && !getHosts().isEmpty();
+    }
+    
+    /**
+     * Tesztelési célból értelmes szöveget generál a metódus az objektumnak.
+     */
     @Override
     public String toString() {
         return "Port: " + getPort() + LS +
                "CA file: " + getCAFile() + LS +
                "Cert file: " + getCertFile() + LS +
                "Key file:" + getKeyFile() + LS +
-               "Hosts: " + getHosts();
+               "Hosts: " + getHosts() + LS +
+               "Correct? " + isCorrect();
     }
     
     /**
@@ -176,7 +204,7 @@ public class Config {
                 if (ln.startsWith("#")) continue;
                 ind = ln.indexOf("#");
                 if (ind != -1) ln = ln.substring(0, ind);
-                ls.add(ln);
+                if (!ln.isEmpty()) ls.add(ln);
             }
             in.close();
             return ls;

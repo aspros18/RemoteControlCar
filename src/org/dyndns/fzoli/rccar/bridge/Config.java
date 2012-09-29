@@ -126,6 +126,15 @@ public class Config {
     public List<String> getHosts() {
         return hosts;
     }
+
+    @Override
+    public String toString() {
+        return "Port: " + getPort() + LS +
+               "CA file: " + getCAFile() + LS +
+               "Cert file: " + getCertFile() + LS +
+               "Key file:" + getKeyFile() + LS +
+               "Hosts: " + getHosts();
+    }
     
     /**
      * Gyártó metódus.

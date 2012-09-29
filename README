@@ -73,8 +73,13 @@ Itt kell megadni:
 - a híd címét (host vagy IP) és portját (amin a socket servlet figyel)
 - a tanúsítvány publikus kulcsát (crt fájl) és privát kulcsát (key fájl), amivel a hídhoz kapcsolódik és titkosít.
 - a tanúsítvány kiállítójának publikus kulcsát
+- mennyi időközönként küldjön statisztikát a telefon
 Opcionális beállításként megadható a híd tanúsítványának CN mezője, csak a biztonság kedvéért.
 Előfordulhat, hogy rossz címet állítottunk be és nem a híd van címezve. Ez esetben ha a CN mező meg van adva, kiküszöbölhető a fölösleges kapcsolódás és azonnal egyértelmű hibajelzést kapunk. Ha nincs megadva a CN mező, a program percenként fölöslegesen fog próbálkozni, konkrét hibát nem jelezve.
+
+A hang stream, eredetileg kikapcsolt és kérhető lesz bekapcsolásra. Kikapcsolása esetén elég a socket streamet lezárni és kezelni kell a kivételt.
+A streamet az android beépített szolgáltatása (MediaRecorder.AudioEncoder.AAC) fogja szolgáltatni és a híd fogja tovább adni a vezérlőknek.
+
 
 Bridge:
 -------

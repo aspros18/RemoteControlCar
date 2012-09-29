@@ -37,6 +37,7 @@ public abstract class AbstractClientProcess extends AbstractProcess {
     /**
      * Ez a metódus fut le a szálban.
      * A kapcsolatazonosító szervertől való fogadása után a konkrét feldolgozás kezdődik meg, és ha a feldolgozás végetér, az erőforrások felszabadulnak.
+     * @throws ProcessException ha bármi hiba történik
      */
     @Override
     public final void run() {

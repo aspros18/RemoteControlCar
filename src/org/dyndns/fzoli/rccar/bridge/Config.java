@@ -154,6 +154,7 @@ public class Config {
      * @param f a beolvasandó fájl
      * @param def ha a fájl nem létezik, létrejön a fájl a paraméter tartalmával.
      * @return Sorokat tartalmazó lista vagy NULL, ha a fájl nem létezik.
+     * @throws RuntimeException ha bármi hiba történik. Pl. nincs olvasási/írási jog
      */
     private static List<String> read(File f, String def) {
         try {

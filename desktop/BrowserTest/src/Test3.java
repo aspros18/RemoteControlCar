@@ -116,7 +116,7 @@ public class Test3 {
                             public void run() {
                                 try {
                                     angle += 2;
-                                    arrow.rotate(angle);
+                                    arrow.setRotation(angle);
                                     ImageIO.write(arrow, "png", arrowFile);
                                     webBrowser.executeJavascript("document.getElementById('arrow').innerHTML = '<img src=\"" + arrowFile.getPath() + "?nocache=" + Math.random() + "\" />';");
                                 }

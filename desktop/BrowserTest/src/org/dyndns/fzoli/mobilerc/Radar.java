@@ -26,7 +26,6 @@ import javax.swing.SwingUtilities;
  */
 public class Radar extends JDialog {
     
-    private double arrowAngle = 0;
     private RadarPosition position = new RadarPosition(0, 0);
     
     private static final String LS = System.getProperty("line.separator");
@@ -75,8 +74,6 @@ public class Radar extends JDialog {
     
     public Radar(final Window owner, final RadarLoadListener callback) {
         super(owner, "Radar");
-        
-        if (!TMP_DIR.isDirectory()) TMP_DIR.mkdir();
         
         final JLayeredPane radarPane = new JLayeredPane();
         radarPane.setPreferredSize(new Dimension(RADAR_SIZE, RADAR_SIZE));
@@ -141,40 +138,51 @@ public class Radar extends JDialog {
         return position;
     }
     
-    public double getArrowAngle() {
-        return arrowAngle;
+    public Double getArrowRotation() {
+        return ARROW.getRotation();
     }
     
     public void setPosition(double latitude, double longitude) {
         setPosition(new RadarPosition(latitude, longitude));
     }
     
-    public void setPosition(RadarPosition pos) {
-        position = pos;
+    public void setPosition(final RadarPosition pos) {
         SwingUtilities.invokeLater(new Runnable() {
             
             @Override
             public void run() {
+                position = pos;
                 webBrowser.executeJavascript("map.setCenter(new google.maps.LatLng(" + position.getLatitude() + ", " + position.getLongitude() + "));");
             }
             
         });
     }
     
-    public void setArrow(double angle) {
-        arrowAngle = angle;
+    public void setArrow(final Double rotation) {
         SwingUtilities.invokeLater(new Runnable() {
             
             @Override
             public void run() {
                 try {
-                    ARROW.rotate(arrowAngle);
+                    ARROW.setRotation(rotation);
+                    if (!TMP_DIR.isDirectory()) TMP_DIR.mkdir();
                     ImageIO.write(ARROW, "png", ARROW_FILE);
                     webBrowser.executeJavascript("document.getElementById('arrow').innerHTML = '<img src=\"" + ARROW_FILE.toURI().toURL() + "?nocache=" + Math.random() + "\" />';");
                 }
                 catch(Exception ex) {
                     throw new RuntimeException(ex);
                 }
+            }
+            
+        });
+    }
+    
+    public void removeArrow() {
+        SwingUtilities.invokeLater(new Runnable() {
+            
+            @Override
+            public void run() {
+                webBrowser.executeJavascript("document.getElementById('arrow').innerHTML = '';");
             }
             
         });
@@ -195,7 +203,9 @@ public class Radar extends JDialog {
             for (File c : f.listFiles())
                 delete(c);
         }
-        f.delete();
+        if (f.exists()) {
+            f.delete();
+        }
     }
     
     public static void main(String[] args) {
@@ -211,6 +221,7 @@ public class Radar extends JDialog {
 
                     @Override
                     public void loadFinished(final Radar radar) {
+                        radar.setArrow(null);
                         timer.schedule(new TimerTask() {
                             
                             double angle = 0;
@@ -221,8 +232,8 @@ public class Radar extends JDialog {
                                 radar.setArrow(angle);
                             }
                             
-                        }, 0, 1000);
-                        radar.setPosition(47.35021, 19.10237);
+                        }, 5000, 1000);
+                        radar.setPosition(47.35021, 19.10236);
                         radar.setVisible(true);
                     }
                     

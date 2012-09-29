@@ -13,7 +13,7 @@ public class RotateablePolygon extends Polygon {
         super(xpoints, ypoints, npoints);
     }
 
-    public void rotate(double angle, Point centre) {
+    public RotateablePolygon rotate(double angle, Point centre) {
         if (angle != 0) {
 
             int[] x = new int[npoints];
@@ -41,6 +41,7 @@ public class RotateablePolygon extends Polygon {
             ypoints = y;
 
         }
+        return this;
     }
     
     private static int[] createPoints(Point[] points, boolean x) {

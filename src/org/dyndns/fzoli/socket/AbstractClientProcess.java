@@ -34,6 +34,10 @@ public abstract class AbstractClientProcess extends AbstractProcess {
         this.connectionId = connectionId;
     }
     
+    /**
+     * Ez a metódus fut le a szálban.
+     * A kapcsolatazonosító szervertől való fogadása után a konkrét feldolgozás kezdődik meg, és ha a feldolgozás végetér, az erőforrások felszabadulnak.
+     */
     @Override
     public final void run() {
         try {
@@ -57,6 +61,9 @@ public abstract class AbstractClientProcess extends AbstractProcess {
         }
     }
     
+    /**
+     * Kliens oldali adatfeldolgozó metódus.
+     */
     protected abstract void process();
 
 }

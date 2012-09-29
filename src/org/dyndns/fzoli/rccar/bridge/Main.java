@@ -7,7 +7,7 @@ package org.dyndns.fzoli.rccar.bridge;
 public class Main {
     
     public static void main(String[] args) {
-        Config.getConfig();
+        Config.getConfig(); //TEST
     }
     
 }

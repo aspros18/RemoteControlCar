@@ -36,7 +36,6 @@ public class Main {
      * A híd main metódusa.
      */
     public static void main(String[] args) {
-        System.out.println(CONFIG);
         if (CONFIG.isCorrect()) try {
             ServerSocket ss = createServerSocket();
             //TODO: feldolgozás

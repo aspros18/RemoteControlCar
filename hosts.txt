@@ -1,3 +1,4 @@
 # Ebben a fájlban kell felsorolni a távirányítós autókat vezérlő telefonok (host) tanúsítványának Common Name (CN) mezőit.
 # Soronként csak egy CN mező adható meg!
-testclient
+host
+host2

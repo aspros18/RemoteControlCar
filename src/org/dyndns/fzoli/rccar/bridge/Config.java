@@ -40,31 +40,34 @@ public class Config {
                                KEY_PASSWORD = "password";
     
     private static final String LS = System.getProperty("line.separator"),
-                                UD = System.getProperty("user.dir");
+                                UD = System.getProperty("user.dir"),
+                                CC = "#";
     
     /**
      * A konfig fájlok eléréséhez létrehozott objektumok.
      */
-    private static final File FILE_CONFIG = new File(UD, "bridge.conf"),
-                              FILE_HOSTS = new File(UD, "hosts.txt");
+    public static final File FILE_CONFIG = new File(UD, "bridge.conf"),
+                             FILE_HOSTS = new File(UD, "hosts.txt");
     
     /**
      * Az alapértelmezett hosts.txt fájl tartalma.
      */
     private static final String DEFAULT_HOSTS =
-            "# Ebben a fájlban kell felsorolni a távirányítós autókat vezérlő telefonok (host) tanúsítványának Common Name (CN) mezőit." + LS +
-            "# Soronként csak egy CN mező adható meg!" + LS + LS;
+            CC + " Ebben a fájlban kell felsorolni a távirányítós autókat vezérlő telefonok (host) tanúsítványának Common Name (CN) mezőit." + LS +
+            CC + " Soronként csak egy CN mező adható meg!" + LS +
+            "host" + LS +
+            "host2";
     
     /**
      * Az alapértelmezett bridge.conf fájl tartalma.
      */
     private static final String DEFAULT_CONFIG =
-            "# Ez a fájl a távirányítós autókat vezérlő telefonokat (host) és a számítógépen futó vezérlő programokat (controller) összekötő szerver (híd) konfigurációs állománya." + LS +
-            KEY_PORT + " 8443 # az a TCP port, amin a szerver figyel" + LS +
-            KEY_CA + " /path/to/ca.crt # a tanúsítványokat kiállító CA tanúsítvány-fájl" + LS +
-            KEY_CERT + " /path/to/name.crt # a szerver tanúsítvány-fájl" + LS +
-            KEY_KEY + " /path/to/name.key # a szerver titkos kulcsa" + LS +
-            KEY_PASSWORD + " optional_cert_password # a szerver tanúsítványának jelszava, ha van";
+            CC + " Ez a fájl a távirányítós autókat vezérlő telefonokat (host) és a számítógépen futó vezérlő programokat (controller) összekötő szerver (híd) konfigurációs állománya." + LS +
+            KEY_PORT + " 8443 " + CC + " az a TCP port, amin a szerver figyel" + LS +
+            KEY_CA + ' ' + new File("test-certs", "ca.crt") + ' ' + CC + " a tanúsítványokat kiállító CA tanúsítvány-fájl" + LS +
+            KEY_CERT + ' ' + new File("test-certs", "bridge.crt") + ' ' + CC + " a szerver tanúsítvány-fájl" + LS +
+            KEY_KEY + ' ' + new File("test-certs", "bridge.key") + ' ' + CC + " a szerver titkos kulcsa" + LS +
+            CC + ' ' + KEY_PASSWORD + " optional_cert_password " + CC + " a szerver tanúsítványának jelszava, ha van";
     
     /**
      * Ez az osztály nem példányosítható és nem származhatnak belőle újabb osztályok.
@@ -79,7 +82,9 @@ public class Config {
      */
     public Integer getPort() {
         try {
-            return Integer.parseInt(getValues().get(KEY_PORT));
+            int port = Integer.parseInt(getValues().get(KEY_PORT));
+            if (port < 1 || port > 65535) return null;
+            return port;
         }
         catch (NullPointerException | NumberFormatException ex) {
             return null;
@@ -159,6 +164,13 @@ public class Config {
     }
     
     /**
+     * @return true, ha bármely konfig fájl most lett létrehozva
+     */
+    public boolean isNew() {
+        return getHosts() == null || getValues() == null;
+    }
+    
+    /**
      * Tesztelési célból értelmes szöveget generál a metódus az objektumnak.
      */
     @Override
@@ -209,8 +221,8 @@ public class Config {
             BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
             while ((ln = in.readLine()) != null) {
                 ln = ln.trim();
-                if (ln.startsWith("#")) continue;
-                ind = ln.indexOf("#");
+                if (ln.startsWith(CC)) continue;
+                ind = ln.indexOf(CC);
                 if (ind != -1) ln = ln.substring(0, ind);
                 if (!ln.isEmpty()) ls.add(ln);
             }

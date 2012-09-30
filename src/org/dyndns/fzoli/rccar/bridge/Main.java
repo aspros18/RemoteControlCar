@@ -44,7 +44,25 @@ public class Main {
             ex.printStackTrace();
         }
         else {
-            System.err.println("Nem megfelelő konfiguráció."); //TODO: beszédesebb hibaüzenet
+            if (CONFIG.isNew()) {
+                System.out.println("A konfigurációs fájlokat létrehoztam.\nKérem, állítsa be őket megfelelően.");
+                System.out.println("Konfig fájl helye: " + Config.FILE_CONFIG);
+                System.out.println("Hosts fájl helye: " + Config.FILE_HOSTS);
+            }
+            else {
+                System.err.println("Nem megfelelő konfiguráció.");
+                if (CONFIG.isConfigFileCorrect()) {
+                    System.err.println("Legalább egy hosztot adjon meg a " + Config.FILE_HOSTS + " fájlban.");
+                }
+                else {
+                    System.err.println("A " + Config.FILE_CONFIG + " fájl hibásan van paraméterezve:");
+                    if (CONFIG.getPort() == null) System.err.println("- Adjon meg érvényes portot.");
+                    if (CONFIG.getCAFile() == null) System.err.println("- Adjon meg létező ca fájl útvonalat.");
+                    if (CONFIG.getCertFile() == null) System.err.println("- Adjon meg létező cert fájl útvonalat.");
+                    if (CONFIG.getKeyFile() == null) System.err.println("- Adjon meg létező key fájl útvonalat.");
+                }
+                System.exit(1);
+            }
         }
     }
     

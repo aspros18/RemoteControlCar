@@ -42,6 +42,7 @@ public class Main {
         }
         catch (Exception ex) {
             ex.printStackTrace();
+            System.exit(1);
         }
         else {
             if (CONFIG.isNew()) {

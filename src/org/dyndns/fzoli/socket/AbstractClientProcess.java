@@ -5,7 +5,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 /**
- * Külön szálban, a socketen át adatfeldolgozást végző kliens oldali osztály.
+ * Külön szálban, a socketen át adatfeldolgozást végző kliens oldali osztály alapja.
  * @author zoli
  */
 public abstract class AbstractClientProcess extends AbstractProcess {

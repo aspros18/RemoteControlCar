@@ -37,7 +37,8 @@ public class Config {
                                KEY_CA = "ca",
                                KEY_CERT = "cert",
                                KEY_KEY = "key",
-                               KEY_PASSWORD = "password";
+                               KEY_PASSWORD = "password",
+                               KEY_ADMIN = "admin";
     
     private static final String LS = System.getProperty("line.separator"),
                                 UD = System.getProperty("user.dir"),
@@ -67,7 +68,8 @@ public class Config {
             KEY_CA + ' ' + new File("test-certs", "ca.crt") + ' ' + CC + " a tanúsítványokat kiállító CA tanúsítvány-fájl" + LS +
             KEY_CERT + ' ' + new File("test-certs", "bridge.crt") + ' ' + CC + " a szerver tanúsítvány-fájl" + LS +
             KEY_KEY + ' ' + new File("test-certs", "bridge.key") + ' ' + CC + " a szerver titkos kulcsa" + LS +
-            CC + ' ' + KEY_PASSWORD + " optional_cert_password " + CC + " a szerver tanúsítványának jelszava, ha van";
+            CC + ' ' + KEY_PASSWORD + " optional_cert_password " + CC + " a szerver tanúsítványának jelszava, ha van" + LS +
+            CC + ' ' + KEY_ADMIN + " optional_admin_cert_common_name " + CC + " kitüntetett vezérlő tanúsítvány, amivel rendszergazdaként használható a vezérlő program";
     
     /**
      * Ez az osztály nem példányosítható és nem származhatnak belőle újabb osztályok.
@@ -118,9 +120,24 @@ public class Config {
         return createFile(KEY_KEY);
     }
     
+    /**
+     * Az opcionális tanúsítvány jelszó értékét adja vissza.
+     * Ha nincs megadva, üres karakterlánccal tér vissza.
+     */
     public char[] getPassword() {
         if (getValues() == null || getValues().get(KEY_PASSWORD) == null) return new char[] {};
         return getValues().get(KEY_PASSWORD).toCharArray();
+    }
+    
+    /**
+     * Az opcionális rendszergazda tanúsítványában szereplő CN mező értékét adja vissza.
+     * Ha nincs megadva, üres szöveggel tér vissza.
+     */
+    public String getAdmin() {
+        if (getValues() == null) return null;
+        String name = getValues().get(KEY_ADMIN);
+        if (name == null) return "";
+        return name;
     }
     
     /**
@@ -181,6 +198,7 @@ public class Config {
                "Key file:" + getKeyFile() + LS +
                "Hosts: " + getHosts() + LS +
                "Password: " + new String(getPassword()) + LS +
+               "Admin: " + getAdmin() + LS +
                "Correct? " + isCorrect();
     }
     

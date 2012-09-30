@@ -8,14 +8,17 @@ import javax.net.ssl.SSLSocket;
  */
 public abstract class AbstractSecureServerProcess extends AbstractServerProcess implements SecureProcess {
 
-    private final String commonName;
+    private final String localCommonName, remoteCommonName;
     
     /**
-     * @throws SecureProcessException ha nem megbízható a kapcsolat
+     * Szerver oldali adatfeldolgozó konstruktora.
+     * @param socket SSLSocket, amin keresztül folyik a titkosított kommunikáció.
+     * @throws SecureProcessException ha nem megbízható a kapcsolat vagy a tanúsítvány hibás
      */
     public AbstractSecureServerProcess(SSLSocket socket, int connectionId) {
         super(socket, connectionId);
-        commonName = SecureUtil.getCommonName(socket);
+        localCommonName = SecureUtil.getLocalCommonName(socket);
+        remoteCommonName = SecureUtil.getRemoteCommonName(socket);
     }
 
     /**
@@ -27,11 +30,19 @@ public abstract class AbstractSecureServerProcess extends AbstractServerProcess 
     }
 
     /**
-     * A titkosított kommunikáció másik oldalán álló gép tanúsítványának CN mezőjét adja vissza.
+     * A titkosított kommunikáció ezen oldalán álló szerver tanúsítványának CN mezőjét adja vissza.
      */
     @Override
-    public String getCommonName() {
-        return commonName;
+    public String getLocalCommonName() {
+        return localCommonName;
+    }
+
+    /**
+     * A titkosított kommunikáció másik oldalán álló kliens tanúsítványának CN mezőjét adja vissza.
+     */
+    @Override
+    public String getRemoteCommonName() {
+        return remoteCommonName;
     }
     
 }

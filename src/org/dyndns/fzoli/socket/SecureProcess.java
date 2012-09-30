@@ -15,8 +15,13 @@ public interface SecureProcess extends Process {
     public SSLSocket getSocket();
     
     /**
+     * A titkosított kommunikáció ezen oldalán álló gép tanúsítványának CN mezőjét adja vissza.
+     */
+    public String getLocalCommonName();
+    
+    /**
      * A titkosított kommunikáció másik oldalán álló gép tanúsítványának CN mezőjét adja vissza.
      */
-    public String getCommonName();
+    public String getRemoteCommonName();
     
 }

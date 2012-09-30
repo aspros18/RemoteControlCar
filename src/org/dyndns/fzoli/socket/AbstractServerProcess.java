@@ -13,6 +13,7 @@ public abstract class AbstractServerProcess extends AbstractProcess {
     private final Integer connectionId;
     
     /**
+     * Szerver oldali adatfeldolgozó konstruktora.
      * @param socket Socket, amin keresztül folyik a kommunikáció.
      */
     public AbstractServerProcess(Socket socket, int connectionId) {

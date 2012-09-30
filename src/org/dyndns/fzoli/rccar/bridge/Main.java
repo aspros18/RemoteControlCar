@@ -8,7 +8,7 @@ import org.apache.commons.ssl.SSLServer;
 import org.apache.commons.ssl.TrustMaterial;
 
 /**
- *
+ * A híd indító osztálya.
  * @author zoli
  */
 public class Main {

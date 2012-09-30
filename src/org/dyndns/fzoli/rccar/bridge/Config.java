@@ -36,7 +36,8 @@ public class Config {
     public static final String KEY_PORT = "port",
                                KEY_CA = "ca",
                                KEY_CERT = "cert",
-                               KEY_KEY = "key";
+                               KEY_KEY = "key",
+                               KEY_PASSWORD = "password";
     
     private static final String LS = System.getProperty("line.separator"),
                                 UD = System.getProperty("user.dir");
@@ -51,7 +52,7 @@ public class Config {
      * Az alapértelmezett hosts.txt fájl tartalma.
      */
     private static final String DEFAULT_HOSTS =
-            "# Ebben a fájlban kell felsorolni a távirányítós autókat vezérlő telefonok (host) tanusítványának Common Name (CN) mezőit." + LS +
+            "# Ebben a fájlban kell felsorolni a távirányítós autókat vezérlő telefonok (host) tanúsítványának Common Name (CN) mezőit." + LS +
             "# Soronként csak egy CN mező adható meg!" + LS + LS;
     
     /**
@@ -60,9 +61,10 @@ public class Config {
     private static final String DEFAULT_CONFIG =
             "# Ez a fájl a távirányítós autókat vezérlő telefonokat (host) és a számítógépen futó vezérlő programokat (controller) összekötő szerver (híd) konfigurációs állománya." + LS +
             KEY_PORT + " 8443 # az a TCP port, amin a szerver figyel" + LS +
-            KEY_CA + " /path/to/ca.crt # a tanusítványokat kiállító CA tanusítvány-fájl" + LS +
-            KEY_CERT + " /path/to/name.crt # a szerver tanusítvány-fájl" + LS +
-            KEY_KEY + " /path/to/name.key # a szerver titkos kulcsa" + LS;
+            KEY_CA + " /path/to/ca.crt # a tanúsítványokat kiállító CA tanúsítvány-fájl" + LS +
+            KEY_CERT + " /path/to/name.crt # a szerver tanúsítvány-fájl" + LS +
+            KEY_KEY + " /path/to/name.key # a szerver titkos kulcsa" + LS +
+            KEY_PASSWORD + " optional_cert_password # a szerver tanúsítványának jelszava, ha van";
     
     /**
      * Ez az osztály nem példányosítható és nem származhatnak belőle újabb osztályok.
@@ -79,7 +81,7 @@ public class Config {
         try {
             return Integer.parseInt(getValues().get(KEY_PORT));
         }
-        catch (Exception ex) {
+        catch (NullPointerException | NumberFormatException ex) {
             return null;
         }
     }
@@ -95,7 +97,7 @@ public class Config {
     
     /**
      * A konfigurációs fájl cert paramétere.
-     * A CA által kiállított érvényes tanusítvány helye.
+     * A CA által kiállított érvényes tanúsítvány helye.
      * @return fájl vagy NULL, ha a fájl nem létezik
      */
     public File getCertFile() {
@@ -104,11 +106,16 @@ public class Config {
     
     /**
      * A konfigurációs fájl key paramétere.
-     * A CA által kiállított érvényes tanusítvány titkos kulcsának helye.
+     * A CA által kiállított érvényes tanúsítvány titkos kulcsának helye.
      * @return fájl vagy NULL, ha a fájl nem létezik
      */
     public File getKeyFile() {
-        return createFile(KEY_CERT);
+        return createFile(KEY_KEY);
+    }
+    
+    public char[] getPassword() {
+        if (getValues() == null || getValues().get(KEY_PASSWORD) == null) return new char[] {};
+        return getValues().get(KEY_PASSWORD).toCharArray();
     }
     
     /**
@@ -120,7 +127,7 @@ public class Config {
     }
 
     /**
-     * Az autót vezérlő telefonok tanusítványainak CN mezői.
+     * Az autót vezérlő telefonok tanúsítványainak CN mezői.
      * @return A hostokat tartalmazó lista vagy NULL, ha a konfig fájl nem létezik.
      */
     public List<String> getHosts() {
@@ -161,6 +168,7 @@ public class Config {
                "Cert file: " + getCertFile() + LS +
                "Key file:" + getKeyFile() + LS +
                "Hosts: " + getHosts() + LS +
+               "Password: " + new String(getPassword()) + LS +
                "Correct? " + isCorrect();
     }
     

@@ -1,4 +1,4 @@
-package org.dyndns.fzoli.socket;
+package org.dyndns.fzoli.socket.process;
 
 import java.net.Socket;
 

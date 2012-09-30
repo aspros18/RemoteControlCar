@@ -1,4 +1,4 @@
-package org.dyndns.fzoli.socket;
+package org.dyndns.fzoli.socket.process;
 
 /**
  * A SecureProcess SSL műveletei közben fellépő hibák kivétele.

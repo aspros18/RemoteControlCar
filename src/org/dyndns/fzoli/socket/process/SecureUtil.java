@@ -1,4 +1,4 @@
-package org.dyndns.fzoli.socket;
+package org.dyndns.fzoli.socket.process;
 
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
@@ -11,7 +11,7 @@ import javax.security.cert.X509Certificate;
  * Segédosztály a SecureProcess interfész implementálásához.
  * @author zoli
  */
-public class SecureUtil {
+class SecureUtil {
     
     /**
      * A titkosított kommunikáció ezen oldalán álló gép tanúsítványának CN mezőjét adja vissza.

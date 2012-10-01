@@ -15,12 +15,18 @@ import org.h2.tools.SimpleResultSet;
  */
 public class AdminDAO {
 
+    /**
+     * A CSV fájl egyetlen sorát reprezentáló osztály.
+     */
     public static class Row {
         
         private String host, controller;
         private int order;
 
-        public Row(String host, String controller, int order) {
+        /**
+         * Példányosítani csak az AdminDAO tudja.
+         */
+        private Row(String host, String controller, int order) {
             this.host = host;
             this.controller = controller;
             this.order = order;
@@ -36,6 +42,11 @@ public class AdminDAO {
 
         public int getOrder() {
             return order;
+        }
+
+        @Override
+        public String toString() {
+            return "Host: " + host + "; controller: " + controller + "; order: " + order;
         }
         
     }
@@ -146,8 +157,9 @@ public class AdminDAO {
     
     /**
      * Beolvassa a CSV fájl tartalmát és listát ad vissza róla.
+     * @return NULL, ha a fájl nem olvasható, egyébként sorlista.
      */
-    private static List<Row> read() {
+    public static List<Row> getRows() {
         ResultSet rs;
         List<Row> rows;
         try {

@@ -58,7 +58,7 @@ public class Main {
                     //TODO: feldolgozás
                 }
                 catch (SecureProcessException ex) {
-                    System.err.println("Ismeretlen kliens próbált meg kapcsolódni a " + s.getInetAddress() + " címről.");
+                    System.err.println("Nem megbízható kapcsolódás a " + s.getInetAddress() + " címről.");
                 }
             }
         }

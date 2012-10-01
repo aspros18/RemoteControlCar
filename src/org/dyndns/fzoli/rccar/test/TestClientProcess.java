@@ -17,10 +17,7 @@ public class TestClientProcess extends AbstractSecureClientProcess {
 
     @Override
     protected void process() {
-        System.out.println("Device: " + getDeviceId());
-        System.out.println("Connection: " + getConnectionId());
-        System.out.println("Local name: " + getLocalCommonName());
-        System.out.println("Remote name: " + getRemoteCommonName());
+        TestServerProcess.test(this);
     }
     
     public static void main(String[] args) throws Exception {

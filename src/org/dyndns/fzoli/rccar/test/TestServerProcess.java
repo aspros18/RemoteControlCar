@@ -1,9 +1,11 @@
 package org.dyndns.fzoli.rccar.test;
 
 import java.io.File;
+import java.io.IOException;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.socket.process.AbstractSecureServerProcess;
+import org.dyndns.fzoli.socket.process.SecureProcess;
 import org.dyndns.fzoli.socket.process.SecureProcessException;
 import org.dyndns.fzoli.socket.process.SecureUtil;
 
@@ -19,11 +21,24 @@ public class TestServerProcess extends AbstractSecureServerProcess {
 
     @Override
     protected void process() {
-        System.out.println("Device: " + getDeviceId());
-        System.out.println("Connection: " + getConnectionId());
-        System.out.println("Local name: " + getLocalCommonName());
-        System.out.println("Remote name: " + getRemoteCommonName());
+        test(this);
+    }
+    
+    /**
+     * Azt tesztelem, hogy mi történik akkor, ha mindkét oldal egyszerre akar olvasni, vagy írni.
+     */
+    public static void test(SecureProcess proc) {
+        System.out.println("Device: " + proc.getDeviceId());
+        System.out.println("Connection: " + proc.getConnectionId());
+        System.out.println("Local name: " + proc.getLocalCommonName());
+        System.out.println("Remote name: " + proc.getRemoteCommonName());
         System.out.println();
+        try {
+            proc.getSocket().getOutputStream().write(1);
+            System.out.println(proc.getSocket().getInputStream().read());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
     
     public static void main(String[] args) throws Exception {

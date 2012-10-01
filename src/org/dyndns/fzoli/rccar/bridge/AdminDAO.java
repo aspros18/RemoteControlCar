@@ -1,17 +1,45 @@
 package org.dyndns.fzoli.rccar.bridge;
 
 import java.io.File;
+import java.sql.ResultSet;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 import org.h2.tools.Csv;
 import org.h2.tools.SimpleResultSet;
 
 /**
- * A híd admin adatbázisa.
+ * A híd adminadatbázisa.
  * A vezérlő programok felhasználóit állítja sorrendbe.
  * @author zoli
  */
 public class AdminDAO {
 
+    public static class Row {
+        
+        private String host, controller;
+        private int order;
+
+        public Row(String host, String controller, int order) {
+            this.host = host;
+            this.controller = controller;
+            this.order = order;
+        }
+
+        public String getHost() {
+            return host;
+        }
+
+        public String getController() {
+            return controller;
+        }
+
+        public int getOrder() {
+            return order;
+        }
+        
+    }
+    
     /**
      * H2 API CSV manipuláló objektuma.
      */
@@ -114,6 +142,36 @@ public class AdminDAO {
         catch(Exception ex) {
             return false;
         }
+    }
+    
+    /**
+     * Beolvassa a CSV fájl tartalmát és listát ad vissza róla.
+     */
+    private static List<Row> read() {
+        ResultSet rs;
+        List<Row> rows;
+        try {
+            rs = CSV.read(FILE_CSV.getAbsolutePath(), null, null);
+            rows = new ArrayList<>();
+        }
+        catch(Exception ex) {
+            return null;
+        }
+        try {
+            while (rs.next()) {
+                try {
+                    rows.add(new Row(rs.getString(KEY_HOST), rs.getString(KEY_CONTROLLER), rs.getInt(KEY_ORDER)));
+                }
+                catch (Exception ex) {
+                    ;
+                }
+            }
+            rs.close();
+        }
+        catch (Exception ex) {
+            ;
+        }
+        return rows;
     }
     
 }

@@ -68,24 +68,18 @@ public class Main {
         else {
             final StringBuilder msg = new StringBuilder();
             if (CONFIG.isNew()) {
-                msg.append("A konfigurációs fájlokat létrehoztam.").append(LS)
-                   .append("Kérem, állítsa be őket megfelelően!").append(LS).append(LS)
-                   .append("Konfig fájl helye: ").append(Config.FILE_CONFIG).append(LS)
-                   .append("Hosts fájl helye: ").append(Config.FILE_HOSTS);
+                msg.append("A konfigurációs fájlt létrehoztam.").append(LS)
+                   .append("Kérem, állítsa be megfelelően!").append(LS).append(LS)
+                   .append("Konfig fájl útvonala:").append(LS).append(Config.FILE_CONFIG);
                 alert(VAL_MESSAGE, msg.toString(), System.out);
             }
             else {
                 msg.append("Nem megfelelő konfiguráció!").append(LS).append(LS);
-                if (CONFIG.isConfigFileCorrect()) {
-                    msg.append("Legalább egy hosztot adjon meg a ").append(Config.FILE_HOSTS).append(" fájlban.");
-                }
-                else {
-                    msg.append("A ").append(Config.FILE_CONFIG).append(" fájl hibásan van paraméterezve:").append(LS);
-                    if (CONFIG.getPort() == null) msg.append("- Adjon meg érvényes portot.").append(LS);
-                    if (CONFIG.getCAFile() == null) msg.append("- Adjon meg létező ca fájl útvonalat.").append(LS);
-                    if (CONFIG.getCertFile() == null) msg.append("- Adjon meg létező cert fájl útvonalat.").append(LS);
-                    if (CONFIG.getKeyFile() == null) msg.append("- Adjon meg létező key fájl útvonalat.").append(LS);
-                }
+                msg.append("A ").append(Config.FILE_CONFIG).append(" fájl hibásan van paraméterezve:").append(LS);
+                if (CONFIG.getPort() == null) msg.append("- Adjon meg érvényes portot.").append(LS);
+                if (CONFIG.getCAFile() == null) msg.append("- Adjon meg létező ca fájl útvonalat.").append(LS);
+                if (CONFIG.getCertFile() == null) msg.append("- Adjon meg létező cert fájl útvonalat.").append(LS);
+                if (CONFIG.getKeyFile() == null) msg.append("- Adjon meg létező key fájl útvonalat.").append(LS);
                 alert(VAL_ERROR, msg.toString(), System.err);
                 System.exit(1);
             }

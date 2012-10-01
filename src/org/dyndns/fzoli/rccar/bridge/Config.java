@@ -14,21 +14,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A híd konfigurációját tölti be a két konfig fájlból.
+ * A híd konfigurációját tölti be a bridge.conf fájlból.
  * Ha a konfig fájl nem létezik, létrehozza az alapértelmezett konfiggal.
  * A konfig fájlban # karakterrel lehet kommentezni a sorokban.
  * A fölösleges szóközöket az objektumot létrehozó metódus levágja.
- * 
- * A két konfig fájl nevei:
- * - bridge.conf
- * - hosts.txt
- * 
  * @author zoli
  */
 public class Config {
     
     private Map<String, String> values;
-    private List<String> hosts;
     
     /**
      * Az értékeket tartalmazó felsorolás kulcsai, amit a program használ.
@@ -52,22 +46,12 @@ public class Config {
     private static final String CC = "#";
     
     /**
-     * A konfig fájlok eléréséhez létrehozott objektumok.
+     * A konfig fájl eléréséhez létrehozott objektum.
      */
-    public static final File FILE_CONFIG = new File(UD, "bridge.conf"),
-                             FILE_HOSTS = new File(UD, "hosts.txt");
+    public static final File FILE_CONFIG = new File(UD, "bridge.conf");
     
     /**
-     * Az alapértelmezett hosts.txt fájl tartalma.
-     */
-    private static final String DEFAULT_HOSTS =
-            CC + " Ebben a fájlban kell felsorolni a távirányítós autókat vezérlő telefonok (host) tanúsítványának Common Name (CN) mezőit." + LS +
-            CC + " Soronként csak egy CN mező adható meg!" + LS +
-            "host" + LS +
-            "host2";
-    
-    /**
-     * Az alapértelmezett bridge.conf fájl tartalma.
+     * Az alapértelmezett fájl tartalma.
      */
     private static final String DEFAULT_CONFIG =
             CC + " Ez a fájl a távirányítós autókat vezérlő telefonokat (host) és a számítógépen futó vezérlő programokat (controller) összekötő szerver (híd) konfigurációs állománya." + LS +
@@ -157,24 +141,9 @@ public class Config {
     }
 
     /**
-     * Az autót vezérlő telefonok tanúsítványainak CN mezői.
-     * @return A hostokat tartalmazó lista vagy NULL, ha a konfig fájl nem létezik.
-     */
-    public List<String> getHosts() {
-        return hosts;
-    }
-
-    /**
-     * @return true, ha minden érték meg van adva és érvényes, valamint legalább egy host létezik
-     */
-    public boolean isCorrect() {
-        return isConfigFileCorrect() && isHostFileCorrect();
-    }
-    
-    /**
      * @return true, ha minden érték meg van adva és érvényes, egyébként false
      */
-    public boolean isConfigFileCorrect() {
+    public boolean isCorrect() {
         return getPort() != null &&
                getCAFile() != null &&
                getCertFile() != null &&
@@ -182,17 +151,10 @@ public class Config {
     }
     
     /**
-     * @return true, ha legalább egy host létezik, egyébként false
-     */
-    public boolean isHostFileCorrect() {
-        return getHosts() != null && !getHosts().isEmpty();
-    }
-    
-    /**
-     * @return true, ha bármely konfig fájl most lett létrehozva
+     * @return true, ha a konfig fájl most lett létrehozva
      */
     public boolean isNew() {
-        return getHosts() == null || getValues() == null;
+        return getValues() == null;
     }
     
     /**
@@ -204,7 +166,6 @@ public class Config {
                "CA file: " + getCAFile() + LS +
                "Cert file: " + getCertFile() + LS +
                "Key file:" + getKeyFile() + LS +
-               "Hosts: " + getHosts() + LS +
                "Password: " + new String(getPassword()) + LS +
                "Root name: " + getRootName() + LS +
                "Correct? " + isCorrect();
@@ -215,7 +176,6 @@ public class Config {
      */
     public static Config getInstance() {
         Config config = new Config();
-        config.hosts = read(FILE_HOSTS, DEFAULT_HOSTS);
         List<String> conf = read(FILE_CONFIG, DEFAULT_CONFIG);
         if (conf != null) {
             int ind;

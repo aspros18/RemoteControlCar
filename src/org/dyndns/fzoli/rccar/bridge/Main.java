@@ -68,6 +68,7 @@ public class Main {
             SystemTray tray = SystemTray.getSystemTray();
             PopupMenu menu = new PopupMenu();
             TrayIcon icon = new TrayIcon(R.getBridgeImage(), "Mobile-RC Híd", menu);
+            icon.setImageAutoSize(true);
             //TODO: ikon és menü hozzáadás
             tray.add(icon);
             return tray;
@@ -113,6 +114,14 @@ public class Main {
             }
             
         }));
+    }
+    
+    /**
+     * Közli az üzenetet a felhasználóval, de a program futását nem folyásolja be, mert nem modális.
+     * Az üzenet a rendszerikon segítségével jelenik meg, de ha nincs grafikus felület, akkor a konzolra íródik ki.
+     */
+    private static void showMessage(String title, String message) {
+        //TODO
     }
     
     /**

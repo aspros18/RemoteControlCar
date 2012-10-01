@@ -18,4 +18,9 @@ public interface Process extends Runnable {
      */
     public Integer getConnectionId();
     
+    /**
+     * @return Eszközazonosító, ami segítségével megtudható a kliens típusa.
+     */
+    public Integer getDeviceId();
+    
 }

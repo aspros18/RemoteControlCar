@@ -10,14 +10,16 @@ import java.net.Socket;
  */
 public abstract class AbstractClientProcess extends AbstractProcess {
 
+    private final int deviceId;
     private Integer connectionId;
     
     /**
      * Kliens oldali adatfeldolgozó konstruktora.
      * @param socket Socket, amin keresztül folyik a kommunikáció.
      */
-    public AbstractClientProcess(Socket socket) {
+    public AbstractClientProcess(Socket socket, int deviceId) {
         super(socket);
+        this.deviceId = deviceId;
     }
 
     /**
@@ -34,6 +36,15 @@ public abstract class AbstractClientProcess extends AbstractProcess {
     private void setConnectionId(int connectionId) {
         this.connectionId = connectionId;
     }
+
+    /**
+     * Az eszközazonosítót a kliens generálja, ezért soha nem null.
+     * @return Eszközazonosító, ami segítségével megtudható a kliens típusa.
+     */
+    @Override
+    public final Integer getDeviceId() {
+        return deviceId;
+    }
     
     /**
      * Ez a metódus fut le a szálban.
@@ -46,6 +57,9 @@ public abstract class AbstractClientProcess extends AbstractProcess {
             // stream referenciák megszerzése
             InputStream in = getSocket().getInputStream();
             OutputStream out = getSocket().getOutputStream();
+            
+            // eszközazonosító közlése a szervernek
+            out.write(getDeviceId());
             
             // kapcsolatazonosító megszerzése a szervertől
             setConnectionId(in.read());

@@ -12,6 +12,8 @@ public abstract class AbstractServerProcess extends AbstractProcess {
 
     private final Integer connectionId;
     
+    private Integer deviceId;
+    
     /**
      * Szerver oldali adatfeldolgozó konstruktora.
      * @param socket Socket, amin keresztül folyik a kommunikáció.
@@ -29,6 +31,19 @@ public abstract class AbstractServerProcess extends AbstractProcess {
     public final Integer getConnectionId() {
         return connectionId;
     }
+
+    /**
+     * Az eszközazonosítót a kliens generálja, ezért a kapcsolat létrejöttéig értéke null.
+     * @return Eszközazonosító, ami segítségével megtudható a kliens típusa.
+     */
+    @Override
+    public final Integer getDeviceId() {
+        return deviceId;
+    }
+    
+    private void setDeviceId(int deviceId) {
+        this.deviceId = deviceId;
+    }
     
     /**
      * Ez a metódus fut le a szálban.
@@ -42,7 +57,10 @@ public abstract class AbstractServerProcess extends AbstractProcess {
             InputStream in = getSocket().getInputStream();
             OutputStream out = getSocket().getOutputStream();
             
-            // kapcsolatazonosító közlése a klienssel
+            // eszközazonosító elkérése a klienstől
+            setDeviceId(in.read());
+            
+            // kapcsolatazonosító közlése a kliensnek
             out.write(getConnectionId());
             
             // adatfeldolgozás

@@ -15,8 +15,8 @@ public abstract class AbstractSecureClientProcess extends AbstractClientProcess 
      * @param socket SSLSocket, amin keresztül folyik a titkosított kommunikáció.
      * @throws SecureProcessException ha nem megbízható a kapcsolat vagy a tanúsítvány hibás
      */
-    public AbstractSecureClientProcess(SSLSocket socket) {
-        super(socket);
+    public AbstractSecureClientProcess(SSLSocket socket, int deviceId) {
+        super(socket, deviceId);
         localCommonName = SecureUtil.getLocalCommonName(socket);
         remoteCommonName = SecureUtil.getRemoteCommonName(socket);
     }

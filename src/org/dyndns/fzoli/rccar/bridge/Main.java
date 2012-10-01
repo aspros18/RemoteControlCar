@@ -24,6 +24,8 @@ public class Main {
      */
     private static final String LS = System.getProperty("line.separator");
     
+    private static final String VAL_MESSAGE = "Híd üzenet", VAL_ERROR = "Híd hiba";
+    
     /**
      * SSL Server socket létrehozása a konfig fájl alapján.
      * @param port szerver portja
@@ -40,10 +42,22 @@ public class Main {
     
     /**
      * A híd main metódusa.
+     * Ha a konfiguráció még nem létezik, lérehozza és figyelmezteti a felhasználót, hogy állítsa be és kilép.
+     * Ha a konfiguráció létezik, de rosszul paraméterezett, figyelmezteti a felhasználót és kilép.
+     * A program futása előtt ha nem létezik az admin adatbázis, létrehozza és figyelmezteti a felhasználót.
+     * Ezek után a híd program elkezdi futását.
      */
     public static void main(String[] args) {
         setSystemLookAndFeel();
         if (CONFIG.isCorrect()) try {
+            if (AdminDAO.isNew()) {
+                if (AdminDAO.exists()) {
+                    alert(VAL_MESSAGE, "A rendszergazdákat tartalmazó adatbázist létrehoztam." + LS + "Mostantól használható az adatbázis.", System.out);
+                }
+                else {
+                    alert(VAL_ERROR, "Hiba a rendszergazdákat tartalmazó adatbázis létrehozása során!", System.err);
+                }
+            }
             final ServerSocket ss = createServerSocket();
             //TODO: feldolgozás
         }
@@ -58,7 +72,7 @@ public class Main {
                    .append("Kérem, állítsa be őket megfelelően!").append(LS).append(LS)
                    .append("Konfig fájl helye: ").append(Config.FILE_CONFIG).append(LS)
                    .append("Hosts fájl helye: ").append(Config.FILE_HOSTS);
-                alert("Üzenet", msg.toString(), System.out);
+                alert(VAL_MESSAGE, msg.toString(), System.out);
             }
             else {
                 msg.append("Nem megfelelő konfiguráció!").append(LS).append(LS);
@@ -72,7 +86,7 @@ public class Main {
                     if (CONFIG.getCertFile() == null) msg.append("- Adjon meg létező cert fájl útvonalat.").append(LS);
                     if (CONFIG.getKeyFile() == null) msg.append("- Adjon meg létező key fájl útvonalat.").append(LS);
                 }
-                alert("Hiba", msg.toString(), System.err);
+                alert(VAL_ERROR, msg.toString(), System.err);
                 System.exit(1);
             }
         }

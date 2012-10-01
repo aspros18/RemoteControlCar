@@ -12,6 +12,11 @@ import javax.swing.UIManager;
 public class UIUtil {
     
     /**
+     * Általános rendszerváltozók.
+     */
+    private static final String LS = System.getProperty("line.separator");
+    
+    /**
      * Egy tályékoztató szöveget jelenít meg a felhasználónak.
      * Ha a grafikus felület elérhető, modális ablakban jelenik meg az üzenet,
      * különben a kimenet streamre megy ki a fejléc és a szöveg.
@@ -23,8 +28,8 @@ public class UIUtil {
      */
     public static void alert(String title, String text, PrintStream out) {
         if (GraphicsEnvironment.isHeadless()) { // ha nem elérhető a grafikus felület
-            out.println(title + ':'); // fejléc, aztán ...
-            out.println(text); // ... kimenet streamre írás
+            out.println(LS + title + ':'); // fejléc, aztán ...
+            out.println(text + LS); // ... kimenet streamre írás
         }
         else { // ha van grafikus felület
             JOptionPane.showMessageDialog(null, text, title, out == System.err ? JOptionPane.ERROR_MESSAGE : JOptionPane.WARNING_MESSAGE); // dialógus ablak megjelenítése

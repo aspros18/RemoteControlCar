@@ -1,12 +1,12 @@
 package org.dyndns.fzoli.rccar.bridge;
 
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.security.GeneralSecurityException;
-import org.apache.commons.ssl.KeyMaterial;
-import org.apache.commons.ssl.SSLServer;
-import org.apache.commons.ssl.TrustMaterial;
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLSocket;
 import static org.dyndns.fzoli.rccar.UIUtil.*;
+import org.dyndns.fzoli.socket.process.SecureProcessException;
+import org.dyndns.fzoli.socket.process.SecureUtil;
 
 /**
  * A híd indító osztálya.
@@ -28,16 +28,9 @@ public class Main {
     
     /**
      * SSL Server socket létrehozása a konfig fájl alapján.
-     * @param port szerver portja
      */
-    private static ServerSocket createServerSocket() throws IOException, GeneralSecurityException {
-        SSLServer server = new SSLServer(); // SSL szerver socket létrehozására kell
-        server.setKeyMaterial(new KeyMaterial(CONFIG.getCertFile(), CONFIG.getKeyFile(), CONFIG.getPassword())); //publikus és privát kulcs megadása a kapcsolathoz
-        server.setTrustMaterial(new TrustMaterial(CONFIG.getCAFile())); // a saját CA (és az ő általa kiállított tanúsítványok) legyen megbízható csak (testserver és testclient tanúsítványok)
-        server.setCheckHostname(false); // a hostname kivételével minden más ellenőrzése, amikor a kliens kapcsolódik
-        server.setCheckExpiry(true);
-        server.setCheckCRL(true); 
-        return server.createServerSocket(CONFIG.getPort()); // server socket létrehozása
+    private static SSLServerSocket createServerSocket() throws IOException, GeneralSecurityException {
+        return SecureUtil.createServerSocket(CONFIG.getPort(), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile(), CONFIG.getPassword());
     }
     
     /**
@@ -58,8 +51,16 @@ public class Main {
                     alert(VAL_ERROR, "Hiba a rendszergazdákat tartalmazó adatbázis létrehozása során!" + LS + "A program rendszergazdamentesen indul.", System.err);
                 }
             }
-            final ServerSocket ss = createServerSocket();
-            //TODO: feldolgozás
+            final SSLServerSocket ss = createServerSocket();
+            while (!ss.isClosed()) {
+                SSLSocket s = (SSLSocket) ss.accept();
+                try {
+                    //TODO: feldolgozás
+                }
+                catch (SecureProcessException ex) {
+                    System.err.println("Ismeretlen kliens próbált meg kapcsolódni a " + s.getInetAddress() + " címről.");
+                }
+            }
         }
         catch (Exception ex) {
             ex.printStackTrace();

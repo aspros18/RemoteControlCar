@@ -1,0 +1,42 @@
+package org.dyndns.fzoli.rccar.test;
+
+import java.io.File;
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLSocket;
+import org.dyndns.fzoli.socket.process.AbstractSecureServerProcess;
+import org.dyndns.fzoli.socket.process.SecureProcessException;
+import org.dyndns.fzoli.socket.process.SecureUtil;
+
+/**
+ * Teszt osztály szerver oldalra.
+ * @author zoli
+ */
+public class TestServerProcess extends AbstractSecureServerProcess {
+
+    public TestServerProcess(SSLSocket socket, int connectionId) {
+        super(socket, connectionId);
+    }
+
+    @Override
+    protected void process() {
+        System.out.println("Device: " + getDeviceId());
+        System.out.println("Connection: " + getConnectionId());
+        System.out.println("Local name: " + getLocalCommonName());
+        System.out.println("Remote name: " + getRemoteCommonName());
+        System.out.println();
+    }
+    
+    public static void main(String[] args) throws Exception {
+        SSLServerSocket ss = SecureUtil.createServerSocket(8443, new File("test-certs/ca.crt"), new File("test-certs/bridge.crt"), new File("test-certs/bridge.key"), new char[]{});
+        while (!ss.isClosed()) {
+            SSLSocket s = (SSLSocket) ss.accept();
+            try {
+                new Thread(new TestServerProcess(s, 10)).start();
+            }
+            catch (SecureProcessException ex) {
+                System.err.println("Nem megbízható kapcsolódás a " + s.getInetAddress() + " címről.");
+            }
+        }
+    }
+    
+}

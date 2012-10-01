@@ -38,11 +38,18 @@ public class Config {
                                KEY_CERT = "cert",
                                KEY_KEY = "key",
                                KEY_PASSWORD = "password",
-                               KEY_ADMIN = "admin";
+                               KEY_ROOT = "root";
     
+    /**
+     * Általános rendszerváltozók.
+     */
     private static final String LS = System.getProperty("line.separator"),
-                                UD = System.getProperty("user.dir"),
-                                CC = "#";
+                                UD = System.getProperty("user.dir");
+    
+    /**
+     * A soronként érvényes megjegyzés karakter.
+     */
+    private static final String CC = "#";
     
     /**
      * A konfig fájlok eléréséhez létrehozott objektumok.
@@ -69,7 +76,7 @@ public class Config {
             KEY_CERT + ' ' + new File("test-certs", "bridge.crt") + ' ' + CC + " a szerver tanúsítvány-fájl" + LS +
             KEY_KEY + ' ' + new File("test-certs", "bridge.key") + ' ' + CC + " a szerver titkos kulcsa" + LS +
             CC + ' ' + KEY_PASSWORD + " optional_cert_password " + CC + " a szerver tanúsítványának jelszava, ha van" + LS +
-            CC + ' ' + KEY_ADMIN + " optional_admin_cert_common_name " + CC + " kitüntetett vezérlő tanúsítvány, amivel rendszergazdaként használható a vezérlő program";
+            CC + ' ' + KEY_ROOT + " optional_admin_cert_common_name " + CC + " kitüntetett vezérlő tanúsítvány, amivel rendszergazdaként használható a vezérlő program";
     
     /**
      * Ez az osztály nem példányosítható és nem származhatnak belőle újabb osztályok.
@@ -131,11 +138,12 @@ public class Config {
     
     /**
      * Az opcionális rendszergazda tanúsítványában szereplő CN mező értékét adja vissza.
-     * Ha nincs megadva, üres szöveggel tér vissza.
+     * Ez a felhasználó a szerver rendszergazdáját jelöli és minden műveletre fel van hatalmazva.
+     * Ha nincs megadva, üres szöveggel tér vissza és nem lesz a szervernek rendszergazdája.
      */
-    public String getAdmin() {
+    public String getRootName() {
         if (getValues() == null) return null;
-        String name = getValues().get(KEY_ADMIN);
+        String name = getValues().get(KEY_ROOT);
         if (name == null) return "";
         return name;
     }
@@ -198,14 +206,14 @@ public class Config {
                "Key file:" + getKeyFile() + LS +
                "Hosts: " + getHosts() + LS +
                "Password: " + new String(getPassword()) + LS +
-               "Admin: " + getAdmin() + LS +
+               "Root name: " + getRootName() + LS +
                "Correct? " + isCorrect();
     }
     
     /**
      * Gyártó metódus.
      */
-    public static Config getConfig() {
+    public static Config getInstance() {
         Config config = new Config();
         config.hosts = read(FILE_HOSTS, DEFAULT_HOSTS);
         List<String> conf = read(FILE_CONFIG, DEFAULT_CONFIG);

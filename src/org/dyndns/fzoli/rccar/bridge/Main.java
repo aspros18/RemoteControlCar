@@ -6,6 +6,7 @@ import java.security.GeneralSecurityException;
 import org.apache.commons.ssl.KeyMaterial;
 import org.apache.commons.ssl.SSLServer;
 import org.apache.commons.ssl.TrustMaterial;
+import static org.dyndns.fzoli.rccar.UIUtil.*;
 
 /**
  * A híd indító osztálya.
@@ -16,7 +17,12 @@ public class Main {
     /**
      * A híd konfigurációja.
      */
-    private static final Config CONFIG = Config.getConfig();
+    private static final Config CONFIG = Config.getInstance();
+    
+    /**
+     * Általános rendszerváltozók.
+     */
+    private static final String LS = System.getProperty("line.separator");
     
     /**
      * SSL Server socket létrehozása a konfig fájl alapján.
@@ -36,8 +42,9 @@ public class Main {
      * A híd main metódusa.
      */
     public static void main(String[] args) {
+        setSystemLookAndFeel();
         if (CONFIG.isCorrect()) try {
-            ServerSocket ss = createServerSocket();
+            final ServerSocket ss = createServerSocket();
             //TODO: feldolgozás
         }
         catch (Exception ex) {
@@ -45,23 +52,27 @@ public class Main {
             System.exit(1);
         }
         else {
+            final StringBuilder msg = new StringBuilder();
             if (CONFIG.isNew()) {
-                System.out.println("A konfigurációs fájlokat létrehoztam.\nKérem, állítsa be őket megfelelően.");
-                System.out.println("Konfig fájl helye: " + Config.FILE_CONFIG);
-                System.out.println("Hosts fájl helye: " + Config.FILE_HOSTS);
+                msg.append("A konfigurációs fájlokat létrehoztam.").append(LS)
+                   .append("Kérem, állítsa be őket megfelelően!").append(LS).append(LS)
+                   .append("Konfig fájl helye: ").append(Config.FILE_CONFIG).append(LS)
+                   .append("Hosts fájl helye: ").append(Config.FILE_HOSTS);
+                alert("Üzenet", msg.toString(), System.out);
             }
             else {
-                System.err.println("Nem megfelelő konfiguráció.");
+                msg.append("Nem megfelelő konfiguráció!").append(LS).append(LS);
                 if (CONFIG.isConfigFileCorrect()) {
-                    System.err.println("Legalább egy hosztot adjon meg a " + Config.FILE_HOSTS + " fájlban.");
+                    msg.append("Legalább egy hosztot adjon meg a ").append(Config.FILE_HOSTS).append(" fájlban.");
                 }
                 else {
-                    System.err.println("A " + Config.FILE_CONFIG + " fájl hibásan van paraméterezve:");
-                    if (CONFIG.getPort() == null) System.err.println("- Adjon meg érvényes portot.");
-                    if (CONFIG.getCAFile() == null) System.err.println("- Adjon meg létező ca fájl útvonalat.");
-                    if (CONFIG.getCertFile() == null) System.err.println("- Adjon meg létező cert fájl útvonalat.");
-                    if (CONFIG.getKeyFile() == null) System.err.println("- Adjon meg létező key fájl útvonalat.");
+                    msg.append("A ").append(Config.FILE_CONFIG).append(" fájl hibásan van paraméterezve:").append(LS);
+                    if (CONFIG.getPort() == null) msg.append("- Adjon meg érvényes portot.").append(LS);
+                    if (CONFIG.getCAFile() == null) msg.append("- Adjon meg létező ca fájl útvonalat.").append(LS);
+                    if (CONFIG.getCertFile() == null) msg.append("- Adjon meg létező cert fájl útvonalat.").append(LS);
+                    if (CONFIG.getKeyFile() == null) msg.append("- Adjon meg létező key fájl útvonalat.").append(LS);
                 }
+                alert("Hiba", msg.toString(), System.err);
                 System.exit(1);
             }
         }

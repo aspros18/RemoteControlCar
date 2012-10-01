@@ -76,7 +76,7 @@ public class Config {
             KEY_CERT + ' ' + new File("test-certs", "bridge.crt") + ' ' + CC + " a szerver tanúsítvány-fájl" + LS +
             KEY_KEY + ' ' + new File("test-certs", "bridge.key") + ' ' + CC + " a szerver titkos kulcsa" + LS +
             CC + ' ' + KEY_PASSWORD + " optional_cert_password " + CC + " a szerver tanúsítványának jelszava, ha van" + LS +
-            CC + ' ' + KEY_ROOT + " optional_admin_cert_common_name " + CC + " kitüntetett vezérlő tanúsítvány, amivel rendszergazdaként használható a program";
+            CC + ' ' + KEY_ROOT + " optional_admin_cert_common_name " + CC + " kitüntetett tanúsítvány, amivel rendszergazdaként használható a program";
     
     /**
      * Ez az osztály nem példányosítható és nem származhatnak belőle újabb osztályok.

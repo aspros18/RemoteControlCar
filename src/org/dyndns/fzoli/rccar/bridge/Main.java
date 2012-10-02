@@ -9,6 +9,7 @@ import java.security.GeneralSecurityException;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.exceptiondialog.UncaughtExceptionDialog;
+import org.dyndns.fzoli.exceptiondialog.UncaughtExceptionParameters;
 import static org.dyndns.fzoli.rccar.UIUtil.alert;
 import static org.dyndns.fzoli.rccar.UIUtil.setSystemLookAndFeel;
 import static org.dyndns.fzoli.rccar.bridge.SystemTrayIcon.showMessage;
@@ -75,14 +76,17 @@ public class Main {
         if (SystemTrayIcon.isSupported()) {
             Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 
+                String title = "Nem várt hiba";
+                UncaughtExceptionParameters params = new UncaughtExceptionParameters(title, "Nem várt hiba keletkezett a program futása alatt.", "Részletek", "Bezárás", "Másolás", "Mindet kijelöl");
+                
                 @Override
                 public void uncaughtException(final Thread t, final Throwable ex) {
                     if (SystemTrayIcon.isVisible()) {
-                        SystemTrayIcon.showMessage("Nem várt hiba", "Részletekért kattintson ide.", TrayIcon.MessageType.ERROR, new ActionListener() {
+                        SystemTrayIcon.showMessage(title, "További részletekért kattintson ide.", TrayIcon.MessageType.ERROR, new ActionListener() {
 
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                UncaughtExceptionDialog.showException(t, ex, Dialog.ModalityType.MODELESS, null, null);
+                                UncaughtExceptionDialog.showException(t, ex, Dialog.ModalityType.MODELESS, params, null);
                             }
                             
                         });
@@ -130,9 +134,7 @@ public class Main {
      * A program futása előtt ha nem létezik az admin adatbázis, létrehozza és figyelmezteti a felhasználót.
      * Ezek után a híd program elkezdi futását.
      */
-    public static void main(String[] args) { //TODO: a kivételkezelés átgondolása és jó lenne külön metódusba tenni a tényleges futást
-        Integer i = null; // TODO: teszt után törölni
-        System.out.println(i * 3); // TODO: teszt után törölni
+    public static void main(String[] args) { //TODO: a kivételkezelés átgondolása (hogy egyes kivételek esetén legyen leállás és jelenjen meg a dialógusablak) + jó lenne külön metódusba tenni a tényleges futást
         if (CONFIG.isCorrect()) try {
             if (AdminDAO.isNew()) {
                 if (AdminDAO.exists()) {
@@ -154,7 +156,6 @@ public class Main {
             }
         }
         catch (Exception ex) {
-            System.out.println(i * 3); // TODO: teszt után törölni
             ex.printStackTrace();
             System.exit(1);
         }

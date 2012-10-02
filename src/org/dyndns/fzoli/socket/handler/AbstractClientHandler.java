@@ -1,26 +1,28 @@
-package org.dyndns.fzoli.socket.process;
+package org.dyndns.fzoli.socket.handler;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import org.dyndns.fzoli.socket.process.ProcessException;
 
 /**
- * Külön szálban, a socketen át adatfeldolgozást végző kliens oldali osztály alapja.
+ * Kapcsolatkezelő kliens oldalra.
+ * A socket feldolgozása előtt az adatok alapján kiválasztja, melyik feldolgozót kell indítani.
  * @author zoli
  */
-public abstract class AbstractClientProcess extends AbstractProcess {
+public abstract class AbstractClientHandler extends AbstractHandler {
 
     private final Integer deviceId;
     
     private Integer connectionId;
     
     /**
-     * Kliens oldali adatfeldolgozó konstruktora.
+     * A kliens oldali kapcsolatkezelő konstruktora.
      * @param socket Socket, amin keresztül folyik a kommunikáció.
      * @param deviceId eszközazonosító, ami alapján a szerver tudja, mivel kommunikál
      * @throws IllegalArgumentException ha az eszközazonosító mérete nagyobb egy bájtnál vagy negatív
      */
-    public AbstractClientProcess(Socket socket, int deviceId) {
+    public AbstractClientHandler(Socket socket, int deviceId) {
         super(socket);
         if (deviceId < 0 || deviceId > 255) throw new IllegalArgumentException("Device ID needs to be between 1 and 255");
         this.deviceId = deviceId;
@@ -33,10 +35,10 @@ public abstract class AbstractClientProcess extends AbstractProcess {
      * @return Kapcsolatazonosító, ami segítségével megtudható a kapcsolatteremtés célja.
      */
     @Override
-    public final Integer getConnectionId() {
+    public Integer getConnectionId() {
         return connectionId;
     }
-    
+
     private void setConnectionId(int connectionId) {
         this.connectionId = connectionId;
     }
@@ -46,17 +48,19 @@ public abstract class AbstractClientProcess extends AbstractProcess {
      * @return Eszközazonosító, ami segítségével megtudható a kliens típusa.
      */
     @Override
-    public final Integer getDeviceId() {
+    public Integer getDeviceId() {
         return deviceId;
     }
-    
+
     /**
      * Ez a metódus fut le a szálban.
-     * Az eszközazonosító küldése és a kapcsolatazonosító szervertől való fogadása után a konkrét feldolgozás kezdődik meg, és ha a feldolgozás végetér, az erőforrások felszabadulnak.
+     * Az eszközazonosító küldése és a kapcsolatazonosító szervertől való fogadása után eldől,
+     * melyik kapcsolatfeldolgozót kell használni és a konkrét feldolgozás kezdődik meg.
+     * Ha a feldolgozás végetér, az erőforrások felszabadulnak.
      * @throws ProcessException ha bármi hiba történik
      */
     @Override
-    public final void run() {
+    public void run() {
         try {
             // stream referenciák megszerzése
             InputStream in = getSocket().getInputStream();
@@ -68,8 +72,8 @@ public abstract class AbstractClientProcess extends AbstractProcess {
             // kapcsolatazonosító megszerzése a szervertől
             setConnectionId(in.read());
             
-            // adatfeldolgozás
-            process();
+            // adatfeldolgozó kiválasztása és futtatása
+            selectProcess().run();
             
             // kapcsolat bezárása
             in.close();
@@ -81,9 +85,4 @@ public abstract class AbstractClientProcess extends AbstractProcess {
         }
     }
     
-    /**
-     * Kliens oldali adatfeldolgozó metódus.
-     */
-    protected abstract void process();
-
 }

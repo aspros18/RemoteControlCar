@@ -7,7 +7,7 @@ import java.net.Socket;
  * Nem jutott jobb név eszembe. :D
  * @author zoli
  */
-public interface Socketter {
+public interface Socketter extends Runnable {
     
     /**
      * @return Socket, amin keresztül folyik a kommunikáció.

@@ -95,16 +95,44 @@ public class SystemTrayIcon {
     
     /**
      * Üzenetet jelenít meg buborékablakban a felhasználónak.
+     * Az üzenet ikonja információközlő.
+     * Ha a rendszerikon nem támogatott vagy nem látható, konzolra megy az üzenet.
+     * @param title az üzenet lényege pár szóban
+     * @param text a teljes üzenet
+     */
+    public static void showMessage(String title, String text) {
+        showMessage(title, text, TrayIcon.MessageType.INFO);
+    }
+    
+    /**
+     * Üzenetet jelenít meg buborékablakban a felhasználónak.
      * Ha a rendszerikon nem támogatott vagy nem látható, konzolra megy az üzenet.
      * @param title az üzenet lényege pár szóban
      * @param text a teljes üzenet
      * @param type az ikon típusa
      */
     public static void showMessage(String title, String text, TrayIcon.MessageType type) {
+        showMessage(title, text, type, null);
+    }
+    
+    /**
+     * Üzenetet jelenít meg buborékablakban a felhasználónak.
+     * Ha a rendszerikon nem támogatott vagy nem látható, konzolra megy az üzenet.
+     * @param title az üzenet lényege pár szóban
+     * @param text a teljes üzenet
+     * @param type az ikon típusa
+     * @param callback opcionális eseménykezelő, ami akkor fut le, ha az üzenetre kattintanak
+     */
+    public static void showMessage(String title, String text, TrayIcon.MessageType type, ActionListener callback) {
         if (visible && isSupported()) {
-            icon.displayMessage("caption", "text", type);
+            synchronized (icon) { // amíg az üzenet nem jelent meg, nem fogad több kérést
+                ActionListener[] ls = icon.getActionListeners();
+                if (ls.length == 1) icon.removeActionListener(ls[0]); // az előző eseménykezelő eltávolítása, ha van
+                if (callback != null) icon.addActionListener(callback); // új eseménykezelő hozzáadása, ha van
+                icon.displayMessage("caption", "text", type); // üzenet megjelenítése
+            }
         }
-        else {
+        else { // ha az ikon nem támogatott vagy nem látható, konzolra megy az üzenet
             print(title, text, TrayIcon.MessageType.ERROR == type ? System.err : System.out);
         }
     }

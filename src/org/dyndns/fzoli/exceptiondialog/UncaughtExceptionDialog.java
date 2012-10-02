@@ -22,10 +22,13 @@ public final class UncaughtExceptionDialog extends JDialog {
     
     private JPanel pc = new JPanel(new GridLayout());
     
+    private UncaughtExceptionListener uel;
+    
     /**
      * A dialógusablakot nem lehet kívülről példányosítani.
      */
-    private UncaughtExceptionDialog(Dialog.ModalityType modalityType, String s, UncaughtExceptionParameters params) {
+    private UncaughtExceptionDialog(Dialog.ModalityType modalityType, String s, UncaughtExceptionParameters params, UncaughtExceptionListener uel) {
+        this.uel = uel;
         setResizable(false);
         setTitle(params.getTitle());
         setIconImage(params.getDialogIconImage());
@@ -149,6 +152,12 @@ public final class UncaughtExceptionDialog extends JDialog {
         });
         btOk.requestFocus();
     }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        if (uel != null) uel.exceptionDialogClosed();
+    }
     
     private void setComponent(Component c) {
         pc.setVisible(false);
@@ -262,7 +271,7 @@ public final class UncaughtExceptionDialog extends JDialog {
             String s = createDetails(e);
             params = params == null ? new UncaughtExceptionParameters() : params;
             modalityType = modalityType == null ? Dialog.ModalityType.APPLICATION_MODAL : modalityType;
-            final UncaughtExceptionDialog d = new UncaughtExceptionDialog(modalityType, s, params);
+            final UncaughtExceptionDialog d = new UncaughtExceptionDialog(modalityType, s, params, uel);
             UncaughtExceptionSource src = new UncaughtExceptionSource() {
 
                 @Override
@@ -276,7 +285,7 @@ public final class UncaughtExceptionDialog extends JDialog {
                 }
 
             };
-            if (uel != null) uel.exceptionThrown(new UncaughtExceptionEvent(src, s, t, e));
+            if (uel != null) uel.exceptionDialogAppears(new UncaughtExceptionEvent(src, s, t, e));
             d.setVisible(true);
         }
     }

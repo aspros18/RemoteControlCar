@@ -10,6 +10,7 @@ import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.exceptiondialog.UncaughtExceptionDialog;
 import org.dyndns.fzoli.exceptiondialog.UncaughtExceptionParameters;
+import org.dyndns.fzoli.exceptiondialog.event.UncaughtExceptionAdapter;
 import static org.dyndns.fzoli.rccar.UIUtil.alert;
 import static org.dyndns.fzoli.rccar.UIUtil.setSystemLookAndFeel;
 import static org.dyndns.fzoli.rccar.bridge.SystemTrayIcon.showMessage;
@@ -70,7 +71,8 @@ public class Main {
     
     /**
      * Beállítja a híd kivételkezelő metódusát.
-     * Ha a rendszerikonok támogatva vannak, dialógusablak jeleníti meg a nem kezelt kivételeket.
+     * Ha a rendszerikonok támogatva vannak, dialógusablak jeleníti meg a nem kezelt kivételeket,
+     * egyébként nem változik az eredeti kivételkezelés.
      */
     private static void setExceptionHandler() {
         if (SystemTrayIcon.isSupported()) {
@@ -79,17 +81,43 @@ public class Main {
                 String title = "Nem várt hiba";
                 UncaughtExceptionParameters params = new UncaughtExceptionParameters(title, "Nem várt hiba keletkezett a program futása alatt.", "Részletek", "Bezárás", "Másolás", "Mindet kijelöl");
                 
+                /**
+                 * Megjeleníti a kivételt.
+                 * Ha nem kivétel, hanem hiba keletkezett, egyből modálisan megjelenik az ablak és bezárása után leáll a program.
+                 */
+                void showExceptionDialog(final Thread t, final Throwable ex, final boolean error) {
+                    UncaughtExceptionDialog.showException(t, ex, error ? Dialog.ModalityType.APPLICATION_MODAL : Dialog.ModalityType.MODELESS, params, new UncaughtExceptionAdapter() {
+
+                        @Override
+                        public void exceptionDialogClosed() {
+                            if (error) System.exit(1);
+                        }
+                                    
+                    });
+                }
+                
+                /**
+                 * Ha nem kezelt hiba történik, ez a metódus fut le.
+                 * Ha a rendszerikon nem látható, akkor a konzolra íródik a kivétel.
+                 * Throwable lehet kivétel vagy hiba is.
+                 */
                 @Override
                 public void uncaughtException(final Thread t, final Throwable ex) {
                     if (SystemTrayIcon.isVisible()) {
-                        SystemTrayIcon.showMessage(title, "További részletekért kattintson ide.", TrayIcon.MessageType.ERROR, new ActionListener() {
+                        final boolean error = ex instanceof Error;
+                        if (error) {
+                            showExceptionDialog(t, ex, error);
+                        }
+                        else {
+                            SystemTrayIcon.showMessage(title, "További részletekért kattintson ide.", TrayIcon.MessageType.ERROR, new ActionListener() {
 
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                UncaughtExceptionDialog.showException(t, ex, Dialog.ModalityType.MODELESS, params, null);
-                            }
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    showExceptionDialog(t, ex, error);
+                                }
                             
-                        });
+                            });
+                        }
                     }
                     else {
                         ex.printStackTrace();
@@ -102,9 +130,15 @@ public class Main {
     
     /**
      * SSL Server socket létrehozása a konfig fájl alapján.
+     * @throws Error ha nem sikerül a szerver socket létrehozása
      */
     private static SSLServerSocket createServerSocket() throws IOException, GeneralSecurityException {
-        return SecureUtil.createServerSocket(CONFIG.getPort(), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile(), CONFIG.getPassword());
+        try {
+            return SecureUtil.createServerSocket(CONFIG.getPort(), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile(), CONFIG.getPassword());
+        }
+        catch(Exception ex) {
+            throw new Error(ex.getMessage());
+        }
     }
     
     /**

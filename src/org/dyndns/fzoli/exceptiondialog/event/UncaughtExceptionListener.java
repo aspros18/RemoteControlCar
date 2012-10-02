@@ -7,9 +7,14 @@ package org.dyndns.fzoli.exceptiondialog.event;
 public interface UncaughtExceptionListener {
 
     /**
-     * A nem kezelt kivétel keletkezésekor lefutó metódus.
+     * A dialógusablak megjelenése előtt lefutó metódus.
      * @param e az esemény
      */
-    void exceptionThrown(UncaughtExceptionEvent e);
+    void exceptionDialogAppears(UncaughtExceptionEvent e);
+    
+    /**
+     * A dialógusablak eltűnése után lefutó metódus.
+     */
+    void exceptionDialogClosed();
     
 }

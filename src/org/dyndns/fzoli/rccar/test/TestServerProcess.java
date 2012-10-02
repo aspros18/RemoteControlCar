@@ -20,7 +20,16 @@ public class TestServerProcess extends AbstractSecureServerProcess {
 
     @Override
     protected void process() {
-        test(this);
+        test(this); // alap információ megjelenítése
+        try {
+            Thread.sleep(5000); // 5 mp várakozás
+            getSocket().getOutputStream().write(10); // írás
+            getSocket().getInputStream().read(); // blokkolásra kell
+            System.out.println("kapcsolat vége");
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
     
     /**

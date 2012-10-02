@@ -36,7 +36,7 @@ public class SecureUtil {
         server.setTrustMaterial(new TrustMaterial(ca)); // csak a saját CA és az ő általa kiállított tanúsítványok legyenek megbízhatóak
         server.setCheckHostname(false); // a hostname kivételével minden más ellenőrzése, amikor a kliens kapcsolódik
         server.setCheckExpiry(true);
-        server.setCheckCRL(true); 
+        server.setCheckCRL(true);
         return (SSLServerSocket) server.createServerSocket(port); // server socket létrehozása
     }
     

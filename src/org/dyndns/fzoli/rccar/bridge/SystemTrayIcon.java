@@ -61,6 +61,14 @@ public class SystemTrayIcon {
     }
     
     /**
+     * Értéke megadja, hogy látható-e a rendszerikon.
+     * A rendszerikon nem tehető láthatóvá olyan rendszeren, ahol nem támogatott.
+     */
+    public static boolean isVisible() {
+        return visible;
+    }
+    
+    /**
      * Menüelemet ad hozzá a rendszerikon menüjéhez, ha az támogatott.
      * @param label a menüben megjelenő szöveg
      * @param callback eseménykezelő
@@ -99,9 +107,10 @@ public class SystemTrayIcon {
      * Ha a rendszerikon nem támogatott vagy nem látható, konzolra megy az üzenet.
      * @param title az üzenet lényege pár szóban
      * @param text a teljes üzenet
+     * @return ha az üzenet a rendszerikonban jelent meg, true, ha a konzolon, false
      */
-    public static void showMessage(String title, String text) {
-        showMessage(title, text, TrayIcon.MessageType.INFO);
+    public static boolean showMessage(String title, String text) {
+        return showMessage(title, text, TrayIcon.MessageType.INFO);
     }
     
     /**
@@ -110,9 +119,10 @@ public class SystemTrayIcon {
      * @param title az üzenet lényege pár szóban
      * @param text a teljes üzenet
      * @param type az ikon típusa
+     * @return ha az üzenet a rendszerikonban jelent meg, true, ha a konzolon, false
      */
-    public static void showMessage(String title, String text, TrayIcon.MessageType type) {
-        showMessage(title, text, type, null);
+    public static boolean showMessage(String title, String text, TrayIcon.MessageType type) {
+        return showMessage(title, text, type, null);
     }
     
     /**
@@ -122,18 +132,21 @@ public class SystemTrayIcon {
      * @param text a teljes üzenet
      * @param type az ikon típusa
      * @param callback opcionális eseménykezelő, ami akkor fut le, ha az üzenetre kattintanak
+     * @return ha az üzenet a rendszerikonban jelent meg, true, ha a konzolon, false
      */
-    public static void showMessage(String title, String text, TrayIcon.MessageType type, ActionListener callback) {
+    public static boolean showMessage(String title, String text, TrayIcon.MessageType type, ActionListener callback) {
         if (visible && isSupported()) {
             synchronized (icon) { // amíg az üzenet nem jelent meg, nem fogad több kérést
                 ActionListener[] ls = icon.getActionListeners();
                 if (ls.length == 1) icon.removeActionListener(ls[0]); // az előző eseménykezelő eltávolítása, ha van
                 if (callback != null) icon.addActionListener(callback); // új eseménykezelő hozzáadása, ha van
-                icon.displayMessage("caption", "text", type); // üzenet megjelenítése
+                icon.displayMessage(title, text, type); // üzenet megjelenítése
             }
+            return true;
         }
         else { // ha az ikon nem támogatott vagy nem látható, konzolra megy az üzenet
             print(title, text, TrayIcon.MessageType.ERROR == type ? System.err : System.out);
+            return false;
         }
     }
     

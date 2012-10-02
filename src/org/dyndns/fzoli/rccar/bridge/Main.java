@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.bridge;
 
+import java.awt.Dialog;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -72,8 +73,26 @@ public class Main {
      */
     private static void setExceptionHandler() {
         if (SystemTrayIcon.isSupported()) {
-            //TODO: ezt a metódust lecserélni, mert ide nem lesz jó
-            UncaughtExceptionDialog.applyHandler();
+            Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+
+                @Override
+                public void uncaughtException(final Thread t, final Throwable ex) {
+                    if (SystemTrayIcon.isVisible()) {
+                        SystemTrayIcon.showMessage("Nem várt hiba", "Részletekért kattintson ide.", TrayIcon.MessageType.ERROR, new ActionListener() {
+
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                UncaughtExceptionDialog.showException(t, ex, Dialog.ModalityType.MODELESS, null, null);
+                            }
+                            
+                        });
+                    }
+                    else {
+                        ex.printStackTrace();
+                    }
+                }
+                
+            });
         }
     }
     
@@ -112,6 +131,8 @@ public class Main {
      * Ezek után a híd program elkezdi futását.
      */
     public static void main(String[] args) { //TODO: a kivételkezelés átgondolása és jó lenne külön metódusba tenni a tényleges futást
+        Integer i = null; // TODO: teszt után törölni
+        System.out.println(i * 3); // TODO: teszt után törölni
         if (CONFIG.isCorrect()) try {
             if (AdminDAO.isNew()) {
                 if (AdminDAO.exists()) {
@@ -133,6 +154,7 @@ public class Main {
             }
         }
         catch (Exception ex) {
+            System.out.println(i * 3); // TODO: teszt után törölni
             ex.printStackTrace();
             System.exit(1);
         }

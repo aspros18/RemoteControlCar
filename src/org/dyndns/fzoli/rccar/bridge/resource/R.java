@@ -1,7 +1,6 @@
 package org.dyndns.fzoli.rccar.bridge.resource;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import javax.imageio.ImageIO;
 
 /**
@@ -12,9 +11,15 @@ public class R {
     
     /**
      * Egy hidat ábrázoló képet ad vissza, ami a híd program ikonja.
+     * @throws RuntimeException ha a forrás fájl nem található
      */
-    public static BufferedImage getBridgeImage() throws IOException {
-        return ImageIO.read(R.class.getResourceAsStream("bridge.png"));
+    public static BufferedImage getBridgeImage() {
+        try {
+            return ImageIO.read(R.class.getResourceAsStream("bridge.png"));
+        }
+        catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
     
 }

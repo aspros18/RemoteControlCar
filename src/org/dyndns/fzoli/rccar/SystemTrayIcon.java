@@ -1,12 +1,13 @@
-package org.dyndns.fzoli.rccar.bridge;
+package org.dyndns.fzoli.rccar;
 
+import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import static org.dyndns.fzoli.rccar.UIUtil.print;
-import org.dyndns.fzoli.rccar.bridge.resource.R;
 
 /**
  * Ha van grafikus felület, rendszerikont jelenít meg.
@@ -44,7 +45,7 @@ public class SystemTrayIcon {
         try {
             tray = SystemTray.getSystemTray();
             menu = new PopupMenu();
-            icon = new TrayIcon(R.getBridgeImage(), "Mobile-RC Híd", menu);
+            icon = new TrayIcon(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB), null, menu);
             icon.setImageAutoSize(true);
         }
         catch (Exception ex) {
@@ -78,6 +79,19 @@ public class SystemTrayIcon {
             MenuItem mi = new MenuItem(label);
             mi.addActionListener(callback);
             menu.add(mi);
+        }
+    }
+    
+    /**
+     * Beállítja a paraméterben átadott szöveget és ikont, ha támogatva vannak a rendszerikonok.
+     * @param tooltip a megjelenő szöveg, amikor az egér az ikon felett van
+     * @param img az a kép, ami megjelenik az ikonban
+     * @throws NullPointerException ha a kép null
+     */
+    public static void setIcon(String tooltip, Image img) {
+        if (isSupported()) {
+            icon.setToolTip(tooltip);
+            icon.setImage(img);
         }
     }
     

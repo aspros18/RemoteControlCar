@@ -10,9 +10,11 @@ import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.exceptiondialog.UncaughtExceptionDialog;
 import org.dyndns.fzoli.exceptiondialog.UncaughtExceptionParameters;
 import org.dyndns.fzoli.exceptiondialog.event.UncaughtExceptionAdapter;
+import org.dyndns.fzoli.rccar.SystemTrayIcon;
+import static org.dyndns.fzoli.rccar.SystemTrayIcon.showMessage;
 import static org.dyndns.fzoli.rccar.UIUtil.alert;
 import static org.dyndns.fzoli.rccar.UIUtil.setSystemLookAndFeel;
-import static org.dyndns.fzoli.rccar.bridge.SystemTrayIcon.showMessage;
+import org.dyndns.fzoli.rccar.bridge.resource.R;
 import org.dyndns.fzoli.socket.process.SecureProcessException;
 import org.dyndns.fzoli.socket.process.SecureUtil;
 
@@ -53,8 +55,8 @@ public class Main {
     }
     
     /**
-     * Beállítja a rendszerikon menüjét.
-     * Hozzáadja a kilépés menüopciót és megjeleníti a rendszerikont.
+     * Beállítja a rendszerikont.
+     * Hozzáadja a kilépés menüopciót beállítja az ikont és megjeleníti azt.
      */
     private static void setSystemTrayIcon() {
         SystemTrayIcon.addMenuItem("Kilépés", new ActionListener() {
@@ -65,6 +67,7 @@ public class Main {
             }
             
         });
+        SystemTrayIcon.setIcon("Mobile-RC híd", R.getBridgeImage());
         SystemTrayIcon.setVisible(true);
     }
     

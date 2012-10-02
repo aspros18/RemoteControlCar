@@ -15,6 +15,7 @@ import static org.dyndns.fzoli.rccar.SystemTrayIcon.showMessage;
 import static org.dyndns.fzoli.rccar.UIUtil.alert;
 import static org.dyndns.fzoli.rccar.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.rccar.bridge.resource.R;
+import org.dyndns.fzoli.rccar.test.TestServerProcess;
 import org.dyndns.fzoli.socket.process.SecureProcessException;
 import org.dyndns.fzoli.socket.process.SecureUtil;
 
@@ -175,7 +176,7 @@ public class Main {
             SSLSocket s = null;
             try {
                 s = (SSLSocket) ss.accept(); // kliensre várakozik, és ha kapcsolódtak ...
-                // TODO: ... feldolgozza
+                new Thread(new TestServerProcess(s, 8)).start(); // ... feldolgozza az új szálban ; TODO: teszt, a kapcsolatazonosító: 8
             }
             catch (SecureProcessException ex) {
                 if (s != null) showMessage(VAL_MESSAGE, "Nem megbízható kapcsolódás a " + s.getInetAddress() + " címről.", TrayIcon.MessageType.WARNING);

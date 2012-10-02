@@ -25,7 +25,7 @@ public class TestServerProcess extends AbstractSecureServerProcess {
     }
     
     /**
-     * Azt tesztelem, hogy mi történik akkor, ha mindkét oldal egyszerre akar olvasni, vagy írni.
+     * Azt tesztelem, hogy működik-e az elgondolásom.
      */
     public static void test(SecureProcess proc) {
         System.out.println("Device: " + proc.getDeviceId());
@@ -33,12 +33,6 @@ public class TestServerProcess extends AbstractSecureServerProcess {
         System.out.println("Local name: " + proc.getLocalCommonName());
         System.out.println("Remote name: " + proc.getRemoteCommonName());
         System.out.println();
-        try {
-            proc.getSocket().getOutputStream().write(1);
-            System.out.println(proc.getSocket().getInputStream().read());
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
     }
     
     public static void main(String[] args) throws Exception {

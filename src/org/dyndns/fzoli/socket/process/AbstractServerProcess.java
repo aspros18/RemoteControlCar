@@ -20,6 +20,7 @@ public abstract class AbstractServerProcess extends AbstractProcess {
      */
     public AbstractServerProcess(Socket socket, int connectionId) {
         super(socket);
+        if (connectionId < 0 || connectionId > 255) throw new IllegalArgumentException("Connection ID needs to be between 1 and 255");
         this.connectionId = connectionId;
     }
 

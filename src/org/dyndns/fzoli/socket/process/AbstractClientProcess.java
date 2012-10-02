@@ -19,6 +19,7 @@ public abstract class AbstractClientProcess extends AbstractProcess {
      */
     public AbstractClientProcess(Socket socket, int deviceId) {
         super(socket);
+        if (deviceId < 0 || deviceId > 255) throw new IllegalArgumentException("Device ID needs to be between 1 and 255");
         this.deviceId = deviceId;
     }
 

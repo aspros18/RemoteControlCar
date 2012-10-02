@@ -1,7 +1,6 @@
 package org.dyndns.fzoli.rccar.test;
 
 import java.io.File;
-import java.io.IOException;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.socket.process.AbstractSecureServerProcess;

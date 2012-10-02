@@ -28,12 +28,22 @@ public class UIUtil {
      */
     public static void alert(String title, String text, PrintStream out) {
         if (GraphicsEnvironment.isHeadless()) { // ha nem elérhető a grafikus felület
-            out.println(LS + title + ':'); // fejléc, aztán ...
-            out.println(text + LS); // ... kimenet streamre írás
+            print(title, text, out);
         }
         else { // ha van grafikus felület
-            JOptionPane.showMessageDialog(null, text, title, out == System.err ? JOptionPane.ERROR_MESSAGE : JOptionPane.WARNING_MESSAGE); // dialógus ablak megjelenítése
+            JOptionPane.showMessageDialog(null, text, title, System.err == out ? JOptionPane.ERROR_MESSAGE : JOptionPane.WARNING_MESSAGE); // dialógus ablak megjelenítése
         }
+    }
+    
+    /**
+     * Paraméter alapján előállítja a kimenetet, és a megadott kimenetre kiírja.
+     * @param title a fejléc
+     * @param text az üzenet
+     * @patam out a kimenet
+     */
+    public static void print(String title, String text, PrintStream out) {
+        out.println(LS + title + ':'); // fejléc, aztán ...
+        out.println(text + LS); // ... kimenet streamre írás
     }
     
     /**

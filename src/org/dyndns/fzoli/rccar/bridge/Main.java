@@ -1,16 +1,16 @@
 package org.dyndns.fzoli.rccar.bridge;
 
-import java.awt.AWTException;
-import java.awt.PopupMenu;
-import java.awt.SystemTray;
 import java.awt.TrayIcon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.exceptiondialog.UncaughtExceptionDialog;
-import static org.dyndns.fzoli.rccar.UIUtil.*;
-import org.dyndns.fzoli.rccar.bridge.resource.R;
+import static org.dyndns.fzoli.rccar.UIUtil.alert;
+import static org.dyndns.fzoli.rccar.UIUtil.setSystemLookAndFeel;
+import static org.dyndns.fzoli.rccar.bridge.SystemTrayIcon.showMessage;
 import org.dyndns.fzoli.socket.process.SecureProcessException;
 import org.dyndns.fzoli.socket.process.SecureUtil;
 
@@ -36,46 +36,34 @@ public class Main {
     private static final String VAL_MESSAGE = "Híd üzenet", VAL_ERROR = "Híd hiba";
     
     /**
-     * A SystemTray null, ha a rendszer nem támogatja vagy nem található az ikon képe.
-     */
-    private static final SystemTray SYSTEM_TRAY;
-    
-    /**
      * A szerver socket referenciája arra kell, hogy eseménykezelővel ki lehessen lépni.
      */
     private static SSLServerSocket SERVER_SOCKET;
     
     /**
-     * Még mielőtt lefutna a main metódus, beállítódik a saját kivételkezelő, a rendszer LAF, a rendszerikon és az erőforrás-felszabadító szál.
+     * Még mielőtt lefutna a main metódus, beállítódik a rendszer LAF, a saját kivételkezelő, a rendszerikon és az erőforrás-felszabadító szál.
      */
     static {
-        SYSTEM_TRAY = createSystemTrayIcon();
         setSystemLookAndFeel();
         setExceptionHandler();
+        setSystemTrayIcon();
         addShutdownHook();
     }
     
     /**
-     * Ha van grafikus felület, rendszerikont jelenít meg.
-     * Több funkciója is van az ikonnak:
-     * - a felhasználó látja, hogy a program fut
-     * - a felhasználó ha nem konzolból indította a programot, csak itt képes leállítani
-     * - nem kezelt kivétel esetén buborékablak tályékoztatja a felhasználót, amire kattintva megtekintheti a hibát
-     * @return SystemTray ha a rendszer támogatja és elérhető az ikon képe, egyébként null
+     * Beállítja a rendszerikon menüjét.
+     * Hozzáadja a kilépés menüopciót és megjeleníti a rendszerikont.
      */
-    private static SystemTray createSystemTrayIcon() {
-        try {
-            SystemTray tray = SystemTray.getSystemTray();
-            PopupMenu menu = new PopupMenu();
-            TrayIcon icon = new TrayIcon(R.getBridgeImage(), "Mobile-RC Híd", menu);
-            icon.setImageAutoSize(true);
-            //TODO: ikon és menü hozzáadás
-            tray.add(icon);
-            return tray;
-        }
-        catch (UnsupportedOperationException | SecurityException | IOException | AWTException ex) {
-            return null;
-        }
+    private static void setSystemTrayIcon() {
+        SystemTrayIcon.addMenuItem("Kilépés", new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+            
+        });
+        SystemTrayIcon.setVisible(true);
     }
     
     /**
@@ -83,7 +71,7 @@ public class Main {
      * Ha a rendszerikonok támogatva vannak, dialógusablak jeleníti meg a nem kezelt kivételeket.
      */
     private static void setExceptionHandler() {
-        if (SYSTEM_TRAY != null) {
+        if (SystemTrayIcon.isSupported()) {
             //TODO: ezt a metódust lecserélni, mert ide nem lesz jó
             UncaughtExceptionDialog.applyHandler();
         }
@@ -117,14 +105,6 @@ public class Main {
     }
     
     /**
-     * Közli az üzenetet a felhasználóval, de a program futását nem folyásolja be, mert nem modális.
-     * Az üzenet a rendszerikon segítségével jelenik meg, de ha nincs grafikus felület, akkor a konzolra íródik ki.
-     */
-    private static void showMessage(String title, String message) {
-        //TODO
-    }
-    
-    /**
      * A híd main metódusa.
      * Ha a konfiguráció még nem létezik, lérehozza és figyelmezteti a felhasználót, hogy állítsa be és kilép.
      * Ha a konfiguráció létezik, de rosszul paraméterezett, figyelmezteti a felhasználót és kilép.
@@ -148,7 +128,7 @@ public class Main {
                     // TODO: ... feldolgozza
                 }
                 catch (SecureProcessException ex) {
-                    System.err.println("Nem megbízható kapcsolódás a " + s.getInetAddress() + " címről.");
+                    showMessage(VAL_MESSAGE, "Nem megbízható kapcsolódás a " + s.getInetAddress() + " címről.", TrayIcon.MessageType.WARNING);
                 }
             }
         }

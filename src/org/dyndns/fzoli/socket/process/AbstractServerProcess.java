@@ -17,6 +17,8 @@ public abstract class AbstractServerProcess extends AbstractProcess {
     /**
      * Szerver oldali adatfeldolgozó konstruktora.
      * @param socket Socket, amin keresztül folyik a kommunikáció.
+     * @param connectionId kapcsolatazonosító, ami alapján a kliens tudja, mi a dolga
+     * @throws IllegalArgumentException ha a kapcsolatazonosító mérete nagyobb egy bájtnál vagy negatív
      */
     public AbstractServerProcess(Socket socket, int connectionId) {
         super(socket);

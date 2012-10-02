@@ -16,6 +16,8 @@ public abstract class AbstractClientProcess extends AbstractProcess {
     /**
      * Kliens oldali adatfeldolgozó konstruktora.
      * @param socket Socket, amin keresztül folyik a kommunikáció.
+     * @param deviceId eszközazonosító, ami alapján a szerver tudja, mivel kommunikál
+     * @throws IllegalArgumentException ha az eszközazonosító mérete nagyobb egy bájtnál vagy negatív
      */
     public AbstractClientProcess(Socket socket, int deviceId) {
         super(socket);

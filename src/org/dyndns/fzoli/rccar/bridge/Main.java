@@ -200,6 +200,7 @@ public class Main {
                    .append("Kérem, állítsa be megfelelően!").append(LS).append(LS)
                    .append("Konfig fájl útvonala:").append(LS).append(Config.FILE_CONFIG);
                 alert(VAL_MESSAGE, msg.toString(), System.out);
+                System.exit(0);
             }
             else {
                 msg.append("Nem megfelelő konfiguráció!").append(LS).append(LS);

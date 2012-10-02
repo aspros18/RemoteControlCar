@@ -93,7 +93,7 @@ public class SecureUtil {
      * @throws SecureProcessException ha a munkamenet nem érvényes
      */
     private static void checkSession(SSLSocket socket) {
-        if (!socket.getSession().isValid()) throw new SecureProcessException("Invalid certificate. Please, check your CA.");
+        if (socket == null || socket.getSession() == null || socket.getSession().getLocalCertificates() == null || (!socket.getSession().isValid())) throw new SecureProcessException("Invalid certificate. Please, check your CA.");
     }
     
     /**

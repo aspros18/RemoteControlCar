@@ -5,7 +5,6 @@ import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.exceptiondialog.UncaughtExceptionDialog;
@@ -132,7 +131,7 @@ public class Main {
      * SSL Server socket létrehozása a konfig fájl alapján.
      * @throws Error ha nem sikerül a szerver socket létrehozása
      */
-    private static SSLServerSocket createServerSocket() throws IOException, GeneralSecurityException {
+    private static SSLServerSocket createServerSocket() {
         try {
             return SecureUtil.createServerSocket(CONFIG.getPort(), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile(), CONFIG.getPassword());
         }
@@ -162,14 +161,37 @@ public class Main {
     }
     
     /**
+     * A socket szerver futása.
+     * Ha nem megbízható kapcsolat jön létre, jelzi a felhasználónak.
+     * Ha nem várt kivétel képződik, kivételt dob, ami a felhasználó tudtára lesz adva.
+     * @throws RuntimeException ha nem várt kivétel képződik
+     */
+    private static void runServer() {
+        final SSLServerSocket ss = createServerSocket();
+        while (!ss.isClosed()) { // ameddig nincs lezárva a socket szerver
+            SSLSocket s = null;
+            try {
+                s = (SSLSocket) ss.accept(); // kliensre várakozik, és ha kapcsolódtak ...
+                // TODO: ... feldolgozza
+            }
+            catch (SecureProcessException ex) {
+                if (s != null) showMessage(VAL_MESSAGE, "Nem megbízható kapcsolódás a " + s.getInetAddress() + " címről.", TrayIcon.MessageType.WARNING);
+            }
+            catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    }
+    
+    /**
      * A híd main metódusa.
      * Ha a konfiguráció még nem létezik, lérehozza és figyelmezteti a felhasználót, hogy állítsa be és kilép.
      * Ha a konfiguráció létezik, de rosszul paraméterezett, figyelmezteti a felhasználót és kilép.
      * A program futása előtt ha nem létezik az admin adatbázis, létrehozza és figyelmezteti a felhasználót.
      * Ezek után a híd program elkezdi futását.
      */
-    public static void main(String[] args) { //TODO: a kivételkezelés átgondolása (hogy egyes kivételek esetén legyen leállás és jelenjen meg a dialógusablak) + jó lenne külön metódusba tenni a tényleges futást
-        if (CONFIG.isCorrect()) try {
+    public static void main(String[] args) {
+        if (CONFIG.isCorrect()) {
             if (AdminDAO.isNew()) {
                 if (AdminDAO.exists()) {
                     alert(VAL_MESSAGE, "A rendszergazdákat tartalmazó adatbázist létrehoztam." + LS + "Mostantól használható az adatbázis.", System.out);
@@ -178,20 +200,7 @@ public class Main {
                     alert(VAL_ERROR, "Hiba a rendszergazdákat tartalmazó adatbázis létrehozása során!" + LS + "A program rendszergazdamentesen indul.", System.err);
                 }
             }
-            final SSLServerSocket ss = createServerSocket();
-            while (!ss.isClosed()) { // ameddig nincs lezárva a socket szerver
-                SSLSocket s = (SSLSocket) ss.accept(); // kliensre várakozik, és ha kapcsolódtak ...
-                try {
-                    // TODO: ... feldolgozza
-                }
-                catch (SecureProcessException ex) {
-                    showMessage(VAL_MESSAGE, "Nem megbízható kapcsolódás a " + s.getInetAddress() + " címről.", TrayIcon.MessageType.WARNING);
-                }
-            }
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
-            System.exit(1);
+            runServer();
         }
         else {
             final StringBuilder msg = new StringBuilder();

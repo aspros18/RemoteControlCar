@@ -18,7 +18,7 @@ import org.dyndns.fzoli.exceptiondialog.event.UncaughtExceptionSource;
  * de a nem fontosakat már nem írtam meg, ezért hiányos a kommentezés.
  * @author zoli
  */
-public final class UncaughtExceptionDialog extends JDialog {
+public final class UncaughtExceptionDialog extends JDialog { //TODO: ha túl hosszú az üzenet, nem minden rendszeren jelenik meg
     
     private JPanel pc = new JPanel(new GridLayout());
     

@@ -68,7 +68,7 @@ public abstract class AbstractSecureServerHandler extends AbstractServerHandler 
             }
         }
     }
-    
+
     /**
      * Kiválasztja a biztonságos kapcsolatfeldolgozó objektumot az adatok alapján és elindítja.
      * A metódus csak akkor hívható meg, amikor már ismert a kapcsolatazonosító és eszközazonosító,

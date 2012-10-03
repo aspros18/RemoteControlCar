@@ -78,6 +78,17 @@ public abstract class AbstractClientHandler extends AbstractHandler {
     }
     
     /**
+     * Ha kivétel képződik, fel kell dolgozni.
+     * @param ex a kivétel
+     * @throws HandlerException ha nem RuntimeException a kivétel
+     * @throws RuntimeException ha RuntimeException a kivétel
+     */
+    protected void onException(Exception ex) {
+        if (ex instanceof RuntimeException) throw (RuntimeException) ex;
+        throw new HandlerException(ex);
+    }
+    
+    /**
      * Ez a metódus fut le a szálban.
      * Az eszköz- és kapcsolatazonosító szervernek való elküldése után eldől, melyik kapcsolatfeldolgozót
      * kell használni a kliens oldalon és a konkrét feldolgozás kezdődik meg.
@@ -121,7 +132,7 @@ public abstract class AbstractClientHandler extends AbstractHandler {
             out.close();
         }
         catch (Exception ex) {
-            throw new HandlerException(ex);
+            onException(ex);
         }
     }
     

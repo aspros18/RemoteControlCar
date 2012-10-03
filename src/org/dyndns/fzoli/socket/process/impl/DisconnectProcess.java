@@ -3,7 +3,7 @@ package org.dyndns.fzoli.socket.process.impl;
 import org.dyndns.fzoli.socket.process.SecureProcess;
 
 /**
- * Az implementált osztályok a klienssel kiépített kapcsolatot arra használják, hogy
+ * Az implementált osztályok a másik oldallal kiépített kapcsolatot arra használják, hogy
  * másodpercenként ellenőrzik, hogy megszakadt-e a kapcsolat a másik oldallal.
  * @author zoli
  */

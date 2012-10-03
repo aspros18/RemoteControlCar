@@ -24,7 +24,7 @@ public abstract class ClientDisconnectProcess extends AbstractSecureProcess impl
     protected void onConnect() {}
     
     /**
-     * Ez a metódus hívódik meg, amikor megszakad a kapcsolat a klienssel.
+     * Ez a metódus hívódik meg, amikor megszakad a kapcsolat a szerverrel.
      * Az összes aktív kapcsolatfeldolgozót leállítja, mely ugyan ahhoz az eszközhöz tartozik.
      */
     protected void onDisconnect() {
@@ -33,7 +33,7 @@ public abstract class ClientDisconnectProcess extends AbstractSecureProcess impl
     
     /**
      * A socket bementének olvasására be lehet állítani időtúllépést.
-     * Erre alapozva megtudható, hogy él-e még a kapcsolat a másik oldallal.
+     * Erre alapozva megtudható, hogy él-e még a kapcsolat a szerverrel.
      */
     @Override
     public void run() {

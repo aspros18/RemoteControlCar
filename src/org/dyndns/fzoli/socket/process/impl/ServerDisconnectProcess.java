@@ -37,7 +37,7 @@ public class ServerDisconnectProcess extends AbstractSecureProcess implements Di
     
     /**
      * A socket bementének olvasására be lehet állítani időtúllépést.
-     * Erre alapozva megtudható, hogy él-e még a kapcsolat a másik oldallal.
+     * Erre alapozva megtudható, hogy él-e még a kapcsolat a klienssel.
      */
     @Override
     public void run() {

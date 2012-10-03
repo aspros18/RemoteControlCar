@@ -4,21 +4,24 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import javax.net.ssl.SSLSocket;
-import org.dyndns.fzoli.socket.process.AbstractSecureClientProcess;
+import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
+import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.handler.SecureUtil;
+import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
+import org.dyndns.fzoli.socket.process.SecureProcess;
 
 /**
  * Teszt osztály kliens oldalra.
  * @author zoli
  */
-public class TestClientProcess extends AbstractSecureClientProcess {
+public class TestClientProcess extends AbstractSecureProcess {
 
     private static final int timeout = 1000;
     
     private int count = 0;
     
-    public TestClientProcess(SSLSocket socket, int deviceId) {
-        super(socket, deviceId);
+    public TestClientProcess(SecureHandler handler) {
+        super(handler);
     }
 
     /**
@@ -27,7 +30,7 @@ public class TestClientProcess extends AbstractSecureClientProcess {
      * Ez a kliens oldali teszt.
      */
     @Override
-    protected void process() {
+    public void run() {
         TestServerProcess.test(this); // alap információ megjelenítése
         try {
             InputStream in = getSocket().getInputStream();
@@ -47,7 +50,14 @@ public class TestClientProcess extends AbstractSecureClientProcess {
     
     public static void main(String[] args) throws Exception {
         SSLSocket s = SecureUtil.createClientSocket("192.168.20.5", 8443, new File("test-certs/ca.crt"), new File("test-certs/controller.crt"), new File("test-certs/controller.key"), new char[]{});
-        new Thread(new TestClientProcess(s, 5)).start(); // az eszközazonosító: 5
+        new Thread(new AbstractSecureClientHandler(s, 5) { // az eszközazonosító: 5
+
+            @Override
+            protected SecureProcess selectProcess() { // kliens oldali teszt feldolgozó használata
+                return new TestClientProcess(this);
+            }
+            
+        }).start(); // új szálban indítás
     }
     
 }

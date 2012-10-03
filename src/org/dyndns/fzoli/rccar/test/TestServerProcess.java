@@ -5,23 +5,25 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
-import org.dyndns.fzoli.socket.process.AbstractSecureServerProcess;
+import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
+import org.dyndns.fzoli.socket.handler.SecureHandler;
+import org.dyndns.fzoli.socket.handler.SecureUtil;
+import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
 import org.dyndns.fzoli.socket.process.SecureProcess;
 import org.dyndns.fzoli.socket.process.SecureProcessException;
-import org.dyndns.fzoli.socket.handler.SecureUtil;
 
 /**
  * Teszt osztály szerver oldalra.
  * @author zoli
  */
-public class TestServerProcess extends AbstractSecureServerProcess {
+public class TestServerProcess extends AbstractSecureProcess {
 
     private int count = 0;
     
     private static final int timeout = 1000, delay = 200;
     
-    public TestServerProcess(SSLSocket socket, int connectionId) {
-        super(socket, connectionId);
+    public TestServerProcess(SecureHandler handler) {
+        super(handler);
     }
 
     /**
@@ -30,7 +32,7 @@ public class TestServerProcess extends AbstractSecureServerProcess {
      * Ez a szerver oldali teszt.
      */
     @Override
-    protected void process() {
+    public void run() {
         test(this); // alap információ megjelenítése
         try {
             InputStream in = getSocket().getInputStream();
@@ -64,7 +66,14 @@ public class TestServerProcess extends AbstractSecureServerProcess {
         while (!ss.isClosed()) {
             SSLSocket s = (SSLSocket) ss.accept();
             try {
-                new Thread(new TestServerProcess(s, 10)).start();
+                new Thread(new AbstractSecureServerHandler(s, 10) { // a kapcsolatazonosító: 10
+
+                    @Override
+                    protected SecureProcess selectProcess() { // szerver oldali teszt feldolgozó használata
+                        return new TestServerProcess(this);
+                    }
+                    
+                }).start(); // új szálban indítás
             }
             catch (SecureProcessException ex) {
                 System.err.println("Nem megbízható kapcsolódás a " + s.getInetAddress() + " címről.");

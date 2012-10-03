@@ -9,4 +9,10 @@ import org.dyndns.fzoli.socket.Socketter;
  */
 public interface Handler extends Socketter {
     
+    /**
+     * Ez a metódus fut a külön szálban, és ebben választódik ki és indul el az adatfeldolgozó.
+     */
+    @Override
+    public void run();
+    
 }

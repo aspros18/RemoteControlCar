@@ -4,36 +4,51 @@ import java.net.Socket;
 import org.dyndns.fzoli.socket.handler.Handler;
 
 /**
- * Külön szálban, a socketen át adatfeldolgozást végző osztály alapja kliens és szerver oldalra.
+ * A socketen át adatfeldolgozást végző osztály alapja.
  * @author zoli
  */
 public abstract class AbstractProcess implements Process {
     
-    //private final Handler handler;
-    private final Socket socket;
+    private final Handler handler;
     
     /**
+     * Adatfeldolgozó inicializálása.
      * @param handler Kapcsolatfeldolgozó, ami létrehozza ezt az adatfeldolgozót.
-     * @param socket Socket, amin keresztül folyik a kommunikáció.
+     * @throws NullPointerException ha handler null
      */
-    public AbstractProcess(/*Handler handler, */Socket socket) {
-        this.socket = socket;
-        //this.handler = handler;
+    public AbstractProcess(Handler handler) {
+        this.handler = handler;
     }
     
     /**
      * @return Kapcsolatfeldolgozó, ami létrehozta ezt az adatfeldolgozót.
      */
-    //protected Handler getHandler() {
-    //    return handler;
-    //}
+    protected Handler getHandler() {
+        return handler;
+    }
     
     /**
      * @return Socket, amin keresztül folyik a kommunikáció.
      */
     @Override
     public Socket getSocket() {
-        return socket;
+        return getHandler().getSocket();
+    }
+
+    /**
+     * @return Kapcsolatazonosító, ami segítségével megtudható a kapcsolatteremtés célja.
+     */
+    @Override
+    public Integer getConnectionId() {
+        return getHandler().getConnectionId();
+    }
+
+    /**
+     * @return Eszközazonosító, ami segítségével megtudható a kliens típusa.
+     */
+    @Override
+    public Integer getDeviceId() {
+        return getHandler().getDeviceId();
     }
     
 }

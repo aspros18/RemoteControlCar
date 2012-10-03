@@ -27,7 +27,7 @@ public abstract class AbstractServerHandler extends AbstractHandler {
         if (connectionId < 0 || connectionId > 255) throw new IllegalArgumentException("Connection ID needs to be between 1 and 255");
         this.connectionId = connectionId;
     }
-
+    
     /**
      * @return Kapcsolatazonosító, ami segítségével megtudható a kapcsolatteremtés célja.
      */

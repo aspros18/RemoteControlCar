@@ -17,14 +17,15 @@ public abstract class AbstractServerHandler extends AbstractHandler {
     /**
      * A szerver oldali kapcsolatkezelő konstruktora.
      * @param socket Socket, amin keresztül folyik a kommunikáció.
-     * @param connectionId kapcsolatazonosító, ami alapján a kliens tudja, mi a dolga
-     * @throws IllegalArgumentException ha a kapcsolatazonosító mérete nagyobb egy bájtnál vagy negatív
      */
     public AbstractServerHandler(Socket socket) {
         super(socket);
     }
     
     /**
+     * A kapcsolatazonosító a szerver oldalon addig nem ismert, míg a kliens nem közli.
+     * Ha a kapcsolat létrejön, a második bejövő bájt tartalmazza a kapcsolatazonosítót,
+     * ameddig ez nem jön át, a kapcsolatazonosító null értékű marad.
      * @return Kapcsolatazonosító, ami segítségével megtudható a kapcsolatteremtés célja.
      */
     @Override
@@ -33,6 +34,9 @@ public abstract class AbstractServerHandler extends AbstractHandler {
     }
 
     /**
+     * Az eszközazonosító a szerver oldalon addig nem ismert, míg a kliens nem közli.
+     * Ha a kapcsolat létrejön, az első bejövő bájt tartalmazza az eszközazonosítót,
+     * ameddig ez nem jön át, az eszközazonosító null értékű marad.
      * @return Eszközazonosító, ami segítségével megtudható a kliens típusa.
      */
     @Override
@@ -40,10 +44,18 @@ public abstract class AbstractServerHandler extends AbstractHandler {
         return deviceId;
     }
     
+    /**
+     * Beállítja az eszközazonosítót.
+     * Amint a metódus lefutott, már biztonságosan elkérhető az adat.
+     */
     private void setDeviceId(int deviceId) {
         this.deviceId = deviceId;
     }
     
+    /**
+     * Beállítja a kapcsolatazonosítót.
+     * Amint a metódus lefutott, már biztonságosan elkérhető az adat.
+     */
     private void setConnectionId(int connectionId) {
         this.connectionId = connectionId;
     }
@@ -58,8 +70,8 @@ public abstract class AbstractServerHandler extends AbstractHandler {
     
     /**
      * Ez a metódus fut le a szálban.
-     * Az eszközazonosító fogadása és a kapcsolatazonosító kliensnek való elküldése után eldől,
-     * melyik kapcsolatfeldolgozót kell használni és a konkrét feldolgozás kezdődik meg.
+     * Az eszköz- és kapcsolatazonosító klienstől való fogadása után eldől, melyik kapcsolatfeldolgozót
+     * kell használni a szerver oldalon és a konkrét feldolgozás kezdődik meg.
      * Ha a feldolgozás végetér, az erőforrások felszabadulnak.
      * @throws ProcessException ha bármi hiba történik
      */

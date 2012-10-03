@@ -38,9 +38,7 @@ public abstract class AbstractClientHandler extends AbstractHandler {
     }
     
     /**
-     * A kapcsolatazonosító a kliens oldalon addig nem ismert, míg a szerver nem közli.
-     * Ha a kapcsolat létrejön, az első bejövő bájt tartalmazza a kapcsolatazonosítót,
-     * ameddig ez nem történik meg, a kapcsolatazonosító null értékű marad.
+     * A kapcsolatazonosítót a kliens generálja, ezért soha nem null.
      * @return Kapcsolatazonosító, ami segítségével megtudható a kapcsolatteremtés célja.
      */
     @Override
@@ -67,8 +65,8 @@ public abstract class AbstractClientHandler extends AbstractHandler {
     
     /**
      * Ez a metódus fut le a szálban.
-     * Az eszközazonosító küldése és a kapcsolatazonosító szervertől való fogadása után eldől,
-     * melyik kapcsolatfeldolgozót kell használni és a konkrét feldolgozás kezdődik meg.
+     * Az eszköz- és kapcsolatazonosító szervernek való elküldése után eldől, melyik kapcsolatfeldolgozót
+     * kell használni a kliens oldalon és a konkrét feldolgozás kezdődik meg.
      * Ha a feldolgozás végetér, az erőforrások felszabadulnak.
      * @throws ProcessException ha bármi hiba történik
      */

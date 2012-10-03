@@ -2,6 +2,7 @@ package org.dyndns.fzoli.socket.handler;
 
 import java.net.Socket;
 import javax.net.ssl.SSLSocket;
+import org.dyndns.fzoli.socket.SecureUtil;
 import org.dyndns.fzoli.socket.process.SecureProcess;
 
 /**

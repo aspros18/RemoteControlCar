@@ -1,4 +1,4 @@
-package org.dyndns.fzoli.socket.handler;
+package org.dyndns.fzoli.socket;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,6 +59,10 @@ public class SecureUtil {
         client.setCheckCRL(true);
         SSLSocket s = (SSLSocket) client.createSocket(host, port); // kliens socket létrehozása és kapcsolódás
         return s;
+    }
+    
+    public static void startServer(int port, File ca, File crt, File key, char[] passwd) throws GeneralSecurityException, IOException {
+        
     }
     
     /**

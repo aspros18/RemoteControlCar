@@ -16,8 +16,8 @@ import static org.dyndns.fzoli.rccar.UIUtil.alert;
 import static org.dyndns.fzoli.rccar.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.rccar.bridge.resource.R;
 import org.dyndns.fzoli.rccar.test.TestServerProcess;
+import org.dyndns.fzoli.socket.SecureUtil;
 import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
-import org.dyndns.fzoli.socket.handler.SecureUtil;
 import org.dyndns.fzoli.socket.process.SecureProcessException;
 
 /**

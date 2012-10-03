@@ -15,10 +15,10 @@ import static org.dyndns.fzoli.rccar.SystemTrayIcon.showMessage;
 import static org.dyndns.fzoli.rccar.UIUtil.alert;
 import static org.dyndns.fzoli.rccar.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.rccar.bridge.resource.R;
-import org.dyndns.fzoli.socket.process.impl.ServerDisconnectProcess;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
 import org.dyndns.fzoli.socket.handler.SecureHandlerException;
+import org.dyndns.fzoli.socket.process.impl.ServerDisconnectProcess;
 
 /**
  * A híd indító osztálya.

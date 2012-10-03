@@ -1,14 +1,8 @@
 package org.dyndns.fzoli.socket.process.impl;
 
-import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
-import javax.net.ssl.SSLServerSocket;
-import javax.net.ssl.SSLSocket;
-import org.dyndns.fzoli.socket.SSLSocketUtil;
-import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
-import org.dyndns.fzoli.socket.handler.SecureHandlerException;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
 
 /**

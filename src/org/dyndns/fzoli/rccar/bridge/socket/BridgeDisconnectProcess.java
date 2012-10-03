@@ -61,7 +61,7 @@ public class BridgeDisconnectProcess extends ServerDisconnectProcess {
      * Jelez a felhasználónak, kapcsolódást illetve lekapcsolódást, ha kérik.
      */
     private void log(boolean connect) {
-        if (show) showMessage("Kapcsolat", getRemoteCommonName() + ' ' + (connect ? "kapcsolódott a hídhoz" : "lekapcsolódott a hídról") + '.');
+        if (show) showMessage("Kapcsolat", getRemoteCommonName() + ' ' + (connect ? "kapcsolódott a hídhoz" : "lekapcsolódott a hídról"));
     }
     
 }

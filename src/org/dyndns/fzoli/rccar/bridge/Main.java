@@ -131,6 +131,17 @@ public class Main {
     }
     
     /**
+     * A szerver elindítása előtt a konzolon beadott paramétereket feldolgozza.
+     * A paraméterek szükségtelenek, ha van grafikus felület a rendszeren.
+     * Ha a -v paraméter meg lett adva, ki fogja jelezni a kapcsolódásokat a program.
+     */
+    private static void readArguments(String[] args) {
+        if (args.length == 1 && args[0].equals("-v")) {
+            BridgeDisconnectProcess.setLogEnabled(true);
+        }
+    }
+    
+    /**
      * SSL Server socket létrehozása a konfig fájl alapján.
      * @throws Error ha nem sikerül a szerver socket létrehozása
      */
@@ -185,6 +196,7 @@ public class Main {
                     alert(VAL_ERROR, "Hiba a rendszergazdákat tartalmazó adatbázis létrehozása során!" + LS + "A program rendszergazdamentesen fut tovább.", System.err);
                 }
             }
+            readArguments(args);
             runServer();
         }
         else {

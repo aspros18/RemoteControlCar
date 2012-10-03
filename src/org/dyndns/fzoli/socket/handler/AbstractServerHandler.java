@@ -3,7 +3,6 @@ package org.dyndns.fzoli.socket.handler;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import org.dyndns.fzoli.socket.process.ProcessException;
 
 /**
  * Kapcsolatkezelő szerver oldalra.
@@ -73,7 +72,7 @@ public abstract class AbstractServerHandler extends AbstractHandler {
      * Az eszköz- és kapcsolatazonosító klienstől való fogadása után eldől, melyik kapcsolatfeldolgozót
      * kell használni a szerver oldalon és a konkrét feldolgozás kezdődik meg.
      * Ha a feldolgozás végetér, az erőforrások felszabadulnak.
-     * @throws ProcessException ha bármi hiba történik
+     * @throws HandlerException ha bármi hiba történik
      */
     @Override
     public void run() {
@@ -103,7 +102,7 @@ public abstract class AbstractServerHandler extends AbstractHandler {
             out.close();
         }
         catch (Exception ex) {
-            throw new ProcessException(ex);
+            throw new HandlerException(ex);
         }
     }
     

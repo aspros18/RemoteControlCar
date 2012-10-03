@@ -2,7 +2,6 @@ package org.dyndns.fzoli.socket.handler;
 
 import java.net.Socket;
 import javax.net.ssl.SSLSocket;
-import org.dyndns.fzoli.socket.SecureUtil;
 import org.dyndns.fzoli.socket.process.SecureProcess;
 
 /**
@@ -25,12 +24,26 @@ public abstract class AbstractSecureClientHandler extends AbstractClientHandler 
     }
 
     /**
+     * Ez a metódus fut le a szálban.
+     * Az eszköz- és kapcsolatazonosító szervernek való elküldése után eldől, melyik kapcsolatfeldolgozót
+     * kell használni a kliens oldalon és a konkrét feldolgozás kezdődik meg.
+     * Ha a feldolgozás végetér, az erőforrások felszabadulnak.
+     * @throws HandlerException ha bármi hiba történik
+     * @throws SecureHandlerException ha nem megbízható vagy hibás bármelyik tanúsítvány
+     */
+    @Override
+    public void run() {
+        super.run();
+    }
+    
+    /**
      * Megszerzi a helyi és távoli tanúsítvány Common Name mezőjét.
+     * @throws SecureHandlerException ha nem megbízható vagy hibás bármelyik tanúsítvány
      */
     @Override
     protected void init() {
-        localCommonName = SecureUtil.getLocalCommonName(getSocket());
-        remoteCommonName = SecureUtil.getRemoteCommonName(getSocket());
+        localCommonName = SecureHandlerUtil.getLocalCommonName(getSocket());
+        remoteCommonName = SecureHandlerUtil.getRemoteCommonName(getSocket());
     }
 
     /**

@@ -16,9 +16,9 @@ import static org.dyndns.fzoli.rccar.UIUtil.alert;
 import static org.dyndns.fzoli.rccar.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.rccar.bridge.resource.R;
 import org.dyndns.fzoli.rccar.test.TestServerProcess;
-import org.dyndns.fzoli.socket.SecureUtil;
+import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
-import org.dyndns.fzoli.socket.process.SecureProcessException;
+import org.dyndns.fzoli.socket.handler.SecureHandlerException;
 
 /**
  * A híd indító osztálya.
@@ -138,7 +138,7 @@ public class Main {
      */
     private static SSLServerSocket createServerSocket() {
         try {
-            return SecureUtil.createServerSocket(CONFIG.getPort(), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile(), CONFIG.getPassword());
+            return SSLSocketUtil.createServerSocket(CONFIG.getPort(), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile(), CONFIG.getPassword());
         }
         catch(Exception ex) {
             throw new Error(ex.getMessage());
@@ -188,7 +188,7 @@ public class Main {
                 }).start(); // ... feldolgozza az új szálban ; TODO: teszt után eredeti megírása
                 
             }
-            catch (SecureProcessException ex) {
+            catch (SecureHandlerException ex) {
                 if (s != null) showMessage(VAL_MESSAGE, "Nem megbízható kapcsolódás a " + s.getInetAddress() + " címről.", TrayIcon.MessageType.WARNING);
             }
             catch (Exception ex) {

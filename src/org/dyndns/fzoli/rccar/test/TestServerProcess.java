@@ -5,12 +5,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
-import org.dyndns.fzoli.socket.SecureUtil;
+import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
+import org.dyndns.fzoli.socket.handler.SecureHandlerException;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
 import org.dyndns.fzoli.socket.process.SecureProcess;
-import org.dyndns.fzoli.socket.process.SecureProcessException;
 
 /**
  * Teszt osztály szerver oldalra.
@@ -62,7 +62,7 @@ public class TestServerProcess extends AbstractSecureProcess {
     }
     
     public static void main(String[] args) throws Exception {
-        SSLServerSocket ss = SecureUtil.createServerSocket(8443, new File("test-certs/ca.crt"), new File("test-certs/bridge.crt"), new File("test-certs/bridge.key"), new char[]{});
+        SSLServerSocket ss = SSLSocketUtil.createServerSocket(8443, new File("test-certs/ca.crt"), new File("test-certs/bridge.crt"), new File("test-certs/bridge.key"), new char[]{});
         while (!ss.isClosed()) {
             SSLSocket s = (SSLSocket) ss.accept();
             try {
@@ -75,7 +75,7 @@ public class TestServerProcess extends AbstractSecureProcess {
                     
                 }).start(); // új szálban indítás
             }
-            catch (SecureProcessException ex) {
+            catch (SecureHandlerException ex) {
                 System.err.println("Nem megbízható kapcsolódás a " + s.getInetAddress() + " címről.");
             }
         }

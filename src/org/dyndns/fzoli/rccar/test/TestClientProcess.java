@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import javax.net.ssl.SSLSocket;
-import org.dyndns.fzoli.socket.SecureUtil;
+import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
@@ -49,7 +49,7 @@ public class TestClientProcess extends AbstractSecureProcess {
     
     public static void main(String[] args) throws Exception {
         for (int i = 1; i <= 2; i++) { // két kapcsolatot fog kialakítani
-            SSLSocket s = SecureUtil.createClientSocket("192.168.20.5", 8443, new File("test-certs/ca.crt"), new File("test-certs/controller.crt"), new File("test-certs/controller.key"), new char[]{});
+            SSLSocket s = SSLSocketUtil.createClientSocket("192.168.20.5", 8443, new File("test-certs/ca.crt"), new File("test-certs/controller.crt"), new File("test-certs/controller.key"), new char[]{});
             new Thread(new AbstractSecureClientHandler(s, 5, i) { // az eszközazonosító 5, a kapcsolatazonosító ciklusonként más
 
                 @Override

@@ -1,29 +1,29 @@
-package org.dyndns.fzoli.socket.process;
+package org.dyndns.fzoli.socket.handler;
 
 /**
- * A Process adatfeldolgozása közben fellépő hibák kivétele.
+ * A SecureHandler SSL műveletei közben fellépő kivétel.
  * @author zoli
  */
-public class ProcessException extends RuntimeException {
+public class SecureHandlerException extends HandlerException {
 
     /**
      * Saját kivétel létrehozása saját üzenettel.
      */
-    public ProcessException(String message) {
+    public SecureHandlerException(String message) {
         super(message);
     }
-    
+
     /**
      * Már létező kivétel felhasználása.
      */
-    public ProcessException(Throwable cause) {
+    public SecureHandlerException(Throwable cause) {
         super(cause);
     }
 
     /**
      * Már létező kivétel felhasználása saját üzenettel.
      */
-    public ProcessException(String message, Throwable cause) {
+    public SecureHandlerException(String message, Throwable cause) {
         super(message, cause);
     }
     

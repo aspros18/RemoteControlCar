@@ -49,7 +49,7 @@ public class TestClientProcess extends AbstractSecureProcess {
     
     public static void main(String[] args) throws Exception {
         SSLSocket s = SecureUtil.createClientSocket("192.168.20.5", 8443, new File("test-certs/ca.crt"), new File("test-certs/controller.crt"), new File("test-certs/controller.key"), new char[]{});
-        new Thread(new AbstractSecureClientHandler(s, 5) { // az eszközazonosító: 5
+        new Thread(new AbstractSecureClientHandler(s, 5, 10) { // az eszközazonosító 5, a kapcsolatazonosító 10
 
             @Override
             protected TestClientProcess selectProcess() { // kliens oldali teszt feldolgozó használata

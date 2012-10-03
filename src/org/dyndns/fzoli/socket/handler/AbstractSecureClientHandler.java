@@ -19,8 +19,8 @@ public abstract class AbstractSecureClientHandler extends AbstractClientHandler 
      * @param deviceId eszközazonosító, ami alapján a szerver tudja, mivel kommunikál
      * @throws IllegalArgumentException ha az eszközazonosító mérete nagyobb egy bájtnál vagy negatív
      */
-    public AbstractSecureClientHandler(Socket socket, int deviceId) {
-        super(socket, deviceId);
+    public AbstractSecureClientHandler(Socket socket, int deviceId, int connectionId) {
+        super(socket, deviceId, connectionId);
     }
 
     /**

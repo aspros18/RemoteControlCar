@@ -66,7 +66,7 @@ public class TestServerProcess extends AbstractSecureProcess {
         while (!ss.isClosed()) {
             SSLSocket s = (SSLSocket) ss.accept();
             try {
-                new Thread(new AbstractSecureServerHandler(s, 10) { // a kapcsolatazonosító: 10
+                new Thread(new AbstractSecureServerHandler(s) {
 
                     @Override
                     protected TestServerProcess selectProcess() { // szerver oldali teszt feldolgozó használata

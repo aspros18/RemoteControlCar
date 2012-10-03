@@ -12,22 +12,31 @@ import org.dyndns.fzoli.socket.process.ProcessException;
  */
 public abstract class AbstractClientHandler extends AbstractHandler {
 
-    private final Integer deviceId;
-    
-    private Integer connectionId;
+    private final Integer deviceId, connectionId;
     
     /**
      * A kliens oldali kapcsolatkezelő konstruktora.
      * @param socket Socket, amin keresztül folyik a kommunikáció.
      * @param deviceId eszközazonosító, ami alapján a szerver tudja, mivel kommunikál
-     * @throws IllegalArgumentException ha az eszközazonosító mérete nagyobb egy bájtnál vagy negatív
+     * @param connectionId kapcsolatazonosító, ami alapján a szerver tudja, mi a kérés
+     * @throws IllegalArgumentException ha az eszközazonosító vagy a kapcsolatazonosító mérete nagyobb egy bájtnál vagy negatív értékű
      */
-    public AbstractClientHandler(Socket socket, int deviceId) {
+    public AbstractClientHandler(Socket socket, int deviceId, int connectionId) {
         super(socket);
-        if (deviceId < 0 || deviceId > 255) throw new IllegalArgumentException("Device ID needs to be between 1 and 255");
+        checkId("Device", deviceId);
+        checkId("Connection", connectionId);
         this.deviceId = deviceId;
+        this.connectionId = connectionId;
     }
 
+    /**
+     * Ellenőrzi az azonosítót, és ha mérete nagyobb egy bájtnál vagy negatív értékű, kivételt dob.
+     * @throws IllegalArgumentException ha az azonosító értéke nem megengedett
+     */
+    private void checkId(String name, int id) {
+        if (id < 0 || id > 255) throw new IllegalArgumentException(name + " ID needs to be between 1 and 255");
+    }
+    
     /**
      * A kapcsolatazonosító a kliens oldalon addig nem ismert, míg a szerver nem közli.
      * Ha a kapcsolat létrejön, az első bejövő bájt tartalmazza a kapcsolatazonosítót,
@@ -37,10 +46,6 @@ public abstract class AbstractClientHandler extends AbstractHandler {
     @Override
     public Integer getConnectionId() {
         return connectionId;
-    }
-
-    private void setConnectionId(int connectionId) {
-        this.connectionId = connectionId;
     }
 
     /**
@@ -74,11 +79,11 @@ public abstract class AbstractClientHandler extends AbstractHandler {
             InputStream in = getSocket().getInputStream();
             OutputStream out = getSocket().getOutputStream();
             
-            // eszközazonosító közlése a szervernek
+            // eszközazonosító küldése a szervernek
             out.write(getDeviceId());
             
-            // kapcsolatazonosító megszerzése a szervertől
-            setConnectionId(in.read());
+            // kapcsolatazonosító küldése a szervernek
+            out.write(getConnectionId());
             
             // inicializáló metódus futtatása
             init();

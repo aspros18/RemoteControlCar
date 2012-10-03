@@ -12,9 +12,7 @@ import org.dyndns.fzoli.socket.process.ProcessException;
  */
 public abstract class AbstractServerHandler extends AbstractHandler {
 
-    private final Integer connectionId;
-    
-    private Integer deviceId;
+    private Integer deviceId, connectionId;
     
     /**
      * A szerver oldali kapcsolatkezelő konstruktora.
@@ -22,10 +20,8 @@ public abstract class AbstractServerHandler extends AbstractHandler {
      * @param connectionId kapcsolatazonosító, ami alapján a kliens tudja, mi a dolga
      * @throws IllegalArgumentException ha a kapcsolatazonosító mérete nagyobb egy bájtnál vagy negatív
      */
-    public AbstractServerHandler(Socket socket, int connectionId) {
+    public AbstractServerHandler(Socket socket) {
         super(socket);
-        if (connectionId < 0 || connectionId > 255) throw new IllegalArgumentException("Connection ID needs to be between 1 and 255");
-        this.connectionId = connectionId;
     }
     
     /**
@@ -46,6 +42,10 @@ public abstract class AbstractServerHandler extends AbstractHandler {
     
     private void setDeviceId(int deviceId) {
         this.deviceId = deviceId;
+    }
+    
+    private void setConnectionId(int connectionId) {
+        this.connectionId = connectionId;
     }
     
     /**
@@ -72,6 +72,9 @@ public abstract class AbstractServerHandler extends AbstractHandler {
             
             // eszközazonosító elkérése a klienstől
             setDeviceId(in.read());
+            
+            // kapcsolatazonosító elkérése a klienstől
+            setConnectionId(in.read());
             
             // inicializáló metódus futtatása
             init();

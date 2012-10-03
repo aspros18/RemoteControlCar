@@ -178,14 +178,14 @@ public class Main {
             try {
                 s = (SSLSocket) ss.accept(); // kliensre várakozik, és ha kapcsolódtak ...
                 
-                new Thread(new AbstractSecureServerHandler(s, 8) {
+                new Thread(new AbstractSecureServerHandler(s) {
 
                     @Override
                     protected TestServerProcess selectProcess() { // szerver oldali teszt feldolgozó használata
                         return new TestServerProcess(this);
                     }
                     
-                }).start(); // ... feldolgozza az új szálban ; TODO: teszt után eredeti megírása ; kapcsolatazonosító: 8
+                }).start(); // ... feldolgozza az új szálban ; TODO: teszt után eredeti megírása
                 
             }
             catch (SecureProcessException ex) {

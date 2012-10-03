@@ -13,8 +13,8 @@ public abstract class AbstractSecureServerHandler extends AbstractServerHandler 
 
     private String localCommonName, remoteCommonName;
     
-    public AbstractSecureServerHandler(Socket socket, int connectionId) {
-        super(socket, connectionId);
+    public AbstractSecureServerHandler(Socket socket) {
+        super(socket);
     }
 
     /**

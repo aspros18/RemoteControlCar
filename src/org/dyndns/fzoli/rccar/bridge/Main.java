@@ -13,10 +13,9 @@ import static org.dyndns.fzoli.rccar.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.rccar.UncaughtExceptionHandler;
 import static org.dyndns.fzoli.rccar.UncaughtExceptionHandler.showException;
 import org.dyndns.fzoli.rccar.bridge.resource.R;
+import org.dyndns.fzoli.rccar.bridge.socket.BridgeHandler;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
-import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
 import org.dyndns.fzoli.socket.handler.SecureHandlerException;
-import org.dyndns.fzoli.socket.process.impl.ServerDisconnectProcess;
 
 /**
  * A híd indító osztálya.
@@ -124,23 +123,8 @@ public class Main {
         while (!ss.isClosed()) { // ameddig nincs lezárva a socket szerver
             SSLSocket s = null;
             try {
-                s = (SSLSocket) ss.accept(); // kliensre várakozik, és ha kapcsolódtak ...
-                
-                new Thread(new AbstractSecureServerHandler(s) {
-
-                    @Override
-                    protected ServerDisconnectProcess selectProcess() { // szerver oldali teszt feldolgozó használata
-                        return new ServerDisconnectProcess(this) {
-
-                            @Override
-                            protected void onDisconnect() {
-                                System.out.println("MEGSZAKADT A KAPCSOLAT A KLIENSSEL");
-                            }
-                            
-                        };
-                    }
-                    
-                }).start(); // ... feldolgozza az új szálban ; TODO: teszt után eredeti megírása
+                s = (SSLSocket) ss.accept(); // kliensre várakozik, és ha kapcsolódtak, ...
+                new Thread(new BridgeHandler(s)).start(); // ... új szálban kezeli a kapcsolatot
             }
             catch (SecureHandlerException ex) {
                 // ha nem megbízható kliens kapcsolódott, információ közlése a felhasználónak

@@ -1,6 +1,5 @@
 package org.dyndns.fzoli.socket.handler;
 
-import java.net.Socket;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.socket.process.SecureProcess;
 
@@ -14,12 +13,13 @@ public abstract class AbstractSecureClientHandler extends AbstractClientHandler 
     private String localCommonName, remoteCommonName;
     
     /**
-     * A biztonságos kliens oldali kapcsolatkezelő konstruktora.
-     * @param socket Socket, amin keresztül folyik a kommunikáció.
+     * A kliens oldali biztonságos kapcsolatkezelő konstruktora.
+     * @param socket SSLSocket, amin keresztül folyik a kommunikáció.
      * @param deviceId eszközazonosító, ami alapján a szerver tudja, mivel kommunikál
-     * @throws IllegalArgumentException ha az eszközazonosító mérete nagyobb egy bájtnál vagy negatív
+     * @param connectionId kapcsolatazonosító, ami alapján a szerver tudja, mi a kérés
+     * @throws IllegalArgumentException ha az eszközazonosító vagy a kapcsolatazonosító mérete nagyobb egy bájtnál vagy negatív értékű
      */
-    public AbstractSecureClientHandler(Socket socket, int deviceId, int connectionId) {
+    public AbstractSecureClientHandler(SSLSocket socket, int deviceId, int connectionId) {
         super(socket, deviceId, connectionId);
     }
 

@@ -15,8 +15,6 @@ import org.dyndns.fzoli.socket.process.impl.ServerDisconnectProcess;
  */
 public class ServerDisconnectTest {
     
-    private static DummyProcess dummy;
-    
     public static void main(String[] args) throws Exception {
         SSLServerSocket ss = SSLSocketUtil.createServerSocket(8443, new File("test-certs/ca.crt"), new File("test-certs/bridge.crt"), new File("test-certs/bridge.key"), new char[]{});
         while (!ss.isClosed()) {
@@ -35,12 +33,7 @@ public class ServerDisconnectTest {
                                     @Override
                                     protected void onDisconnect() {
                                         System.out.println("CLIENT DISCONNECT");
-                                        try {
-                                            if (dummy != null) dummy.getSocket().close();
-                                        }
-                                        catch (Exception ex) {
-                                            ex.printStackTrace();
-                                        }
+                                        super.onDisconnect();
                                     }
 
                                 };

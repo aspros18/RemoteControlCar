@@ -3,6 +3,9 @@ package org.dyndns.fzoli.socket.handler;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+import org.dyndns.fzoli.socket.process.Process;
 
 /**
  * Kapcsolatkezelő kliens oldalra.
@@ -12,6 +15,8 @@ import java.net.Socket;
 public abstract class AbstractClientHandler extends AbstractHandler {
 
     private final Integer deviceId, connectionId;
+    
+    private final static List<Process> PROCESSES = new ArrayList<>();
     
     /**
      * A kliens oldali kapcsolatkezelő konstruktora.
@@ -34,6 +39,16 @@ public abstract class AbstractClientHandler extends AbstractHandler {
      */
     private void checkId(String name, int id) {
         if (id < 0 || id > 255) throw new IllegalArgumentException(name + " ID needs to be between 1 and 255");
+    }
+
+    /**
+     * Azokat az adatfeldolgozókat adja vissza, melyek még dolgoznak.
+     */
+    @Override
+    public List<Process> getProcesses() {
+        synchronized(PROCESSES) {
+            return new ArrayList<>(PROCESSES);
+        }
     }
     
     /**
@@ -84,8 +99,21 @@ public abstract class AbstractClientHandler extends AbstractHandler {
             // inicializáló metódus futtatása
             init();
             
-            // adatfeldolgozó kiválasztása és futtatása
-            selectProcess().run();
+            // adatfeldolgozó kiválasztása
+            Process proc = selectProcess();
+            
+            // adatfeldolgozó hozzáadása a listához
+            synchronized(PROCESSES) {
+                PROCESSES.add(proc);
+            }
+            
+            // adatfeldolgozó futtatása
+            proc.run();
+            
+            // adatfeldolgozó eltávolítása a listából
+            synchronized(PROCESSES) {
+                PROCESSES.remove(proc);
+            }
             
             // kapcsolat bezárása
             in.close();

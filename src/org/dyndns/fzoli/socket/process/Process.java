@@ -1,12 +1,18 @@
 package org.dyndns.fzoli.socket.process;
 
 import org.dyndns.fzoli.socket.Socketter;
+import org.dyndns.fzoli.socket.handler.Handler;
 
 /**
  * Interfész a socketen át adatfeldolgozást végző osztály írására.
  * @author zoli
  */
 public interface Process extends Socketter {
+    
+    /**
+     * @return Kapcsolatfeldolgozó, ami létrehozta ezt az adatfeldolgozót.
+     */
+    public Handler getHandler();
     
     /**
      * Ez a metódus indítja el az adatfeldolgozást.

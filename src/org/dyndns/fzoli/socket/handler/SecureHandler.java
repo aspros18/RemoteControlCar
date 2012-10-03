@@ -1,6 +1,8 @@
 package org.dyndns.fzoli.socket.handler;
 
+import java.util.List;
 import org.dyndns.fzoli.socket.SecureSocketter;
+import org.dyndns.fzoli.socket.process.SecureProcess;
 
 /**
  * Biztonságos socketfeldolgozó implementálásához kliens és szerver oldalra.
@@ -8,5 +10,10 @@ import org.dyndns.fzoli.socket.SecureSocketter;
  * @author zoli
  */
 public interface SecureHandler extends Handler, SecureSocketter {
+    
+    /**
+     * Azokat a biztonságos adatfeldolgozókat adja vissza, melyek még dolgoznak.
+     */
+    public List<SecureProcess> getSecureProcesses();
     
 }

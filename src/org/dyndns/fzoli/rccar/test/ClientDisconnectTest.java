@@ -13,8 +13,6 @@ import org.dyndns.fzoli.socket.process.impl.ClientDisconnectProcess;
  */
 public class ClientDisconnectTest {
     
-    private static DummyProcess dummy;
-    
     public static void main(String[] args) throws Exception {
         for (int i = 0; i <= 1; i++) { // két kapcsolatot fog kialakítani
             SSLSocket s = SSLSocketUtil.createClientSocket("192.168.20.5", 8443, new File("test-certs/ca.crt"), new File("test-certs/controller.crt"), new File("test-certs/controller.key"), new char[]{});
@@ -24,19 +22,14 @@ public class ClientDisconnectTest {
                 protected AbstractSecureProcess selectProcess() { // kliens oldali teszt feldolgozó használata
                     switch (getConnectionId()) {
                         case 1:
-                            return dummy = new DummyProcess(this);
+                            return new DummyProcess(this);
                         default:
                             return new ClientDisconnectProcess(this) {
 
                                 @Override
                                 protected void onDisconnect() {
                                     System.out.println("SERVER DISCONNECT");
-                                    try {
-                                        if (dummy != null) dummy.getSocket().close();
-                                    }
-                                    catch (Exception ex) {
-                                        ex.printStackTrace();
-                                    }
+                                    super.onDisconnect();
                                 }
 
                             };

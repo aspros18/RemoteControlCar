@@ -3,6 +3,9 @@ package org.dyndns.fzoli.socket.handler;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+import org.dyndns.fzoli.socket.process.Process;
 
 /**
  * Kapcsolatkezelő szerver oldalra.
@@ -13,12 +16,24 @@ public abstract class AbstractServerHandler extends AbstractHandler {
 
     private Integer deviceId, connectionId;
     
+    private final static List<Process> PROCESSES = new ArrayList<>();
+    
     /**
      * A szerver oldali kapcsolatkezelő konstruktora.
      * @param socket Socket, amin keresztül folyik a kommunikáció.
      */
     public AbstractServerHandler(Socket socket) {
         super(socket);
+    }
+
+    /**
+     * Azokat az adatfeldolgozókat adja vissza, melyek még dolgoznak.
+     */
+    @Override
+    public List<Process> getProcesses() {
+        synchronized(PROCESSES) {
+            return new ArrayList<>(PROCESSES);
+        }
     }
     
     /**
@@ -77,6 +92,7 @@ public abstract class AbstractServerHandler extends AbstractHandler {
     @Override
     public void run() {
         try {
+            
             // stream referenciák megszerzése
             InputStream in = getSocket().getInputStream();
             OutputStream out = getSocket().getOutputStream();
@@ -90,8 +106,21 @@ public abstract class AbstractServerHandler extends AbstractHandler {
             // inicializáló metódus futtatása
             init();
             
-            // adatfeldolgozó kiválasztása és futtatása
-            selectProcess().run();
+            // adatfeldolgozó kiválasztása
+            Process proc = selectProcess();
+            
+            // adatfeldolgozó hozzáadása a listához
+            synchronized(PROCESSES) {
+                PROCESSES.add(proc);
+            }
+            
+            // adatfeldolgozó futtatása
+            proc.run();
+            
+            // adatfeldolgozó eltávolítása a listából
+            synchronized(PROCESSES) {
+                PROCESSES.remove(proc);
+            }
             
             // kapcsolat bezárása
             in.close();

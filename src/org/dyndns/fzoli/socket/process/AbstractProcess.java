@@ -23,7 +23,8 @@ public abstract class AbstractProcess implements Process {
     /**
      * @return Kapcsolatfeldolgozó, ami létrehozta ezt az adatfeldolgozót.
      */
-    protected Handler getHandler() {
+    @Override
+    public Handler getHandler() {
         return handler;
     }
     

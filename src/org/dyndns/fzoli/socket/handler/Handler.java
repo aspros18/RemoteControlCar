@@ -1,6 +1,8 @@
 package org.dyndns.fzoli.socket.handler;
 
+import java.util.List;
 import org.dyndns.fzoli.socket.Socketter;
+import org.dyndns.fzoli.socket.process.Process;
 
 /**
  * Kapcsolatkezelő implementálásához kliens és szerver oldalra.
@@ -8,6 +10,11 @@ import org.dyndns.fzoli.socket.Socketter;
  * @author zoli
  */
 public interface Handler extends Socketter {
+    
+    /**
+     * Azokat az adatfeldolgozókat adja vissza, melyek még dolgoznak.
+     */
+    public List<Process> getProcesses();
     
     /**
      * Ez a metódus fut a külön szálban, és ebben választódik ki és indul el az adatfeldolgozó.

@@ -22,7 +22,7 @@ public abstract class AbstractSecureProcess extends AbstractProcess implements S
      * @return Biztonságos kapcsolatfeldolgozó, ami létrehozta ezt az adatfeldolgozót.
      */
     @Override
-    protected SecureHandler getHandler() {
+    public SecureHandler getHandler() {
         return (SecureHandler) super.getHandler();
     }
 

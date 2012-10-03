@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.socket.handler;
 
+import java.util.List;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.socket.process.SecureProcess;
 
@@ -21,6 +22,14 @@ public abstract class AbstractSecureClientHandler extends AbstractClientHandler 
      */
     public AbstractSecureClientHandler(SSLSocket socket, int deviceId, int connectionId) {
         super(socket, deviceId, connectionId);
+    }
+
+    /**
+     * Azokat a biztonságos adatfeldolgozókat adja vissza, melyek még dolgoznak.
+     */
+    @Override
+    public List<SecureProcess> getSecureProcesses() {
+        return SecureHandlerUtil.getSecureProcesses(getProcesses());
     }
 
     /**

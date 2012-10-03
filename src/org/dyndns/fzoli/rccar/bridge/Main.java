@@ -1,19 +1,16 @@
 package org.dyndns.fzoli.rccar.bridge;
 
-import java.awt.Dialog;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
-import org.dyndns.fzoli.exceptiondialog.UncaughtExceptionDialog;
-import org.dyndns.fzoli.exceptiondialog.UncaughtExceptionParameters;
-import org.dyndns.fzoli.exceptiondialog.event.UncaughtExceptionAdapter;
 import org.dyndns.fzoli.rccar.SystemTrayIcon;
 import static org.dyndns.fzoli.rccar.SystemTrayIcon.showMessage;
 import static org.dyndns.fzoli.rccar.UIUtil.alert;
 import static org.dyndns.fzoli.rccar.UIUtil.setSystemLookAndFeel;
+import static org.dyndns.fzoli.rccar.bridge.UncaughtExceptionHandler.showException;
 import org.dyndns.fzoli.rccar.bridge.resource.R;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
@@ -57,6 +54,15 @@ public class Main {
     }
     
     /**
+     * Beállítja a híd kivételkezelő metódusát.
+     * Ha a rendszerikonok támogatva vannak, dialógusablak jeleníti meg a nem kezelt kivételeket,
+     * egyébként nem változik az eredeti kivételkezelés.
+     */
+    private static void setExceptionHandler() {
+        UncaughtExceptionHandler.apply();
+    }
+    
+    /**
      * Beállítja a rendszerikont.
      * Hozzáadja a kilépés menüopciót beállítja az ikont és megjeleníti azt.
      */
@@ -71,78 +77,6 @@ public class Main {
         });
         SystemTrayIcon.setIcon("Mobile-RC híd", R.getBridgeImage());
         SystemTrayIcon.setVisible(true);
-    }
-    
-    /**
-     * Beállítja a híd kivételkezelő metódusát.
-     * Ha a rendszerikonok támogatva vannak, dialógusablak jeleníti meg a nem kezelt kivételeket,
-     * egyébként nem változik az eredeti kivételkezelés.
-     */
-    private static void setExceptionHandler() {
-        if (SystemTrayIcon.isSupported()) {
-            Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-
-                String title = "Nem várt hiba";
-                UncaughtExceptionParameters params = new UncaughtExceptionParameters(title, "Nem várt hiba keletkezett a program futása alatt.", "Részletek", "Bezárás", "Másolás", "Mindet kijelöl");
-                
-                /**
-                 * Megjeleníti a kivételt.
-                 * Ha nem kivétel, hanem hiba keletkezett, egyből modálisan megjelenik az ablak és bezárása után leáll a program.
-                 */
-                void showExceptionDialog(final Thread t, final Throwable ex, final boolean error) {
-                    UncaughtExceptionDialog.showException(t, ex, error ? Dialog.ModalityType.APPLICATION_MODAL : Dialog.ModalityType.MODELESS, params, new UncaughtExceptionAdapter() {
-
-                        @Override
-                        public void exceptionDialogClosed() {
-                            if (error) System.exit(1);
-                        }
-                                    
-                    });
-                }
-                
-                /**
-                 * Ha nem kezelt hiba történik, ez a metódus fut le.
-                 * Ha a rendszerikon nem látható, akkor a konzolra íródik a kivétel.
-                 * Throwable lehet kivétel vagy hiba is.
-                 */
-                @Override
-                public void uncaughtException(final Thread t, final Throwable ex) {
-                    if (SystemTrayIcon.isVisible()) {
-                        final boolean error = ex instanceof Error;
-                        if (error) {
-                            showExceptionDialog(t, ex, error);
-                        }
-                        else {
-                            SystemTrayIcon.showMessage(title, "További részletekért kattintson ide.", TrayIcon.MessageType.ERROR, new ActionListener() {
-
-                                @Override
-                                public void actionPerformed(ActionEvent e) {
-                                    showExceptionDialog(t, ex, error);
-                                }
-                            
-                            });
-                        }
-                    }
-                    else {
-                        ex.printStackTrace();
-                    }
-                }
-                
-            });
-        }
-    }
-    
-    /**
-     * SSL Server socket létrehozása a konfig fájl alapján.
-     * @throws Error ha nem sikerül a szerver socket létrehozása
-     */
-    private static SSLServerSocket createServerSocket() {
-        try {
-            return SSLSocketUtil.createServerSocket(CONFIG.getPort(), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile(), CONFIG.getPassword());
-        }
-        catch(Exception ex) {
-            throw new Error(ex.getMessage());
-        }
     }
     
     /**
@@ -163,6 +97,19 @@ public class Main {
             }
             
         }));
+    }
+    
+    /**
+     * SSL Server socket létrehozása a konfig fájl alapján.
+     * @throws Error ha nem sikerül a szerver socket létrehozása
+     */
+    private static SSLServerSocket createServerSocket() {
+        try {
+            return SSLSocketUtil.createServerSocket(CONFIG.getPort(), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile(), CONFIG.getPassword());
+        }
+        catch(Exception ex) {
+            throw new Error(ex.getMessage());
+        }
     }
     
     /**
@@ -193,13 +140,12 @@ public class Main {
                     }
                     
                 }).start(); // ... feldolgozza az új szálban ; TODO: teszt után eredeti megírása
-                
             }
             catch (SecureHandlerException ex) {
                 if (s != null) showMessage(VAL_MESSAGE, "Nem megbízható kapcsolódás a " + s.getInetAddress() + " címről.", TrayIcon.MessageType.WARNING);
             }
             catch (Exception ex) {
-                throw new RuntimeException(ex);
+                showException(ex); // ha bármilyen kivétel keletkezik, nem áll le a szerver, csak közli a kivételt
             }
         }
     }

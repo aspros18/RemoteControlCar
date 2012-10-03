@@ -53,6 +53,14 @@ public abstract class AbstractClientHandler extends AbstractHandler {
     }
 
     /**
+     * Miután az eszközazonosító és a kapcsolatazonosító közlése megtörtént,
+     * lefut ez az inicializáló metódus, ami után a konkrét feldolgozás történik meg.
+     * Ez a metódus az utód osztályoknak lett létrehozva inicializálás céljára.
+     */
+    protected void init() {
+    }
+    
+    /**
      * Ez a metódus fut le a szálban.
      * Az eszközazonosító küldése és a kapcsolatazonosító szervertől való fogadása után eldől,
      * melyik kapcsolatfeldolgozót kell használni és a konkrét feldolgozás kezdődik meg.
@@ -71,6 +79,9 @@ public abstract class AbstractClientHandler extends AbstractHandler {
             
             // kapcsolatazonosító megszerzése a szervertől
             setConnectionId(in.read());
+            
+            // inicializáló metódus futtatása
+            init();
             
             // adatfeldolgozó kiválasztása és futtatása
             selectProcess().run();

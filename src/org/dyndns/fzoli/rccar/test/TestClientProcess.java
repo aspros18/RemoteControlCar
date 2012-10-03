@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.socket.process.AbstractSecureClientProcess;
-import org.dyndns.fzoli.socket.process.SecureUtil;
+import org.dyndns.fzoli.socket.handler.SecureUtil;
 
 /**
  * Teszt osztály kliens oldalra.

@@ -17,7 +17,7 @@ import static org.dyndns.fzoli.rccar.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.rccar.bridge.resource.R;
 import org.dyndns.fzoli.rccar.test.TestServerProcess;
 import org.dyndns.fzoli.socket.process.SecureProcessException;
-import org.dyndns.fzoli.socket.process.SecureUtil;
+import org.dyndns.fzoli.socket.handler.SecureUtil;
 
 /**
  * A híd indító osztálya.

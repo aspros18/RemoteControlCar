@@ -2,7 +2,6 @@ package org.dyndns.fzoli.socket.handler;
 
 import java.net.Socket;
 import javax.net.ssl.SSLSocket;
-import org.dyndns.fzoli.socket.process.SecureUtil;
 
 /**
  * Biztonságos kapcsolatkezelő kliens oldalra.

@@ -8,7 +8,7 @@ import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.socket.process.AbstractSecureServerProcess;
 import org.dyndns.fzoli.socket.process.SecureProcess;
 import org.dyndns.fzoli.socket.process.SecureProcessException;
-import org.dyndns.fzoli.socket.process.SecureUtil;
+import org.dyndns.fzoli.socket.handler.SecureUtil;
 
 /**
  * Teszt osztály szerver oldalra.

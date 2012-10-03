@@ -1,4 +1,4 @@
-package org.dyndns.fzoli.socket.process;
+package org.dyndns.fzoli.socket.handler;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,9 +14,10 @@ import org.apache.commons.ssl.KeyMaterial;
 import org.apache.commons.ssl.SSLClient;
 import org.apache.commons.ssl.SSLServer;
 import org.apache.commons.ssl.TrustMaterial;
+import org.dyndns.fzoli.socket.process.SecureProcessException;
 
 /**
- * Segédosztály a SecureProcess interfész implementálásához és az SSLSocketek létrehozásához.
+ * Segédosztály a SecureHandler interfész implementálásához és az SSL Socketek létrehozásához.
  * @author zoli
  */
 public class SecureUtil {

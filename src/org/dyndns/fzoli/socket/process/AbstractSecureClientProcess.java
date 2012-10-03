@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.socket.process;
 
+import org.dyndns.fzoli.socket.handler.SecureUtil;
 import javax.net.ssl.SSLSocket;
 
 /**

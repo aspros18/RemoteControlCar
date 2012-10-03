@@ -90,9 +90,6 @@ public abstract class AbstractServerHandler extends AbstractHandler {
             // inicializáló metódus futtatása
             init();
             
-            // kapcsolatazonosító közlése a kliensnek
-            out.write(getConnectionId());
-            
             // adatfeldolgozó kiválasztása és futtatása
             selectProcess().run();
             

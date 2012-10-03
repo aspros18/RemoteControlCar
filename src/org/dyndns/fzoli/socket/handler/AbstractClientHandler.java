@@ -78,7 +78,6 @@ public abstract class AbstractClientHandler extends AbstractHandler {
             
             // eszközazonosító küldése a szervernek
             out.write(getDeviceId());
-            
             // kapcsolatazonosító küldése a szervernek
             out.write(getConnectionId());
             

@@ -15,7 +15,7 @@ import static org.dyndns.fzoli.rccar.SystemTrayIcon.showMessage;
 import static org.dyndns.fzoli.rccar.UIUtil.alert;
 import static org.dyndns.fzoli.rccar.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.rccar.bridge.resource.R;
-import org.dyndns.fzoli.rccar.test.TestServerProcess;
+import org.dyndns.fzoli.socket.process.impl.ServerDisconnectProcess;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
 import org.dyndns.fzoli.socket.handler.SecureHandlerException;
@@ -181,8 +181,15 @@ public class Main {
                 new Thread(new AbstractSecureServerHandler(s) {
 
                     @Override
-                    protected TestServerProcess selectProcess() { // szerver oldali teszt feldolgozó használata
-                        return new TestServerProcess(this);
+                    protected ServerDisconnectProcess selectProcess() { // szerver oldali teszt feldolgozó használata
+                        return new ServerDisconnectProcess(this) {
+
+                            @Override
+                            protected void onDisconnect() {
+                                System.out.println("MEGSZAKADT A KAPCSOLAT A KLIENSSEL");
+                            }
+                            
+                        };
                     }
                     
                 }).start(); // ... feldolgozza az új szálban ; TODO: teszt után eredeti megírása

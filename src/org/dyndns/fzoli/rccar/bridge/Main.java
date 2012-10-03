@@ -10,7 +10,8 @@ import org.dyndns.fzoli.rccar.SystemTrayIcon;
 import static org.dyndns.fzoli.rccar.SystemTrayIcon.showMessage;
 import static org.dyndns.fzoli.rccar.UIUtil.alert;
 import static org.dyndns.fzoli.rccar.UIUtil.setSystemLookAndFeel;
-import static org.dyndns.fzoli.rccar.bridge.UncaughtExceptionHandler.showException;
+import org.dyndns.fzoli.rccar.UncaughtExceptionHandler;
+import static org.dyndns.fzoli.rccar.UncaughtExceptionHandler.showException;
 import org.dyndns.fzoli.rccar.bridge.resource.R;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
@@ -142,10 +143,12 @@ public class Main {
                 }).start(); // ... feldolgozza az új szálban ; TODO: teszt után eredeti megírása
             }
             catch (SecureHandlerException ex) {
+                // ha nem megbízható kliens kapcsolódott, információ közlése a felhasználónak
                 if (s != null) showMessage(VAL_MESSAGE, "Nem megbízható kapcsolódás a " + s.getInetAddress() + " címről.", TrayIcon.MessageType.WARNING);
             }
             catch (Exception ex) {
-                showException(ex); // ha bármilyen kivétel keletkezik, nem áll le a szerver, csak közli a kivételt
+                // ha bármilyen kivétel keletkezik, nem áll le a szerver, csak közli a kivételt
+                showException(ex);
             }
         }
     }

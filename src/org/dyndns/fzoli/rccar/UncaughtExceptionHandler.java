@@ -1,4 +1,4 @@
-package org.dyndns.fzoli.rccar.bridge;
+package org.dyndns.fzoli.rccar;
 
 import java.awt.Dialog;
 import java.awt.TrayIcon;
@@ -7,7 +7,6 @@ import java.awt.event.ActionListener;
 import org.dyndns.fzoli.exceptiondialog.UncaughtExceptionDialog;
 import org.dyndns.fzoli.exceptiondialog.UncaughtExceptionParameters;
 import org.dyndns.fzoli.exceptiondialog.event.UncaughtExceptionAdapter;
-import org.dyndns.fzoli.rccar.SystemTrayIcon;
 
 /**
  * A híd nem várt hibáit kezeli le.
@@ -16,7 +15,7 @@ import org.dyndns.fzoli.rccar.SystemTrayIcon;
  * Ha a grafikus felület nem támogatott, a konzolon jelenik meg a nem kezelt hiba és Error esetén azonnal kilép a program.
  * @author zoli
  */
-class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
+public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
 
     private static final String title = "Nem várt hiba";
     private static final UncaughtExceptionParameters params = new UncaughtExceptionParameters(title, "Nem várt hiba keletkezett a program futása alatt.", "Részletek", "Bezárás", "Másolás", "Mindet kijelöl");

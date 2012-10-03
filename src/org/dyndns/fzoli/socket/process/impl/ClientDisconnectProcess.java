@@ -21,7 +21,9 @@ public abstract class ClientDisconnectProcess extends AbstractSecureProcess impl
     /**
      * Ez a metódus hívódik meg, amikor létrejön a kapcsolat a szerverrel.
      */
-    protected void onConnect() {}
+    protected void onConnect() {
+        ;
+    }
     
     /**
      * Ez a metódus hívódik meg, amikor megszakad a kapcsolat a szerverrel.

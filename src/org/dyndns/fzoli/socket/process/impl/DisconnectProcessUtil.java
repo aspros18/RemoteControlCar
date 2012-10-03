@@ -13,12 +13,10 @@ class DisconnectProcessUtil {
      * Ez a metódus hívódik meg, amikor megszakad a kapcsolat a klienssel.
      * Az összes aktív kapcsolatfeldolgozót leállítja, mely ugyan ahhoz az eszközhöz tartozik.
      */
-    public static void onDisconnect(DisconnectProcess sp) { //TODO: bugos a szerver oldalon valamiért
+    public static void onDisconnect(DisconnectProcess sp) {
         List<SecureProcess> procs = sp.getHandler().getSecureProcesses();
-        System.out.println(procs);
         for (SecureProcess proc : procs) {
             try {
-                System.out.println(proc.getRemoteCommonName() + " ; " + sp.getRemoteCommonName());
                 if (proc.getRemoteCommonName().equals(sp.getRemoteCommonName())) {
                     proc.getSocket().close();
                 }

@@ -16,7 +16,7 @@ public class ClientDisconnectTest {
     public static void main(String[] args) throws Exception {
         for (int i = 0; i <= 1; i++) { // két kapcsolatot fog kialakítani
             SSLSocket s = SSLSocketUtil.createClientSocket("192.168.20.5", 8443, new File("test-certs/ca.crt"), new File("test-certs/controller.crt"), new File("test-certs/controller.key"), new char[]{});
-            new Thread(new AbstractSecureClientHandler(s, 5, i) { // az eszközazonosító 5, a kapcsolatazonosító ciklusonként más
+            new Thread(new AbstractSecureClientHandler(s, 5, i) {  // az eszközazonosító 5, a kapcsolatazonosító ciklusonként más
 
                 @Override
                 protected AbstractSecureProcess selectProcess() { // kliens oldali teszt feldolgozó használata

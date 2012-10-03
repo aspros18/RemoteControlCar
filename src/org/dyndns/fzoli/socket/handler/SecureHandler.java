@@ -16,4 +16,10 @@ public interface SecureHandler extends Handler, SecureSocketter {
      */
     public List<SecureProcess> getSecureProcesses();
     
+    /**
+     * Igaz, ha ugyan azzal a tanúsítvánnyal és azonosítókkal rendelkezik a megadott feldolgozó.
+     * @param handler a másik feldolgozó
+     */
+    public boolean isCertEqual(SecureHandler handler);
+    
 }

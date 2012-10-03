@@ -30,6 +30,15 @@ public abstract class AbstractSecureServerHandler extends AbstractServerHandler 
     }
 
     /**
+     * Igaz, ha ugyan azzal a tanúsítvánnyal és azonosítókkal rendelkezik a megadott feldolgozó.
+     * @param handler a másik feldolgozó
+     */
+    @Override
+    public boolean isCertEqual(SecureHandler handler) {
+        return SecureHandlerUtil.isCertEqual(this, handler);
+    }
+
+    /**
      * Ez a metódus fut le a szálban.
      * Az eszköz- és kapcsolatazonosító klienstől való fogadása után eldől, melyik kapcsolatfeldolgozót
      * kell használni a szerver oldalon és a konkrét feldolgozás kezdődik meg.
@@ -54,7 +63,7 @@ public abstract class AbstractSecureServerHandler extends AbstractServerHandler 
         remoteCommonName = SecureHandlerUtil.getRemoteCommonName(getSocket());
         List<SecureProcess> procs = getSecureProcesses();
         for (SecureProcess proc : procs) {
-            if (proc.getRemoteCommonName().equals(getRemoteCommonName()) && proc.getConnectionId().equals(getConnectionId()) && proc.getDeviceId().equals(getDeviceId())) {
+            if (proc.getHandler().isCertEqual(this)) {
                 throw new MultipleCertificateException();
             }
         }

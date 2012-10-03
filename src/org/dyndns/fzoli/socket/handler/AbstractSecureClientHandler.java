@@ -33,6 +33,15 @@ public abstract class AbstractSecureClientHandler extends AbstractClientHandler 
     }
 
     /**
+     * Igaz, ha ugyan azzal a tanúsítvánnyal és azonosítókkal rendelkezik a megadott feldolgozó.
+     * @param handler a másik feldolgozó
+     */
+    @Override
+    public boolean isCertEqual(SecureHandler handler) {
+        return SecureHandlerUtil.isCertEqual(this, handler);
+    }
+    
+    /**
      * Ez a metódus fut le a szálban.
      * Az eszköz- és kapcsolatazonosító szervernek való elküldése után eldől, melyik kapcsolatfeldolgozót
      * kell használni a kliens oldalon és a konkrét feldolgozás kezdődik meg.

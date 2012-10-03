@@ -18,6 +18,15 @@ import org.dyndns.fzoli.socket.process.SecureProcess;
 class SecureHandlerUtil {
     
     /**
+     * Igaz, ha ugyan azzal a tanúsítvánnyal és azonosítókkal rendelkezik a két feldolgozó.
+     * @param h1 az egyik feldolgozó
+     * @param h2 a másik feldolgozó
+     */
+    public static boolean isCertEqual(SecureHandler h1, SecureHandler h2) {
+        return h1.getRemoteCommonName().equals(h2.getRemoteCommonName()) && h1.getDeviceId().equals(h2.getDeviceId()) && h1.getConnectionId().equals(h2.getConnectionId());
+    }
+    
+    /**
      * A paraméterben átadott listát leszűri.
      */
     public static List<SecureProcess> getSecureProcesses(List<Process> processes) {

@@ -36,6 +36,7 @@ public abstract class AbstractSecureServerHandler extends AbstractServerHandler 
      * Ha a feldolgozás végetér, az erőforrások felszabadulnak.
      * @throws HandlerException ha bármi hiba történik
      * @throws SecureHandlerException ha nem megbízható vagy hibás bármelyik tanúsítvány
+     * @throws MultipleCertificateException ha ugyan azzal a tanúsítvánnyal több kliens is kapcsolódik
      */
     @Override
     public void run() {
@@ -43,7 +44,7 @@ public abstract class AbstractSecureServerHandler extends AbstractServerHandler 
     }
 
     /**
-     * Megszerzi a helyi és távoli tanúsítvány Common Name mezőjét.
+     * Megszerzi a helyi és távoli tanúsítvány Common Name mezőjét és ellenőrzi a tanúsítványt.
      * @throws SecureHandlerException ha nem megbízható vagy hibás bármelyik tanúsítvány
      * @throws MultipleCertificateException ha ugyan azzal a tanúsítvánnyal több kliens is kapcsolódik
      */

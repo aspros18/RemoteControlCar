@@ -83,6 +83,16 @@ public class SystemTrayIcon {
     }
     
     /**
+     * Menüelemet ad hozzá a rendszerikon menüjéhez, ha az támogatott.
+     * @param mi a menüelem
+     */
+    public static void addMenuItem(MenuItem mi) {
+        if (isSupported()) {
+            menu.add(mi);
+        }
+    }
+    
+    /**
      * Beállítja a paraméterben átadott szöveget és ikont, ha támogatva vannak a rendszerikonok.
      * @param tooltip a megjelenő szöveg, amikor az egér az ikon felett van
      * @param img az a kép, ami megjelenik az ikonban

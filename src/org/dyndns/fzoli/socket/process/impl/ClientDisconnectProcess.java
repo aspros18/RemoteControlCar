@@ -19,7 +19,12 @@ public abstract class ClientDisconnectProcess extends AbstractSecureProcess {
     }
 
     /**
-     * Ez a metódus hívódik meg, amikor a kapcsolat megszakad a szerverrel.
+     * Ez a metódus hívódik meg, amikor létrejön a kapcsolat a szerverrel.
+     */
+    protected void onConnect() {}
+    
+    /**
+     * Ez a metódus hívódik meg, amikor megszakad a kapcsolat a szerverrel.
      */
     protected abstract void onDisconnect();
     
@@ -29,6 +34,7 @@ public abstract class ClientDisconnectProcess extends AbstractSecureProcess {
      */
     @Override
     public void run() {
+        onConnect();
         try {
             InputStream in = getSocket().getInputStream();
             OutputStream out = getSocket().getOutputStream();
@@ -42,6 +48,7 @@ public abstract class ClientDisconnectProcess extends AbstractSecureProcess {
         catch (Exception ex) {
             onDisconnect();
         }
+        onDisconnect();
     }
     
 }

@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.bridge;
 
+import java.awt.MenuItem;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,6 +14,7 @@ import static org.dyndns.fzoli.rccar.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.rccar.UncaughtExceptionHandler;
 import static org.dyndns.fzoli.rccar.UncaughtExceptionHandler.showException;
 import org.dyndns.fzoli.rccar.bridge.resource.R;
+import org.dyndns.fzoli.rccar.bridge.socket.BridgeDisconnectProcess;
 import org.dyndns.fzoli.rccar.bridge.socket.BridgeHandler;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.socket.handler.SecureHandlerException;
@@ -64,18 +66,47 @@ public class Main {
     
     /**
      * Beállítja a rendszerikont.
-     * Hozzáadja a kilépés menüopciót beállítja az ikont és megjeleníti azt.
+     * Hozzáadja a kapcsolatjelzés és kilépés menüopciót beállítja az ikont és megjeleníti azt.
      */
     private static void setSystemTrayIcon() {
-        SystemTrayIcon.addMenuItem("Kilépés", new ActionListener() {
+        // az ikon beállítása
+        SystemTrayIcon.setIcon("Mobile-RC híd", R.getBridgeImage());
+        
+        // kapcsolatjelzés beállító opció létrehozása és beállítása
+        final MenuItem miConnLog = new MenuItem(BridgeDisconnectProcess.getLogOption());
+        miConnLog.addActionListener(new ActionListener() {
 
+            /**
+             * Ha a naplózás beállítását kérik.
+             */
             @Override
             public void actionPerformed(ActionEvent e) {
+                // naplózás beállítása az ellenkezőjére
+                BridgeDisconnectProcess.setLogEnabled(!BridgeDisconnectProcess.isLogEnabled());
+                // a megváltozott opció frissítése
+                miConnLog.setLabel(BridgeDisconnectProcess.getLogOption());
+            }
+            
+        });
+        
+        // kapcsolatjelzés beállító opció hozzáadása
+        SystemTrayIcon.addMenuItem(miConnLog);
+        
+        // kilépés opció hozzáadása
+        SystemTrayIcon.addMenuItem("Kilépés", new ActionListener() {
+
+            /**
+             * Ha a kilépésre kattintottak.
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // a program kilép
                 System.exit(0);
             }
             
         });
-        SystemTrayIcon.setIcon("Mobile-RC híd", R.getBridgeImage());
+        
+        // a rendszerikon megjelenítése
         SystemTrayIcon.setVisible(true);
     }
     

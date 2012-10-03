@@ -18,7 +18,6 @@ import org.dyndns.fzoli.rccar.bridge.resource.R;
 import org.dyndns.fzoli.rccar.test.TestServerProcess;
 import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
 import org.dyndns.fzoli.socket.handler.SecureUtil;
-import org.dyndns.fzoli.socket.process.SecureProcess;
 import org.dyndns.fzoli.socket.process.SecureProcessException;
 
 /**
@@ -182,7 +181,7 @@ public class Main {
                 new Thread(new AbstractSecureServerHandler(s, 8) {
 
                     @Override
-                    protected SecureProcess selectProcess() { // szerver oldali teszt feldolgozó használata
+                    protected TestServerProcess selectProcess() { // szerver oldali teszt feldolgozó használata
                         return new TestServerProcess(this);
                     }
                     

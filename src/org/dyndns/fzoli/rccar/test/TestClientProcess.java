@@ -8,7 +8,6 @@ import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.handler.SecureUtil;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
-import org.dyndns.fzoli.socket.process.SecureProcess;
 
 /**
  * Teszt osztály kliens oldalra.
@@ -53,7 +52,7 @@ public class TestClientProcess extends AbstractSecureProcess {
         new Thread(new AbstractSecureClientHandler(s, 5) { // az eszközazonosító: 5
 
             @Override
-            protected SecureProcess selectProcess() { // kliens oldali teszt feldolgozó használata
+            protected TestClientProcess selectProcess() { // kliens oldali teszt feldolgozó használata
                 return new TestClientProcess(this);
             }
             

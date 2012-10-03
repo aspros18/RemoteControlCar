@@ -69,7 +69,7 @@ public class TestServerProcess extends AbstractSecureProcess {
                 new Thread(new AbstractSecureServerHandler(s, 10) { // a kapcsolatazonosító: 10
 
                     @Override
-                    protected SecureProcess selectProcess() { // szerver oldali teszt feldolgozó használata
+                    protected TestServerProcess selectProcess() { // szerver oldali teszt feldolgozó használata
                         return new TestServerProcess(this);
                     }
                     

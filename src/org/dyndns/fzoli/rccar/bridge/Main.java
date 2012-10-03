@@ -158,8 +158,8 @@ public class Main {
     /**
      * Figyelmeztetőüzenet jelzése a sikertelen kapcsolódásról.
      */
-    private static void showWarning(SSLSocket s, String msg) {
-        if (s != null) showMessage(VAL_MESSAGE, msg + " a " + s.getInetAddress() + " címről.", TrayIcon.MessageType.WARNING);
+    public static void showWarning(SSLSocket s, String msg) {
+        if (s != null) showMessage(VAL_MESSAGE, msg + " a " + s.getInetAddress().getHostName() + " címről.", TrayIcon.MessageType.WARNING);
     }
     
     /**
@@ -179,10 +179,6 @@ public class Main {
             catch (SecureHandlerException ex) {
                 // ha nem megbízható kliens kapcsolódott, információ közlése a felhasználónak
                 showWarning(s, "Nem megbízható kapcsolódás");
-            }
-            catch (MultipleCertificateException ex) {
-                // duplázott tanúsítvány esetén információ közlése
-                showWarning(s, "Duplázott tanúsítvány");
             }
             catch (Exception ex) {
                 // ha bármilyen kivétel keletkezik, nem áll le a szerver, csak közli a kivételt

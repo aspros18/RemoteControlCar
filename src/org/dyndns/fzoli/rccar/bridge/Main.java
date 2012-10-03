@@ -17,6 +17,7 @@ import org.dyndns.fzoli.rccar.bridge.resource.R;
 import org.dyndns.fzoli.rccar.bridge.socket.BridgeDisconnectProcess;
 import org.dyndns.fzoli.rccar.bridge.socket.BridgeHandler;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
+import org.dyndns.fzoli.socket.handler.MultipleCertificateException;
 import org.dyndns.fzoli.socket.handler.SecureHandlerException;
 
 /**
@@ -155,6 +156,13 @@ public class Main {
     }
     
     /**
+     * Figyelmeztetőüzenet jelzése a sikertelen kapcsolódásról.
+     */
+    private static void showWarning(SSLSocket s, String msg) {
+        if (s != null) showMessage(VAL_MESSAGE, msg + " a " + s.getInetAddress() + " címről.", TrayIcon.MessageType.WARNING);
+    }
+    
+    /**
      * A socket szerver elindítása, a program értelme.
      * Ha nem megbízható kapcsolat jön létre, jelzi a felhasználónak.
      * Ha nem várt kivétel képződik, kivételt dob, ami a felhasználó tudtára lesz adva.
@@ -170,7 +178,11 @@ public class Main {
             }
             catch (SecureHandlerException ex) {
                 // ha nem megbízható kliens kapcsolódott, információ közlése a felhasználónak
-                if (s != null) showMessage(VAL_MESSAGE, "Nem megbízható kapcsolódás a " + s.getInetAddress() + " címről.", TrayIcon.MessageType.WARNING);
+                showWarning(s, "Nem megbízható kapcsolódás");
+            }
+            catch (MultipleCertificateException ex) {
+                // duplázott tanúsítvány esetén információ közlése
+                showWarning(s, "Duplázott tanúsítvány");
             }
             catch (Exception ex) {
                 // ha bármilyen kivétel keletkezik, nem áll le a szerver, csak közli a kivételt

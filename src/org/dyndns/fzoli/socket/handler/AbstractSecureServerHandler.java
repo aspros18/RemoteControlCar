@@ -45,11 +45,18 @@ public abstract class AbstractSecureServerHandler extends AbstractServerHandler 
     /**
      * Megszerzi a helyi és távoli tanúsítvány Common Name mezőjét.
      * @throws SecureHandlerException ha nem megbízható vagy hibás bármelyik tanúsítvány
+     * @throws MultipleCertificateException ha ugyan azzal a tanúsítvánnyal több kliens is kapcsolódik
      */
     @Override
     protected void init() {
         localCommonName = SecureHandlerUtil.getLocalCommonName(getSocket());
         remoteCommonName = SecureHandlerUtil.getRemoteCommonName(getSocket());
+        List<SecureProcess> procs = getSecureProcesses();
+        for (SecureProcess proc : procs) {
+            if (proc.getRemoteCommonName().equals(getRemoteCommonName()) && proc.getConnectionId().equals(getConnectionId()) && proc.getDeviceId().equals(getDeviceId())) {
+                throw new MultipleCertificateException();
+            }
+        }
     }
     
     /**

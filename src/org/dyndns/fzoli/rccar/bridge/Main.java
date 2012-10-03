@@ -179,10 +179,10 @@ public class Main {
         if (CONFIG.isCorrect()) {
             if (AdminDAO.isNew()) {
                 if (AdminDAO.exists()) {
-                    alert(VAL_MESSAGE, "A rendszergazdákat tartalmazó adatbázist létrehoztam." + LS + "Mostantól használható az adatbázis.", System.out);
+                    alert(VAL_MESSAGE, "A rendszergazdákat tartalmazó adatbázist létrehoztam." + LS + "Mostantól használható az adatbázis." + LS + "A program fut tovább.", System.out);
                 }
                 else {
-                    alert(VAL_ERROR, "Hiba a rendszergazdákat tartalmazó adatbázis létrehozása során!" + LS + "A program rendszergazdamentesen indul.", System.err);
+                    alert(VAL_ERROR, "Hiba a rendszergazdákat tartalmazó adatbázis létrehozása során!" + LS + "A program rendszergazdamentesen fut tovább.", System.err);
                 }
             }
             runServer();

@@ -48,15 +48,17 @@ public class TestClientProcess extends AbstractSecureProcess {
     }
     
     public static void main(String[] args) throws Exception {
-        SSLSocket s = SecureUtil.createClientSocket("192.168.20.5", 8443, new File("test-certs/ca.crt"), new File("test-certs/controller.crt"), new File("test-certs/controller.key"), new char[]{});
-        new Thread(new AbstractSecureClientHandler(s, 5, 10) { // az eszközazonosító 5, a kapcsolatazonosító 10
+        for (int i = 1; i <= 2; i++) { // két kapcsolatot fog kialakítani
+            SSLSocket s = SecureUtil.createClientSocket("192.168.20.5", 8443, new File("test-certs/ca.crt"), new File("test-certs/controller.crt"), new File("test-certs/controller.key"), new char[]{});
+            new Thread(new AbstractSecureClientHandler(s, 5, i) { // az eszközazonosító 5, a kapcsolatazonosító ciklusonként más
 
-            @Override
-            protected TestClientProcess selectProcess() { // kliens oldali teszt feldolgozó használata
-                return new TestClientProcess(this);
-            }
-            
-        }).start(); // új szálban indítás
+                @Override
+                protected TestClientProcess selectProcess() { // kliens oldali teszt feldolgozó használata
+                    return new TestClientProcess(this);
+                }
+
+            }).start(); // új szálban indítás
+        }
     }
     
 }

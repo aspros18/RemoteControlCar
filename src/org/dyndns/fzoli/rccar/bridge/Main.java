@@ -81,7 +81,7 @@ public class Main {
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-                // naplózás beállítása az ellenkezőjére
+                // naplózás beállítása az ellenkezőjére, mint volt
                 BridgeDisconnectProcess.setLogEnabled(!BridgeDisconnectProcess.isLogEnabled());
                 // a megváltozott opció frissítése
                 miConnLog.setLabel(BridgeDisconnectProcess.getLogOption());

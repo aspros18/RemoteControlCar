@@ -4,10 +4,7 @@ package org.dyndns.fzoli.socket.handler;
  * Akkor keletkezik ez a kivétel, ha ugyan azzal a tanúsítvánnyal többen is kapcsolódnak a szerverhez.
  * @author zoli
  */
-public class MultipleCertificateException extends SecurityException {
-
-    public MultipleCertificateException() {
-    }
+public class MultipleCertificateException extends SecureHandlerException {
 
     public MultipleCertificateException(String s) {
         super(s);

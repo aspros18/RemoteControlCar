@@ -64,7 +64,7 @@ public abstract class AbstractSecureServerHandler extends AbstractServerHandler 
         List<SecureProcess> procs = getSecureProcesses();
         for (SecureProcess proc : procs) {
             if (proc.getHandler().isCertEqual(this)) {
-                throw new MultipleCertificateException();
+                throw new MultipleCertificateException("Duplicated certificate");
             }
         }
     }

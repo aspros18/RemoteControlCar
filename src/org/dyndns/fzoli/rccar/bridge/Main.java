@@ -19,7 +19,6 @@ import org.dyndns.fzoli.rccar.bridge.resource.R;
 import org.dyndns.fzoli.rccar.bridge.socket.BridgeDisconnectProcess;
 import org.dyndns.fzoli.rccar.bridge.socket.BridgeHandler;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
-import org.dyndns.fzoli.socket.handler.SecureHandlerException;
 
 /**
  * A híd indító osztálya.
@@ -212,10 +211,6 @@ public class Main {
             try {
                 s = (SSLSocket) ss.accept(); // kliensre várakozik, és ha kapcsolódtak, ...
                 new Thread(new BridgeHandler(s)).start(); // ... új szálban kezeli a kapcsolatot
-            }
-            catch (SecureHandlerException ex) {
-                // ha nem megbízható kliens kapcsolódott, információ közlése a felhasználónak
-                showWarning(s, "Nem megbízható kapcsolódás"); //TODO: valamiért nem ez a kivétel keletkezik
             }
             catch (Exception ex) {
                 // ha bármilyen kivétel keletkezik, nem áll le a szerver, csak közli a kivételt

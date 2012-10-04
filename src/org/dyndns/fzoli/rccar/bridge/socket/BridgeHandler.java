@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.bridge.socket;
 
+import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.bridge.Main;
 import org.dyndns.fzoli.rccar.test.DummyProcess;
@@ -35,6 +36,9 @@ public class BridgeHandler extends AbstractSecureServerHandler {
         }
         catch (MultipleCertificateException e) {
             showWarning("Duplázott tanúsítvány");
+        }
+        catch (SSLHandshakeException e) {
+            showWarning("Nem megbízható kapcsolódás");
         }
         catch (Exception e) {
             // nem várt hiba jelzése

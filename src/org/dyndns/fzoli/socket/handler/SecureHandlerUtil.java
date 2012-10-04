@@ -4,6 +4,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSocket;
 import javax.security.cert.CertificateException;
@@ -16,6 +17,16 @@ import org.dyndns.fzoli.socket.process.SecureProcess;
  * @author zoli
  */
 class SecureHandlerUtil {
+    
+    /**
+     * Ha kivétel képződik, fel kell dolgozni.
+     * A SecureHandlert implementáló osztályban elsőként ezt a metódust, majd az ős metódusát kell meghívni.
+     * @param ex a kivétel
+     * @throws SecureHandlerException ha nem sikerül az SSL kézfogás
+     */
+    public static void onException(Exception ex) {
+        if (ex instanceof SSLHandshakeException) throw new SecureHandlerException(ex);
+    }
     
     /**
      * Igaz, ha ugyan azzal a tanúsítvánnyal és azonosítókkal rendelkezik a két feldolgozó.

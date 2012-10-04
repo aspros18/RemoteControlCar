@@ -70,6 +70,19 @@ public abstract class AbstractSecureServerHandler extends AbstractServerHandler 
     }
 
     /**
+     * Ha kivétel képződik, fel kell dolgozni.
+     * @param ex a kivétel
+     * @throws HandlerException ha nem RuntimeException a kivétel
+     * @throws SecureHandlerException ha nem sikerül az SSL kézfogás
+     * @throws RuntimeException ha RuntimeException a kivétel
+     */
+    @Override
+    protected void onException(Exception ex) {
+        SecureHandlerUtil.onException(ex);
+        super.onException(ex);
+    }
+
+    /**
      * Kiválasztja a biztonságos kapcsolatfeldolgozó objektumot az adatok alapján és elindítja.
      * A metódus csak akkor hívható meg, amikor már ismert a kapcsolatazonosító és eszközazonosító.
      */

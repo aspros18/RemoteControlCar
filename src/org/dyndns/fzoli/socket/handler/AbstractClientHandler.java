@@ -102,10 +102,16 @@ public abstract class AbstractClientHandler extends AbstractHandler {
             InputStream in = getSocket().getInputStream();
             OutputStream out = getSocket().getOutputStream();
             
+            // maximum 1 másodperc van a két bájt küldésére
+            getSocket().setSoTimeout(1000);
+            
             // eszközazonosító küldése a szervernek
             out.write(getDeviceId());
             // kapcsolatazonosító küldése a szervernek
             out.write(getConnectionId());
+            
+            // időtúllépés eredeti állapota kikapcsolva
+            getSocket().setSoTimeout(0);
             
             // inicializáló metódus futtatása
             init();

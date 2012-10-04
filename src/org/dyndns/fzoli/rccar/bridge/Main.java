@@ -215,7 +215,7 @@ public class Main {
             }
             catch (SecureHandlerException ex) {
                 // ha nem megbízható kliens kapcsolódott, információ közlése a felhasználónak
-                showWarning(s, "Nem megbízható kapcsolódás");
+                showWarning(s, "Nem megbízható kapcsolódás"); //TODO: valamiért nem ez a kivétel keletkezik
             }
             catch (Exception ex) {
                 // ha bármilyen kivétel keletkezik, nem áll le a szerver, csak közli a kivételt

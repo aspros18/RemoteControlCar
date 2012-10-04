@@ -25,9 +25,7 @@ public class ServerDisconnectTest {
                     @Override
                     protected AbstractSecureProcess selectProcess() { // szerver oldali teszt feldolgozó használata
                         switch (getConnectionId()) {
-                            case 1:
-                                return new DummyProcess(this);
-                            default:
+                            case 0:
                                 return new ServerDisconnectProcess(this) {
 
                                     @Override
@@ -37,13 +35,15 @@ public class ServerDisconnectTest {
                                     }
 
                                 };
+                            default:
+                                return new DummyProcess(this);
                         }
                     }
                     
                 }).start(); // új szálban indítás
             }
             catch (SecureHandlerException ex) {
-                System.err.println("Nem megbízható kapcsolódás a " + s.getInetAddress() + " címről.");
+                ex.printStackTrace();
             }
         }
     }

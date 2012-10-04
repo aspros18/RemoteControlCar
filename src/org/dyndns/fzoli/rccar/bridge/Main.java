@@ -162,6 +162,7 @@ public class Main {
      * A paraméterek szükségtelenek, ha van grafikus felület a rendszeren.
      * Ha a -v paraméter meg lett adva, a program ki fogja jelezni a figyelmeztetéseket.
      * Ha a -vv paraméter meg lett adva, a program ki fogja jelezni a figyelmeztetéseket és a kapcsolódásokat is.
+     * Ha a -m paraméter meg lett adva, a program nem jelez se figyelmeztetéseket, se kapcsolódásokat.
      */
     private static void readArguments(String[] args) {
         if (args.length == 1) {
@@ -172,6 +173,10 @@ public class Main {
             else if (args[0].equals("-vv")) {
                 BridgeHandler.setWarnEnabled(true);
                 BridgeDisconnectProcess.setLogEnabled(true);
+            }
+            else if (args[0].equals("-m")) {
+                BridgeHandler.setWarnEnabled(false);
+                BridgeDisconnectProcess.setLogEnabled(false);
             }
         }
     }

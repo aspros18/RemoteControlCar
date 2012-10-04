@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.bridge.socket;
 
 import java.awt.TrayIcon;
+import java.net.SocketException;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocket;
 import static org.dyndns.fzoli.rccar.SystemTrayIcon.showMessage;
@@ -43,10 +44,21 @@ public class BridgeHandler extends AbstractSecureServerHandler {
     
     /**
      * Ha adott klienstől az első kapcsolatfelvétel közben hiba keletkezik, jelzi a felhasználónak.
+     * @param message a kijelzendő üzenet
      */
     private void showWarning(String message) {
         if (getConnectionId() == null || getConnectionId().equals(0))
             if (getSocket() != null && isWarnEnabled()) showMessage(VAL_WARNING, message + " a " + getSocket().getInetAddress().getHostName() + " címről.", TrayIcon.MessageType.WARNING);
+    }
+    
+    /**
+     * Ha adott klienstől az első kapcsolatfelvétel közben hiba keletkezik, jelzi a felhasználónak.
+     * @param message a kijelzendő üzenet
+     * @param details további részlet az üzenet mellé
+     */
+    private void showWarning(String message, String details) {
+        if (details == null || details.isEmpty()) showWarning(message);
+        else showWarning(message + " (" + details + ")");
     }
     
     /**
@@ -68,7 +80,10 @@ public class BridgeHandler extends AbstractSecureServerHandler {
             showWarning("Nem megbízható kapcsolódás");
         }
         catch (RemoteHandlerException e) {
-            showWarning("Távoli hiba (" + e.getMessage() + ")");
+            showWarning("Távoli hiba", e.getMessage());
+        }
+        catch (SocketException e) {
+            showWarning("Socket hiba", e.getMessage());
         }
         catch (Exception e) {
             // nem várt hiba jelzése

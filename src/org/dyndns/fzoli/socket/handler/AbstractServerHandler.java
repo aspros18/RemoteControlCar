@@ -1,6 +1,8 @@
 package org.dyndns.fzoli.socket.handler;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -78,8 +80,7 @@ public abstract class AbstractServerHandler extends AbstractHandler {
      * Miután az eszközazonosító és a kapcsolatazonosító közlése megtörtént,
      * lefut ez az inicializáló metódus, ami után a konkrét feldolgozás történik meg.
      * Ez a metódus az utód osztályoknak lett létrehozva inicializálás céljára.
-     * Ebben a metódusban nem célszerű socketen át adatot küldeni vagy fogadni,
-     * mert nincs időtúllépés, és ha a kapcsolat megszakad, beragad a metódus.
+     * Ebben a metódusban nem célszerű socketen át adatot küldeni vagy fogadni.
      */
     protected void init() {
     }
@@ -93,6 +94,16 @@ public abstract class AbstractServerHandler extends AbstractHandler {
     protected void onException(Exception ex) {
         if (ex instanceof RuntimeException) throw (RuntimeException) ex;
         throw new HandlerException(ex);
+    }
+    
+    /**
+     * Megpróbálja az üzenetet elküldeni a kliensnek.
+     * @throws IOException ha nem sikerült a küldés
+     */
+    private void sendStatus(OutputStream out, String s) throws IOException {
+        ObjectOutputStream oos = new ObjectOutputStream(out);
+        oos.writeUTF(s);
+        oos.flush();
     }
     
     /**
@@ -110,19 +121,39 @@ public abstract class AbstractServerHandler extends AbstractHandler {
             InputStream in = getSocket().getInputStream();
             OutputStream out = getSocket().getOutputStream();
             
-            // maximum 1 másodperc van a két bájt olvasására
-            getSocket().setSoTimeout(1000);
+            // maximum 3 másodperc van a két bájt olvasására és az inicializálásra
+            getSocket().setSoTimeout(3000);
             
             // eszközazonosító elkérése a klienstől
             setDeviceId(in.read());
             // kapcsolatazonosító elkérése a klienstől
             setConnectionId(in.read());
             
+            try {
+                // inicializáló metódus futtatása
+                init();
+                // rendben jelzés küldése a kliensnek
+                sendStatus(out, HandlerException.VAL_OK);
+            }
+            catch (IOException ex) {
+                // nem sikerült a rendben jelzés küldése, ezért nem próbál üzenetet küldeni
+                throw ex;
+            }
+            catch (HandlerException ex) {
+                // a kivétel üzenetét közli a klienssel is
+                sendStatus(out, ex.getMessage());
+                // a kivétel megy tovább, mint ha semmi nem történt volna
+                throw ex;
+            }
+            catch (Exception ex) {
+                // olyan kivétel keletkezett, mely szerver oldali hiba
+                sendStatus(out, "unexpected error");
+                // a kivétel megy tovább
+                throw ex;
+            }
+            
             // időtúllépés eredeti állapota kikapcsolva
             getSocket().setSoTimeout(0);
-            
-            // inicializáló metódus futtatása
-            init();
             
             // adatfeldolgozó kiválasztása
             Process proc = selectProcess();

@@ -1,6 +1,8 @@
 package org.dyndns.fzoli.socket.handler;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -73,6 +75,7 @@ public abstract class AbstractClientHandler extends AbstractHandler {
      * Miután az eszközazonosító és a kapcsolatazonosító közlése megtörtént,
      * lefut ez az inicializáló metódus, ami után a konkrét feldolgozás történik meg.
      * Ez a metódus az utód osztályoknak lett létrehozva inicializálás céljára.
+     * Ebben a metódusban nem célszerű socketen át adatot küldeni vagy fogadni.
      */
     protected void init() {
     }
@@ -89,6 +92,15 @@ public abstract class AbstractClientHandler extends AbstractHandler {
     }
     
     /**
+     * Megpróbálja az üzenetet fogadni a szervertől.
+     * @throws IOException ha nem sikerült a fogadás
+     */
+    private String readStatus(InputStream in) throws IOException {
+        ObjectInputStream oin = new ObjectInputStream(in);
+        return oin.readUTF();
+    }
+    
+    /**
      * Ez a metódus fut le a szálban.
      * Az eszköz- és kapcsolatazonosító szervernek való elküldése után eldől, melyik kapcsolatfeldolgozót
      * kell használni a kliens oldalon és a konkrét feldolgozás kezdődik meg.
@@ -102,19 +114,24 @@ public abstract class AbstractClientHandler extends AbstractHandler {
             InputStream in = getSocket().getInputStream();
             OutputStream out = getSocket().getOutputStream();
             
-            // maximum 1 másodperc van a két bájt küldésére
-            getSocket().setSoTimeout(1000);
+            // maximum 3 másodperc van a két bájt küldésére és az inicializálásra
+            getSocket().setSoTimeout(3000);
             
             // eszközazonosító küldése a szervernek
             out.write(getDeviceId());
             // kapcsolatazonosító küldése a szervernek
             out.write(getConnectionId());
             
-            // időtúllépés eredeti állapota kikapcsolva
-            getSocket().setSoTimeout(0);
-            
             // inicializáló metódus futtatása
             init();
+            
+            String status = readStatus(in);
+            if (!status.equals(HandlerException.VAL_OK)) {
+                throw new HandlerException(status);
+            }
+            
+            // időtúllépés eredeti állapota kikapcsolva
+            getSocket().setSoTimeout(0);
             
             // adatfeldolgozó kiválasztása
             Process proc = selectProcess();

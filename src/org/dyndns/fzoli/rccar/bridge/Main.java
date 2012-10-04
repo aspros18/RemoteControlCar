@@ -185,7 +185,9 @@ public class Main {
             return SSLSocketUtil.createServerSocket(CONFIG.getPort(), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile(), CONFIG.getPassword());
         }
         catch(Exception ex) {
-            throw new Error(ex.getMessage());
+            alert(VAL_ERROR, "Nem sikerült a szerver elindítása a megadott porton: " + CONFIG.getPort() + LS + "Az operációsrendszer üzenete: " + ex.getMessage(), System.err);
+            System.exit(1);
+            return null;
         }
     }
     

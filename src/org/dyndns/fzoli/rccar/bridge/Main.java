@@ -40,6 +40,11 @@ public class Main {
     private static final String VAL_MESSAGE = "Híd üzenet", VAL_ERROR = "Híd hiba";
     
     /**
+     * Több helyen is használt szövegek.
+     */
+    public static final String VAL_WARNING = "Figyelmeztetés", VAL_CONN_LOG = "Kapcsolatjelzés";
+    
+    /**
      * A szerver socket referenciája arra kell, hogy eseménykezelővel ki lehessen lépni.
      */
     private static SSLServerSocket SERVER_SOCKET;
@@ -72,7 +77,7 @@ public class Main {
         SystemTrayIcon.setIcon("Mobile-RC híd", R.getBridgeImage());
         
         // kapcsolatjelzés beállító opció létrehozása és beállítása
-        final CheckboxMenuItem miConnLog = new CheckboxMenuItem("Kapcsolatjelzés", BridgeDisconnectProcess.isLogEnabled());
+        final CheckboxMenuItem miConnLog = new CheckboxMenuItem(VAL_CONN_LOG, BridgeDisconnectProcess.isLogEnabled());
         miConnLog.addItemListener(new ItemListener() {
 
             /**
@@ -89,7 +94,7 @@ public class Main {
         });
         
         // figyelmeztetés beállító opció létrehozása és beállítása
-        final CheckboxMenuItem miWarnLog = new CheckboxMenuItem("Figyelmeztetés", BridgeHandler.isWarnEnabled());
+        final CheckboxMenuItem miWarnLog = new CheckboxMenuItem(VAL_WARNING, BridgeHandler.isWarnEnabled());
         miWarnLog.addItemListener(new ItemListener() {
 
             /**

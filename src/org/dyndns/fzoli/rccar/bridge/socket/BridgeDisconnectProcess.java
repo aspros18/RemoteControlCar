@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.bridge.socket;
 
 import static org.dyndns.fzoli.rccar.SystemTrayIcon.showMessage;
+import static org.dyndns.fzoli.rccar.bridge.Main.VAL_CONN_LOG;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.impl.ServerDisconnectProcess;
 
@@ -55,7 +56,7 @@ public class BridgeDisconnectProcess extends ServerDisconnectProcess {
      * Jelez a felhasználónak, kapcsolódást illetve lekapcsolódást, ha kérik.
      */
     private void log(boolean connect) {
-        if (show) showMessage("Kapcsolat", getRemoteCommonName() + ' ' + (connect ? "kapcsolódott a hídhoz" : "lekapcsolódott a hídról"));
+        if (show) showMessage(VAL_CONN_LOG, getRemoteCommonName() + ' ' + (connect ? "kapcsolódott a hídhoz" : "lekapcsolódott a hídról"));
     }
     
 }

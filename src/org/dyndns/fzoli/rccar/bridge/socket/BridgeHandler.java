@@ -4,6 +4,7 @@ import java.awt.TrayIcon;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocket;
 import static org.dyndns.fzoli.rccar.SystemTrayIcon.showMessage;
+import static org.dyndns.fzoli.rccar.bridge.Main.VAL_WARNING;
 import org.dyndns.fzoli.rccar.test.DummyProcess;
 import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
 import org.dyndns.fzoli.socket.handler.MultipleCertificateException;
@@ -45,7 +46,7 @@ public class BridgeHandler extends AbstractSecureServerHandler {
      */
     private void showWarning(String message) {
         if (getConnectionId() == null || getConnectionId().equals(0))
-            if (getSocket() != null && isWarnEnabled()) showMessage("Figyelmeztetés", message + " a " + getSocket().getInetAddress().getHostName() + " címről.", TrayIcon.MessageType.WARNING);
+            if (getSocket() != null && isWarnEnabled()) showMessage(VAL_WARNING, message + " a " + getSocket().getInetAddress().getHostName() + " címről.", TrayIcon.MessageType.WARNING);
     }
     
     /**

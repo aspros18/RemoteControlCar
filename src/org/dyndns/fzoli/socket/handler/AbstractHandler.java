@@ -1,6 +1,9 @@
 package org.dyndns.fzoli.socket.handler;
 
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+import org.dyndns.fzoli.socket.handler.event.HandlerListener;
 import org.dyndns.fzoli.socket.process.Process;
 
 /**
@@ -12,11 +15,43 @@ public abstract class AbstractHandler implements Handler {
     
     private final Socket SOCKET;
     
+    private final List<HandlerListener> LISTENERS = new ArrayList<HandlerListener>();
+    
     /**
      * @param socket Socket, amin keresztül folyik a kommunikáció.
      */
     public AbstractHandler(Socket socket) {
         SOCKET = socket;
+    }
+
+    /**
+     * A kapcsolatkezelő eseményfigyelőit adja vissza.
+     */
+    @Override
+    public List<HandlerListener> getHandlerListeners() {
+        synchronized(LISTENERS) {
+            return new ArrayList<HandlerListener>(LISTENERS);
+        }
+    }
+
+    /**
+     * A kapcsolatkezelőhöz eseményfigyelőt ad hozzá.
+     */
+    @Override
+    public void addHandlerListener(HandlerListener listener) {
+        synchronized(LISTENERS) {
+            LISTENERS.add(listener);
+        }
+    }
+
+    /**
+     * A kapcsolatkezelőből eseményfigyelőt távolít el.
+     */
+    @Override
+    public void removeHandlerListener(HandlerListener listener) {
+        synchronized(LISTENERS) {
+            LISTENERS.remove(listener);
+        }
     }
 
     /**
@@ -37,9 +72,20 @@ public abstract class AbstractHandler implements Handler {
 
     /**
      * A kapcsolatfeldolgozó kiválasztása után hívódik meg.
+     * Meghívja az összes eseménykezelő onProcessSelected metódusát külön szálakban.
      */
-    protected void onProcessSelected() {
-        ;
+    protected void fireProcessSelected() {
+        List<HandlerListener> ls = getHandlerListeners();
+        for (final HandlerListener hl : ls) {
+            new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    hl.onProcessSelected(AbstractHandler.this);
+                }
+                
+            }).start();
+        }
     }
     
     /**

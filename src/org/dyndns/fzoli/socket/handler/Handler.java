@@ -2,6 +2,7 @@ package org.dyndns.fzoli.socket.handler;
 
 import java.util.List;
 import org.dyndns.fzoli.socket.Socketter;
+import org.dyndns.fzoli.socket.handler.event.HandlerListener;
 import org.dyndns.fzoli.socket.process.Process;
 
 /**
@@ -15,6 +16,21 @@ public interface Handler extends Socketter {
      * Azokat az adatfeldolgozókat adja vissza, melyek még dolgoznak.
      */
     public List<Process> getProcesses();
+    
+    /**
+     * A kapcsolatkezelő eseményfigyelőit adja vissza.
+     */
+    public List<HandlerListener> getHandlerListeners();
+    
+    /**
+     * A kapcsolatkezelőhöz eseményfigyelőt ad hozzá.
+     */
+    public void addHandlerListener(HandlerListener listener);
+    
+    /**
+     * A kapcsolatkezelőből eseményfigyelőt távolít el.
+     */
+    public void removeHandlerListener(HandlerListener listener);
     
     /**
      * Ez a metódus fut a külön szálban, és ebben választódik ki és indul el az adatfeldolgozó.

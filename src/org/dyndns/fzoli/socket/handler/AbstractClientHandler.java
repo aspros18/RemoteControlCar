@@ -136,7 +136,7 @@ public abstract class AbstractClientHandler extends AbstractHandler {
             Process proc = selectProcess();
             
             // jelzés, hogy kiválasztódott a Process
-            onProcessSelected();
+            fireProcessSelected();
             
             // adatfeldolgozó hozzáadása a listához
             synchronized(PROCESSES) {

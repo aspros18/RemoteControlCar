@@ -6,7 +6,9 @@ import java.security.GeneralSecurityException;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
+import org.dyndns.fzoli.socket.handler.Handler;
 import org.dyndns.fzoli.socket.handler.HandlerException;
+import org.dyndns.fzoli.socket.handler.event.HandlerListener;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
 import org.dyndns.fzoli.socket.process.impl.ClientDisconnectProcess;
 
@@ -59,22 +61,39 @@ public class ClientDisconnectTest {
     }
     
     public static void main(String[] args) throws Exception {
-        // az első kapcsolódás a szerverhez új szálban
-        new Thread(new TestClientHandler(createSocket(), 5, 0) { // eszközazonosító: 5; kapcsolatazonosító: 0
+        new ClientConnectingTest(5, new int[] {0, 1, 2, 3}) {
 
             @Override
-            protected void onProcessSelected() { // ha sikerült az első kapcsolódás
-                try {
-                    for (int i = 1; i <= 3; i++) { // további három tesztkapcsolat kialakítása; remélhetőleg sikeres lesz, mivel az első kapcsolódás sikerült
-                        new Thread(new TestClientHandler(createSocket(), 5, i) {}).start(); // új szálban indítás; eszközazonosító: 5; kapcsolatazonosítók: 1 - 3
-                    }
-                }
-                catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+            protected SSLSocket createConnection() throws GeneralSecurityException, IOException {
+                return createSocket();
             }
-            
-        }).start();
+
+            @Override
+            protected AbstractSecureClientHandler createHandler(SSLSocket socket, int deviceId, int connectionId) {
+                return new TestClientHandler(socket, deviceId, connectionId);
+            }
+        }.connect();
+        
+        // az első kapcsolódás a szerverhez új szálban
+//        new Thread(new TestClientHandler(createSocket(), 5, 0) { // eszközazonosító: 5; kapcsolatazonosító: 0
+//            {
+//                addHandlerListener(new HandlerListener() {
+//                    
+//                    @Override
+//                    public void onProcessSelected(Handler handler) { // ha sikerült az első kapcsolódás
+//                        try {
+//                            for (int i = 1; i <= 3; i++) { // további három tesztkapcsolat kialakítása; remélhetőleg sikeres lesz, mivel az első kapcsolódás sikerült
+//                                new Thread(new TestClientHandler(createSocket(), 5, i) {}).start(); // új szálban indítás; eszközazonosító: 5; kapcsolatazonosítók: 1 - 3
+//                            }
+//                        }
+//                        catch (Exception ex) {
+//                            ex.printStackTrace();
+//                        }
+//                    }
+//                    
+//                });
+//            }
+//        }).start();
     }
     
 }

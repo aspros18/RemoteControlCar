@@ -31,7 +31,7 @@ public abstract class AbstractHandler implements Handler {
      * Ez a metódus az utód osztályoknak lett létrehozva inicializálás céljára.
      * Ebben a metódusban nem célszerű socketen át adatot küldeni vagy fogadni.
      */
-    void init() {
+    protected void init() {
         ;
     }
 

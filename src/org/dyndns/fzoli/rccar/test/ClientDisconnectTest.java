@@ -13,30 +13,37 @@ import org.dyndns.fzoli.socket.process.impl.ClientDisconnectProcess;
  */
 public class ClientDisconnectTest {
     
+    private static class TestClientHandler extends AbstractSecureClientHandler {
+
+        public TestClientHandler(SSLSocket socket, int deviceId, int connectionId) {
+            super(socket, deviceId, connectionId);
+        }
+
+        @Override
+        protected AbstractSecureProcess selectProcess() {
+            switch (getConnectionId()) {
+                case 0:
+                    return new ClientDisconnectProcess(this) {
+                        
+                        @Override
+                        protected void onDisconnect() {
+                            System.out.println("SERVER DISCONNECT");
+                            super.onDisconnect();
+                        }
+                        
+                    };
+                default:
+                    return new DummyProcess(this);
+            }
+        }
+        
+    }
+    
     public static void main(String[] args) throws Exception {
-        for (int i = 0; i <= 1; i++) { // két kapcsolatot fog kialakítani. élesben is hasonló lesz, annyi eltéréssel, hogy az első kapcsolat kiépítését be fogja várni és aztán épül ki a többi, ha az sikerült
+        
+        for (int i = 0; i <= 3; i++) { // két kapcsolatot fog kialakítani. élesben is hasonló lesz, annyi eltéréssel, hogy az első kapcsolat kiépítését be fogja várni és aztán épül ki a többi, ha az sikerült
             SSLSocket s = SSLSocketUtil.createClientSocket("192.168.20.5", 8443, new File("test-certs/ca.crt"), new File("test-certs/controller.crt"), new File("test-certs/controller.key"), new char[]{});
-            new Thread(new AbstractSecureClientHandler(s, 5, i) {  // az eszközazonosító 5, a kapcsolatazonosító ciklusonként más
-
-                @Override
-                protected AbstractSecureProcess selectProcess() { // kliens oldali teszt feldolgozó használata
-                    switch (getConnectionId()) {
-                        case 1:
-                            return new DummyProcess(this);
-                        default:
-                            return new ClientDisconnectProcess(this) {
-
-                                @Override
-                                protected void onDisconnect() {
-                                    System.out.println("SERVER DISCONNECT");
-                                    super.onDisconnect();
-                                }
-
-                            };
-                    }
-                }
-
-            }).start(); // új szálban indítás
+            new Thread(new TestClientHandler(s, 5, i)).start(); // új szálban indítás; eszközazonosító: 5; kapcsolatazonosító ciklusonként más
         }
     }
     

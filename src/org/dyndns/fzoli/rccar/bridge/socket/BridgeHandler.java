@@ -51,10 +51,10 @@ public class BridgeHandler extends AbstractSecureServerHandler {
     @Override
     protected AbstractSecureProcess selectProcess() {
         switch (getConnectionId()) {
-            case 1:
-                return new DummyProcess(this);
-            default:
+            case 0:
                 return new BridgeDisconnectProcess(this);
+            default:
+                return new DummyProcess(this);
         }
     }
     

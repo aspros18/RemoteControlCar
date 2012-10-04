@@ -34,12 +34,12 @@ public class BridgeHandler extends AbstractSecureServerHandler {
             throw ex;
         }
         catch (MultipleCertificateException e) {
-            if (getConnectionId().equals(0)) {
-                // csak az első kapcsolatfelvételnél kell jelezni
+            // csak az első kapcsolatfelvételnél kell jelezni
+            if (getConnectionId() == null || getConnectionId().equals(0))
                 showWarning(getSocket(), "Duplázott tanúsítvány");
-            }
         }
         catch (Exception e) {
+            // nem várt hiba jelzése
             super.onException(e);
         }
     }

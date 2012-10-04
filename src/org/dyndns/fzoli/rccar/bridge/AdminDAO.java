@@ -164,7 +164,7 @@ public class AdminDAO {
         List<Row> rows;
         try {
             rs = CSV.read(FILE_CSV.getAbsolutePath(), null, null);
-            rows = new ArrayList<>();
+            rows = new ArrayList<Row>();
         }
         catch(Exception ex) {
             return null;

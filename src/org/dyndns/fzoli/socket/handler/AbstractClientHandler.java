@@ -18,7 +18,7 @@ public abstract class AbstractClientHandler extends AbstractHandler {
 
     private final Integer deviceId, connectionId;
     
-    private final static List<Process> PROCESSES = new ArrayList<>();
+    private final static List<Process> PROCESSES = new ArrayList<Process>();
     
     /**
      * A kliens oldali kapcsolatkezelő konstruktora.
@@ -49,7 +49,7 @@ public abstract class AbstractClientHandler extends AbstractHandler {
     @Override
     public List<Process> getProcesses() {
         synchronized(PROCESSES) {
-            return new ArrayList<>(PROCESSES);
+            return new ArrayList<Process>(PROCESSES);
         }
     }
     

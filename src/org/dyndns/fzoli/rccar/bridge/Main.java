@@ -165,11 +165,19 @@ public class Main {
     /**
      * A szerver elindítása előtt a konzolon beadott paramétereket feldolgozza.
      * A paraméterek szükségtelenek, ha van grafikus felület a rendszeren.
-     * Ha a -v paraméter meg lett adva, ki fogja jelezni a kapcsolódásokat a program.
+     * Ha a -v paraméter meg lett adva, a program ki fogja jelezni a figyelmeztetéseket.
+     * Ha a -vv paraméter meg lett adva, a program ki fogja jelezni a figyelmeztetéseket és a kapcsolódásokat is.
      */
     private static void readArguments(String[] args) {
-        if (args.length == 1 && args[0].equals("-v")) {
-            BridgeDisconnectProcess.setLogEnabled(true);
+        if (args.length == 1) {
+            if (args[0].equals("-v")) {
+                warn = true;
+                BridgeDisconnectProcess.setLogEnabled(false);
+            }
+            else if (args[0].equals("-vv")) {
+                warn = true;
+                BridgeDisconnectProcess.setLogEnabled(true);
+            }
         }
     }
     

@@ -79,7 +79,10 @@ public class Config {
             if (port < 1 || port > 65535) return null;
             return port;
         }
-        catch (NullPointerException | NumberFormatException ex) {
+        catch (NullPointerException ex) {
+            return null;
+        }
+        catch (NumberFormatException ex) {
             return null;
         }
     }
@@ -180,7 +183,7 @@ public class Config {
         if (conf != null) {
             int ind;
             String key, val;
-            config.values = new HashMap<>();
+            config.values = new HashMap<String, String>();
             for (String ln : conf) {
                 ind = ln.indexOf(" ");
                 if (ind == -1) continue;
@@ -203,7 +206,7 @@ public class Config {
         try {
             int ind;
             String ln;
-            List<String> ls = new ArrayList<>();
+            List<String> ls = new ArrayList<String>();
             BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
             while ((ln = in.readLine()) != null) {
                 ln = ln.trim();

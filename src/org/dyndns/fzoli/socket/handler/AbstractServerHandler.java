@@ -18,7 +18,7 @@ public abstract class AbstractServerHandler extends AbstractHandler {
 
     private Integer deviceId, connectionId;
     
-    private final static List<Process> PROCESSES = new ArrayList<>();
+    private final static List<Process> PROCESSES = new ArrayList<Process>();
     
     /**
      * A szerver oldali kapcsolatkezelő konstruktora.
@@ -34,7 +34,7 @@ public abstract class AbstractServerHandler extends AbstractHandler {
     @Override
     public List<Process> getProcesses() {
         synchronized(PROCESSES) {
-            return new ArrayList<>(PROCESSES);
+            return new ArrayList<Process>(PROCESSES);
         }
     }
     

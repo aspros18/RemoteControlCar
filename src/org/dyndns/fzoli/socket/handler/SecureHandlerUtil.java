@@ -30,7 +30,7 @@ class SecureHandlerUtil {
      * A paraméterben átadott listát leszűri.
      */
     public static List<SecureProcess> getSecureProcesses(List<Process> processes) {
-        List<SecureProcess> ls = new ArrayList<>();
+        List<SecureProcess> ls = new ArrayList<SecureProcess>();
         for (Process proc : processes) {
             if (proc instanceof SecureProcess)
                 ls.add((SecureProcess) proc);
@@ -47,7 +47,10 @@ class SecureHandlerUtil {
             checkSession(socket);
             return getCommonName(socket.getSession().getLocalCertificates()[0]);
         }
-        catch (CertificateException | CertificateEncodingException ex) {
+        catch (CertificateException ex) {
+            throw new SecureHandlerException(ex);
+        }
+        catch (CertificateEncodingException ex) {
             throw new SecureHandlerException(ex);
         }
     }
@@ -61,7 +64,13 @@ class SecureHandlerUtil {
             checkSession(socket);
             return getCommonName(socket.getSession().getPeerCertificates()[0]);
         }
-        catch (SSLPeerUnverifiedException | CertificateException | CertificateEncodingException ex) {
+        catch (SSLPeerUnverifiedException ex) {
+            throw new SecureHandlerException(ex);
+        }
+        catch (CertificateException ex) {
+            throw new SecureHandlerException(ex);
+        }
+        catch (CertificateEncodingException ex) {
             throw new SecureHandlerException(ex);
         }
     }

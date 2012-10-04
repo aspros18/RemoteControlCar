@@ -36,6 +36,13 @@ public abstract class AbstractHandler implements Handler {
     }
 
     /**
+     * A kapcsolatfeldolgozó kiválasztása után hívódik meg.
+     */
+    protected void onProcessSelected() {
+        ;
+    }
+    
+    /**
      * @return Socket, amin keresztül folyik a kommunikáció.
      */
     @Override

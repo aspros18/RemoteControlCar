@@ -65,6 +65,10 @@ public abstract class AbstractHandler implements Handler {
      * lefut ez az inicializáló metódus, ami után a konkrét feldolgozás történik meg.
      * Ez a metódus az utód osztályoknak lett létrehozva inicializálás céljára.
      * Ebben a metódusban nem célszerű socketen át adatot küldeni vagy fogadni.
+     * Inicializálás alatt igény szerint lehet kivételt is dobni, melyet mindkét oldal
+     * megkap a Handler inicializálása közben, és le lehet kezelni a dobott kivételt.
+     * @throws HandlerException ha a helyi eszközön kivétel keletkezett
+     * @throws RemoteHandlerException ha a távoli eszközön kivétel keletkezett
      */
     protected void init() {
         ;

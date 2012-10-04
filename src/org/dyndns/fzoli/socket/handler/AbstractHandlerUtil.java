@@ -56,13 +56,13 @@ class AbstractHandlerUtil {
      * Megpróbálja az üzenetet fogadni a távoli géptől.
      * Ha a másik oldalon hiba keletkezett, kivételt dob.
      * @throws IOException ha nem sikerült a fogadás
-     * @throws HandlerException ha a másik oldalon hiba keletkezett
+     * @throws RemoteHandlerException ha a másik oldalon hiba keletkezett
      */
     public static void readStatus(InputStream in) throws IOException {
         ObjectInputStream oin = new ObjectInputStream(in);
         String status = oin.readUTF();
         if (!status.equals(HandlerException.VAL_OK)) {
-            throw new HandlerException(status);
+            throw new RemoteHandlerException(status);
         }
     }
     

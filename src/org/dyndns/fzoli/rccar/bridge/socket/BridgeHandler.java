@@ -7,6 +7,7 @@ import static org.dyndns.fzoli.rccar.SystemTrayIcon.showMessage;
 import org.dyndns.fzoli.rccar.test.DummyProcess;
 import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
 import org.dyndns.fzoli.socket.handler.MultipleCertificateException;
+import org.dyndns.fzoli.socket.handler.RemoteHandlerException;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
 
 /**
@@ -64,6 +65,9 @@ public class BridgeHandler extends AbstractSecureServerHandler {
         }
         catch (SSLHandshakeException e) {
             showWarning("Nem megbízható kapcsolódás");
+        }
+        catch (RemoteHandlerException e) {
+            showWarning("Távoli hiba (" + e.getMessage() + ")");
         }
         catch (Exception e) {
             // nem várt hiba jelzése

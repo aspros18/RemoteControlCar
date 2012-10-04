@@ -85,7 +85,7 @@ public abstract class AbstractClientHandler extends AbstractHandler {
      * Megpróbálja az üzenetet fogadni a szervertől.
      * Ha a szerver oldalon hiba keletkezett, kivételt dob.
      * @throws IOException ha nem sikerült a fogadás
-     * @throws HandlerException ha a szerver oldalon hiba keletkezett
+     * @throws RemoteHandlerException ha a szerver oldalon hiba keletkezett
      */
     private void readStatus(InputStream in) throws IOException {
         AbstractHandlerUtil.readStatus(in);

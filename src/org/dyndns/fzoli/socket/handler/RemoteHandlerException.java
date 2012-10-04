@@ -1,23 +1,23 @@
 package org.dyndns.fzoli.socket.handler;
 
 /**
- * Akkor keletkezik ez a kivétel, ha ugyan azzal a tanúsítvánnyal többen is kapcsolódnak a szerverhez.
+ * A távoli eszközön keletkezett kivétel.
  * @author zoli
  */
-public class MultipleCertificateException extends SecureHandlerException {
+public class RemoteHandlerException extends HandlerException {
 
     /**
      * Saját kivétel létrehozása saját üzenettel.
      * Az üzenet tartalma bármi lehet, ami nem a rendben jelzés: {@code HandlerException.VAL_OK}
      */
-    public MultipleCertificateException(String message) {
+    public RemoteHandlerException(String message) {
         super(message);
     }
 
     /**
      * Már létező kivétel felhasználása.
      */
-    public MultipleCertificateException(Throwable cause) {
+    public RemoteHandlerException(Throwable cause) {
         super(cause);
     }
 
@@ -25,7 +25,7 @@ public class MultipleCertificateException extends SecureHandlerException {
      * Már létező kivétel felhasználása saját üzenettel.
      * Az üzenet tartalma bármi lehet, ami nem rendben jelzés.
      */
-    public MultipleCertificateException(String message, Throwable cause) {
+    public RemoteHandlerException(String message, Throwable cause) {
         super(message, cause);
     }
     

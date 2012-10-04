@@ -6,6 +6,7 @@ import java.security.GeneralSecurityException;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
+import org.dyndns.fzoli.socket.handler.HandlerException;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
 import org.dyndns.fzoli.socket.process.impl.ClientDisconnectProcess;
 
@@ -22,6 +23,12 @@ public class ClientDisconnectTest {
 
         public TestClientHandler(SSLSocket socket, int deviceId, int connectionId) {
             super(socket, deviceId, connectionId);
+        }
+
+        @Override
+        protected void init() {
+            super.init();
+            // throw new HandlerException("salala"); // távoli hiba előidézése
         }
 
         @Override

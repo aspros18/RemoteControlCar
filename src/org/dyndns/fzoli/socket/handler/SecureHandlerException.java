@@ -8,6 +8,7 @@ public class SecureHandlerException extends HandlerException {
 
     /**
      * Saját kivétel létrehozása saját üzenettel.
+     * Az üzenet tartalma bármi lehet, ami nem a rendben jelzés: {@code HandlerException.VAL_OK}
      */
     public SecureHandlerException(String message) {
         super(message);
@@ -22,6 +23,7 @@ public class SecureHandlerException extends HandlerException {
 
     /**
      * Már létező kivétel felhasználása saját üzenettel.
+     * Az üzenet tartalma bármi lehet, ami nem rendben jelzés.
      */
     public SecureHandlerException(String message, Throwable cause) {
         super(message, cause);

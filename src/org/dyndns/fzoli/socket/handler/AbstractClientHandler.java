@@ -93,11 +93,16 @@ public abstract class AbstractClientHandler extends AbstractHandler {
     
     /**
      * Megpróbálja az üzenetet fogadni a szervertől.
+     * Ha a szerver oldalon hiba keletkezett, kivételt dob.
      * @throws IOException ha nem sikerült a fogadás
+     * @throws HandlerException ha a szerver oldalon hiba keletkezett
      */
-    private String readStatus(InputStream in) throws IOException {
+    private void readStatus(InputStream in) throws IOException {
         ObjectInputStream oin = new ObjectInputStream(in);
-        return oin.readUTF();
+        String status = oin.readUTF();
+        if (!status.equals(HandlerException.VAL_OK)) {
+            throw new HandlerException(status);
+        }
     }
     
     /**
@@ -126,10 +131,8 @@ public abstract class AbstractClientHandler extends AbstractHandler {
             // inicializáló metódus futtatása
             init();
             
-            String status = readStatus(in);
-            if (!status.equals(HandlerException.VAL_OK)) {
-                throw new HandlerException(status);
-            }
+            // üzenet fogadása a szervertől és kivételdobás hiba esetén
+            readStatus(in);
             
             // időtúllépés eredeti állapota kikapcsolva
             getSocket().setSoTimeout(0);

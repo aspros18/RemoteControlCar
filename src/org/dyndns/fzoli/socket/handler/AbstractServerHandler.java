@@ -107,6 +107,36 @@ public abstract class AbstractServerHandler extends AbstractHandler {
     }
     
     /**
+     * Az inicializáló metódust kivételkezelten meghívja és közli a klienssel az eredményt.
+     * @throws Exception ha inicializálás közben kivétel történt
+     * @throws IOException ha nem sikerült a kimenetre írni
+     */
+    private void runInit(OutputStream out) throws IOException, Exception {
+        try {
+            // inicializáló metódus futtatása
+            init();
+            // rendben jelzés küldése a kliensnek
+            sendStatus(out, HandlerException.VAL_OK);
+        }
+        catch (IOException ex) {
+            // nem sikerült a rendben jelzés küldése, ezért nem próbál üzenetet küldeni
+            throw ex;
+        }
+        catch (HandlerException ex) {
+            // a kivétel üzenetét közli a klienssel is
+            sendStatus(out, ex.getMessage());
+            // a kivétel megy tovább, mint ha semmi nem történt volna
+            throw ex;
+        }
+        catch (Exception ex) {
+            // olyan kivétel keletkezett, mely szerver oldali hiba
+            sendStatus(out, "unexpected error");
+            // a kivétel megy tovább
+            throw ex;
+        }
+    }
+    
+    /**
      * Ez a metódus fut le a szálban.
      * Az eszköz- és kapcsolatazonosító klienstől való fogadása után eldől, melyik kapcsolatfeldolgozót
      * kell használni a szerver oldalon és a konkrét feldolgozás kezdődik meg.
@@ -129,28 +159,8 @@ public abstract class AbstractServerHandler extends AbstractHandler {
             // kapcsolatazonosító elkérése a klienstől
             setConnectionId(in.read());
             
-            try {
-                // inicializáló metódus futtatása
-                init();
-                // rendben jelzés küldése a kliensnek
-                sendStatus(out, HandlerException.VAL_OK);
-            }
-            catch (IOException ex) {
-                // nem sikerült a rendben jelzés küldése, ezért nem próbál üzenetet küldeni
-                throw ex;
-            }
-            catch (HandlerException ex) {
-                // a kivétel üzenetét közli a klienssel is
-                sendStatus(out, ex.getMessage());
-                // a kivétel megy tovább, mint ha semmi nem történt volna
-                throw ex;
-            }
-            catch (Exception ex) {
-                // olyan kivétel keletkezett, mely szerver oldali hiba
-                sendStatus(out, "unexpected error");
-                // a kivétel megy tovább
-                throw ex;
-            }
+            // inicializálás és eredményközlés
+            runInit(out);
             
             // időtúllépés eredeti állapota kikapcsolva
             getSocket().setSoTimeout(0);

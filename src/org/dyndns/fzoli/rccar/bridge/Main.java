@@ -1,7 +1,6 @@
 package org.dyndns.fzoli.rccar.bridge;
 
 import java.awt.CheckboxMenuItem;
-import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -10,7 +9,6 @@ import java.io.IOException;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.SystemTrayIcon;
-import static org.dyndns.fzoli.rccar.SystemTrayIcon.showMessage;
 import static org.dyndns.fzoli.rccar.UIUtil.alert;
 import static org.dyndns.fzoli.rccar.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.rccar.UncaughtExceptionHandler;
@@ -45,11 +43,6 @@ public class Main {
      * A szerver socket referenciája arra kell, hogy eseménykezelővel ki lehessen lépni.
      */
     private static SSLServerSocket SERVER_SOCKET;
-    
-    /**
-     * Figyelmeztető üzenetek megjelenését szabályozza.
-     */
-    private static boolean warn = true;
     
     /**
      * Még mielőtt lefutna a main metódus, beállítódik a rendszer LAF, a saját kivételkezelő, a rendszerikon és az erőforrás-felszabadító szál.
@@ -96,7 +89,7 @@ public class Main {
         });
         
         // figyelmeztetés beállító opció létrehozása és beállítása
-        final CheckboxMenuItem miWarnLog = new CheckboxMenuItem("Figyelmeztetés", warn);
+        final CheckboxMenuItem miWarnLog = new CheckboxMenuItem("Figyelmeztetés", BridgeHandler.isWarnEnabled());
         miWarnLog.addItemListener(new ItemListener() {
 
             /**
@@ -105,9 +98,9 @@ public class Main {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 // warn beállítása az ellenkezőjére, mint volt
-                warn = !warn;
+                BridgeHandler.setWarnEnabled(!BridgeHandler.isWarnEnabled());
                 // a megváltozott opció frissítése
-                miWarnLog.setState(warn);
+                miWarnLog.setState(BridgeHandler.isWarnEnabled());
             }
             
         });
@@ -168,11 +161,11 @@ public class Main {
     private static void readArguments(String[] args) {
         if (args.length == 1) {
             if (args[0].equals("-v")) {
-                warn = true;
+                BridgeHandler.setWarnEnabled(true);
                 BridgeDisconnectProcess.setLogEnabled(false);
             }
             else if (args[0].equals("-vv")) {
-                warn = true;
+                BridgeHandler.setWarnEnabled(true);
                 BridgeDisconnectProcess.setLogEnabled(true);
             }
         }
@@ -189,13 +182,6 @@ public class Main {
         catch(Exception ex) {
             throw new Error(ex.getMessage());
         }
-    }
-    
-    /**
-     * Figyelmeztetőüzenet jelzése a sikertelen kapcsolódásról.
-     */
-    public static void showWarning(SSLSocket s, String msg) {
-        if (s != null && warn) showMessage(VAL_MESSAGE, msg + " a " + s.getInetAddress().getHostName() + " címről.", TrayIcon.MessageType.WARNING);
     }
     
     /**

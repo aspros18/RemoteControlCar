@@ -1,8 +1,9 @@
 package org.dyndns.fzoli.rccar.bridge.socket;
 
+import java.awt.TrayIcon;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocket;
-import org.dyndns.fzoli.rccar.bridge.Main;
+import static org.dyndns.fzoli.rccar.SystemTrayIcon.showMessage;
 import org.dyndns.fzoli.rccar.test.DummyProcess;
 import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
 import org.dyndns.fzoli.socket.handler.MultipleCertificateException;
@@ -15,6 +16,11 @@ import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
 public class BridgeHandler extends AbstractSecureServerHandler {
 
     /**
+     * Alapértelmezetten a figyelmeztetések be vannak kapcsolva.
+     */
+    private static boolean show = true;
+    
+    /**
      * A híd biztonságos kapcsolatkezelő konstruktora.
      * @param socket SSLSocket, amin keresztül folyik a kommunikáció.
      */
@@ -22,6 +28,25 @@ public class BridgeHandler extends AbstractSecureServerHandler {
         super(socket);
     }
 
+    public static boolean isWarnEnabled() {
+        return show;
+    }
+    
+    /**
+     * Bekapcsolja vagy kikapcsolja a figyelmeztetéseket.
+     */
+    public static void setWarnEnabled(boolean enabled) {
+        show = enabled;
+    }
+    
+    /**
+     * Ha adott klienstől az első kapcsolatfelvétel közben hiba keletkezik, jelzi a felhasználónak.
+     */
+    private void showWarning(String message) {
+        if (getConnectionId() == null || getConnectionId().equals(0))
+            if (getSocket() != null && isWarnEnabled()) showMessage("Figyelmeztetés", message + " a " + getSocket().getInetAddress().getHostName() + " címről.", TrayIcon.MessageType.WARNING);
+    }
+    
     /**
      * Ha kivétel képződik a szálban, fel kell dolgozni.
      * Duplázott tanúsítvány esetén figyelmezteti a felhasználót.
@@ -44,14 +69,6 @@ public class BridgeHandler extends AbstractSecureServerHandler {
             // nem várt hiba jelzése
             super.onException(e);
         }
-    }
-
-    /**
-     * Ha adott klienstől az első kapcsolatfelvétel közben hiba keletkezik, jelzi a felhasználónak.
-     */
-    private void showWarning(String message) {
-        if (getConnectionId() == null || getConnectionId().equals(0))
-            Main.showWarning(getSocket(), message);
     }
     
     /**

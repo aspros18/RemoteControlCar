@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.bridge;
 
+import java.awt.CheckboxMenuItem;
 import java.awt.MenuItem;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
@@ -75,7 +76,7 @@ public class Main {
         SystemTrayIcon.setIcon("Mobile-RC híd", R.getBridgeImage());
         
         // kapcsolatjelzés beállító opció létrehozása és beállítása
-        final MenuItem miConnLog = new MenuItem(BridgeDisconnectProcess.getLogOption());
+        final CheckboxMenuItem miConnLog = new CheckboxMenuItem("Kapcsolatjelzés", BridgeDisconnectProcess.isLogEnabled());
         miConnLog.addActionListener(new ActionListener() {
 
             /**
@@ -86,7 +87,7 @@ public class Main {
                 // naplózás beállítása az ellenkezőjére, mint volt
                 BridgeDisconnectProcess.setLogEnabled(!BridgeDisconnectProcess.isLogEnabled());
                 // a megváltozott opció frissítése
-                miConnLog.setLabel(BridgeDisconnectProcess.getLogOption());
+                miConnLog.setState(BridgeDisconnectProcess.isLogEnabled());
             }
             
         });

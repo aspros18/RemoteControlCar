@@ -29,13 +29,6 @@ public class BridgeDisconnectProcess extends ServerDisconnectProcess {
         show = enabled;
     }
     
-    /**
-     * Megadja a menüelem aktuális opcióját.
-     */
-    public static String getLogOption() {
-        return "Kapcsolatjelzés " + (isLogEnabled() ? "ki" : "be");
-    }
-    
     public BridgeDisconnectProcess(SecureHandler handler) {
         super(handler);
     }

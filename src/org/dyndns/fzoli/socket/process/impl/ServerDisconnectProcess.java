@@ -46,7 +46,7 @@ public class ServerDisconnectProcess extends AbstractSecureProcess implements Di
             InputStream in = getSocket().getInputStream();
             OutputStream out = getSocket().getOutputStream();
             getSocket().setSoTimeout(timeout);
-            while(!getSocket().isClosed() && getSocket().isConnected()) {
+            while(true) {
                 out.write(1);
                 in.read();
                 Thread.sleep(waiting);
@@ -55,7 +55,6 @@ public class ServerDisconnectProcess extends AbstractSecureProcess implements Di
         catch (Exception ex) {
             onDisconnect();
         }
-        onDisconnect();
     }
     
 }

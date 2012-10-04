@@ -44,7 +44,7 @@ public abstract class ClientDisconnectProcess extends AbstractSecureProcess impl
             InputStream in = getSocket().getInputStream();
             OutputStream out = getSocket().getOutputStream();
             getSocket().setSoTimeout(timeout);
-            while(!getSocket().isClosed() && getSocket().isConnected()) {
+            while(true) {
                 in.read();
                 out.write(1);
                 Thread.sleep(1);
@@ -53,7 +53,6 @@ public abstract class ClientDisconnectProcess extends AbstractSecureProcess impl
         catch (Exception ex) {
             onDisconnect();
         }
-        onDisconnect();
     }
     
 }

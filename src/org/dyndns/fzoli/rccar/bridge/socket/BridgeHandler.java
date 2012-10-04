@@ -1,7 +1,7 @@
 package org.dyndns.fzoli.rccar.bridge.socket;
 
 import javax.net.ssl.SSLSocket;
-import static org.dyndns.fzoli.rccar.bridge.Main.showWarning;
+import org.dyndns.fzoli.rccar.bridge.Main;
 import org.dyndns.fzoli.rccar.test.DummyProcess;
 import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
 import org.dyndns.fzoli.socket.handler.MultipleCertificateException;
@@ -34,9 +34,7 @@ public class BridgeHandler extends AbstractSecureServerHandler {
             throw ex;
         }
         catch (MultipleCertificateException e) {
-            // csak az első kapcsolatfelvételnél kell jelezni
-            if (getConnectionId() == null || getConnectionId().equals(0))
-                showWarning(getSocket(), "Duplázott tanúsítvány");
+            showWarning("Duplázott tanúsítvány");
         }
         catch (Exception e) {
             // nem várt hiba jelzése
@@ -44,6 +42,14 @@ public class BridgeHandler extends AbstractSecureServerHandler {
         }
     }
 
+    /**
+     * Ha adott klienstől az első kapcsolatfelvétel közben hiba keletkezik, jelzi a felhasználónak.
+     */
+    private void showWarning(String message) {
+        if (getConnectionId() == null || getConnectionId().equals(0))
+            Main.showWarning(getSocket(), message);
+    }
+    
     /**
      * Kiválasztja a biztonságos kapcsolatfeldolgozó objektumot az adatok alapján és elindítja.
      * TODO: egyelőre teszt

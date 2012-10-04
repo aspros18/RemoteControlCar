@@ -87,6 +87,16 @@ public abstract class AbstractServerHandler extends AbstractHandler {
     }
 
     /**
+     * Megpróbálja az üzenetet fogadni a klienstől.
+     * Ha a kliens oldalon hiba keletkezett, kivételt dob.
+     * @throws IOException ha nem sikerült a fogadás
+     * @throws HandlerException ha a kliens oldalon hiba keletkezett
+     */
+    private void readStatus(InputStream in) throws IOException {
+        AbstractHandlerUtil.readStatus(in);
+    }
+    
+    /**
      * Az inicializáló metódust kivételkezelten meghívja és közli a klienssel az eredményt.
      * @throws Exception ha inicializálás közben kivétel történt
      * @throws IOException ha nem sikerült a kimenetre írni
@@ -118,8 +128,11 @@ public abstract class AbstractServerHandler extends AbstractHandler {
             // kapcsolatazonosító elkérése a klienstől
             setConnectionId(in.read());
             
-            // inicializálás és eredményközlés
+            // inicializálás és eredményközlés a kliensnek
             runInit(out);
+            
+            // eredmény fogadása a klienstől és kivételdobás hiba esetén
+            readStatus(in);
             
             // időtúllépés eredeti állapota kikapcsolva
             getSocket().setSoTimeout(0);

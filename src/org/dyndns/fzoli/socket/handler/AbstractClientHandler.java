@@ -92,6 +92,15 @@ public abstract class AbstractClientHandler extends AbstractHandler {
     }
     
     /**
+     * Az inicializáló metódust kivételkezelten meghívja és közli a szerverrel az eredményt.
+     * @throws Exception ha inicializálás közben kivétel történt
+     * @throws IOException ha nem sikerült a kimenetre írni
+     */
+    private void runInit(OutputStream out) throws IOException, Exception {
+        AbstractHandlerUtil.runInit(this, out);
+    }
+    
+    /**
      * Ez a metódus fut le a szálban.
      * Az eszköz- és kapcsolatazonosító szervernek való elküldése után eldől, melyik kapcsolatfeldolgozót
      * kell használni a kliens oldalon és a konkrét feldolgozás kezdődik meg.
@@ -114,11 +123,11 @@ public abstract class AbstractClientHandler extends AbstractHandler {
             // kapcsolatazonosító küldése a szervernek
             out.write(getConnectionId());
             
-            // üzenet fogadása a szervertől és kivételdobás hiba esetén
+            // eredmény fogadása a szervertől és kivételdobás hiba esetén
             readStatus(in);
             
-            // inicializáló metódus futtatása
-            init();
+            // inicializálás és eredményközlés a szervernek
+            runInit(out);
             
             // időtúllépés eredeti állapota kikapcsolva
             getSocket().setSoTimeout(0);

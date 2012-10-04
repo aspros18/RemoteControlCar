@@ -1,7 +1,6 @@
 package org.dyndns.fzoli.rccar.bridge;
 
 import java.awt.CheckboxMenuItem;
-import java.awt.MenuItem;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

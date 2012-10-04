@@ -52,11 +52,12 @@ public class ClientDisconnectTest {
     }
     
     public static void main(String[] args) throws Exception {
+        final String url = args.length == 1 ? args[0] : "192.168.20.5";
         new ClientConnectHelper(5, new int[] {0, 1, 2, 3}) {
 
             @Override
             protected SSLSocket createConnection() throws GeneralSecurityException, IOException {
-                return SSLSocketUtil.createClientSocket("192.168.20.5", 8443, new File("test-certs/ca.crt"), new File("test-certs/controller.crt"), new File("test-certs/controller.key"), new char[]{});
+                return SSLSocketUtil.createClientSocket(url, 8443, new File("test-certs/ca.crt"), new File("test-certs/controller.crt"), new File("test-certs/controller.key"), new char[]{});
             }
 
             @Override

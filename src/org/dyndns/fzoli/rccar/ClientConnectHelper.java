@@ -71,7 +71,7 @@ public abstract class ClientConnectHelper {
      * @param connectionId a közben használt kapcsolatazonosító
      */
     protected void onException(Exception ex, int connectionId) {
-        ;
+        throw new RuntimeException(ex.getMessage() + "; connection id: " + connectionId, ex);
     }
     
     /**

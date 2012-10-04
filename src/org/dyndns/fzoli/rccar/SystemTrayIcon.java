@@ -93,6 +93,15 @@ public class SystemTrayIcon {
     }
     
     /**
+     * A menühöz szeparátort ad hozzá, ha az támogatott.
+     */
+    public static void addMenuSeparator() {
+        if (isSupported()) {
+            menu.addSeparator();
+        }
+    }
+    
+    /**
      * Beállítja a paraméterben átadott szöveget és ikont, ha támogatva vannak a rendszerikonok.
      * @param tooltip a megjelenő szöveg, amikor az egér az ikon felett van
      * @param img az a kép, ami megjelenik az ikonban

@@ -38,8 +38,8 @@ public class BridgeDisconnectProcess extends ServerDisconnectProcess {
      */
     @Override
     protected void onConnect() {
-        log(true);
         super.onConnect();
+        log(true);
     }
     
     /**

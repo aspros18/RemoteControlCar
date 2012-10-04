@@ -5,6 +5,8 @@ import java.awt.MenuItem;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.IOException;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
@@ -49,6 +51,11 @@ public class Main {
     private static SSLServerSocket SERVER_SOCKET;
     
     /**
+     * Figyelmeztető üzenetek megjelenését szabályozza.
+     */
+    private static boolean warn = true;
+    
+    /**
      * Még mielőtt lefutna a main metódus, beállítódik a rendszer LAF, a saját kivételkezelő, a rendszerikon és az erőforrás-felszabadító szál.
      */
     static {
@@ -77,13 +84,13 @@ public class Main {
         
         // kapcsolatjelzés beállító opció létrehozása és beállítása
         final CheckboxMenuItem miConnLog = new CheckboxMenuItem("Kapcsolatjelzés", BridgeDisconnectProcess.isLogEnabled());
-        miConnLog.addActionListener(new ActionListener() {
+        miConnLog.addItemListener(new ItemListener() {
 
             /**
              * Ha a naplózás beállítását kérik.
              */
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void itemStateChanged(ItemEvent e) {
                 // naplózás beállítása az ellenkezőjére, mint volt
                 BridgeDisconnectProcess.setLogEnabled(!BridgeDisconnectProcess.isLogEnabled());
                 // a megváltozott opció frissítése
@@ -92,8 +99,31 @@ public class Main {
             
         });
         
+        // figyelmeztetés beállító opció létrehozása és beállítása
+        final CheckboxMenuItem miWarnLog = new CheckboxMenuItem("Figyelmeztetés", warn);
+        miWarnLog.addItemListener(new ItemListener() {
+
+            /**
+             * Ha a naplózás beállítását kérik.
+             */
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                // warn beállítása az ellenkezőjére, mint volt
+                warn = !warn;
+                // a megváltozott opció frissítése
+                miWarnLog.setState(warn);
+            }
+            
+        });
+        
+        // figyelmeztetés beállító opció hozzáadása
+        SystemTrayIcon.addMenuItem(miWarnLog);
+        
         // kapcsolatjelzés beállító opció hozzáadása
         SystemTrayIcon.addMenuItem(miConnLog);
+        
+        // szeparátor hozzáadása a menühöz
+        SystemTrayIcon.addMenuSeparator();
         
         // kilépés opció hozzáadása
         SystemTrayIcon.addMenuItem("Kilépés", new ActionListener() {
@@ -161,7 +191,7 @@ public class Main {
      * Figyelmeztetőüzenet jelzése a sikertelen kapcsolódásról.
      */
     public static void showWarning(SSLSocket s, String msg) {
-        if (s != null) showMessage(VAL_MESSAGE, msg + " a " + s.getInetAddress().getHostName() + " címről.", TrayIcon.MessageType.WARNING);
+        if (s != null && warn) showMessage(VAL_MESSAGE, msg + " a " + s.getInetAddress().getHostName() + " címről.", TrayIcon.MessageType.WARNING);
     }
     
     /**

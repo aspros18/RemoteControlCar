@@ -86,7 +86,7 @@ public abstract class AbstractServerHandler extends AbstractHandler {
     }
     
     /**
-     * Ha kivétel képződik, fel kell dolgozni.
+     * Ha kivétel képződik a szálban, fel kell dolgozni.
      * @param ex a kivétel
      * @throws HandlerException ha nem RuntimeException a kivétel
      * @throws RuntimeException ha RuntimeException a kivétel

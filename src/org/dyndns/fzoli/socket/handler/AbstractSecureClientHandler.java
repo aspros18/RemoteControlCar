@@ -66,7 +66,7 @@ public abstract class AbstractSecureClientHandler extends AbstractClientHandler 
 
     /**
      * Kiválasztja a biztonságos kapcsolatfeldolgozó objektumot az adatok alapján és elindítja.
-     * A metódus csak akkor hívható meg, amikor már ismert a kapcsolatazonosító és eszközazonosító,
+     * A metódus csak akkor hívható meg, amikor már ismert a kapcsolatazonosító és eszközazonosító.
      */
     @Override
     protected abstract SecureProcess selectProcess();

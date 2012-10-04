@@ -21,8 +21,6 @@ import org.dyndns.fzoli.rccar.bridge.socket.BridgeHandler;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.socket.handler.SecureHandlerException;
 
-//TODO: duplán jelenik meg a figyelmeztetőüzenet ha ugyan azzal a tanúsítvánnyal kapcsolódik a kliens (a lekapcsolódás üzenet)
-
 /**
  * A híd indító osztálya.
  * @author zoli

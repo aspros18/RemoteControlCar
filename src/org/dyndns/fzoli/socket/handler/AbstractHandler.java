@@ -26,6 +26,16 @@ public abstract class AbstractHandler implements Handler {
     protected abstract Process selectProcess();
 
     /**
+     * Miután az eszközazonosító és a kapcsolatazonosító közlése megtörtént,
+     * lefut ez az inicializáló metódus, ami után a konkrét feldolgozás történik meg.
+     * Ez a metódus az utód osztályoknak lett létrehozva inicializálás céljára.
+     * Ebben a metódusban nem célszerű socketen át adatot küldeni vagy fogadni.
+     */
+    void init() {
+        ;
+    }
+
+    /**
      * @return Socket, amin keresztül folyik a kommunikáció.
      */
     @Override

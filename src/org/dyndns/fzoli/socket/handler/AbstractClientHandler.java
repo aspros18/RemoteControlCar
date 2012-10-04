@@ -2,7 +2,6 @@ package org.dyndns.fzoli.socket.handler;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -70,15 +69,6 @@ public abstract class AbstractClientHandler extends AbstractHandler {
     public Integer getDeviceId() {
         return deviceId;
     }
-
-    /**
-     * Miután az eszközazonosító és a kapcsolatazonosító közlése megtörtént,
-     * lefut ez az inicializáló metódus, ami után a konkrét feldolgozás történik meg.
-     * Ez a metódus az utód osztályoknak lett létrehozva inicializálás céljára.
-     * Ebben a metódusban nem célszerű socketen át adatot küldeni vagy fogadni.
-     */
-    protected void init() {
-    }
     
     /**
      * Ha kivétel képződik, fel kell dolgozni.
@@ -98,11 +88,7 @@ public abstract class AbstractClientHandler extends AbstractHandler {
      * @throws HandlerException ha a szerver oldalon hiba keletkezett
      */
     private void readStatus(InputStream in) throws IOException {
-        ObjectInputStream oin = new ObjectInputStream(in);
-        String status = oin.readUTF();
-        if (!status.equals(HandlerException.VAL_OK)) {
-            throw new HandlerException(status);
-        }
+        AbstractHandlerUtil.readStatus(in);
     }
     
     /**
@@ -128,11 +114,11 @@ public abstract class AbstractClientHandler extends AbstractHandler {
             // kapcsolatazonosító küldése a szervernek
             out.write(getConnectionId());
             
-            // inicializáló metódus futtatása
-            init();
-            
             // üzenet fogadása a szervertől és kivételdobás hiba esetén
             readStatus(in);
+            
+            // inicializáló metódus futtatása
+            init();
             
             // időtúllépés eredeti állapota kikapcsolva
             getSocket().setSoTimeout(0);

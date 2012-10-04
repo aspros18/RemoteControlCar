@@ -1,4 +1,4 @@
-package org.dyndns.fzoli.rccar.test;
+package org.dyndns.fzoli.rccar;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -11,7 +11,7 @@ import org.dyndns.fzoli.socket.handler.event.HandlerListener;
  * Kliens oldalra egyszerű kapcsolódást megvalósító osztály.
  * @author zoli
  */
-public abstract class ClientConnectingTest {
+public abstract class ClientConnectHelper {
 
     /**
      * Eszközazonosító.
@@ -45,7 +45,7 @@ public abstract class ClientConnectingTest {
      * @param deviceId eszközazonosító
      * @param connectionIds kapcsolatazonosítókat tartalmazó tömb
      */
-    public ClientConnectingTest(int deviceId, int[] connectionIds) {
+    public ClientConnectHelper(int deviceId, int[] connectionIds) {
         if (connectionIds == null || connectionIds.length < 1) throw new IllegalArgumentException("At least one Connection ID needs to be added");
         this.deviceId = deviceId;
         this.connectionIds = connectionIds;

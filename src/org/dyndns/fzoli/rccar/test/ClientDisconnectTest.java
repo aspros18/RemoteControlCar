@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import javax.net.ssl.SSLSocket;
+import org.dyndns.fzoli.rccar.ClientConnectHelper;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
@@ -51,7 +52,7 @@ public class ClientDisconnectTest {
     }
     
     public static void main(String[] args) throws Exception {
-        new ClientConnectingTest(5, new int[] {0, 1, 2, 3}) {
+        new ClientConnectHelper(5, new int[] {0, 1, 2, 3}) {
 
             @Override
             protected SSLSocket createConnection() throws GeneralSecurityException, IOException {

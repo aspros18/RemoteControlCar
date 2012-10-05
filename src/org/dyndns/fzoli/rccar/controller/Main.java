@@ -3,6 +3,7 @@ package org.dyndns.fzoli.rccar.controller;
 import java.awt.TrayIcon;
 import org.dyndns.fzoli.rccar.SystemTrayIcon;
 import static org.dyndns.fzoli.rccar.SystemTrayIcon.showMessage;
+import static org.dyndns.fzoli.rccar.UIUtil.alert;
 import static org.dyndns.fzoli.rccar.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.rccar.UncaughtExceptionHandler;
 import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.setDefaultSplashMessage;
@@ -18,6 +19,16 @@ public class Main {
      * A konfigurációt tartalmazó objektum.
      */
     private static final Config CONFIG = Config.getInstance();
+    
+    /**
+     * Üzenettípusok.
+     */
+    private static final String VAL_WARNING = "Figyelmeztetés", VAL_ERROR = "Hiba";
+    
+    /**
+     * Új sor jel.
+     */
+    private static final String LS = System.getProperty("line.separator");
     
     /**
      * Még mielőtt lefutna a main metódus, a nyitóképernyő szövege megjelenik és a rendszer LAF, a kivételkezelő valamint a rendszerikon beállítódik.
@@ -55,7 +66,13 @@ public class Main {
      * Szimulál 5 másodpercnyi töltést, aztán végetér a program.
      */
     public static void main(String[] args) throws InterruptedException {
-        if (CONFIG.isDefault()) showMessage("Figyelmeztetés", "Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!", TrayIcon.MessageType.WARNING);
+        if (!CONFIG.isFileExists()) {
+            alert(VAL_ERROR, "A konfiguráció nem létező fájlra hivatkozik." + LS + "A folytatás előtt a hibát helyre kell hozni.", System.err);
+            //TODO: modális ablakként megjeleníteni a beállításokat; ha bezárják, a program lépjen ki
+        }
+        if (CONFIG.isCertDefault()) {
+            showMessage(VAL_WARNING, "Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!", TrayIcon.MessageType.WARNING);
+        }
         Thread.sleep(5000);
         System.exit(0);
     }

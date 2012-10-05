@@ -59,25 +59,27 @@ public class Config implements Serializable {
         return port;
     }
 
+    
+    
     /**
      * Az egyetlen megbízható tanúsítvány-kiállító.
      */
     public File getCAFile() {
-        return ca;
+        return getFile(ca);
     }
 
     /**
      * Az a tanúsítvány, amivel a program kapcsolódik a szerverhez.
      */
     public File getCertFile() {
-        return cert;
+        return getFile(cert);
     }
 
     /**
      * A tanúsítvány titkos kulcsa.
      */
     public File getKeyFile() {
-        return key;
+        return getFile(key);
     }
 
     /**
@@ -103,6 +105,34 @@ public class Config implements Serializable {
      */
     public boolean isCertDefault() {
         return DEFAULT.cert.equals(cert) && DEFAULT.key.equals(key);
+    }
+    
+    /**
+     * Megmondja hogy léteznek-e a tanúsítvány fájlok.
+     */
+    public boolean isFileExists() {
+        return isCAFileExists() && isCertFileExists() && isKeyFileExists();
+    }
+    
+    /**
+     * Megmondja hogy a tanúsítvány-kiállító fájl létezik-e.
+     */
+    public boolean isCAFileExists() {
+        return getCAFile() != null;
+    }
+    
+    /**
+     * Megmondja hogy a tanúsítvány fájl létezik-e.
+     */
+    public boolean isCertFileExists() {
+        return getCertFile() != null;
+    }
+    
+    /**
+     * Megmondja hogy a tanúsítvány-kulcs fájl létezik-e.
+     */
+    public boolean isKeyFileExists() {
+        return getKeyFile() != null;
     }
     
     /**
@@ -159,6 +189,13 @@ public class Config implements Serializable {
                "Key file:" + getKeyFile() + LS +
                "Password length: " + (getPassword() == null ? -1 : getPassword().length) + LS +
                "Default? " + isDefault();
+    }
+    
+    /**
+     * @return null, ha nem létezik a fájl, egyébként a megadott fájl
+     */
+    private static File getFile(File f) {
+        return f.isFile() ? f : null;
     }
     
     /**

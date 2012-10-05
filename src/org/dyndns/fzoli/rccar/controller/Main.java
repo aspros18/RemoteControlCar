@@ -67,7 +67,7 @@ public class Main {
      */
     public static void main(String[] args) throws InterruptedException {
         if (!CONFIG.isFileExists()) {
-            alert(VAL_ERROR, "A konfiguráció nem létező fájlra hivatkozik." + LS + "A folytatás előtt a hibát helyre kell hozni.", System.err);
+            alert(VAL_ERROR, (CONFIG.isDefault() ? "Az alapértelmezett konfiguráció nem használható, mert" : "A konfiguráció") + " nem létező fájlra hivatkozik." + LS + "A folytatás előtt a hibát helyre kell hozni.", System.err);
             //TODO: modális ablakként megjeleníteni a beállításokat; ha bezárják, a program lépjen ki
         }
         if (CONFIG.isCertDefault()) {

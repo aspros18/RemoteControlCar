@@ -63,7 +63,7 @@ public class Config {
             CC + ' ' + KEY_ROOT + " optional_admin_cert_common_name " + CC + " kitüntetett tanúsítvány, amivel rendszergazdaként használható a program";
     
     /**
-     * Ez az osztály nem példányosítható és nem származhatnak belőle újabb osztályok.
+     * Ez az osztály nem példányosítható kívülről és nem származhatnak belőle újabb osztályok.
      */
     private Config() {
     }

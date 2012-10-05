@@ -2,6 +2,9 @@ package org.dyndns.fzoli.rccar;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
 import org.dyndns.fzoli.socket.handler.Handler;
@@ -23,6 +26,11 @@ public abstract class ClientConnectHelper {
      */
     private final int[] connectionIds;
 
+    /**
+     * A kiépített kapcsolatokat tartalmazó lista.
+     */
+    private final List<SSLSocket> CONNECTIONS = new ArrayList<SSLSocket>();
+    
     /**
      * Eseménykezelő, ami lefut, ha sikerült az első kapcsolódás.
      * Ha az első kapcsolódás sikerült, létrehozza a többi kapcsolatot is.
@@ -76,12 +84,17 @@ public abstract class ClientConnectHelper {
     
     /**
      * Kapcsolódik a szerverhez a megadott kapcsolatazonosítóval.
+     * A létrehozott socketet eltárolja a listában.
      * @param connectionId a kapcsolatazonosító
      * @param addListener megadja, kell-e eseményt hozzáadni
      */
     private void runHandler(int connectionId, boolean addListener) {
         try {
-            AbstractSecureClientHandler handler = createHandler(createConnection(), deviceId, connectionId);
+            SSLSocket conn = createConnection();
+            synchronized(CONNECTIONS) {
+                CONNECTIONS.add(conn);
+            }
+            AbstractSecureClientHandler handler = createHandler(conn, deviceId, connectionId);
             if (addListener) handler.addHandlerListener(listener);
             new Thread(handler).start();
         }
@@ -95,6 +108,25 @@ public abstract class ClientConnectHelper {
      */
     public void connect() {
         runHandler(connectionIds[0], true);
+    }
+    
+    /**
+     * A kapcsolatok bezárása.
+     */
+    public void disconnect() {
+        synchronized(CONNECTIONS) {
+            Iterator<SSLSocket> it = CONNECTIONS.iterator();
+            while (it.hasNext()) {
+                SSLSocket conn = it.next();
+                it.remove();
+                try {
+                    conn.close();
+                }
+                catch (Exception ex) {
+                    ;
+                }
+            }
+        }
     }
     
 }

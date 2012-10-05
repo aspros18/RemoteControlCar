@@ -160,8 +160,6 @@ Az egérrel pontos utasítást lehet adni mind sebesség, mind irány terén.
 A billentyűzettel egyszerűbb, de durvább irányítást érhet el a felhasználó és több vezérlés mód közül választhat.
 (A vezérlési módok a durvaságot szabályozzák pl. előre nyílra egyenletesen gyorsuljon fel vagy földkaparással max grafttal induljon el)
 
-SplashScreen megadása a jar manifest fájlban: SplashScreen-Image: org/dyndns/fzoli/rccar/controller/resource/splash.gif
-
 Egy kis trükk:
 --------------
 

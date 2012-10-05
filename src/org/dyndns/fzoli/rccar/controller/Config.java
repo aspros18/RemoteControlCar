@@ -94,11 +94,17 @@ public class Config implements Serializable {
         return DEFAULT.address.equals(address) &&
                DEFAULT.port == port &&
                DEFAULT.ca.equals(ca) &&
-               DEFAULT.cert.equals(cert) &&
-               DEFAULT.key.equals(key) &&
-               new String(DEFAULT.password).equals(new String(password));
+               new String(DEFAULT.password).equals(new String(password)) &&
+               isCertDefault();
     }
 
+    /**
+     * Megmondja, hogy az alapértelmezett tanúsítvány van-e beállítva.
+     */
+    public boolean isCertDefault() {
+        return DEFAULT.cert.equals(cert) && DEFAULT.key.equals(key);
+    }
+    
     /**
      * Beállítja a szerver címét.
      */

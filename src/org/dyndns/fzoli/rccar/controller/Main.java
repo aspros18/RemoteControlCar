@@ -1,6 +1,8 @@
 package org.dyndns.fzoli.rccar.controller;
 
+import java.awt.TrayIcon;
 import org.dyndns.fzoli.rccar.SystemTrayIcon;
+import static org.dyndns.fzoli.rccar.SystemTrayIcon.showMessage;
 import static org.dyndns.fzoli.rccar.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.rccar.UncaughtExceptionHandler;
 import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.setDefaultSplashMessage;
@@ -53,6 +55,7 @@ public class Main {
      * Szimulál 5 másodpercnyi töltést, aztán végetér a program.
      */
     public static void main(String[] args) throws InterruptedException {
+        if (CONFIG.isDefault()) showMessage("Figyelmeztetés", "Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!", TrayIcon.MessageType.WARNING);
         Thread.sleep(5000);
         System.exit(0);
     }

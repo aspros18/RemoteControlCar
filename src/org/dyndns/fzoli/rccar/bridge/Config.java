@@ -169,13 +169,14 @@ public class Config {
                "CA file: " + getCAFile() + LS +
                "Cert file: " + getCertFile() + LS +
                "Key file:" + getKeyFile() + LS +
-               "Password: " + new String(getPassword()) + LS +
+               "Password length: " + (getPassword() == null ? -1 : getPassword().length) + LS +
                "Root name: " + getRootName() + LS +
                "Correct? " + isCorrect();
     }
     
     /**
      * Gyártó metódus.
+     * @throws RuntimeException ha bármi hiba történik. Pl. nincs olvasási/írási jog
      */
     public static Config getInstance() {
         Config config = new Config();

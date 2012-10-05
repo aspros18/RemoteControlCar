@@ -1,13 +1,18 @@
 package org.dyndns.fzoli.rccar.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 /**
  * A vezérlő konfigurációját tölti be és menti el a felhasználó könyvtárába egy fájlba.
  * Ha a fájl nem létezik, létrehozza az alapértelmezett adatokkal.
  * @author zoli
  */
-public class Config {
+public class Config implements Serializable {
     
     /**
      * Változók deklarálása és az alapértelmezések beállítása.
@@ -18,6 +23,21 @@ public class Config {
     private File ca = new File("test-certs", "ca.crt");
     private File cert = new File("test-certs", "controller.crt");
     private File key = new File("test-certs", "controller.key");
+    
+    /**
+     * Az a fájl, amelybe a szerializálás történik.
+     */
+    private static final File STORE = new File(System.getProperty("user.home"), "mobile-rc.ser");
+    
+    /**
+     * Az alapértelmezett konfiguráció.
+     */
+    private static final Config DEFAULT = new Config();
+    
+    /**
+     * Új sor jel.
+     */
+    private static final String LS = System.getProperty("line.separator");
     
     /**
      * Ez az osztály nem példányosítható kívülről és nem származhatnak belőle újabb osztályok.
@@ -42,21 +62,21 @@ public class Config {
     /**
      * Az egyetlen megbízható tanúsítvány-kiállító.
      */
-    public File getCa() {
+    public File getCAFile() {
         return ca;
     }
 
     /**
      * Az a tanúsítvány, amivel a program kapcsolódik a szerverhez.
      */
-    public File getCert() {
+    public File getCertFile() {
         return cert;
     }
 
     /**
      * A tanúsítvány titkos kulcsa.
      */
-    public File getKey() {
+    public File getKeyFile() {
         return key;
     }
 
@@ -71,7 +91,12 @@ public class Config {
      * Megmondja, hogy a konfiguráció megegyezik-e az alapértelmezettel.
      */
     public boolean isDefault() {
-        return true; //TODO
+        return DEFAULT.address.equals(address) &&
+               DEFAULT.port == port &&
+               DEFAULT.ca.equals(ca) &&
+               DEFAULT.cert.equals(cert) &&
+               DEFAULT.key.equals(key) &&
+               new String(DEFAULT.password).equals(new String(password));
     }
 
     /**
@@ -91,39 +116,95 @@ public class Config {
     /**
      * Beállítja az egyetlen megbízahtó tanúsítvány-kiállítót.
      */
-    public void setCa(File ca) {
+    public void setCAFile(File ca) {
         this.ca = ca;
     }
 
     /**
      * Beállítja a használandó tanúsítványt.
      */
-    public void setCert(File cert) {
+    public void setCertFile(File cert) {
         this.cert = cert;
     }
 
-    public void setKey(File key) {
+    /**
+     * Beállítja a használandó tanúsítvány titkos kulcsát.
+     */
+    public void setKeyFile(File key) {
         this.key = key;
     }
 
+    /**
+     * Beállítja a használandó tanúsítvány jelszavát.
+     */
     public void setPassword(char[] password) {
         this.password = password;
     }
     
     /**
-     * A szerializált fájlból beolvassa az adatokat.
-     * Ha nem létezik a fájl, az alapértelmezett adatokkal tér vissza.
+     * Tesztelési célból értelmes szöveget generál a metódus az objektumnak.
      */
-    public static Config read() {
-        return null; //TODO
+    @Override
+    public String toString() {
+        return "Address: " + getAddress() + LS +
+               "Port: " + getPort() + LS +
+               "CA file: " + getCAFile() + LS +
+               "Cert file: " + getCertFile() + LS +
+               "Key file:" + getKeyFile() + LS +
+               "Password length: " + (getPassword() == null ? -1 : getPassword().length) + LS +
+               "Default? " + isDefault();
+    }
+    
+    /**
+     * Gyártó metódus.
+     * A szerializált fájlból beolvassa az adatokat.
+     * Ha nem létezik a fájl vagy nem olvasható, az alapértelmezett adatokkal tér vissza.
+     * Ha a fájl létezik, de nem Config objektum van benne, a fájl felülíródik.
+     */
+    public static Config getInstance() {
+        try {
+            if (STORE.isFile()) {
+                FileInputStream fis = new FileInputStream(STORE);
+                ObjectInputStream oin = new ObjectInputStream(fis);
+                Config config;
+                try {
+                    config = (Config) oin.readObject();
+                }
+                catch (Exception ex) {
+                    config = new Config();
+                    save(config);
+                }
+                oin.close();
+                fis.close();
+                return config;
+            }
+            else {
+                return new Config();
+            }
+        }
+        catch (Exception ex) {
+            return new Config();
+        }
     }
     
     /**
      * A konfigurációt tartalmazó objektumot fájlba szerializálja.
      * Ha a fájl nem létezik, szerializálás előtt létrehozza.
+     * @return true, ha sikerült a szerializálás, egyébként false
      */
-    public static void save(Config config) {
-        ; //TODO
+    public static boolean save(Config config) {
+        try {
+            FileOutputStream fos = new FileOutputStream(STORE, false);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(config);
+            oos.flush();
+            oos.close();
+            fos.close();
+            return true;
+        }
+        catch (Exception ex) {
+            return false;
+        }
     }
     
 }

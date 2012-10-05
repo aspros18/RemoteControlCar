@@ -73,7 +73,6 @@ public class Main {
      * - Ha a kapcsolódás folyamatban van, megszakad.
      * - Ha modális az ablak és a beállítások változatlanok, a program végetér bezárásakor.
      * - Ha nem modális az ablak, akkor újra kezdődik a kapcsolódás az ablak bezárásakor függetlenül a változástól.
-     * - Az ablakban jó lenne jelezni, hogy az alapértelmezett tanúsítványok nem megbízhatóak.
      * - Ha már van kiépítve kapcsolat, és megváltozik a konfiguráció, jelenjen meg Igen/Nem/Mégse ablak:
      *   a) Igen: ablak bezárása, adatok elmentése, kapcsolat bezárása és új konfiggal kapcsolódás
      *   b) Nem: ablak bezárása, adatok elmentése
@@ -106,7 +105,7 @@ public class Main {
                 
                 });
             }
-            else if (CONFIG.isCertDefault()) { // ez a metódus az ablak bezárása után is fusson le, de csak akkor, ha az ablak megnyitásakor nem volt igaz a CONFIG.isDefault
+            else if (CONFIG.isCertDefault()) {
                 showMessage(VAL_WARNING, "Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!", TrayIcon.MessageType.WARNING);
             }
         }

@@ -12,8 +12,8 @@ import static org.dyndns.fzoli.rccar.UIUtil.print;
 /**
  * Ha van grafikus felület, rendszerikont jelenít meg.
  * Több funkciója is van az ikonnak:
- * - a felhasználó látja, hogy a program fut
- * - a felhasználó ha nem konzolból indította a programot, csak itt képes leállítani
+ * - a felhasználó látja, hogy a program fut még akkor is, ha háttérben van
+ * - a felhasználó ha nem konzolból indította a programot, csak itt képes leállítani, ha a háttérben fut
  * - nem kezelt kivétel esetén buborékablak tályékoztatja a felhasználót, amire kattintva megtekintheti a hibát
  * @author zoli
  */

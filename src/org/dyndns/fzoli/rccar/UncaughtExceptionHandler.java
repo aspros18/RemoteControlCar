@@ -9,7 +9,7 @@ import org.dyndns.fzoli.exceptiondialog.UncaughtExceptionParameters;
 import org.dyndns.fzoli.exceptiondialog.event.UncaughtExceptionAdapter;
 
 /**
- * A híd nem várt hibáit kezeli le.
+ * A program nem várt hibáit kezeli le.
  * Error esetén egy modális dialógusablak jelenik meg és a bezárása után kilép a program.
  * Exception esetén a rendszerikonon jelenik meg egy figyelmeztetés, amire kattintva egy nem modális dialógusablak jelenik meg.
  * Ha a grafikus felület nem támogatott, a konzolon jelenik meg a nem kezelt hiba és Error esetén azonnal kilép a program.
@@ -27,7 +27,7 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
     }
     
     /**
-     * Alkalmazza a híd kivételkezelő metódusát.
+     * Alkalmazza a program kivételkezelő metódusát.
      * Ha a rendszerikonok támogatva vannak, dialógusablak jeleníti meg a nem kezelt kivételeket,
      * egyébként nem változik az eredeti kivételkezelés.
      */

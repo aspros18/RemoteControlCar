@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.ClientConnectionHelper;
+import org.dyndns.fzoli.rccar.ConnectionKeys;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
@@ -14,7 +15,7 @@ import org.dyndns.fzoli.socket.process.impl.ClientDisconnectProcess;
  * Teszt elindító kapcsolatmegszakadás detektálására kliens oldalon.
  * @author zoli
  */
-public class ClientDisconnectTest {
+public class ClientDisconnectTest implements ConnectionKeys {
     
     /**
      * A kliens oldali teszt kapcsolatkezelő.
@@ -34,7 +35,7 @@ public class ClientDisconnectTest {
         @Override
         protected AbstractSecureProcess selectProcess() {
             switch (getConnectionId()) {
-                case 0:
+                case KEY_CONN_DISCONNECT:
                     return new ClientDisconnectProcess(this) {
                         
                         @Override
@@ -44,16 +45,17 @@ public class ClientDisconnectTest {
                         }
                         
                     };
-                default:
+                case KEY_CONN_DUMMY:
                     return new DummyProcess(this);
             }
+            return null;
         }
         
     }
     
     public static void main(String[] args) throws Exception {
         final String url = args.length == 1 ? args[0] : "192.168.20.5";
-        new ClientConnectionHelper(5, new int[] {0, 1, 2, 3}) {
+        new ClientConnectionHelper(5, new int[] {KEY_CONN_DISCONNECT, KEY_CONN_DUMMY, KEY_CONN_DUMMY}) {
 
             @Override
             protected SSLSocket createConnection() throws GeneralSecurityException, IOException {

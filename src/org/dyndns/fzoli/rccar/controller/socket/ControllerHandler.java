@@ -1,4 +1,4 @@
-package org.dyndns.fzoli.rccar.controller;
+package org.dyndns.fzoli.rccar.controller.socket;
 
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.test.DummyProcess;
@@ -10,12 +10,12 @@ import org.dyndns.fzoli.socket.process.impl.ClientDisconnectProcess;
  * A vezérlő kapcsolatkezelője.
  * @author zoli
  */
-public class ConnectionHandler extends AbstractSecureClientHandler {
+public class ControllerHandler extends AbstractSecureClientHandler {
 
     /**
      * Szép konstruktor.
      */
-    public ConnectionHandler(SSLSocket socket, int deviceId, int connectionId) {
+    public ControllerHandler(SSLSocket socket, int deviceId, int connectionId) {
         super(socket, deviceId, connectionId);
     }
 

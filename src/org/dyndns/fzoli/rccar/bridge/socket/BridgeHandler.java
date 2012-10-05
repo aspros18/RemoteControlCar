@@ -4,6 +4,7 @@ import java.awt.TrayIcon;
 import java.net.SocketException;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocket;
+import org.dyndns.fzoli.rccar.ConnectionKeys;
 import static org.dyndns.fzoli.rccar.SystemTrayIcon.showMessage;
 import static org.dyndns.fzoli.rccar.bridge.Main.VAL_WARNING;
 import org.dyndns.fzoli.rccar.test.DummyProcess;
@@ -16,7 +17,7 @@ import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
  * A híd kapcsolatkezelője.
  * @author zoli
  */
-public class BridgeHandler extends AbstractSecureServerHandler {
+public class BridgeHandler extends AbstractSecureServerHandler implements ConnectionKeys {
 
     /**
      * Alapértelmezetten a figyelmeztetések be vannak kapcsolva.
@@ -98,11 +99,12 @@ public class BridgeHandler extends AbstractSecureServerHandler {
     @Override
     protected AbstractSecureProcess selectProcess() {
         switch (getConnectionId()) {
-            case 0:
+            case KEY_CONN_DISCONNECT:
                 return new BridgeDisconnectProcess(this);
-            default:
+            case KEY_CONN_DUMMY:
                 return new DummyProcess(this);
         }
+        return null;
     }
     
 }

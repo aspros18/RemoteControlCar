@@ -1,9 +1,10 @@
-package org.dyndns.fzoli.rccar.controller;
+package org.dyndns.fzoli.rccar.controller.socket;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.ClientConnectionHelper;
+import org.dyndns.fzoli.rccar.controller.Config;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
 
@@ -45,7 +46,7 @@ public class ConnectionHelper extends ClientConnectionHelper {
      */
     @Override
     protected AbstractSecureClientHandler createHandler(SSLSocket socket, int deviceId, int connectionId) {
-        return new ConnectionHandler(socket, deviceId, connectionId);
+        return new ControllerHandler(socket, deviceId, connectionId);
     }
     
 }

@@ -106,7 +106,7 @@ public class Main {
                 
                 });
             }
-            else if (CONFIG.isCertDefault()) {
+            else if (CONFIG.isCertDefault()) { // ez a metódus az ablak bezárása után is fusson le, de csak akkor, ha az ablak megnyitásakor nem volt igaz a CONFIG.isDefault
                 showMessage(VAL_WARNING, "Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!", TrayIcon.MessageType.WARNING);
             }
         }

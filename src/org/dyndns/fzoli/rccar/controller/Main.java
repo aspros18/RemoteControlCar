@@ -1,6 +1,5 @@
 package org.dyndns.fzoli.rccar.controller;
 
-import javax.swing.JFrame;
 import org.dyndns.fzoli.rccar.SystemTrayIcon;
 import static org.dyndns.fzoli.rccar.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.rccar.UncaughtExceptionHandler;
@@ -43,26 +42,18 @@ public class Main {
      */
     private static void setSystemTrayIcon() {
         // az ikon beállítása
-        SystemTrayIcon.setIcon("Mobile-RC", R.getIconImage());
+        //SystemTrayIcon.setIcon("Mobile-RC", R.getIconImage());
         // a rendszerikon megjelenítése
-        SystemTrayIcon.setVisible(true);
+        //SystemTrayIcon.setVisible(true);
     }
     
     /**
      * A vezérlő main metódusa.
      * Nyitóképernyő tesztelés.
-     * Szimulál 5 másodpercnyi töltést, aztán megjelenít egy üres ablakot, ezzel a nyitóképernyőt eltüntetve.
+     * Szimulál 5 másodpercnyi töltést, aztán végetér a program.
      */
     public static void main(String[] args) throws InterruptedException {
         Thread.sleep(5000);
-        new JFrame() {
-            {
-                setSize(200, 100);
-                setTitle("Teszt vége");
-                setLocationRelativeTo(this);
-                setDefaultCloseOperation(EXIT_ON_CLOSE);
-            }
-        }.setVisible(true);
     }
     
 }

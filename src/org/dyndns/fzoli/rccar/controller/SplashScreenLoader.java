@@ -67,6 +67,15 @@ public class SplashScreenLoader {
     }
     
     /**
+     * Bezárja a nyitóképernyőt, ha az megjelent.
+     */
+    public static void closeSplashScreen() {
+        if (g != null) {
+            splash.close();
+        }
+    }
+    
+    /**
      * A nyitóképernyő tályékoztatószövegét alapértelmezésre állatja be.
      * Ha nincs megadva nyitóképernyő, nem tesz semmit.
      */

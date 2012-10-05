@@ -86,7 +86,10 @@ public class Main {
             alert(VAL_ERROR, (CONFIG.isDefault() ? "Az alapértelmezett konfiguráció nem használható, mert" : "A konfiguráció") + " nem létező fájlra hivatkozik." + LS + "A folytatás előtt a hibát helyre kell hozni.", System.err);
             showSettingDialog(true);
         }
-        if (CONFIG.isCertDefault()) {
+        if (CONFIG.isDefault()) {
+            showMessage(VAL_WARNING, "Az alapértelmezett konfigurációt csak tesztelés céljára szabad használni!", TrayIcon.MessageType.WARNING);
+        }
+        else if (CONFIG.isCertDefault()) {
             showMessage(VAL_WARNING, "Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!", TrayIcon.MessageType.WARNING);
         }
         Thread.sleep(5000);

@@ -1,7 +1,7 @@
 package org.dyndns.fzoli.rccar.controller;
 
 import javax.swing.JFrame;
-import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.showSplashScreen;
+import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.showSplashScreenText;
 
 /**
  * A vezérlő indító osztálya.
@@ -10,16 +10,16 @@ import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.showSplashScr
 public class Main {
     
     /**
-     * Még mielőtt lefutna a main metódus, megjelenik egy töltés-jelző.
+     * Még mielőtt lefutna a main metódus, a nyitóképernyő szövege megjelenik.
      */
     static {
-        showSplashScreen();
+        showSplashScreenText();
     }
     
     /**
      * A vezérlő main metódusa.
-     * Töltésjelző teszt.
-     * Szimulál 5 másodpercnyi töltést, aztán megjelenít egy üres ablakot, ezzel a töltésjelzőt eltüntetve.
+     * Nyitóképernyő tesztelés.
+     * Szimulál 5 másodpercnyi töltést, aztán megjelenít egy üres ablakot, ezzel a nyitóképernyőt eltüntetve.
      */
     public static void main(String[] args) throws InterruptedException {
         Thread.sleep(5000);

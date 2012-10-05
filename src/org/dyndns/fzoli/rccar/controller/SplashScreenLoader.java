@@ -7,15 +7,15 @@ import java.awt.RenderingHints;
 import java.awt.SplashScreen;
 
 /**
- * Töltésjelzővel kapcsolatos metódusok.
+ * Nyitóképernyővel kapcsolatos metódusok.
  * @author zoli
  */
 public class SplashScreenLoader {
     
     /**
-     * A töltésjelzőn megjeleníti a magyar szöveget.
+     * A nyitóképernyőn megjeleníti a magyar szöveget.
      */
-    public static void showSplashScreen() {
+    public static void showSplashScreenText() {
         final SplashScreen splash = SplashScreen.getSplashScreen();
         if (splash != null) {
             Graphics2D g = splash.createGraphics();

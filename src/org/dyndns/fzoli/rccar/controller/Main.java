@@ -1,6 +1,8 @@
 package org.dyndns.fzoli.rccar.controller;
 
 import java.awt.TrayIcon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import org.dyndns.fzoli.rccar.SystemTrayIcon;
 import static org.dyndns.fzoli.rccar.SystemTrayIcon.showMessage;
 import static org.dyndns.fzoli.rccar.UIUtil.alert;
@@ -67,9 +69,11 @@ public class Main {
     }
     
     /**
-     * Egyelőre semmit nem csinál, de majd beállításokat fog megjeleníteni.
+     * TODO: Egyelőre semmit nem csinál, de majd beállításokat fog megjeleníteni.
      * Ha a kapcsolódás folyamatban van, megszakad.
-     * Ha modális az ablak és a beállítások változatlanok, a program végetér bezárásakor
+     * Ha modális az ablak és a beállítások változatlanok, a program végetér bezárásakor.
+     * Ha nem modális az ablak, akkor újra kezdődik a kapcsolódás az ablak bezárásakor függetlenül a változástól.
+     * Az ablakban jó lenne jelezni, hogy az alapértelmezett tanúsítványok nem megbízhatóak.
      * @param model modális legyen-e az ablak
      */
     private static void showSettingDialog(boolean modal) {
@@ -82,15 +86,26 @@ public class Main {
      * Szimulál 5 másodpercnyi töltést, aztán végetér a program.
      */
     public static void main(String[] args) throws InterruptedException {
+        System.out.println(CONFIG);
         if (!CONFIG.isFileExists()) {
             alert(VAL_ERROR, (CONFIG.isDefault() ? "Az alapértelmezett konfiguráció nem használható, mert" : "A konfiguráció") + " nem létező fájlra hivatkozik." + LS + "A folytatás előtt a hibát helyre kell hozni.", System.err);
             showSettingDialog(true);
         }
-        if (CONFIG.isDefault()) {
-            showMessage(VAL_WARNING, "Az alapértelmezett konfigurációt csak tesztelés céljára szabad használni!", TrayIcon.MessageType.WARNING);
-        }
-        else if (CONFIG.isCertDefault()) {
-            showMessage(VAL_WARNING, "Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!", TrayIcon.MessageType.WARNING);
+        if (CONFIG.isDefault() || CONFIG.isCertDefault()) {
+            ActionListener alCfg = new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    showSettingDialog(false);
+                }
+                
+            };
+            if (CONFIG.isDefault()) {
+                showMessage(VAL_WARNING, "A konfiguráció beállítása a menüből érhető el. Most ide kattintva is megteheti.", TrayIcon.MessageType.WARNING, alCfg);
+            }
+            else if (CONFIG.isCertDefault()) {
+                showMessage(VAL_WARNING, "Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!", TrayIcon.MessageType.WARNING, alCfg);
+            }
         }
         Thread.sleep(5000);
         System.exit(0);

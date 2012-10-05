@@ -96,19 +96,18 @@ public class Main {
             showSettingDialog(true);
         }
         if (CONFIG.isDefault() || CONFIG.isCertDefault()) {
-            ActionListener alCfg = new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    showSettingDialog(false);
-                }
-                
-            };
             if (CONFIG.isDefault()) {
-                showMessage(VAL_WARNING, "A konfiguráció beállítása a menüből érhető el. Most ide kattintva is megteheti.", TrayIcon.MessageType.WARNING, alCfg);
+                showMessage(VAL_WARNING, "A konfiguráció beállítása a menüből érhető el. Most ide kattintva is megteheti.", TrayIcon.MessageType.WARNING, new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        showSettingDialog(false);
+                    }
+                
+                });
             }
             else if (CONFIG.isCertDefault()) {
-                showMessage(VAL_WARNING, "Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!", TrayIcon.MessageType.WARNING, alCfg);
+                showMessage(VAL_WARNING, "Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!", TrayIcon.MessageType.WARNING);
             }
         }
         Thread.sleep(5000);

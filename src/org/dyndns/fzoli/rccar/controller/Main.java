@@ -54,7 +54,6 @@ public class Main {
      * Szimulál 5 másodpercnyi töltést, aztán megjelenít egy üres ablakot, ezzel a nyitóképernyőt eltüntetve.
      */
     public static void main(String[] args) throws InterruptedException {
-        System.out.println(CONFIG);
         Thread.sleep(5000);
         new JFrame() {
             {

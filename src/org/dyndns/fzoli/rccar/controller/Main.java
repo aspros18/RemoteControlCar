@@ -4,7 +4,7 @@ import javax.swing.JFrame;
 import org.dyndns.fzoli.rccar.SystemTrayIcon;
 import static org.dyndns.fzoli.rccar.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.rccar.UncaughtExceptionHandler;
-import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.showSplashScreenText;
+import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.setDefaultSplashMessage;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 
 /**
@@ -19,10 +19,10 @@ public class Main {
     private static final Config CONFIG = Config.getInstance();
     
     /**
-     * Még mielőtt lefutna a main metódus, a nyitóképernyő szövege megjelenik és a rendszer LAF, a kivételkezelő és a rendszerikon beállítódik.
+     * Még mielőtt lefutna a main metódus, a nyitóképernyő szövege megjelenik és a rendszer LAF, a kivételkezelő valamint a rendszerikon beállítódik.
      */
     static {
-        showSplashScreenText();
+        setDefaultSplashMessage();
         setSystemLookAndFeel();
         setExceptionHandler();
         setSystemTrayIcon();

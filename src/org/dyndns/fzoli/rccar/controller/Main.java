@@ -13,6 +13,32 @@ import java.awt.SplashScreen;
 public class Main {
     
     /**
+     * Még mielőtt lefutna a main metódus, megjelenik egy töltés-jelző.
+     */
+    static {
+        showSplashScreen();
+    }
+    
+    /**
+     * Megjeleníti a töltésjelzőt.
+     */
+    private static void showSplashScreen() {
+        final SplashScreen splash = SplashScreen.getSplashScreen();
+        if (splash != null) {
+            Graphics2D g = splash.createGraphics();
+            if (g != null) {
+                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g.setColor(Color.BLACK);
+                g.setFont(new Font("Arial", Font.PLAIN, 12));
+                printSimpleString(g, "Kapcsolódás a szerverhez...", 300, 185);
+                g.setFont(new Font("Arial", Font.BOLD, 20));
+                printSimpleString(g, "Mobile-RC", 300, 35);
+                splash.update();
+            }
+        }
+    }
+    
+    /**
      * A felületre középre igazítva írja ki a megadott szöveget.
      * @param g a felület, amire kirajzolódik a szöveg
      * @param s a kirajzolandó szöveg
@@ -30,21 +56,8 @@ public class Main {
      * Teszt: SplashScreen
      */
     public static void main(String[] args) throws InterruptedException {
-        final SplashScreen splash = SplashScreen.getSplashScreen();
-        if (splash != null) {
-            Graphics2D g = splash.createGraphics();
-            if (g != null) {
-                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g.setColor(Color.BLACK);
-                g.setFont(new Font("Arial", Font.PLAIN, 12));
-                printSimpleString(g, "Kapcsolódás a szerverhez...", 300, 185);
-                g.setFont(new Font("Arial", Font.BOLD, 20));
-                printSimpleString(g, "Mobile RC", 300, 35);
-                while (splash.isVisible()) {
-                    splash.update();
-                    Thread.sleep(100);
-                }
-            }
+        while(true) {
+            Thread.sleep(100);
         }
     }
     

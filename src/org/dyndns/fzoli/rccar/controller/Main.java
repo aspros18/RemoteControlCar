@@ -69,11 +69,15 @@ public class Main {
     }
     
     /**
-     * TODO: Egyelőre semmit nem csinál, de majd beállításokat fog megjeleníteni.
-     * Ha a kapcsolódás folyamatban van, megszakad.
-     * Ha modális az ablak és a beállítások változatlanok, a program végetér bezárásakor.
-     * Ha nem modális az ablak, akkor újra kezdődik a kapcsolódás az ablak bezárásakor függetlenül a változástól.
-     * Az ablakban jó lenne jelezni, hogy az alapértelmezett tanúsítványok nem megbízhatóak.
+     * TODO: Egyelőre semmit nem csinál, de majd a beállításkezelő ablakot fogja megjeleníteni.
+     * - Ha a kapcsolódás folyamatban van, megszakad.
+     * - Ha modális az ablak és a beállítások változatlanok, a program végetér bezárásakor.
+     * - Ha nem modális az ablak, akkor újra kezdődik a kapcsolódás az ablak bezárásakor függetlenül a változástól.
+     * - Az ablakban jó lenne jelezni, hogy az alapértelmezett tanúsítványok nem megbízhatóak.
+     * - Ha már van kiépítve kapcsolat, és megváltozik a konfiguráció, jelenjen meg Igen/Nem/Mégse ablak:
+     *   a) Igen: ablak bezárása, adatok elmentése, kapcsolat bezárása és új konfiggal kapcsolódás
+     *   b) Nem: ablak bezárása, adatok elmentése
+     *   c) Mégsem: nem tesz semmit, az ablak nem záródik be
      * @param model modális legyen-e az ablak
      */
     private static void showSettingDialog(boolean modal) {

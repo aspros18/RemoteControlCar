@@ -4,6 +4,7 @@ import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.RenderingHints;
 import java.awt.SplashScreen;
 
@@ -20,6 +21,7 @@ public class SplashScreenLoader {
     
     /**
      * A nyitóképernyő.
+     * Null, ha nincs nyitóképernyő-kép megadva.
      */
     private static final SplashScreen splash;
     
@@ -36,27 +38,37 @@ public class SplashScreenLoader {
     
     /**
      * Inicializálás.
+     * Ha nincs grafikus felület, nincs mit tenni.
+     * Ha van grafikus felület és nyitóképernyő, a "Mobile-RC" felirat megjelenik,
+     * és a @code{setSplashMessage} metódus boldogan teljesíti a kéréseket.
      */
     static {
-        splash = SplashScreen.getSplashScreen();
-        if (splash != null) {
-            g = splash.createGraphics();
-            if (g != null) {
-                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g.setColor(Color.BLACK);
-                g.setFont(new Font("Arial", Font.BOLD, 20));
-                printString("Mobile-RC", 35);
-                g.setFont(new Font("Arial", Font.PLAIN, 12));
-                splash.update();
-            }
+        if (GraphicsEnvironment.isHeadless()) {
+            splash = null;
+            g = null;
         }
         else {
-            g = null;
+            splash = SplashScreen.getSplashScreen();
+            if (splash != null) {
+                g = splash.createGraphics();
+                if (g != null) {
+                    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    g.setColor(Color.BLACK);
+                    g.setFont(new Font("Arial", Font.BOLD, 20));
+                    printString("Mobile-RC", 35);
+                    g.setFont(new Font("Arial", Font.PLAIN, 12));
+                    splash.update();
+                }
+            }
+            else {
+                g = null;
+            }
         }
     }
     
     /**
      * A nyitóképernyő tályékoztatószövegét alapértelmezésre állatja be.
+     * Ha nincs megadva nyitóképernyő, nem tesz semmit.
      */
     public static void setDefaultSplashMessage() {
         setSplashMessage(DEF_MSG);
@@ -64,6 +76,7 @@ public class SplashScreenLoader {
     
     /**
      * A nyitóképernyő tályékoztatószövegét állatja be.
+     * Ha nincs megadva nyitóképernyő, nem tesz semmit.
      * @param s a kirajzolandó szöveg
      */
     public static void setSplashMessage(String s) {
@@ -79,6 +92,7 @@ public class SplashScreenLoader {
     
     /**
      * A felületre középre igazítva írja ki a megadott szöveget.
+     * Ellenőrizetlen metódus, ezért private.
      * @param g a felület, amire kirajzolódik a szöveg
      * @param s a kirajzolandó szöveg
      * @param width a felület szélessége pixelben

@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.SplashScreen;
+import javax.swing.JFrame;
 
 /**
  * A vezérlő indító osztálya.
@@ -56,9 +57,17 @@ public class Main {
      * Teszt: SplashScreen
      */
     public static void main(String[] args) throws InterruptedException {
-        while(true) {
+        for(int i = 0; i < 100; i++) {
             Thread.sleep(100);
         }
+        new JFrame() {
+            {
+                setSize(200, 100);
+                setTitle("Teszt vége");
+                setLocationRelativeTo(this);
+                setDefaultCloseOperation(EXIT_ON_CLOSE);
+            }
+        }.setVisible(true);
     }
     
 }

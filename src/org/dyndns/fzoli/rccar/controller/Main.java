@@ -42,9 +42,9 @@ public class Main {
      */
     private static void setSystemTrayIcon() {
         // az ikon beállítása
-        //SystemTrayIcon.setIcon("Mobile-RC", R.getIconImage());
+        SystemTrayIcon.setIcon("Mobile-RC", R.getIconImage());
         // a rendszerikon megjelenítése
-        //SystemTrayIcon.setVisible(true);
+        SystemTrayIcon.setVisible(true);
     }
     
     /**
@@ -54,6 +54,7 @@ public class Main {
      */
     public static void main(String[] args) throws InterruptedException {
         Thread.sleep(5000);
+        System.exit(0);
     }
     
 }

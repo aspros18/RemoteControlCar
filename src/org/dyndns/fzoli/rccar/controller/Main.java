@@ -23,7 +23,7 @@ public class Main {
     /**
      * A híd szerverrel építi ki a kapcsolatot.
      */
-    private static final ConnectHelper CONN = new ConnectHelper(CONFIG);
+    private static final ConnectionHelper CONN = new ConnectionHelper(CONFIG);
     
     /**
      * Üzenettípusok.

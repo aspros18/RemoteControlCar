@@ -14,7 +14,7 @@ import org.dyndns.fzoli.socket.handler.event.HandlerListener;
  * Kliens oldalra egyszerű kapcsolódást megvalósító osztály.
  * @author zoli
  */
-public abstract class ClientConnectHelper {
+public abstract class ClientConnectionHelper {
 
     /**
      * Eszközazonosító.
@@ -53,7 +53,7 @@ public abstract class ClientConnectHelper {
      * @param deviceId eszközazonosító
      * @param connectionIds kapcsolatazonosítókat tartalmazó tömb
      */
-    public ClientConnectHelper(int deviceId, int[] connectionIds) {
+    public ClientConnectionHelper(int deviceId, int[] connectionIds) {
         if (connectionIds == null || connectionIds.length < 1) throw new IllegalArgumentException("At least one Connection ID needs to be added");
         this.deviceId = deviceId;
         this.connectionIds = connectionIds;

@@ -3,7 +3,7 @@ package org.dyndns.fzoli.rccar.controller;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import javax.net.ssl.SSLSocket;
-import org.dyndns.fzoli.rccar.ClientConnectHelper;
+import org.dyndns.fzoli.rccar.ClientConnectionHelper;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
 
@@ -11,7 +11,7 @@ import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
  * A vezérlő kliens híd szerverhez való kapcsolódását oldja meg.
  * @author zoli
  */
-public class ConnectHelper extends ClientConnectHelper {
+public class ConnectionHelper extends ClientConnectionHelper {
     
     /**
      * A vezérlő konfigurációja.
@@ -23,7 +23,7 @@ public class ConnectHelper extends ClientConnectHelper {
      * Eszközazonosító: 1
      * Kapcsolatazonosítók: 0, 1, 2
      */
-    public ConnectHelper(Config config) {
+    public ConnectionHelper(Config config) {
         super(1, new int[] {0, 1, 2});
         CONFIG = config;
     }
@@ -45,7 +45,7 @@ public class ConnectHelper extends ClientConnectHelper {
      */
     @Override
     protected AbstractSecureClientHandler createHandler(SSLSocket socket, int deviceId, int connectionId) {
-        return new ConnectHandler(socket, deviceId, connectionId);
+        return new ConnectionHandler(socket, deviceId, connectionId);
     }
     
 }

@@ -10,12 +10,12 @@ import org.dyndns.fzoli.socket.process.impl.ClientDisconnectProcess;
  * A vezérlő kapcsolatkezelője.
  * @author zoli
  */
-public class ConnectHandler extends AbstractSecureClientHandler {
+public class ConnectionHandler extends AbstractSecureClientHandler {
 
     /**
      * Szép konstruktor.
      */
-    public ConnectHandler(SSLSocket socket, int deviceId, int connectionId) {
+    public ConnectionHandler(SSLSocket socket, int deviceId, int connectionId) {
         super(socket, deviceId, connectionId);
     }
 

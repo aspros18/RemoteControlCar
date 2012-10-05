@@ -21,6 +21,11 @@ public class Main {
     private static final Config CONFIG = Config.getInstance();
     
     /**
+     * A híd szerverrel építi ki a kapcsolatot.
+     */
+    private static final ConnectHelper CONN = new ConnectHelper(CONFIG);
+    
+    /**
      * Üzenettípusok.
      */
     private static final String VAL_WARNING = "Figyelmeztetés", VAL_ERROR = "Hiba";
@@ -61,6 +66,16 @@ public class Main {
     }
     
     /**
+     * Egyelőre semmit nem csinál, de majd beállításokat fog megjeleníteni.
+     * Ha a kapcsolódás folyamatban van, megszakad.
+     * Ha modális az ablak és a beállítások változatlanok, a program végetér bezárásakor
+     * @param model modális legyen-e az ablak
+     */
+    private static void showSettingDialog(boolean modal) {
+        ; //TODO
+    }
+    
+    /**
      * A vezérlő main metódusa.
      * Nyitóképernyő tesztelés.
      * Szimulál 5 másodpercnyi töltést, aztán végetér a program.
@@ -68,7 +83,7 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         if (!CONFIG.isFileExists()) {
             alert(VAL_ERROR, (CONFIG.isDefault() ? "Az alapértelmezett konfiguráció nem használható, mert" : "A konfiguráció") + " nem létező fájlra hivatkozik." + LS + "A folytatás előtt a hibát helyre kell hozni.", System.err);
-            //TODO: modális ablakként megjeleníteni a beállításokat; ha bezárják, a program lépjen ki
+            showSettingDialog(true);
         }
         if (CONFIG.isCertDefault()) {
             showMessage(VAL_WARNING, "Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!", TrayIcon.MessageType.WARNING);

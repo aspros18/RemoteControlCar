@@ -10,7 +10,7 @@ import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
  * másodpercenként ellenőrizze, hogy megszakadt-e a kapcsolat.
  * @author zoli
  */
-public abstract class ClientDisconnectProcess extends AbstractSecureProcess implements DisconnectProcess {
+public class ClientDisconnectProcess extends AbstractSecureProcess implements DisconnectProcess {
 
     private static final int timeout = 1000;
     

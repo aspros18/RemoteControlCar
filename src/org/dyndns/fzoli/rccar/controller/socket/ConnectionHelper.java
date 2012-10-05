@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.ClientConnectionHelper;
+import org.dyndns.fzoli.rccar.ConnectionKeys;
 import org.dyndns.fzoli.rccar.controller.Config;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
@@ -12,7 +13,7 @@ import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
  * A vezérlő kliens híd szerverhez való kapcsolódását oldja meg.
  * @author zoli
  */
-public class ConnectionHelper extends ClientConnectionHelper {
+public class ConnectionHelper extends ClientConnectionHelper implements ConnectionKeys {
     
     /**
      * A vezérlő konfigurációja.
@@ -20,12 +21,11 @@ public class ConnectionHelper extends ClientConnectionHelper {
     private final Config CONFIG;
     
     /**
-     * Konstruktor az alábbi adatokkal.
-     * Eszközazonosító: 1
-     * Kapcsolatazonosítók: 0, 1, 2
+     * Konstruktor.
+     * TODO: Egyelőre teszt.
      */
     public ConnectionHelper(Config config) {
-        super(1, new int[] {0, 1, 2});
+        super(KEY_DEV_CONTROLLER, new int[] {KEY_CONN_DISCONNECT, KEY_CONN_DUMMY, KEY_CONN_DUMMY});
         CONFIG = config;
     }
 

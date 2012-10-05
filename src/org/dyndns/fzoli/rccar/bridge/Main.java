@@ -16,6 +16,8 @@ import static org.dyndns.fzoli.rccar.UncaughtExceptionHandler.showException;
 import org.dyndns.fzoli.rccar.bridge.resource.R;
 import org.dyndns.fzoli.rccar.bridge.socket.BridgeDisconnectProcess;
 import org.dyndns.fzoli.rccar.bridge.socket.BridgeHandler;
+import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.closeSplashScreen;
+import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.setDefaultSplashMessage;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
 
 /**
@@ -53,10 +55,12 @@ public class Main {
      * Még mielőtt lefutna a main metódus, beállítódik a rendszer LAF, a saját kivételkezelő, a rendszerikon és az erőforrás-felszabadító szál.
      */
     static {
+        setDefaultSplashMessage(); //TODO: erre nem lesz szükség
         setSystemLookAndFeel();
         setExceptionHandler();
         setSystemTrayIcon();
         addShutdownHook();
+        closeSplashScreen(); //TODO: erre nem lesz szükség
     }
     
     /**

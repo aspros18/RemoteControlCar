@@ -85,6 +85,19 @@ public class ConfigEditorDialog extends JDialog {
             UIManager.put("FileChooser.helpButtonToolTipText", "Súgó");
             UIManager.put("FileChooser.filesOfTypeLabelText", "Fájltípus");
             UIManager.put("FileChooser.upFolderToolTipText", "Fel");
+            UIManager.put("FileChooser.acceptAllFileFilterText", "Minden fájl");
+            UIManager.put("FileChooser.lookInLabelText", "Le");
+            UIManager.put("FileChooser.listViewButtonAccessibleName", "Lista");
+            UIManager.put("FileChooser.detailsViewButtonAccessibleName", "Részletek");
+            UIManager.put("FileChooser.upFolderAccessibleName", "Fel");
+            UIManager.put("FileChooser.homeFolderAccessibleName", "Kezdőkönyvtár");
+            UIManager.put("FileChooser.fileNameHeaderText", "Név"); 
+            UIManager.put("FileChooser.fileSizeHeaderText", "Méret"); 
+            UIManager.put("FileChooser.fileTypeHeaderText", "Típus"); 
+            UIManager.put("FileChooser.fileDateHeaderText", "Dátum"); 
+            UIManager.put("FileChooser.fileAttrHeaderText", "Tulajdonságok"); 
+            UIManager.put("FileChooser.openDialogTitleText","Megnyitás");
+            UIManager.put("FileChooser.readOnly", Boolean.TRUE);
         }
         
         private final Component PARENT;

@@ -1,30 +1,25 @@
 package org.dyndns.fzoli.rccar.controller;
 
-import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.text.ParseException;
 import java.util.regex.Pattern;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
-import javax.swing.UIManager;
-import javax.swing.text.DefaultFormatter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.dyndns.fzoli.rccar.controller.resource.R;
+import org.dyndns.fzoli.ui.FilePanel;
+import org.dyndns.fzoli.ui.RegexPatternFormatter;
 
 /**
  * A vezérlő konfigurációját beállító dialógusablak.
@@ -32,141 +27,6 @@ import org.dyndns.fzoli.rccar.controller.resource.R;
  * @author zoli
  */
 public class ConfigEditorDialog extends JDialog {
-
-    /**
-     * Reguláris kifejezésre illeszkedő szövegformázó.
-     */
-    private static class RegexPatternFormatter extends DefaultFormatter {
-
-        protected java.util.regex.Matcher matcher;
-
-        public RegexPatternFormatter(Pattern regex) {
-          setOverwriteMode(false);
-          matcher = regex.matcher(""); // Matcher inicializálása a regexhez
-        }
-
-        @Override
-        public Object stringToValue(String string) throws ParseException {
-            if (string == null)
-                return null;
-            matcher.reset(string); // Matcher szövegének beállítása
-
-            if (!matcher.matches()) // Ha nem illeszkedik a szöveg, kivételt dob
-                throw new ParseException("does not match regex", 0);
-
-            // Ha a szöveg illeszkedett, akkor vissza lehet térni vele
-            return super.stringToValue(string);
-        }
-
-    }
-    
-    /**
-     * Fájl megjelenítő és kiválasztó panel.
-     */
-    private static class FilePanel extends JPanel {
-
-        /**
-         * Beállítja a magyar elnevezéseket a fájl tallózóhoz.
-         */
-        static {
-            UIManager.put("FileChooser.fileNameLabelText", "Fájlnév");
-            UIManager.put("FileChooser.homeFolderToolTipText", "Kezdőkönyvtár");
-            UIManager.put("FileChooser.newFolderToolTipText", "Új könyvtár");
-            UIManager.put("FileChooser.listViewButtonToolTipTextlist", "Lista");
-            UIManager.put("FileChooser.detailsViewButtonToolTipText", "Részletek");
-            UIManager.put("FileChooser.saveButtonText", "Mentés");
-            UIManager.put("FileChooser.openButtonText", "Megnyitás");
-            UIManager.put("FileChooser.cancelButtonText", "Mégse");
-            UIManager.put("FileChooser.updateButtonText", "Frissítés");
-            UIManager.put("FileChooser.helpButtonText", "Súgó");
-            UIManager.put("FileChooser.saveButtonToolTipText", "Mentés");
-            UIManager.put("FileChooser.openButtonToolTipText", "Megnyitás");
-            UIManager.put("FileChooser.cancelButtonToolTipText", "Mégse");
-            UIManager.put("FileChooser.updateButtonToolTipText", "Frissítés");
-            UIManager.put("FileChooser.helpButtonToolTipText", "Súgó");
-            UIManager.put("FileChooser.filesOfTypeLabelText", "Fájltípus");
-            UIManager.put("FileChooser.upFolderToolTipText", "Fel");
-            UIManager.put("FileChooser.acceptAllFileFilterText", "Minden fájl");
-            UIManager.put("FileChooser.lookInLabelText", "Hely");
-            UIManager.put("FileChooser.listViewButtonAccessibleName", "Lista");
-            UIManager.put("FileChooser.detailsViewButtonAccessibleName", "Részletek");
-            UIManager.put("FileChooser.upFolderAccessibleName", "Fel");
-            UIManager.put("FileChooser.homeFolderAccessibleName", "Kezdőkönyvtár");
-            UIManager.put("FileChooser.fileNameHeaderText", "Név"); 
-            UIManager.put("FileChooser.fileSizeHeaderText", "Méret"); 
-            UIManager.put("FileChooser.fileTypeHeaderText", "Típus"); 
-            UIManager.put("FileChooser.fileDateHeaderText", "Dátum"); 
-            UIManager.put("FileChooser.fileAttrHeaderText", "Tulajdonságok"); 
-            UIManager.put("FileChooser.openDialogTitleText","Megnyitás");
-            UIManager.put("FileChooser.readOnly", Boolean.TRUE);
-        }
-        
-        private final Component PARENT;
-        
-        private File file;
-        
-        private final JButton btSearch = new JButton("Tallózás");
-        private final JTextField tfFile = new JTextField(20);
-        
-        /**
-         * Fájl tallózás eseményfigyelő.
-         * Ha a tallózásra kattintottak, fájlkereső ablak jelenik meg.
-         * A fájl kiválasztása után, beállítja a kiválasztott fájlt.
-         */
-        private final ActionListener alSearch = new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser fc = new JFileChooser();
-                if (JFileChooser.APPROVE_OPTION == fc.showOpenDialog(PARENT)) {
-                    setFile(fc.getSelectedFile());
-                }
-            }
-            
-        };
-        
-        /**
-         * Konstruktor. TODO: lehessen fájltípusra szűkíteni
-         * Megjeleníti a fejlécet, a fájlútvonal-mutatót és a tallózó gombot.
-         * @param text a fájlválasztó fejléce
-         */
-        public FilePanel(Component parent, String text) {
-            super(new GridBagLayout());
-            PARENT = parent;
-            setOpaque(false);
-            GridBagConstraints c = new GridBagConstraints();
-            c.insets = new Insets(2, 2, 2, 2);
-            c.gridwidth = 1;
-            c.fill = GridBagConstraints.BOTH;
-            c.gridx = 0;
-            c.gridy = 0;
-            c.weightx = 2;
-            add(new JLabel("<html>" + text + ":</html>"), c);
-            c.weightx = 1;
-            c.gridy = 1;
-            add(tfFile, c);
-            c.gridx = 1;
-            add(btSearch, c);
-            tfFile.setEditable(false);
-            btSearch.addActionListener(alSearch);
-        }
-        
-        /**
-         * A beállított fájlt adja vissza.
-         */
-        public File getFile() {
-            return file;
-        }
-        
-        /**
-         * Beállítja a fájlt.
-         */
-        public void setFile(File file) {
-            this.file = file;
-            tfFile.setText(file.toString());
-        }
-        
-    }
     
     /**
      * A dialógusablak lapfüleinek tartalma ebbe a panelbe kerül bele.
@@ -253,7 +113,9 @@ public class ConfigEditorDialog extends JDialog {
             setLayout(new GridLayout());
             GridBagConstraints c = new GridBagConstraints();
             c.fill = GridBagConstraints.BOTH;
-            add(new FilePanel(this, "Teszt"));
+            FilePanel fp = new FilePanel(this, "Teszt");
+            fp.setFileFilter(new FileNameExtensionFilter("Tanúsítvány-fájl (*.crt)", new String[] {"crt"}));
+            add(fp);
         }
     };
     

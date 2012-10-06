@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.controller;
 
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -13,12 +14,14 @@ import java.text.ParseException;
 import java.util.regex.Pattern;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
 import javax.swing.text.DefaultFormatter;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 
@@ -61,22 +64,59 @@ public class ConfigEditorDialog extends JDialog {
      */
     private static class FilePanel extends JPanel {
 
+        /**
+         * Beállítja a magyar elnevezéseket a fájl tallózóhoz.
+         */
+        static {
+            UIManager.put("FileChooser.fileNameLabelText", "Fájlnév");
+            UIManager.put("FileChooser.homeFolderToolTipText", "Kezdőkönyvtár");
+            UIManager.put("FileChooser.newFolderToolTipText", "Új könyvtár");
+            UIManager.put("FileChooser.listViewButtonToolTipTextlist", "Lista");
+            UIManager.put("FileChooser.detailsViewButtonToolTipText", "Részletek");
+            UIManager.put("FileChooser.saveButtonText", "Mentés");
+            UIManager.put("FileChooser.openButtonText", "Megnyitás");
+            UIManager.put("FileChooser.cancelButtonText", "Mégse");
+            UIManager.put("FileChooser.updateButtonText", "Frissítés");
+            UIManager.put("FileChooser.helpButtonText", "Súgó");
+            UIManager.put("FileChooser.saveButtonToolTipText", "Mentés");
+            UIManager.put("FileChooser.openButtonToolTipText", "Megnyitás");
+            UIManager.put("FileChooser.cancelButtonToolTipText", "Mégse");
+            UIManager.put("FileChooser.updateButtonToolTipText", "Frissítés");
+            UIManager.put("FileChooser.helpButtonToolTipText", "Súgó");
+            UIManager.put("FileChooser.filesOfTypeLabelText", "Fájltípus");
+            UIManager.put("FileChooser.upFolderToolTipText", "Fel");
+        }
+        
+        private final Component PARENT;
+        
         private File file;
         
         private final JButton btSearch = new JButton("Tallózás");
         private final JTextField tfFile = new JTextField(20);
         
+        /**
+         * Fájl tallózás eseményfigyelő.
+         * Ha a tallózásra kattintottak, fájlkereső ablak jelenik meg.
+         * A fájl kiválasztása után, beállítja a kiválasztott fájlt.
+         */
         private final ActionListener alSearch = new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+                JFileChooser fc = new JFileChooser();
+                fc.showOpenDialog(PARENT);
             }
             
         };
         
-        public FilePanel(String text) {
+        /**
+         * Konstruktor.
+         * Megjeleníti a fejlécet, a fájlútvonal-mutatót és a tallózó gombot.
+         * @param text a fájlválasztó fejléce
+         */
+        public FilePanel(Component parent, String text) {
             super(new GridBagLayout());
+            PARENT = parent;
             setOpaque(false);
             GridBagConstraints c = new GridBagConstraints();
             c.insets = new Insets(2, 2, 2, 2);
@@ -91,15 +131,23 @@ public class ConfigEditorDialog extends JDialog {
             add(tfFile, c);
             c.gridx = 1;
             add(btSearch, c);
+            tfFile.setEditable(false);
             btSearch.addActionListener(alSearch);
         }
         
+        /**
+         * A beállított fájlt adja vissza.
+         */
         public File getFile() {
             return file;
         }
         
+        /**
+         * Beállítja a fájlt.
+         */
         public void setFile(File file) {
-            
+            this.file = file;
+            tfFile.setText(file.toString());
         }
         
     }
@@ -189,7 +237,7 @@ public class ConfigEditorDialog extends JDialog {
             setLayout(new GridLayout());
             GridBagConstraints c = new GridBagConstraints();
             c.fill = GridBagConstraints.BOTH;
-            add(new FilePanel("Teszt"));
+            add(new FilePanel(this, "Teszt"));
         }
     };
     

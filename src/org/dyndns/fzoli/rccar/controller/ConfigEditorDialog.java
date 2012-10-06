@@ -71,9 +71,15 @@ public class ConfigEditorDialog extends JDialog {
      */
     private final Config CONFIG;
     
+    /**
+     * A szerver címe írható át benne.
+     */
     private final JTextField tfAddress = new JTextField();
     
-    private final JFormattedTextField tfPort = new JFormattedTextField(createPortFormatter());
+    /**
+     * A szerver portja írható át benne.
+     */
+    private final JTextField tfPort = new JFormattedTextField(createPortFormatter());
     
     /**
      * Az ablak bezárásakor lefutó eseménykezelő.
@@ -151,6 +157,9 @@ public class ConfigEditorDialog extends JDialog {
         initDialog();
     }
     
+    /**
+     * Inicializálja az ablakot.
+     */
     private void initDialog() {
         addWindowListener(closeListener);
         setTitle("Kapcsolatbeállító");
@@ -161,6 +170,9 @@ public class ConfigEditorDialog extends JDialog {
         setLocationRelativeTo(this);
     }
     
+    /**
+     * A port maszkolására hoz létre egy formázó objektumot.
+     */
     private AbstractFormatter createPortFormatter() {
         Pattern ptPort = Pattern.compile("[\\d]{0,5}", Pattern.CASE_INSENSITIVE);
         RegexPatternFormatter fmPort = new RegexPatternFormatter(ptPort) {
@@ -168,7 +180,7 @@ public class ConfigEditorDialog extends JDialog {
             @Override
             public Object stringToValue(String string) throws ParseException {
                 try {
-                    if (string.isEmpty()) return "";
+                    if (string.isEmpty()) return CONFIG.getPort();
                     int number = Integer.parseInt(string);
                     if (number < 1 || number > 65536) throw new Exception();
                 }
@@ -183,6 +195,9 @@ public class ConfigEditorDialog extends JDialog {
         return fmPort;
     }
     
+    /**
+     * Betölti a konfigurációt a felület elemeibe.
+     */
     private void loadConfig() {
         tfAddress.setText(CONFIG.getAddress());
         tfPort.setText(Integer.toString(CONFIG.getPort()));

@@ -118,7 +118,9 @@ public class ConfigEditorDialog extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fc = new JFileChooser();
-                System.out.println(fc.showOpenDialog(PARENT));
+                if (JFileChooser.APPROVE_OPTION == fc.showOpenDialog(PARENT)) {
+                    setFile(fc.getSelectedFile());
+                }
             }
             
         };

@@ -99,7 +99,7 @@ public class FilePanel extends JPanel {
     /**
      * A kiválasztott fájl útvonalát jeleníti meg.
      */
-    private final JTextField tfFile = new JTextField(20);
+    private final JTextField tfFile = new JTextField(10);
 
     /**
      * A panelen megjelenített fájl.

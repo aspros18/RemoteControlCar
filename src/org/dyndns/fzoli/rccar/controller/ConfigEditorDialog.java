@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.controller;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -122,7 +123,9 @@ public class ConfigEditorDialog extends JDialog {
             
             c.gridy = 0; // nulladik sor
             c.gridwidth = 2; // két oszlopot foglal el a magyarázat
-            add(new JLabel("<html>Ezen a lapfülen állíthatja be a híd szervernek az elérési útvonalát.</html>"), c);
+            JLabel lbMsg = new JLabel("<html>Ezen a lapfülen állíthatja be a híd szervernek az elérési útvonalát.</html>");
+            lbMsg.setPreferredSize(new Dimension(240, 30));
+            add(lbMsg, c);
             c.gridwidth = 1; // a többi elem egy oszlopot foglal el
             
             c.gridy = 1; // első sor (1, 1)
@@ -184,7 +187,7 @@ public class ConfigEditorDialog extends JDialog {
         setIconImage(R.getIconImage());
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         add(tabbedPane);
-        setSize(300, 210);
+        pack();
         setLocationRelativeTo(this);
     }
     

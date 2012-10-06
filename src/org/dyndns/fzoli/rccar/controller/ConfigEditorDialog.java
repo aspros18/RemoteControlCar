@@ -74,7 +74,7 @@ public class ConfigEditorDialog extends JDialog {
     /**
      * A szerver címe írható át benne.
      */
-    private final JTextField tfAddress = new JTextField();
+    private final JTextField tfAddress = new JFormattedTextField(createAddressFormatter());
     
     /**
      * A szerver portja írható át benne.
@@ -108,7 +108,7 @@ public class ConfigEditorDialog extends JDialog {
             
             c.gridy = 0; // nulladik sor
             c.gridwidth = 2; // két oszlopot foglal el a magyarázat
-            add(new JLabel("<html>Ezen a lapfülen állíthatja be a híd szerver elérési útvonalát.</html>"), c);
+            add(new JLabel("<html>Ezen a lapfülen állíthatja be a híd szervernek az elérési útvonalát.</html>"), c);
             c.gridwidth = 1; // a többi elem egy oszlopot foglal el
             
             c.gridy = 1; // első sor (1, 1)
@@ -171,10 +171,28 @@ public class ConfigEditorDialog extends JDialog {
     }
     
     /**
+     * A cím maszkolására hoz létre egy formázó objektumot.
+     */
+    private AbstractFormatter createAddressFormatter() {
+        Pattern ptAddress = Pattern.compile("^[a-z]{1}[\\w\\.]{0,18}[a-z]{1}$", Pattern.CASE_INSENSITIVE);
+        RegexPatternFormatter fmAddress = new RegexPatternFormatter(ptAddress) {
+
+            @Override
+            public Object stringToValue(String string) throws ParseException {
+                if (string.length() < 2) return CONFIG.getAddress();
+                return ((String)super.stringToValue(string)).toLowerCase();
+            }
+            
+        };
+        fmAddress.setAllowsInvalid(false);
+        return fmAddress;
+    }
+    
+    /**
      * A port maszkolására hoz létre egy formázó objektumot.
      */
     private AbstractFormatter createPortFormatter() {
-        Pattern ptPort = Pattern.compile("[\\d]{0,5}", Pattern.CASE_INSENSITIVE);
+        Pattern ptPort = Pattern.compile("^[\\d]{0,5}$", Pattern.CASE_INSENSITIVE);
         RegexPatternFormatter fmPort = new RegexPatternFormatter(ptPort) {
 
             @Override

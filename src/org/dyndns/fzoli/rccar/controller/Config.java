@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import org.dyndns.fzoli.rccar.controller.resource.MD5Checksum;
 
 /**
  * A vezérlő konfigurációját tölti be és menti el a felhasználó könyvtárába egy fájlba.
@@ -23,6 +24,19 @@ public class Config implements Serializable {
     private File ca = new File("test-certs", "ca.crt");
     private File cert = new File("test-certs", "controller.crt");
     private File key = new File("test-certs", "controller.key");
+    
+    /**
+     * Az alapértelmezett crt fájlok ujjlenyomatait tartalmazó tömb.
+     * Arra kellenek, hogy detektálni lehessen, hogy az alapértelmezett crt fájl van-e használva.
+     */
+    private static final String[] DEFAULT_MD5_SUMS = {
+        "cdd3bb2582891a0a3648df8bde333b01",
+        "2d561463be9984ebb7e3f93637f5629f",
+        "256799a47b53bbbdb3f47e13296e8982",
+        "80ef24662cef2cda28776bbbe846d611",
+        "5b3e0eba53a6911ac66b372e75028b9f",
+        "213ecbe458669ef1d421c042fae71c3d"
+    };
     
     /**
      * Az a fájl, amelybe a szerializálás történik.
@@ -96,15 +110,25 @@ public class Config implements Serializable {
         return DEFAULT.address.equals(address) &&
                DEFAULT.port == port &&
                DEFAULT.ca.equals(ca) &&
-               new String(DEFAULT.password).equals(new String(password)) &&
-               isCertDefault();
+               DEFAULT.cert.equals(cert) &&
+               DEFAULT.key.equals(key) &&
+               new String(DEFAULT.password).equals(new String(password));
     }
 
     /**
      * Megmondja, hogy az alapértelmezett tanúsítvány van-e beállítva.
      */
     public boolean isCertDefault() {
-        return DEFAULT.cert.equals(cert) && DEFAULT.key.equals(key);
+        try {
+            String md5Sum = MD5Checksum.getMD5Checksum(getCertFile());
+            for (String s : DEFAULT_MD5_SUMS) {
+                if (s.equals(md5Sum)) return true;
+            }
+            return false;
+        }
+        catch (Exception ex) {
+            return false;
+        }
     }
     
     /**

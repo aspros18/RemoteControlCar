@@ -99,20 +99,18 @@ public class Main {
             alert(VAL_ERROR, (CONFIG.isDefault() ? "Az alapértelmezett konfiguráció nem használható, mert" : "A konfiguráció") + " nem létező fájlra hivatkozik." + LS + "A folytatás előtt a hibát helyre kell hozni.", System.err);
             showSettingDialog(true);
         }
-        if (CONFIG.isDefault() || CONFIG.isCertDefault()) {
-            if (CONFIG.isDefault()) {
-                showMessage(VAL_WARNING, "A konfiguráció beállítása a menüből érhető el. Most ide kattintva is megteheti.", TrayIcon.MessageType.WARNING, new ActionListener() {
+        if (CONFIG.isCertDefault()) {
+            showMessage(VAL_WARNING, "Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!", TrayIcon.MessageType.WARNING);
+        }
+        if (CONFIG.isDefault()) {
+            showMessage(VAL_WARNING, "A konfiguráció beállítása a menüből érhető el. Most ide kattintva is megteheti.", TrayIcon.MessageType.WARNING, new ActionListener() {
 
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        showSettingDialog(false);
-                    }
-                
-                });
-            }
-            else if (CONFIG.isCertDefault()) {
-                showMessage(VAL_WARNING, "Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!", TrayIcon.MessageType.WARNING);
-            }
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    showSettingDialog(false);
+                }
+
+            });
         }
         //CONFIG.setPassword(new char[] {'a','a','a','a','a','a','a','a'});
         //CONN.connect();

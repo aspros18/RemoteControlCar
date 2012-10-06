@@ -31,8 +31,7 @@ public class ConfigEditorDialog extends JDialog {
     
     /**
      * A dialógusablak lapfüleinek tartalma ebbe a panelbe kerül bele.
-     * Mindegyik panel {@code GridBagLayout} elrendezésmenedzsert használ és
-     * mindegyik panel átlátszó.
+     * Mindegyik panel átlátszó.
      * @see GridBagLayout
      */
     private static class ConfigPanel extends JPanel {

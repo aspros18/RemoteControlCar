@@ -2,6 +2,7 @@ package org.dyndns.fzoli.rccar.controller;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -36,7 +37,6 @@ public class ConfigEditorDialog extends JDialog {
     private static class ConfigPanel extends JPanel {
         
         public ConfigPanel() {
-            super(new GridBagLayout());
             setOpaque(false);
         }
         
@@ -112,6 +112,7 @@ public class ConfigEditorDialog extends JDialog {
      */
     private final JPanel addressPanel = new ConfigPanel() {
         {
+            setLayout(new GridBagLayout());
             GridBagConstraints c = new GridBagConstraints();
             c.insets = new Insets(5, 5, 5, 5); // 5 pixeles margó
             c.fill = GridBagConstraints.BOTH; // teljes helykitöltés
@@ -146,16 +147,10 @@ public class ConfigEditorDialog extends JDialog {
      */
     private final JPanel certificatePanel = new ConfigPanel() {
         {
-            setLayout(new GridBagLayout());
-            GridBagConstraints c = new GridBagConstraints();
-            c.fill = GridBagConstraints.BOTH;
-            c.gridwidth = 1;
-            c.gridy = 0;
-            add(fpCa, c);
-            c.gridy = 1;
-            add(fpCert, c);
-            c.gridy = 2;
-            add(fpKey, c);
+            setLayout(new GridLayout(3, 1));
+            add(fpCa);
+            add(fpCert);
+            add(fpKey);
         }
     };
     

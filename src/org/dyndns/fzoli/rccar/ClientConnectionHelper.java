@@ -74,6 +74,13 @@ public abstract class ClientConnectionHelper {
     protected abstract AbstractSecureClientHandler createHandler(SSLSocket socket, int deviceId, int connectionId);
     
     /**
+     * Ha a kapcsolódás végetért, ez a metódus fut le.
+     */
+    protected void onConnected() {
+        ;
+    }
+    
+    /**
      * Ha kivétel keletkezik, ebben a metódusban le lehet kezelni.
      * @param ex a keletkezett kivétel
      * @param connectionId a közben használt kapcsolatazonosító
@@ -85,6 +92,8 @@ public abstract class ClientConnectionHelper {
     /**
      * Kapcsolódik a szerverhez a megadott kapcsolatazonosítóval.
      * A létrehozott socketet eltárolja a listában.
+     * Ha az utolsó kapcsolat is kialakult, @code{onConnect} metódus fut le.
+     * Ha bármi hiba történik, @code{onException} metódus fut le.
      * @param connectionId a kapcsolatazonosító
      * @param addListener megadja, kell-e eseményt hozzáadni
      */
@@ -97,6 +106,7 @@ public abstract class ClientConnectionHelper {
             AbstractSecureClientHandler handler = createHandler(conn, deviceId, connectionId);
             if (addListener) handler.addHandlerListener(listener);
             new Thread(handler).start();
+            if (connectionId == connectionIds[connectionIds.length - 1]) onConnected();
         }
         catch (Exception ex) {
             onException(ex, connectionId);
@@ -105,6 +115,8 @@ public abstract class ClientConnectionHelper {
     
     /**
      * Kapcsolódás a szerverhez.
+     * Ha az utolsó kapcsolat is kialakult, @code{onConnect} metódus fut le.
+     * Ha bármi hiba történik a kapcsolódások közben, @code{onException} metódus fut le.
      */
     public void connect() {
         runHandler(connectionIds[0], true);

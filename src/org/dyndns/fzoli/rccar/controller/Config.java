@@ -112,7 +112,8 @@ public class Config implements Serializable {
                DEFAULT.ca.equals(ca) &&
                DEFAULT.cert.equals(cert) &&
                DEFAULT.key.equals(key) &&
-               new String(DEFAULT.password).equals(new String(password));
+               new String(DEFAULT.password).equals(new String(password)) &&
+               isCertDefault();
     }
 
     /**

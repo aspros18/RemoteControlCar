@@ -2,11 +2,16 @@ package org.dyndns.fzoli.rccar.controller;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.text.ParseException;
 import java.util.regex.Pattern;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFormattedTextField.AbstractFormatter;
@@ -49,6 +54,54 @@ public class ConfigEditorDialog extends JDialog {
             return super.stringToValue(string);
         }
 
+    }
+    
+    /**
+     * Fájl megjelenítő és kiválasztó panel.
+     */
+    private static class FilePanel extends JPanel {
+
+        private File file;
+        
+        private final JButton btSearch = new JButton("Tallózás");
+        private final JTextField tfFile = new JTextField(20);
+        
+        private final ActionListener alSearch = new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+            }
+            
+        };
+        
+        public FilePanel(String text) {
+            super(new GridBagLayout());
+            setOpaque(false);
+            GridBagConstraints c = new GridBagConstraints();
+            c.insets = new Insets(2, 2, 2, 2);
+            c.gridwidth = 1;
+            c.fill = GridBagConstraints.BOTH;
+            c.gridx = 0;
+            c.gridy = 0;
+            c.weightx = 2;
+            add(new JLabel("<html>" + text + ":</html>"), c);
+            c.weightx = 1;
+            c.gridy = 1;
+            add(tfFile, c);
+            c.gridx = 1;
+            add(btSearch, c);
+            btSearch.addActionListener(alSearch);
+        }
+        
+        public File getFile() {
+            return file;
+        }
+        
+        public void setFile(File file) {
+            
+        }
+        
     }
     
     /**
@@ -133,7 +186,10 @@ public class ConfigEditorDialog extends JDialog {
      */
     private final JPanel certificatePanel = new ConfigPanel() {
         {
-            add(new JLabel("teszt2"));
+            setLayout(new GridLayout());
+            GridBagConstraints c = new GridBagConstraints();
+            c.fill = GridBagConstraints.BOTH;
+            add(new FilePanel("Teszt"));
         }
     };
     

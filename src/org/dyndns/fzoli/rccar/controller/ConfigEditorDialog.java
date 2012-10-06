@@ -126,7 +126,7 @@ public class ConfigEditorDialog extends JDialog {
         };
         
         /**
-         * Konstruktor.
+         * Konstruktor. TODO: lehessen fájltípusra szűkíteni
          * Megjeleníti a fejlécet, a fájlútvonal-mutatót és a tallózó gombot.
          * @param text a fájlválasztó fejléce
          */

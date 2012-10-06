@@ -121,8 +121,9 @@ public class Main {
         }
         //CONFIG.setPassword(new char[] {'a','a','a','a','a','a','a','a'});
         //CONN.connect();
-        Thread.sleep(5000);
-        System.exit(0);
+        //Thread.sleep(5000);
+        //System.exit(0);
+        showSettingDialog(true);
     }
     
 }

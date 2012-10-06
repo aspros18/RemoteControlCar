@@ -1,8 +1,12 @@
 package org.dyndns.fzoli.rccar.controller;
 
+import java.awt.GridBagLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 
 /**
@@ -12,6 +16,21 @@ import org.dyndns.fzoli.rccar.controller.resource.R;
  */
 public class ConfigEditorDialog extends JDialog {
 
+    /**
+     * A dialógusablak lapfüleinek tartalma ebbe a panelbe kerül bele.
+     * Mindegyik panel {@code GridBagLayout} elrendezésmenedzsert használ és
+     * mindegyik panel átlátszó.
+     * @see GridBagLayout
+     */
+    private static class ConfigPanel extends JPanel {
+
+        public ConfigPanel() {
+            super(new GridBagLayout());
+            setOpaque(false);
+        }
+        
+    }
+    
     /**
      * A konfiguráció, amit használ az ablak.
      */
@@ -31,6 +50,34 @@ public class ConfigEditorDialog extends JDialog {
     };
     
     /**
+     * Ezen a panelen állítható be a híd szerver elérési útvonala.
+     */
+    private final JPanel addressPanel = new ConfigPanel() {
+        {
+            add(new JLabel("teszt1"));
+        }
+    };
+    
+    /**
+     * Ezen a panelen állítható be a kapcsolathoz használt tanúsítvány.
+     */
+    private final JPanel certificatePanel = new ConfigPanel() {
+        {
+            add(new JLabel("teszt2"));
+        }
+    };
+    
+    /**
+     * Az ablakot teljes egészében kitöltő lapfüles panel.
+     */
+    private final JTabbedPane tabbedPane = new JTabbedPane() {
+        {
+            addTab("Cím", addressPanel);
+            addTab("Tanúsítvány", certificatePanel);
+        }
+    };
+    
+    /**
      * Konstruktor.
      * @param config konfiguráció, amit használ az ablak.
      */
@@ -40,10 +87,11 @@ public class ConfigEditorDialog extends JDialog {
         setTitle("Kapcsolat beállítása");
         setIconImage(R.getIconImage());
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        setSize(200, 100);
+        add(tabbedPane);
+        setSize(200, 110);
         setLocationRelativeTo(this);
     }
-
+    
     /**
      * Beállítja az ablak modalitását.
      */
@@ -71,7 +119,7 @@ public class ConfigEditorDialog extends JDialog {
      * TODO
      */
     private void onClosing() {
-        ;
+        System.exit(0);
     }
     
 }

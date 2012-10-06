@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.controller;
 
+import java.awt.GraphicsEnvironment;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -89,6 +90,10 @@ public class Main {
      * Szimulál 5 másodpercnyi töltést, aztán végetér a program.
      */
     public static void main(String[] args) throws InterruptedException {
+        if (GraphicsEnvironment.isHeadless()) {
+            System.err.println("A program futtatásához grafikus környezetre van szükség." + LS + "A program kilép.");
+            System.exit(1);
+        }
         System.out.println(CONFIG);
         if (!CONFIG.isFileExists()) {
             alert(VAL_ERROR, (CONFIG.isDefault() ? "Az alapértelmezett konfiguráció nem használható, mert" : "A konfiguráció") + " nem létező fájlra hivatkozik." + LS + "A folytatás előtt a hibát helyre kell hozni.", System.err);

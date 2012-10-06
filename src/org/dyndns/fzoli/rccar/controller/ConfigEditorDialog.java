@@ -267,7 +267,7 @@ public class ConfigEditorDialog extends JDialog {
      */
     @Override
     public void setVisible(boolean b) {
-        if (b) loadConfig();
+        if (b && !isVisible()) loadConfig();
         super.setVisible(b);
         if (b) {
             toFront();

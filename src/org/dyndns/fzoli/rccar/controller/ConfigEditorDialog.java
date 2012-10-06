@@ -1,12 +1,15 @@
 package org.dyndns.fzoli.rccar.controller;
 
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 
 /**
@@ -23,7 +26,7 @@ public class ConfigEditorDialog extends JDialog {
      * @see GridBagLayout
      */
     private static class ConfigPanel extends JPanel {
-
+        
         public ConfigPanel() {
             super(new GridBagLayout());
             setOpaque(false);
@@ -35,6 +38,9 @@ public class ConfigEditorDialog extends JDialog {
      * A konfiguráció, amit használ az ablak.
      */
     private final Config CONFIG;
+    
+    private final JTextField tfAddress = new JTextField(),
+                             tfPort = new JTextField();
     
     /**
      * Az ablak bezárásakor lefutó eseménykezelő.
@@ -54,7 +60,26 @@ public class ConfigEditorDialog extends JDialog {
      */
     private final JPanel addressPanel = new ConfigPanel() {
         {
-            add(new JLabel("teszt1"));
+            GridBagConstraints c = new GridBagConstraints();
+            c.insets = new Insets(5, 5, 5, 5);
+            c.fill = GridBagConstraints.BOTH;
+            
+            c.gridx = 1; // első oszlop
+            
+            c.gridy = 1; // első sor (1, 1)
+            add(new JLabel("Szerver cím:"), c);
+            
+            c.gridy = 2; // második sor (1, 2)
+            add(new JLabel("Szerver port:"), c);
+            
+            c.weightx = 1;
+            c.gridx = 2; // második oszlop
+            
+            c.gridy = 1; // első sor (2, 1)
+            add(tfAddress, c);
+            
+            c.gridy = 2; // második sor (2, 2)
+            add(tfPort, c);
         }
     };
     
@@ -72,7 +97,7 @@ public class ConfigEditorDialog extends JDialog {
      */
     private final JTabbedPane tabbedPane = new JTabbedPane() {
         {
-            addTab("Cím", addressPanel);
+            addTab("Útvonal", addressPanel);
             addTab("Tanúsítvány", certificatePanel);
         }
     };
@@ -83,13 +108,23 @@ public class ConfigEditorDialog extends JDialog {
      */
     public ConfigEditorDialog(Config config) {
         CONFIG = config;
+        loadConfig();
+        initDialog();
+    }
+    
+    private void initDialog() {
         addWindowListener(closeListener);
-        setTitle("Kapcsolat beállítása");
+        setTitle("Kapcsolatbeállító");
         setIconImage(R.getIconImage());
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         add(tabbedPane);
-        setSize(200, 110);
+        setSize(300, 210);
         setLocationRelativeTo(this);
+    }
+    
+    private void loadConfig() {
+        tfAddress.setText(CONFIG.getAddress());
+        tfPort.setText(Integer.toString(CONFIG.getPort()));
     }
     
     /**

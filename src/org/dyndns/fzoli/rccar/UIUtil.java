@@ -2,8 +2,10 @@ package org.dyndns.fzoli.rccar;
 
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.io.Console;
 import java.io.PrintStream;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -28,7 +30,7 @@ public class UIUtil {
      * Ha nincs se konzol, se grafikus felület, a program kilép.
      * Ha a dialógus ablakon nem az OK-ra kattintottak, a program kilép.
      */
-    public static char[] showPasswordInput() {
+    public static char[] showPasswordInput(Image icon) {
         String message = "A tanúsítvány beolvasása sikertelen volt.";
         String request = "Adja meg a tanúsítvány jelszavát, ha van: ";
         if (GraphicsEnvironment.isHeadless()) {
@@ -41,6 +43,8 @@ public class UIUtil {
             return console.readPassword(request);
         }
         else {
+            JFrame dummyFrame = new JFrame();
+            dummyFrame.setIconImage(icon);
             JPanel panel = new JPanel(new GridLayout(3, 1));
             JLabel lbMessage = new JLabel(message);
             JLabel lbRequest = new JLabel(request);
@@ -49,7 +53,7 @@ public class UIUtil {
             panel.add(lbRequest);
             panel.add(pass);
             String[] options = new String[] {"OK", "Kilépés"};
-            int option = JOptionPane.showOptionDialog(null, panel, "Jelszó",
+            int option = JOptionPane.showOptionDialog(dummyFrame, panel, "Jelszó",
                 JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE,
                 null, options, options[1]);
             if (option == 0) {

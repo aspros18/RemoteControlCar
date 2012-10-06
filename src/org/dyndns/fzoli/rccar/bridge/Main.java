@@ -199,7 +199,7 @@ public class Main {
             return SSLSocketUtil.createServerSocket(CONFIG.getPort(), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile(), CONFIG.getPassword());
         }
         catch (KeyStoreException ex) {
-            CONFIG.setPassword(showPasswordInput());
+            CONFIG.setPassword(showPasswordInput(R.getBridgeImage()));
             return createServerSocket();
         }
         catch(Exception ex) {

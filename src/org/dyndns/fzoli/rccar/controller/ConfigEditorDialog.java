@@ -14,6 +14,7 @@ import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
@@ -172,7 +173,6 @@ public class ConfigEditorDialog extends JDialog {
      */
     public ConfigEditorDialog(Config config) {
         CONFIG = config;
-        loadConfig();
         initComponents();
         initDialog();
     }
@@ -263,9 +263,11 @@ public class ConfigEditorDialog extends JDialog {
     /**
      * Megjeleníti vagy elrejti az ablakot.
      * Ha megjelenést kértek, előtérbe kerül az ablak.
+     * A konfiguráció frissül az ablak megjelenésekor.
      */
     @Override
     public void setVisible(boolean b) {
+        if (b) loadConfig();
         super.setVisible(b);
         if (b) {
             toFront();
@@ -279,7 +281,24 @@ public class ConfigEditorDialog extends JDialog {
      * TODO
      */
     private void onClosing() {
-        System.exit(0);
+        if (!CONFIG.getCAFile().equals(fpCa.getFile()) ||
+            !CONFIG.getCertFile().equals(fpCert.getFile()) ||
+            !CONFIG.getKeyFile().equals(fpKey.getFile()) ||
+            !CONFIG.getAddress().equals(tfAddress.getText()) ||
+            CONFIG.getPort() != Integer.parseInt(tfPort.getText())) {
+            int sel = JOptionPane.showOptionDialog(this, "Teszt", getTitle(), JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[] {"Igen", "Nem", "Mégse"}, "Mégse");
+            switch (sel) {
+                case 0:
+                    System.exit(0);
+                    break;
+                case 1:
+                    dispose();
+                    break;
+            }
+        }
+        else {
+            dispose();
+        }
     }
     
 }

@@ -79,68 +79,70 @@ public class Main {
      * Hozzáadja a kapcsolatjelzés és kilépés menüopciót beállítja az ikont és megjeleníti azt.
      */
     private static void setSystemTrayIcon() {
-        // az ikon beállítása
-        SystemTrayIcon.setIcon("Mobile-RC híd", R.getBridgeImage());
-        
-        // kapcsolatjelzés beállító opció létrehozása és beállítása
-        final CheckboxMenuItem miConnLog = new CheckboxMenuItem(VAL_CONN_LOG, BridgeDisconnectProcess.isLogEnabled());
-        miConnLog.addItemListener(new ItemListener() {
-
-            /**
-             * Ha a naplózás beállítását kérik.
-             */
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                // naplózás beállítása az ellenkezőjére, mint volt
-                BridgeDisconnectProcess.setLogEnabled(!BridgeDisconnectProcess.isLogEnabled());
-                // a megváltozott opció frissítése
-                miConnLog.setState(BridgeDisconnectProcess.isLogEnabled());
-            }
+        if (SystemTrayIcon.isSupported()) {
+            // az ikon beállítása
+            SystemTrayIcon.setIcon("Mobile-RC híd", R.getBridgeImage());
             
-        });
-        
-        // figyelmeztetés beállító opció létrehozása és beállítása
-        final CheckboxMenuItem miWarnLog = new CheckboxMenuItem(VAL_WARNING, BridgeHandler.isWarnEnabled());
-        miWarnLog.addItemListener(new ItemListener() {
+            // kapcsolatjelzés beállító opció létrehozása és beállítása
+            final CheckboxMenuItem miConnLog = new CheckboxMenuItem(VAL_CONN_LOG, BridgeDisconnectProcess.isLogEnabled());
+            miConnLog.addItemListener(new ItemListener() {
 
-            /**
-             * Ha a naplózás beállítását kérik.
-             */
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                // warn beállítása az ellenkezőjére, mint volt
-                BridgeHandler.setWarnEnabled(!BridgeHandler.isWarnEnabled());
-                // a megváltozott opció frissítése
-                miWarnLog.setState(BridgeHandler.isWarnEnabled());
-            }
-            
-        });
-        
-        // figyelmeztetés beállító opció hozzáadása
-        SystemTrayIcon.addMenuItem(miWarnLog);
-        
-        // kapcsolatjelzés beállító opció hozzáadása
-        SystemTrayIcon.addMenuItem(miConnLog);
-        
-        // szeparátor hozzáadása a menühöz
-        SystemTrayIcon.addMenuSeparator();
-        
-        // kilépés opció hozzáadása
-        SystemTrayIcon.addMenuItem("Kilépés", new ActionListener() {
+                /**
+                 * Ha a naplózás beállítását kérik.
+                 */
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    // naplózás beállítása az ellenkezőjére, mint volt
+                    BridgeDisconnectProcess.setLogEnabled(!BridgeDisconnectProcess.isLogEnabled());
+                    // a megváltozott opció frissítése
+                    miConnLog.setState(BridgeDisconnectProcess.isLogEnabled());
+                }
 
-            /**
-             * Ha a kilépésre kattintottak.
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // a program kilép
-                System.exit(0);
-            }
-            
-        });
-        
-        // a rendszerikon megjelenítése
-        SystemTrayIcon.setVisible(true);
+            });
+
+            // figyelmeztetés beállító opció létrehozása és beállítása
+            final CheckboxMenuItem miWarnLog = new CheckboxMenuItem(VAL_WARNING, BridgeHandler.isWarnEnabled());
+            miWarnLog.addItemListener(new ItemListener() {
+
+                /**
+                 * Ha a naplózás beállítását kérik.
+                 */
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    // warn beállítása az ellenkezőjére, mint volt
+                    BridgeHandler.setWarnEnabled(!BridgeHandler.isWarnEnabled());
+                    // a megváltozott opció frissítése
+                    miWarnLog.setState(BridgeHandler.isWarnEnabled());
+                }
+
+            });
+
+            // figyelmeztetés beállító opció hozzáadása
+            SystemTrayIcon.addMenuItem(miWarnLog);
+
+            // kapcsolatjelzés beállító opció hozzáadása
+            SystemTrayIcon.addMenuItem(miConnLog);
+
+            // szeparátor hozzáadása a menühöz
+            SystemTrayIcon.addMenuSeparator();
+
+            // kilépés opció hozzáadása
+            SystemTrayIcon.addMenuItem("Kilépés", new ActionListener() {
+
+                /**
+                 * Ha a kilépésre kattintottak.
+                 */
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // a program kilép
+                    System.exit(0);
+                }
+
+            });
+
+            // a rendszerikon megjelenítése
+            SystemTrayIcon.setVisible(true);
+        }
     }
     
     /**

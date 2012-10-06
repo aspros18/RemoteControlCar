@@ -69,8 +69,15 @@ public class FilePanel extends JPanel {
             JFileChooser fc = new JFileChooser();
             fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
             fc.setAcceptAllFileFilterUsed(fileFilter == null);
+            fc.setMultiSelectionEnabled(false);
             fc.setFileHidingEnabled(true);
-            if (fileFilter != null) fc.setFileFilter(fileFilter);
+            if (file != null) {
+                fc.setSelectedFile(file);
+                fc.setCurrentDirectory(file);
+            }
+            if (fileFilter != null) {
+                fc.setFileFilter(fileFilter);
+            }
             if (JFileChooser.APPROVE_OPTION == fc.showOpenDialog(PARENT)) {
                 setFile(fc.getSelectedFile());
             }
@@ -142,8 +149,9 @@ public class FilePanel extends JPanel {
      * Beállítja a fájlt és megjeleníti.
      */
     public void setFile(File file) {
+        if (!file.isFile()) return;
         this.file = file;
-        tfFile.setText(file.toString());
+        tfFile.setText(file.getName());
     }
 
     /**

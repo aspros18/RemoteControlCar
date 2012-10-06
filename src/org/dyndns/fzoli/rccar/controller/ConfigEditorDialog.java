@@ -2,7 +2,6 @@ package org.dyndns.fzoli.rccar.controller;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -44,6 +43,16 @@ public class ConfigEditorDialog extends JDialog {
     }
     
     /**
+     * Crt fájlszűrő.
+     */
+    private static final FileNameExtensionFilter fnefCrt = new FileNameExtensionFilter("Tanúsítvány (*.crt)", new String[] {"crt"});
+    
+    /**
+     * Key fájlszűrő.
+     */
+    private static final FileNameExtensionFilter fnefKey = new FileNameExtensionFilter("Tanúsítvány kulcs (*.key)", new String[] {"key"});
+    
+    /**
      * A konfiguráció, amit használ az ablak.
      */
     private final Config CONFIG;
@@ -57,6 +66,33 @@ public class ConfigEditorDialog extends JDialog {
      * A szerver portja írható át benne.
      */
     private final JTextField tfPort = new JFormattedTextField(createPortFormatter());
+    
+    /**
+     * A kiállító fájl tallózó panele.
+     */
+    private final FilePanel fpCa = new FilePanel(this, "Kiállító") {
+        {
+            setFileFilter(fnefCrt);
+        }
+    };
+    
+    /**
+     * A tanúsítvány fájl tallózó panele.
+     */
+    private final FilePanel fpCert = new FilePanel(this, "Tanúsítvány") {
+        {
+            setFileFilter(fnefCrt);
+        }
+    };
+    
+    /**
+     * A tanúsítvány kulcs-fájl tallózó panele.
+     */
+    private final FilePanel fpKey = new FilePanel(this, "Kulcs") {
+        {
+            setFileFilter(fnefKey);
+        }
+    };
     
     /**
      * Az ablak bezárásakor lefutó eseménykezelő.
@@ -110,12 +146,16 @@ public class ConfigEditorDialog extends JDialog {
      */
     private final JPanel certificatePanel = new ConfigPanel() {
         {
-            setLayout(new GridLayout());
+            setLayout(new GridBagLayout());
             GridBagConstraints c = new GridBagConstraints();
             c.fill = GridBagConstraints.BOTH;
-            FilePanel fp = new FilePanel(this, "Teszt");
-            fp.setFileFilter(new FileNameExtensionFilter("Tanúsítvány-fájl (*.crt)", new String[] {"crt"}));
-            add(fp);
+            c.gridwidth = 1;
+            c.gridy = 0;
+            add(fpCa, c);
+            c.gridy = 1;
+            add(fpCert, c);
+            c.gridy = 2;
+            add(fpKey, c);
         }
     };
     
@@ -162,6 +202,17 @@ public class ConfigEditorDialog extends JDialog {
     }
     
     /**
+     * Betölti a konfigurációt a felület elemeibe.
+     */
+    private void loadConfig() {
+        tfAddress.setText(CONFIG.getAddress());
+        tfPort.setText(Integer.toString(CONFIG.getPort()));
+        fpCa.setFile(CONFIG.getCAFile());
+        fpCert.setFile(CONFIG.getCertFile());
+        fpKey.setFile(CONFIG.getKeyFile());
+    }
+    
+    /**
      * A cím maszkolására hoz létre egy formázó objektumot.
      */
     private AbstractFormatter createAddressFormatter() {
@@ -202,14 +253,6 @@ public class ConfigEditorDialog extends JDialog {
         };
         fmPort.setAllowsInvalid(false);
         return fmPort;
-    }
-    
-    /**
-     * Betölti a konfigurációt a felület elemeibe.
-     */
-    private void loadConfig() {
-        tfAddress.setText(CONFIG.getAddress());
-        tfPort.setText(Integer.toString(CONFIG.getPort()));
     }
     
     /**

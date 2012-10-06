@@ -70,6 +70,38 @@ public class Main {
     private static void setSystemTrayIcon() {
         // az ikon beállítása
         SystemTrayIcon.setIcon("Mobile-RC", R.getIconImage());
+        
+        // kapcsolatbeállítás opció hozzáadása
+        SystemTrayIcon.addMenuItem("Kapcsolatbeállítás", new ActionListener() {
+
+            /**
+             * Ha a kapcsolatbeállításra kattintottak.
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // kapcsolatbeállító ablak megjelenítése
+                showSettingDialog(false);
+            }
+            
+        });
+        
+        //szeparátor hozzáadása
+        SystemTrayIcon.addMenuSeparator();
+        
+        // kilépés opció hozzáadása
+        SystemTrayIcon.addMenuItem("Kilépés", new ActionListener() {
+
+            /**
+             * Ha a kilépésre kattintottak.
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // a program kilép
+                System.exit(0);
+            }
+            
+        });
+        
         // a rendszerikon megjelenítése
         SystemTrayIcon.setVisible(true);
     }

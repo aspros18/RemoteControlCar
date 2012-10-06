@@ -114,6 +114,8 @@ public class Main {
                 showMessage(VAL_WARNING, "Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!", TrayIcon.MessageType.WARNING);
             }
         }
+        //CONFIG.setPassword(new char[] {'a','a','a','a','a','a','a','a'});
+        //CONN.connect();
         Thread.sleep(5000);
         System.exit(0);
     }

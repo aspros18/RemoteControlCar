@@ -1,8 +1,13 @@
 package org.dyndns.fzoli.rccar;
 
 import java.awt.GraphicsEnvironment;
+import java.awt.GridLayout;
+import java.io.Console;
 import java.io.PrintStream;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.UIManager;
 
 /**
@@ -15,6 +20,47 @@ public class UIUtil {
      * Általános rendszerváltozók.
      */
     private static final String LS = System.getProperty("line.separator");
+    
+    /**
+     * Bekéri a tanúsítvány jelszavát a felhasználótól.
+     * Ha a grafikus felület elérhető, dialógus ablakban kéri be a jelszót,
+     * egyébként megpróbálja konzolról bekérni a jelszót.
+     * Ha nincs se konzol, se grafikus felület, a program kilép.
+     * Ha a dialógus ablakon nem az OK-ra kattintottak, a program kilép.
+     */
+    public static char[] showPasswordInput() {
+        String message = "A tanúsítvány beolvasása sikertelen volt.";
+        String request = "Adja meg a tanúsítvány jelszavát, ha van: ";
+        if (GraphicsEnvironment.isHeadless()) {
+            Console console = System.console();
+            if (console == null) {
+                alert("Hiba", "A tanúsítvány jelszava nem állítható be.", System.err);
+                System.exit(1);
+            }
+            console.printf("%s%n", message);
+            return console.readPassword(request);
+        }
+        else {
+            JPanel panel = new JPanel(new GridLayout(3, 1));
+            JLabel lbMessage = new JLabel(message);
+            JLabel lbRequest = new JLabel(request);
+            JPasswordField pass = new JPasswordField(10);
+            panel.add(lbMessage);
+            panel.add(lbRequest);
+            panel.add(pass);
+            String[] options = new String[] {"OK", "Kilépés"};
+            int option = JOptionPane.showOptionDialog(null, panel, "Jelszó",
+                JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+                null, options, options[1]);
+            if (option == 0) {
+                return pass.getPassword();
+            }
+            else {
+                System.exit(0);
+            }
+        }
+        return null;
+    }
     
     /**
      * Egy tályékoztató szöveget jelenít meg a felhasználónak.

@@ -30,8 +30,8 @@ public class SSLSocketUtil {
         server.setKeyMaterial(new KeyMaterial(crt, key, passwd)); //publikus és privát kulcs megadása a kapcsolathoz
         server.setTrustMaterial(new TrustMaterial(ca)); // csak a saját CA és az ő általa kiállított tanúsítványok legyenek megbízhatóak
         server.setCheckHostname(false); // a hostname kivételével minden más ellenőrzése, amikor a kliens kapcsolódik
-        server.setCheckExpiry(true);
-        server.setCheckCRL(true);
+        server.setCheckExpiry(true); // lejárat ellenőrzés
+        server.setCheckCRL(true); // visszavonás ellenőrzés
         return (SSLServerSocket) server.createServerSocket(port); // server socket létrehozása
     }
     
@@ -49,8 +49,8 @@ public class SSLSocketUtil {
         client.setKeyMaterial(new KeyMaterial(crt, key, passwd)); //publikus és privát kulcs megadása a kapcsolathoz
         client.setTrustMaterial(new TrustMaterial(ca)); // csak a megadott CA és az ő általa kiállított tanusítványok legyenek megbízhatóak
         client.setCheckHostname(false); // hostname ellenőrzés kikapcsolása, minden más engedélyezése
-        client.setCheckExpiry(true);
-        client.setCheckCRL(true);
+        client.setCheckExpiry(true); // lejárat ellenőrzés
+        client.setCheckCRL(true); // visszavonás ellenőrzés
         SSLSocket s = (SSLSocket) client.createSocket(host, port); // kliens socket létrehozása és kapcsolódás
         return s;
     }

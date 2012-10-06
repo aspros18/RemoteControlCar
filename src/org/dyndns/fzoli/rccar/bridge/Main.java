@@ -6,11 +6,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.IOException;
+import java.security.KeyStoreException;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.SystemTrayIcon;
 import static org.dyndns.fzoli.rccar.UIUtil.alert;
 import static org.dyndns.fzoli.rccar.UIUtil.setSystemLookAndFeel;
+import static org.dyndns.fzoli.rccar.UIUtil.showPasswordInput;
 import org.dyndns.fzoli.rccar.UncaughtExceptionHandler;
 import static org.dyndns.fzoli.rccar.UncaughtExceptionHandler.showException;
 import org.dyndns.fzoli.rccar.bridge.resource.R;
@@ -187,11 +189,16 @@ public class Main {
     
     /**
      * SSL Server socket létrehozása a konfig fájl alapján.
+     * Ha valamiért nem sikerül a tanúsítvány használata, jelszó bevitel jelenik meg.
      * @throws Error ha nem sikerül a szerver socket létrehozása
      */
     private static SSLServerSocket createServerSocket() {
         try {
             return SSLSocketUtil.createServerSocket(CONFIG.getPort(), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile(), CONFIG.getPassword());
+        }
+        catch (KeyStoreException ex) {
+            CONFIG.setPassword(showPasswordInput());
+            return createServerSocket();
         }
         catch(Exception ex) {
             alert(VAL_ERROR, "Nem sikerült a szerver elindítása a megadott porton: " + CONFIG.getPort() + LS + "Az operációsrendszer üzenete: " + ex.getMessage(), System.err);

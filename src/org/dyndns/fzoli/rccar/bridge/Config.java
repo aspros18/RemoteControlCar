@@ -63,6 +63,11 @@ public class Config {
             CC + ' ' + KEY_ROOT + " optional_admin_cert_common_name " + CC + " kitüntetett tanúsítvány, amivel rendszergazdaként használható a program";
     
     /**
+     * Ideignlenes jelszó a memóriában.
+     */
+    private char[] password = null;
+    
+    /**
      * Ez az osztály nem példányosítható kívülről és nem származhatnak belőle újabb osztályok.
      */
     private Config() {
@@ -119,8 +124,16 @@ public class Config {
      * Ha nincs megadva, üres karakterlánccal tér vissza.
      */
     public char[] getPassword() {
+        if (password != null) return password;
         if (getValues() == null || getValues().get(KEY_PASSWORD) == null) return new char[] {};
         return getValues().get(KEY_PASSWORD).toCharArray();
+    }
+    
+    /**
+     * A memóriában tárolja a megadott jelszót.
+     */
+    public void setPassword(char[] password) {
+        this.password = password;
     }
     
     /**

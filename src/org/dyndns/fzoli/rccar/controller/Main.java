@@ -30,6 +30,11 @@ public class Main {
     private static final ConnectionHelper CONN = new ConnectionHelper(CONFIG);
     
     /**
+     * Konfiguráció-szerkesztő ablak.
+     */
+    private static ConfigEditorDialog configEditor;
+    
+    /**
      * Üzenettípusok.
      */
     private static final String VAL_WARNING = "Figyelmeztetés", VAL_ERROR = "Hiba";
@@ -81,7 +86,9 @@ public class Main {
      * @param model modális legyen-e az ablak
      */
     private static void showSettingDialog(boolean modal) {
-        ; //TODO
+        if (configEditor == null) configEditor = new ConfigEditorDialog(CONFIG);
+        configEditor.setModal(modal);
+        configEditor.setVisible(true);
     }
     
     /**

@@ -92,8 +92,8 @@ public abstract class ClientConnectionHelper {
     /**
      * Kapcsolódik a szerverhez a megadott kapcsolatazonosítóval.
      * A létrehozott socketet eltárolja a listában.
-     * Ha az utolsó kapcsolat is kialakult, @code{onConnect} metódus fut le.
-     * Ha bármi hiba történik, @code{onException} metódus fut le.
+     * Ha az utolsó kapcsolat is kialakult, {@code onConnect} metódus fut le.
+     * Ha bármi hiba történik, {@code onException} metódus fut le.
      * @param connectionId a kapcsolatazonosító
      * @param addListener megadja, kell-e eseményt hozzáadni
      */
@@ -115,8 +115,8 @@ public abstract class ClientConnectionHelper {
     
     /**
      * Kapcsolódás a szerverhez.
-     * Ha az utolsó kapcsolat is kialakult, @code{onConnect} metódus fut le.
-     * Ha bármi hiba történik a kapcsolódások közben, @code{onException} metódus fut le.
+     * Ha az utolsó kapcsolat is kialakult, {@code onConnect} metódus fut le.
+     * Ha bármi hiba történik a kapcsolódások közben, {@code onException} metódus fut le.
      */
     public void connect() {
         runHandler(connectionIds[0], true);

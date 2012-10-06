@@ -40,7 +40,7 @@ public class SplashScreenLoader {
      * Inicializálás.
      * Ha nincs grafikus felület, nincs mit tenni.
      * Ha van grafikus felület és nyitóképernyő, a "Mobile-RC" felirat megjelenik,
-     * és a @code{setSplashMessage} metódus boldogan teljesíti a kéréseket.
+     * és a {@code setSplashMessage} metódus boldogan teljesíti a kéréseket.
      */
     static {
         if (GraphicsEnvironment.isHeadless()) {

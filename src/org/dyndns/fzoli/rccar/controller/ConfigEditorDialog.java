@@ -12,6 +12,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.text.ParseException;
 import java.util.regex.Pattern;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -271,6 +272,7 @@ public class ConfigEditorDialog extends JDialog {
     public ConfigEditorDialog(Config config) {
         CONFIG = config;
         loadConfig();
+        initComponents();
         initDialog();
     }
     
@@ -285,6 +287,14 @@ public class ConfigEditorDialog extends JDialog {
         add(tabbedPane);
         setSize(300, 210);
         setLocationRelativeTo(this);
+    }
+    
+    /**
+     * Inicializálja a komponenseket.
+     */
+    private void initComponents() {
+        tabbedPane.setFocusable(false);
+        tabbedPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     }
     
     /**

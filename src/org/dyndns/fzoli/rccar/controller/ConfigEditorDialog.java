@@ -86,7 +86,7 @@ public class ConfigEditorDialog extends JDialog {
             UIManager.put("FileChooser.filesOfTypeLabelText", "Fájltípus");
             UIManager.put("FileChooser.upFolderToolTipText", "Fel");
             UIManager.put("FileChooser.acceptAllFileFilterText", "Minden fájl");
-            UIManager.put("FileChooser.lookInLabelText", "Le");
+            UIManager.put("FileChooser.lookInLabelText", "Hely");
             UIManager.put("FileChooser.listViewButtonAccessibleName", "Lista");
             UIManager.put("FileChooser.detailsViewButtonAccessibleName", "Részletek");
             UIManager.put("FileChooser.upFolderAccessibleName", "Fel");
@@ -117,7 +117,7 @@ public class ConfigEditorDialog extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fc = new JFileChooser();
-                fc.showOpenDialog(PARENT);
+                System.out.println(fc.showOpenDialog(PARENT));
             }
             
         };

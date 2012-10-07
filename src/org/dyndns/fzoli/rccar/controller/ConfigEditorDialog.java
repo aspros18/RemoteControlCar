@@ -28,7 +28,6 @@ import org.dyndns.fzoli.ui.RegexPatternFormatter;
 
 /**
  * A vezérlő konfigurációját beállító dialógusablak.
- * TODO
  * @author zoli
  */
 public class ConfigEditorDialog extends JDialog {
@@ -150,8 +149,9 @@ public class ConfigEditorDialog extends JDialog {
         {
             setLayout(new GridBagLayout());
             GridBagConstraints c = new GridBagConstraints();
+            c.weighty = 1; // teljes helylefoglalás hosszúságban
             c.insets = new Insets(5, 5, 5, 5); // 5 pixeles margó
-            c.fill = GridBagConstraints.BOTH; // teljes helykitöltés
+            c.fill = GridBagConstraints.HORIZONTAL; // teljes helykitöltés horizontálisan (sorkitöltés)
             
             c.gridx = 1; // első oszlop
             c.weightx = 0; // csak annyit foglal, amennyit kell
@@ -159,7 +159,7 @@ public class ConfigEditorDialog extends JDialog {
             c.gridy = 0; // nulladik sor
             c.gridwidth = 2; // két oszlopot foglal el a magyarázat
             JLabel lbMsg = new JLabel("<html>Ezen a lapfülen állíthatja be a híd szervernek az elérési útvonalát.</html>");
-            lbMsg.setPreferredSize(new Dimension(240, 30));
+            lbMsg.setPreferredSize(new Dimension(240, 30)); // két sorba kerül az üzenet, mivel nem fér el egy sorban ezen a méreten
             add(lbMsg, c);
             c.gridwidth = 1; // a többi elem egy oszlopot foglal el
             
@@ -222,30 +222,30 @@ public class ConfigEditorDialog extends JDialog {
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.BOTH;
-        c.weightx = 1;
-        c.weighty = 1;
+        c.fill = GridBagConstraints.BOTH; // mindkét irányban helykitöltés
+        c.weightx = 1; // helyfoglalás szélességében ...
+        c.weighty = 1; // ... és hosszúságában is
         add(tabbedPane, c);
         c.gridy = 1;
-        c.fill = GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.LAST_LINE_END;
-        JPanel pButton = new JPanel();
+        c.weighty = 0; // minimális helyfoglalás ...
+        c.fill = GridBagConstraints.NONE; // ... nincs átméretezés ...
+        c.anchor = GridBagConstraints.LAST_LINE_END; // ... és jobb alsó sarokba kerül ...
+        JPanel pButton = new JPanel(); // ... a gombokat tartalmazó panel
         pButton.add(btCancel);
         pButton.add(btOk);
-        c.weighty = 0;
         add(pButton, c);
-        pack();
-        setMinimumSize(getSize());
-        setLocationRelativeTo(this);
+        pack(); // legkisebb méretre állítás ...
+        setMinimumSize(getSize()); // ... és ennél a méretnél csak nagyobb lehet az ablak
+        setLocationRelativeTo(this); // képernyő közepére igazítás
     }
     
     /**
      * Inicializálja a komponenseket.
      */
     private void initComponents() {
-        tabbedPane.setFocusable(false);
-        tabbedPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        btOk.setPreferredSize(btCancel.getPreferredSize());
+        tabbedPane.setFocusable(false); // zavaró kijelölés jelzés leszedése
+        tabbedPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // 5 x 5 pixeles margó
+        btOk.setPreferredSize(btCancel.getPreferredSize()); // a két gomb egy méretre állítása
     }
     
     /**
@@ -277,6 +277,7 @@ public class ConfigEditorDialog extends JDialog {
      * Ha nem megfelelő a konfiguráció és modális az ablak, a program leáll.
      */
     private void unsaveConfig() {
+        //TODO
         dispose();
     }
     
@@ -284,17 +285,19 @@ public class ConfigEditorDialog extends JDialog {
      * A cím maszkolására hoz létre egy formázó objektumot.
      */
     private AbstractFormatter createAddressFormatter() {
+        // IP címre és hosztnévre és egyéb egyedi címekre is egész jól használható szűrő
         Pattern ptAddress = Pattern.compile("^[a-z\\d]{1}[\\w\\.\\d]{0,18}[a-z\\d]{1}$", Pattern.CASE_INSENSITIVE);
         RegexPatternFormatter fmAddress = new RegexPatternFormatter(ptAddress) {
 
             @Override
             public Object stringToValue(String string) throws ParseException {
+                // ha a szöveg pontra végződik vagy rövidebb két karakternél, az eredeti szöveg kerül a helyére a szerkesztés befejezésekor
                 if (string.length() < 2 || string.endsWith(".")) return CONFIG.getAddress();
-                return ((String)super.stringToValue(string)).toLowerCase();
+                return ((String)super.stringToValue(string)).toLowerCase(); // a szerkesztés befejezésekor minden karaktert kicsire cserél
             }
             
         };
-        fmAddress.setAllowsInvalid(false);
+        fmAddress.setAllowsInvalid(false); // nem engedi meg a nem megfelelő értékek beírását
         return fmAddress;
     }
     
@@ -302,24 +305,29 @@ public class ConfigEditorDialog extends JDialog {
      * A port maszkolására hoz létre egy formázó objektumot.
      */
     private AbstractFormatter createPortFormatter() {
+        // maximum 5 karakter és csak szám lehet
         Pattern ptPort = Pattern.compile("^[\\d]{0,5}$", Pattern.CASE_INSENSITIVE);
         RegexPatternFormatter fmPort = new RegexPatternFormatter(ptPort) {
 
             @Override
             public Object stringToValue(String string) throws ParseException {
                 try {
+                    // ha a szöveg üres, az eredeti szöveg kerül a helyére a szerkesztés befejezésekor
                     if (string.isEmpty()) return CONFIG.getPort();
-                    int number = Integer.parseInt(string);
-                    if (number < 1 || number > 65536) throw new Exception();
+                    // ha a szöveg nem alakítható egész számmá vagy az intervallumon kívül esik, kivételt keletkezik...
+                    int number = Integer.parseInt(string); // ... itt
+                    if (number < 1 || number > 65536) throw new Exception(); // ... vagy itt
                 }
                 catch (Exception ex) {
+                    // ParseException kivétel dobása, hogy nem megfelelő az érték
                     throw new ParseException("invalid port", 0);
                 }
+                // ha eddig nem dobódott kivétel, még a regex kifejezés dobhat kivételt és ha dob, nem frissül a szöveg
                 return super.stringToValue(string);
             }
             
         };
-        fmPort.setAllowsInvalid(false);
+        fmPort.setAllowsInvalid(false); // nem engedi meg a nem megfelelő értékek beírását
         return fmPort;
     }
     
@@ -356,7 +364,7 @@ public class ConfigEditorDialog extends JDialog {
     
     /**
      * Az ablak bezárásakor ha módosult a konfiguráció és nincs mentve,
-     * megkérdi, akarja-e menteni.
+     * megkérdi, akarja-e menteni, egyébként biztos, hogy nincs mentés.
      */
     private void onClosing() {
         if (CONFIG.equals(tfAddress.getText(), Integer.parseInt(tfPort.getText()), fpCa.getFile(), fpCert.getFile(), fpKey.getFile())) {

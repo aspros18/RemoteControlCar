@@ -61,6 +61,9 @@ public class FilePanel extends JPanel {
      * Fájl tallózás eseményfigyelő.
      * Ha a tallózásra kattintottak, fájlkereső ablak jelenik meg.
      * A fájl kiválasztása után, beállítja a kiválasztott fájlt.
+     * Ha van már fájl beállítva, a keresőablak kijelöli a fájlt megjelenésekor.
+     * Ha nincs fájl beállítva még, de már más panelen állítottak be, akkor
+     * az utolsó kiválasztott fájl könyvtárából indul a keresés.
      */
     private final ActionListener alSearch = new ActionListener() {
 

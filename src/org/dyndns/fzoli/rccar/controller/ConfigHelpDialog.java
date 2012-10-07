@@ -15,7 +15,7 @@ import javax.swing.ScrollPaneConstants;
  */
 public class ConfigHelpDialog extends JDialog {
 
-    private static final JLabel taHelp = new JLabel("<html>Ahhoz, hogy kapcsolódni lehessen a szerverhez,<br>meg kell adni az elérési útvonalát, ami a címből<br>és a portból áll. A cím lehet IP cím és domain is.<br><br>A kommunikáció titkosított kapcsolaton kereszül<br>folyik, ezért a kliensnek szüksége van tanúsítványra.<br><br>A tanúsítvány három fájlból tevődik össze:<br>- kiállító<br>- nyílvános kulcs<br>- titkos kulcs<br><br>Mindhárom fájl szükséges ahhoz, hogy a kapcsolat<br>létrejöhessen a szerverrel, ezért addig nem indítható<br>a program, míg nincs mind a három fájl beállítva.</html>");
+    private static final JLabel taHelp = new JLabel("<html><span style=\"font-size: 14px\">Ahhoz, hogy kapcsolódni lehessen a szerverhez,<br>meg kell adni az elérési útvonalát, ami a címből<br>és a portból áll. A cím lehet IP cím és domain is.<br><br>A kommunikáció titkosított kapcsolaton kereszül<br>folyik, ezért a kliensnek szüksége van tanúsítványra.<br><br>A tanúsítvány három fájlból tevődik össze:<br>- kiállító<br>- nyílvános kulcs<br>- titkos kulcs<br><br>Mindhárom fájl szükséges ahhoz, hogy a kapcsolat<br>létrejöhessen a szerverrel, ezért addig nem indítható<br>a program, míg nincs mind a három fájl beállítva.</span></html>");
     
     public ConfigHelpDialog(Dialog owner) {
         super(owner, "Súgó"); // szülő és címsor szöveg beállítása

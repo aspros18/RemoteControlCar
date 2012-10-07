@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.ui;
 
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -13,6 +14,40 @@ import javax.swing.JPanel;
  */
 public class OkCancelPanel extends JPanel {
 
+    /**
+     * Láthatatlan gomb a súgó gomb helyére, ha nincs súgó gomb megadva.
+     */
+    private static final JButton INVISIBLE_BUTTON = new JButton() {
+
+        /**
+         * Nem rajzol semmit, tehát nem látható.
+         */
+        @Override
+        protected void paintComponent(Graphics g) {
+            ;
+        }
+        
+    };
+
+    /**
+     * Konstruktor.
+     * @param btOk Oké gomb
+     * @param btCancel Mégse gomb
+     * @param gap az Oké és Mégse gomb közötti rés
+     * @throws NullPointerException ha bármelyik gomb null
+     */
+    public OkCancelPanel(JButton btOk, JButton btCancel, int gap) {
+        this(btOk, btCancel, null, gap);
+    }
+    
+    /**
+     * Konstruktor.
+     * @param btOk Oké gomb
+     * @param btCancel Mégse gomb
+     * @param btHelp Súgó gomb
+     * @param gap az Oké és Mégse gomb közötti rés
+     * @throws NullPointerException ha az OK vagy Mégse gomb null
+     */
     public OkCancelPanel(JButton btOk, JButton btCancel, JButton btHelp, int gap) {
         super(new GridBagLayout());
         
@@ -22,8 +57,7 @@ public class OkCancelPanel extends JPanel {
         
         pc.weightx = Integer.MAX_VALUE; // a Súgó gomb tölti ki a nagy részt ...
         pc.anchor = GridBagConstraints.LINE_START; // ... és bal szélre kerül
-        add(btHelp, pc);
-        
+        add(btHelp == null ? INVISIBLE_BUTTON : btHelp, pc);
         pc.weightx = 1; // a másik két gomb minimális helyet foglal el ...
         pc.anchor = GridBagConstraints.LINE_END; // ... a jobb szélen
         
@@ -64,10 +98,10 @@ public class OkCancelPanel extends JPanel {
      * Létrehoz egy tömböt a paraméterben átadott gombokkal, hogy iterálni lehessen őket.
      */
     private static JButton[] createButtonArray(JButton btOk, JButton btCancel, JButton btHelp) {
-        final JButton[] buttons = new JButton[3];
+        final JButton[] buttons = new JButton[btHelp == null ? 2 : 3];
         buttons[0] = btOk;
         buttons[1] = btCancel;
-        buttons[2] = btHelp;
+        if (btHelp != null) buttons[2] = btHelp;
         return buttons;
     }
     

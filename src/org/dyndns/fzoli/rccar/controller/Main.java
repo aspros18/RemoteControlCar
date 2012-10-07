@@ -150,7 +150,6 @@ public class Main {
             System.err.println("A program futtatásához grafikus környezetre van szükség." + LS + "A program kilép.");
             System.exit(1);
         }
-        System.out.println(CONFIG);
         if (!CONFIG.isFileExists()) {
             alert(VAL_ERROR, (CONFIG.isDefault() ? "Az alapértelmezett konfiguráció nem használható, mert" : "A konfiguráció") + " nem létező fájlra hivatkozik." + LS + "A folytatás előtt a hibát helyre kell hozni.", System.err);
             showSettingDialog(true, 1);

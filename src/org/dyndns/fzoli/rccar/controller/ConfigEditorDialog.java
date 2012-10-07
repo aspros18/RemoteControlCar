@@ -5,11 +5,14 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.ParseException;
 import java.util.regex.Pattern;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFormattedTextField.AbstractFormatter;
@@ -99,13 +102,45 @@ public class ConfigEditorDialog extends JDialog {
      * Az ablak bezárásakor lefutó eseménykezelő.
      * Meghívja az {@code onClosing} metódust.
      */
-    private WindowAdapter closeListener = new WindowAdapter() {
+    private final WindowAdapter closeListener = new WindowAdapter() {
 
         @Override
         public void windowClosing(WindowEvent e) {
             onClosing();
         }
         
+    };
+    
+    /**
+     * Erre a gombra kattintva a konfiguráció elmentődik és bezárul az ablak.
+     */
+    private final JButton btOk = new JButton("OK") {
+        {
+            addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    saveConfig();
+                }
+                
+            });
+        }
+    };
+    
+    /**
+     * Erre a gombra kattintva bezárul az ablak, a konfiguráció nem változik.
+     */
+    private final JButton btCancel = new JButton("Mégse") {
+        {
+            addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    dispose();
+                }
+                
+            });
+        }
     };
     
     /**
@@ -185,7 +220,20 @@ public class ConfigEditorDialog extends JDialog {
         setTitle("Kapcsolatbeállító");
         setIconImage(R.getIconImage());
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        add(tabbedPane);
+        setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.BOTH;
+        c.weightx = 1;
+        c.weighty = 1;
+        add(tabbedPane, c);
+        c.gridy = 1;
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.LAST_LINE_END;
+        JPanel pButton = new JPanel();
+        pButton.add(btCancel);
+        pButton.add(btOk);
+        c.weighty = 0;
+        add(pButton, c);
         pack();
         setLocationRelativeTo(this);
     }
@@ -196,6 +244,7 @@ public class ConfigEditorDialog extends JDialog {
     private void initComponents() {
         tabbedPane.setFocusable(false);
         tabbedPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        btOk.setPreferredSize(btCancel.getPreferredSize());
     }
     
     /**
@@ -207,6 +256,19 @@ public class ConfigEditorDialog extends JDialog {
         fpCa.setFile(CONFIG.getCAFile());
         fpCert.setFile(CONFIG.getCertFile());
         fpKey.setFile(CONFIG.getKeyFile());
+    }
+    
+    /**
+     * Elmenti a konfigurációt és bezárja az ablakot.
+     */
+    private void saveConfig() {
+        CONFIG.setAddress(tfAddress.getText());
+        CONFIG.setCAFile(fpCa.getFile());
+        CONFIG.setCertFile(fpCert.getFile());
+        CONFIG.setKeyFile(fpKey.getFile());
+        CONFIG.setPort(Integer.parseInt(tfPort.getText()));
+        Config.save(CONFIG);
+        dispose();
     }
     
     /**
@@ -278,7 +340,6 @@ public class ConfigEditorDialog extends JDialog {
     /**
      * Az ablak bezárásakor ha módosult a konfiguráció és nincs mentve,
      * megkérdi, akarja-e menteni.
-     * TODO
      */
     private void onClosing() {
         if (!CONFIG.getCAFile().equals(fpCa.getFile()) ||
@@ -286,10 +347,10 @@ public class ConfigEditorDialog extends JDialog {
             !CONFIG.getKeyFile().equals(fpKey.getFile()) ||
             !CONFIG.getAddress().equals(tfAddress.getText()) ||
             CONFIG.getPort() != Integer.parseInt(tfPort.getText())) {
-            int sel = JOptionPane.showOptionDialog(this, "Teszt", getTitle(), JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[] {"Igen", "Nem", "Mégse"}, "Mégse");
+            int sel = JOptionPane.showOptionDialog(this, "Menti a módosításokat?", getTitle(), JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[] {"Igen", "Nem", "Mégse"}, "Mégse");
             switch (sel) {
                 case 0:
-                    System.exit(0);
+                    saveConfig();
                     break;
                 case 1:
                     dispose();

@@ -284,12 +284,12 @@ public class ConfigEditorDialog extends JDialog {
      * A cím maszkolására hoz létre egy formázó objektumot.
      */
     private AbstractFormatter createAddressFormatter() {
-        Pattern ptAddress = Pattern.compile("^[a-z]{1}[\\w\\.]{0,18}[a-z]{1}$", Pattern.CASE_INSENSITIVE);
+        Pattern ptAddress = Pattern.compile("^[a-z\\d]{1}[\\w\\.\\d]{0,18}[a-z\\d]{1}$", Pattern.CASE_INSENSITIVE);
         RegexPatternFormatter fmAddress = new RegexPatternFormatter(ptAddress) {
 
             @Override
             public Object stringToValue(String string) throws ParseException {
-                if (string.length() < 2) return CONFIG.getAddress();
+                if (string.length() < 2 || string.endsWith(".")) return CONFIG.getAddress();
                 return ((String)super.stringToValue(string)).toLowerCase();
             }
             

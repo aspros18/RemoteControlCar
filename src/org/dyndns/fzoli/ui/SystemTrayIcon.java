@@ -1,4 +1,4 @@
-package org.dyndns.fzoli.rccar;
+package org.dyndns.fzoli.ui;
 
 import java.awt.Image;
 import java.awt.MenuItem;

@@ -3,9 +3,9 @@ package org.dyndns.fzoli.rccar.controller.socket;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import javax.net.ssl.SSLSocket;
-import org.dyndns.fzoli.rccar.ClientConnectionHelper;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import org.dyndns.fzoli.rccar.controller.Config;
+import org.dyndns.fzoli.socket.ClientConnectionHelper;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
 

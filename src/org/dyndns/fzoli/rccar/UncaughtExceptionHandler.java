@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import org.dyndns.fzoli.exceptiondialog.UncaughtExceptionDialog;
 import org.dyndns.fzoli.exceptiondialog.UncaughtExceptionParameters;
 import org.dyndns.fzoli.exceptiondialog.event.UncaughtExceptionAdapter;
+import org.dyndns.fzoli.ui.SystemTrayIcon;
 
 /**
  * A program nem várt hibáit kezeli le.

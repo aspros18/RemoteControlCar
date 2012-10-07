@@ -1,9 +1,9 @@
 package org.dyndns.fzoli.rccar.bridge.socket;
 
-import static org.dyndns.fzoli.rccar.SystemTrayIcon.showMessage;
 import static org.dyndns.fzoli.rccar.bridge.Main.VAL_CONN_LOG;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.impl.ServerDisconnectProcess;
+import static org.dyndns.fzoli.ui.SystemTrayIcon.showMessage;
 
 /**
  * A híd oldalán vizsgálja, hogy él-e még a kapcsolat a klienssel.

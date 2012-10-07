@@ -5,14 +5,14 @@ import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.PrintStream;
-import org.dyndns.fzoli.rccar.SystemTrayIcon;
-import static org.dyndns.fzoli.rccar.SystemTrayIcon.showMessage;
 import org.dyndns.fzoli.rccar.UIUtil;
 import static org.dyndns.fzoli.rccar.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.rccar.UncaughtExceptionHandler;
 import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.setDefaultSplashMessage;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.controller.socket.ConnectionHelper;
+import org.dyndns.fzoli.ui.SystemTrayIcon;
+import static org.dyndns.fzoli.ui.SystemTrayIcon.showMessage;
 
 /**
  * A vezérlő indító osztálya.

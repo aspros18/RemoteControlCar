@@ -10,7 +10,6 @@ import java.io.PrintStream;
 import java.security.KeyStoreException;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
-import org.dyndns.fzoli.rccar.SystemTrayIcon;
 import org.dyndns.fzoli.rccar.UIUtil;
 import static org.dyndns.fzoli.rccar.UIUtil.setSystemLookAndFeel;
 import static org.dyndns.fzoli.rccar.UIUtil.showPasswordInput;
@@ -22,6 +21,7 @@ import org.dyndns.fzoli.rccar.bridge.socket.BridgeHandler;
 import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.closeSplashScreen;
 import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.setDefaultSplashMessage;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
+import org.dyndns.fzoli.ui.SystemTrayIcon;
 
 /**
  * A híd indító osztálya.

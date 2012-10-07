@@ -81,7 +81,7 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // kapcsolatbeállító ablak megjelenítése
-                showSettingDialog(false);
+                showSettingDialog(false, null);
             }
             
         });
@@ -118,9 +118,10 @@ public class Main {
      *   b) Nem: ablak bezárása, adatok elmentése
      *   c) Mégsem: nem tesz semmit, az ablak nem záródik be
      * @param force kényszerítve legyen-e a felhasználó helyes konfiguráció megadására
+     * @param tabIndex a megjelenő lapfül
      */
-    private static void showSettingDialog(boolean force) {
-        if (configEditor == null) configEditor = new ConfigEditorDialog(CONFIG);
+    private static void showSettingDialog(boolean force, Integer tabIndex) {
+        if (configEditor == null) configEditor = new ConfigEditorDialog(CONFIG, tabIndex);
         configEditor.setModal(force);
         configEditor.setVisible(true);
     }
@@ -152,7 +153,7 @@ public class Main {
         System.out.println(CONFIG);
         if (!CONFIG.isFileExists()) {
             alert(VAL_ERROR, (CONFIG.isDefault() ? "Az alapértelmezett konfiguráció nem használható, mert" : "A konfiguráció") + " nem létező fájlra hivatkozik." + LS + "A folytatás előtt a hibát helyre kell hozni.", System.err);
-            showSettingDialog(true);
+            showSettingDialog(true, 1);
         }
         if (CONFIG.isCertDefault()) {
             showMessage(VAL_WARNING, "Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!", TrayIcon.MessageType.WARNING);
@@ -162,7 +163,7 @@ public class Main {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    showSettingDialog(false);
+                    showSettingDialog(false, null);
                 }
 
             });
@@ -171,7 +172,7 @@ public class Main {
         //CONFIG.setPassword(new char[] {'a','a','a','a','a','a','a','a'});
         //CONN.connect();
         //Thread.sleep(5000);
-        if (CONFIG.isFileExists()) showSettingDialog(true);
+        if (CONFIG.isFileExists()) showSettingDialog(true, null);
         System.exit(0);
     }
     

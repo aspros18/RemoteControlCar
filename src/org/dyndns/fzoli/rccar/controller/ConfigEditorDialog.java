@@ -220,6 +220,16 @@ public class ConfigEditorDialog extends JDialog {
      * @param config konfiguráció, amit használ az ablak.
      */
     public ConfigEditorDialog(Config config) {
+        this(config, null);
+    }
+    
+    /**
+     * Konstruktor.
+     * @param config konfiguráció, amit használ az ablak.
+     * @param tabIndex a megjelenő lapfül
+     */
+    public ConfigEditorDialog(Config config, Integer tabIndex) {
+        if (tabIndex != null) tabbedPane.setSelectedIndex(tabIndex);
         CONFIG = config;
         initComponents();
         initDialog();

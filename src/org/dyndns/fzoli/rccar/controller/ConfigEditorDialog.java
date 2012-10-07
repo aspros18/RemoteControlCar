@@ -25,13 +25,14 @@ import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.ui.FilePanel;
+import org.dyndns.fzoli.ui.ModalFrame;
 import org.dyndns.fzoli.ui.RegexPatternFormatter;
 
 /**
  * A vezérlő konfigurációját beállító dialógusablak.
  * @author zoli
  */
-public class ConfigEditorDialog extends JDialog {
+public class ConfigEditorDialog extends ModalFrame {
     
     /**
      * A dialógusablak lapfüleinek tartalma ebbe a panelbe kerül bele.
@@ -360,21 +361,21 @@ public class ConfigEditorDialog extends JDialog {
         return fmPort;
     }
     
-    /**
-     * Megmondja, modális-e az ablak.
-     */
-    @Override
-    public boolean isModal() {
-        return !getModalityType().equals(ModalityType.MODELESS);
-    }
-    
-    /**
-     * Beállítja az ablak modalitását.
-     */
-    @Override
-    public void setModal(boolean modal) {
-        setModalityType(modal ? ModalityType.APPLICATION_MODAL : ModalityType.MODELESS);
-    }
+//    /**
+//     * Megmondja, modális-e az ablak.
+//     */
+//    @Override
+//    public boolean isModal() {
+//        return !getModalityType().equals(ModalityType.MODELESS);
+//    }
+//    
+//    /**
+//     * Beállítja az ablak modalitását.
+//     */
+//    @Override
+//    public void setModal(boolean modal) {
+//        setModalityType(modal ? ModalityType.APPLICATION_MODAL : ModalityType.MODELESS);
+//    }
 
     /**
      * Megjeleníti vagy elrejti az ablakot.

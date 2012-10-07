@@ -121,7 +121,8 @@ public class Main {
      * @param tabIndex a megjelenő lapfül
      */
     private static void showSettingDialog(boolean force, Integer tabIndex) {
-        if (configEditor == null) configEditor = new ConfigEditorDialog(CONFIG, tabIndex);
+        if (configEditor == null) configEditor = new ConfigEditorDialog(CONFIG);
+        configEditor.setTabIndex(tabIndex);
         configEditor.setModal(force);
         configEditor.setVisible(true);
     }

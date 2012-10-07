@@ -324,6 +324,14 @@ public class ConfigEditorDialog extends JDialog {
     }
     
     /**
+     * Megmondja, modális-e az ablak.
+     */
+    @Override
+    public boolean isModal() {
+        return !getModalityType().equals(ModalityType.MODELESS);
+    }
+    
+    /**
      * Beállítja az ablak modalitását.
      */
     @Override

@@ -149,9 +149,9 @@ public class FilePanel extends JPanel {
      * Beállítja a fájlt és megjeleníti.
      */
     public void setFile(File file) {
-        if (!file.isFile()) return;
+        if (file != null && !file.isFile()) return;
         this.file = file;
-        tfFile.setText(file.getName());
+        tfFile.setText(file == null ? "" : file.getName());
     }
 
     /**

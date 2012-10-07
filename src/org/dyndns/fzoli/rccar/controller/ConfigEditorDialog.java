@@ -48,6 +48,11 @@ public class ConfigEditorDialog extends JDialog {
     }
     
     /**
+     * Súgó ablak.
+     */
+    private final JDialog dialogHelp = new ConfigHelpDialog(this);
+    
+    /**
      * Crt fájlszűrő.
      */
     private static final FileNameExtensionFilter fnefCrt = new FileNameExtensionFilter("Tanúsítvány (*.crt)", new String[] {"crt"});
@@ -165,7 +170,7 @@ public class ConfigEditorDialog extends JDialog {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    ;
+                    dialogHelp.setVisible(true);
                 }
                 
             });

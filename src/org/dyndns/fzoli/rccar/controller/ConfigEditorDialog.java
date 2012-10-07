@@ -136,7 +136,7 @@ public class ConfigEditorDialog extends JDialog {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    dispose();
+                    unsaveConfig();
                 }
                 
             });
@@ -273,6 +273,14 @@ public class ConfigEditorDialog extends JDialog {
     }
     
     /**
+     * Bezárja az ablakot a konfiguráció mentése nélkül.
+     * Ha nem megfelelő a konfiguráció és modális az ablak, a program leáll.
+     */
+    private void unsaveConfig() {
+        dispose();
+    }
+    
+    /**
      * A cím maszkolására hoz létre egy formázó objektumot.
      */
     private AbstractFormatter createAddressFormatter() {
@@ -344,7 +352,7 @@ public class ConfigEditorDialog extends JDialog {
      */
     private void onClosing() {
         if (CONFIG.equals(tfAddress.getText(), Integer.parseInt(tfPort.getText()), fpCa.getFile(), fpCert.getFile(), fpKey.getFile())) {
-            dispose();
+            unsaveConfig();
         }
         else {
             int sel = JOptionPane.showOptionDialog(this, "Menti a módosításokat?", getTitle(), JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[] {"Igen", "Nem", "Mégse"}, "Mégse");
@@ -353,7 +361,7 @@ public class ConfigEditorDialog extends JDialog {
                     saveConfig();
                     break;
                 case 1:
-                    dispose();
+                    unsaveConfig();
                     break;
             }
         }

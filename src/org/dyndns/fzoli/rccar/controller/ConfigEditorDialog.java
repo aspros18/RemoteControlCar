@@ -346,7 +346,7 @@ public class ConfigEditorDialog extends JDialog {
                     if (string.length() < 1) return CONFIG.getPort();
                     // ha a szöveg nem alakítható egész számmá vagy az intervallumon kívül esik, kivételt keletkezik...
                     int number = Integer.parseInt(string); // ... itt
-                    if (number < 1 || number > 65536) throw new Exception(); // ... vagy itt
+                    if (number < 1 || number > 65535) throw new Exception(); // ... vagy itt
                 }
                 catch (Exception ex) {
                     // ParseException kivétel dobása, hogy nem megfelelő az érték

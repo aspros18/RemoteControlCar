@@ -160,10 +160,13 @@ public class FilePanel extends JPanel {
 
     /**
      * Beállítja a fájlt és megjeleníti.
+     * A fájl csak akkor változik, ha a megadott fájl létezik és nem könyvtár,
+     * valamint ha van fájlszűrő, megfelel a szűrőfeltételnek.
      */
     public void setFile(File file) {
         if (file != null && !file.isFile()) return;
         lastFile = file;
+        if (fileFilter != null && !fileFilter.accept(file)) return;
         this.file = file;
         tfFile.setText(file == null ? "" : file.getName());
     }

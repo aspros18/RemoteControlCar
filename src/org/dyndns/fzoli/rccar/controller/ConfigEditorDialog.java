@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.text.ParseException;
 import java.util.regex.Pattern;
 import javax.swing.BorderFactory;
@@ -289,7 +290,7 @@ public class ConfigEditorDialog extends JDialog {
      * Ha nem megfelelő a konfiguráció és modális az ablak, a program leáll.
      */
     private void unsaveConfig() {
-        //TODO
+        if (isModal() && !isConfigValid(CONFIG.getAddress(), Integer.toString(CONFIG.getPort()), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile())) System.exit(0);
         dispose();
     }
     
@@ -298,11 +299,19 @@ public class ConfigEditorDialog extends JDialog {
      * Érvényes, ha mindhárom fájl be van állítva és mindkét bemenet megfelel a reguláris kifejezésüknek.
      */
     private boolean isConfigValid() {
-        return ptAddress.matcher(tfAddress.getText()).matches() &&
-               ptPort.matcher(tfPort.getText()).matches() &&
-               fpCa.getFile() != null &&
-               fpCert.getFile() != null &&
-               fpKey.getFile() != null;
+        return isConfigValid(tfAddress.getText(), tfPort.getText(), fpCa.getFile(), fpCert.getFile(), fpKey.getFile());
+    }
+    
+    /**
+     * Megadja, érvényes-e a paraméterben megadott beállítás.
+     * Érvényes, ha mindhárom fájl be van állítva és mindkét bemenet megfelel a reguláris kifejezésüknek.
+     */
+    private static boolean isConfigValid(String address, String port, File ca, File cert, File key) {
+        return ptAddress.matcher(address).matches() &&
+               ptPort.matcher(port).matches() &&
+               ca != null &&
+               cert != null &&
+               key != null;
     }
     
     /**

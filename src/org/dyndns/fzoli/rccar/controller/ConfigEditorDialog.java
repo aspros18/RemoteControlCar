@@ -287,10 +287,10 @@ public class ConfigEditorDialog extends JDialog {
     
     /**
      * Bezárja az ablakot a konfiguráció mentése nélkül.
-     * Ha nem megfelelő a konfiguráció és modális az ablak, a program leáll.
+     * Ha nem megfelelő az érvényben lévő konfiguráció és modális az ablak, a program leáll.
      */
     private void unsaveConfig() {
-        if (isModal() && !isConfigValid(CONFIG.getAddress(), Integer.toString(CONFIG.getPort()), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile())) System.exit(0);
+        if (isModal() && !CONFIG.isFileExists()) System.exit(0);
         dispose();
     }
     

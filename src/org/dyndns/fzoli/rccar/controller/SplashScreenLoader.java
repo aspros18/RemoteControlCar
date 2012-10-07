@@ -15,11 +15,6 @@ import java.awt.SplashScreen;
 public class SplashScreenLoader {
     
     /**
-     * A nyitóképernyő-kép szélessége.
-     */
-    private static final int width = 300;
-    
-    /**
      * A nyitóképernyő.
      * Null, ha nincs nyitóképernyő-kép megadva.
      */
@@ -92,7 +87,7 @@ public class SplashScreenLoader {
         if (g != null && s != null) {
             int y = 185;
             g.setComposite(AlphaComposite.Clear);
-            g.fillRect(0, y - 50, width, 100);
+            g.fillRect(0, y - 50, splash.getSize().width, 100);
             g.setPaintMode();
             printString(s + (s.isEmpty() ? "" : "..."), y);
             splash.update();
@@ -109,7 +104,7 @@ public class SplashScreenLoader {
      */
     private static void printString(String s, int y) {
         int len = (int) g.getFontMetrics().getStringBounds(s, g).getWidth();
-        int start = width / 2 - len / 2;
+        int start = splash.getSize().width / 2 - len / 2;
         g.drawString(s, start, y);
     }
     

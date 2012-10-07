@@ -30,14 +30,12 @@ public class ConfigHelpDialog extends JDialog {
         JScrollPane sp = new JScrollPane(taHelp);
         sp.setOpaque(false);
         sp.setViewportBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
-        sp.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        sp.setBorder(null);
         sp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         add(sp);
-        
         pack();
         setMinimumSize(new Dimension(getSize().width + 30, 1));
         setLocationRelativeTo(owner);
-        
     }
     
 }

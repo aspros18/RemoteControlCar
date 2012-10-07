@@ -398,7 +398,9 @@ public class ConfigEditorDialog extends JDialog {
      */
     private boolean checkConfig() {
         if (!isConfigValid()) {
-            JOptionPane.showMessageDialog(this, "A beállítások nem megfelelőek!", "Figyelmeztetés", JOptionPane.WARNING_MESSAGE);
+            String[] opts = new String[] {"OK", "Kilépés"};
+            int sel = JOptionPane.showOptionDialog(this, "A beállítások nem megfelelőek!", "Figyelmeztetés", JOptionPane.NO_OPTION, JOptionPane.WARNING_MESSAGE, null, opts, opts[0]);
+            if (sel != 0) unsaveConfig();
             return false;
         }
         return true;

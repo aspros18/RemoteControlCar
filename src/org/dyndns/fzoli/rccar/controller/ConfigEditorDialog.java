@@ -343,11 +343,10 @@ public class ConfigEditorDialog extends JDialog {
      * megkérdi, akarja-e menteni.
      */
     private void onClosing() {
-        if (!CONFIG.getCAFile().equals(fpCa.getFile()) ||
-            !CONFIG.getCertFile().equals(fpCert.getFile()) ||
-            !CONFIG.getKeyFile().equals(fpKey.getFile()) ||
-            !CONFIG.getAddress().equals(tfAddress.getText()) ||
-            CONFIG.getPort() != Integer.parseInt(tfPort.getText())) {
+        if (CONFIG.equals(tfAddress.getText(), Integer.parseInt(tfPort.getText()), fpCa.getFile(), fpCert.getFile(), fpKey.getFile())) {
+            dispose();
+        }
+        else {
             int sel = JOptionPane.showOptionDialog(this, "Menti a módosításokat?", getTitle(), JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[] {"Igen", "Nem", "Mégse"}, "Mégse");
             switch (sel) {
                 case 0:
@@ -357,9 +356,6 @@ public class ConfigEditorDialog extends JDialog {
                     dispose();
                     break;
             }
-        }
-        else {
-            dispose();
         }
     }
     

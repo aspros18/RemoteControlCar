@@ -73,8 +73,6 @@ public class Config implements Serializable {
         return port;
     }
 
-    
-    
     /**
      * Az egyetlen megbízható tanúsítvány-kiállító.
      */
@@ -104,16 +102,48 @@ public class Config implements Serializable {
     }
 
     /**
+     * Ha mindkét objektum null, true;
+     * Ha csak az egyik objektum null, false;
+     * Ha a fenti két eset nem teljesül, akkor true, ha egyenlőek.
+     */
+    private boolean equals(Object o1, Object o2) {
+        if (o1 == null && o2 == null) return true;
+        if (o1 == null ^ o2 == null) return false;
+        return o1.equals(o2);
+    }
+    
+    /**
+     * Összehasonlítja a konfiguráció értékeit a paraméterben megadottakkal és ha a jelszó kivételével mind egyezik, igazzal tér vissza.
+     */
+    public boolean equals(String address, int port, File ca, File cert, File key) {
+        return equals(address, port, ca, cert, key, getPassword());
+    }
+    
+    /**
+     * Összehasonlítja a konfiguráció értékeit a paraméterben megadottakkal és ha mind egyezik, igazzal tér vissza.
+     */
+    public boolean equals(String address, int port, File ca, File cert, File key, char[] password) {
+        return equals(getAddress(), address) &&
+               equals(getCAFile(), ca) &&
+               equals(getCertFile(), cert) &&
+               equals(getKeyFile(), key) &&
+               equals(new String(getPassword()), new String(password)) &&
+               getPort() == port;
+    }
+    
+    /**
+     * Két konfiguráció azonos, ha minden paraméterük megegyezik.
+     */
+    public boolean equals(Config o) {
+        Config conf = (Config) o;
+        return equals(conf.getAddress(), conf.getPort(), conf.getCAFile(), conf.getCertFile(), conf.getKeyFile(), conf.getPassword());
+    }
+    
+    /**
      * Megmondja, hogy a konfiguráció megegyezik-e az alapértelmezettel.
      */
     public boolean isDefault() {
-        return DEFAULT.address.equals(address) &&
-               DEFAULT.port == port &&
-               DEFAULT.ca.equals(ca) &&
-               DEFAULT.cert.equals(cert) &&
-               DEFAULT.key.equals(key) &&
-               new String(DEFAULT.password).equals(new String(password)) &&
-               isCertDefault();
+        return equals(DEFAULT) && isCertDefault();
     }
 
     /**

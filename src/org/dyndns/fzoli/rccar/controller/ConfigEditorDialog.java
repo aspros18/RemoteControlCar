@@ -367,18 +367,22 @@ public class ConfigEditorDialog extends JDialog {
      * megkérdi, akarja-e menteni, egyébként biztos, hogy nincs mentés.
      */
     private void onClosing() {
+        getContentPane().requestFocus(); // fókusz átadása az ablaknak, hogy biztosan minden szerkesztés végetérjen
         if (CONFIG.equals(tfAddress.getText(), Integer.parseInt(tfPort.getText()), fpCa.getFile(), fpCert.getFile(), fpKey.getFile())) {
             unsaveConfig();
         }
         else {
-            int sel = JOptionPane.showOptionDialog(this, "Menti a módosításokat?", getTitle(), JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[] {"Igen", "Nem", "Mégse"}, "Mégse");
+            String[] opts = new String[] {"Igen", "Nem", "Mégse"}; // az alapértelmezett opció a Mégse
+            int sel = JOptionPane.showOptionDialog(this, "Menti a módosításokat?", getTitle(), JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, opts, opts[2]);
             switch (sel) {
-                case 0:
+                case 0: // Igen
                     saveConfig();
                     break;
-                case 1:
+                case 1: // Nem
                     unsaveConfig();
                     break;
+                case 2: // Mégse
+                    ;
             }
         }
     }

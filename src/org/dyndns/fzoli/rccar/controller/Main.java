@@ -93,6 +93,7 @@ public class Main {
 
             /**
              * Ha a kilépésre kattintottak.
+             * TODO: ha ki van építve a kapcsolat, kérdezzen rá a kilépésre.
              */
             @Override
             public void actionPerformed(ActionEvent e) {

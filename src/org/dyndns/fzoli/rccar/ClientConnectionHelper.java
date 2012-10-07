@@ -60,6 +60,14 @@ public abstract class ClientConnectionHelper {
     }
     
     /**
+     * Megmondja, hogy kapcsolódva van-e a kliens a szerverhez.
+     * @return true, ha az összes kapcsolat ki van alakítva a szerverrel
+     */
+    public boolean isConnected() {
+        return CONNECTIONS.size() == connectionIds.length;
+    }
+    
+    /**
      * Socket létrehozása.
      * Kapcsolódás a szerverhez.
      */

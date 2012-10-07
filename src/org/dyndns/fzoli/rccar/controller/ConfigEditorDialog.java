@@ -249,6 +249,7 @@ public class ConfigEditorDialog extends JDialog {
         add(pButton, c);
         pack(); // legkisebb méretre állítás ...
         setMinimumSize(getSize()); // ... és ennél a méretnél csak nagyobb lehet az ablak
+        setMaximumSize(new Dimension(Integer.MAX_VALUE, getSize().height)); // Java 1.7.0_07 még mindig bugos, de egyszer csak menni fog
         setLocationRelativeTo(this); // képernyő közepére igazítás
     }
     

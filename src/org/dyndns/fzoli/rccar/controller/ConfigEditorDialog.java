@@ -25,6 +25,7 @@ import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.ui.FilePanel;
+import org.dyndns.fzoli.ui.OkCancelPanel;
 import org.dyndns.fzoli.ui.RegexPatternFormatter;
 
 /**
@@ -156,6 +157,22 @@ public class ConfigEditorDialog extends JDialog {
     };
     
     /**
+     * Erre a gombra kattintva előjön a súgó.
+     */
+    private final JButton btHelp = new JButton("Súgó") {
+        {
+            addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    ;
+                }
+                
+            });
+        }
+    };
+    
+    /**
      * Ezen a panelen állítható be a híd szerver elérési útvonala.
      */
     private final JPanel addressPanel = new ConfigPanel() {
@@ -239,28 +256,30 @@ public class ConfigEditorDialog extends JDialog {
      * Inicializálja az ablakot.
      */
     private void initDialog() {
-        addWindowListener(closeListener);
-        setTitle("Kapcsolatbeállító");
-        setIconImage(R.getIconImage());
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        setLayout(new GridBagLayout());
+        setTitle("Kapcsolatbeállító"); // címsor szöveg beállítása
+        setIconImage(R.getIconImage()); // címsor ikon beállítása
+        setLayout(new GridBagLayout()); // elrendezésmenedzser megadása
         GridBagConstraints c = new GridBagConstraints();
+        
         c.fill = GridBagConstraints.BOTH; // mindkét irányban helykitöltés
         c.weightx = 1; // helyfoglalás szélességében ...
         c.weighty = 1; // ... és hosszúságában is
-        add(tabbedPane, c);
-        c.gridy = 1;
-        c.weighty = 0; // minimális helyfoglalás ...
-        c.fill = GridBagConstraints.NONE; // ... nincs átméretezés ...
-        c.anchor = GridBagConstraints.LAST_LINE_END; // ... és jobb alsó sarokba kerül ...
-        JPanel pButton = new JPanel(); // ... a gombokat tartalmazó panel
-        pButton.add(btCancel);
-        pButton.add(btOk);
-        add(pButton, c);
+        add(tabbedPane, c); // lapfül panel hozzáadása
+        
+        c.gridy = 1; // következő sor
+        c.weighty = 0; // minimális helyfoglalás magasságban ...
+        c.fill = GridBagConstraints.HORIZONTAL; // ... és teljes szélesség elfoglalása ...
+        JPanel pButton = new OkCancelPanel(btOk, btCancel, btHelp, 5); // ... a gombokat tartalmazó panelnek
+        pButton.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 5)); // margó a gombokat tartalmazó panelre
+        add(pButton, c); // gombok hozzáadása az ablakhoz
+        
         pack(); // legkisebb méretre állítás ...
         setMinimumSize(getSize()); // ... és ennél a méretnél csak nagyobb lehet az ablak
         setMaximumSize(new Dimension(Integer.MAX_VALUE, getSize().height)); // Java 1.7.0_07 még mindig bugos, de egyszer csak menni fog
         setLocationRelativeTo(this); // képernyő közepére igazítás
+        
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE); // az alapértelmezett bezárás tiltása
+        addWindowListener(closeListener); // bezáráskor saját metódus hívódik meg
     }
     
     /**

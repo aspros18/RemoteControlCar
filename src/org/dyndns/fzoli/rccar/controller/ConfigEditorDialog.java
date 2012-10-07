@@ -235,6 +235,7 @@ public class ConfigEditorDialog extends JDialog {
         c.weighty = 0;
         add(pButton, c);
         pack();
+        setMinimumSize(getSize());
         setLocationRelativeTo(this);
     }
     

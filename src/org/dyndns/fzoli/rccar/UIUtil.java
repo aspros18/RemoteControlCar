@@ -77,11 +77,31 @@ public class UIUtil {
      * @param out a kimenet stream
      */
     public static void alert(String title, String text, PrintStream out) {
+        alert(title, text, out, null);
+    }
+    
+    /**
+     * Egy tályékoztató szöveget jelenít meg a felhasználónak.
+     * Ha a grafikus felület elérhető, modális ablakban jelenik meg az üzenet,
+     * különben a kimenet streamre megy ki a fejléc és a szöveg.
+     * Ha a kimeneti stream System.err, akkor hibaüzenetes ablakikon,
+     * egyébként figyelmeztetőikon kerül az ablakra.
+     * @param title a fejléc
+     * @param text a megjelenő szöveg
+     * @param out a kimenet stream
+     * @param icon a megjelenő ablak fejlécében megjelenő ikon
+     */
+    public static void alert(String title, String text, PrintStream out, Image icon) {
         if (GraphicsEnvironment.isHeadless()) { // ha nem elérhető a grafikus felület
             print(title, text, out);
         }
         else { // ha van grafikus felület
-            JOptionPane.showMessageDialog(null, text, title, System.err == out ? JOptionPane.ERROR_MESSAGE : JOptionPane.WARNING_MESSAGE); // dialógus ablak megjelenítése
+            JFrame dummy = null;
+            if (icon != null) {
+                dummy = new JFrame();
+                dummy.setIconImage(icon);
+            }
+            JOptionPane.showMessageDialog(dummy, text, title, System.err == out ? JOptionPane.ERROR_MESSAGE : JOptionPane.WARNING_MESSAGE); // dialógus ablak megjelenítése
         }
     }
     

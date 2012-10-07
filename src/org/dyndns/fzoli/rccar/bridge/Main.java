@@ -6,11 +6,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.security.KeyStoreException;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.SystemTrayIcon;
-import static org.dyndns.fzoli.rccar.UIUtil.alert;
+import org.dyndns.fzoli.rccar.UIUtil;
 import static org.dyndns.fzoli.rccar.UIUtil.setSystemLookAndFeel;
 import static org.dyndns.fzoli.rccar.UIUtil.showPasswordInput;
 import org.dyndns.fzoli.rccar.UncaughtExceptionHandler;
@@ -163,6 +164,20 @@ public class Main {
             }
             
         }));
+    }
+    
+    /**
+     * Egy tályékoztató szöveget jelenít meg a felhasználónak.
+     * Ha a grafikus felület elérhető, modális ablakban jelenik meg az üzenet,
+     * különben a kimenet streamre megy ki a fejléc és a szöveg.
+     * Ha a kimeneti stream System.err, akkor hibaüzenetes ablakikon,
+     * egyébként figyelmeztetőikon kerül az ablakra.
+     * @param title a fejléc
+     * @param text a megjelenő szöveg
+     * @param out a kimenet stream
+     */
+    private static void alert(String title, String text, PrintStream out) {
+        UIUtil.alert(title, text, out, R.getBridgeImage());
     }
     
     /**

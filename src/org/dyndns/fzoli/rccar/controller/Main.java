@@ -4,9 +4,10 @@ import java.awt.GraphicsEnvironment;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.PrintStream;
 import org.dyndns.fzoli.rccar.SystemTrayIcon;
 import static org.dyndns.fzoli.rccar.SystemTrayIcon.showMessage;
-import static org.dyndns.fzoli.rccar.UIUtil.alert;
+import org.dyndns.fzoli.rccar.UIUtil;
 import static org.dyndns.fzoli.rccar.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.rccar.UncaughtExceptionHandler;
 import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.setDefaultSplashMessage;
@@ -122,6 +123,20 @@ public class Main {
         if (configEditor == null) configEditor = new ConfigEditorDialog(CONFIG);
         configEditor.setModal(force);
         configEditor.setVisible(true);
+    }
+    
+    /**
+     * Egy tályékoztató szöveget jelenít meg a felhasználónak.
+     * Ha a grafikus felület elérhető, modális ablakban jelenik meg az üzenet,
+     * különben a kimenet streamre megy ki a fejléc és a szöveg.
+     * Ha a kimeneti stream System.err, akkor hibaüzenetes ablakikon,
+     * egyébként figyelmeztetőikon kerül az ablakra.
+     * @param title a fejléc
+     * @param text a megjelenő szöveg
+     * @param out a kimenet stream
+     */
+    private static void alert(String title, String text, PrintStream out) {
+        UIUtil.alert(title, text, out, R.getIconImage());
     }
     
     /**

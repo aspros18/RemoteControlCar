@@ -115,11 +115,11 @@ public class Main {
      *   a) Igen: ablak bezárása, adatok elmentése, kapcsolat bezárása és új konfiggal kapcsolódás
      *   b) Nem: ablak bezárása, adatok elmentése
      *   c) Mégsem: nem tesz semmit, az ablak nem záródik be
-     * @param model modális legyen-e az ablak
+     * @param force kényszerítve legyen-e a felhasználó helyes konfiguráció megadására
      */
-    private static void showSettingDialog(boolean modal) {
+    private static void showSettingDialog(boolean force) {
         if (configEditor == null) configEditor = new ConfigEditorDialog(CONFIG);
-        configEditor.setModal(modal);
+        configEditor.setModal(force);
         configEditor.setVisible(true);
     }
     

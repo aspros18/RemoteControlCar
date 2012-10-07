@@ -71,7 +71,12 @@ public class FilePanel extends JPanel {
             fc.setAcceptAllFileFilterUsed(fileFilter == null);
             fc.setMultiSelectionEnabled(false);
             fc.setFileHidingEnabled(true);
-            if (file != null) {
+            if (file == null) {
+                if (lastFile != null) {
+                    fc.setCurrentDirectory(lastFile);
+                }
+            }
+            else {
                 fc.setSelectedFile(file);
                 fc.setCurrentDirectory(file);
             }
@@ -105,6 +110,11 @@ public class FilePanel extends JPanel {
      * A panelen megjelenített fájl.
      */
     private File file;
+    
+    /**
+     * Az utóljára kiválasztott fájl bármelyik panelen.
+     */
+    private static File lastFile;
     
     /**
      * Fájl szűrő.
@@ -150,6 +160,7 @@ public class FilePanel extends JPanel {
      */
     public void setFile(File file) {
         if (file != null && !file.isFile()) return;
+        lastFile = file;
         this.file = file;
         tfFile.setText(file == null ? "" : file.getName());
     }

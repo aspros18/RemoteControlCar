@@ -293,7 +293,6 @@ public class ConfigEditorDialog extends JDialog {
     private void initComponents() {
         tabbedPane.setFocusable(false); // zavaró kijelölés jelzés leszedése
         tabbedPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // 5 x 5 pixeles margó
-        btOk.setPreferredSize(btCancel.getPreferredSize()); // a két gomb egy méretre állítása
     }
     
     /**

@@ -15,7 +15,7 @@ import org.dyndns.fzoli.socket.handler.event.HandlerListener;
  * @author zoli
  */
 public abstract class ClientConnectionHelper {
-
+    
     /**
      * Eszközazonosító.
      */
@@ -49,6 +49,11 @@ public abstract class ClientConnectionHelper {
     };
     
     /**
+     * Megadja, hogy folyamatban van-e a kapcsolódás.
+     */
+    private boolean connecting;
+    
+    /**
      * Egyszerű kapcsolódást megvalósító osztály konstruktora.
      * @param deviceId eszközazonosító
      * @param connectionIds kapcsolatazonosítókat tartalmazó tömb
@@ -65,6 +70,14 @@ public abstract class ClientConnectionHelper {
      */
     public boolean isConnected() {
         return CONNECTIONS.size() == connectionIds.length;
+    }
+
+    /**
+     * Megmondja, hogy a kapcsolódás folyamatban van-e.
+     * @return true, ha a kapcsolódás folyamatban van
+     */
+    public boolean isConnecting() {
+        return connecting;
     }
     
     /**
@@ -114,7 +127,10 @@ public abstract class ClientConnectionHelper {
             AbstractSecureClientHandler handler = createHandler(conn, deviceId, connectionId);
             if (addListener) handler.addHandlerListener(listener);
             new Thread(handler).start();
-            if (connectionId == connectionIds[connectionIds.length - 1]) onConnected();
+            if (connectionId == connectionIds[connectionIds.length - 1]) {
+                connecting = false;
+                onConnected();
+            }
         }
         catch (Exception ex) {
             onException(ex, connectionId);
@@ -127,6 +143,8 @@ public abstract class ClientConnectionHelper {
      * Ha bármi hiba történik a kapcsolódások közben, {@code onException} metódus fut le.
      */
     public void connect() {
+        if (isConnecting()) return;
+        connecting = true;
         runHandler(connectionIds[0], true);
     }
     
@@ -135,6 +153,7 @@ public abstract class ClientConnectionHelper {
      */
     public void disconnect() {
         synchronized(CONNECTIONS) {
+            connecting = false;
             Iterator<SSLSocket> it = CONNECTIONS.iterator();
             while (it.hasNext()) {
                 SSLSocket conn = it.next();

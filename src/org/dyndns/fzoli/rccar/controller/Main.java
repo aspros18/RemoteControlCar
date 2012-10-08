@@ -66,7 +66,6 @@ public class Main {
     
     /**
      * Beállítja a rendszerikont.
-     * TODO
      */
     private static void setSystemTrayIcon() {
         // az ikon beállítása
@@ -109,19 +108,22 @@ public class Main {
     }
     
     /**
-     * TODO: Egyelőre semmit nem csinál, de majd a beállításkezelő ablakot fogja megjeleníteni.
-     * - Ha a kapcsolódás folyamatban van, megszakad.
-     * - Ha modális az ablak és a beállítások változatlanok, a program végetér bezárásakor.
-     * - Ha nem modális az ablak, akkor újra kezdődik a kapcsolódás az ablak bezárásakor függetlenül a változástól.
-     * - Ha már van kiépítve kapcsolat, és megváltozik a konfiguráció, jelenjen meg Igen/Nem/Mégse ablak:
-     *   a) Igen: ablak bezárása, adatok elmentése, kapcsolat bezárása és új konfiggal kapcsolódás
-     *   b) Nem: ablak bezárása, adatok elmentése
-     *   c) Mégsem: nem tesz semmit, az ablak nem záródik be
+     * TODO
+     * A beállításkezelő ablakot jeleníti meg.
      * @param force kényszerítve legyen-e a felhasználó helyes konfiguráció megadására
      * @param tabIndex a megjelenő lapfül
      */
     private static void showSettingDialog(boolean force, Integer tabIndex) {
-        if (configEditor == null) configEditor = new ConfigEditorDialog(CONFIG);
+        if (!CONN.isConnected()) CONN.disconnect();
+        if (configEditor == null) configEditor = new ConfigEditorDialog(CONFIG) {
+
+            @Override
+            public void dispose() {
+                super.dispose();
+                if (!CONN.isConnected()) CONN.connect();
+            }
+            
+        };
         configEditor.setTabIndex(tabIndex);
         configEditor.setModal(force);
         configEditor.setVisible(true);
@@ -173,7 +175,7 @@ public class Main {
         //CONN.connect();
         //Thread.sleep(5000);
         if (CONFIG.isFileExists()) showSettingDialog(true, null);
-        System.exit(0);
+        //System.exit(0);
     }
     
 }

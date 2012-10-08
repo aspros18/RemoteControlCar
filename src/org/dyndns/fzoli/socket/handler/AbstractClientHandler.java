@@ -105,7 +105,6 @@ public abstract class AbstractClientHandler extends AbstractHandler {
      * Az eszköz- és kapcsolatazonosító szervernek való elküldése után eldől, melyik kapcsolatfeldolgozót
      * kell használni a kliens oldalon és a konkrét feldolgozás kezdődik meg.
      * Ha a feldolgozás végetér, az erőforrások felszabadulnak.
-     * TODO: kliens oldalra is meg kell írni a hibaüzenet továbbítását
      * @throws HandlerException ha bármi hiba történik
      */
     @Override

@@ -32,7 +32,7 @@ public class ConnectionProgressFrame extends JFrame {
 
         private static final List<ConnProgPanel> panels = new ArrayList<ConnProgPanel>();
         
-        private final JLabel lbIcon;
+        private final JLabel lbIcon, lbText;
         
         public ConnProgPanel(Icon icon, String text) {
             super(new GridBagLayout());
@@ -43,7 +43,7 @@ public class ConnectionProgressFrame extends JFrame {
             c.insets = new Insets(5, 5, 5, 5);
             lbIcon = new JLabel(icon);
             add(lbIcon, c);
-            JLabel lbText = new JLabel(text);
+            lbText = new JLabel(text);
             lbText.setHorizontalAlignment(SwingConstants.LEFT);
             c.weightx = Integer.MAX_VALUE;
             c.fill = GridBagConstraints.HORIZONTAL;
@@ -52,12 +52,12 @@ public class ConnectionProgressFrame extends JFrame {
             Dimension iconSize = new Dimension(1, 1);
             Dimension panelSize = new Dimension(1, 1);
             for (ConnProgPanel panel : panels) {
-                setMaxSize(panel, panelSize);
-                //setMaxSize(panel.lbIcon, iconSize);
+                setMaxSize(panel.lbIcon, iconSize);
+                setMaxSize(panel.lbText, panelSize);
             }
             for (ConnProgPanel panel : panels) {
-                panel.setPreferredSize(panelSize);
-                //panel.lbIcon.setPreferredSize(iconSize);
+                panel.lbIcon.setPreferredSize(iconSize);
+                panel.lbText.setPreferredSize(panelSize);
             }
         }
         

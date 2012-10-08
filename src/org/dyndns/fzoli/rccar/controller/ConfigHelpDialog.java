@@ -1,8 +1,8 @@
 package org.dyndns.fzoli.rccar.controller;
 
 import java.awt.Color;
-import java.awt.Dialog;
 import java.awt.Dimension;
+import java.awt.Window;
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -20,7 +20,7 @@ public class ConfigHelpDialog extends JDialog {
      */
     private static final JLabel taHelp = new JLabel("<html><span style=\"font-size: 11px\"><p style=\"margin: 5px 0px 5px 0px\"><b>Útvonal</b></p>Ahhoz, hogy kapcsolódni lehessen a szerverhez,<br>meg kell adni az elérési útvonalát, ami a címből<br>és a portból áll. A cím lehet IP cím és domain is.<p style=\"margin: 5px 0px 5px 0px\"><b>Tanúsítvány</b></p><p style=\"margin: 0px 0px 5px 0px\">A kommunikáció titkosított kapcsolaton keresztül (SSL)<br>folyik, ezért a kliensnek szüksége van tanúsítványra.</p>A tanúsítvány három fájlból tevődik össze:<br>- Kiállító <i>(CA tanúsítvány)</i><br>- Tanúsítvány <i>(nyílvános kulcs)</i><br>- Kulcs <i>(titkos kulcs)</i><p style=\"margin: 5px 0px 5px 0px\"><b>Mi ez?</b></p>Mindhárom fájl szükséges ahhoz, hogy a kapcsolat<br>létrejöhessen a szerverrel, ezért addig nem indítható<br>a program, míg nincs az útvonal és mindhárom fájl beállítva.</span></html>");
     
-    public ConfigHelpDialog(Dialog owner) {
+    public ConfigHelpDialog(Window owner) {
         super(owner, "Súgó"); // szülő és címsor szöveg beállítása
         setDefaultCloseOperation(HIDE_ON_CLOSE); // bezáráskor elrejtődés
         setModalityType(ModalityType.APPLICATION_MODAL); // modális dialógus

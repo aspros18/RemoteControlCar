@@ -33,7 +33,7 @@ public class Main {
     /**
      * Konfiguráció-szerkesztő ablak.
      */
-    private static ConfigEditorDialog configEditor;
+    private static ConfigEditorWindow configEditor;
     
     /**
      * Üzenettípusok.
@@ -115,7 +115,7 @@ public class Main {
      */
     private static void showSettingDialog(boolean force, Integer tabIndex) {
         if (!CONN.isConnected()) CONN.disconnect();
-        if (configEditor == null) configEditor = new ConfigEditorDialog(CONFIG) {
+        if (configEditor == null) configEditor = new ConfigEditorWindow(CONFIG) {
 
             @Override
             public void dispose() {

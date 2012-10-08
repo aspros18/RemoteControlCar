@@ -141,6 +141,7 @@ public abstract class ClientConnectionHelper {
      * Kapcsolódás a szerverhez.
      * Ha az utolsó kapcsolat is kialakult, {@code onConnect} metódus fut le.
      * Ha bármi hiba történik a kapcsolódások közben, {@code onException} metódus fut le.
+     * Ha a kapcsolódás folyamatban van már, nem csinál semmit.
      */
     public void connect() {
         if (isConnecting()) return;

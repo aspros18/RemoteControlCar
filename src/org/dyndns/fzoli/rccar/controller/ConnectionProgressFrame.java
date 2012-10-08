@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.controller;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -31,6 +32,8 @@ public class ConnectionProgressFrame extends JFrame {
 
         private static final List<ConnProgPanel> panels = new ArrayList<ConnProgPanel>();
         
+        private final JLabel lbIcon;
+        
         public ConnProgPanel(Icon icon, String text) {
             super(new GridBagLayout());
             GridBagConstraints c = new GridBagConstraints();
@@ -38,22 +41,30 @@ public class ConnectionProgressFrame extends JFrame {
             c.fill = GridBagConstraints.NONE;
             c.weightx = 1;
             c.insets = new Insets(5, 5, 5, 5);
-            add(new JLabel(icon), c);
+            lbIcon = new JLabel(icon);
+            add(lbIcon, c);
             JLabel lbText = new JLabel(text);
             lbText.setHorizontalAlignment(SwingConstants.LEFT);
             c.weightx = Integer.MAX_VALUE;
             c.fill = GridBagConstraints.HORIZONTAL;
             add(lbText, c);
             panels.add(this);
-            Dimension size = new Dimension(1, 1);
+            Dimension iconSize = new Dimension(1, 1);
+            Dimension panelSize = new Dimension(1, 1);
             for (ConnProgPanel panel : panels) {
-                Dimension d = panel.getPreferredSize();
-                if (d.getWidth() > size.getWidth()) size.width = (int) d.getWidth();
-                if (d.getHeight() > size.getHeight()) size.height = (int) d.getHeight();
+                setMaxSize(panel, panelSize);
+                //setMaxSize(panel.lbIcon, iconSize);
             }
             for (ConnProgPanel panel : panels) {
-                panel.setPreferredSize(size);
+                panel.setPreferredSize(panelSize);
+                //panel.lbIcon.setPreferredSize(iconSize);
             }
+        }
+        
+        private static void setMaxSize(Component c, Dimension panelSize) {
+            Dimension d = c.getPreferredSize();
+            if (d.getWidth() > panelSize.getWidth()) panelSize.width = (int) d.getWidth();
+            if (d.getHeight() > panelSize.getHeight()) panelSize.height = (int) d.getHeight();
         }
         
     };
@@ -66,7 +77,7 @@ public class ConnectionProgressFrame extends JFrame {
     /**
      * Hibát kijelző panel.
      */
-    private final JPanel pError = new ConnProgPanel(LookAndFeelIcon.createIcon(this, "OptionPane.errorIcon", R.getErrorImage()), "Nem sikerült kapcsolódni a szerverhez!");
+    private final JPanel pError = new ConnProgPanel(LookAndFeelIcon.createIcon(this, "OptionPane.errorIcon", null), "Nem sikerült kapcsolódni a szerverhez!");
     
     /**
      * Konstruktor.

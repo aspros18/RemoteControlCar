@@ -71,6 +71,20 @@ public abstract class AbstractClientHandler extends AbstractHandler {
     }
     
     /**
+     * Kapcsolatazonosító alapján megkeresi az adatfeldolgozót.
+     * @return null, ha nincs találat, egyébként adatfeldolgozó objektum
+     */
+    protected Process findProcessByConnectionId(int connectionId) {
+        List<Process> ls = getProcesses();
+        for (Process p : ls) {
+            if (p.getConnectionId().equals(connectionId)) {
+                return p;
+            }
+        }
+        return null;
+    }
+    
+    /**
      * Ha kivétel képződik, fel kell dolgozni.
      * @param ex a kivétel
      * @throws HandlerException ha nem RuntimeException a kivétel

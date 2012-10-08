@@ -20,14 +20,6 @@ public class R {
     }
     
     /**
-     * Hibaikont tartalmazó kép.
-     * @throws RuntimeException ha a forrás fájl nem található
-     */
-    public static BufferedImage getErrorImage() {
-        return getImage("error.png");
-    }
-    
-    /**
      * Indikátor animációt készít.
      * @throws RuntimeException ha a forrás fájl nem található
      */

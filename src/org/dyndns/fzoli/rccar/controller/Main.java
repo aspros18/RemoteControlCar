@@ -143,9 +143,8 @@ public class Main {
     }
     
     /**
+     * TODO
      * A vezérlő main metódusa.
-     * Nyitóképernyő tesztelés.
-     * Szimulál 5 másodpercnyi töltést, aztán végetér a program.
      */
     public static void main(String[] args) throws InterruptedException {
         if (GraphicsEnvironment.isHeadless()) {

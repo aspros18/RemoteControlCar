@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.io.Console;
 import java.io.PrintStream;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -19,6 +20,36 @@ import javax.swing.UIManager;
 public class UIUtil {
     
     /**
+     * A jelszómegjelenítő dialógus visszatérési értéke.
+     */
+    public static class PasswordData {
+        
+        private final char[] password;
+        private final boolean save;
+
+        public PasswordData(char[] password, boolean save) {
+            this.password = password;
+            this.save = save;
+        }
+
+        /**
+         * A beírt jelszó.
+         */
+        public char[] getPassword() {
+            return password;
+        }
+
+        /**
+         * Kérnek-e jelszómentést.
+         * @return true, ha kérnek jelszómentést (vagyis be lett pipálva a checkbox)
+         */
+        public boolean isSave() {
+            return save;
+        }
+        
+    }
+    
+    /**
      * Általános rendszerváltozók.
      */
     private static final String LS = System.getProperty("line.separator");
@@ -29,8 +60,10 @@ public class UIUtil {
      * egyébként megpróbálja konzolról bekérni a jelszót.
      * Ha nincs se konzol, se grafikus felület, a program kilép.
      * Ha a dialógus ablakon nem az OK-ra kattintottak, a program kilép.
+     * @param icon a címsorban megjelenő ikon
+     * @param saveEnabled engedélyezve legyen-e a jelszó mentése checkbox
      */
-    public static char[] showPasswordInput(Image icon) {
+    public static PasswordData showPasswordInput(Image icon, boolean saveEnabled) {
         String message = "A tanúsítvány beolvasása sikertelen volt.";
         String request = "Adja meg a tanúsítvány jelszavát, ha van: ";
         if (GraphicsEnvironment.isHeadless()) {
@@ -40,24 +73,28 @@ public class UIUtil {
                 System.exit(1);
             }
             console.printf("%s%n", message);
-            return console.readPassword(request);
+            return new PasswordData(console.readPassword(request), false);
         }
         else {
             JFrame dummyFrame = new JFrame();
             dummyFrame.setIconImage(icon);
-            JPanel panel = new JPanel(new GridLayout(3, 1));
+            JPanel panel = new JPanel(new GridLayout(4, 1));
             JLabel lbMessage = new JLabel(message);
             JLabel lbRequest = new JLabel(request);
             JPasswordField pass = new JPasswordField(10);
+            JCheckBox save = new JCheckBox("Jelszó mentése");
+            save.setEnabled(saveEnabled);
+            save.setSelected(false);
             panel.add(lbMessage);
             panel.add(lbRequest);
             panel.add(pass);
+            panel.add(save);
             String[] options = new String[] {"OK", "Kilépés"};
             int option = JOptionPane.showOptionDialog(dummyFrame, panel, "Jelszó",
                 JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE,
                 null, options, options[1]);
             if (option == 0) {
-                return pass.getPassword();
+                return new PasswordData(pass.getPassword(), save.isSelected());
             }
             else {
                 System.exit(0);

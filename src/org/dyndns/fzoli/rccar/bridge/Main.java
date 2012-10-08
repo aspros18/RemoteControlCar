@@ -214,7 +214,7 @@ public class Main {
             return SSLSocketUtil.createServerSocket(CONFIG.getPort(), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile(), CONFIG.getPassword());
         }
         catch (KeyStoreException ex) {
-            CONFIG.setPassword(showPasswordInput(R.getBridgeImage()));
+            CONFIG.setPassword(showPasswordInput(R.getBridgeImage(), false).getPassword());
             return createServerSocket();
         }
         catch(Exception ex) {

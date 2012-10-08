@@ -8,6 +8,7 @@ import java.io.PrintStream;
 import org.dyndns.fzoli.rccar.UIUtil;
 import static org.dyndns.fzoli.rccar.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.rccar.UncaughtExceptionHandler;
+import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.closeSplashScreen;
 import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.setDefaultSplashMessage;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.controller.socket.ConnectionHelper;
@@ -171,10 +172,11 @@ public class Main {
             });
         }
         /* TESZT RÉSZ */
+        closeSplashScreen();
         //CONFIG.setPassword(new char[] {'a','a','a','a','a','a','a','a'});
         //CONN.connect();
         //Thread.sleep(5000);
-        if (CONFIG.isFileExists()) showSettingDialog(true, null);
+        //if (CONFIG.isFileExists()) showSettingDialog(true, null);
         //System.exit(0);
     }
     

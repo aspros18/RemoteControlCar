@@ -16,17 +16,19 @@ public class LookAndFeelIcon {
     
     /**
      * Visszatér egy LAF ikonnal.
-     * Ha a megadott kulcshoz nem tartozik ikon, a paraméterben átadott képpel tér vissza,
-     * de ha nem adtak meg paraméterben képet, bepróbálkozik a NimbusLookAndFeel témával végül az alapértelmezettel.
-     * @return ha a LAF ikon null, a paraméterben átadott ikonnal tér vissza.
+     * Ha a megadott kulcshoz nem tartozik ikon, a paraméterben átadott képet használja,
+     * de ha nem adtak meg paraméterben képet, bepróbálkozik a NimbusLookAndFeel
+     * témával végül az alapértelmezet témát használja.
+     * @return ha a LAF ikon null, a paraméterben átadott képből készült ikonnal tér vissza.
      */
     public static Icon createIcon(Component component, String key, Image img) {
         try {
-            if (img == null) {
-                Icon icon = UIManager.getIcon(key);
+            Icon icon = UIManager.getIcon(key);
+            if (icon != null) {
                 img = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
                 icon.paintIcon(component, img.getGraphics(), 0, 0);
             }
+            if (img == null) throw new Exception();
             return new ImageIcon(img);
         }
         catch (Exception ex) {

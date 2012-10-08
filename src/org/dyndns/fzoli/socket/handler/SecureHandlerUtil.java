@@ -34,7 +34,18 @@ class SecureHandlerUtil {
      * @param h2 a másik feldolgozó
      */
     public static boolean isCertEqual(SecureHandler h1, SecureHandler h2) {
-        return h1.getRemoteCommonName().equals(h2.getRemoteCommonName()) && h1.getDeviceId().equals(h2.getDeviceId()) && h1.getConnectionId().equals(h2.getConnectionId());
+        return isCertEqual(h1, h2.getRemoteCommonName(), h2.getDeviceId(), h2.getConnectionId());
+    }
+    
+    /**
+     * Igaz, ha ugyan azzal a tanúsítvánnyal és azonosítókkal rendelkezik a feldolgozó, mint a paraméterben megadottak.
+     * @param h a feldolgozó
+     * @param remoteName tanúsítvány common name
+     * @param deviceId eszközazonosító
+     * @param connectionId kapcsolatazonosító
+     */
+    public static boolean isCertEqual(SecureHandler h, String remoteName, int deviceId, int connectionId) {
+        return h.getRemoteCommonName().equals(remoteName) && h.getDeviceId().equals(deviceId) && h.getConnectionId().equals(connectionId);
     }
     
     /**

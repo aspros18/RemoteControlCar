@@ -54,7 +54,7 @@ public class ClientDisconnectTest implements ConnectionKeys {
     }
     
     public static void main(String[] args) throws Exception {
-        final String url = args.length == 1 ? args[0] : "192.168.20.5";
+        final String url = args.length == 1 ? args[0] : "192.168.10.1";
         new ClientConnectionHelper(5, new int[] {KEY_CONN_DISCONNECT, KEY_CONN_DUMMY}) {
 
             @Override

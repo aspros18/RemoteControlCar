@@ -37,7 +37,24 @@ public abstract class AbstractSecureServerHandler extends AbstractServerHandler 
     public boolean isCertEqual(SecureHandler handler) {
         return SecureHandlerUtil.isCertEqual(this, handler);
     }
-
+    
+    /**
+     * Megkeresi az adatfeldolgozót a paraméterek alapján.
+     * @param remoteName tanúsítvány common name
+     * @param deviceId eszközazonosító
+     * @param connectionId kapcsolatazonosító
+     * @return null, ha nincs találat, egyébként adatfeldolgozó objektum
+     */
+    protected SecureProcess findProcess(String remoteName, int deviceId, int connectionId) {
+        List<SecureProcess> procs = getSecureProcesses();
+        for (SecureProcess proc : procs) {
+            if (SecureHandlerUtil.isCertEqual(proc.getHandler(), remoteName, deviceId, connectionId)) {
+                return proc;
+            }
+        }
+        return null;
+    }
+    
     /**
      * Ez a metódus fut le a szálban.
      * Az eszköz- és kapcsolatazonosító klienstől való fogadása után eldől, melyik kapcsolatfeldolgozót

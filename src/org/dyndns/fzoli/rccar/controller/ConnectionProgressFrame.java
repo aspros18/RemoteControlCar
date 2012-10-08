@@ -1,11 +1,12 @@
 package org.dyndns.fzoli.rccar.controller;
 
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -26,14 +27,26 @@ import org.dyndns.fzoli.ui.OkCancelPanel;
 public class ConnectionProgressFrame extends JFrame {
     
     /**
+     * Az ablakon megjelenő panelek.
+     */
+    private static class ConnProgPanel extends IconTextPanel {
+
+        public ConnProgPanel(Component owner, Icon icon, String text) {
+            super(owner, icon, text);
+            setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0)); // alsó és felső margó 5 pixel
+        }
+        
+    }
+    
+    /**
      * Folyamatjelző panel.
      */
-    public final IconTextPanel pProgress = new IconTextPanel(this, R.getIndicatorImageIcon(), "Kapcsolódás folyamatban...");
+    private final IconTextPanel pProgress = new ConnProgPanel(this, R.getIndicatorImageIcon(), "Kapcsolódás folyamatban...");
     
     /**
      * Hibát kijelző panel.
      */
-    public final IconTextPanel pError = new IconTextPanel(this, LookAndFeelIcon.createIcon(this, "OptionPane.errorIcon", null), "Nem sikerült kapcsolódni a szerverhez!");
+    private final IconTextPanel pError = new ConnProgPanel(this, LookAndFeelIcon.createIcon(this, "OptionPane.errorIcon", null), "Nem sikerült kapcsolódni a szerverhez!");
     
     /**
      * Újra gomb.
@@ -44,7 +57,7 @@ public class ConnectionProgressFrame extends JFrame {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    setPanel(pProgress); //teszt
+                    setProgress(true); // teszt
                 }
                 
             });
@@ -60,7 +73,7 @@ public class ConnectionProgressFrame extends JFrame {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    setPanel(pError); //teszt
+                    setProgress(false); // teszt
                 }
                 
             });
@@ -85,11 +98,6 @@ public class ConnectionProgressFrame extends JFrame {
     };
     
     /**
-     * Az a panel, amelyen cserélgetődnek a {@code IconTextPanel} komponensek.
-     */
-    private final JPanel pContainer = new JPanel(new GridLayout());
-    
-    /**
      * Konstruktor.
      * Alapértelmezetten hibaüzenetet mutat a panel.
      */
@@ -99,14 +107,14 @@ public class ConnectionProgressFrame extends JFrame {
         setLayout(new GridBagLayout()); // kedvenc elrendezésmenedzserem alkalmazása
         setDefaultCloseOperation(EXIT_ON_CLOSE); // X-re kattintva vége a programnak
         setResizable(false); // átméretezés tiltása
-        setPanel(pError); // hibaüzenet mutatása
         
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.BOTH; // teljes helykitöltés, ...
         c.weightx = 1; // ... hogy az ikon balra rendeződjön
         
-        pContainer.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0)); // alsó és felső margó 5 pixel
-        add(pContainer, c);
+        add(pError, c); 
+        add(pProgress, c); // mindkét panelt felfűzöm az ablakra ...
+        setProgress(false); // ... de egyszerre csak az egyik látható
         
         c.gridy = 1; // következő sorba mennek a gombok
         JPanel pButtons = new OkCancelPanel(btAgain, btSettings, btExit, 5);
@@ -120,11 +128,17 @@ public class ConnectionProgressFrame extends JFrame {
     
     /**
      * Beállítja a látható panelt.
+     * @param on true esetén az indikátor jelenik meg, egyébként a hibaüzenet.
      */
-    public void setPanel(IconTextPanel p) {
-        pContainer.removeAll(); // eltávolítja a panel komponenseit
-        pContainer.add(p); // hozzáadja panelhez a kért komponenst
-        repaint(); // újrarajzolja az ablakot
+    public void setProgress(boolean on) {
+        if (on) {
+            pError.setVisible(false);
+            pProgress.setVisible(true);
+        }
+        else {
+            pError.setVisible(true);
+            pProgress.setVisible(false);
+        }
     }
     
 }

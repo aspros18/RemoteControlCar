@@ -31,6 +31,7 @@ public class ConnectionProgressFrame extends AbstractConnectionProgressFrame {
     @Override
     protected void onSettings() {
         setProgress(false); //teszt
+        Main.showSettingDialog(false, null);
     }
     
 }

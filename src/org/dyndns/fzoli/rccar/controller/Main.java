@@ -31,11 +31,6 @@ public class Main {
     private static final ConnectionHelper CONN = new ConnectionHelper(CONFIG);
     
     /**
-     * Konfiguráció-szerkesztő ablak.
-     */
-    private static ConfigEditorWindow configEditor;
-    
-    /**
      * Üzenettípusok.
      */
     private static final String VAL_WARNING = "Figyelmeztetés", VAL_ERROR = "Hiba";
@@ -46,6 +41,16 @@ public class Main {
     private static final String LS = System.getProperty("line.separator");
     
     /**
+     * Konfiguráció-szerkesztő ablak.
+     */
+    private static final ConfigEditorWindow CONFIG_EDITOR;
+    
+    /**
+     * Kapcsolódásjelző- és kezelő ablak.
+     */
+    private static final ConnectionProgressFrame PROGRESS_FRAME;
+    
+    /**
      * Még mielőtt lefutna a main metódus, a nyitóképernyő szövege megjelenik és a rendszer LAF, a kivételkezelő valamint a rendszerikon beállítódik.
      */
     static {
@@ -53,6 +58,8 @@ public class Main {
         setSystemLookAndFeel();
         setExceptionHandler();
         setSystemTrayIcon();
+        PROGRESS_FRAME = new ConnectionProgressFrame();
+        CONFIG_EDITOR = new ConfigEditorWindow(CONFIG);
     }
     
     /**
@@ -113,20 +120,12 @@ public class Main {
      * @param force kényszerítve legyen-e a felhasználó helyes konfiguráció megadására
      * @param tabIndex a megjelenő lapfül
      */
-    private static void showSettingDialog(boolean force, Integer tabIndex) {
+    public static void showSettingDialog(boolean force, Integer tabIndex) {
         if (!CONN.isConnected()) CONN.disconnect();
-        if (configEditor == null) configEditor = new ConfigEditorWindow(CONFIG) {
-
-            @Override
-            public void dispose() {
-                super.dispose();
-                if (!CONN.isConnected()) CONN.connect();
-            }
-            
-        };
-        configEditor.setTabIndex(tabIndex);
-        configEditor.setModal(force);
-        configEditor.setVisible(true);
+        PROGRESS_FRAME.setVisible(false);
+        CONFIG_EDITOR.setTabIndex(tabIndex);
+        CONFIG_EDITOR.setModal(force);
+        CONFIG_EDITOR.setVisible(true);
     }
     
     /**
@@ -171,7 +170,7 @@ public class Main {
             });
         }
         /* TESZT RÉSZ */
-        new ConnectionProgressFrame().setVisible(true);
+        PROGRESS_FRAME.setVisible(true);
         //CONFIG.setPassword(new char[] {'a','a','a','a','a','a','a','a'});
         //CONN.connect();
         //Thread.sleep(5000);

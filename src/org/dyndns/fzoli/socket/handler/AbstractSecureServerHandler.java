@@ -45,7 +45,7 @@ public abstract class AbstractSecureServerHandler extends AbstractServerHandler 
      * @param connectionId kapcsolatazonosító
      * @return null, ha nincs találat, egyébként adatfeldolgozó objektum
      */
-    protected SecureProcess findProcess(String remoteName, int deviceId, int connectionId) {
+    public SecureProcess findProcess(String remoteName, int deviceId, int connectionId) {
         List<SecureProcess> procs = getSecureProcesses();
         for (SecureProcess proc : procs) {
             if (SecureHandlerUtil.isCertEqual(proc.getHandler(), remoteName, deviceId, connectionId)) {

@@ -48,36 +48,46 @@ public class ConnectionProgressFrame extends JFrame {
      */
     private final JButton btExit = new JButton("Kilépés");
     
+    /**
+     * Az a panel, amelyen cserélgetődnek a {@code IconTextPanel} komponensek.
+     */
     private final JPanel pContainer = new JPanel(new GridLayout());
     
     /**
-     * TODO
      * Konstruktor.
+     * Alapértelmezetten hibaüzenetet mutat a panel.
      */
     public ConnectionProgressFrame() {
         super("Kapcsolódáskezelő");
-        setIconImage(R.getIconImage());
-        setLayout(new GridBagLayout());
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setResizable(false);
+        setIconImage(R.getIconImage()); // kicsi ikon beállítása
+        setLayout(new GridBagLayout()); // kedvenc elrendezésmenedzserem alkalmazása
+        setDefaultCloseOperation(EXIT_ON_CLOSE); // X-re kattintva vége a programnak
+        setResizable(false); // átméretezés tiltása
+        setPanel(pError); // hibaüzenet mutatása
+        
         GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.BOTH;
-        c.weightx = 1;
-        pContainer.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+        c.fill = GridBagConstraints.BOTH; // teljes helykitöltés, ...
+        c.weightx = 1; // ... hogy az ikon balra rendeződjön
+        
+        pContainer.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0)); // alsó és felső margó 5 pixel
         add(pContainer, c);
-        c.gridy = 1;
+        
+        c.gridy = 1; // következő sorba mennek a gombok
         JPanel pButtons = new OkCancelPanel(btAgain, btExit, btSettings, 5);
-        pButtons.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
+        pButtons.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5)); // felső margó kivételével mind 5 pixel
         add(pButtons, c);
-        setPanel(pError);
-        pack();
-        setLocationRelativeTo(this);
-        btAgain.requestFocus();
+        
+        pack(); // ablak méretének minimalizálása
+        setLocationRelativeTo(this); // középre igazítás
+        btAgain.requestFocus(); // alapértelmezett opció az Újra gomb
     }
     
+    /**
+     * Beállítja a látható panelt.
+     */
     public void setPanel(IconTextPanel p) {
-        pContainer.removeAll();
-        pContainer.add(p);
+        pContainer.removeAll(); // eltávolítja a panel komponenseit
+        pContainer.add(p); // hozzáadja panelhez a kért komponenst
     }
     
 }

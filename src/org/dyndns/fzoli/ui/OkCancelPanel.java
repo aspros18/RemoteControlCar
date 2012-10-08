@@ -55,16 +55,18 @@ public class OkCancelPanel extends JPanel {
         pc.fill = GridBagConstraints.NONE; // a gombok mérete ne változzon
         pc.gridwidth = 1; // a teljes szélesség kitöltése
         
+        pc.insets = new Insets(0, 0, 0, gap); // jobb oldali margó beállítása
+        
         pc.weightx = Integer.MAX_VALUE; // a Súgó gomb tölti ki a nagy részt ...
         pc.anchor = GridBagConstraints.LINE_START; // ... és bal szélre kerül
         add(btHelp == null ? INVISIBLE_BUTTON : btHelp, pc);
+        
         pc.weightx = 1; // a másik két gomb minimális helyet foglal el ...
         pc.anchor = GridBagConstraints.LINE_END; // ... a jobb szélen
         
-        pc.insets = new Insets(0, 0, 0, gap); // jobb oldali margó beállítása
         add(btCancel, pc);
         
-        pc.insets = new Insets(0, 0, 0, 0); // margó vissza eredeti állapotba
+        pc.insets = new Insets(0, 0, 0, 0); // margó vissza eredeti állapotba (nincs margó)
         add(btOk, pc);
         
         resizeButtons(btOk, btCancel, btHelp); // gombok átméretezése

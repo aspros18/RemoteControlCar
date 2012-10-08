@@ -3,6 +3,8 @@ package org.dyndns.fzoli.rccar.controller;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -36,17 +38,51 @@ public class ConnectionProgressFrame extends JFrame {
     /**
      * Újra gomb.
      */
-    private final JButton btAgain = new JButton("Újra");
+    private final JButton btAgain = new JButton("Újra") {
+        {
+            addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    setPanel(pProgress); //teszt
+                }
+                
+            });
+        }
+    };
     
     /**
      * Kapcsolatbeállítás gomb.
      */
-    private final JButton btSettings = new JButton("Kapcsolatbeállítás");
+    private final JButton btSettings = new JButton("Kapcsolatbeállítás") {
+        {
+            addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    setPanel(pError); //teszt
+                }
+                
+            });
+        }
+    };
     
     /**
      * Kilépés gomb.
+     * Rákattintva a program végetér.
      */
-    private final JButton btExit = new JButton("Kilépés");
+    private final JButton btExit = new JButton("Kilépés") {
+        {
+            addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.exit(0);
+                }
+                
+            });
+        }
+    };
     
     /**
      * Az a panel, amelyen cserélgetődnek a {@code IconTextPanel} komponensek.
@@ -73,7 +109,7 @@ public class ConnectionProgressFrame extends JFrame {
         add(pContainer, c);
         
         c.gridy = 1; // következő sorba mennek a gombok
-        JPanel pButtons = new OkCancelPanel(btAgain, btExit, btSettings, 5);
+        JPanel pButtons = new OkCancelPanel(btAgain, btSettings, btExit, 5);
         pButtons.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5)); // felső margó kivételével mind 5 pixel
         add(pButtons, c);
         
@@ -88,6 +124,7 @@ public class ConnectionProgressFrame extends JFrame {
     public void setPanel(IconTextPanel p) {
         pContainer.removeAll(); // eltávolítja a panel komponenseit
         pContainer.add(p); // hozzáadja panelhez a kért komponenst
+        repaint(); // újrarajzolja az ablakot
     }
     
 }

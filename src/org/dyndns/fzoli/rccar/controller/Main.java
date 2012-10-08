@@ -173,6 +173,7 @@ public class Main {
         }
         /* TESZT RÉSZ */
         closeSplashScreen();
+        new ConnectionProgressFrame().setVisible(true);
         //CONFIG.setPassword(new char[] {'a','a','a','a','a','a','a','a'});
         //CONN.connect();
         //Thread.sleep(5000);

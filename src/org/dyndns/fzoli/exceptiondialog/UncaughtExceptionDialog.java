@@ -2,7 +2,6 @@ package org.dyndns.fzoli.exceptiondialog;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import javax.swing.*;
@@ -10,6 +9,7 @@ import javax.swing.text.JTextComponent;
 import org.dyndns.fzoli.exceptiondialog.event.UncaughtExceptionEvent;
 import org.dyndns.fzoli.exceptiondialog.event.UncaughtExceptionListener;
 import org.dyndns.fzoli.exceptiondialog.event.UncaughtExceptionSource;
+import org.dyndns.fzoli.ui.LookAndFeelIcon;
 
 /**
  * Exception megjelenítő dialógusablak.
@@ -174,33 +174,7 @@ public final class UncaughtExceptionDialog extends JDialog { //TODO: ha túl hos
     }
     
     private JLabel createMessageIconLabel(Image img) {
-        try {
-            if (img == null) {
-                Icon icon = UIManager.getIcon("OptionPane.errorIcon");
-                img = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
-                icon.paintIcon(this, img.getGraphics(), 0, 0);
-            }
-            return new JLabel(new ImageIcon(img));
-        }
-        catch (Exception ex) {
-            try {
-                LookAndFeel tmp = UIManager.getLookAndFeel();
-                try {
-                    UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-                }
-                catch (Exception e) {
-                    UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-                }
-                if (tmp.equals(UIManager.getLookAndFeel())) return null;
-                JLabel lb = createMessageIconLabel(null);
-                UIManager.setLookAndFeel(tmp);
-                return lb;
-            }
-            catch(Exception e) {
-                ;
-            }
-            return null;
-        }
+        return new JLabel(LookAndFeelIcon.createIcon(this, "OptionPane.errorIcon", img));
     }
     
     /**

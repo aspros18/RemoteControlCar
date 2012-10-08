@@ -1,7 +1,6 @@
 package org.dyndns.fzoli.rccar.controller.resource;
 
 import java.awt.image.BufferedImage;
-import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -17,12 +16,15 @@ public class R {
      * @throws RuntimeException ha a forrás fájl nem található
      */
     public static BufferedImage getIconImage() {
-        try {
-            return ImageIO.read(R.class.getResourceAsStream("icon.png"));
-        }
-        catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
+        return getImage("icon.png");
+    }
+    
+    /**
+     * Hibaikont tartalmazó kép.
+     * @throws RuntimeException ha a forrás fájl nem található
+     */
+    public static BufferedImage getErrorImage() {
+        return getImage("error.png");
     }
     
     /**
@@ -32,6 +34,19 @@ public class R {
     public static Icon getIndicatorImageIcon() {
         try {
             return new ImageIcon(R.class.getResource("indicator.gif"));
+        }
+        catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+    
+    /**
+     * Beolvassa a képfájlt.
+     * @throws RuntimeException ha a forrás fájl nem található
+     */
+    private static BufferedImage getImage(String name) {
+        try {
+            return ImageIO.read(R.class.getResourceAsStream(name));
         }
         catch (Exception ex) {
             throw new RuntimeException(ex);

@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.test;
 
 import java.io.IOException;
+import org.dyndns.fzoli.rccar.controller.SplashScreenLoader;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
 
@@ -18,6 +19,7 @@ public class DummyProcess extends AbstractSecureProcess {
     @Override
     public void run() {
         try {
+            SplashScreenLoader.closeSplashScreen();
             System.out.println("Device id: " + getDeviceId());
             System.out.println("Connection id: " + getConnectionId());
             System.out.println("Dummy: " + getSocket().getInputStream().read());

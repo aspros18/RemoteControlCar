@@ -12,9 +12,7 @@ import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
  */
 public class ServerDisconnectProcess extends AbstractSecureProcess implements DisconnectProcess {
     
-    private static final int timeout = 1000, delay = 200;
-    
-    private static final int waiting = timeout - delay;
+    private static final int timeout = 1500, waiting = 250;
     
     public ServerDisconnectProcess(SecureHandler handler) {
         super(handler);
@@ -49,7 +47,12 @@ public class ServerDisconnectProcess extends AbstractSecureProcess implements Di
             while(true) {
                 out.write(1);
                 in.read();
-                Thread.sleep(waiting);
+                try {
+                    Thread.sleep(waiting);
+                }
+                catch (Exception ex) {
+                    ;
+                }
             }
         }
         catch (Exception ex) {

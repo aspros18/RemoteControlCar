@@ -52,7 +52,7 @@ public class SplashScreenLoader {
                     g.setFont(new Font("Arial", Font.BOLD, 20));
                     printString("Mobile-RC", 35);
                     g.setFont(new Font("Arial", Font.PLAIN, 12));
-                    splash.update();
+                    updateSplash();
                 }
             }
             else {
@@ -71,10 +71,14 @@ public class SplashScreenLoader {
     
     /**
      * Bezárja a nyitóképernyőt, ha az megjelent.
+     * Ha nincs mit bezárni, nem jelez hibát.
      */
     public static void closeSplashScreen() {
-        if (g != null) {
+        try {
             splash.close();
+        }
+        catch (Exception ex) {
+            ;
         }
     }
     
@@ -98,7 +102,7 @@ public class SplashScreenLoader {
             g.fillRect(0, y - 50, splash.getSize().width, 100);
             g.setPaintMode();
             printString(s + (s.isEmpty() ? "" : "..."), y);
-            splash.update();
+            updateSplash();
         }
     }
     
@@ -114,6 +118,19 @@ public class SplashScreenLoader {
         int len = (int) g.getFontMetrics().getStringBounds(s, g).getWidth();
         int start = splash.getSize().width / 2 - len / 2;
         g.drawString(s, start, y);
+    }
+    
+    /**
+     * Frissíti a splash képernyőt, ha tudja.
+     * Semmi kivételt nem dob.
+     */
+    private static void updateSplash() {
+        try {
+            splash.update();
+        }
+        catch (Exception ex) {
+            ;
+        }
     }
     
 }

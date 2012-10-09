@@ -2,6 +2,7 @@ package org.dyndns.fzoli.socket.process.impl;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
 
@@ -12,7 +13,7 @@ import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
  */
 public class ClientDisconnectProcess extends AbstractSecureProcess implements DisconnectProcess {
 
-    private static final int timeout = 1000;
+    private static final int timeout = 1500;
     
     public ClientDisconnectProcess(SecureHandler handler) {
         super(handler);
@@ -47,7 +48,6 @@ public class ClientDisconnectProcess extends AbstractSecureProcess implements Di
             while(true) {
                 in.read();
                 out.write(1);
-                Thread.sleep(1);
             }
         }
         catch (Exception ex) {

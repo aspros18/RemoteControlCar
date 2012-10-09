@@ -48,6 +48,12 @@ public class OptionPane extends JOptionPane {
     }
     
     /**
+     * Magyar nyelvű gomb opciók.
+     */
+    private static final String[] OPTS_OK_EXIT = new String[] {"OK", "Kilépés"},
+                                  OPTS_YES_NO = {"Igen", "Nem"};
+    
+    /**
      * Jelszóbekérő dialógust jelenít meg.
      * Ha a grafikus felület elérhető, dialógus ablakban kéri be a jelszót,
      * egyébként megpróbálja konzolról bekérni a jelszót.
@@ -80,10 +86,9 @@ public class OptionPane extends JOptionPane {
             panel.add(lbRequest);
             panel.add(pass);
             panel.add(save);
-            String[] options = new String[] {"OK", "Kilépés"};
-            int option = JOptionPane.showOptionDialog(createDummyFrame(icon), panel, "Jelszó",
-                JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE,
-                null, options, options[1]);
+            int option = showOptionDialog(createDummyFrame(icon), panel, "Jelszó",
+                NO_OPTION, QUESTION_MESSAGE,
+                null, OPTS_OK_EXIT, OPTS_OK_EXIT[1]);
             if (option == 0) {
                 return new PasswordData(pass.getPassword(), save.isSelected());
             }
@@ -95,7 +100,11 @@ public class OptionPane extends JOptionPane {
     }
     
     public static void showMessageDialog(Image icon, String message, String title, int messageType) {
-        JOptionPane.showMessageDialog(createDummyFrame(icon), message, title, messageType);
+        showMessageDialog(createDummyFrame(icon), message, title, messageType);
+    }
+    
+    public static int showYesNoDialog(Image icon, String message, String title) {
+        return showOptionDialog(createDummyFrame(icon), message, title, NO_OPTION, QUESTION_MESSAGE, null, OPTS_YES_NO, OPTS_YES_NO[1]);
     }
     
     private static JFrame createDummyFrame(Image icon) {

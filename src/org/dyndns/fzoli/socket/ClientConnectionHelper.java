@@ -133,6 +133,7 @@ public abstract class ClientConnectionHelper {
             }
         }
         catch (Exception ex) {
+            connecting = false;
             onException(ex, connectionId);
         }
     }
@@ -146,7 +147,14 @@ public abstract class ClientConnectionHelper {
     public void connect() {
         if (isConnecting()) return;
         connecting = true;
-        runHandler(connectionIds[0], true);
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                runHandler(connectionIds[0], true);
+            }
+            
+        }).start();
     }
     
     /**

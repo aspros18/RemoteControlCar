@@ -61,17 +61,22 @@ public class Main {
     /**
      * Kapcsolódásjelző- és kezelő ablak.
      */
-    private static final ConnectionProgressFrame PROGRESS_FRAME;
+    public static final ConnectionProgressFrame PROGRESS_FRAME;
     
     /**
-     * Még mielőtt lefutna a main metódus, a nyitóképernyő szövege megjelenik és a rendszer LAF, a kivételkezelő valamint a rendszerikon beállítódik.
+     * Még mielőtt lefutna a main metódus,
+     * a nyitóképernyő szövege megjelenik és a rendszer LAF,
+     * a kivételkezelő valamint a rendszerikon beállítódik
+     * és inicilizálódnak azok az ablakok, melyek jó eséllyel használva lesznek.
      */
     static {
         setDefaultSplashMessage();
         setSystemLookAndFeel();
         setExceptionHandler();
         setSystemTrayIcon();
-        PROGRESS_FRAME = new ConnectionProgressFrame();
+        // előinicializálom az ablakokat, míg a nyitóképernyő fent van,
+        // hogy később ne menjen el ezzel a hasznos idő
+        PROGRESS_FRAME = new ConnectionProgressFrame(CONN);
         CONFIG_EDITOR = new ConfigEditorWindow(CONFIG);
     }
     
@@ -174,25 +179,40 @@ public class Main {
     }
     
     /**
-     * A vezérlő main metódusa.
+     * A program értelme.
+     * Kijelzi, hogy elkezdődött a kapcsolódás és kapcsolódik a szerverhez.
+     * Innentől kezdve már a kommunikációtól függ, hogyan folytatódik a program futása.
      */
-    public static void main(String[] args) throws InterruptedException {
-        if (GraphicsEnvironment.isHeadless()) {
-            System.err.println("A program futtatásához grafikus környezetre van szükség." + LS + "A program kilép.");
-            System.exit(1);
-        }
-        if (!CONFIG.isFileExists()) {
-            showSettingError((CONFIG.isDefault() ? "Az alapértelmezett konfiguráció nem használható, mert" : "A konfiguráció") + " nem létező fájlra hivatkozik." + LS + "A folytatás előtt a hibát helyre kell hozni.");
-            showSettingDialog(true, 1);            
-        }
-        if (CONFIG.isCertDefault()) {
-            showSettingWarning("Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!");
-        }
-        if (CONFIG.isDefault()) {
-            showSettingWarning("A konfiguráció beállítása a menüből érhető el. Most ide kattintva is megteheti.");
-        }
+    private static void runClient() {
         showConnecting();
         CONN.connect();
+    }
+    
+    /**
+     * A vezérlő main metódusa.
+     * Ha a grafikus felület nem érhető el, konzolra írja a szomorú tényt és a program végetér.
+     * Ha a konfigurációban megadott tanúsítványfájlok nem léteznek, közli a hibát és kényszeríti a kijavítását úgy,
+     * hogy feldobja a konfiguráció beállító ablakot és addig nem lehet elhagyni, míg nincs létező fájl beállítva.
+     * Ezek után megnézi a program, hogy a publikus teszt tanúsítványok vannak-e használva és ha igen, figyelmezteti a felhasználót.
+     * Ha a konfiguráció teljes egészében megegyezik az eredeti beállításokkal, a program közli, hol állítható át.
+     * Végül a kliens program elkezdi futását.
+     */
+    public static void main(String[] args) throws InterruptedException {
+        if (GraphicsEnvironment.isHeadless()) { // ha a grafikus felület nem érhető el
+            System.err.println("A program futtatásához grafikus környezetre van szükség." + LS + "A program kilép.");
+            System.exit(1); // hibakóddal lép ki
+        }
+        if (!CONFIG.isFileExists()) { // ha a tanúsítvány fájlok egyike nem létezik
+            showSettingError((CONFIG.isDefault() ? "Az alapértelmezett konfiguráció nem használható, mert" : "A konfiguráció") + " nem létező fájlra hivatkozik." + LS + "A folytatás előtt a hibát helyre kell hozni.");
+            showSettingDialog(true, 1); // kényszerített beállítás és tanúsítvány lapfül előtérbe hozása
+        }
+        if (CONFIG.isCertDefault()) { // figyelmeztetés
+            showSettingWarning("Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!");
+        }
+        if (CONFIG.isDefault()) { // figyelmeztetés
+            showSettingWarning("A konfiguráció beállítása a menüből érhető el. Most ide kattintva is megteheti.");
+        }
+        runClient(); // és végül a lényeg
     }
     
 }

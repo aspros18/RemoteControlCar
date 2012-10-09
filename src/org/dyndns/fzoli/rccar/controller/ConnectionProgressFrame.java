@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.controller;
 
 import org.dyndns.fzoli.rccar.controller.resource.R;
+import org.dyndns.fzoli.rccar.controller.socket.ConnectionHelper;
 import org.dyndns.fzoli.ui.AbstractConnectionProgressFrame;
 
 /**
@@ -9,12 +10,15 @@ import org.dyndns.fzoli.ui.AbstractConnectionProgressFrame;
  */
 public class ConnectionProgressFrame extends AbstractConnectionProgressFrame {
 
+    private final ConnectionHelper CONN;
+    
     /**
      * Beállítja a kis autó ikont és az indikátor animációt.
      */
-    public ConnectionProgressFrame() {
+    public ConnectionProgressFrame(ConnectionHelper conn) {
         super(R.getIndicatorImageIcon());
         setIconImage(R.getIconImage());
+        CONN = conn;
     }
 
     /**
@@ -22,7 +26,8 @@ public class ConnectionProgressFrame extends AbstractConnectionProgressFrame {
      */
     @Override
     protected void onAgain() {
-        setProgress(true); //teszt
+        setProgress(true);
+        CONN.connect();
     }
 
     /**
@@ -30,7 +35,6 @@ public class ConnectionProgressFrame extends AbstractConnectionProgressFrame {
      */
     @Override
     protected void onSettings() {
-        setProgress(false); //teszt
         Main.showSettingDialog(false, null);
     }
     

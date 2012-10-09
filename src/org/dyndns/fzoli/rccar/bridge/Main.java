@@ -225,7 +225,7 @@ public class Main {
     }
     
     /**
-     * A socket szerver elindítása, a program értelme.
+     * A szerver socket elindítása, a program értelme.
      * Ha nem megbízható kapcsolat jön létre, jelzi a felhasználónak.
      * Ha nem várt kivétel képződik, kivételt dob, ami a felhasználó tudtára lesz adva.
      * @throws RuntimeException ha nem várt kivétel képződik

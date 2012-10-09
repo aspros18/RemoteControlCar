@@ -1,10 +1,12 @@
 package org.dyndns.fzoli.rccar.controller.socket;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.security.GeneralSecurityException;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import org.dyndns.fzoli.rccar.controller.Config;
+import static org.dyndns.fzoli.rccar.controller.Main.PROGRESS_FRAME;
 import org.dyndns.fzoli.socket.ClientConnectionHelper;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
@@ -47,6 +49,20 @@ public class ConnectionHelper extends ClientConnectionHelper implements Connecti
     @Override
     protected AbstractSecureClientHandler createHandler(SSLSocket socket, int deviceId, int connectionId) {
         return new ControllerHandler(socket, deviceId, connectionId);
+    }
+
+    @Override
+    protected void onException(Exception ex, int connectionId) {
+        try {
+            throw ex;
+        }
+        catch (ConnectException e) {
+            PROGRESS_FRAME.setProgress(false);
+            PROGRESS_FRAME.setVisible(true);
+        }
+        catch (Exception e) {
+            super.onException(e, connectionId);
+        }
     }
     
 }

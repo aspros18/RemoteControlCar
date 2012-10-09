@@ -7,7 +7,6 @@ import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import static org.dyndns.fzoli.rccar.UIUtil.print;
 
 /**
  * Ha van grafikus felület, rendszerikont jelenít meg.
@@ -178,7 +177,7 @@ public class SystemTrayIcon {
             return true;
         }
         else { // ha az ikon nem támogatott vagy nem látható, konzolra megy az üzenet
-            print(title, text, TrayIcon.MessageType.ERROR == type ? System.err : System.out);
+            UIUtil.print(title, text, TrayIcon.MessageType.ERROR == type ? System.err : System.out);
             return false;
         }
     }

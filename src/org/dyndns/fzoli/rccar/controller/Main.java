@@ -77,7 +77,7 @@ public class Main {
         // előinicializálom az ablakokat, míg a nyitóképernyő fent van,
         // hogy később ne menjen el ezzel a hasznos idő
         PROGRESS_FRAME = new ConnectionProgressFrame(CONN);
-        CONFIG_EDITOR = new ConfigEditorWindow(CONFIG);
+        CONFIG_EDITOR = new ConfigEditorWindow(CONFIG, CONN);
     }
     
     /**

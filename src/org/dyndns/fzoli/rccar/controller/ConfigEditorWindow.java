@@ -23,7 +23,9 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import static org.dyndns.fzoli.rccar.controller.Main.PROGRESS_FRAME;
 import org.dyndns.fzoli.rccar.controller.resource.R;
+import org.dyndns.fzoli.rccar.controller.socket.ConnectionHelper;
 import org.dyndns.fzoli.ui.FilePanel;
 import org.dyndns.fzoli.ui.ModalFrame;
 import org.dyndns.fzoli.ui.OkCancelPanel;
@@ -78,6 +80,11 @@ public class ConfigEditorWindow extends ModalFrame {
      * A konfiguráció, amit használ az ablak.
      */
     private final Config CONFIG;
+    
+    /**
+     * Kapcsolódás segítő.
+     */
+    private final ConnectionHelper CONN;
     
     /**
      * A szerver címe írható át benne.
@@ -242,7 +249,8 @@ public class ConfigEditorWindow extends ModalFrame {
      * Konstruktor.
      * @param config konfiguráció, amit használ az ablak.
      */
-    public ConfigEditorWindow(Config config) {
+    public ConfigEditorWindow(Config config, ConnectionHelper conn) {
+        CONN = conn;
         CONFIG = config;
         initComponents();
         initWindow();
@@ -417,6 +425,14 @@ public class ConfigEditorWindow extends ModalFrame {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        if (!CONN.isConnected()) {
+            PROGRESS_FRAME.setVisible(true);
+        }
     }
     
     /**

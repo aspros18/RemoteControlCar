@@ -168,9 +168,8 @@ public class Main {
      * a kapcsolódásjelző ablak jelenik meg.
      */
     private static void showConnecting() {
-        String msg = "Kapcsolódás a szerverhez...";
         if (SplashScreenLoader.isVisible()) {
-            SplashScreenLoader.setSplashMessage(msg);
+            SplashScreenLoader.setSplashMessage("Kapcsolódás a szerverhez");
         }
         else {
             PROGRESS_FRAME.setProgress(true);

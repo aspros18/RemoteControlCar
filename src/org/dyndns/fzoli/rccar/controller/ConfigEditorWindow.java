@@ -29,6 +29,7 @@ import org.dyndns.fzoli.rccar.controller.socket.ConnectionHelper;
 import org.dyndns.fzoli.ui.FilePanel;
 import org.dyndns.fzoli.ui.ModalFrame;
 import org.dyndns.fzoli.ui.OkCancelPanel;
+import org.dyndns.fzoli.ui.OptionPane;
 import org.dyndns.fzoli.ui.RegexPatternFormatter;
 
 /**
@@ -306,7 +307,8 @@ public class ConfigEditorWindow extends ModalFrame {
     }
     
     /**
-     * Elmenti a konfigurációt és bezárja az ablakot.
+     * Elmenti a konfigurációt.
+     * Ha sikerült a mentés, bezárja az ablakot, egyébként figyelmezteti a felhasználót.
      */
     private void saveConfig() {
         CONFIG.setAddress(tfAddress.getText());
@@ -314,8 +316,8 @@ public class ConfigEditorWindow extends ModalFrame {
         CONFIG.setCertFile(fpCert.getFile());
         CONFIG.setKeyFile(fpKey.getFile());
         CONFIG.setPort(Integer.parseInt(tfPort.getText()));
-        Config.save(CONFIG);
-        dispose();
+        if (Config.save(CONFIG)) dispose();
+        else OptionPane.showWarningDialog(R.getIconImage(), "Nem sikerült lemezre menteni a beállításokat!", "Figyelmeztetés");
     }
     
     /**

@@ -8,6 +8,7 @@ import org.dyndns.fzoli.rccar.UncaughtExceptionHandler;
 import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.setDefaultSplashMessage;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.controller.socket.ConnectionHelper;
+import org.dyndns.fzoli.ui.OptionPane;
 import org.dyndns.fzoli.ui.SystemTrayIcon;
 import static org.dyndns.fzoli.ui.SystemTrayIcon.showMessage;
 import org.dyndns.fzoli.ui.UIUtil;
@@ -101,15 +102,22 @@ public class Main {
 
             /**
              * Ha a kilépésre kattintottak.
-             * TODO: ha ki van építve a kapcsolat, kérdezzen rá a kilépésre.
+             * A program azonnal végetér, ha nincs kiépítve kapcsolat,
+             * egyébként megkérdezi a felhasználót, hogy biztos ki akar-e lépni
+             * és csak akkor lép ki, ha Igen a válasza.
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (CONN.isConnected()) {
-                    
+                if (CONN.isConnected()) { // ha van kiépített kapcsolat
+                    // megkérdi, biztos-e a kilépésben
+                    int opt = OptionPane.showYesNoDialog(R.getIconImage(), "Biztos, hogy kilép a programból?", "Megerősítés");
+                    // ha igen, akkor a program kilép
+                    if (opt == 0) System.exit(0);
                 }
-                // a program kilép
-                System.exit(0);
+                else { // ha nincs kiépített kapcsolat
+                    // a program kilép
+                    System.exit(0);
+                }
             }
             
         });

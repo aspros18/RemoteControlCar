@@ -132,7 +132,7 @@ public abstract class AbstractConnectionProgressFrame extends JFrame {
      * Beállítja a látható panelt.
      * @param on true esetén az indikátor jelenik meg, egyébként a hibaüzenet.
      */
-    protected void setProgress(boolean on) {
+    public void setProgress(boolean on) {
         setAgainButtonEnabled(!on);
         if (on) {
             pError.setVisible(false);

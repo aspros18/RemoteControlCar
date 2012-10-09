@@ -158,7 +158,22 @@ public class Main {
     }
     
     /**
-     * TODO
+     * Közli a felhasználóval, hogy a kapcsolódás folyamatban van.
+     * Ha a nyitóképernyő még látható, akkor azon történik a jelzés, egyébként
+     * a kapcsolódásjelző ablak jelenik meg.
+     */
+    private static void showConnecting() {
+        String msg = "Kapcsolódás a szerverhez...";
+        if (SplashScreenLoader.isVisible()) {
+            SplashScreenLoader.setSplashMessage(msg);
+        }
+        else {
+            PROGRESS_FRAME.setProgress(true);
+            PROGRESS_FRAME.setVisible(true);
+        }
+    }
+    
+    /**
      * A vezérlő main metódusa.
      */
     public static void main(String[] args) throws InterruptedException {
@@ -168,7 +183,7 @@ public class Main {
         }
         if (!CONFIG.isFileExists()) {
             showSettingError((CONFIG.isDefault() ? "Az alapértelmezett konfiguráció nem használható, mert" : "A konfiguráció") + " nem létező fájlra hivatkozik." + LS + "A folytatás előtt a hibát helyre kell hozni.");
-            showSettingDialog(true, 1);
+            showSettingDialog(true, 1);            
         }
         if (CONFIG.isCertDefault()) {
             showSettingWarning("Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!");
@@ -176,13 +191,8 @@ public class Main {
         if (CONFIG.isDefault()) {
             showSettingWarning("A konfiguráció beállítása a menüből érhető el. Most ide kattintva is megteheti.");
         }
-        /* TESZT RÉSZ */
-        PROGRESS_FRAME.setVisible(true);
-        //CONFIG.setPassword(new char[] {'a','a','a','a','a','a','a','a'});
-        //CONN.connect();
-        //Thread.sleep(5000);
-        //if (CONFIG.isFileExists()) showSettingDialog(true, null);
-        //System.exit(0);
+        showConnecting();
+        CONN.connect();
     }
     
 }

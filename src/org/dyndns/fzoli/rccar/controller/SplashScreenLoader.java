@@ -62,6 +62,14 @@ public class SplashScreenLoader {
     }
     
     /**
+     * Megmondja, látható-e még a nyitóképernyő.
+     */
+    public static boolean isVisible() {
+        if (g == null) return false;
+        return splash.isVisible();
+    }
+    
+    /**
      * Bezárja a nyitóképernyőt, ha az megjelent.
      */
     public static void closeSplashScreen() {

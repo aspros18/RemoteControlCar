@@ -15,7 +15,7 @@ import javax.swing.JPasswordField;
  * Magyar nyelvű dialógusablakokat hoz létre.
  * @author zoli
  */
-public class OptionPane {
+public class OptionPane extends JOptionPane {
     
     /**
      * A jelszómegjelenítő dialógus visszatérési értéke.

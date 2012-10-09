@@ -1,6 +1,8 @@
 package org.dyndns.fzoli.rccar.controller.resource;
 
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -10,6 +12,11 @@ import javax.swing.ImageIcon;
  * @author zoli
  */
 public class R {
+    
+    /**
+     * Az egyszer már betöltött képek referenciáit tárolja.
+     */
+    private static final Map<String, BufferedImage> IMAGES = new HashMap<String, BufferedImage>();
     
     /**
      * A program ikonjának képét adja vissza.
@@ -33,15 +40,21 @@ public class R {
     }
     
     /**
-     * Beolvassa a képfájlt.
+     * Beolvassa a képfájlt és cacheli a memóriában.
      * @throws RuntimeException ha a forrás fájl nem található
      */
     private static BufferedImage getImage(String name) {
-        try {
-            return ImageIO.read(R.class.getResourceAsStream(name));
-        }
-        catch (Exception ex) {
-            throw new RuntimeException(ex);
+        synchronized (IMAGES) {
+            BufferedImage img = IMAGES.get(name);
+            if (img != null) return img;
+            try {
+                img = ImageIO.read(R.class.getResourceAsStream(name));
+                IMAGES.put(name, img);
+                return img;
+            }
+            catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
     

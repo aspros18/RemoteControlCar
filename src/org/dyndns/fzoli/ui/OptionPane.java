@@ -99,14 +99,33 @@ public class OptionPane extends JOptionPane {
         return null;
     }
     
+    /**
+     * Üzenet dialógust jelenít meg és a megadott képet használja címsor ikonnak.
+     * @param icon a címsorba kerülő ikon képe
+     * @param message az üzenet
+     * @param title a címsor szövege
+     * @param messageType az üzenet típusa, az üzenet melletti ikont folyásolja be
+     */
     public static void showMessageDialog(Image icon, String message, String title, int messageType) {
         showMessageDialog(createDummyFrame(icon), message, title, messageType);
     }
     
+    /**
+     * Igen/Nem kérdező dialógust jelenít meg és a megadott képet használja címsor ikonnak.
+     * @param icon a címsorba kerülő ikon képe
+     * @param message az üzenet
+     * @param title a címsor szövege
+     */
     public static int showYesNoDialog(Image icon, String message, String title) {
         return showOptionDialog(createDummyFrame(icon), message, title, NO_OPTION, QUESTION_MESSAGE, null, OPTS_YES_NO, OPTS_YES_NO[1]);
     }
     
+    /**
+     * Egy kis csel arra, hogy a címsorban a kért ikon jelenhessen meg.
+     * Készít egy ablakot, ami soha nem fog megjelenni, de a dialógus örökli a címsorban lévő ikonját.
+     * Teljesen fölösleges lenne, ha lehetne címsor ikont megadni a {@code JOptionPane} metódusainak.
+     * @param icon a címsorba kerülő ikon képe
+     */
     private static JFrame createDummyFrame(Image icon) {
         JFrame dummy = null;
         if (icon != null) {

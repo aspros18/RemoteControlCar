@@ -245,13 +245,13 @@ public class ConfigEditorWindow extends ModalFrame {
     public ConfigEditorWindow(Config config) {
         CONFIG = config;
         initComponents();
-        initDialog();
+        initWindow();
     }
     
     /**
      * Inicializálja az ablakot.
      */
-    private void initDialog() {
+    private void initWindow() {
         setTitle("Kapcsolatbeállító"); // címsor szöveg beállítása
         setIconImage(R.getIconImage()); // címsor ikon beállítása
         setLayout(new GridBagLayout()); // elrendezésmenedzser megadása

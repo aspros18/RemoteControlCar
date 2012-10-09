@@ -3,7 +3,6 @@ package org.dyndns.fzoli.ui;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.io.PrintStream;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
@@ -48,12 +47,7 @@ public class UIUtil {
             print(title, text, out);
         }
         else { // ha van grafikus felület
-            JFrame dummy = null;
-            if (icon != null) {
-                dummy = new JFrame();
-                dummy.setIconImage(icon);
-            }
-            JOptionPane.showMessageDialog(dummy, text, title, System.err == out ? JOptionPane.ERROR_MESSAGE : JOptionPane.WARNING_MESSAGE); // dialógus ablak megjelenítése
+            OptionPane.showMessageDialog(icon, text, title, System.err == out ? JOptionPane.ERROR_MESSAGE : JOptionPane.WARNING_MESSAGE); // dialógus ablak megjelenítése
         }
     }
     

@@ -69,8 +69,6 @@ public class OptionPane {
             return new PasswordData(console.readPassword(request), false);
         }
         else {
-            JFrame dummyFrame = new JFrame();
-            dummyFrame.setIconImage(icon);
             JPanel panel = new JPanel(new GridLayout(4, 1));
             JLabel lbMessage = new JLabel(message);
             JLabel lbRequest = new JLabel(request);
@@ -83,7 +81,7 @@ public class OptionPane {
             panel.add(pass);
             panel.add(save);
             String[] options = new String[] {"OK", "Kilépés"};
-            int option = JOptionPane.showOptionDialog(dummyFrame, panel, "Jelszó",
+            int option = JOptionPane.showOptionDialog(createDummyFrame(icon), panel, "Jelszó",
                 JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE,
                 null, options, options[1]);
             if (option == 0) {
@@ -94,6 +92,19 @@ public class OptionPane {
             }
         }
         return null;
+    }
+    
+    public static void showMessageDialog(Image icon, String message, String title, int messageType) {
+        JOptionPane.showMessageDialog(createDummyFrame(icon), message, title, messageType);
+    }
+    
+    private static JFrame createDummyFrame(Image icon) {
+        JFrame dummy = null;
+        if (icon != null) {
+            dummy = new JFrame();
+            dummy.setIconImage(icon);
+        }
+        return dummy;
     }
     
 }

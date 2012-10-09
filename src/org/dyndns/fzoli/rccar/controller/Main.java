@@ -132,7 +132,6 @@ public class Main {
     }
     
     /**
-     * TODO
      * A beállításkezelő ablakot jeleníti meg.
      * @param force kényszerítve legyen-e a felhasználó helyes konfiguráció megadására
      * @param tabIndex a megjelenő lapfül

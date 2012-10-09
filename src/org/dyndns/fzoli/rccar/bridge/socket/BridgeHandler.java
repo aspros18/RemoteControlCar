@@ -94,7 +94,7 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
     
     /**
      * Kiválasztja a biztonságos kapcsolatfeldolgozó objektumot az adatok alapján és elindítja.
-     * TODO: egyelőre teszt
+     * TODO: Egyelőre teszt
      */
     @Override
     protected AbstractSecureProcess selectProcess() {

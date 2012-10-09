@@ -2,7 +2,6 @@ package org.dyndns.fzoli.socket.process.impl;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Date;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
 

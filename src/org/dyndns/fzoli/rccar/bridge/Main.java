@@ -72,7 +72,7 @@ public class Main {
      * egyébként nem változik az eredeti kivételkezelés.
      */
     private static void setExceptionHandler() {
-        UncaughtExceptionHandler.apply();
+        UncaughtExceptionHandler.apply(R.getBridgeImage());
     }
     
     /**

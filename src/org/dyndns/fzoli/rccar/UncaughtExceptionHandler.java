@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar;
 
 import java.awt.Dialog;
+import java.awt.Image;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,13 +19,34 @@ import org.dyndns.fzoli.ui.SystemTrayIcon;
  */
 public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
 
+    /**
+     * A kivételmegjelenítő ablak címsor szövege.
+     */
     private static final String title = "Nem várt hiba";
-    private static final UncaughtExceptionParameters params = new UncaughtExceptionParameters(title, "Nem várt hiba keletkezett a program futása alatt.", "Részletek", "Bezárás", "Másolás", "Mindet kijelöl");
 
+    /**
+     * Az kivételmegjelenítő ablak ikonja.
+     */
+    private static Image icon;
+    
     /**
      * Nincs szükség példányosításra, se öröklésre.
      */
     private UncaughtExceptionHandler() {
+    }
+    
+    /**
+     * Létrehozza a kivételmegjelenítő ablak megjelenését beállító objektumot.
+     */
+    private static UncaughtExceptionParameters createParameters() {
+        return new UncaughtExceptionParameters(title, "Nem várt hiba keletkezett a program futása alatt.", "Részletek", "Bezárás", "Másolás", "Mindet kijelöl", icon);
+    }
+    
+    /**
+     * Beállítja a címsorban megjelenő ikont.
+     */
+    public static void setIcon(Image icon) {
+        UncaughtExceptionHandler.icon = icon;
     }
     
     /**
@@ -39,6 +61,17 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
     }
     
     /**
+     * Alkalmazza a program kivételkezelő metódusát és beállítja a kivételmegjelenítő címsorának ikonját.
+     * Ha a rendszerikonok támogatva vannak, dialógusablak jeleníti meg a nem kezelt kivételeket,
+     * egyébként nem változik az eredeti kivételkezelés.
+     * @param icon a kivételmegjelenítő címsorának ikonja
+     */
+    public static void apply(Image icon) {
+        setIcon(icon);
+        apply();
+    }
+    
+    /**
      * Megjeleníti a kivételt egy dialógusablakban.
      * Ha nem kivétel, hanem hiba keletkezett, modálisan jelenik meg az ablak és a bezárása után leáll a program.
      * @param t a szál, amiben a hiba keletkezett
@@ -46,7 +79,7 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
      */
     public static void showExceptionDialog(final Thread t, final Throwable ex) {
         final boolean error = ex instanceof Error;
-        UncaughtExceptionDialog.showException(t, ex, error ? Dialog.ModalityType.APPLICATION_MODAL : Dialog.ModalityType.MODELESS, params, new UncaughtExceptionAdapter() {
+        UncaughtExceptionDialog.showException(t, ex, error ? Dialog.ModalityType.APPLICATION_MODAL : Dialog.ModalityType.MODELESS, createParameters(), new UncaughtExceptionAdapter() {
 
             @Override
             public void exceptionDialogClosed() {

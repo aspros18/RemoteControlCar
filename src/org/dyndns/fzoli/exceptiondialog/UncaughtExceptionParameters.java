@@ -13,6 +13,8 @@ import java.awt.event.MouseAdapter;
  */
 public final class UncaughtExceptionParameters {
     
+    private static final Image NULL_IMAGE = null;
+    
     private String title, details, close, copy, selectAll, info;
     private Image dialogIconImage, messageIconImage;
     private Component component;
@@ -22,7 +24,11 @@ public final class UncaughtExceptionParameters {
     }
 
     public UncaughtExceptionParameters(String title, String info, String details, String close, String copy, String selectAll) {
-        this(title, info, details, close, copy, selectAll, null);
+        this(title, info, details, close, copy, selectAll, NULL_IMAGE);
+    }
+    
+    public UncaughtExceptionParameters(String title, String info, String details, String close, String copy, String selectAll, Image dialogIconImage) {
+        this(title, info, details, close, copy, selectAll, dialogIconImage, null, null, null);
     }
     
     public UncaughtExceptionParameters(String title, String info, String details, String close, String copy, String selectAll, Component component) {

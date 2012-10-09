@@ -433,7 +433,9 @@ public class ConfigEditorWindow extends ModalFrame {
     public void dispose() {
         super.dispose();
         if (!CONN.isConnected()) {
+            PROGRESS_FRAME.setProgress(true);
             PROGRESS_FRAME.setVisible(true);
+            CONN.connect();
         }
     }
     

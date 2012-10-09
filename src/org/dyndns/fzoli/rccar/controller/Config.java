@@ -6,7 +6,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import org.dyndns.fzoli.rccar.controller.resource.MD5Checksum;
+import org.dyndns.fzoli.resource.MD5Checksum;
 
 /**
  * A vezérlő konfigurációját tölti be és menti el a felhasználó könyvtárába egy fájlba.

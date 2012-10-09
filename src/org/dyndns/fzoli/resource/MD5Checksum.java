@@ -1,4 +1,4 @@
-package org.dyndns.fzoli.rccar.controller.resource;
+package org.dyndns.fzoli.resource;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -23,7 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import static org.dyndns.fzoli.rccar.controller.Main.PROGRESS_FRAME;
+import static org.dyndns.fzoli.rccar.controller.Main.runClient;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.controller.socket.ConnectionHelper;
 import org.dyndns.fzoli.ui.FilePanel;
@@ -429,14 +429,13 @@ public class ConfigEditorWindow extends ModalFrame {
         return true;
     }
 
+    /**
+     * Bezárja az ablakot és elindítja a programot.
+     */
     @Override
     public void dispose() {
         super.dispose();
-        if (!CONN.isConnected()) {
-            PROGRESS_FRAME.setProgress(true);
-            PROGRESS_FRAME.setVisible(true);
-            CONN.connect();
-        }
+        runClient();
     }
     
     /**

@@ -179,10 +179,11 @@ public class Main {
     
     /**
      * A program értelme.
-     * Kijelzi, hogy elkezdődött a kapcsolódás és kapcsolódik a szerverhez.
+     * Kijelzi, hogy elkezdődött a kapcsolódás és kapcsolódik a szerverhez (ha már nem történt meg).
      * Innentől kezdve már a kommunikációtól függ, hogyan folytatódik a program futása.
      */
-    private static void runClient() {
+    public static void runClient() {
+        if (CONN.isConnected()) return;
         showConnecting();
         CONN.connect();
     }

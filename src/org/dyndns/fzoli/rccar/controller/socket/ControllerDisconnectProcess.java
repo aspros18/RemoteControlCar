@@ -22,7 +22,7 @@ public class ControllerDisconnectProcess extends ClientDisconnectProcess {
     @Override
     protected void onDisconnect() {
         super.onDisconnect();
-        PROGRESS_FRAME.setProgress(false);
+        PROGRESS_FRAME.setDisconnect(true);
         PROGRESS_FRAME.setVisible(true);
     }
     

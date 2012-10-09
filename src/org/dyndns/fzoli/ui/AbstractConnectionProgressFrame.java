@@ -45,6 +45,11 @@ public abstract class AbstractConnectionProgressFrame extends JFrame {
     private final IconTextPanel pError;
     
     /**
+     * Kapcsolatmegszakadás figyelmeztetést kijelző panel.
+     */
+    private final IconTextPanel pWarning;
+    
+    /**
      * Újra gomb.
      * Meghívja az {@code onAgain} metódust, ha kiválasztják.
      */
@@ -105,6 +110,7 @@ public abstract class AbstractConnectionProgressFrame extends JFrame {
         // panelek példányosítása
         pProgress = new ConnProgPanel(this, progressIcon, "Kapcsolódás folyamatban...");
         pError = new ConnProgPanel(this, LookAndFeelIcon.createIcon(this, "OptionPane.errorIcon", null), "Nem sikerült kapcsolódni a szerverhez!");
+        pWarning = new ConnProgPanel(this, LookAndFeelIcon.createIcon(this, "OptionPane.warningIcon", null), "Megszakadt a kapcsolat a szerverrel!");
         
         setLayout(new GridBagLayout()); // kedvenc elrendezésmenedzserem alkalmazása
         setDefaultCloseOperation(EXIT_ON_CLOSE); // X-re kattintva vége a programnak
@@ -116,6 +122,7 @@ public abstract class AbstractConnectionProgressFrame extends JFrame {
         
         add(pError, c); 
         add(pProgress, c); // mindkét panelt felfűzöm az ablakra ...
+        add(pWarning, c); // mindkét panelt felfűzöm az ablakra ...
         setProgress(false); // ... de egyszerre csak az egyik látható
         
         c.gridy = 1; // következő sorba mennek a gombok
@@ -136,10 +143,30 @@ public abstract class AbstractConnectionProgressFrame extends JFrame {
         setAgainButtonEnabled(!on);
         if (on) {
             pError.setVisible(false);
+            pWarning.setVisible(false);
             pProgress.setVisible(true);
         }
         else {
             pError.setVisible(true);
+            pWarning.setVisible(false);
+            pProgress.setVisible(false);
+        }
+    }
+    
+    /**
+     * Beállítja a látható panelt.
+     * @param disconnect true esetén a kapcsolatmegszakdó üzenet jelenik meg, egyébként a hibaüzenet
+     */
+    public void setDisconnect(boolean disconnect) {
+        setAgainButtonEnabled(disconnect);
+        if (disconnect) {
+            pError.setVisible(false);
+            pWarning.setVisible(true);
+            pProgress.setVisible(false);
+        }
+        else {
+            pError.setVisible(true);
+            pWarning.setVisible(false);
             pProgress.setVisible(false);
         }
     }

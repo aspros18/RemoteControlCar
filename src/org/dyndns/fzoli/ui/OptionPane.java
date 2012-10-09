@@ -50,8 +50,9 @@ public class OptionPane extends JOptionPane {
     /**
      * Magyar nyelvű gomb opciók.
      */
-    private static final String[] OPTS_OK_EXIT = new String[] {"OK", "Kilépés"},
-                                  OPTS_YES_NO = {"Igen", "Nem"};
+    private static final String[] OPTS_OK_EXIT = {"OK", "Kilépés"},
+                                  OPTS_YES_NO = {"Igen", "Nem"},
+                                  OPTS_OK = {"OK"};
     
     /**
      * Jelszóbekérő dialógust jelenít meg.
@@ -118,6 +119,16 @@ public class OptionPane extends JOptionPane {
      */
     public static int showYesNoDialog(Image icon, String message, String title) {
         return showOptionDialog(createDummyFrame(icon), message, title, NO_OPTION, QUESTION_MESSAGE, null, OPTS_YES_NO, OPTS_YES_NO[1]);
+    }
+    
+    /**
+     * Figyelmeztető dialógust jelenít meg és a megadott képet használja címsor ikonnak.
+     * @param icon a címsorba kerülő ikon képe
+     * @param message az üzenet
+     * @param title a címsor szövege
+     */
+    public static int showWarningDialog(Image icon, String message, String title) {
+        return showOptionDialog(createDummyFrame(icon), message, title, NO_OPTION, WARNING_MESSAGE, null, OPTS_OK, OPTS_OK[0]);
     }
     
     /**

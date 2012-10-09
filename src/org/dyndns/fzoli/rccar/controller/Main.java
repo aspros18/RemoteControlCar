@@ -4,7 +4,6 @@ import java.awt.GraphicsEnvironment;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.PrintStream;
 import org.dyndns.fzoli.rccar.UIUtil;
 import static org.dyndns.fzoli.rccar.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.rccar.UncaughtExceptionHandler;
@@ -39,6 +38,19 @@ public class Main {
      * Új sor jel.
      */
     private static final String LS = System.getProperty("line.separator");
+    
+    /**
+     * Eseményfigyelő, ami esemény hatására megjeleníti a kapcsolatbeállító ablakot.
+     */
+    private static final ActionListener AL_SETTING = new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // kapcsolatbeállító ablak megjelenítése
+            showSettingDialog(false, null);
+        }
+
+    };
     
     /**
      * Konfiguráció-szerkesztő ablak.
@@ -79,18 +91,7 @@ public class Main {
         SystemTrayIcon.setIcon("Mobile-RC", R.getIconImage());
         
         // kapcsolatbeállítás opció hozzáadása
-        SystemTrayIcon.addMenuItem("Kapcsolatbeállítás", new ActionListener() {
-
-            /**
-             * Ha a kapcsolatbeállításra kattintottak.
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // kapcsolatbeállító ablak megjelenítése
-                showSettingDialog(false, null);
-            }
-            
-        });
+        SystemTrayIcon.addMenuItem("Kapcsolatbeállítás", AL_SETTING);
         
         //szeparátor hozzáadása
         SystemTrayIcon.addMenuSeparator();
@@ -129,17 +130,20 @@ public class Main {
     }
     
     /**
-     * Egy tályékoztató szöveget jelenít meg a felhasználónak.
-     * Ha a grafikus felület elérhető, modális ablakban jelenik meg az üzenet,
-     * különben a kimenet streamre megy ki a fejléc és a szöveg.
-     * Ha a kimeneti stream System.err, akkor hibaüzenetes ablakikon,
-     * egyébként figyelmeztetőikon kerül az ablakra.
-     * @param title a fejléc
+     * Hibaüzenetet küld a felhasználónak modális dialógusablakban.
      * @param text a megjelenő szöveg
-     * @param out a kimenet stream
      */
-    private static void alert(String title, String text, PrintStream out) {
-        UIUtil.alert(title, text, out, R.getIconImage());
+    private static void showSettingError(String text) {
+        UIUtil.alert(VAL_ERROR, text, System.err, R.getIconImage());
+    }
+    
+    /**
+     * Figyelmeztetést küld a felhasználónak a buborékablakra.
+     * Az üzenetre kattintva a kapcsolatbeállító ablak jelenik meg.
+     * @param text a megjelenő szöveg
+     */
+    private static void showSettingWarning(String text) {
+        showMessage(VAL_WARNING, text, TrayIcon.MessageType.WARNING, AL_SETTING);
     }
     
     /**
@@ -152,21 +156,14 @@ public class Main {
             System.exit(1);
         }
         if (!CONFIG.isFileExists()) {
-            alert(VAL_ERROR, (CONFIG.isDefault() ? "Az alapértelmezett konfiguráció nem használható, mert" : "A konfiguráció") + " nem létező fájlra hivatkozik." + LS + "A folytatás előtt a hibát helyre kell hozni.", System.err);
+            showSettingError((CONFIG.isDefault() ? "Az alapértelmezett konfiguráció nem használható, mert" : "A konfiguráció") + " nem létező fájlra hivatkozik." + LS + "A folytatás előtt a hibát helyre kell hozni.");
             showSettingDialog(true, 1);
         }
         if (CONFIG.isCertDefault()) {
-            showMessage(VAL_WARNING, "Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!", TrayIcon.MessageType.WARNING);
+            showSettingWarning("Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!");
         }
         if (CONFIG.isDefault()) {
-            showMessage(VAL_WARNING, "A konfiguráció beállítása a menüből érhető el. Most ide kattintva is megteheti.", TrayIcon.MessageType.WARNING, new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    showSettingDialog(false, null);
-                }
-
-            });
+            showSettingWarning("A konfiguráció beállítása a menüből érhető el. Most ide kattintva is megteheti.");
         }
         /* TESZT RÉSZ */
         PROGRESS_FRAME.setVisible(true);

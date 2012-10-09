@@ -173,10 +173,11 @@ public abstract class AbstractConnectionProgressFrame extends JFrame {
     
     /**
      * Beállítja az Újra gombot.
-     * @param enabled true esetén engedélyezett, false esetén nem engedélyezett
+     * @param enabled true esetén engedélyezett és fókuszált, false esetén nem engedélyezett
      */
     protected void setAgainButtonEnabled(boolean enabled) {
         btAgain.setEnabled(enabled);
+        if (enabled ^ !btAgain.isEnabled()) btAgain.requestFocus(); // fókusz vissza, ha tiltva volt
     }
     
     /**

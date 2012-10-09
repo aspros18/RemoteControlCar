@@ -52,6 +52,11 @@ public class ConnectionHelper extends ClientConnectionHelper implements Connecti
     }
 
     @Override
+    protected void onConnected() {
+        PROGRESS_FRAME.setVisible(false);
+    }
+
+    @Override
     protected void onException(Exception ex, int connectionId) {
         try {
             throw ex;

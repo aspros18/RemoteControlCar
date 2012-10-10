@@ -1,9 +1,8 @@
 package org.dyndns.fzoli.rccar.controller.socket;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import org.dyndns.fzoli.rccar.controller.ConnectionProgressFrame.Status;
 import static org.dyndns.fzoli.rccar.controller.Main.showConnectionStatus;
+import org.dyndns.fzoli.rccar.test.DisconnectProcessTester;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.impl.ClientDisconnectProcess;
 
@@ -12,14 +11,8 @@ import org.dyndns.fzoli.socket.process.impl.ClientDisconnectProcess;
  * @author zoli
  */
 public class ControllerDisconnectProcess extends ClientDisconnectProcess {
-
-    /**
-     * Tesztelés céljából létrehozott változók.
-     */
-    private Date lastDate;
-    private long max = 0, sum = 0, count = 0;
-    private final Date startDate = new Date();
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat(" [m:s] ");
+    
+    private final DisconnectProcessTester TESTER = new DisconnectProcessTester();
     
     public ControllerDisconnectProcess(SecureHandler handler) {
         super(handler, 10000, 250); // 10 mp időtúllépés, 250 ms sleep
@@ -27,17 +20,12 @@ public class ControllerDisconnectProcess extends ClientDisconnectProcess {
 
     @Override
     public void beforeAnswer() throws Exception {
-        lastDate = new Date();
+        TESTER.beforeAnswer();
     }
     
     @Override
     public void afterAnswer() throws Exception {
-        Date now = new Date();
-        long ping = now.getTime() - lastDate.getTime();
-        max = Math.max(max, ping);
-        sum += ping;
-        count++;
-        System.out.println(dateFormat.format(new Date(now.getTime() - startDate.getTime())) + ping + " ms (max. " + max + " ms; avg. " + (sum / count) + " ms)");
+        TESTER.afterAnswer();
     }
 
     /**

@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.bridge.socket;
 
 import static org.dyndns.fzoli.rccar.bridge.Main.VAL_CONN_LOG;
+import org.dyndns.fzoli.rccar.test.DisconnectProcessTester;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.impl.ServerDisconnectProcess;
 import static org.dyndns.fzoli.ui.SystemTrayIcon.showMessage;
@@ -16,22 +17,20 @@ public class BridgeDisconnectProcess extends ServerDisconnectProcess {
      */
     private static boolean show = false;
     
-    /**
-     * Megadja, hogy be van-e kapcsolva az üzenetjelzés.
-     */
-    public static boolean isLogEnabled() {
-        return show;
-    }
-    
-    /**
-     * Bekapcsolja vagy kikapcsolja az üzenetjelzést.
-     */
-    public static void setLogEnabled(boolean enabled) {
-        show = enabled;
-    }
+    private final DisconnectProcessTester TESTER = new DisconnectProcessTester();
     
     public BridgeDisconnectProcess(SecureHandler handler) {
         super(handler, 10000, 250); // 10 mp időtúllépés, 250 ms sleep
+    }
+
+    @Override
+    public void beforeAnswer() throws Exception {
+        TESTER.beforeAnswer();
+    }
+
+    @Override
+    public void afterAnswer() throws Exception {
+        TESTER.afterAnswer();
     }
     
     /**
@@ -57,6 +56,20 @@ public class BridgeDisconnectProcess extends ServerDisconnectProcess {
      */
     private void log(boolean connect) {
         if (show) showMessage(VAL_CONN_LOG, getRemoteCommonName() + ' ' + (connect ? "kapcsolódott a hídhoz" : "lekapcsolódott a hídról"));
+    }
+    
+    /**
+     * Megadja, hogy be van-e kapcsolva az üzenetjelzés.
+     */
+    public static boolean isLogEnabled() {
+        return show;
+    }
+    
+    /**
+     * Bekapcsolja vagy kikapcsolja az üzenetjelzést.
+     */
+    public static void setLogEnabled(boolean enabled) {
+        show = enabled;
     }
     
 }

@@ -5,6 +5,7 @@ import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.dyndns.fzoli.rccar.UncaughtExceptionHandler;
+import org.dyndns.fzoli.rccar.controller.ConnectionProgressFrame.Status;
 import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.setDefaultSplashMessage;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.controller.socket.ConnectionHelper;
@@ -61,7 +62,7 @@ public class Main {
     /**
      * Kapcsolódásjelző- és kezelő ablak.
      */
-    public static final ConnectionProgressFrame PROGRESS_FRAME;
+    private static final ConnectionProgressFrame PROGRESS_FRAME;
     
     /**
      * Még mielőtt lefutna a main metódus,
@@ -171,9 +172,17 @@ public class Main {
             SplashScreenLoader.setSplashMessage("Kapcsolódás a szerverhez");
         }
         else {
-            PROGRESS_FRAME.setProgress(true);
-            PROGRESS_FRAME.setVisible(true);
+            showConnectionStatus(Status.CONNECTING);
         }
+    }
+    
+    /**
+     * Beállítja a kapcsolatjelző ablakon a látható ikont és szöveget.
+     * Ha nincs megadva státusz, akkor az ablak eltűnik, egyébként a megadott státusz jelenik meg
+     * @param status a kapcsolat státusza
+     */
+    public static void showConnectionStatus(Status status) {
+        PROGRESS_FRAME.setStatus(status);
     }
     
     /**

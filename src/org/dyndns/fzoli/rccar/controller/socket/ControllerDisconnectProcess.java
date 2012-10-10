@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.controller.socket;
 
-import static org.dyndns.fzoli.rccar.controller.Main.PROGRESS_FRAME;
+import org.dyndns.fzoli.rccar.controller.ConnectionProgressFrame.Status;
+import static org.dyndns.fzoli.rccar.controller.Main.showConnectionStatus;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.impl.ClientDisconnectProcess;
 
@@ -22,8 +23,7 @@ public class ControllerDisconnectProcess extends ClientDisconnectProcess {
     @Override
     protected void onDisconnect() {
         super.onDisconnect();
-        PROGRESS_FRAME.setDisconnect(true);
-        PROGRESS_FRAME.setVisible(true);
+        showConnectionStatus(Status.DISCONNECTED);
     }
     
 }

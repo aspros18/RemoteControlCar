@@ -3,6 +3,7 @@ package org.dyndns.fzoli.rccar.controller;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import static org.dyndns.fzoli.rccar.controller.Main.runClient;
+import static org.dyndns.fzoli.rccar.controller.Main.showSettingDialog;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.ui.AbstractConnectionProgressFrame;
 import org.dyndns.fzoli.ui.IconTextPanel;
@@ -26,6 +27,16 @@ public class ConnectionProgressFrame extends AbstractConnectionProgressFrame {
     }
     
     /**
+     * A kapcsolatok állapotai.
+     */
+    public static enum Status {
+        CONNECTING,
+        CONNECTION_ERROR,
+        DISCONNECTED,
+        REFUSED
+    };
+    
+    /**
      * Az ablakon ezek a panelek jelenhetnek meg.
      */
     private static final IconTextPanel[] PANELS = {
@@ -44,11 +55,24 @@ public class ConnectionProgressFrame extends AbstractConnectionProgressFrame {
     }
 
     /**
+     * Beállítja a megjelenő panelt és az Újra gombot.
+     * Az Újra gomb tiltva lesz {@code Status.CONNECTING} státusz esetén.
+     * Ha nincs megadva státusz, az ablak elrejtődik.
+     * @param status a kapcsolat egyik állapota
+     */
+    public void setStatus(Status status) {
+        if (status != null) {
+            setAgainButtonEnabled(status != Status.CONNECTING);
+            setIconTextPanel(status.ordinal());
+        }
+        setVisible(status != null);
+    }
+    
+    /**
      * Akkor hívódik meg, amikor az Újra gombot kiválasztják.
      */
     @Override
     protected void onAgain() {
-        setProgress(true);
         runClient();
     }
 
@@ -57,35 +81,7 @@ public class ConnectionProgressFrame extends AbstractConnectionProgressFrame {
      */
     @Override
     protected void onSettings() {
-        Main.showSettingDialog(false, null);
-    }
-    
-    /**
-     * Beállítja a megjelenő panelt és az Újra gombot.
-     * Folyamatjelzés közben az Újra gomb használata nem engedélyezett.
-     * @param b true esetén a folyamatjelző, false esetén a hibaüzenet jelenik meg
-     */
-    public void setProgress(boolean b) {
-        setAgainButtonEnabled(!b);
-        setIconTextPanel(b ? 0 : 1);
-    }
-    
-    /**
-     * Beállítja a megjelenő panelt és az Újra gombot engedélyezi.
-     * @param b true esetén a kapcsolat elveszett szöveg, false esetén a hibaüzenet jelenik meg
-     */
-    public void setDisconnect(boolean b) {
-        setAgainButtonEnabled(true);
-        setIconTextPanel(b ? 2 : 1);
-    }
-    
-    /**
-     * Beállítja a megjelenő panelt és az Újra gombot engedélyezi.
-     * @param b true esetén a kapcsolat elutasítva szöveg, false esetén a hibaüzenet jelenik meg
-     */
-    public void setRefused(boolean b) {
-        setAgainButtonEnabled(true);
-        setIconTextPanel(b ? 3 : 1);
+        showSettingDialog(false, null);
     }
     
 }

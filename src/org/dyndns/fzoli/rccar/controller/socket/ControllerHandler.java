@@ -2,7 +2,8 @@ package org.dyndns.fzoli.rccar.controller.socket;
 
 import java.net.SocketTimeoutException;
 import javax.net.ssl.SSLSocket;
-import static org.dyndns.fzoli.rccar.controller.Main.PROGRESS_FRAME;
+import org.dyndns.fzoli.rccar.controller.ConnectionProgressFrame.Status;
+import static org.dyndns.fzoli.rccar.controller.Main.showConnectionStatus;
 import org.dyndns.fzoli.rccar.test.DummyProcess;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
 import org.dyndns.fzoli.socket.handler.RemoteHandlerException;
@@ -27,12 +28,10 @@ public class ControllerHandler extends AbstractSecureClientHandler {
             throw ex;
         }
         catch (RemoteHandlerException e) {
-            PROGRESS_FRAME.setRefused(true);
-            PROGRESS_FRAME.setVisible(true);
+            showConnectionStatus(Status.REFUSED);
         }
         catch (SocketTimeoutException e) {
-            PROGRESS_FRAME.setProgress(false);
-            PROGRESS_FRAME.setVisible(true);
+            showConnectionStatus(Status.CONNECTION_ERROR);
         }
         catch (Exception e) {
             super.onException(e);

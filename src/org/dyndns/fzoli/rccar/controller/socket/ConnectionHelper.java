@@ -7,7 +7,8 @@ import java.security.GeneralSecurityException;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import org.dyndns.fzoli.rccar.controller.Config;
-import static org.dyndns.fzoli.rccar.controller.Main.PROGRESS_FRAME;
+import org.dyndns.fzoli.rccar.controller.ConnectionProgressFrame.Status;
+import static org.dyndns.fzoli.rccar.controller.Main.showConnectionStatus;
 import org.dyndns.fzoli.socket.ClientConnectionHelper;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
@@ -52,34 +53,33 @@ public class ConnectionHelper extends ClientConnectionHelper implements Connecti
         return new ControllerHandler(socket, deviceId, connectionId);
     }
 
+    /**
+     * Ha kapcsolódott a kliens összes szála a szerverhez, a kapcsolódásjelzés elrejtődik.
+     */
     @Override
     protected void onConnected() {
-        showError(false);
+        showConnectionStatus(null);
     }
 
+    /**
+     * Kivételek kezelése.
+     * Kapcsolódás hiba esetén hiba jelenik meg.
+     * Nem várt hiba esetén kivétel dobódik, amit egy dialógus ablak jelenít meg.
+     */
     @Override
     protected void onException(Exception ex, int connectionId) {
         try {
             throw ex;
         }
         catch (ConnectException e) {
-            showError(true);
+            showConnectionStatus(Status.CONNECTION_ERROR);
         }
         catch (UnknownHostException e) {
-            showError(true);
+            showConnectionStatus(Status.CONNECTION_ERROR);
         }
         catch (Exception e) {
             super.onException(e, connectionId);
         }
-    }
-    
-    /**
-     * Megjeleníti vagy elrejti a kapcsolódás hibát.
-     * @param b true esetén megjelenik, egyébként eltűnik a hibajelzés
-     */
-    private void showError(boolean b) {
-        if (b) PROGRESS_FRAME.setProgress(false);
-        PROGRESS_FRAME.setVisible(b);
     }
     
 }

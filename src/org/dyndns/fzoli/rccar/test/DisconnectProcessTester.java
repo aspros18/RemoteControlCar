@@ -13,7 +13,7 @@ public class DisconnectProcessTester {
     private Date lastDate;
     private long max = 0, sum = 0, count = 0;
     private final Date startDate = new Date();
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat(" [mm:ss] ");
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("[mm:ss] ");
 
     public void beforeAnswer() throws Exception {
         lastDate = new Date();

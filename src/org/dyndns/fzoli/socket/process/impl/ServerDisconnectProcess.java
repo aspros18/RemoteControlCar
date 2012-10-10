@@ -13,7 +13,7 @@ import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
  */
 public class ServerDisconnectProcess extends AbstractSecureProcess implements DisconnectProcess {
     
-    private static final int timeout = 3000, waiting = 250;
+    private static final int timeout = 10000, waiting = 250;
     
     public ServerDisconnectProcess(SecureHandler handler) {
         super(handler);
@@ -34,6 +34,8 @@ public class ServerDisconnectProcess extends AbstractSecureProcess implements Di
         DisconnectProcessUtil.onDisconnect(this);
     }
     
+    private long max = 0, sum = 0, count = 0;
+    
     /**
      * A socket bementének olvasására be lehet állítani időtúllépést.
      * Erre alapozva megtudható, hogy él-e még a kapcsolat a klienssel.
@@ -51,7 +53,11 @@ public class ServerDisconnectProcess extends AbstractSecureProcess implements Di
                 Date d1 = new Date();
                 in.read();
                 Date d2 = new Date();
-                System.out.println("Server Ping: " + (d2.getTime() - d1.getTime()) + " ms");
+                long ping = d2.getTime() - d1.getTime();
+                max = Math.max(max, ping);
+                sum += ping;
+                count++;
+                System.out.println("Client write: " + ping + " ms (max. " + max + " ms avg. " + (sum / (double) count) + " ms)");
                 Thread.sleep(waiting);
             }
         }

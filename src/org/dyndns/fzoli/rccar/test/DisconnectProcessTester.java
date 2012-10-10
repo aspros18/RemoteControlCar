@@ -12,10 +12,12 @@ public class DisconnectProcessTester {
 
     private Date lastDate;
     private long max = 0, sum = 0, count = 0;
+    private boolean timeout = false;
     private final Date startDate = new Date();
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("[mm:ss] ");
 
     public void onTimeout() {
+        timeout = true;
         System.out.println("Timeout!");
     }
     
@@ -29,7 +31,7 @@ public class DisconnectProcessTester {
         max = Math.max(max, ping);
         sum += ping;
         count++;
-        System.out.println(dateFormat.format(new Date(now.getTime() - startDate.getTime())) + ping + " ms (max. " + max + " ms ; avg. " + (sum / count) + " ms)");
+        System.out.println(dateFormat.format(new Date(now.getTime() - startDate.getTime())) + ping + " ms (max. " + (timeout ? "too big" : (max + " ms")) + " ; avg. " + (sum / count) + " ms)");
     }
 
 }

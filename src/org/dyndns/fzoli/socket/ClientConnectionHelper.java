@@ -49,11 +49,6 @@ public abstract class ClientConnectionHelper {
     };
     
     /**
-     * Megadja, hogy folyamatban van-e a kapcsolódás.
-     */
-    private boolean connecting;
-    
-    /**
      * Egyszerű kapcsolódást megvalósító osztály konstruktora.
      * @param deviceId eszközazonosító
      * @param connectionIds kapcsolatazonosítókat tartalmazó tömb
@@ -101,14 +96,7 @@ public abstract class ClientConnectionHelper {
      */
     public boolean isConnecting() {
         removeClosedConnections();
-        return connecting && getConnectionsSize() > 0;
-    }
-
-    /**
-     * Beállítja a kapcsolódás folyamatát.
-     */
-    public void setConnecting(boolean connecting) {
-        this.connecting = connecting;
+        return getConnectionsSize() > 0 && getConnectionsSize() < connectionIds.length;
     }
     
     /**
@@ -159,12 +147,10 @@ public abstract class ClientConnectionHelper {
             if (addListener) handler.addHandlerListener(listener);
             new Thread(handler).start();
             if (connectionId == connectionIds[connectionIds.length - 1]) {
-                setConnecting(false);
                 onConnected();
             }
         }
         catch (Exception ex) {
-            setConnecting(false);
             onException(ex, connectionId);
         }
     }
@@ -177,7 +163,6 @@ public abstract class ClientConnectionHelper {
      */
     public void connect() {
         if (isConnecting() || isConnected()) return;
-        setConnecting(true);
         new Thread(new Runnable() {
 
             @Override
@@ -193,7 +178,6 @@ public abstract class ClientConnectionHelper {
      */
     public void disconnect() {
         synchronized(CONNECTIONS) {
-            setConnecting(false);
             Iterator<SSLSocket> it = CONNECTIONS.iterator();
             while (it.hasNext()) {
                 SSLSocket conn = it.next();

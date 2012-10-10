@@ -26,12 +26,12 @@ public class ControllerDisconnectProcess extends ClientDisconnectProcess {
     }
 
     @Override
-    protected void beforeAnswer() throws Exception {
+    public void beforeAnswer() throws Exception {
         lastDate = new Date();
     }
     
     @Override
-    protected void afterAnswer() throws Exception {
+    public void afterAnswer() throws Exception {
         Date now = new Date();
         long ping = now.getTime() - lastDate.getTime();
         max = Math.max(max, ping);
@@ -46,7 +46,7 @@ public class ControllerDisconnectProcess extends ClientDisconnectProcess {
      * és megjeleníti a kapcsolódás hiba ablakot.
      */
     @Override
-    protected void onDisconnect(Exception ex) {
+    public void onDisconnect(Exception ex) {
         super.onDisconnect(ex);
         showConnectionStatus(Status.DISCONNECTED);
     }

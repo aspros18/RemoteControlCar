@@ -45,7 +45,7 @@ public class ClientDisconnectTest implements ConnectionKeys {
                     return new ClientDisconnectProcess(this, 1000, 250) {
                         
                         @Override
-                        protected void onDisconnect(Exception ex) {
+                        public void onDisconnect(Exception ex) {
                             System.out.println("SERVER DISCONNECT");
                             super.onDisconnect(ex);
                         }

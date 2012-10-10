@@ -33,7 +33,8 @@ public class ServerDisconnectProcess extends AbstractSecureProcess implements Di
     /**
      * Ez a metódus hívódik meg, amikor létrejön a kapcsolat a klienssel.
      */
-    protected void onConnect() {
+    @Override
+    public void onConnect() {
         ;
     }
     
@@ -41,7 +42,8 @@ public class ServerDisconnectProcess extends AbstractSecureProcess implements Di
      * A válaszkérés előtt hívódik meg.
      * @throws Exception az {@code onTimeout} metódusnak átadott kivétel
      */
-    protected void beforeAnswer() throws Exception {
+    @Override
+    public void beforeAnswer() throws Exception {
         ;
     }
     
@@ -49,7 +51,8 @@ public class ServerDisconnectProcess extends AbstractSecureProcess implements Di
      * Akkor hívódik meg, amikor a klienstől sikeresen válasz érkezett.
      * @throws Exception az {@code onTimeout} metódusnak átadott kivétel
      */
-    protected void afterAnswer() throws Exception {
+    @Override
+    public void afterAnswer() throws Exception {
         ;
     }
     
@@ -61,7 +64,8 @@ public class ServerDisconnectProcess extends AbstractSecureProcess implements Di
      * @param ex a hibát okozó kivétel
      * @throws Exception az {@code onDisconnect} metódusnak átadott kivétel
      */
-    protected void onTimeout(Exception ex) throws Exception {
+    @Override
+    public void onTimeout(Exception ex) throws Exception {
         throw ex;
     }
     
@@ -70,7 +74,8 @@ public class ServerDisconnectProcess extends AbstractSecureProcess implements Di
      * Az összes aktív kapcsolatfeldolgozót leállítja, mely ugyan ahhoz az eszközhöz tartozik.
      * @param ex a hibát okozó kivétel
      */
-    protected void onDisconnect(Exception ex) {
+    @Override
+    public void onDisconnect(Exception ex) {
         DisconnectProcessUtil.onDisconnect(this);
     }
     

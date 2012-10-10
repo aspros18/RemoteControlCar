@@ -38,7 +38,7 @@ public class BridgeDisconnectProcess extends ServerDisconnectProcess {
      * Ha a kapcsolat létrejött, jelzi, ha kérik.
      */
     @Override
-    protected void onConnect() {
+    public void onConnect() {
         super.onConnect();
         log(true);
     }
@@ -47,7 +47,7 @@ public class BridgeDisconnectProcess extends ServerDisconnectProcess {
      * Ha a kapcsolat végetért, jelzi, ha kérik.
      */
     @Override
-    protected void onDisconnect(Exception ex) {
+    public void onDisconnect(Exception ex) {
         log(false);
         super.onDisconnect(ex);
     }

@@ -42,12 +42,12 @@ public class ClientDisconnectTest implements ConnectionKeys {
         protected AbstractSecureProcess selectProcess() {
             switch (getConnectionId()) {
                 case KEY_CONN_DISCONNECT:
-                    return new ClientDisconnectProcess(this) {
+                    return new ClientDisconnectProcess(this, 1000, 250) {
                         
                         @Override
-                        protected void onDisconnect() {
+                        protected void onDisconnect(Exception ex) {
                             System.out.println("SERVER DISCONNECT");
-                            super.onDisconnect();
+                            super.onDisconnect(ex);
                         }
                         
                     };

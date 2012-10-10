@@ -12,7 +12,7 @@ import org.dyndns.fzoli.socket.process.impl.ClientDisconnectProcess;
 public class ControllerDisconnectProcess extends ClientDisconnectProcess {
 
     public ControllerDisconnectProcess(SecureHandler handler) {
-        super(handler);
+        super(handler, 10000, 250); // 10 mp időtúllépés, 250 ms sleep
     }
 
     /**
@@ -21,8 +21,8 @@ public class ControllerDisconnectProcess extends ClientDisconnectProcess {
      * és megjeleníti a kapcsolódás hiba ablakot.
      */
     @Override
-    protected void onDisconnect() {
-        super.onDisconnect();
+    protected void onDisconnect(Exception ex) {
+        super.onDisconnect(ex);
         showConnectionStatus(Status.DISCONNECTED);
     }
     

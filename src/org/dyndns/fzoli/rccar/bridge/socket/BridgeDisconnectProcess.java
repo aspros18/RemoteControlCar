@@ -31,7 +31,7 @@ public class BridgeDisconnectProcess extends ServerDisconnectProcess {
     }
     
     public BridgeDisconnectProcess(SecureHandler handler) {
-        super(handler);
+        super(handler, 10000, 250); // 10 mp időtúllépés, 250 ms sleep
     }
     
     /**
@@ -47,9 +47,9 @@ public class BridgeDisconnectProcess extends ServerDisconnectProcess {
      * Ha a kapcsolat végetért, jelzi, ha kérik.
      */
     @Override
-    protected void onDisconnect() {
+    protected void onDisconnect(Exception ex) {
         log(false);
-        super.onDisconnect();
+        super.onDisconnect(ex);
     }
     
     /**

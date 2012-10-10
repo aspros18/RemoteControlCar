@@ -208,20 +208,30 @@ public class Main {
     /**
      * Ha van kiépítve kapcsolat, bontja azt és új kapcsolatot alakít ki.
      */
-    private static void reconnect() {
+    public static void reconnect() {
         if (CONN.isConnected()) {
             CONN.disconnect();
-            runClient();
+            runClient(500);
         }
     }
     
     /**
      * A program értelme.
      * Kijelzi, hogy elkezdődött a kapcsolódás és kapcsolódik a szerverhez (ha még nem történt meg).
-     * Fél másodperc késleltetés van beállítva, hogy legyen ideje a felhasználónak észlelni a folyamatot.
      * Innentől kezdve már a kommunikációtól függ, hogyan folytatódik a program futása.
      */
     public static void runClient() {
+        runClient(0);
+    }
+    
+    /**
+     * A program értelme.
+     * Kijelzi, hogy elkezdődött a kapcsolódás és kapcsolódik a szerverhez (ha még nem történt meg).
+     * Késleltetés van beállítva, hogy legyen ideje a felhasználónak észlelni a folyamatot.
+     * Innentől kezdve már a kommunikációtól függ, hogyan folytatódik a program futása.
+     * @param delay a késleltetés
+     */
+    public static void runClient(int delay) {
         if (CONN.isConnected()) return;
         connecting = true;
         showConnecting();
@@ -233,7 +243,7 @@ public class Main {
                 CONN.connect();
             }
             
-        }, 500);
+        }, delay);
     }
     
     /**

@@ -17,6 +17,9 @@ class DisconnectProcessUtil {
      */
     private Timer timer;
     
+    /**
+     * Megadja, hogy meg lett-e hívva már az {@code onDisconnect} metódus.
+     */
     private boolean disconnected = false;
     
     /**
@@ -28,13 +31,16 @@ class DisconnectProcessUtil {
         this.proc = proc;
     }
 
+    /**
+     * Ha még nem lett meghívva, meghívódik az {@code onDisconnect} metódus.
+     */
     public void callDisconnect(Exception ex) {
         if (!disconnected) proc.onDisconnect(ex);
         disconnected = true;
     }
     
     /**
-     * Aktiválja vagy inaktiválja az időzítőt, ami meghívja a második időtúllépést.
+     * Aktiválja vagy inaktiválja az időzítőt, ami meghívja a második végzetes időtúllépést.
      */
     public void setTimeoutActive(boolean b, final Exception ex) throws SocketException {
         if (b) {

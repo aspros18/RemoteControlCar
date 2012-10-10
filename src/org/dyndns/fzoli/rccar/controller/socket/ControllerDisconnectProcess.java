@@ -19,6 +19,12 @@ public class ControllerDisconnectProcess extends ClientDisconnectProcess {
     }
 
     @Override
+    public void onTimeout(Exception ex) throws Exception {
+        super.onTimeout(ex);
+        TESTER.onTimeout();
+    }
+
+    @Override
     public void beforeAnswer() throws Exception {
         super.beforeAnswer();
         TESTER.beforeAnswer();

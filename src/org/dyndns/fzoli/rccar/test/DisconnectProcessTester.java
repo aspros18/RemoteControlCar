@@ -15,11 +15,15 @@ public class DisconnectProcessTester {
     private final Date startDate = new Date();
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("[mm:ss] ");
 
-    public void beforeAnswer() throws Exception {
+    public void onTimeout() {
+        System.out.println("Timeout!");
+    }
+    
+    public void beforeAnswer() {
         lastDate = new Date();
     }
 
-    public void afterAnswer() throws Exception {
+    public void afterAnswer() {
         Date now = new Date();
         long ping = now.getTime() - lastDate.getTime();
         max = Math.max(max, ping);

@@ -84,7 +84,6 @@ public abstract class ClientConnectionHelper {
      * Beállítja a kapcsolódás folyamatát.
      */
     public void setConnecting(boolean connecting) {
-        System.out.println(connecting);
         this.connecting = connecting;
     }
     

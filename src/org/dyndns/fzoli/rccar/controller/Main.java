@@ -4,6 +4,8 @@ import java.awt.GraphicsEnvironment;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Timer;
+import java.util.TimerTask;
 import org.dyndns.fzoli.rccar.UncaughtExceptionHandler;
 import org.dyndns.fzoli.rccar.controller.ConnectionProgressFrame.Status;
 import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.setDefaultSplashMessage;
@@ -65,6 +67,11 @@ public class Main {
     private static final ConnectionProgressFrame PROGRESS_FRAME;
     
     /**
+     * Segédváltozó kapcsolódás kérés detektálására.
+     */
+    private static boolean connecting = false;
+    
+    /**
      * Még mielőtt lefutna a main metódus,
      * a nyitóképernyő szövege megjelenik és a rendszer LAF,
      * a kivételkezelő valamint a rendszerikon beállítódik
@@ -99,6 +106,15 @@ public class Main {
         
         // kapcsolatbeállítás opció hozzáadása
         SystemTrayIcon.addMenuItem("Kapcsolatbeállítás", AL_SETTING);
+        
+        SystemTrayIcon.addMenuItem("Újrakapcsolódás", new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                reconnect();
+            }
+            
+        });
         
         //szeparátor hozzáadása
         SystemTrayIcon.addMenuSeparator();
@@ -176,24 +192,48 @@ public class Main {
         }
     }
     
+    
+    
     /**
      * Beállítja a kapcsolatjelző ablakon a látható ikont és szöveget.
-     * Ha nincs megadva státusz, akkor az ablak eltűnik, egyébként a megadott státusz jelenik meg
+     * Ha nincs megadva státusz, akkor az ablak eltűnik, egyébként a megadott státusz jelenik meg.
+     * Ha éppen kapcsolódás van, csak a kapcsolódás státusz állítható be.
      * @param status a kapcsolat státusza
      */
     public static void showConnectionStatus(Status status) {
+        if (connecting && status != Status.CONNECTING) return;
         PROGRESS_FRAME.setStatus(status);
     }
     
     /**
+     * Ha van kiépítve kapcsolat, bontja azt és új kapcsolatot alakít ki.
+     */
+    private static void reconnect() {
+        if (CONN.isConnected()) {
+            CONN.disconnect();
+            runClient();
+        }
+    }
+    
+    /**
      * A program értelme.
-     * Kijelzi, hogy elkezdődött a kapcsolódás és kapcsolódik a szerverhez (ha már nem történt meg).
+     * Kijelzi, hogy elkezdődött a kapcsolódás és kapcsolódik a szerverhez (ha még nem történt meg).
+     * Fél másodperc késleltetés van beállítva, hogy legyen ideje a felhasználónak észlelni a folyamatot.
      * Innentől kezdve már a kommunikációtól függ, hogyan folytatódik a program futása.
      */
     public static void runClient() {
         if (CONN.isConnected()) return;
+        connecting = true;
         showConnecting();
-        CONN.connect();
+        new Timer().schedule(new TimerTask() {
+
+            @Override
+            public void run() {
+                connecting = false;
+                CONN.connect();
+            }
+            
+        }, 500);
     }
     
     /**

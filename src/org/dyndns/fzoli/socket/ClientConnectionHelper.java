@@ -84,6 +84,7 @@ public abstract class ClientConnectionHelper {
      * Beállítja a kapcsolódás folyamatát.
      */
     public void setConnecting(boolean connecting) {
+        System.out.println(connecting);
         this.connecting = connecting;
     }
     
@@ -152,7 +153,7 @@ public abstract class ClientConnectionHelper {
      * Ha a kapcsolódás folyamatban van már, nem csinál semmit.
      */
     public void connect() {
-        if (isConnecting()) return;
+        //if (isConnecting()) return;
         setConnecting(true);
         new Thread(new Runnable() {
 

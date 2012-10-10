@@ -211,7 +211,7 @@ public class Main {
     public static void reconnect() {
         if (CONN.isConnected()) {
             CONN.disconnect();
-            runClient(500);
+            runClient(true);
         }
     }
     
@@ -221,17 +221,17 @@ public class Main {
      * Innentől kezdve már a kommunikációtól függ, hogyan folytatódik a program futása.
      */
     public static void runClient() {
-        runClient(0);
+        runClient(false);
     }
     
     /**
      * A program értelme.
      * Kijelzi, hogy elkezdődött a kapcsolódás és kapcsolódik a szerverhez (ha még nem történt meg).
-     * Késleltetés van beállítva, hogy legyen ideje a felhasználónak észlelni a folyamatot.
+     * Fél másodperc késleltetés van beállítva, hogy legyen ideje a felhasználónak észlelni a folyamatot.
      * Innentől kezdve már a kommunikációtól függ, hogyan folytatódik a program futása.
-     * @param delay a késleltetés
+     * @param delay legyen-e késleltetés
      */
-    public static void runClient(int delay) {
+    public static void runClient(boolean delay) {
         if (CONN.isConnected()) return;
         connecting = true;
         showConnecting();
@@ -243,7 +243,7 @@ public class Main {
                 CONN.connect();
             }
             
-        }, delay);
+        }, delay ? 500 : 0);
     }
     
     /**

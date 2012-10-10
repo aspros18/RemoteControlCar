@@ -77,7 +77,7 @@ public class ConnectionProgressFrame extends AbstractConnectionProgressFrame {
      */
     @Override
     protected void onAgain() {
-        runClient(500);
+        runClient(true);
     }
 
     /**

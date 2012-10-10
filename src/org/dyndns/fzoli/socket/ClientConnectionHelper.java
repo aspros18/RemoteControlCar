@@ -65,11 +65,24 @@ public abstract class ClientConnectionHelper {
     }
     
     /**
-     * TODO
+     * Az összes lezárt kapcsolatot eltávolítja a kapcsolatokat tartalmazó listából.
+     */
+    private void removeClosedConnections() {
+        synchronized (CONNECTIONS) {
+            Iterator<SSLSocket> it = CONNECTIONS.iterator();
+            while (it.hasNext()) {
+                SSLSocket conn = it.next();
+                if (conn.isClosed()) it.remove();
+            }
+        }
+    }
+    
+    /**
      * Megmondja, hogy kapcsolódva van-e a kliens a szerverhez.
      * @return true, ha az összes kapcsolat ki van alakítva a szerverrel
      */
     public boolean isConnected() {
+        removeClosedConnections();
         return CONNECTIONS.size() == connectionIds.length;
     }
 
@@ -155,7 +168,7 @@ public abstract class ClientConnectionHelper {
      * Ha a kapcsolódás folyamatban van már, nem csinál semmit.
      */
     public void connect() {
-        if (isConnecting()) return;
+        if (isConnecting() || isConnected()) return;
         setConnecting(true);
         new Thread(new Runnable() {
 

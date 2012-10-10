@@ -35,7 +35,9 @@ public class ConnectionProgressFrame extends AbstractConnectionProgressFrame {
         DISCONNECTED,
         REFUSED,
         UNKNOWN_HOST,
-        CONNECTION_TIMEOUT
+        CONNECTION_TIMEOUT,
+        HANDSHAKE_ERROR,
+        KEYSTORE_ERROR
     };
     
     /**
@@ -47,7 +49,9 @@ public class ConnectionProgressFrame extends AbstractConnectionProgressFrame {
         new ConnProgPanel(R.getWarningIcon(), "Megszakadt a kapcsolat a szerverrel!"),
         new ConnProgPanel(R.getWarningIcon(), "A szerver elutasította a kérést!"),
         new ConnProgPanel(R.getErrorIcon(), "A szerver hosztneve nem érhető el!"),
-        new ConnProgPanel(R.getErrorIcon(), "Időtúllépés a kapcsolódás közben!")
+        new ConnProgPanel(R.getErrorIcon(), "Időtúllépés a kapcsolódás közben!"),
+        new ConnProgPanel(R.getErrorIcon(), "Az SSL kapcsolat létrehozása nem sikerült!"),
+        new ConnProgPanel(R.getErrorIcon(), "A tanúsítványok beállítása nem megfelelő!")
     };
     
     /**

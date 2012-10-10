@@ -5,6 +5,7 @@ import java.net.ConnectException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
+import java.security.KeyStoreException;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import org.dyndns.fzoli.rccar.controller.Config;
@@ -80,6 +81,9 @@ public class ConnectionHelper extends ClientConnectionHelper implements Connecti
         }
         catch (SocketException e) {
             showConnectionStatus(Status.DISCONNECTED);
+        }
+        catch (KeyStoreException e) {
+            showConnectionStatus(Status.KEYSTORE_ERROR);
         }
         catch (Exception e) {
             super.onException(e, connectionId);

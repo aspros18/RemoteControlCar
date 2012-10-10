@@ -2,6 +2,7 @@ package org.dyndns.fzoli.rccar.controller.socket;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
@@ -53,7 +54,7 @@ public class ConnectionHelper extends ClientConnectionHelper implements Connecti
 
     @Override
     protected void onConnected() {
-        PROGRESS_FRAME.setVisible(false);
+        showError(false);
     }
 
     @Override
@@ -61,13 +62,24 @@ public class ConnectionHelper extends ClientConnectionHelper implements Connecti
         try {
             throw ex;
         }
-        catch (ConnectException e) {
-            PROGRESS_FRAME.setProgress(false);
-            PROGRESS_FRAME.setVisible(true);
+        catch(ConnectException e) {
+            showError(true);
         }
-        catch (Exception e) {
+        catch(UnknownHostException e) {
+            showError(true);
+        }
+        catch(Exception e) {
             super.onException(e, connectionId);
         }
+    }
+    
+    /**
+     * Megjeleníti vagy elrejti a kapcsolódás hibát.
+     * @param b true esetén megjelenik, egyébként eltűnik a hibajelzés
+     */
+    private void showError(boolean b) {
+        if (b) PROGRESS_FRAME.setProgress(false);
+        PROGRESS_FRAME.setVisible(b);
     }
     
 }

@@ -48,7 +48,7 @@ public class ConnectionProgressFrame extends AbstractConnectionProgressFrame {
         new ConnProgPanel(R.getErrorIcon(), "Nem sikerült kapcsolódni a szerverhez!"),
         new ConnProgPanel(R.getWarningIcon(), "Megszakadt a kapcsolat a szerverrel!"),
         new ConnProgPanel(R.getWarningIcon(), "A szerver elutasította a kérést!"),
-        new ConnProgPanel(R.getErrorIcon(), "A szerver hosztneve nem érhető el!"),
+        new ConnProgPanel(R.getErrorIcon(), "A szerver címe nem érhető el!"),
         new ConnProgPanel(R.getErrorIcon(), "Időtúllépés a kapcsolódás közben!"),
         new ConnProgPanel(R.getErrorIcon(), "Az SSL kapcsolat létrehozása nem sikerült!"),
         new ConnProgPanel(R.getErrorIcon(), "A tanúsítványok beállítása nem megfelelő!")

@@ -2,8 +2,8 @@ package org.dyndns.fzoli.rccar.controller;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
+import static org.dyndns.fzoli.rccar.controller.Main.runClient;
 import org.dyndns.fzoli.rccar.controller.resource.R;
-import org.dyndns.fzoli.rccar.controller.socket.ConnectionHelper;
 import org.dyndns.fzoli.ui.AbstractConnectionProgressFrame;
 import org.dyndns.fzoli.ui.IconTextPanel;
 
@@ -26,12 +26,6 @@ public class ConnectionProgressFrame extends AbstractConnectionProgressFrame {
     }
     
     /**
-     * A kapcsolódást segító objektum.
-     * Kell rá a referencia, hogy kérésre lehessen kapcsolódást indítani.
-     */
-    private final ConnectionHelper CONN;
-    
-    /**
      * Az ablakon ezek a panelek jelenhetnek meg.
      */
     private static final IconTextPanel[] PANELS = {
@@ -44,10 +38,9 @@ public class ConnectionProgressFrame extends AbstractConnectionProgressFrame {
     /**
      * Beállítja a kis autó ikont és az indikátor animációt.
      */
-    public ConnectionProgressFrame(ConnectionHelper conn) {
+    public ConnectionProgressFrame() {
         super(PANELS);
         setIconImage(R.getIconImage());
-        CONN = conn;
     }
 
     /**
@@ -56,7 +49,7 @@ public class ConnectionProgressFrame extends AbstractConnectionProgressFrame {
     @Override
     protected void onAgain() {
         setProgress(true);
-        CONN.connect();
+        runClient();
     }
 
     /**

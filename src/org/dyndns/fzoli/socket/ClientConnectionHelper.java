@@ -73,6 +73,7 @@ public abstract class ClientConnectionHelper {
     }
 
     /**
+     * TODO
      * Megmondja, hogy a kapcsolódás folyamatban van-e.
      * @return true, ha a kapcsolódás folyamatban van
      */
@@ -152,7 +153,7 @@ public abstract class ClientConnectionHelper {
      * Ha a kapcsolódás folyamatban van már, nem csinál semmit.
      */
     public void connect() {
-        //if (isConnecting()) return;
+        if (isConnecting()) return;
         setConnecting(true);
         new Thread(new Runnable() {
 

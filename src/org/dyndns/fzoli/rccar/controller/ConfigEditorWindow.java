@@ -83,11 +83,6 @@ public class ConfigEditorWindow extends ModalFrame {
     private final Config CONFIG;
     
     /**
-     * Kapcsolódás segítő.
-     */
-    private final ConnectionHelper CONN;
-    
-    /**
      * A szerver címe írható át benne.
      */
     private final JTextField tfAddress = new JFormattedTextField(createAddressFormatter());
@@ -250,8 +245,7 @@ public class ConfigEditorWindow extends ModalFrame {
      * Konstruktor.
      * @param config konfiguráció, amit használ az ablak.
      */
-    public ConfigEditorWindow(Config config, ConnectionHelper conn) {
-        CONN = conn;
+    public ConfigEditorWindow(Config config) {
         CONFIG = config;
         initComponents();
         initWindow();

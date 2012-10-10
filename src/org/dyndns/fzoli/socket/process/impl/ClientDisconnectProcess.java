@@ -2,6 +2,7 @@ package org.dyndns.fzoli.socket.process.impl;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
@@ -35,6 +36,8 @@ public class ClientDisconnectProcess extends AbstractSecureProcess implements Di
     }
     
     private long max = 0, sum = 0, count = 0;
+    private final Date startDate = new Date();
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat(" [m:s] ");
     
     /**
      * A socket bementének olvasására be lehet állítani időtúllépést.
@@ -57,7 +60,7 @@ public class ClientDisconnectProcess extends AbstractSecureProcess implements Di
                 max = Math.max(max, ping);
                 sum += ping;
                 count++;
-                System.out.println("Server write: " + ping + " ms (max. " + max + " ms avg. " + (sum / (double) count) + " ms)");
+                System.out.println('C' + dateFormat.format(new Date(d2.getTime() - startDate.getTime())) + ping + " ms (max. " + max + " ms; avg. " + (sum / count) + " ms)");
                 Thread.sleep(waiting);
             }
         }

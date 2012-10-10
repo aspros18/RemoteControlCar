@@ -2,6 +2,7 @@ package org.dyndns.fzoli.socket.process.impl;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
 
@@ -47,7 +48,10 @@ public class ServerDisconnectProcess extends AbstractSecureProcess implements Di
             while(true) {
                 out.write(1);
                 out.flush();
+                Date d1 = new Date();
                 in.read();
+                Date d2 = new Date();
+                System.out.println("Ping: " + (d2.getTime() - d1.getTime()) + " ms");
                 Thread.sleep(waiting);
             }
         }

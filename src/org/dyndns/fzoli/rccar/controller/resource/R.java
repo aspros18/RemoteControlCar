@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import org.dyndns.fzoli.ui.LookAndFeelIcon;
 
 /**
  * A vezérlő erőforráskezelő osztálya.
@@ -30,13 +31,27 @@ public class R {
      * Indikátor animációt készít.
      * @throws RuntimeException ha a forrás fájl nem található
      */
-    public static Icon getIndicatorImageIcon() {
+    public static Icon getIndicatorIcon() {
         try {
             return new ImageIcon(R.class.getResource("indicator.gif"));
         }
         catch (Exception ex) {
             throw new RuntimeException(ex);
         }
+    }
+    
+    /**
+     * A LookAndFeel hibaikonjával tér vissza.
+     */
+    public static Icon getErrorIcon() {
+        return LookAndFeelIcon.createIcon(null, "OptionPane.errorIcon", null);
+    }
+    
+    /**
+     * A LookAndFeel hibaikonjával tér vissza.
+     */
+    public static Icon getWarningIcon() {
+        return LookAndFeelIcon.createIcon(null, "OptionPane.warningIcon", null);
     }
     
     /**

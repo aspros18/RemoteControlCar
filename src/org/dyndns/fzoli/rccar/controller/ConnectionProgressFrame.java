@@ -6,7 +6,6 @@ import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.controller.socket.ConnectionHelper;
 import org.dyndns.fzoli.ui.AbstractConnectionProgressFrame;
 import org.dyndns.fzoli.ui.IconTextPanel;
-import org.dyndns.fzoli.ui.LookAndFeelIcon;
 
 /**
  * A vezérlő kapcsolódásjelző- és kezelő ablaka.
@@ -36,9 +35,10 @@ public class ConnectionProgressFrame extends AbstractConnectionProgressFrame {
      * Az ablakon ezek a panelek jelenhetnek meg.
      */
     private static final IconTextPanel[] PANELS = {
-        new ConnProgPanel(R.getIndicatorImageIcon(), "Kapcsolódás folyamatban..."),
-        new ConnProgPanel(LookAndFeelIcon.createIcon(null, "OptionPane.errorIcon", null), "Nem sikerült kapcsolódni a szerverhez!"),
-        new ConnProgPanel(LookAndFeelIcon.createIcon(null, "OptionPane.warningIcon", null), "Megszakadt a kapcsolat a szerverrel!")
+        new ConnProgPanel(R.getIndicatorIcon(), "Kapcsolódás folyamatban..."),
+        new ConnProgPanel(R.getErrorIcon(), "Nem sikerült kapcsolódni a szerverhez!"),
+        new ConnProgPanel(R.getWarningIcon(), "Megszakadt a kapcsolat a szerverrel!"),
+        new ConnProgPanel(R.getWarningIcon(), "A szerver elutasította a kérést!")
     };
     
     /**
@@ -84,6 +84,15 @@ public class ConnectionProgressFrame extends AbstractConnectionProgressFrame {
     public void setDisconnect(boolean b) {
         setAgainButtonEnabled(true);
         setIconTextPanel(b ? 2 : 1);
+    }
+    
+    /**
+     * Beállítja a megjelenő panelt és az Újra gombot engedélyezi.
+     * @param b true esetén a kapcsolat elutasítva szöveg, false esetén a hibaüzenet jelenik meg
+     */
+    public void setRefused(boolean b) {
+        setAgainButtonEnabled(true);
+        setIconTextPanel(b ? 3 : 1);
     }
     
 }

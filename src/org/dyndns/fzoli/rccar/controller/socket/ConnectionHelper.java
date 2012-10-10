@@ -62,13 +62,13 @@ public class ConnectionHelper extends ClientConnectionHelper implements Connecti
         try {
             throw ex;
         }
-        catch(ConnectException e) {
+        catch (ConnectException e) {
             showError(true);
         }
-        catch(UnknownHostException e) {
+        catch (UnknownHostException e) {
             showError(true);
         }
-        catch(Exception e) {
+        catch (Exception e) {
             super.onException(e, connectionId);
         }
     }

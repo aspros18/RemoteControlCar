@@ -162,6 +162,12 @@ public abstract class AbstractServerHandler extends AbstractHandler {
             out.close();
         }
         catch (Exception ex) {
+            try {
+                getSocket().close();
+            }
+            catch (Exception e) {
+                ;
+            }
             onException(ex);
         }
     }

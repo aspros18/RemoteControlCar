@@ -171,6 +171,12 @@ public abstract class AbstractClientHandler extends AbstractHandler {
             out.close();
         }
         catch (Exception ex) {
+            try {
+                getSocket().close();
+            }
+            catch (Exception e) {
+                ;
+            }
             onException(ex);
         }
     }

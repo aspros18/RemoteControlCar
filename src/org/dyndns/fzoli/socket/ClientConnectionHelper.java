@@ -65,6 +65,15 @@ public abstract class ClientConnectionHelper {
     }
     
     /**
+     * Megmondja, hány socket van tárolva a listában.
+     */
+    private int getConnectionsSize() {
+        synchronized(CONNECTIONS) {
+            return CONNECTIONS.size();
+        }
+    }
+    
+    /**
      * Az összes lezárt kapcsolatot eltávolítja a kapcsolatokat tartalmazó listából.
      */
     private void removeClosedConnections() {
@@ -83,23 +92,22 @@ public abstract class ClientConnectionHelper {
      */
     public boolean isConnected() {
         removeClosedConnections();
-        return CONNECTIONS.size() == connectionIds.length;
+        return getConnectionsSize() == connectionIds.length;
     }
 
     /**
-     * TODO
      * Megmondja, hogy a kapcsolódás folyamatban van-e.
      * @return true, ha a kapcsolódás folyamatban van
      */
     public boolean isConnecting() {
-        return connecting;
+        removeClosedConnections();
+        return connecting && getConnectionsSize() > 0;
     }
 
     /**
      * Beállítja a kapcsolódás folyamatát.
      */
     public void setConnecting(boolean connecting) {
-        System.out.println("set connecting: " + connecting);
         this.connecting = connecting;
     }
     

@@ -31,19 +31,18 @@ public class IconTextPanel extends JPanel {
     private final JLabel lbIcon, lbText;
 
     /**
-     * Az a komponens, melyre rákerül a panel.
+     * A szülő komponens.
      */
-    private final Component owner;
-
+    private Component parent;
+    
     /**
      * Konstruktor.
      * @param owner az a komponens, melyre rákerül a panel
      * @param icon az ikon, ami a panel bal szélén jelenik meg
      * @param text a szöveg, ami az ikon mellé kerül
      */
-    public IconTextPanel(Component owner, Icon icon, String text) {
+    public IconTextPanel(Icon icon, String text) {
         super(new GridBagLayout());
-        this.owner = owner; // tulajdonos referencia megszerzése
         panels.add(this); // a panel nyílvántartásba vétele
 
         GridBagConstraints c = new GridBagConstraints();
@@ -61,29 +60,45 @@ public class IconTextPanel extends JPanel {
         lbText.setHorizontalAlignment(SwingConstants.LEFT); // szöveg balra igazítva
         add(lbText, c); // panelhez adás
 
-        resizeComponents();
     }
 
+    /**
+     * A szülő komponens beállítása.
+     */
+    public void setParent(Component parent) {
+        this.parent = parent;
+    }
+    
     /**
      * Átméretezi a panelek címkéit.
      * Megkeresi a legnagyobb méretű címként és alkalmazza a többire a méretét.
      * Csak azokat a paneleket veszi figyelembe, melyek tulajdonosa megegyezik az övével.
+     * @param parent csak azok lesznek átmeretezve, melyek szülője megegyezik a paraméterrel
      */
-    private void resizeComponents() {
+    public static void resizeComponents(Component parent) {
         Dimension iconSize = new Dimension(1, 1);
         Dimension panelSize = new Dimension(1, 1);
         for (IconTextPanel panel : panels) {
-            if (panel.owner != owner) continue;
+            if (!isParent(parent, panel)) continue;
             setMaxSize(panel.lbIcon, iconSize);
             setMaxSize(panel.lbText, panelSize);
         }
         for (IconTextPanel panel : panels) {
-            if (panel.owner != owner) continue;
+            if (!isParent(parent, panel)) continue;
             panel.lbIcon.setPreferredSize(iconSize);
             panel.lbText.setPreferredSize(panelSize);
         }
     }
 
+    /**
+     * Igazzal tér vissza, ha a panelnek ugyan az az objektum a szülője.
+     * @param parent a szülő mellyel összehasonlítja
+     * @param panel a vizsgált panel
+     */
+    private static boolean isParent(Component parent, IconTextPanel panel) {
+        return !(parent == null || panel.parent == null || parent != panel.parent);
+    }
+    
     /**
      * Beállítja a maximum értéket.
      * @param component a komponens, amit vizsgál

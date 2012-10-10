@@ -1,12 +1,10 @@
 package org.dyndns.fzoli.ui;
 
-import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -21,33 +19,6 @@ import javax.swing.JPanel;
  * @author zoli
  */
 public abstract class AbstractConnectionProgressFrame extends JFrame {
-    
-    /**
-     * Az ablakon megjelenő panelek.
-     */
-    private static class ConnProgPanel extends IconTextPanel {
-
-        public ConnProgPanel(Component owner, Icon icon, String text) {
-            super(owner, icon, text);
-            setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0)); // alsó és felső margó 5 pixel
-        }
-        
-    }
-    
-    /**
-     * Folyamatjelző panel.
-     */
-    private final IconTextPanel pProgress;
-    
-    /**
-     * Hibát kijelző panel.
-     */
-    private final IconTextPanel pError;
-    
-    /**
-     * Kapcsolatmegszakadás figyelmeztetést kijelző panel.
-     */
-    private final IconTextPanel pWarning;
     
     /**
      * Újra gomb.
@@ -101,16 +72,17 @@ public abstract class AbstractConnectionProgressFrame extends JFrame {
     };
     
     /**
+     * Az ablakon megjeleníthető paneleket tartalmazza.
+     */
+    private final IconTextPanel[] PANELS;
+    
+    /**
      * Konstruktor.
      * Alapértelmezetten hibaüzenetet mutat a panel.
      */
-    public AbstractConnectionProgressFrame(Icon progressIcon) {
+    public AbstractConnectionProgressFrame(IconTextPanel[] panels) {
         super("Kapcsolódáskezelő");
-        
-        // panelek példányosítása
-        pProgress = new ConnProgPanel(this, progressIcon, "Kapcsolódás folyamatban...");
-        pError = new ConnProgPanel(this, LookAndFeelIcon.createIcon(this, "OptionPane.errorIcon", null), "Nem sikerült kapcsolódni a szerverhez!");
-        pWarning = new ConnProgPanel(this, LookAndFeelIcon.createIcon(this, "OptionPane.warningIcon", null), "Megszakadt a kapcsolat a szerverrel!");
+        PANELS = panels;
         
         setLayout(new GridBagLayout()); // kedvenc elrendezésmenedzserem alkalmazása
         setDefaultCloseOperation(EXIT_ON_CLOSE); // X-re kattintva vége a programnak
@@ -120,10 +92,13 @@ public abstract class AbstractConnectionProgressFrame extends JFrame {
         c.fill = GridBagConstraints.BOTH; // teljes helykitöltés, ...
         c.weightx = 1; // ... hogy az ikon balra rendeződjön
         
-        add(pError, c); 
-        add(pProgress, c); // mindkét panelt felfűzöm az ablakra ...
-        add(pWarning, c); // mindkét panelt felfűzöm az ablakra ...
-        setProgress(false); // ... de egyszerre csak az egyik látható
+        for (IconTextPanel panel : panels) {
+            add(panel, c); // az összes panelt felfűzöm az ablakra
+            panel.setParent(this); // beállítom az ablak referenciáját szülőnek
+        }
+        IconTextPanel.resizeComponents(this); // átméretezem a komponenseket
+        
+        setIconTextPanel(0); // az első panel lesz látható csak
         
         c.gridy = 1; // következő sorba mennek a gombok
         JPanel pButtons = new OkCancelPanel(btAgain, btSettings, btExit, 5);
@@ -137,37 +112,11 @@ public abstract class AbstractConnectionProgressFrame extends JFrame {
     
     /**
      * Beállítja a látható panelt.
-     * @param on true esetén az indikátor jelenik meg, egyébként a hibaüzenet.
+     * @param index a konstruktorban átadott paneleket tartalmazó tömb indexe
      */
-    public void setProgress(boolean on) {
-        setAgainButtonEnabled(!on);
-        if (on) {
-            pError.setVisible(false);
-            pWarning.setVisible(false);
-            pProgress.setVisible(true);
-        }
-        else {
-            pError.setVisible(true);
-            pWarning.setVisible(false);
-            pProgress.setVisible(false);
-        }
-    }
-    
-    /**
-     * Beállítja a látható panelt.
-     * @param disconnect true esetén a kapcsolatmegszakdó üzenet jelenik meg, egyébként a hibaüzenet
-     */
-    public void setDisconnect(boolean disconnect) {
-        setAgainButtonEnabled(disconnect);
-        if (disconnect) {
-            pError.setVisible(false);
-            pWarning.setVisible(true);
-            pProgress.setVisible(false);
-        }
-        else {
-            pError.setVisible(true);
-            pWarning.setVisible(false);
-            pProgress.setVisible(false);
+    public void setIconTextPanel(int index) {
+        for (int i = 0; i < PANELS.length; i++) {
+            PANELS[i].setVisible(i == index);
         }
     }
     

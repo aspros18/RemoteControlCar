@@ -51,7 +51,7 @@ public class ServerDisconnectProcess extends AbstractSecureProcess implements Di
                 Date d1 = new Date();
                 in.read();
                 Date d2 = new Date();
-                System.out.println("Ping: " + (d2.getTime() - d1.getTime()) + " ms");
+                System.out.println("Server Ping: " + (d2.getTime() - d1.getTime()) + " ms");
                 Thread.sleep(waiting);
             }
         }

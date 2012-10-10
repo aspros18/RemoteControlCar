@@ -51,7 +51,7 @@ public class ClientDisconnectProcess extends AbstractSecureProcess implements Di
                 Date d2 = new Date();
                 out.write(1);
                 out.flush();
-                System.out.println("Ping: " + (d2.getTime() - d1.getTime()) + " ms");
+                System.out.println("Client Ping: " + (d2.getTime() - d1.getTime()) + " ms");
                 Thread.sleep(waiting);
             }
         }

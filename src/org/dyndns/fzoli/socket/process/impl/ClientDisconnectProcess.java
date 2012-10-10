@@ -12,7 +12,7 @@ import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
  */
 public class ClientDisconnectProcess extends AbstractSecureProcess implements DisconnectProcess {
 
-    private static final int timeout = 1500;
+    private static final int timeout = 3000, waiting = 250;
     
     public ClientDisconnectProcess(SecureHandler handler) {
         super(handler);
@@ -45,8 +45,13 @@ public class ClientDisconnectProcess extends AbstractSecureProcess implements Di
             OutputStream out = getSocket().getOutputStream();
             getSocket().setSoTimeout(timeout);
             while(true) {
+//                Date d1 = new Date();
                 in.read();
+//                Date d2 = new Date();
                 out.write(1);
+                out.flush();
+//                System.out.println(d2.getTime() - d1.getTime() + " ms");
+                Thread.sleep(waiting);
             }
         }
         catch (Exception ex) {

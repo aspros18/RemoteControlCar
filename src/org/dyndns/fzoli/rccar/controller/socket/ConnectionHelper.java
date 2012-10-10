@@ -2,6 +2,7 @@ package org.dyndns.fzoli.rccar.controller.socket;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 import javax.net.ssl.SSLSocket;
@@ -76,6 +77,9 @@ public class ConnectionHelper extends ClientConnectionHelper implements Connecti
         }
         catch (UnknownHostException e) {
             showConnectionStatus(Status.UNKNOWN_HOST);
+        }
+        catch (SocketException e) {
+            showConnectionStatus(Status.DISCONNECTED);
         }
         catch (Exception e) {
             super.onException(e, connectionId);

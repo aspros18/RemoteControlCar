@@ -2,8 +2,6 @@ package org.dyndns.fzoli.socket.process.impl;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
 
@@ -40,12 +38,19 @@ public class ClientDisconnectProcess extends AbstractSecureProcess implements Di
     }
     
     /**
-     * Ez a metódus hívódik meg, amikor megszakad a kapcsolat a szerverrel.
-     * Az összes aktív kapcsolatfeldolgozót leállítja, mely ugyan ahhoz az eszközhöz tartozik.
-     * @param ex a hibát okozó kivétel
+     * A válaszkérés előtt hívódik meg.
+     * @throws Exception az {@code onTimeout} metódusnak átadott kivétel
      */
-    protected void onDisconnect(Exception ex) {
-        DisconnectProcessUtil.onDisconnect(this);
+    protected void beforeAnswer() throws Exception {
+        ;
+    }
+    
+    /**
+     * Akkor hívódik meg, amikor a szervertől sikeresen válasz érkezett.
+     * @throws Exception az {@code onTimeout} metódusnak átadott kivétel
+     */
+    protected void afterAnswer() throws Exception {
+        ;
     }
     
     /**
@@ -61,16 +66,13 @@ public class ClientDisconnectProcess extends AbstractSecureProcess implements Di
     }
     
     /**
-     * Akkor hívódik meg, amikor a szervertől sikeresen válasz érkezett.
-     * @throws Exception az {@code onTimeout} metódusnak átadott kivétel
+     * Ez a metódus hívódik meg, amikor megszakad a kapcsolat a szerverrel.
+     * Az összes aktív kapcsolatfeldolgozót leállítja, mely ugyan ahhoz az eszközhöz tartozik.
+     * @param ex a hibát okozó kivétel
      */
-    protected void onAnswer() throws Exception {
-        ;
+    protected void onDisconnect(Exception ex) {
+        DisconnectProcessUtil.onDisconnect(this);
     }
-    
-//    private long max = 0, sum = 0, count = 0;
-//    private final Date startDate = new Date();
-//    private final SimpleDateFormat dateFormat = new SimpleDateFormat(" [m:s] ");
     
     /**
      * A socket bementének olvasására be lehet állítani időtúllépést.
@@ -85,17 +87,11 @@ public class ClientDisconnectProcess extends AbstractSecureProcess implements Di
             getSocket().setSoTimeout(timeout);
             while(true) {
                 try {
-//                    Date d1 = new Date();
+                    beforeAnswer();
                     in.read();
-//                    Date d2 = new Date();
+                    afterAnswer();
                     out.write(1);
                     out.flush();
-                    onAnswer();
-//                    long ping = d2.getTime() - d1.getTime();
-//                    max = Math.max(max, ping);
-//                    sum += ping;
-//                    count++;
-//                    System.out.println('C' + dateFormat.format(new Date(d2.getTime() - startDate.getTime())) + ping + " ms (max. " + max + " ms; avg. " + (sum / count) + " ms)");
                 }
                 catch (Exception ex) {
                     onTimeout(ex);

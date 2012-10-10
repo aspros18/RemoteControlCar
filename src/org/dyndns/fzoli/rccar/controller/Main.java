@@ -21,16 +21,6 @@ import static org.dyndns.fzoli.ui.UIUtil.setSystemLookAndFeel;
 public class Main {
     
     /**
-     * A konfigurációt tartalmazó objektum.
-     */
-    private static final Config CONFIG = Config.getInstance();
-    
-    /**
-     * A híd szerverrel építi ki a kapcsolatot.
-     */
-    private static final ConnectionHelper CONN = new ConnectionHelper(CONFIG);
-    
-    /**
      * Üzenettípusok.
      */
     private static final String VAL_WARNING = "Figyelmeztetés", VAL_ERROR = "Hiba";
@@ -52,6 +42,16 @@ public class Main {
         }
 
     };
+    
+    /**
+     * A konfigurációt tartalmazó objektum.
+     */
+    private static final Config CONFIG = Config.getInstance();
+    
+    /**
+     * A híd szerverrel építi ki a kapcsolatot.
+     */
+    private static final ConnectionHelper CONN = new ConnectionHelper(CONFIG);
     
     /**
      * Konfiguráció-szerkesztő ablak.

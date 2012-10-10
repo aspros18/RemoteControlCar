@@ -31,7 +31,7 @@ public class ControllerHandler extends AbstractSecureClientHandler {
             showConnectionStatus(Status.REFUSED);
         }
         catch (SocketTimeoutException e) {
-            showConnectionStatus(Status.CONNECTION_ERROR);
+            showConnectionStatus(Status.CONNECTION_TIMEOUT);
         }
         catch (Exception e) {
             super.onException(e);

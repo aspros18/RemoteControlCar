@@ -33,7 +33,9 @@ public class ConnectionProgressFrame extends AbstractConnectionProgressFrame {
         CONNECTING,
         CONNECTION_ERROR,
         DISCONNECTED,
-        REFUSED
+        REFUSED,
+        UNKNOWN_HOST,
+        CONNECTION_TIMEOUT
     };
     
     /**
@@ -43,7 +45,9 @@ public class ConnectionProgressFrame extends AbstractConnectionProgressFrame {
         new ConnProgPanel(R.getIndicatorIcon(), "Kapcsolódás folyamatban..."),
         new ConnProgPanel(R.getErrorIcon(), "Nem sikerült kapcsolódni a szerverhez!"),
         new ConnProgPanel(R.getWarningIcon(), "Megszakadt a kapcsolat a szerverrel!"),
-        new ConnProgPanel(R.getWarningIcon(), "A szerver elutasította a kérést!")
+        new ConnProgPanel(R.getWarningIcon(), "A szerver elutasította a kérést!"),
+        new ConnProgPanel(R.getErrorIcon(), "A szerver hosztneve nem érhető el!"),
+        new ConnProgPanel(R.getErrorIcon(), "Időtúllépés a kapcsolódás közben!")
     };
     
     /**

@@ -65,6 +65,7 @@ public abstract class ClientConnectionHelper {
     }
     
     /**
+     * TODO
      * Megmondja, hogy kapcsolódva van-e a kliens a szerverhez.
      * @return true, ha az összes kapcsolat ki van alakítva a szerverrel
      */
@@ -85,6 +86,7 @@ public abstract class ClientConnectionHelper {
      * Beállítja a kapcsolódás folyamatát.
      */
     public void setConnecting(boolean connecting) {
+        System.out.println("set connecting: " + connecting);
         this.connecting = connecting;
     }
     

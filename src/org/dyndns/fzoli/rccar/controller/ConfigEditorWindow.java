@@ -25,7 +25,6 @@ import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import static org.dyndns.fzoli.rccar.controller.Main.runClient;
 import org.dyndns.fzoli.rccar.controller.resource.R;
-import org.dyndns.fzoli.rccar.controller.socket.ConnectionHelper;
 import org.dyndns.fzoli.ui.FilePanel;
 import org.dyndns.fzoli.ui.ModalFrame;
 import org.dyndns.fzoli.ui.OkCancelPanel;

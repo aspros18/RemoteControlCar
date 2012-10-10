@@ -75,7 +75,7 @@ public class ConnectionHelper extends ClientConnectionHelper implements Connecti
             showConnectionStatus(Status.CONNECTION_ERROR);
         }
         catch (UnknownHostException e) {
-            showConnectionStatus(Status.CONNECTION_ERROR);
+            showConnectionStatus(Status.UNKNOWN_HOST);
         }
         catch (Exception e) {
             super.onException(e, connectionId);

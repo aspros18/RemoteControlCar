@@ -2,6 +2,8 @@ package org.dyndns.fzoli.socket.process.impl;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
 
@@ -15,19 +17,50 @@ public class ServerDisconnectProcess extends AbstractSecureProcess implements Di
     /**
      * Konstruktorban beállított konstansok.
      */
-    private final int timeout, waiting;
+    private final int timeout1, timeout2, waiting;
+    
+    /**
+     * Kliens és szerver oldalon is megegyező metódusok gyűjteménye.
+     */
+    private final DisconnectProcessUtil UTIL = new DisconnectProcessUtil(this);
     
     /**
      * Szerver oldalra időtúllépés detektáló.
      * @param handler Biztonságos kapcsolatfeldolgozó, ami létrehozza ezt az adatfeldolgozót.
-     * @param timeout az időtúllépés ideje ezredmásodpercben
+     * @param timeout1 az első időtúllépés ideje ezredmásodpercben
+     * @param timeout2 a második időtúllépés ideje ezredmásodpercben
      * @param waiting két ellenőrzés között eltelt idő
      * @throws NullPointerException ha handler null
      */
-    public ServerDisconnectProcess(SecureHandler handler, int timeout, int waiting) {
+    public ServerDisconnectProcess(SecureHandler handler, int timeout1, int timeout2, int waiting) {
         super(handler);
-        this.timeout = timeout;
+        this.timeout1 = timeout1;
+        this.timeout2 = timeout2;
         this.waiting = waiting;
+    }
+
+    /**
+     * Az első időtúllépés ideje.
+     */
+    @Override
+    public int getFirstTimeout() {
+        return timeout1;
+    }
+
+    /**
+     * A második időtúllépés ideje.
+     */
+    @Override
+    public int getSecondTimeout() {
+        return timeout2;
+    }
+
+    /**
+     * Két ellenőrzés között eltelt idő.
+     */
+    @Override
+    public int getWaiting() {
+        return waiting;
     }
 
     /**
@@ -58,25 +91,36 @@ public class ServerDisconnectProcess extends AbstractSecureProcess implements Di
     
     /**
      * Időtúllépés esetén hívódik meg.
-     * A metódus ha kivételt dob, az {@code onDisconnect} metódus hívódik meg.
-     * A metódus az elkapott kivételt dobja, így alapértelmezésként az első megszakadás
-     * esetén már lefut az {@code onDisconnect}
+     * Az első időtúllépés történt meg, ami még nem végzetes.
+     * Ha a metódus kivételt dob, az {@code onDisconnect} metódus hívódik meg.
      * @param ex a hibát okozó kivétel
      * @throws Exception az {@code onDisconnect} metódusnak átadott kivétel
      */
     @Override
-    public void onTimeout(Exception ex) throws Exception {
-        throw ex;
+    public void onTimeout(final Exception ex) throws Exception {
+        ;
     }
     
     /**
      * Ez a metódus hívódik meg, amikor megszakad a kapcsolat a klienssel.
+     * A második időtúllépés történt meg, ami végzetes hiba.
      * Az összes aktív kapcsolatfeldolgozót leállítja, mely ugyan ahhoz az eszközhöz tartozik.
      * @param ex a hibát okozó kivétel
      */
     @Override
     public void onDisconnect(Exception ex) {
-        DisconnectProcessUtil.onDisconnect(this);
+        UTIL.onDisconnect();
+    }
+    
+    /**
+     * Aktiválja vagy inaktiválja az időzítőt, ami meghívja a második időtúllépést.
+     */
+    private void setTimeoutActive(boolean b, Exception ex) throws SocketException {
+        UTIL.setTimeoutActive(b, ex);
+    }
+    
+    private void callDisconnect(Exception ex) {
+        UTIL.callDisconnect(ex);
     }
     
     /**
@@ -89,23 +133,25 @@ public class ServerDisconnectProcess extends AbstractSecureProcess implements Di
         try {
             InputStream in = getSocket().getInputStream();
             OutputStream out = getSocket().getOutputStream();
-            getSocket().setSoTimeout(timeout);
+            getSocket().setSoTimeout(getFirstTimeout());
             while(true) {
                 try {
                     out.write(1);
                     out.flush();
                     beforeAnswer();
                     in.read();
+                    setTimeoutActive(false, null);
                     afterAnswer();
                 }
-                catch (Exception ex) {
+                catch (SocketTimeoutException ex) {
+                    setTimeoutActive(true, ex);
                     onTimeout(ex);
                 }
-                Thread.sleep(waiting);
+                Thread.sleep(getWaiting());
             }
         }
         catch (Exception ex) {
-            onDisconnect(ex);
+            callDisconnect(ex);
         }
     }
     

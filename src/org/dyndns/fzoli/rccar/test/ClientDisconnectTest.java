@@ -42,7 +42,7 @@ public class ClientDisconnectTest implements ConnectionKeys {
         protected AbstractSecureProcess selectProcess() {
             switch (getConnectionId()) {
                 case KEY_CONN_DISCONNECT:
-                    return new ClientDisconnectProcess(this, 1000, 250) {
+                    return new ClientDisconnectProcess(this, 1000, 10000, 250) {
                         
                         @Override
                         public void onDisconnect(Exception ex) {

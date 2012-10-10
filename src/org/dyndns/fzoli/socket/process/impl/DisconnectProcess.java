@@ -10,6 +10,21 @@ import org.dyndns.fzoli.socket.process.SecureProcess;
 public interface DisconnectProcess extends SecureProcess {
     
     /**
+     * Az első időtúllépés ideje.
+     */
+    public int getFirstTimeout();
+    
+    /**
+     * A második időtúllépés ideje.
+     */
+    public int getSecondTimeout();
+    
+    /**
+     * Két ellenőrzés között eltelt idő.
+     */
+    public int getWaiting();
+    
+    /**
      * A socket bementének olvasására be lehet állítani időtúllépést.
      * Erre alapozva megtudható, hogy él-e még a kapcsolat a távoli géppel.
      */
@@ -35,6 +50,7 @@ public interface DisconnectProcess extends SecureProcess {
     
     /**
      * Időtúllépés esetén hívódik meg.
+     * Az első időtúllépés történt meg, ami még nem végzetes.
      * A metódus ha kivételt dob, az {@code onDisconnect} metódus hívódik meg.
      * A metódus az elkapott kivételt dobja, így alapértelmezésként az első megszakadás
      * esetén már lefut az {@code onDisconnect}
@@ -45,6 +61,7 @@ public interface DisconnectProcess extends SecureProcess {
     
     /**
      * Ez a metódus hívódik meg, amikor megszakad a kapcsolat.
+     * A második időtúllépés történt meg, ami végzetes hiba.
      * Az összes aktív kapcsolatfeldolgozót leállítja, mely ugyan ahhoz az eszközhöz tartozik.
      * @param ex a hibát okozó kivétel
      */

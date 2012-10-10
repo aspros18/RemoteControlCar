@@ -15,16 +15,18 @@ public class ControllerDisconnectProcess extends ClientDisconnectProcess {
     private final DisconnectProcessTester TESTER = new DisconnectProcessTester();
     
     public ControllerDisconnectProcess(SecureHandler handler) {
-        super(handler, 10000, 250); // 10 mp időtúllépés, 250 ms sleep
+        super(handler, 1000, 10000, 250); // 1 és 10 mp időtúllépés, 250 ms sleep
     }
 
     @Override
     public void beforeAnswer() throws Exception {
+        super.beforeAnswer();
         TESTER.beforeAnswer();
     }
     
     @Override
     public void afterAnswer() throws Exception {
+        super.afterAnswer();
         TESTER.afterAnswer();
     }
 

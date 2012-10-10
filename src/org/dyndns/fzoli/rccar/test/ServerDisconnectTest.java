@@ -27,7 +27,7 @@ public class ServerDisconnectTest implements ConnectionKeys {
                     protected AbstractSecureProcess selectProcess() { // szerver oldali teszt feldolgozó használata
                         switch (getConnectionId()) {
                             case KEY_CONN_DISCONNECT:
-                                return new ServerDisconnectProcess(this, 1000, 250) {
+                                return new ServerDisconnectProcess(this, 1000, 10000, 250) {
 
                                     @Override
                                     public void onDisconnect(Exception ex) {

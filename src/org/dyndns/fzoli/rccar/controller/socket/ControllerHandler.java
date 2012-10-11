@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.controller.socket;
 
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocket;
@@ -36,6 +37,9 @@ public class ControllerHandler extends AbstractSecureClientHandler {
         }
         catch (SSLHandshakeException e) {
             showConnectionStatus(Status.HANDSHAKE_ERROR);
+        }
+        catch (SocketException e) {
+            showConnectionStatus(Status.CONNECTION_ERROR);
         }
         catch (Exception e) {
             super.onException(e);

@@ -27,8 +27,8 @@ public class ClientDisconnectProcess extends AbstractSecureProcess implements Di
     /**
      * Kliens oldalra időtúllépés detektáló.
      * @param handler Biztonságos kapcsolatfeldolgozó, ami létrehozza ezt az adatfeldolgozót.
-     * @param timeout1 az első időtúllépés ideje ezredmásodpercben
-     * @param timeout2 a második időtúllépés ideje ezredmásodpercben
+     * @param timeout1 az első időtúllépés ideje ezredmásodpercben (nem végzetes korlát)
+     * @param timeout2 a második időtúllépés ideje ezredmásodpercben (végzetes korlát)
      * @param waiting két ellenőrzés között eltelt idő
      * @throws NullPointerException ha handler null
      */
@@ -129,29 +129,29 @@ public class ClientDisconnectProcess extends AbstractSecureProcess implements Di
      */
     @Override
     public void run() {
-        onConnect();
+        onConnect(); // onConnect eseménykezelő hívása, hogy a kapcsolat létrejött
         try {
-            InputStream in = getSocket().getInputStream();
-            OutputStream out = getSocket().getOutputStream();
-            getSocket().setSoTimeout(getFirstTimeout());
-            while(true) {
+            InputStream in = getSocket().getInputStream(); // kliens oldali bemenet
+            OutputStream out = getSocket().getOutputStream(); // kliens oldali kimenet
+            getSocket().setSoTimeout(getFirstTimeout()); // in.read() metódusnak az 1. időtúllépés beállítása
+            while(true) { // végtelen ciklus, amit SocketException zár be a kapcsolat végén
                 try {
-                    beforeAnswer();
-                    in.read();
-                    setTimeoutActive(false, null);
-                    afterAnswer();
-                    out.write(1);
-                    out.flush();
+                    beforeAnswer(); // olvasás előtti eseménykezelő hívása
+                    in.read(); // válasz a szervertől
+                    setTimeoutActive(false, null); // 2. időtúllépés inaktiválása, ha kell
+                    afterAnswer(); // olvasás utáni eseménykezelő hívása
+                    out.write(1); // üzenés a szervernek ...
+                    out.flush(); // ... azonnal
                 }
-                catch (SocketTimeoutException ex) {
-                    setTimeoutActive(true, ex);
-                    onTimeout(ex);
+                catch (SocketTimeoutException ex) { // ha az in.read() az 1. időkorláton belül nem kapott bájtot
+                    setTimeoutActive(true, ex); // 2. időtúllépés aktiválása, ha kell
+                    onTimeout(ex); // időtúllépés eseménykezelő hívása
                 }
-                Thread.sleep(getWaiting());
+                Thread.sleep(getWaiting()); // várakozik egy kicsit, hogy a sávszélességet ne terhelje, és hogy szinkronban legyen a szerverrel
             }
         }
-        catch (Exception ex) {
-            callDisconnect(ex);
+        catch (Exception ex) { // ha bármilyen hiba történt
+            callDisconnect(ex); // disconnect eseménykezelő hívása, ha kell
         }
     }
     

@@ -44,22 +44,22 @@ class DisconnectProcessUtil {
      */
     public void setTimeoutActive(boolean b, final Exception ex) throws SocketException {
         if (b) {
-            if (timer == null) {
-                timer = new Timer();
+            if (timer == null) { // ha aktiválni kell, csak akkor aktiválódik, ha még nem aktív
+                timer = new Timer(); // időzítő létrehozása, ami a 2. időtúllépést hívja meg
                 timer.schedule(new TimerTask() {
 
                     @Override
-                    public void run() {
-                        callDisconnect(ex);
+                    public void run() { // ha letelt az idő
+                        callDisconnect(ex); // disconnect esemény hívása, ha még nem hívták meg
                     }
                     
                 }, proc.getSecondTimeout());
             }
         }
         else {
-            if (timer != null) {
-                timer.cancel();
-                timer = null;
+            if (timer != null) { // ha deaktiválni kell, csak akkor deaktiválódik, ha még aktív
+                timer.cancel(); // időzítő leállítása
+                timer = null; // Garbage Collector végezheti a dolgát
             }
         }
     }
@@ -70,13 +70,14 @@ class DisconnectProcessUtil {
      */
     public void onDisconnect() {
         List<SecureProcess> procs = proc.getHandler().getSecureProcesses();
-        for (SecureProcess prc : procs) {
+        for (SecureProcess prc : procs) { // végigmegy a biztonságos kapcsolatfeldolgozókon ...
             try {
-                if (prc.getRemoteCommonName().equals(proc.getRemoteCommonName())) {
-                    prc.getSocket().close();
+                // ... és ha megegyező eszközazonosítóval és Common Name mezővel rendelkeznek ...
+                if (prc.getDeviceId().equals(proc.getDeviceId()) && prc.getRemoteCommonName().equals(proc.getRemoteCommonName())) {
+                    prc.getSocket().close(); // ... bezárja a kapcsolatukat
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex) { // ha nem sikerült bezárni a socketet, akkor már zárva volt
                 ;
             }
         }

@@ -49,8 +49,6 @@ public class SplashScreenLoader {
                 if (g != null) {
                     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                     g.setColor(Color.BLACK);
-                    g.setFont(new Font("Arial", Font.BOLD, 20));
-                    printString("Mobile-RC", 35);
                     g.setFont(new Font("Arial", Font.PLAIN, 12));
                     updateSplash();
                 }
@@ -99,7 +97,7 @@ public class SplashScreenLoader {
         if (g != null && s != null) {
             int y = 185;
             g.setComposite(AlphaComposite.Clear);
-            g.fillRect(0, y - 50, splash.getSize().width, 100);
+            g.fillRect(1, y - 10, splash.getSize().width - 2, 20);
             g.setPaintMode();
             printString(s + (s.isEmpty() ? "" : "..."), y);
             updateSplash();

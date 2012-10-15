@@ -32,7 +32,8 @@ public class Config {
                                KEY_CERT = "cert",
                                KEY_KEY = "key",
                                KEY_PASSWORD = "password",
-                               KEY_ROOT = "root";
+                               KEY_ROOT = "root",
+                               KEY_HIDDEN = "hidden";
     
     /**
      * Általános rendszerváltozók.
@@ -60,7 +61,8 @@ public class Config {
             KEY_CERT + ' ' + new File("test-certs", "bridge.crt") + ' ' + CC + " a szerver tanúsítvány-fájl" + LS +
             KEY_KEY + ' ' + new File("test-certs", "bridge.key") + ' ' + CC + " a szerver titkos kulcsa" + LS +
             CC + ' ' + KEY_PASSWORD + " optional_cert_password " + CC + " a szerver tanúsítványának jelszava, ha van" + LS +
-            CC + ' ' + KEY_ROOT + " optional_admin_cert_common_name " + CC + " kitüntetett tanúsítvány, amivel rendszergazdaként használható a program";
+            CC + ' ' + KEY_ROOT + " optional_admin_cert_common_name " + CC + " kitüntetett tanúsítvány, amivel rendszergazdaként használható a program" + LS +
+            CC + ' ' + KEY_HIDDEN + " false " + CC + " ha true, a rendszerikon nem jelenik meg annak ellenére sem, hogy van grafikus felület";
     
     /**
      * Ideignlenes jelszó a memóriában.
@@ -73,6 +75,20 @@ public class Config {
     private Config() {
     }
 
+    /**
+     * A konfigurációs fájl hidden paramétere.
+     * Ha true, akor nem jelenik meg a rendszerikon.
+     * @return false, ha nincs megadva vagy ha a megadott érték "true", akkor true
+     */
+    public boolean isHidden() {
+        try {
+            return Boolean.parseBoolean(getValues().get(KEY_HIDDEN));
+        }
+        catch (Exception ex) {
+            return false;
+        }
+    }
+    
     /**
      * A konfigurációs fájl port paramétere.
      * A SocketServer ezen a porton figyel.
@@ -184,6 +200,7 @@ public class Config {
                "Key file:" + getKeyFile() + LS +
                "Password length: " + (getPassword() == null ? -1 : getPassword().length) + LS +
                "Root name: " + getRootName() + LS +
+               "Hidden: " + isHidden() + LS +
                "Correct? " + isCorrect();
     }
     

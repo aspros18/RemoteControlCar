@@ -236,7 +236,7 @@ public class ConfigEditorWindow extends ModalFrame {
     private final JTabbedPane tabbedPane = new JTabbedPane() {
         {
             addTab("Útvonal", addressPanel);
-            addTab("Tanúsítvány", certificatePanel);
+            addTab("Biztonság", certificatePanel);
         }
     };
     

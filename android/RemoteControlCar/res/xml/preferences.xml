@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/category_path">
+        <EditTextPreference
+            android:key="address"
+            android:title="@string/title_address"
+            android:summary="@string/summary_address"
+            android:inputType="textUri"
+            android:defaultValue="10.0.2.2" />
+        <EditTextPreference
+            android:key="port"
+            android:title="@string/title_port"
+            android:summary="@string/summary_port"
+            android:maxLength="5"
+            android:inputType="number"
+            android:defaultValue="8443" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/category_security">
+        <org.dyndns.fzoli.android.preference.FilePreference
+            android:id="@+id/file_ca"
+            android:key="ca"
+            android:title="@string/title_ca"
+            android:summary="@string/summary_ca" />
+        <org.dyndns.fzoli.android.preference.FilePreference
+            android:id="@+id/file_crt"
+            android:key="crt"
+            android:title="@string/title_crt"
+            android:summary="@string/summary_crt" />
+        <org.dyndns.fzoli.android.preference.FilePreference
+            android:id="@+id/file_key"
+            android:key="key"
+            android:title="@string/title_key"
+            android:summary="@string/summary_key" />
+    </PreferenceCategory>
+</PreferenceScreen>

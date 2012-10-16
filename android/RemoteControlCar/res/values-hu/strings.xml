@@ -1,0 +1,15 @@
+<resources>
+    <string name="menu_settings">Beállítások</string>
+    <string name="wrong_value">Hibás érték!</string>
+    <string name="category_path">Útvonal</string>
+    <string name="category_security">Biztonság</string>
+    <string name="title_address">Cím</string>
+    <string name="title_ca">Kiállító</string>
+    <string name="title_crt">Tanúsítvány</string>
+    <string name="title_key">Kulcs</string>
+    <string name="summary_address">Szerver címe</string>
+    <string name="summary_port">Szerver portja</string>
+    <string name="summary_ca">Certificate Authority megadása</string>
+    <string name="summary_crt">Publikus kulcs megadása</string>
+    <string name="summary_key">Privát kulcs megadása</string>
+</resources>

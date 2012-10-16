@@ -62,7 +62,7 @@ public class Config {
             KEY_KEY + ' ' + new File("test-certs", "bridge.key") + ' ' + CC + " a szerver titkos kulcsa" + LS +
             CC + ' ' + KEY_PASSWORD + " optional_cert_password " + CC + " a szerver tanúsítványának jelszava, ha van" + LS +
             CC + ' ' + KEY_ROOT + " optional_admin_cert_common_name " + CC + " kitüntetett tanúsítvány, amivel rendszergazdaként használható a program" + LS +
-            CC + ' ' + KEY_HIDDEN + " false " + CC + " ha true, a rendszerikon nem jelenik meg annak ellenére sem, hogy van grafikus felület";
+            CC + ' ' + KEY_HIDDEN + " true " + CC + " ha true, a rendszerikon nem jelenik meg annak ellenére sem, hogy van grafikus felület";
     
     /**
      * Ideignlenes jelszó a memóriában.

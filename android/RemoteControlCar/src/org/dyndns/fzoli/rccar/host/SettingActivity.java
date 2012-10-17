@@ -46,7 +46,7 @@ public class SettingActivity extends PreferenceActivity {
 		@Override
 		public void afterTextChanged(Editable s) {
 			try {
-				int port = Integer.parseInt(s.toString());
+			    int port = Integer.parseInt(s.toString());
 			    if (port > 65535) setText(s, "65535");
 			    if (port < 0) setText(s, "0");
 			    if (port != 0 && s.toString().startsWith("0")) setText(s, Integer.toString(port));
@@ -159,13 +159,13 @@ public class SettingActivity extends PreferenceActivity {
 	@SuppressWarnings("deprecation")
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-    	if (data != null) {
-    		String key = KEYS.get(requestCode);
-	    	String path = getPath(this, data.getData());
-	    	getPreferenceManager().getSharedPreferences().edit().putString(key, path).commit();
-	    	showFileName(key, path);
-    	}
-    }
+		if (data != null) {
+			String key = KEYS.get(requestCode);
+			String path = getPath(this, data.getData());
+			getPreferenceManager().getSharedPreferences().edit().putString(key, path).commit();
+			showFileName(key, path);
+		}
+	}
 	
 	/**
 	 * Frissíti a fájlnevet, ha a fájl létezik.

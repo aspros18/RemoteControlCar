@@ -2,16 +2,14 @@ package org.dyndns.fzoli.rccar.test;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -21,10 +19,10 @@ abstract class ArrowComponent extends BufferedImage {
 
     public ArrowComponent(int size) {
         super(size, size, TYPE_INT_ARGB);
-        paint((Graphics2D) getGraphics());
+        paint();
     }
     
-    protected abstract void paint(Graphics2D g);
+    protected abstract void paint();
     
     protected Polygon createPolygon() {
         final int size = Math.min(getWidth(), getHeight()) - 1;
@@ -43,7 +41,8 @@ class Arrow extends ArrowComponent {
     }
     
     @Override
-    protected void paint(Graphics2D g) {
+    protected void paint() {
+        Graphics2D g = (Graphics2D) getGraphics();
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, getWidth(), getHeight());
         Polygon arrow = createPolygon();
@@ -58,12 +57,26 @@ class Arrow extends ArrowComponent {
 
 
 
+
+
 class ArrowLine extends ArrowComponent {
+    
+    private int x = 0, y = 0;
     
     public ArrowLine(int size) {
         super(size);
     }
 
+    public void setX(int x) {
+        this.x = x;
+        paint();
+    }
+
+    public void setY(int y) {
+        this.y = y;
+        paint();
+    }
+    
     private Rectangle getDefaultRectangle() {
         int s2 = getWidth() / 2;
         int s20 = getWidth() / 20;
@@ -72,7 +85,6 @@ class ArrowLine extends ArrowComponent {
     }
     
     private Rectangle getRectangleX() {
-        int x = 1;
         int s2 = getWidth() / 2;
         int s10 = getWidth() / 10;
         int s20 = getWidth() / 20;
@@ -80,23 +92,23 @@ class ArrowLine extends ArrowComponent {
         int a = s2 + s40 - 2, b = s2 - s20, c = s10 - 1, d = s2 - s40 + 1;
         if (x > 0) return new Rectangle(a, b, d, c); // jobb
         if (x < 0) return new Rectangle(0, b, d, c); // bal
-        return getDefaultRectangle(); // nulla
+        return getDefaultRectangle(); // semerre
     }
     
     private Rectangle getRectangleY() {
-        int y = 1;
         int s2 = getWidth() / 2;
         int s10 = getWidth() / 10;
         int s20 = getWidth() / 20;
         int s40 = getWidth() / 40;
         int a = s2 + s40 - 2, b = s2 - s20, c = s10 - 1, d = s2 - s40 + 1;
-        if (y > 0) return new Rectangle(b, a, c, d); // le
-        if (y < 0) return new Rectangle(b, 0, c, d); // fel
-        return getDefaultRectangle(); // nulla
+        if (y < 0) return new Rectangle(b, a, c, d); // le
+        if (y > 0) return new Rectangle(b, 0, c, d); // fel
+        return getDefaultRectangle(); // semerre
     }
     
     @Override
-    protected void paint(Graphics2D g) {
+    protected void paint() {
+        Graphics2D g = (Graphics2D) getGraphics();
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, getWidth(), getHeight());
         g.setColor(Color.GREEN);
@@ -126,11 +138,52 @@ public class ArrowTest {
                 pane.add(lbBg, JLayeredPane.POPUP_LAYER);
                 lbBg.setBounds(0, 0, size, size);
                 
-                JLabel lbLn = new JLabel(new ImageIcon(new ArrowLine(size)));
+                final ArrowLine al = new ArrowLine(size);
+                JLabel lbLn = new JLabel(new ImageIcon(al));
                 pane.add(lbLn, JLayeredPane.DEFAULT_LAYER);
                 lbLn.setBounds(0, 0, size, size);
                 
                 add(pane);
+                
+                addKeyListener(new KeyAdapter() {
+
+                    @Override
+                    public void keyPressed(KeyEvent e) {
+                        switch (e.getKeyCode()) {
+                            case KeyEvent.VK_LEFT:
+                                al.setX(-1);
+                                break;
+                            case KeyEvent.VK_RIGHT:
+                                al.setX(1);
+                                break;
+                            case KeyEvent.VK_UP:
+                                al.setY(1);
+                                break;
+                            case KeyEvent.VK_DOWN:
+                                al.setY(-1);
+                        }
+                        repaint();
+                    }
+
+                    @Override
+                    public void keyReleased(KeyEvent e) {
+                        switch (e.getKeyCode()) {
+                            case KeyEvent.VK_LEFT:
+                                al.setX(0);
+                                break;
+                            case KeyEvent.VK_RIGHT:
+                                al.setX(0);
+                                break;
+                            case KeyEvent.VK_UP:
+                                al.setY(0);
+                                break;
+                            case KeyEvent.VK_DOWN:
+                                al.setY(0);
+                        }
+                        repaint();
+                    }
+                    
+                });
                 
                 pack();
                 setResizable(false);

@@ -41,15 +41,15 @@ public class FilePreference extends Preference {
 	 * Ha több fájlkezelő is van telepítve, listából lehet kiválasztani, melyik jelenjen meg.
 	 */
 	private void selectFile() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT); 
-        intent.setType("file/*");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        if (ID != 0) try {
-            ((Activity) getContext()).startActivityForResult(Intent.createChooser(intent, getTitle()), ID);
-        }
-        catch (Exception ex) {
-            ;
-        }
+		Intent intent = new Intent(Intent.ACTION_GET_CONTENT); 
+		intent.setType("file/*");
+		intent.addCategory(Intent.CATEGORY_OPENABLE);
+		if (ID != 0) try {
+			((Activity) getContext()).startActivityForResult(Intent.createChooser(intent, getTitle()), ID);
+		}
+		catch (Exception ex) {
+			;
+		}
 	}
 	
 	/**
@@ -67,23 +67,23 @@ public class FilePreference extends Preference {
 	 * @return a fájl útvonala
 	 */
 	public static String getPath(Context context, Uri uri) {
-        if ("content".equalsIgnoreCase(uri.getScheme())) {
-            String[] projection = { "_data" };
-            Cursor cursor = null;
-            try {
-                cursor = context.getContentResolver().query(uri, projection, null, null, null);
-                int column_index = cursor.getColumnIndexOrThrow("_data");
-                if (cursor.moveToFirst()) {
-                    return cursor.getString(column_index);
-                }
-            } catch (Exception e) {
-                // Edd meg.
-            }
-        }
-        else if ("file".equalsIgnoreCase(uri.getScheme())) {
-            return uri.getPath();
-        }
-        return null;
-    }
+		if ("content".equalsIgnoreCase(uri.getScheme())) {
+			String[] projection = { "_data" };
+			Cursor cursor = null;
+			try {
+				cursor = context.getContentResolver().query(uri, projection, null, null, null);
+				int column_index = cursor.getColumnIndexOrThrow("_data");
+				if (cursor.moveToFirst()) {
+					return cursor.getString(column_index);
+				}
+			} catch (Exception e) {
+				// Edd meg.
+			}
+		}
+		else if ("file".equalsIgnoreCase(uri.getScheme())) {
+			return uri.getPath();
+		}
+		return null;
+	}
 	
 }

@@ -12,25 +12,25 @@ import android.view.MenuItem;
  */
 public class MainActivity extends Activity {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-    }
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+	}
 
-    /**
-     * Amint hivatkoznak a menüre, az activity_main.xml fájl alapján létrejön és megjelenik.
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_main, menu);
-        return true;
-    }
-    
-    /**
-     * Ha a menüben a beállításokat választották, megjelenik a {@code SettingActivity}.
-     * @see SettingActivity
-     */
+	/**
+	 * Amint hivatkoznak a menüre, az activity_main.xml fájl alapján létrejön és megjelenik.
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.activity_main, menu);
+		return true;
+	}
+
+	/**
+	 * Ha a menüben a beállításokat választották, megjelenik a {@code SettingActivity}.
+	 * @see SettingActivity
+	 */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
@@ -38,6 +38,6 @@ public class MainActivity extends Activity {
     			startActivity(new Intent(this, SettingActivity.class));
     	}
     	return super.onOptionsItemSelected(item);
-    }
-    
+	}
+
 }

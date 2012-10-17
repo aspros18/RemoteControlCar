@@ -91,51 +91,51 @@ public class SettingActivity extends PreferenceActivity {
 	/**
 	 * Csak azokat a karaktereket engedi meg leütni, melyek biztosan használhatóak.
 	 */
-    private static final TextWatcher TW_ADDRESS = new TextWatcherAdapter() {
+	private static final TextWatcher TW_ADDRESS = new TextWatcherAdapter() {
     	
-    	/**
-    	 * Az előző szöveg.
-    	 * Arra kell, hogy vissza lehessen állítani a hibás szöveget.
-    	 */
-    	private String tmp;
-    	
-    	@Override
-    	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-    		tmp = s.toString(); // még mielőtt változik a szöveg, elmentődik a régi
-    	}
-    	
-    	@Override
-    	public void afterTextChanged(Editable s) {
-    		String text = s.toString(); // miután megváltozott a szöveg
-    		if (text.length() < 2 || text.endsWith(".")) return; // ha a szöveg nem felel meg a követelményeknek, de később még megfelelhet, nincs ellenőrzés 
-    		if (!PT_ADDRESS.matcher(text).matches()) {
-    			resetText(s); // ha nem felel meg a szöveg a követelményeknek, visszaállítás
-	    	}
-    	}
-    	
-    	/**
-    	 * Visszaállítja a szöveget az előző állapotra, ha a szöveg eltérő.
-    	 */
-    	private void resetText(Editable s) {
-    		if (!s.toString().equals(tmp)) s.replace(0, s.length(), tmp);
-    	}
-    	
-    };
-    
-    /**
-     * Ha a cím beírása félbeszakad, előfordulhat, hogy hibás az érték.
-     * Ha az érték nem megfelelő, a szöveg nem módosul és figyelmeztetve lesz a felhasználó.
-     */
-    private final OnPreferenceChangeListener CL_ADDRESS = new OnPreferenceChangeListener() {
-    	
-    	public boolean onPreferenceChange(Preference preference, Object newValue) {
-    		boolean ok = PT_ADDRESS.matcher(newValue.toString()).matches();
-    		if (!ok) showWarning();
-    		return ok;
-    	};
-    	
-    };
-    
+		/**
+		 * Az előző szöveg.
+		 * Arra kell, hogy vissza lehessen állítani a hibás szöveget.
+		 */
+		private String tmp;
+
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			tmp = s.toString(); // még mielőtt változik a szöveg, elmentődik a régi
+		}
+
+		@Override
+		public void afterTextChanged(Editable s) {
+			String text = s.toString(); // miután megváltozott a szöveg
+			if (text.length() < 2 || text.endsWith(".")) return; // ha a szöveg nem felel meg a követelményeknek, de később még megfelelhet, nincs ellenőrzés 
+			if (!PT_ADDRESS.matcher(text).matches()) {
+				resetText(s); // ha nem felel meg a szöveg a követelményeknek, visszaállítás
+			}
+		}
+
+		/**
+		 * Visszaállítja a szöveget az előző állapotra, ha a szöveg eltérő.
+		 */
+		private void resetText(Editable s) {
+			if (!s.toString().equals(tmp)) s.replace(0, s.length(), tmp);
+		}
+
+	};
+
+	/**
+	 * Ha a cím beírása félbeszakad, előfordulhat, hogy hibás az érték.
+	 * Ha az érték nem megfelelő, a szöveg nem módosul és figyelmeztetve lesz a felhasználó.
+	 */
+	private final OnPreferenceChangeListener CL_ADDRESS = new OnPreferenceChangeListener() {
+
+		public boolean onPreferenceChange(Preference preference, Object newValue) {
+			boolean ok = PT_ADDRESS.matcher(newValue.toString()).matches();
+			if (!ok) showWarning();
+			return ok;
+		};
+
+	};
+
 	/**
 	 * Ez a metódus fut le, amikor létrejön az Activity.
 	 * - Legenerálódik a nézet a preferences.xml fájl alapján.

@@ -82,9 +82,8 @@ class ArrowLine extends ArrowComponent {
     
     private Rectangle getRectangleX() {
         int[] p = getPoints();
-        int l = p[3] - Math.abs(x) - 1;
-        if (x > 0) return new Rectangle(p[0], p[1], p[3] - l, p[2]); // jobb
-        if (x < 0) return new Rectangle(l   , p[1], p[3] - l, p[2]); // bal
+        if (x > 0) return new Rectangle(p[0]        , p[1], x + 1     , p[2]); // jobb
+        if (x < 0) return new Rectangle(p[3] + x - 1, p[1], -1 * x + 1, p[2]); // bal
         return getDefaultRectangle(); // semerre
     }
     

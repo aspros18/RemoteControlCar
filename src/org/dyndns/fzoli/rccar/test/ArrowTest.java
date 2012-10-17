@@ -14,7 +14,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 
-
 abstract class ArrowComponent extends BufferedImage {
 
     public ArrowComponent(int size) {
@@ -54,10 +53,6 @@ class Arrow extends ArrowComponent {
     }
     
 }
-
-
-
-
 
 class ArrowLine extends ArrowComponent {
     

@@ -78,7 +78,7 @@ class ArrowLine extends ArrowComponent {
         int s20 = getWidth() / 20;
         int s40 = getWidth() / 40;
         int a = s2 + s40 - 2, b = s2 - s20, c = s10 - 1, d = s2 - s40 + 1;
-        if (x > 0) return new Rectangle(a, b, 500, c); // jobb
+        if (x > 0) return new Rectangle(a, b, d, c); // jobb
         if (x < 0) return new Rectangle(0, b, d, c); // bal
         return getDefaultRectangle(); // nulla
     }
@@ -90,7 +90,7 @@ class ArrowLine extends ArrowComponent {
         int s20 = getWidth() / 20;
         int s40 = getWidth() / 40;
         int a = s2 + s40 - 2, b = s2 - s20, c = s10 - 1, d = s2 - s40 + 1;
-        if (y > 0) return new Rectangle(b, a, c, 500); // le
+        if (y > 0) return new Rectangle(b, a, c, d); // le
         if (y < 0) return new Rectangle(b, 0, c, d); // fel
         return getDefaultRectangle(); // nulla
     }

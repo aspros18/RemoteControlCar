@@ -105,6 +105,12 @@ class ArrowLine extends ArrowComponent {
         setX(x);
     }
     
+    public void setRelativeY(int y) { //TODO: 0 közeli érték javítása
+        int s = y < getWidth() / 2 ? getWidth() / 20 + 5 : getWidth() / 10 + 3;
+        y = y + (-1 * getMax(false) - s);
+        setY(-1 * y);
+    }
+    
     private int getMax(boolean dec) {
         return getWidth() / 2 - getWidth() / 40 - (dec ? 1 : 0);
     }
@@ -177,7 +183,7 @@ public class ArrowTest {
                     @Override
                     public void mouseDragged(MouseEvent e) {
                         al.setRelativeX(e.getX());
-//                        al.setRelativeY(e.getY());
+                        al.setRelativeY(e.getY());
                         repaint();
                     }
                     
@@ -188,7 +194,7 @@ public class ArrowTest {
                     @Override
                     public void mousePressed(MouseEvent e) {
                         al.setRelativeX(e.getX());
-//                        al.setRelativeY(e.getY());
+                        al.setRelativeY(e.getY());
                         repaint();
                     }
 

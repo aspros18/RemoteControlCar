@@ -31,8 +31,8 @@ public class MainActivity extends Activity {
 	 * Ha a menüben a beállításokat választották, megjelenik a {@code SettingActivity}.
 	 * @see SettingActivity
 	 */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
     		case R.id.menu_settings:
     			startActivity(new Intent(this, SettingActivity.class));

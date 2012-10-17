@@ -46,10 +46,10 @@ public class SettingActivity extends PreferenceActivity {
 		@Override
 		public void afterTextChanged(Editable s) {
 			try {
-			    int port = Integer.parseInt(s.toString());
-			    if (port > 65535) setText(s, "65535");
-			    if (port < 0) setText(s, "0");
-			    if (port != 0 && s.toString().startsWith("0")) setText(s, Integer.toString(port));
+				int port = Integer.parseInt(s.toString());
+				if (port > 65535) setText(s, "65535");
+				if (port < 0) setText(s, "0");
+				if (port != 0 && s.toString().startsWith("0")) setText(s, Integer.toString(port));
 			}
 			catch (NumberFormatException ex) {
 				setText(s, "0");

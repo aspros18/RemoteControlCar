@@ -62,6 +62,21 @@ class ArrowLine extends ArrowComponent {
         super(size);
     }
 
+    private void fill(Graphics2D g, Rectangle r) {
+        g.fillRect(r.x, r.y, r.width, r.height);
+    }
+    
+    @Override
+    protected void paint() {
+        Graphics2D g = (Graphics2D) getGraphics();
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, getWidth(), getHeight());
+        g.setColor(Color.GREEN);
+        fill(g, getDefaultRectangle());
+        fill(g, getRectangleX());
+        fill(g, getRectangleY());
+    }
+    
     public void setX(int x) {
         this.x = x;
         paint();
@@ -70,6 +85,22 @@ class ArrowLine extends ArrowComponent {
     public void setY(int y) {
         this.y = y;
         paint();
+    }
+    
+    public void setPercentX(int x) {
+        setX(getPercent(x, x < 0));
+    }
+    
+    public void setPercentY(int y) {
+        setY(getPercent(y, y > 0));
+    }
+    
+    private int getMax(boolean dec) {
+        return getWidth() / 2 - getWidth() / 40 - (dec ? 1 : 0);
+    }
+    
+    private int getPercent(int i, boolean dec) {
+        return (int)(getMax(dec) * (i / 100.0));
     }
     
     private Rectangle getDefaultRectangle() {
@@ -107,21 +138,6 @@ class ArrowLine extends ArrowComponent {
         return points;
     }
     
-    @Override
-    protected void paint() {
-        Graphics2D g = (Graphics2D) getGraphics();
-        g.setColor(Color.WHITE);
-        g.fillRect(0, 0, getWidth(), getHeight());
-        g.setColor(Color.GREEN);
-        fill(g, getDefaultRectangle());
-        fill(g, getRectangleX());
-        fill(g, getRectangleY());
-    }
-    
-    private void fill(Graphics2D g, Rectangle r) {
-        g.fillRect(r.x, r.y, r.width, r.height);
-    }
-    
 }
 
 public class ArrowTest {
@@ -152,16 +168,16 @@ public class ArrowTest {
                     public void keyPressed(KeyEvent e) {
                         switch (e.getKeyCode()) {
                             case KeyEvent.VK_LEFT:
-                                al.setX(-2);
+                                al.setPercentX(-95);
                                 break;
                             case KeyEvent.VK_RIGHT:
-                                al.setX(2);
+                                al.setPercentX(95);
                                 break;
                             case KeyEvent.VK_UP:
-                                al.setY(2);
+                                al.setPercentY(95);
                                 break;
                             case KeyEvent.VK_DOWN:
-                                al.setY(-2);
+                                al.setPercentY(-95);
                         }
                         repaint();
                     }

@@ -8,6 +8,8 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -95,6 +97,14 @@ class ArrowLine extends ArrowComponent {
         setY(getPercent(y, y > 0));
     }
     
+    public void setRelativeX(int x) {
+        int s = x > getWidth() / 2 ? getWidth() / 20 + 1 : 3;
+        x = x + (-1 * getMax(false) - s);
+        if (x >= 0 && s == 3) x = 0;
+        if (x <= 0 && s != 3) x = 0;
+        setX(x);
+    }
+    
     private int getMax(boolean dec) {
         return getWidth() / 2 - getWidth() / 40 - (dec ? 1 : 0);
     }
@@ -161,6 +171,35 @@ public class ArrowTest {
                 lbLn.setBounds(0, 0, size, size);
                 
                 add(pane);
+                
+                addMouseMotionListener(new MouseAdapter() {
+
+                    @Override
+                    public void mouseDragged(MouseEvent e) {
+                        al.setRelativeX(e.getX());
+//                        al.setRelativeY(e.getY());
+                        repaint();
+                    }
+                    
+                });
+                
+                addMouseListener(new MouseAdapter() {
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+                        al.setRelativeX(e.getX());
+//                        al.setRelativeY(e.getY());
+                        repaint();
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+                        al.setX(0);
+                        al.setY(0);
+                        repaint();
+                    }
+                    
+                });
                 
                 addKeyListener(new KeyAdapter() {
 

@@ -13,7 +13,8 @@ class Arrow extends JComponent {
         setPreferredSize(new Dimension(250, 250));
     }
     
-    private Polygon createPolygon(int size) {
+    private Polygon createPolygon() {
+        final int size = Math.min(getWidth(), getHeight()) - 1;
         final int s2 = size / 2, s10 = size / 20, s20 = size / 40;
         final int[] xpoints = {0  , s10      , s10      , s2 - s20  , s2 - s20 , s2 - s10 , s2 , s2 + s10 , s2 + s20 , s2 + s20 , size - s10 , size - s10 , size , size - s10 , size - s10 , s2 + s20 , s2 + s20   , s2 + s10   , s2   , s2 - s10   , s2 - s20   , s2 - s20 , s10      , s10},
                     ypoints = {s2 , s2 - s10 , s2 - s20 , s2 - s20  , s10      , s10      , 0  , s10      , s10      , s2 - s20 , s2 - s20   , s2 - s10   , s2   , s2 + s10   , s2 + s20   , s2 + s20 , size - s10 , size - s10 , size , size - s10 , size - s10 , s2 + s20 , s2 + s20 , s2 + s10};
@@ -23,7 +24,7 @@ class Arrow extends JComponent {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        ((Graphics2D) g).draw(createPolygon(Math.min(getWidth(), getHeight()) - 1));
+        ((Graphics2D) g).draw(createPolygon());
     }
     
 }

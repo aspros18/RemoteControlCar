@@ -76,29 +76,35 @@ class ArrowLine extends ArrowComponent {
         int s2 = getWidth() / 2;
         int s20 = getWidth() / 20;
         int s40 = getWidth() / 40;
-        return new Rectangle(s2 - s40, s2 - s40, s20 - 1, s20 - 1);
+        int a = s2 - s40, b = s20 - 1;
+        return new Rectangle(a, a, b, b);
     }
     
     private Rectangle getRectangleX() {
-        int s2 = getWidth() / 2;
-        int s10 = getWidth() / 10;
-        int s20 = getWidth() / 20;
-        int s40 = getWidth() / 40;
-        int a = s2 + s40 - 2, b = s2 - s20, c = s10 - 1, d = s2 - s40 + 1;
-        if (x > 0) return new Rectangle(a, b, d, c); // jobb
-        if (x < 0) return new Rectangle(0, b, d, c); // bal
+        int[] p = getPoints();
+        if (x > 0) return new Rectangle(p[0]      , p[1], p[3] - x    , p[2]); // jobb
+        if (x < 0) return new Rectangle(-1 * x + 1, p[1], p[3] + x - 1, p[2]); // bal
         return getDefaultRectangle(); // semerre
     }
     
     private Rectangle getRectangleY() {
+        int[] p = getPoints();
+        if (y < 0) return new Rectangle(p[1], p[0] , p[2], p[3] + y    ); // le
+        if (y > 0) return new Rectangle(p[1], y + 1, p[2], p[3] - y - 1); // fel
+        return getDefaultRectangle(); // semerre
+    }
+    
+    private int[] getPoints() {
+        int[] points = new int[4];
         int s2 = getWidth() / 2;
         int s10 = getWidth() / 10;
         int s20 = getWidth() / 20;
         int s40 = getWidth() / 40;
-        int a = s2 + s40 - 2, b = s2 - s20, c = s10 - 1, d = s2 - s40 + 1;
-        if (y < 0) return new Rectangle(b, a, c, d); // le
-        if (y > 0) return new Rectangle(b, 0, c, d); // fel
-        return getDefaultRectangle(); // semerre
+        points[0] = s2 + s40 - 2;
+        points[1] = s2 - s20;
+        points[2]= s10 - 1;
+        points[3] = s2 - s40 + 1;
+        return points;
     }
     
     @Override
@@ -146,16 +152,16 @@ public class ArrowTest {
                     public void keyPressed(KeyEvent e) {
                         switch (e.getKeyCode()) {
                             case KeyEvent.VK_LEFT:
-                                al.setX(-1);
+                                al.setX(-2);
                                 break;
                             case KeyEvent.VK_RIGHT:
-                                al.setX(1);
+                                al.setX(2);
                                 break;
                             case KeyEvent.VK_UP:
-                                al.setY(1);
+                                al.setY(2);
                                 break;
                             case KeyEvent.VK_DOWN:
-                                al.setY(-1);
+                                al.setY(-2);
                         }
                         repaint();
                     }

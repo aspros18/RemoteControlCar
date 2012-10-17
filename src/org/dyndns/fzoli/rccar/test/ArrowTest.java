@@ -105,7 +105,7 @@ class ArrowLine extends ArrowComponent {
         setX(x);
     }
     
-    public void setRelativeY(int y) { //TODO: 0 közeli érték javítása
+    public void setRelativeY(int y) { //TODO: 0 közeli érték és 's' javítása
         int s = y < getWidth() / 2 ? getWidth() / 20 + 5 : getWidth() / 10 + 3;
         y = y + (-1 * getMax(false) - s);
         setY(-1 * y);
@@ -159,7 +159,7 @@ class ArrowLine extends ArrowComponent {
 public class ArrowTest {
     
     public static void main(String[] args) {
-        final int size = 400;
+        final int size = 600;
         new JFrame() {
             {
                 setTitle("Nyilacska teszt");

@@ -212,21 +212,23 @@ public class ArrowTest {
                 });
                 
                 addKeyListener(new KeyAdapter() {
-
+                    
+                    private Integer codeX, codeY;
+                    
                     @Override
                     public void keyPressed(KeyEvent e) {
                         switch (e.getKeyCode()) {
                             case KeyEvent.VK_LEFT:
-                                al.setPercentX(-100);
+                                setX(e, true);
                                 break;
                             case KeyEvent.VK_RIGHT:
-                                al.setPercentX(100);
+                                setX(e, false);
                                 break;
                             case KeyEvent.VK_UP:
-                                al.setPercentY(100);
+                                setY(e, true);
                                 break;
                             case KeyEvent.VK_DOWN:
-                                al.setPercentY(-100);
+                                setY(e, false);
                         }
                         repaint();
                     }
@@ -235,18 +237,36 @@ public class ArrowTest {
                     public void keyReleased(KeyEvent e) {
                         switch (e.getKeyCode()) {
                             case KeyEvent.VK_LEFT:
-                                al.setX(0);
+                                resetX(e);
                                 break;
                             case KeyEvent.VK_RIGHT:
-                                al.setX(0);
+                                resetX(e);
                                 break;
                             case KeyEvent.VK_UP:
-                                al.setY(0);
+                                resetY(e);
                                 break;
                             case KeyEvent.VK_DOWN:
-                                al.setY(0);
+                                resetY(e);
                         }
                         repaint();
+                    }
+                    
+                    private void setX(KeyEvent e, boolean left) {
+                        codeX = e.getKeyCode();
+                        al.setPercentX(left ? -100 : 100);
+                    }
+                    
+                    private void setY(KeyEvent e, boolean up) {
+                        codeY = e.getKeyCode();
+                        al.setPercentY(up ? 100 : -100);
+                    }
+                    
+                    private void resetX(KeyEvent e) {
+                        if (codeX.equals(e.getKeyCode())) al.setX(0);
+                    }
+                    
+                    private void resetY(KeyEvent e) {
+                        if (codeY.equals(e.getKeyCode())) al.setY(0);
                     }
                     
                 });

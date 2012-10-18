@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.GridBagLayout;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.event.KeyAdapter;
@@ -16,6 +17,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
 
 abstract class ArrowComponent extends BufferedImage {
 
@@ -187,6 +189,10 @@ public class ArrowTest {
             {
                 setTitle("Nyilacska teszt");
                 setDefaultCloseOperation(EXIT_ON_CLOSE);
+                
+                JPanel p = new JPanel(new GridBagLayout());
+                p.setBackground(Color.WHITE);
+                
                 JLayeredPane pane = new JLayeredPane();
                 pane.setPreferredSize(new Dimension(size, size));
                 pane.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
@@ -200,7 +206,8 @@ public class ArrowTest {
                 pane.add(lbLn, JLayeredPane.DEFAULT_LAYER);
                 lbLn.setBounds(0, 0, size, size);
                 
-                add(pane);
+                p.add(pane);
+                add(p);
                 
                 pane.addMouseMotionListener(new MouseAdapter() {
 
@@ -292,7 +299,6 @@ public class ArrowTest {
                 });
                 
                 pack();
-                setResizable(false);
                 setLocationRelativeTo(this);
                 setVisible(true);
             }

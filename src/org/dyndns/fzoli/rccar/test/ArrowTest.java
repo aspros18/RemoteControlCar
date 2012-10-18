@@ -106,8 +106,12 @@ class ArrowLine extends ArrowComponent {
         setX(x);
     }
     
-    public void setRelativeY(int y) { //TODO
-        setY(getMax(false) - y);
+    public void setRelativeY(int y) {
+        int s = y > getWidth() / 2 ? getWidth() / 20 - 1 : 0;
+        y = getMax(false) - y + s;
+        if (y <= 0 && s == 0) y = 0;
+        if (y >= 0 && s != 0) y = 0;
+        setY(y);
     }
     
     private int getMax(boolean dec) {

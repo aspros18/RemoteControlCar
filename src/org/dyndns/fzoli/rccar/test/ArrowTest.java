@@ -336,7 +336,7 @@ public class ArrowTest {
                 setTitle("Nyilacska teszt");
                 setDefaultCloseOperation(EXIT_ON_CLOSE);
                 
-                add(new ArrowPanel(600) {
+                add(new ArrowPanel(200) {
 
                     @Override
                     protected void onChange(int x, int y) {
@@ -347,6 +347,7 @@ public class ArrowTest {
 
                 pack();
                 setLocationRelativeTo(this);
+                setResizable(false);
                 setVisible(true);
             }
         };

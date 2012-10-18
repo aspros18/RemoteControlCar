@@ -181,122 +181,127 @@ class ArrowLine extends ArrowComponent {
     
 }
 
+class ArrowPanel extends JPanel {
+
+    public ArrowPanel(int size) {
+        super(new GridBagLayout());
+        setBackground(Color.WHITE);
+
+        JLayeredPane pane = new JLayeredPane();
+        pane.setPreferredSize(new Dimension(size, size));
+        pane.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+
+        JLabel lbBg = new JLabel(new ImageIcon(new Arrow(size)));
+        pane.add(lbBg, JLayeredPane.POPUP_LAYER);
+        lbBg.setBounds(0, 0, size, size);
+
+        final ArrowLine al = new ArrowLine(size);
+        JLabel lbLn = new JLabel(new ImageIcon(al));
+        pane.add(lbLn, JLayeredPane.DEFAULT_LAYER);
+        lbLn.setBounds(0, 0, size, size);
+
+        add(pane);
+
+        pane.addMouseMotionListener(new MouseAdapter() {
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                al.setRelativeX(e.getX());
+                al.setRelativeY(e.getY());
+                repaint();
+            }
+
+        });
+
+        pane.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                al.setRelativeX(e.getX());
+                al.setRelativeY(e.getY());
+                repaint();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                al.setX(0);
+                al.setY(0);
+                repaint();
+            }
+
+        });
+
+        addKeyListener(new KeyAdapter() {
+
+            private Integer codeX, codeY;
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_LEFT:
+                        setX(e, true);
+                        break;
+                    case KeyEvent.VK_RIGHT:
+                        setX(e, false);
+                        break;
+                    case KeyEvent.VK_UP:
+                        setY(e, true);
+                        break;
+                    case KeyEvent.VK_DOWN:
+                        setY(e, false);
+                }
+                repaint();
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_LEFT:
+                        resetX(e);
+                        break;
+                    case KeyEvent.VK_RIGHT:
+                        resetX(e);
+                        break;
+                    case KeyEvent.VK_UP:
+                        resetY(e);
+                        break;
+                    case KeyEvent.VK_DOWN:
+                        resetY(e);
+                }
+                repaint();
+            }
+
+            private void setX(KeyEvent e, boolean left) {
+                codeX = e.getKeyCode();
+                al.setPercentX(left ? -100 : 100);
+            }
+
+            private void setY(KeyEvent e, boolean up) {
+                codeY = e.getKeyCode();
+                al.setPercentY(up ? 100 : -100);
+            }
+
+            private void resetX(KeyEvent e) {
+                if (codeX.equals(e.getKeyCode())) al.setX(0);
+            }
+
+            private void resetY(KeyEvent e) {
+                if (codeY.equals(e.getKeyCode())) al.setY(0);
+            }
+
+        });
+    }
+    
+}
+
 public class ArrowTest {
     
     public static void main(String[] args) {
-        final int size = 600;
         new JFrame() {
             {
                 setTitle("Nyilacska teszt");
                 setDefaultCloseOperation(EXIT_ON_CLOSE);
-                
-                JPanel p = new JPanel(new GridBagLayout());
-                p.setBackground(Color.WHITE);
-                
-                JLayeredPane pane = new JLayeredPane();
-                pane.setPreferredSize(new Dimension(size, size));
-                pane.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
-                
-                JLabel lbBg = new JLabel(new ImageIcon(new Arrow(size)));
-                pane.add(lbBg, JLayeredPane.POPUP_LAYER);
-                lbBg.setBounds(0, 0, size, size);
-                
-                final ArrowLine al = new ArrowLine(size);
-                JLabel lbLn = new JLabel(new ImageIcon(al));
-                pane.add(lbLn, JLayeredPane.DEFAULT_LAYER);
-                lbLn.setBounds(0, 0, size, size);
-                
-                p.add(pane);
-                add(p);
-                
-                pane.addMouseMotionListener(new MouseAdapter() {
-
-                    @Override
-                    public void mouseDragged(MouseEvent e) {
-                        al.setRelativeX(e.getX());
-                        al.setRelativeY(e.getY());
-                        repaint();
-                    }
-                    
-                });
-                
-                pane.addMouseListener(new MouseAdapter() {
-
-                    @Override
-                    public void mousePressed(MouseEvent e) {
-                        al.setRelativeX(e.getX());
-                        al.setRelativeY(e.getY());
-                        repaint();
-                    }
-
-                    @Override
-                    public void mouseReleased(MouseEvent e) {
-                        al.setX(0);
-                        al.setY(0);
-                        repaint();
-                    }
-                    
-                });
-                
-                addKeyListener(new KeyAdapter() {
-                    
-                    private Integer codeX, codeY;
-                    
-                    @Override
-                    public void keyPressed(KeyEvent e) {
-                        switch (e.getKeyCode()) {
-                            case KeyEvent.VK_LEFT:
-                                setX(e, true);
-                                break;
-                            case KeyEvent.VK_RIGHT:
-                                setX(e, false);
-                                break;
-                            case KeyEvent.VK_UP:
-                                setY(e, true);
-                                break;
-                            case KeyEvent.VK_DOWN:
-                                setY(e, false);
-                        }
-                        repaint();
-                    }
-
-                    @Override
-                    public void keyReleased(KeyEvent e) {
-                        switch (e.getKeyCode()) {
-                            case KeyEvent.VK_LEFT:
-                                resetX(e);
-                                break;
-                            case KeyEvent.VK_RIGHT:
-                                resetX(e);
-                                break;
-                            case KeyEvent.VK_UP:
-                                resetY(e);
-                                break;
-                            case KeyEvent.VK_DOWN:
-                                resetY(e);
-                        }
-                        repaint();
-                    }
-                    
-                    private void setX(KeyEvent e, boolean left) {
-                        codeX = e.getKeyCode();
-                        al.setPercentX(left ? -100 : 100);
-                    }
-                    
-                    private void setY(KeyEvent e, boolean up) {
-                        codeY = e.getKeyCode();
-                        al.setPercentY(up ? 100 : -100);
-                    }
-                    
-                    private void resetX(KeyEvent e) {
-                        if (codeX.equals(e.getKeyCode())) al.setX(0);
-                    }
-                    
-                    private void resetY(KeyEvent e) {
-                        if (codeY.equals(e.getKeyCode())) al.setY(0);
-                    }
-                    
-                });
+                add(new ArrowPanel(400));
                 
                 pack();
                 setLocationRelativeTo(this);

@@ -2,6 +2,7 @@ package org.dyndns.fzoli.rccar.test;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
@@ -98,17 +99,15 @@ class ArrowLine extends ArrowComponent {
     }
     
     public void setRelativeX(int x) {
-        int s = x > getWidth() / 2 ? getWidth() / 20 + 1 : 3;
+        int s = x > getWidth() / 2 ? getWidth() / 20 - 1 : 1;
         x = x + (-1 * getMax(false) - s);
-        if (x >= 0 && s == 3) x = 0;
-        if (x <= 0 && s != 3) x = 0;
+        if (x >= 0 && s == 1) x = 0;
+        if (x <= 0 && s != 1) x = 0;
         setX(x);
     }
     
-    public void setRelativeY(int y) { //TODO: 0 közeli érték és 's' javítása
-        int s = y < getWidth() / 2 ? getWidth() / 20 + 5 : getWidth() / 10 + 3;
-        y = y + (-1 * getMax(false) - s);
-        setY(-1 * y);
+    public void setRelativeY(int y) { //TODO
+        setY(getMax(false) - y);
     }
     
     private int getMax(boolean dec) {
@@ -178,7 +177,7 @@ public class ArrowTest {
                 
                 add(pane);
                 
-                addMouseMotionListener(new MouseAdapter() {
+                pane.addMouseMotionListener(new MouseAdapter() {
 
                     @Override
                     public void mouseDragged(MouseEvent e) {
@@ -189,7 +188,7 @@ public class ArrowTest {
                     
                 });
                 
-                addMouseListener(new MouseAdapter() {
+                pane.addMouseListener(new MouseAdapter() {
 
                     @Override
                     public void mousePressed(MouseEvent e) {
@@ -213,16 +212,16 @@ public class ArrowTest {
                     public void keyPressed(KeyEvent e) {
                         switch (e.getKeyCode()) {
                             case KeyEvent.VK_LEFT:
-                                al.setPercentX(-95);
+                                al.setPercentX(-100);
                                 break;
                             case KeyEvent.VK_RIGHT:
-                                al.setPercentX(95);
+                                al.setPercentX(100);
                                 break;
                             case KeyEvent.VK_UP:
-                                al.setPercentY(95);
+                                al.setPercentY(100);
                                 break;
                             case KeyEvent.VK_DOWN:
-                                al.setPercentY(-95);
+                                al.setPercentY(-100);
                         }
                         repaint();
                     }
@@ -251,6 +250,7 @@ public class ArrowTest {
                 setResizable(false);
                 setLocationRelativeTo(this);
                 setVisible(true);
+                setCursor(Cursor.CROSSHAIR_CURSOR);
             }
         };
     }

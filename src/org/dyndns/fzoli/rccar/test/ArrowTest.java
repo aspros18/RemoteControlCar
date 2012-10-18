@@ -169,6 +169,7 @@ public class ArrowTest {
                 setDefaultCloseOperation(EXIT_ON_CLOSE);
                 JLayeredPane pane = new JLayeredPane();
                 pane.setPreferredSize(new Dimension(size, size));
+                pane.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
                 
                 JLabel lbBg = new JLabel(new ImageIcon(new Arrow(size)));
                 pane.add(lbBg, JLayeredPane.POPUP_LAYER);
@@ -254,7 +255,6 @@ public class ArrowTest {
                 setResizable(false);
                 setLocationRelativeTo(this);
                 setVisible(true);
-                setCursor(Cursor.CROSSHAIR_CURSOR);
             }
         };
     }

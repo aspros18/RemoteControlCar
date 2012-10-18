@@ -181,9 +181,12 @@ class ArrowLine extends ArrowComponent {
     
 }
 
+
 abstract class ArrowPanel extends JPanel {
 
     private final ArrowLine al;
+    
+    private int tmpX = 0, tmpY = 0;
     
     public ArrowPanel(int size) {
         super(new GridBagLayout());
@@ -317,7 +320,13 @@ abstract class ArrowPanel extends JPanel {
     }
     
     private void fireChange() {
-        onChange(getPercentX(), getPercentY());
+        int x = getPercentX();
+        int y = getPercentY();
+        if (tmpX != x || tmpY != y) {
+            tmpX = x;
+            tmpY = y;
+            onChange(x, y);
+        }
     }
     
     protected abstract void onChange(int x, int y);
@@ -327,6 +336,7 @@ abstract class ArrowPanel extends JPanel {
 public class ArrowTest {
     
     public static void main(String[] args) {
+        RepeatingReleasedEventsFixer.install();
         new JFrame() {
             {
                 setTitle("Nyilacska teszt");

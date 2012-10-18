@@ -81,14 +81,6 @@ class ArrowLine extends ArrowComponent {
         fill(g, getRectangleX());
         fill(g, getRectangleY());
     }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
     
     public int getPercentX() {
         return createPercent(x, x < 0);
@@ -98,12 +90,12 @@ class ArrowLine extends ArrowComponent {
         return createPercent(y, y > 0);
     }
     
-    public void setX(int x) {
+    private void setX(int x) {
         this.x = x;
         paint();
     }
 
-    public void setY(int y) {
+    private void setY(int y) {
         this.y = y;
         paint();
     }
@@ -141,7 +133,10 @@ class ArrowLine extends ArrowComponent {
     }
     
     private int createPercent(int i, boolean dec) {
-        return 100 * i / getMax(dec);
+        int s = 100 * i / getMax(dec);
+        if (s > 100) s = 100;
+        if (s < -100) s = -100;
+        return s;
     }
     
     private Rectangle getDefaultRectangle() {
@@ -180,7 +175,6 @@ class ArrowLine extends ArrowComponent {
     }
     
 }
-
 
 abstract class ArrowPanel extends JPanel {
 
@@ -232,8 +226,8 @@ abstract class ArrowPanel extends JPanel {
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                al.setX(0);
-                al.setY(0);
+                al.setPercentX(0);
+                al.setPercentY(0);
                 repaint();
                 fireChange();
             }
@@ -293,11 +287,11 @@ abstract class ArrowPanel extends JPanel {
             }
 
             private void resetX(KeyEvent e) {
-                if (codeX.equals(e.getKeyCode())) al.setX(0);
+                if (codeX.equals(e.getKeyCode())) al.setPercentX(0);
             }
 
             private void resetY(KeyEvent e) {
-                if (codeY.equals(e.getKeyCode())) al.setY(0);
+                if (codeY.equals(e.getKeyCode())) al.setPercentY(0);
             }
 
         });

@@ -8,8 +8,8 @@ import java.awt.event.AWTEventListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import javax.swing.Timer;
 
 /**
@@ -62,7 +62,7 @@ class RepeatingReleasedEventsFixer implements AWTEventListener {
     
     private static RepeatingReleasedEventsFixer installed;
  
-    private final Map<Integer, ReleasedAction> _map = new HashMap<Integer, ReleasedAction>();
+    private final Map<Integer, ReleasedAction> _map = new TreeMap<Integer, ReleasedAction>();
  
     public static void install() {
         if (installed == null) {
@@ -74,6 +74,7 @@ class RepeatingReleasedEventsFixer implements AWTEventListener {
     public static void remove() {
         if (installed != null) {
             Toolkit.getDefaultToolkit().removeAWTEventListener(installed);
+            installed = null;
         }
     }
  

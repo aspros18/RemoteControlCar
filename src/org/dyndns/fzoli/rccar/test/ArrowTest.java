@@ -57,6 +57,8 @@ class Arrow extends ArrowComponent {
     
 }
 
+
+
 class ArrowLine extends ArrowComponent {
     
     private int x = 0, y = 0;
@@ -78,6 +80,22 @@ class ArrowLine extends ArrowComponent {
         fill(g, getDefaultRectangle());
         fill(g, getRectangleX());
         fill(g, getRectangleY());
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+    
+    public int getPercentX() {
+        return createPercent(x);
+    }
+
+    public int getPercentY() {
+        return createPercent(y);
     }
     
     public void setX(int x) {
@@ -120,6 +138,10 @@ class ArrowLine extends ArrowComponent {
     
     private int getPercent(int i, boolean dec) {
         return (int)(getMax(dec) * (i / 100.0));
+    }
+    
+    private int createPercent(int i) {
+        return 100 * i / getMax(false);
     }
     
     private Rectangle getDefaultRectangle() {

@@ -57,8 +57,6 @@ class Arrow extends ArrowComponent {
     
 }
 
-
-
 class ArrowLine extends ArrowComponent {
     
     private int x = 0, y = 0;

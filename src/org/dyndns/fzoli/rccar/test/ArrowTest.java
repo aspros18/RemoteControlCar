@@ -91,11 +91,11 @@ class ArrowLine extends ArrowComponent {
     }
     
     public int getPercentX() {
-        return createPercent(x);
+        return createPercent(x, x < 0);
     }
 
     public int getPercentY() {
-        return createPercent(y);
+        return createPercent(y, y > 0);
     }
     
     public void setX(int x) {
@@ -140,8 +140,8 @@ class ArrowLine extends ArrowComponent {
         return (int)(getMax(dec) * (i / 100.0));
     }
     
-    private int createPercent(int i) {
-        return 100 * i / getMax(false);
+    private int createPercent(int i, boolean dec) {
+        return 100 * i / getMax(dec);
     }
     
     private Rectangle getDefaultRectangle() {
@@ -181,8 +181,10 @@ class ArrowLine extends ArrowComponent {
     
 }
 
-class ArrowPanel extends JPanel {
+abstract class ArrowPanel extends JPanel {
 
+    private final ArrowLine al;
+    
     public ArrowPanel(int size) {
         super(new GridBagLayout());
         setBackground(Color.WHITE);
@@ -196,7 +198,7 @@ class ArrowPanel extends JPanel {
         pane.add(lbBg, JLayeredPane.POPUP_LAYER);
         lbBg.setBounds(0, 0, size, size);
 
-        final ArrowLine al = new ArrowLine(size);
+        al = new ArrowLine(size);
         JLabel lbLn = new JLabel(new ImageIcon(al));
         pane.add(lbLn, JLayeredPane.DEFAULT_LAYER);
         lbLn.setBounds(0, 0, size, size);
@@ -210,6 +212,7 @@ class ArrowPanel extends JPanel {
                 al.setRelativeX(e.getX());
                 al.setRelativeY(e.getY());
                 repaint();
+                fireChange();
             }
 
         });
@@ -221,6 +224,7 @@ class ArrowPanel extends JPanel {
                 al.setRelativeX(e.getX());
                 al.setRelativeY(e.getY());
                 repaint();
+                fireChange();
             }
 
             @Override
@@ -228,6 +232,7 @@ class ArrowPanel extends JPanel {
                 al.setX(0);
                 al.setY(0);
                 repaint();
+                fireChange();
             }
 
         });
@@ -252,6 +257,7 @@ class ArrowPanel extends JPanel {
                         setY(e, false);
                 }
                 repaint();
+                fireChange();
             }
 
             @Override
@@ -270,6 +276,7 @@ class ArrowPanel extends JPanel {
                         resetY(e);
                 }
                 repaint();
+                fireChange();
             }
 
             private void setX(KeyEvent e, boolean left) {
@@ -293,6 +300,28 @@ class ArrowPanel extends JPanel {
         });
     }
     
+    public int getPercentX() {
+        return al.getPercentX();
+    }
+    
+    public int getPercentY() {
+        return al.getPercentY();
+    }
+    
+    public void setPercentX(int x) {
+        al.setPercentX(x);
+    }
+    
+    public void setPercentY(int y) {
+        al.setPercentY(y);
+    }
+    
+    private void fireChange() {
+        onChange(getPercentX(), getPercentY());
+    }
+    
+    protected abstract void onChange(int x, int y);
+    
 }
 
 public class ArrowTest {
@@ -302,7 +331,15 @@ public class ArrowTest {
             {
                 setTitle("Nyilacska teszt");
                 setDefaultCloseOperation(EXIT_ON_CLOSE);
-                add(new ArrowPanel(200));
+                
+                add(new ArrowPanel(600) {
+
+                    @Override
+                    protected void onChange(int x, int y) {
+                        System.out.println(x + " ; " + y);
+                    }
+                    
+                });
 
                 pack();
                 setLocationRelativeTo(this);

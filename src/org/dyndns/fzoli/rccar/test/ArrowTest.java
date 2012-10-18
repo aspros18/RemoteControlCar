@@ -186,6 +186,7 @@ class ArrowPanel extends JPanel {
     public ArrowPanel(int size) {
         super(new GridBagLayout());
         setBackground(Color.WHITE);
+        setFocusable(true);
 
         JLayeredPane pane = new JLayeredPane();
         pane.setPreferredSize(new Dimension(size, size));
@@ -301,8 +302,8 @@ public class ArrowTest {
             {
                 setTitle("Nyilacska teszt");
                 setDefaultCloseOperation(EXIT_ON_CLOSE);
-                add(new ArrowPanel(400));
-                
+                add(new ArrowPanel(200));
+
                 pack();
                 setLocationRelativeTo(this);
                 setVisible(true);

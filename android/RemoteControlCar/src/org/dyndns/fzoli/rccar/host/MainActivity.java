@@ -26,8 +26,14 @@ public class MainActivity extends Activity {
 			
 			@Override
 			public boolean onTouch(View v, MotionEvent e) {
-				arrow.setRelativeX((int)e.getX());
-				arrow.setRelativeY((int)e.getY());
+				if (e.getAction() == MotionEvent.ACTION_UP) {
+					arrow.setX(0);
+					arrow.setY(0);
+				}
+				else {
+					arrow.setRelativeX((int)e.getX());
+					arrow.setRelativeY((int)e.getY());
+				}
 				int x = arrow.getPercentX();
 				int y = arrow.getPercentY();
 				if (mX != x || mY != y) {

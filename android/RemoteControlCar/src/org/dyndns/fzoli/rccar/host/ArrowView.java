@@ -41,39 +41,55 @@ public class ArrowView extends View {
 		return createPercent(y);
 	}
 	
+	private int getMax(boolean positive) {
+		if (positive) return (int)(a - 1.5 * stroke);
+		else return (int)(-1 * a + 1.5 * stroke);
+	}
+	
+	private int chkMax(int i) {
+		if (i > getMax(true)) return getMax(true);
+		if (i < getMax(false)) return getMax(false);
+		return i;
+	}
+	
 	public void setX(int x) {
-		if (x > a - stroke) x = a - stroke;
-		if (x < -1 * a) x = -1 * a;
-		this.x = x;
+		this.x = chkMax(x);
 		invalidate();
 	}
 	
 	public void setY(int y) {
-		if (y > a - stroke) y = a - stroke;
-		if (y < -1 * (a - stroke)) y = -1 * (a - stroke);
-		this.y = y;
+		this.y = chkMax(y);
 		invalidate();
 	}
 	
+	public void setPercentX(int x) {
+		setX(fromPercent(x, x < 0));
+	}
+	
+	public void setPercentY(int y) {
+		setY(fromPercent(y, y > 0));
+	}
+	
 	public void setRelativeX(int x) {
-        int s = x > s2 ? s10 + stroke - 1 : (2 * stroke) - 1;
-        x = x + (-1 * (a - stroke) - s);
-        if (!(x <= 0 ^ s != (2 * stroke) - 1)) x = 0;
+        int s = x > s2 ? s10 : 0;
+        x = x - a - s + 1;
+        if (!(x <= 0 ^ s != 0)) x = 0;
         setX(x);
     }
 	
 	public void setRelativeY(int y) {
-		int s = y > s2 ? s10 + stroke - 1 : stroke - 1;
-        y = (a - stroke) - y + s;
-        if (y <= 0 ^ s != stroke - 1) y = 0;
+		int s = y > s2 ? s10 : 0;
+        y = a - y + s - 1;
+        if (y <= 0 ^ s != 0) y = 0;
         setY(y);
     }
 	
+	private int fromPercent(int i, boolean noStroke) {
+        return (int) Math.round(getMax(true) * (i / 100.0));
+    }
+	
 	private int createPercent(int i) {
-        int s = 100 * i / (a - stroke);
-        if (s > 100) s = 100;
-        if (s < -100) s = -100;
-        return s;
+        return (int) Math.round(100 * i / (double)(getMax(true)));
     }
 	
 	@Override
@@ -139,9 +155,9 @@ public class ArrowView extends View {
 	protected void onDraw(Canvas canvas) {
 		canvas.drawRect(a, a, b, b, mainPaint);
 		if (x > 0) canvas.drawRect(b,  a, b + x, b, mainPaint);
-		if (x < 0) canvas.drawRect(stroke + a + x,  a, a, b, mainPaint);
-		if (y > 0) canvas.drawRect(a,  (a - stroke) - (y - stroke), b, a, mainPaint);
-		if (y < 0) canvas.drawRect(a,  b, b, (s - stroke - ((a - stroke) + y)), mainPaint);
+		if (x < 0) canvas.drawRect(a + x,  a, a, b, mainPaint);
+		if (y > 0) canvas.drawRect(a,  a - y, b, a, mainPaint);
+		if (y < 0) canvas.drawRect(a,  b, b, s - a - y, mainPaint);
 		canvas.drawPath(borderPath, borderPaint);
 	}
 	

@@ -103,11 +103,11 @@ class ArrowLine extends ArrowComponent {
     }
     
     public void setPercentX(int x) {
-        setX(getPercent(x, x < 0));
+        setX(fromPercent(x, x < 0));
     }
     
     public void setPercentY(int y) {
-        setY(getPercent(y, y > 0));
+        setY(fromPercent(y, y > 0));
     }
     
     public void setRelativeX(int x) {
@@ -130,7 +130,7 @@ class ArrowLine extends ArrowComponent {
         return getWidth() / 2 - getWidth() / 40 - (dec ? 1 : 0);
     }
     
-    private int getPercent(int i, boolean dec) {
+    private int fromPercent(int i, boolean dec) {
         return (int)(getMax(dec) * (i / 100.0));
     }
     

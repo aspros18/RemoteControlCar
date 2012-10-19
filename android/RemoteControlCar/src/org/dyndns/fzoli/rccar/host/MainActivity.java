@@ -3,19 +3,42 @@ package org.dyndns.fzoli.rccar.host;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 
 /**
  * Főablak.
  * Innen érhetőek el a beállítások, indítható ill. állítható le a program.
  */
 public class MainActivity extends Activity {
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		final ArrowView arrow = (ArrowView) findViewById(R.id.arrow);
+		arrow.setOnTouchListener(new View.OnTouchListener() {
+			
+			private int mX = 0, mY = 0;
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent e) {
+				arrow.setRelativeX((int)e.getX());
+				arrow.setRelativeY((int)e.getY());
+				int x = arrow.getPercentX();
+				int y = arrow.getPercentY();
+				if (mX != x || mY != y) {
+					mX = x;
+					mY = y;
+					Log.i("test", x + ";" + y);
+				}
+				return true;
+			}
+			
+		});
 	}
 
 	/**

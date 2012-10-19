@@ -55,6 +55,7 @@ class Arrow extends ArrowComponent {
         g.setPaintMode();
         g.setColor(Color.BLACK);
         g.draw(arrow);
+        g.dispose();
     }
     
 }
@@ -80,6 +81,7 @@ class ArrowLine extends ArrowComponent {
         fill(g, getDefaultRectangle());
         fill(g, getRectangleX());
         fill(g, getRectangleY());
+        g.dispose();
     }
     
     public int getPercentX() {
@@ -181,6 +183,18 @@ abstract class ArrowPanel extends JPanel {
     private final ArrowLine al;
     
     private int tmpX = 0, tmpY = 0;
+    private boolean leftOn = false;
+    
+    private void refresh(Integer x, Integer y) {
+        if ((x != null && y != null && leftOn) || (x == null && y == null && !leftOn)) {
+            if (x != null) al.setRelativeX(x);
+            else al.setPercentX(0);
+            if (y != null) al.setRelativeY(y);
+            else al.setPercentY(0);
+            repaint();
+            fireChange();
+        }
+    }
     
     public ArrowPanel(int size) {
         super(new GridBagLayout());
@@ -206,10 +220,7 @@ abstract class ArrowPanel extends JPanel {
 
             @Override
             public void mouseDragged(MouseEvent e) {
-                al.setRelativeX(e.getX());
-                al.setRelativeY(e.getY());
-                repaint();
-                fireChange();
+                refresh(e.getX(), e.getY());
             }
 
         });
@@ -218,18 +229,14 @@ abstract class ArrowPanel extends JPanel {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                al.setRelativeX(e.getX());
-                al.setRelativeY(e.getY());
-                repaint();
-                fireChange();
+                if (e.getButton() == MouseEvent.BUTTON1) leftOn = true;
+                refresh(e.getX(), e.getY());
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                al.setPercentX(0);
-                al.setPercentY(0);
-                repaint();
-                fireChange();
+                if (e.getButton() == MouseEvent.BUTTON1) leftOn = false;
+                refresh(null, null);
             }
 
         });

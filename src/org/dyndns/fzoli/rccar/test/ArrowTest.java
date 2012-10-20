@@ -113,16 +113,14 @@ class ArrowLine extends ArrowComponent {
     public void setRelativeX(int x) {
         int s = x > getWidth() / 2 ? getWidth() / 20 - 1 : 1;
         x = x + (-1 * getMax(false) - s);
-        if (x >= 0 && s == 1) x = 0;
-        if (x <= 0 && s != 1) x = 0;
+        if (!(x <= 0 ^ s != 1)) x = 0;
         setX(x);
     }
     
     public void setRelativeY(int y) {
-        int s = y > getWidth() / 2 ? getWidth() / 20 - 1 : 0;
+        int s = y > getWidth() / 2 ? getWidth() / 20 - 1 : -1;
         y = getMax(false) - y + s;
-        if (y <= 0 && s == 0) y = 0;
-        if (y >= 0 && s != 0) y = 0;
+        if (!(y <= 0 ^ s == -1)) y = 0;
         setY(y);
     }
     
@@ -151,15 +149,15 @@ class ArrowLine extends ArrowComponent {
     
     private Rectangle getRectangleX() {
         int[] p = getPoints();
-        if (x > 0) return new Rectangle(p[0]         , p[1] , x + 1      , p[2]); // jobb
-        if (x < 0) return new Rectangle(p[3] + x - 1 , p[1] , -1 * x + 1 , p[2]); // bal
+        if (x > 0) return new Rectangle(p[0] + 1     , p[1] , x      , p[2]); // jobb
+        if (x < 0) return new Rectangle(p[3] + x - 1 , p[1] , -1 * x , p[2]); // bal
         return getDefaultRectangle(); // semerre
     }
     
     private Rectangle getRectangleY() {
         int[] p = getPoints();
-        if (y < 0) return new Rectangle(p[1] , p[0]         , p[2] , -1 * y + 1); // le
-        if (y > 0) return new Rectangle(p[1] , p[3] - y - 1 , p[2] , y + 1     ); // fel
+        if (y < 0) return new Rectangle(p[1] , p[0] + 1     , p[2] , -1 * y); // le
+        if (y > 0) return new Rectangle(p[1] , p[3] - y - 2 , p[2] , y + 1 ); // fel
         return getDefaultRectangle(); // semerre
     }
     

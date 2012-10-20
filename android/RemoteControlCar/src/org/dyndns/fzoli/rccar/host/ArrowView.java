@@ -63,11 +63,11 @@ public class ArrowView extends View {
 	}
 	
 	public void setPercentX(int x) {
-		setX(fromPercent(x, x < 0));
+		setX(fromPercent(x));
 	}
 	
 	public void setPercentY(int y) {
-		setY(fromPercent(y, y > 0));
+		setY(fromPercent(y));
 	}
 	
 	public void setRelativeX(int x) {
@@ -84,7 +84,7 @@ public class ArrowView extends View {
         setY(y);
     }
 	
-	private int fromPercent(int i, boolean noStroke) {
+	private int fromPercent(int i) {
         return (int) Math.round(getMax(true) * (i / 100.0));
     }
 	

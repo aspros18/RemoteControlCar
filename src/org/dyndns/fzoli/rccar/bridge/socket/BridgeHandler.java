@@ -7,7 +7,7 @@ import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import static org.dyndns.fzoli.rccar.bridge.Main.VAL_WARNING;
-import org.dyndns.fzoli.rccar.test.DummyProcess;
+import org.dyndns.fzoli.rccar.test.MessageTestProcess;
 import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
 import org.dyndns.fzoli.socket.handler.MultipleCertificateException;
 import org.dyndns.fzoli.socket.handler.RemoteHandlerException;
@@ -106,7 +106,7 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
             case KEY_CONN_DISCONNECT:
                 return new BridgeDisconnectProcess(this);
             case KEY_CONN_DUMMY:
-                return new DummyProcess(this);
+                return new MessageTestProcess(this);
         }
         return null;
     }

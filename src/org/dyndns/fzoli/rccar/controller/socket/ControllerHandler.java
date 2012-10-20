@@ -6,7 +6,7 @@ import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.controller.ConnectionProgressFrame.Status;
 import static org.dyndns.fzoli.rccar.controller.Main.showConnectionStatus;
-import org.dyndns.fzoli.rccar.test.DummyProcess;
+import org.dyndns.fzoli.rccar.test.MessageTestProcess;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
 import org.dyndns.fzoli.socket.handler.RemoteHandlerException;
 import org.dyndns.fzoli.socket.process.SecureProcess;
@@ -56,7 +56,7 @@ public class ControllerHandler extends AbstractSecureClientHandler {
             case 0:
                 return new ControllerDisconnectProcess(this);
             default:
-                return new DummyProcess(this);
+                return new MessageTestProcess(this);
         }
     }
     

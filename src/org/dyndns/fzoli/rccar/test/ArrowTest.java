@@ -85,11 +85,11 @@ class ArrowLine extends ArrowComponent {
     }
     
     public int getPercentX() {
-        return createPercent(x, x < 0);
+        return createPercent(x);
     }
 
     public int getPercentY() {
-        return createPercent(y, y > 0);
+        return createPercent(y);
     }
     
     private void setX(int x) {
@@ -103,37 +103,37 @@ class ArrowLine extends ArrowComponent {
     }
     
     public void setPercentX(int x) {
-        setX(fromPercent(x, x < 0));
+        setX(fromPercent(x));
     }
     
     public void setPercentY(int y) {
-        setY(fromPercent(y, y > 0));
+        setY(fromPercent(y));
     }
     
     public void setRelativeX(int x) {
         int s = x > getWidth() / 2 ? getWidth() / 20 - 1 : 1;
-        x = x + (-1 * getMax(false) - s);
+        x = x + (-1 * getMax() - s);
         if (!(x <= 0 ^ s != 1)) x = 0;
         setX(x);
     }
     
     public void setRelativeY(int y) {
         int s = y > getWidth() / 2 ? getWidth() / 20 - 1 : -1;
-        y = getMax(false) - y + s;
+        y = getMax() - y + s;
         if (!(y <= 0 ^ s == -1)) y = 0;
         setY(y);
     }
     
-    private int getMax(boolean dec) {
-        return getWidth() / 2 - getWidth() / 40 - (dec ? 1 : 0);
+    private int getMax() {
+        return getWidth() / 2 - getWidth() / 40;
     }
     
-    private int fromPercent(int i, boolean dec) {
-        return (int)(getMax(dec) * (i / 100.0));
+    private int fromPercent(int i) {
+        return (int)(getMax() * (i / 100.0));
     }
     
-    private int createPercent(int i, boolean dec) {
-        int s = 100 * i / getMax(dec);
+    private int createPercent(int i) {
+        int s = 100 * i / getMax();
         if (s > 100) s = 100;
         if (s < -100) s = -100;
         return s;

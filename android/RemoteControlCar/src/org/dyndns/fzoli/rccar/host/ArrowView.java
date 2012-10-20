@@ -89,7 +89,7 @@ public class ArrowView extends View {
     }
 	
 	private int createPercent(int i) {
-        return (int) Math.round(100 * i / (double)(getMax(true)));
+        return (int) Math.round(100 * i / (double) getMax(true));
     }
 	
 	@Override
@@ -136,28 +136,28 @@ public class ArrowView extends View {
 		b = s2 + s20;
 		
 		borderPath = new Path();
-		borderPath.moveTo( stroke     , a          );
-		borderPath.lineTo( a          , a          );
-		borderPath.lineTo( a          , stroke     );
-		borderPath.lineTo( b          , stroke     );
-		borderPath.lineTo( b          , a          );
-		borderPath.lineTo( s - stroke , a          );
-		borderPath.lineTo( s - stroke , b          );
-		borderPath.lineTo( b          , b          );
-		borderPath.lineTo( b          , s - stroke );
-		borderPath.lineTo( a          , s - stroke );
-		borderPath.lineTo( a          , b          );
-		borderPath.lineTo( stroke     , b          );
+		borderPath.moveTo(stroke, a);
+		borderPath.lineTo(a, a);
+		borderPath.lineTo(a, stroke);
+		borderPath.lineTo(b, stroke);
+		borderPath.lineTo(b, a);
+		borderPath.lineTo(s - stroke, a);
+		borderPath.lineTo(s - stroke, b);
+		borderPath.lineTo(b, b);
+		borderPath.lineTo(b, s - stroke);
+		borderPath.lineTo(a, s - stroke);
+		borderPath.lineTo(a, b);
+		borderPath.lineTo(stroke, b);
 		borderPath.close();
 	}
 	
 	@Override
 	protected void onDraw(Canvas canvas) {
 		canvas.drawRect(a, a, b, b, mainPaint);
-		if (x > 0) canvas.drawRect(b,  a, b + x, b, mainPaint);
-		if (x < 0) canvas.drawRect(a + x,  a, a, b, mainPaint);
-		if (y > 0) canvas.drawRect(a,  a - y, b, a, mainPaint);
-		if (y < 0) canvas.drawRect(a,  b, b, s - a - y, mainPaint);
+		if (x > 0) canvas.drawRect(b, a, b + x, b, mainPaint);
+		if (x < 0) canvas.drawRect(a + x, a, a, b, mainPaint);
+		if (y > 0) canvas.drawRect(a, a - y, b, a, mainPaint);
+		if (y < 0) canvas.drawRect(a, b, b, s - a - y, mainPaint);
 		canvas.drawPath(borderPath, borderPaint);
 	}
 	

@@ -129,7 +129,7 @@ class ArrowLine extends ArrowComponent {
     }
     
     private int fromPercent(int i) {
-        return (int)(getMax() * (i / 100.0));
+        return (int)Math.round((getMax() + (i < 0 ? 1 : 0)) * (i / 100.0));
     }
     
     private int createPercent(int i) {

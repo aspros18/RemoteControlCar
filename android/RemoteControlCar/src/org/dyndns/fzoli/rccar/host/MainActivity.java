@@ -3,11 +3,12 @@ package org.dyndns.fzoli.rccar.host;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 /**
  * Főablak.
@@ -15,17 +16,45 @@ import android.view.View;
  */
 public class MainActivity extends Activity {
 	
+	private Button btStart, btStop;
+	private boolean running = false;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		btStart = (Button) findViewById(R.id.bt_start);
+		btStop = (Button) findViewById(R.id.bt_stop);
+		btStart.setEnabled(true);
+		btStop.setEnabled(false);
+		btStart.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				setRunning(true);
+			}
+			
+		});
+		btStop.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				setRunning(false);
+			}
+			
+		});
+		
+		final TextView tvMessage = (TextView) findViewById(R.id.tv_message);
 		final ArrowView arrow = (ArrowView) findViewById(R.id.arrow);
+		tvMessage.setText("0 ; 0");
 		arrow.setOnTouchListener(new View.OnTouchListener() {
 			
 			private int mX = 0, mY = 0;
 			
 			@Override
 			public boolean onTouch(View v, MotionEvent e) {
+				if (!running) return false;
 				if (e.getAction() == MotionEvent.ACTION_UP) {
 					arrow.setX(0);
 					arrow.setY(0);
@@ -34,12 +63,19 @@ public class MainActivity extends Activity {
 					arrow.setRelativeX((int)e.getX());
 					arrow.setRelativeY((int)e.getY());
 				}
+				
 				int x = arrow.getPercentX();
 				int y = arrow.getPercentY();
+				
+				arrow.setPercentX((x > 0 ? 100 : x == 0 ? 0 : -100));
+				arrow.setPercentY((y > 0 ? 100 : y == 0 ? 0 : -100));
+				x = arrow.getPercentX();
+				y = arrow.getPercentY();
+				
 				if (mX != x || mY != y) {
 					mX = x;
 					mY = y;
-					Log.i("test", x + ";" + y);
+					tvMessage.setText(x + " ; " + y);
 				}
 				return true;
 			}
@@ -67,6 +103,12 @@ public class MainActivity extends Activity {
 				startActivity(new Intent(this, SettingActivity.class));
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	private void setRunning(boolean b) {
+		running = b;
+		btStart.setEnabled(!b);
+		btStop.setEnabled(b);
 	}
 
 }

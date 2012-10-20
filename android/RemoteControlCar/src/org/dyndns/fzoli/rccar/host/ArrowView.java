@@ -22,17 +22,17 @@ public class ArrowView extends View {
 		super(context);
 		initView();
 	}
-
+	
 	public ArrowView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		initView();
 	}
-
+	
 	public ArrowView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		initView();
 	}
-
+	
 	public int getPercentX() {
 		return createPercent(x);
 	}
@@ -71,49 +71,48 @@ public class ArrowView extends View {
 	}
 	
 	public void setRelativeX(int x) {
-        int s = x > s2 ? s10 : 0;
-        x = x - a - s + 1;
-        if (!(x <= 0 ^ s != 0)) x = 0;
-        setX(x);
-    }
+		int s = x > s2 ? s10 : 0;
+		x = x - a - s + 1;
+		if (!(x <= 0 ^ s != 0)) x = 0;
+		setX(x);
+	}
 	
 	public void setRelativeY(int y) {
 		int s = y > s2 ? s10 : 0;
-        y = a - y + s - 1;
-        if (y <= 0 ^ s != 0) y = 0;
-        setY(y);
-    }
+		y = a - y + s - 1;
+		if (y <= 0 ^ s != 0) y = 0;
+		setY(y);
+	}
 	
 	private int fromPercent(int i) {
-        return (int) Math.round(getMax(true) * (i / 100.0));
-    }
+		return (int) Math.round(getMax(true) * (i / 100.0));
+	}
 	
 	private int createPercent(int i) {
-        return (int) Math.round(100 * i / (double) getMax(true));
-    }
+		return (int) Math.round(100 * i / (double) getMax(true));
+	}
 	
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) { 
 		int measuredWidth = measure(widthMeasureSpec);
 		int measuredHeight = measure(heightMeasureSpec);
-
+		
 		int d = Math.min(measuredWidth, measuredHeight);
 		setMeasuredDimension(d, d);
-		
 		initPath();
 	}
-
+	
 	private int measure(int measureSpec) {
-	    int specMode = MeasureSpec.getMode(measureSpec);
-	    int specSize = MeasureSpec.getSize(measureSpec);
-	    if (specMode == MeasureSpec.UNSPECIFIED) {
-	      // Alapértelmezett méret 200 pixel 
-	      return 200;
-	    }
-	    else {
-	      // A teljes hely kitöltése
-	      return specSize;
-	    }
+		int specMode = MeasureSpec.getMode(measureSpec);
+		int specSize = MeasureSpec.getSize(measureSpec);
+		if (specMode == MeasureSpec.UNSPECIFIED) {
+			// Alapértelmezett méret 200 pixel 
+			return 200;
+		}
+		else {
+			// A teljes hely kitöltése
+			return specSize;
+		}
 	}
 	
 	private void initView() {

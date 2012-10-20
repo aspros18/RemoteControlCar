@@ -14,4 +14,6 @@
     <string name="summary_ca">Search Certificate Authority</string>
     <string name="summary_crt">Search public key</string>
     <string name="summary_key">Search private key</string>
+    <string name="text_start">Start</string>
+    <string name="text_stop">Stop</string>
 </resources>

@@ -55,11 +55,9 @@ public class SettingActivity extends PreferenceActivity {
 	private final OnPreferenceChangeListener CL_PORT = createNumberMaskChangeListener(1, 65535);
 	
 	/**
-	 * Még mielőtt a megváltozott szöveg elmentődne, megnézi, megfelel-e az intervallumnak (10 - 1000), és ha nem felel meg, az adat a szerkesztés előtti marad.
+	 * Még mielőtt a megváltozott szöveg elmentődne, megnézi, megfelel-e az intervallumnak (0 - 1000), és ha nem felel meg, az adat a szerkesztés előtti marad.
 	 */
-	private final OnPreferenceChangeListener CL_REFRESH = createNumberMaskChangeListener(10, 1000);
-	
-	
+	private final OnPreferenceChangeListener CL_REFRESH = createNumberMaskChangeListener(0, 1000);
 	
 	/**
 	 * A cím ellenőrzésére használt regex.

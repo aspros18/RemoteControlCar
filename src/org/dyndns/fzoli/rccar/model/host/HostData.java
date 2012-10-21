@@ -1,7 +1,7 @@
 package org.dyndns.fzoli.rccar.model.host;
 
 import java.io.Serializable;
-import org.dyndns.fzoli.rccar.model.Data;
+import org.dyndns.fzoli.rccar.model.BaseData;
 import org.dyndns.fzoli.rccar.model.PartialData;
 import org.dyndns.fzoli.rccar.model.Point3D;
 
@@ -16,7 +16,7 @@ import org.dyndns.fzoli.rccar.model.Point3D;
  * változása mindig részadatban érkezik és nem függ a 'refresh time'-tól.
  * @author zoli
  */
-public class HostData extends Data<HostData, HostData.HostPartialData> {
+public class HostData extends BaseData<HostData, HostData.HostPartialData> {
     
     /**
      * A HostData részadata.
@@ -110,11 +110,6 @@ public class HostData extends Data<HostData, HostData.HostPartialData> {
     }
     
     /**
-     * GPS koordináta.
-     */
-    private Point3D gpsPosition;
-    
-    /**
      * Gravitációs mező.
      */
     private Point3D gravitationalField;
@@ -123,18 +118,6 @@ public class HostData extends Data<HostData, HostData.HostPartialData> {
      * Mágneses mező.
      */
     private Point3D magneticField;
-
-    /**
-     * Akkumulátor szint százalékban.
-     */
-    private Integer batteryLevel;
-    
-    /**
-     * Megadja a GPS koordinátát.
-     */
-    public Point3D getGpsPosition() {
-        return gpsPosition;
-    }
 
     /**
      * Megadja a gravitációs mező erősségét.
@@ -151,20 +134,6 @@ public class HostData extends Data<HostData, HostData.HostPartialData> {
     }
 
     /**
-     * Megadja a host akkumulátorszintjét százalékban.
-     */
-    public Integer getBatteryLevel() {
-        return batteryLevel;
-    }
-
-    /**
-     * Beállítja a GPS koordinátát.
-     */
-    public void setGpsPosition(Point3D gpsPosition) {
-        this.gpsPosition = gpsPosition;
-    }
-
-    /**
      * Beállítja a gravitációs mező erősségét.
      */
     public void setGravitationalField(Point3D gravitationalField) {
@@ -177,13 +146,6 @@ public class HostData extends Data<HostData, HostData.HostPartialData> {
     public void setMagneticField(Point3D magneticField) {
         this.magneticField = magneticField;
     }
-
-    /**
-     * Beállítja az akkumulátorszintet.
-     */
-    public void setBatteryLevel(Integer batteryLevel) {
-        this.batteryLevel = batteryLevel;
-    }
     
     /**
      * Frissíti az adatokat a megadott adatokra.
@@ -192,10 +154,9 @@ public class HostData extends Data<HostData, HostData.HostPartialData> {
     @Override
     public void update(HostData d) {
         if (d != null) {
-            setGpsPosition(d.getGpsPosition());
             setGravitationalField(d.getGravitationalField());
             setMagneticField(d.getMagneticField());
-            setBatteryLevel(d.getBatteryLevel());
+            super.update(d);
         }
     }
     

@@ -1,14 +1,14 @@
 package org.dyndns.fzoli.rccar.model.controller;
 
 import java.io.Serializable;
-import org.dyndns.fzoli.rccar.model.Data;
+import org.dyndns.fzoli.rccar.model.BaseData;
 import org.dyndns.fzoli.rccar.model.PartialData;
 
 /**
  * A híd a vezérlőnek ezen osztály objektumait küldi, amikor adatot közöl.
  * @author zoli
  */
-public class ControllerData extends Data<ControllerData, ControllerData.ControllerPartialData> {
+public class ControllerData extends BaseData<ControllerData, ControllerData.ControllerPartialData> {
     
     /**
      * A ControllerData részadata.
@@ -24,15 +24,6 @@ public class ControllerData extends Data<ControllerData, ControllerData.Controll
             super(data);
         }
         
-    }
-    
-    /**
-     * Frissíti az adatokat a megadott adatokra.
-     * @param d az új adatok
-     */
-    @Override
-    public void update(ControllerData d) {
-        ;
     }
     
 }

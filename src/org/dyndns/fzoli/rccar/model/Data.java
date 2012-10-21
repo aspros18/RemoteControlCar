@@ -13,7 +13,7 @@ import java.io.Serializable;
 public abstract class Data<D extends Data, PD extends PartialData> implements Serializable {
 
     /**
-     * Nem példányosítható, csak örökölhető.
+     * Nem példányosítható kintről, csak örökölhető.
      */
     protected Data() {
     }

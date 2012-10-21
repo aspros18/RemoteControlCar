@@ -22,7 +22,7 @@ public class HostData implements Serializable {
      * A HostData részadata.
      * Egy PartialData objektumot átadva a HostData objektumnak, egyszerű frissítést lehet végrehajtani.
      */
-    public static class PartialData {
+    public static class PartialData implements Serializable {
         
         /**
          * Az adat.

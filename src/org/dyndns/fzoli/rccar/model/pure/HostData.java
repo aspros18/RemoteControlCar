@@ -20,7 +20,7 @@ public class HostData implements Serializable {
      * A HostData részadata.
      * Egy PartialData objektumot átadva a HostData objektumnak, egyszerű frissítést lehet végrehajtani.
      */
-    private static abstract class PartialData<T extends Serializable> implements Serializable {
+    public static abstract class PartialData<T extends Serializable> implements Serializable {
         
         /**
          * Az adat.
@@ -160,7 +160,18 @@ public class HostData implements Serializable {
     }
     
     /**
-     * Frissíti az datokat a megadott adatokra.
+     * Frissíti a megváltozott adatot a részadat alapján.
+     * @param d az új részadat
+     */
+    public void update(PartialData d) {
+        if (d != null) {
+            if (d instanceof PartialPointData) update((PartialPointData) d);
+            if (d instanceof PartialBatteryData) update((PartialBatteryData) d);
+        }
+    }
+    
+    /**
+     * Frissíti az adatokat a megadott adatokra.
      * @param d az új adatok
      */
     public void update(HostData d) {
@@ -176,8 +187,8 @@ public class HostData implements Serializable {
      * Frissíti a megváltozott 3D pontot a részadat alapján.
      * @param d az új részadat
      */
-    public void update(PartialPointData d) {
-        if (d != null && d.type != null) {
+    private void update(PartialPointData d) {
+        if (d.type != null) {
             switch (d.type) {
                 case GPS_POSITION:
                     setGpsPosition(d.data);
@@ -195,10 +206,8 @@ public class HostData implements Serializable {
      * Frissíti a megváltozott akkumulátor-szintet a részadat alapján.
      * @param d az új részadat
      */
-    public void update(PartialBatteryData d) {
-        if (d != null) {
-            setBatteryLevel(d.data);
-        }
+    private void update(PartialBatteryData d) {
+        setBatteryLevel(d.data);
     }
     
 }

@@ -104,6 +104,18 @@ public class HostData implements Serializable {
     }
     
     /**
+     * Frissíti az datokat a paraméterben megadott adatokra.
+     * @param d az adatok
+     */
+    public void update(HostData d) {
+        if (d != null) {
+            setGpsPosition(d.getGpsPosition());
+            setGravitationalField(d.getGravitationalField());
+            setMagneticField(d.getMagneticField());
+        }
+    }
+    
+    /**
      * Frissíti az adatokat a részadat alapján.
      * @param d a részadat
      */

@@ -35,6 +35,12 @@ public class HostData implements Serializable {
             this.data = data;
         }
         
+        /**
+         * A részadatot alkalmazza a paraméterben megadott adaton.
+         * @param d a teljes adat, amin a módosítást alkalmazni kell
+         */
+        protected abstract void apply(HostData d);
+        
     }
     
     /**
@@ -48,6 +54,15 @@ public class HostData implements Serializable {
          */
         public PartialBatteryData(Integer data) {
             super(data);
+        }
+
+        /**
+         * Alkalmazza az akkumulátorszintet a paraméterben megadott adaton.
+         * @param d a teljes adat, amin a módosítást alkalmazni kell
+         */
+        @Override
+        protected void apply(HostData d) {
+            if (d != null) d.setBatteryLevel(data);
         }
         
     }
@@ -79,6 +94,26 @@ public class HostData implements Serializable {
         public PartialPointData(Point3D data, PointType type) {
             super(data);
             this.type = type;
+        }
+
+        /**
+         * Alkalmazza a 3D pontot a paraméterben megadott adaton.
+         * @param d a teljes adat, amin a módosítást alkalmazni kell
+         */
+        @Override
+        protected void apply(HostData d) {
+            if (d != null && type != null) {
+                switch (type) {
+                    case GPS_POSITION:
+                        d.setGpsPosition(data);
+                        break;
+                    case GRAVITATIONAL_FIELD:
+                        d.setGravitationalField(data);
+                        break;
+                    case MAGNETIC_FIELD:
+                        d.setMagneticField(data);
+                }
+            }
         }
         
     }
@@ -164,10 +199,7 @@ public class HostData implements Serializable {
      * @param d az új részadat
      */
     public void update(PartialData d) {
-        if (d != null) {
-            if (d instanceof PartialPointData) update((PartialPointData) d);
-            if (d instanceof PartialBatteryData) update((PartialBatteryData) d);
-        }
+        if (d != null) d.apply(this);
     }
     
     /**
@@ -181,33 +213,6 @@ public class HostData implements Serializable {
             setMagneticField(d.getMagneticField());
             setBatteryLevel(d.getBatteryLevel());
         }
-    }
-    
-    /**
-     * Frissíti a megváltozott 3D pontot a részadat alapján.
-     * @param d az új részadat
-     */
-    private void update(PartialPointData d) {
-        if (d.type != null) {
-            switch (d.type) {
-                case GPS_POSITION:
-                    setGpsPosition(d.data);
-                    break;
-                case GRAVITATIONAL_FIELD:
-                    setGravitationalField(d.data);
-                    break;
-                case MAGNETIC_FIELD:
-                    setMagneticField(d.data);
-            }
-        }
-    }
-    
-    /**
-     * Frissíti a megváltozott akkumulátor-szintet a részadat alapján.
-     * @param d az új részadat
-     */
-    private void update(PartialBatteryData d) {
-        setBatteryLevel(d.data);
     }
     
 }

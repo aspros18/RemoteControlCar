@@ -3,13 +3,16 @@
     <string name="wrong_value">Hibás érték!</string>
     <string name="category_path">Útvonal</string>
     <string name="category_security">Biztonság</string>
+    <string name="category_other">Egyéb</string>
     <string name="title_address">Cím</string>
     <string name="title_ca">Kiállító</string>
     <string name="title_crt">Tanúsítvány</string>
     <string name="title_key">Kulcs</string>
-    <string name="summary_address">Szerver címe</string>
-    <string name="summary_port">Szerver portja</string>
-    <string name="summary_ca">Certificate Authority megadása</string>
-    <string name="summary_crt">Publikus kulcs megadása</string>
-    <string name="summary_key">Privát kulcs megadása</string>
+    <string name="title_refresh_interval">Frissítési időköz</string>
+    <string name="summary_address">Szerver cím megadása</string>
+    <string name="summary_port">Szerver port megadása</string>
+    <string name="summary_ca">Certificate Authority tallózása</string>
+    <string name="summary_crt">Publikus kulcs tallózása</string>
+    <string name="summary_key">Privát kulcs tallózása</string>
+    <string name="summary_refresh_interval">Frissítési időköz megadása</string>
 </resources>

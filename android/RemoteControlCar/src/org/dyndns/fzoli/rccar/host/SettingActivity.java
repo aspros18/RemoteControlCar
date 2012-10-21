@@ -41,47 +41,25 @@ public class SettingActivity extends PreferenceActivity {
 	 * Nem engedi meg, hogy a beírt érték 0 alá vagy 65535 felé menjen, miközben gépel a felhasználó.
 	 * Ha pozitív szám lett megadva, a fölösleges nullákat is eltávolítja.
 	 */
-	private static final TextWatcher TW_PORT = new TextWatcherAdapter() {
-		
-		@Override
-		public void afterTextChanged(Editable s) {
-			try {
-				int port = Integer.parseInt(s.toString());
-				if (port > 65535) setText(s, "65535");
-				if (port < 0) setText(s, "0");
-				if (port != 0 && s.toString().startsWith("0")) setText(s, Integer.toString(port));
-			}
-			catch (NumberFormatException ex) {
-				setText(s, "0");
-			}
-		}
-		
-		private void setText(Editable s, CharSequence cs) {
-			s.replace(0, s.length(), cs);
-		}
-		
-	};
+	private static final TextWatcher TW_PORT = createNumberMaskWatcher(65535);
+	
+	/**
+	 * Nem engedi meg, hogy a beírt érték 0 alá vagy 1000 felé menjen, miközben gépel a felhasználó.
+	 * Ha pozitív szám lett megadva, a fölösleges nullákat is eltávolítja.
+	 */
+	private static final TextWatcher TW_REFRESH = createNumberMaskWatcher(1000);
 	
 	/**
 	 * Még mielőtt a megváltozott szöveg elmentődne, megnézi, megfelel-e az intervallumnak (1 - 65535), és ha nem felel meg, az adat a szerkesztés előtti marad.
 	 */
-	private final OnPreferenceChangeListener CL_PORT = new OnPreferenceChangeListener() {
-		
-		@Override
-		public boolean onPreferenceChange(Preference preference, Object newValue) {
-			try {
-				int port = Integer.parseInt(newValue.toString());
-				boolean ok = port >= 1 && port <= 65535;
-				if (!ok) showWarning();
-				return ok;
-			}
-			catch (NumberFormatException ex) {
-				showWarning();
-				return false;
-			}
-		}
-		
-	};
+	private final OnPreferenceChangeListener CL_PORT = createNumberMaskChangeListener(1, 65535);
+	
+	/**
+	 * Még mielőtt a megváltozott szöveg elmentődne, megnézi, megfelel-e az intervallumnak (10 - 1000), és ha nem felel meg, az adat a szerkesztés előtti marad.
+	 */
+	private final OnPreferenceChangeListener CL_REFRESH = createNumberMaskChangeListener(10, 1000);
+	
+	
 	
 	/**
 	 * A cím ellenőrzésére használt regex.
@@ -195,14 +173,23 @@ public class SettingActivity extends PreferenceActivity {
 	/**
 	 * A szöveg alapú beviteli mezőkre "maszkot" állít be.
 	 */
-	@SuppressWarnings("deprecation")
 	private void initEditTextPreferences() {
-		EditTextPreference etpPort = (EditTextPreference)findPreference("port");
-		etpPort.getEditText().addTextChangedListener(TW_PORT);
-		etpPort.setOnPreferenceChangeListener(CL_PORT);
-		EditTextPreference etpAddress = (EditTextPreference)findPreference("address");
-		etpAddress.getEditText().addTextChangedListener(TW_ADDRESS);
-		etpAddress.setOnPreferenceChangeListener(CL_ADDRESS);
+		initEditTextPreference("address", TW_ADDRESS, CL_ADDRESS);
+		initEditTextPreference("port", TW_PORT, CL_PORT);
+		initEditTextPreference("refresh_interval", TW_REFRESH, CL_REFRESH);
+	}
+	
+	/**
+	 * Egy konkrét szöveg alapú beviteli mezőt "maszkol".
+	 * @param key az EditTextPreference kulcsa
+	 * @param tw a szövegváltozás-figyelő
+	 * @param cl a preference változásfigyelő
+	 */
+	@SuppressWarnings("deprecation")
+	private void initEditTextPreference(String key, TextWatcher tw, OnPreferenceChangeListener cl) {
+		EditTextPreference etp = (EditTextPreference)findPreference(key);
+		etp.getEditText().addTextChangedListener(tw);
+		etp.setOnPreferenceChangeListener(cl);
 	}
 	
 	/**
@@ -210,6 +197,59 @@ public class SettingActivity extends PreferenceActivity {
 	 */
 	private void showWarning() {
 		Toast.makeText(SettingActivity.this, R.string.wrong_value, Toast.LENGTH_SHORT).show();
+	}
+	
+	/**
+	 * Ellenőrző eseményfigyelő gyártása szám alapú bevitelre.
+	 * @param min minimum érték
+	 * @param max maximum érték
+	 */
+	private OnPreferenceChangeListener createNumberMaskChangeListener(final int min, final int max) {
+		return new OnPreferenceChangeListener() {
+			
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				try {
+					int port = Integer.parseInt(newValue.toString());
+					boolean ok = port >= min && port <= max;
+					if (!ok) showWarning();
+					return ok;
+				}
+				catch (NumberFormatException ex) {
+					showWarning();
+					return false;
+				}
+			}
+			
+		};
+	}
+	
+	/**
+	 * Maszkolást végző változásfigyelő gyártása szám alapú bevitelhez.
+	 * A minimum érték mindig nulla.
+	 * @param max a maximum érték
+	 */
+	private static TextWatcher createNumberMaskWatcher(final int max) {
+		return new TextWatcherAdapter() {
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				try {
+					int port = Integer.parseInt(s.toString());
+					if (port > max) setText(s, Integer.toString(max));
+					if (port < 0) setText(s, "0");
+					if (port != 0 && s.toString().startsWith("0")) setText(s, Integer.toString(port));
+				}
+				catch (NumberFormatException ex) {
+					setText(s, "0");
+				}
+			}
+			
+			private void setText(Editable s, CharSequence cs) {
+				s.replace(0, s.length(), cs);
+			}
+			
+		};
 	}
 	
 }

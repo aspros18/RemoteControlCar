@@ -4,16 +4,19 @@
     <string name="wrong_value">Wrong value!</string>
     <string name="category_path">Path</string>
     <string name="category_security">Security</string>
+    <string name="category_other">Other</string>
     <string name="title_address">Address</string>
     <string name="title_port">Port</string>
     <string name="title_ca">Authority</string>
     <string name="title_crt">Certificate</string>
     <string name="title_key">Key</string>
-    <string name="summary_address">Server address</string>
-    <string name="summary_port">Server port</string>
+    <string name="title_refresh_interval">Refresh interval</string>
+    <string name="summary_address">Edit server address</string>
+    <string name="summary_port">Edit server port</string>
     <string name="summary_ca">Search Certificate Authority</string>
     <string name="summary_crt">Search public key</string>
     <string name="summary_key">Search private key</string>
+    <string name="summary_refresh_interval">Edit refresh interval</string>
     <string name="text_start">Start</string>
     <string name="text_stop">Stop</string>
 </resources>

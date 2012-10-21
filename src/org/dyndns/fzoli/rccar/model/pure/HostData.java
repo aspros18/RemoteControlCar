@@ -31,7 +31,7 @@ public class HostData implements Serializable {
          * Részadat inicializálása és beállítása.
          * @param data az adat
          */
-        public PartialData(T data) {
+        protected PartialData(T data) {
             this.data = data;
         }
         

@@ -1,6 +1,8 @@
 package org.dyndns.fzoli.rccar.model.host;
 
 import java.io.Serializable;
+import org.dyndns.fzoli.rccar.model.Data;
+import org.dyndns.fzoli.rccar.model.PartialData;
 import org.dyndns.fzoli.rccar.model.Point3D;
 
 /**
@@ -14,39 +16,28 @@ import org.dyndns.fzoli.rccar.model.Point3D;
  * változása mindig részadatban érkezik és nem függ a 'refresh time'-tól.
  * @author zoli
  */
-public class HostData implements Serializable {
+public class HostData extends Data<HostData, HostData.HostPartialData> {
     
     /**
      * A HostData részadata.
-     * Egy PartialData objektumot átadva a HostData objektumnak, egyszerű frissítést lehet végrehajtani.
+     * Egy HostPartialData objektumot átadva a HostData objektumnak, egyszerű frissítést lehet végrehajtani.
      */
-    public static abstract class PartialData<T extends Serializable> implements Serializable {
-        
-        /**
-         * Az adat.
-         */
-        public final T data;
+    protected static abstract class HostPartialData<T extends Serializable> extends PartialData<HostData, T> {
 
         /**
          * Részadat inicializálása és beállítása.
          * @param data az adat
          */
-        protected PartialData(T data) {
-            this.data = data;
+        protected HostPartialData(T data) {
+            super(data);
         }
-        
-        /**
-         * A részadatot alkalmazza a paraméterben megadott adaton.
-         * @param d a teljes adat, amin a módosítást alkalmazni kell
-         */
-        protected abstract void apply(HostData d);
         
     }
     
     /**
      * A HostData részadata, ami az akkumulátorszint változását tartalmazza.
      */
-    public static class PartialBatteryData extends PartialData<Integer> {
+    public static class PartialBatteryData extends HostPartialData<Integer> {
 
         /**
          * Részadat inicializálása és beállítása.
@@ -61,7 +52,7 @@ public class HostData implements Serializable {
          * @param d a teljes adat, amin a módosítást alkalmazni kell
          */
         @Override
-        protected void apply(HostData d) {
+        public void apply(HostData d) {
             if (d != null) d.setBatteryLevel(data);
         }
         
@@ -70,7 +61,7 @@ public class HostData implements Serializable {
     /**
      * A HostData részadata, ami egy pont változását tartalmazza.
      */
-    public static class PartialPointData extends PartialData<Point3D> {
+    public static class PartialPointData extends HostPartialData<Point3D> {
         
         /**
          * A HostData Point3D változóinak megfeleltetett felsorolás.
@@ -101,7 +92,7 @@ public class HostData implements Serializable {
          * @param d a teljes adat, amin a módosítást alkalmazni kell
          */
         @Override
-        protected void apply(HostData d) {
+        public void apply(HostData d) {
             if (d != null && type != null) {
                 switch (type) {
                     case GPS_POSITION:
@@ -195,17 +186,10 @@ public class HostData implements Serializable {
     }
     
     /**
-     * Frissíti a megváltozott adatot a részadat alapján.
-     * @param d az új részadat
-     */
-    public void update(PartialData d) {
-        if (d != null) d.apply(this);
-    }
-    
-    /**
      * Frissíti az adatokat a megadott adatokra.
      * @param d az új adatok
      */
+    @Override
     public void update(HostData d) {
         if (d != null) {
             setGpsPosition(d.getGpsPosition());

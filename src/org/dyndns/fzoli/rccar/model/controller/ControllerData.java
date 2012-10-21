@@ -2,7 +2,7 @@ package org.dyndns.fzoli.rccar.model.controller;
 
 import java.io.Serializable;
 import org.dyndns.fzoli.rccar.model.BaseData;
-import org.dyndns.fzoli.rccar.model.PartialBatteryBaseData;
+import org.dyndns.fzoli.rccar.model.BatteryPartialBaseData;
 import org.dyndns.fzoli.rccar.model.PartialData;
 import org.dyndns.fzoli.rccar.model.Point3D;
 
@@ -31,13 +31,13 @@ public class ControllerData extends BaseData<ControllerData, PartialData<Control
     /**
      * A ControllerData részadata, ami a GPS pozíció változását tartalmazza.
      */
-    public static class PartialGpsControllerData extends PartialControllerData<Point3D> {
+    public static class GpsPartialControllerData extends PartialControllerData<Point3D> {
 
         /**
          * Részadat inicializálása és beállítása.
          * @param data a GPS koordináta
          */
-        public PartialGpsControllerData(Point3D data) {
+        public GpsPartialControllerData(Point3D data) {
             super(data);
         }
 
@@ -58,13 +58,13 @@ public class ControllerData extends BaseData<ControllerData, PartialData<Control
      * A HostData részadata, ami az akkumulátorszint változását tartalmazza.
      * @author zoli
      */
-    public static class PartialBatteryControllerData extends PartialBatteryBaseData<ControllerData> {
+    public static class BatteryPartialControllerData extends BatteryPartialBaseData<ControllerData> {
 
         /**
          * Részadat inicializálása és beállítása.
          * @param data az akkumulátorszint
          */
-        public PartialBatteryControllerData(Integer data) {
+        public BatteryPartialControllerData(Integer data) {
             super(data);
         }
         

@@ -4,13 +4,13 @@ package org.dyndns.fzoli.rccar.model;
  * A BaseData részadata, ami az akkumulátorszint változását tartalmazza.
  * @author zoli
  */
-public abstract class PartialBatteryBaseData<D extends BaseData> extends PartialBaseData<D, Integer> {
+public abstract class BatteryPartialBaseData<D extends BaseData> extends PartialBaseData<D, Integer> {
 
     /**
      * Részadat inicializálása és beállítása.
      * @param data az akkumulátorszint
      */
-    protected PartialBatteryBaseData(Integer data) {
+    protected BatteryPartialBaseData(Integer data) {
         super(data);
     }
 

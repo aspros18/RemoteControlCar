@@ -2,7 +2,7 @@ package org.dyndns.fzoli.rccar.model.host;
 
 import java.io.Serializable;
 import org.dyndns.fzoli.rccar.model.BaseData;
-import org.dyndns.fzoli.rccar.model.PartialBatteryBaseData;
+import org.dyndns.fzoli.rccar.model.BatteryPartialBaseData;
 import org.dyndns.fzoli.rccar.model.PartialData;
 import org.dyndns.fzoli.rccar.model.Point3D;
 
@@ -38,7 +38,7 @@ public class HostData extends BaseData<HostData, PartialData<HostData, ?>> {
     /**
      * A HostData részadata, ami egy pont változását tartalmazza.
      */
-    public static class PartialPointHostData extends PartialHostData<Point3D> {
+    public static class PointPartialHostData extends PartialHostData<Point3D> {
         
         /**
          * A HostData Point3D változóinak megfeleltetett felsorolás.
@@ -59,7 +59,7 @@ public class HostData extends BaseData<HostData, PartialData<HostData, ?>> {
          * @param data a 3D pontadatok
          * @param type melyik 3D pont
          */
-        public PartialPointHostData(Point3D data, PointType type) {
+        public PointPartialHostData(Point3D data, PointType type) {
             super(data);
             this.type = type;
         }
@@ -90,13 +90,13 @@ public class HostData extends BaseData<HostData, PartialData<HostData, ?>> {
      * A HostData részadata, ami az akkumulátorszint változását tartalmazza.
      * @author zoli
      */
-    public static class PartialBatteryHostData extends PartialBatteryBaseData<HostData> {
+    public static class BatteryPartialHostData extends BatteryPartialBaseData<HostData> {
 
         /**
          * Részadat inicializálása és beállítása.
          * @param data az akkumulátorszint
          */
-        public PartialBatteryHostData(Integer data) {
+        public BatteryPartialHostData(Integer data) {
             super(data);
         }
         

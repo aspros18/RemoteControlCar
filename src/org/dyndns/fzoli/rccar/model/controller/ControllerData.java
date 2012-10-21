@@ -70,4 +70,14 @@ public class ControllerData extends BaseData<ControllerData, PartialData<Control
         
     }
     
+    /**
+     * Északtól fokban való eltérés.
+     */
+    private Integer way;
+    
+    /**
+     * Pillanatnyi sebesség km/h-ban.
+     */
+    private Integer speed;
+    
 }

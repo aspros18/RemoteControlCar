@@ -1,4 +1,4 @@
-package org.dyndns.fzoli.rccar.model.pure;
+package org.dyndns.fzoli.rccar.model.host;
 
 import java.io.Serializable;
 import org.dyndns.fzoli.rccar.model.Point3D;

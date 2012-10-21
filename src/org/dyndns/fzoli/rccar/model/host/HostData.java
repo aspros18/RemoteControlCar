@@ -2,7 +2,7 @@ package org.dyndns.fzoli.rccar.model.host;
 
 import java.io.Serializable;
 import org.dyndns.fzoli.rccar.model.BaseData;
-import org.dyndns.fzoli.rccar.model.PartialBatteryData;
+import org.dyndns.fzoli.rccar.model.PartialBatteryBaseData;
 import org.dyndns.fzoli.rccar.model.PartialData;
 import org.dyndns.fzoli.rccar.model.Point3D;
 
@@ -23,13 +23,13 @@ public class HostData extends BaseData<HostData, PartialData<HostData, ?>> {
      * A HostData részadata.
      * Egy HostPartialData objektumot átadva a HostData objektumnak, egyszerű frissítést lehet végrehajtani.
      */
-    protected static abstract class HostPartialData<T extends Serializable> extends PartialData<HostData, T> {
+    protected static abstract class PartialHostData<T extends Serializable> extends PartialData<HostData, T> {
 
         /**
          * Részadat inicializálása és beállítása.
          * @param data az adat
          */
-        protected HostPartialData(T data) {
+        protected PartialHostData(T data) {
             super(data);
         }
         
@@ -38,7 +38,7 @@ public class HostData extends BaseData<HostData, PartialData<HostData, ?>> {
     /**
      * A HostData részadata, ami egy pont változását tartalmazza.
      */
-    public static class PartialPointData extends HostPartialData<Point3D> {
+    public static class PartialPointHostData extends PartialHostData<Point3D> {
         
         /**
          * A HostData Point3D változóinak megfeleltetett felsorolás.
@@ -59,7 +59,7 @@ public class HostData extends BaseData<HostData, PartialData<HostData, ?>> {
          * @param data a 3D pontadatok
          * @param type melyik 3D pont
          */
-        public PartialPointData(Point3D data, PointType type) {
+        public PartialPointHostData(Point3D data, PointType type) {
             super(data);
             this.type = type;
         }
@@ -90,7 +90,7 @@ public class HostData extends BaseData<HostData, PartialData<HostData, ?>> {
      * A HostData részadata, ami az akkumulátorszint változását tartalmazza.
      * @author zoli
      */
-    public static class PartialBatteryHostData extends PartialBatteryData<HostData> {
+    public static class PartialBatteryHostData extends PartialBatteryBaseData<HostData> {
 
         /**
          * Részadat inicializálása és beállítása.

@@ -5,6 +5,11 @@ import org.dyndns.fzoli.rccar.model.Point3D;
 
 /**
  * Egy hosztra jellemző összes adat, ami a telefon szenzoraiból jön.
+ * Amikor a telefon a szenzoroktól új adatot kap, megnézi, hogy a 'refresh time'
+ * szerint kell-e üzenni a hídnak.
+ * Ha kell üzenni, megnézi, hogy egy vagy több adat változott-e.
+ * Ha több adat változott, a hídnak teljes modelt, egyébként részmodelt küld.
+ * A híd a saját modeljét frissíti a kapott adat alapján az update metódussal.
  * @author zoli
  */
 public class HostData implements Serializable {

@@ -3,7 +3,7 @@ package org.dyndns.fzoli.rccar.model.device.host;
 import java.util.ArrayList;
 import java.util.List;
 import org.dyndns.fzoli.rccar.model.data.host.HostData;
-import org.dyndns.fzoli.rccar.model.device.ChatMessageData;
+import org.dyndns.fzoli.rccar.model.device.ChatMessageInfo;
 import org.dyndns.fzoli.rccar.model.device.Device;
 
 /**
@@ -12,19 +12,19 @@ import org.dyndns.fzoli.rccar.model.device.Device;
  */
 public class HostDevice extends Device<HostData> {
     
-    private final List<ChatMessageData> CHAT_MESSAGES = new ArrayList<ChatMessageData>();
+    private final List<ChatMessageInfo> CHAT_MESSAGES = new ArrayList<ChatMessageInfo>();
     
     public HostDevice(int deviceId, String commonName, HostData data) {
         super(deviceId, commonName, data);
     }
 
-    public List<ChatMessageData> getChatMessages() {
+    public List<ChatMessageInfo> getChatMessages() {
         synchronized (CHAT_MESSAGES) {
-            return new ArrayList<ChatMessageData>(CHAT_MESSAGES);
+            return new ArrayList<ChatMessageInfo>(CHAT_MESSAGES);
         }
     }
     
-    public void addChatMessage(ChatMessageData m) {
+    public void addChatMessage(ChatMessageInfo m) {
         if (m != null) synchronized(CHAT_MESSAGES) {
             CHAT_MESSAGES.add(m);
         }

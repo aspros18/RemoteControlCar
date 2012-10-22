@@ -5,11 +5,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Vector;
+import org.dyndns.fzoli.socket.compress.CompressedBlockInputStream;
+import org.dyndns.fzoli.socket.compress.CompressedBlockOutputStream;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
 
 /**
  * Kliens és szerver oldalra írt, üzenetváltásra használandó szál.
+ * Philip Isenhour által írt tömörítést használ az üzenetek továbbítására.
  * @author zoli
  */
 public abstract class MessageProcess extends AbstractSecureProcess {
@@ -192,7 +195,7 @@ public abstract class MessageProcess extends AbstractSecureProcess {
     public void run() {
         try {
             //ObjectOutputStream létrehozása és átadása az üzenetküldést intéző szálnak
-            worker = new SimpleWorker(new ObjectOutputStream(getSocket().getOutputStream())) {
+            worker = new SimpleWorker(new ObjectOutputStream(new CompressedBlockOutputStream(getSocket().getOutputStream(), 2000))) {
 
                 @Override
                 protected void onException(Exception ex) {
@@ -204,7 +207,7 @@ public abstract class MessageProcess extends AbstractSecureProcess {
             worker.start(); // dolgozó indítása
             onStart(); // jelzés az utód osztályoknak, hogy lehet üzenni
             // ObjectInputStream létrehozása, ...
-            final ObjectInputStream in = new ObjectInputStream(getSocket().getInputStream());
+            final ObjectInputStream in = new ObjectInputStream(new CompressedBlockInputStream(getSocket().getInputStream()));
             while (!getSocket().isClosed()) { // ... és várakozás üzenetre amíg él a kapcsolat
                 onMessage(in.readObject()); // megkapott üzenet feldolgozása
             }

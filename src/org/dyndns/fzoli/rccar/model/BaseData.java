@@ -4,7 +4,7 @@ package org.dyndns.fzoli.rccar.model;
  * Host és Controller oldalon egyaránt használt paraméterek.
  * @author zoli
  */
-public abstract class BaseData<D extends BaseData, PD extends PartialData> extends Data<D, PD> {
+public abstract class BaseData<D extends BaseData, PD extends PartialBaseData> extends Data<D, PD> {
 
     /**
      * GPS koordináta.

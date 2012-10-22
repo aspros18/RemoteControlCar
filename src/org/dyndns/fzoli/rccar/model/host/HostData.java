@@ -36,6 +36,56 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     }
     
     /**
+     * A HostData vezérlő részadata, ami az autó irányításában játszik szerepet.
+     */
+    public static class ControllPartialHostData extends PartialHostData<Controll> {
+
+        /**
+         * Részadat inicializálása és beállítása.
+         * @param data a vezérlőjel
+         */
+        public ControllPartialHostData(Controll data) {
+            super(data);
+        }
+
+        /**
+         * Alkalmazza az új vezérlőjelet a paraméterben megadott adaton.
+         */
+        @Override
+        public void apply(HostData d) {
+            if (d != null) {
+                d.setControll(data);
+            }
+        }
+        
+    }
+    
+    /**
+     * A HostData vezérlő részadata, ami megmondja, hogy kell-e streamelni.
+     */
+    public static class StreamingPartialHostData extends PartialHostData<Boolean> {
+
+        /**
+         * Részadat inicializálása és beállítása.
+         * @param data a vezérlőjel
+         */
+        public StreamingPartialHostData(Boolean data) {
+            super(data);
+        }
+
+        /**
+         * Alkalmazza az új vezérlőjelet a paraméterben megadott adaton.
+         */
+        @Override
+        public void apply(HostData d) {
+            if (d != null) {
+                d.setStreaming(data);
+            }
+        }
+        
+    }
+    
+    /**
      * A HostData részadata, ami egy pont változását tartalmazza.
      */
     public static class PointPartialHostData extends PartialHostData<Point3D> {
@@ -134,6 +184,20 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     private Controll controll = new Controll(0, 0);
 
     /**
+     * Megadja, hogy folyamatban van-e a streamelés.
+     */
+    public Boolean isStreaming() {
+        return streaming;
+    }
+
+    /**
+     * Az autó vezérlőjelét adja vissza.
+     */
+    public Controll getControll() {
+        return controll;
+    }
+
+    /**
      * Megadja a gravitációs mező erősségét.
      */
     public Point3D getGravitationalField() {
@@ -145,6 +209,24 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
      */
     public Point3D getMagneticField() {
         return magneticField;
+    }
+
+    /**
+     * Beállítja, van-e streamelés.
+     * @param streaming ha null, (az alapértelmezett) false állítódik be
+     */
+    public void setStreaming(Boolean streaming) {
+        if (streaming == null) streaming = false;
+        this.streaming = streaming;
+    }
+    
+    /**
+     * Beállítja az autó vezérlőjelét.
+     * @param controll ha null, (az alapértelmezett) 0;0 állítódik be
+     */
+    public void setControll(Controll controll) {
+        if (controll == null) controll = new Controll(0, 0);
+        this.controll = controll;
     }
 
     /**
@@ -168,6 +250,8 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     @Override
     public void update(HostData d) {
         if (d != null) {
+            setControll(d.getControll());
+            setStreaming(d.isStreaming());
             setGravitationalField(d.getGravitationalField());
             setMagneticField(d.getMagneticField());
             super.update(d);

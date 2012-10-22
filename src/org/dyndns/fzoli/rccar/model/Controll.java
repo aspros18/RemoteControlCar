@@ -1,10 +1,12 @@
 package org.dyndns.fzoli.rccar.model;
 
+import java.io.Serializable;
+
 /**
  * Vezérlőjel, ami a jármű irányításáért felelős.
  * @author zoli
  */
-public class Controll {
+public class Controll implements Serializable {
     
     /**
      * Irány.

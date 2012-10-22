@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.model.host;
 
 import java.io.Serializable;
+import java.util.Date;
 import org.dyndns.fzoli.rccar.model.BaseData;
 import org.dyndns.fzoli.rccar.model.Controll;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
@@ -177,6 +178,16 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     private Point3D lastGpsPosition;
     
     /**
+     * Az utolsó előtti GPS pozíció módosulásának dátuma.
+     */
+    private Date lastGpsChangeDate;
+    
+    /**
+     * Az utolsó GPS pozíció módosulásának dátuma.
+     */
+    private Date gpsChangeDate;
+    
+    /**
      * Folyamatban van-e az MJPEG streamelés.
      * Kezdetben nincs streamelés.
      */
@@ -224,6 +235,20 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     }
 
     /**
+     * Megadja az utolsó GPS pozíció módosulásának dátumát.
+     */
+    public Date getGpsChangeDate() {
+        return gpsChangeDate;
+    }
+
+    /**
+     * Megadja az utolsó előtti GPS pozíció módosulásának dátumát.
+     */
+    public Date getLastGpsChangeDate() {
+        return lastGpsChangeDate;
+    }
+
+    /**
      * Beállítja, van-e streamelés.
      * @param streaming ha null, (az alapértelmezett) false állítódik be
      */
@@ -247,6 +272,8 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
      */
     @Override
     public void setGpsPosition(Point3D gpsPosition) {
+        lastGpsChangeDate = gpsChangeDate;
+        gpsChangeDate = new Date();
         this.lastGpsPosition = getGpsPosition();
         super.setGpsPosition(gpsPosition);
     }

@@ -172,6 +172,11 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     private Point3D magneticField;
     
     /**
+     * Az utolsó módosulás előtti GPS pozíció.
+     */
+    private Point3D lastGpsPosition;
+    
+    /**
      * Folyamatban van-e az MJPEG streamelés.
      * Kezdetben nincs streamelés.
      */
@@ -212,6 +217,13 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     }
 
     /**
+     * Megadja az utolsó módosítás előtti GPS pozíciót.
+     */
+    public Point3D getLastGpsPosition() {
+        return lastGpsPosition;
+    }
+
+    /**
      * Beállítja, van-e streamelés.
      * @param streaming ha null, (az alapértelmezett) false állítódik be
      */
@@ -227,6 +239,16 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     public void setControll(Controll controll) {
         if (controll == null) controll = new Controll(0, 0);
         this.controll = controll;
+    }
+
+    /**
+     * Beállítja a GPS koordinátát.
+     * Még mielőtt megváltozna az adat, az előző adat eltárolódik.
+     */
+    @Override
+    public void setGpsPosition(Point3D gpsPosition) {
+        this.lastGpsPosition = getGpsPosition();
+        super.setGpsPosition(gpsPosition);
     }
 
     /**

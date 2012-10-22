@@ -2,6 +2,7 @@ package org.dyndns.fzoli.rccar.model.host;
 
 import java.io.Serializable;
 import org.dyndns.fzoli.rccar.model.BaseData;
+import org.dyndns.fzoli.rccar.model.Controll;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.Point3D;
 
@@ -119,6 +120,18 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
      * Mágneses mező.
      */
     private Point3D magneticField;
+    
+    /**
+     * Folyamatban van-e az MJPEG streamelés.
+     * Kezdetben nincs streamelés.
+     */
+    private Boolean streaming = false;
+    
+    /**
+     * Vezérlőjel.
+     * Alapértelmezetten a jármű áll.
+     */
+    private Controll controll = new Controll(0, 0);
 
     /**
      * Megadja a gravitációs mező erősségét.

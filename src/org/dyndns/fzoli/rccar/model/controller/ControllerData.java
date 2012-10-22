@@ -11,6 +11,9 @@ import org.dyndns.fzoli.rccar.model.Point3D;
  */
 public class ControllerData extends BaseData<ControllerData, PartialBaseData<ControllerData, ?>> {
     
+    //TODO: a modell változása megfeleltethető vezérlőutasításnak is. pl.: autó előre, autó állj, új chat üzenet, autó kiválasztása
+    //      bővíteni a modelleket ez alapján (pl. ChatMessage és ChatMessageInfo átírása PartialBaseData alapúra)
+    
     /**
      * A ControllerData részadata.
      * Egy ControllerPartialData objektumot átadva a ControllerData objektumnak, egyszerű frissítést lehet végrehajtani.

@@ -10,14 +10,14 @@ import org.dyndns.fzoli.rccar.model.host.HostData;
  *
  * @author zoli
  */
-public class DataStorage {
+public class HostStorage {
     
     private final String HOST_NAME;
     private final HostData HOST_DATA = new HostData();
     private final List<String> CONTROLLERS = new ArrayList<String>();
     private final List<ChatMessageInfo> CHAT_MESSAGES = new ArrayList<ChatMessageInfo>();
 
-    public DataStorage(String hostName) {
+    public HostStorage(String hostName) {
         HOST_NAME = hostName;
     }
 

@@ -1,4 +1,4 @@
-package org.dyndns.fzoli.rccar.model;
+package org.dyndns.fzoli.rccar.model.data;
 
 /**
  * A BaseData részadata, ami az akkumulátorszint változását tartalmazza.

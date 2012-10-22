@@ -1,4 +1,4 @@
-package org.dyndns.fzoli.rccar.model;
+package org.dyndns.fzoli.rccar.model.data;
 
 /**
  * Host és Controller oldalon egyaránt használt paraméterek.

@@ -1,10 +1,10 @@
-package org.dyndns.fzoli.rccar.model.host;
+package org.dyndns.fzoli.rccar.model.data.host;
 
 import java.io.Serializable;
-import org.dyndns.fzoli.rccar.model.BaseData;
-import org.dyndns.fzoli.rccar.model.BatteryPartialBaseData;
-import org.dyndns.fzoli.rccar.model.PartialData;
-import org.dyndns.fzoli.rccar.model.Point3D;
+import org.dyndns.fzoli.rccar.model.data.BaseData;
+import org.dyndns.fzoli.rccar.model.data.BatteryPartialBaseData;
+import org.dyndns.fzoli.rccar.model.data.PartialData;
+import org.dyndns.fzoli.rccar.model.data.Point3D;
 
 /**
  * Egy hosztra jellemző összes adat, ami a telefon szenzoraiból jön.

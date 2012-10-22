@@ -2,7 +2,7 @@ package org.dyndns.fzoli.rccar.model.bridge;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.dyndns.fzoli.rccar.model.controller.ChatMessageInfo;
+import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
 import org.dyndns.fzoli.rccar.model.host.HostData;
 
@@ -15,7 +15,7 @@ public class HostStorage {
     private final String HOST_NAME;
     private final HostData HOST_DATA = new HostData();
     private final List<String> CONTROLLERS = new ArrayList<String>();
-    private final List<ChatMessageInfo> CHAT_MESSAGES = new ArrayList<ChatMessageInfo>();
+    private final List<ChatMessage> CHAT_MESSAGES = new ArrayList<ChatMessage>();
 
     public HostStorage(String hostName) {
         HOST_NAME = hostName;
@@ -43,13 +43,13 @@ public class HostStorage {
         }
     }
     
-    public List<ChatMessageInfo> getChatMessages() {
+    public List<ChatMessage> getChatMessages() {
         synchronized(CHAT_MESSAGES) {
-            return new ArrayList<ChatMessageInfo>(CHAT_MESSAGES);
+            return new ArrayList<ChatMessage>(CHAT_MESSAGES);
         }
     }
     
-    public void addChatMessage(ChatMessageInfo m) {
+    public void addChatMessage(ChatMessage m) {
         if (m != null) synchronized(CHAT_MESSAGES) {
             CHAT_MESSAGES.add(m);
         }

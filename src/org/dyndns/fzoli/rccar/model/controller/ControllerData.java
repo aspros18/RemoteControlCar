@@ -1,6 +1,8 @@
 package org.dyndns.fzoli.rccar.model.controller;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import org.dyndns.fzoli.rccar.model.BaseData;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.Point3D;
@@ -122,6 +124,11 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     private Integer speed;
 
     /**
+     * A kiválasztott hoszthoz tartozó chatüzenetek tárolója.
+     */
+    private final List<ChatMessage> CHAT_MESSAGES = new ArrayList<ChatMessage>();
+    
+    /**
      * Az északtól fokban megadott eltérést adja meg.
      */
     public Integer getWay() {
@@ -133,6 +140,24 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
      */
     public Integer getSpeed() {
         return speed;
+    }
+    
+    /**
+     * A kiválasztott hoszthoz tartozó chatüzenetek listáját adja meg.
+     */
+    public List<ChatMessage> getChatMessages() {
+        synchronized(CHAT_MESSAGES) {
+            return new ArrayList<ChatMessage>(CHAT_MESSAGES);
+        }
+    }
+    
+    /**
+     * Chatüzenetet ad hozzá a tárolóhoz.
+     */
+    public void addChatMessage(ChatMessage m) {
+        if (m != null) synchronized(CHAT_MESSAGES) {
+            CHAT_MESSAGES.add(m);
+        }
     }
     
     /**

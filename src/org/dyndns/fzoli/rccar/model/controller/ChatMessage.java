@@ -1,19 +1,36 @@
 package org.dyndns.fzoli.rccar.model.controller;
 
+import java.util.Date;
+import org.dyndns.fzoli.rccar.model.PartialBaseData;
+
 /**
  *
  * @author zoli
  */
-public class ChatMessage {
+public class ChatMessage extends PartialBaseData<ControllerData, String> {
     
-    private final String text;
-
-    public ChatMessage(String text) {
-        this.text = text;
+    private final String SENDER;
+    private final Date DATE;
+    
+    public ChatMessage(String sender, String data) {
+        super(data);
+        SENDER = sender;
+        DATE = new Date();
     }
 
-    public String getText() {
-        return text;
+    public String getSender() {
+        return SENDER;
+    }
+
+    public Date getDate() {
+        return DATE;
+    }
+
+    @Override
+    public void apply(ControllerData d) {
+        if (d != null) {
+            d.addChatMessage(this);
+        }
     }
     
 }

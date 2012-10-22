@@ -1,10 +1,10 @@
-package org.dyndns.fzoli.rccar.model.data.controller;
+package org.dyndns.fzoli.rccar.model.controller;
 
 import java.io.Serializable;
-import org.dyndns.fzoli.rccar.model.data.BaseData;
-import org.dyndns.fzoli.rccar.model.data.BatteryPartialBaseData;
-import org.dyndns.fzoli.rccar.model.data.PartialData;
-import org.dyndns.fzoli.rccar.model.data.Point3D;
+import org.dyndns.fzoli.rccar.model.BaseData;
+import org.dyndns.fzoli.rccar.model.BatteryPartialBaseData;
+import org.dyndns.fzoli.rccar.model.PartialData;
+import org.dyndns.fzoli.rccar.model.Point3D;
 
 /**
  * A híd a vezérlőnek ezen osztály objektumait küldi, amikor adatot közöl.

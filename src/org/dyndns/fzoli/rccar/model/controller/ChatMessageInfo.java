@@ -1,4 +1,4 @@
-package org.dyndns.fzoli.rccar.model.device;
+package org.dyndns.fzoli.rccar.model.controller;
 
 import java.util.Date;
 

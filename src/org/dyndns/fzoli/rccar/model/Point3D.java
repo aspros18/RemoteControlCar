@@ -1,4 +1,4 @@
-package org.dyndns.fzoli.rccar.model.data;
+package org.dyndns.fzoli.rccar.model;
 
 import java.io.Serializable;
 

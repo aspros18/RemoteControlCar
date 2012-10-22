@@ -14,6 +14,7 @@ public class DataStorage {
     
     private final String HOST_NAME;
     private final HostData HOST_DATA = new HostData();
+    private final List<String> CONTROLLERS = new ArrayList<String>();
     private final List<ChatMessageInfo> CHAT_MESSAGES = new ArrayList<ChatMessageInfo>();
 
     public DataStorage(String hostName) {
@@ -24,6 +25,24 @@ public class DataStorage {
         return HOST_NAME;
     }
 
+    public List<String> getControllers() {
+        synchronized(CONTROLLERS) {
+            return new ArrayList<String>(CONTROLLERS);
+        }
+    }
+    
+    public void addController(String c) {
+        if (c != null) synchronized(CONTROLLERS) {
+            CONTROLLERS.add(c);
+        }
+    }
+    
+    public void removeController(String c) {
+        if (c != null) synchronized(CONTROLLERS) {
+            CONTROLLERS.remove(c);
+        }
+    }
+    
     public List<ChatMessageInfo> getChatMessages() {
         synchronized(CHAT_MESSAGES) {
             return new ArrayList<ChatMessageInfo>(CHAT_MESSAGES);

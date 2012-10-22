@@ -11,7 +11,7 @@ public class Point3D implements Serializable {
     /**
      * A három irány értékei.
      */
-    public final int x, y, z;
+    public final int X, Y, Z;
 
     /**
      * Inicializálás és a három paraméter megadása.
@@ -20,9 +20,9 @@ public class Point3D implements Serializable {
      * @param z z irány értéke
      */
     public Point3D(int x, int y, int z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        X = x;
+        Y = y;
+        Z = z;
     }
 
 }

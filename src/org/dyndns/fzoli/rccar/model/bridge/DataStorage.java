@@ -10,13 +10,13 @@ import org.dyndns.fzoli.rccar.model.host.HostData;
  *
  * @author zoli
  */
-public class BridgeData {
+public class DataStorage {
     
     private final String HOST_NAME;
     private final HostData HOST_DATA = new HostData();
     private final List<ChatMessageInfo> CHAT_MESSAGES = new ArrayList<ChatMessageInfo>();
 
-    public BridgeData(String hostName) {
+    public DataStorage(String hostName) {
         HOST_NAME = hostName;
     }
 

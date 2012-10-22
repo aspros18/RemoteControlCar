@@ -2,21 +2,20 @@ package org.dyndns.fzoli.rccar.model.controller;
 
 import java.io.Serializable;
 import org.dyndns.fzoli.rccar.model.BaseData;
-import org.dyndns.fzoli.rccar.model.BatteryPartialBaseData;
-import org.dyndns.fzoli.rccar.model.PartialData;
+import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.Point3D;
 
 /**
  * A híd a vezérlőnek ezen osztály objektumait küldi, amikor adatot közöl.
  * @author zoli
  */
-public class ControllerData extends BaseData<ControllerData, PartialData<ControllerData, ?>> {
+public class ControllerData extends BaseData<ControllerData, PartialBaseData<ControllerData, ?>> {
     
     /**
      * A ControllerData részadata.
      * Egy ControllerPartialData objektumot átadva a ControllerData objektumnak, egyszerű frissítést lehet végrehajtani.
      */
-    protected static abstract class PartialControllerData<T extends Serializable> extends PartialData<ControllerData, T> {
+    private static abstract class PartialControllerData<T extends Serializable> extends PartialBaseData<ControllerData, T> {
         
         /**
          * Részadat inicializálása és beállítása.
@@ -58,14 +57,49 @@ public class ControllerData extends BaseData<ControllerData, PartialData<Control
      * A HostData részadata, ami az akkumulátorszint változását tartalmazza.
      * @author zoli
      */
-    public static class BatteryPartialControllerData extends BatteryPartialBaseData<ControllerData> {
+    public static class IntegerPartialControllerData extends PartialBaseData<ControllerData, Integer> {
 
+        /**
+         * A ControllerData Integer változóinak megfeleltetett felsorolás.
+         */
+        public static enum IntegerType {
+            BATTERY_LEVEL,
+            SPEED,
+            WAY
+        }
+        
+        /**
+         * Megmondja, melyik adatról van szó.
+         */
+        public final IntegerType type;
+        
         /**
          * Részadat inicializálása és beállítása.
          * @param data az akkumulátorszint
          */
-        public BatteryPartialControllerData(Integer data) {
+        public IntegerPartialControllerData(Integer data, IntegerType type) {
             super(data);
+            this.type = type;
+        }
+
+        /**
+         * Alkalmazza a új részadatot a paraméterben megadott adaton.
+         * @param d a teljes adat, amin a módosítást alkalmazni kell
+         */
+        @Override
+        public void apply(ControllerData d) {
+            if (d != null && type != null) {
+                switch (type) {
+                    case BATTERY_LEVEL:
+                        d.setBatteryLevel(data);
+                        break;
+                    case SPEED:
+                        d.setSpeed(data);
+                        break;
+                    case WAY:
+                        d.setWay(data);
+                }
+            }
         }
         
     }
@@ -79,5 +113,48 @@ public class ControllerData extends BaseData<ControllerData, PartialData<Control
      * Pillanatnyi sebesség km/h-ban.
      */
     private Integer speed;
+
+    /**
+     * Az északtól fokban megadott eltérést adja meg.
+     */
+    public Integer getWay() {
+        return way;
+    }
+
+    /**
+     * A pillanatnyi sebességet km/h-ban adja vissza.
+     */
+    public Integer getSpeed() {
+        return speed;
+    }
+    
+    /**
+     * Beállítja az északtól való eltérést.
+     * @param way fokban megadott eltérés
+     */
+    public void setWay(Integer way) {
+        this.way = way;
+    }
+
+    /**
+     * Beállítja a pillanatnyi sebességet.
+     * @param speed km/h-ban megadott érték
+     */
+    public void setSpeed(Integer speed) {
+        this.speed = speed;
+    }
+
+    /**
+     * Frissíti az adatokat a megadott adatokra.
+     * @param d az új adatok
+     */
+    @Override
+    public void update(ControllerData d) {
+        if (d != null) {
+            setSpeed(d.getSpeed());
+            setWay(d.getWay());
+            super.update(d);
+        }
+    }
     
 }

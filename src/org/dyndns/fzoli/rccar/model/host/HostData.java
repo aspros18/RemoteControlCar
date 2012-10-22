@@ -2,8 +2,7 @@ package org.dyndns.fzoli.rccar.model.host;
 
 import java.io.Serializable;
 import org.dyndns.fzoli.rccar.model.BaseData;
-import org.dyndns.fzoli.rccar.model.BatteryPartialBaseData;
-import org.dyndns.fzoli.rccar.model.PartialData;
+import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.Point3D;
 
 /**
@@ -17,13 +16,13 @@ import org.dyndns.fzoli.rccar.model.Point3D;
  * változása mindig részadatban érkezik és nem függ a 'refresh time'-tól.
  * @author zoli
  */
-public class HostData extends BaseData<HostData, PartialData<HostData, ?>> {
+public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     
     /**
      * A HostData részadata.
      * Egy HostPartialData objektumot átadva a HostData objektumnak, egyszerű frissítést lehet végrehajtani.
      */
-    protected static abstract class PartialHostData<T extends Serializable> extends PartialData<HostData, T> {
+    private static abstract class PartialHostData<T extends Serializable> extends PartialBaseData<HostData, T> {
 
         /**
          * Részadat inicializálása és beállítása.
@@ -90,7 +89,7 @@ public class HostData extends BaseData<HostData, PartialData<HostData, ?>> {
      * A HostData részadata, ami az akkumulátorszint változását tartalmazza.
      * @author zoli
      */
-    public static class BatteryPartialHostData extends BatteryPartialBaseData<HostData> {
+    public static class BatteryPartialHostData extends PartialBaseData<HostData, Integer> {
 
         /**
          * Részadat inicializálása és beállítása.
@@ -98,6 +97,15 @@ public class HostData extends BaseData<HostData, PartialData<HostData, ?>> {
          */
         public BatteryPartialHostData(Integer data) {
             super(data);
+        }
+        
+        /**
+         * Alkalmazza az akkumulátorszintet a paraméterben megadott adaton.
+         * @param d a teljes adat, amin a módosítást alkalmazni kell
+         */
+        @Override
+        public void apply(HostData d) {
+            if (d != null) d.setBatteryLevel(data);
         }
         
     }

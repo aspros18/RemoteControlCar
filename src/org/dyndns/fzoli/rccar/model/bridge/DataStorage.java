@@ -40,6 +40,8 @@ public class DataStorage {
         ControllerData d = new ControllerData();
         d.setBatteryLevel(HOST_DATA.getBatteryLevel());
         d.setGpsPosition(HOST_DATA.getGpsPosition());
+        d.setSpeed(0); // TODO
+        d.setWay(0); // TODO
         return d;
     }
     

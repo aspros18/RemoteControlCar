@@ -14,7 +14,7 @@ public class HostStorage {
     
     private final String HOST_NAME;
     private final HostData HOST_DATA = new HostData();
-    private final List<String> CONTROLLERS = new ArrayList<String>();
+    private final List<String> CONTROLLERS = new ArrayList<String>(); //TODO: String helyett saját osztály, amiben szerepel a név és az admin prioritás
     private final List<ChatMessage> CHAT_MESSAGES = new ArrayList<ChatMessage>();
 
     public HostStorage(String hostName) {

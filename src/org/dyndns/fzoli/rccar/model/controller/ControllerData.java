@@ -10,8 +10,10 @@ import org.dyndns.fzoli.rccar.model.Point3D;
 /**
  * A híd a vezérlőnek ezen osztály objektumait küldi, amikor adatot közöl.
  * Tartalmazza a kiválasztott autó nevét,
+ * hogy a vezérlő vezérli-e az autót, <- TODO --!>
+ * hogy a vezérlő szeretné-e vezérelni az autót, <-- TODO --!>
  * az autóhoz tartozó chatüzeneteket egy listában,
- * az autó gps helyzetét, pillanatnyi sebességét és északtól való eltérését.
+ * az autó gps helyzetét, pillanatnyi sebességét, északtól való eltérését és az akkuszintjét.
  * @author zoli
  */
 public class ControllerData extends BaseData<ControllerData, PartialBaseData<ControllerData, ?>> {

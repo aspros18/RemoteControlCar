@@ -10,7 +10,7 @@ public class BatteryPartialBaseData<D extends BaseData> extends PartialBaseData<
      * Részadat inicializálása és beállítása.
      * @param data az akkumulátorszint
      */
-    public BatteryPartialBaseData(Integer data) {
+    protected BatteryPartialBaseData(Integer data) {
         super(data);
     }
 

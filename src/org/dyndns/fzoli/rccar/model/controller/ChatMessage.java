@@ -12,6 +12,12 @@ public class ChatMessage extends PartialBaseData<ControllerData, String> {
     private final String SENDER;
     private final Date DATE;
     
+    public ChatMessage(String data) {
+        super(data);
+        SENDER = null;
+        DATE = null;
+    }
+    
     public ChatMessage(String sender, String data) {
         super(data);
         SENDER = sender;

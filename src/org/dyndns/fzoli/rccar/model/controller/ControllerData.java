@@ -11,14 +11,10 @@ import org.dyndns.fzoli.rccar.model.Point3D;
  * A híd a vezérlőnek ezen osztály objektumait küldi, amikor adatot közöl.
  * Tartalmazza a kiválasztott autó nevét,
  * az autóhoz tartozó chatüzeneteket egy listában,
- * a felhasználó admin prioritását,
  * az autó gps helyzetét, pillanatnyi sebességét és északtól való eltérését.
  * @author zoli
  */
 public class ControllerData extends BaseData<ControllerData, PartialBaseData<ControllerData, ?>> {
-    
-    //TODO: a modell változása megfeleltethető vezérlőutasításnak is. pl.: autó előre, autó állj, új chat üzenet, autó kiválasztása
-    //      bővíteni a modelleket ez alapján (pl. ChatMessage és ChatMessageInfo átírása PartialBaseData alapúra)
     
     /**
      * A ControllerData részadata.
@@ -32,6 +28,32 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
          */
         protected PartialControllerData(T data) {
             super(data);
+        }
+        
+    }
+    
+    /**
+     * A ControllerData részadata, ami a hosztnév változását tartalmazza.
+     */
+    public static class HostNamePartialControllerData extends PartialControllerData<String> {
+
+        /**
+         * Részadat inicializálása és beállítása.
+         * @param data a hosztnév
+         */
+        public HostNamePartialControllerData(String data) {
+            super(data);
+        }
+
+        /**
+         * Alkalmazza a hosztnevet a paraméterben megadott adaton.
+         * @param d a teljes adat, amin a módosítást alkalmazni kell
+         */
+        @Override
+        public void apply(ControllerData d) {
+            if (d != null) {
+                d.setHostName(data);
+            }
         }
         
     }
@@ -124,11 +146,22 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     private Integer speed;
 
     /**
+     * Az aktuális jármű neve.
+     */
+    private String hostName;
+    
+    /**
      * A kiválasztott hoszthoz tartozó chatüzenetek tárolója.
      */
     private final List<ChatMessage> CHAT_MESSAGES;
 
+    /**
+     * A vezérlő adatainak inicializálása.
+     * @param chatMessages az üzeneteket tartalmazó lista
+     * @throws NullPointerException ha az üzeneteket tartalmazó lista null
+     */
     public ControllerData(List<ChatMessage> chatMessages) {
+        if (chatMessages == null) throw new NullPointerException();
         CHAT_MESSAGES = chatMessages;
     }
     
@@ -144,6 +177,13 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
      */
     public Integer getSpeed() {
         return speed;
+    }
+
+    /**
+     * Az aktuális jármű nevét adja vissza.
+     */
+    public String getHostName() {
+        return hostName;
     }
     
     /**
@@ -165,6 +205,15 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     }
     
     /**
+     * Több chatüzenetet ad hozzá a tárolóhoz.
+     */
+    public void addChatMessages(List<ChatMessage> l) {
+        if (l != null) synchronized(CHAT_MESSAGES) {
+            CHAT_MESSAGES.addAll(l);
+        }
+    }
+    
+    /**
      * Beállítja az északtól való eltérést.
      * @param way fokban megadott eltérés
      */
@@ -181,12 +230,21 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     }
 
     /**
+     * Beállítja az aktuális jármű nevét.
+     */
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
+    }
+
+    /**
      * Frissíti az adatokat a megadott adatokra.
      * @param d az új adatok
      */
     @Override
     public void update(ControllerData d) {
         if (d != null) {
+            addChatMessages(d.getChatMessages());
+            setHostName(d.getHostName());
             setSpeed(d.getSpeed());
             setWay(d.getWay());
             super.update(d);

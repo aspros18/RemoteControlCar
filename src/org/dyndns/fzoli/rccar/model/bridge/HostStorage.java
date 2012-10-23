@@ -59,6 +59,7 @@ public class HostStorage {
         ControllerData d = new ControllerData(getChatMessages());
         d.setBatteryLevel(HOST_DATA.getBatteryLevel());
         d.setGpsPosition(HOST_DATA.getGpsPosition());
+        d.setHostName(HOST_NAME);
         d.setSpeed(0); // TODO
         d.setWay(0); // TODO
         return d;

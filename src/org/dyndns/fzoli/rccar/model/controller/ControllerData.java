@@ -126,7 +126,11 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     /**
      * A kiválasztott hoszthoz tartozó chatüzenetek tárolója.
      */
-    private final List<ChatMessage> CHAT_MESSAGES = new ArrayList<ChatMessage>();
+    private final List<ChatMessage> CHAT_MESSAGES;
+
+    public ControllerData(List<ChatMessage> chatMessages) {
+        CHAT_MESSAGES = chatMessages;
+    }
     
     /**
      * Az északtól fokban megadott eltérést adja meg.

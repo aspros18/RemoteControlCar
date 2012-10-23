@@ -57,6 +57,17 @@ public abstract class ClientConnectionHelper {
         if (connectionIds == null || connectionIds.length < 1) throw new IllegalArgumentException("At least one Connection ID needs to be added");
         this.deviceId = deviceId;
         this.connectionIds = connectionIds;
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+
+            /**
+             * A program leállása előtt minden kapcsolat bezárása.
+             */
+            @Override
+            public void run() {
+                disconnect();
+            }
+            
+        }));
     }
     
     /**

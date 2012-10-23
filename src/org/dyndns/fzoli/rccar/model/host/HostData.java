@@ -3,6 +3,7 @@ package org.dyndns.fzoli.rccar.model.host;
 import java.io.Serializable;
 import java.util.Date;
 import org.dyndns.fzoli.rccar.model.BaseData;
+import org.dyndns.fzoli.rccar.model.BatteryPartialBaseData;
 import org.dyndns.fzoli.rccar.model.Controll;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.Point3D;
@@ -139,9 +140,8 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     
     /**
      * A HostData részadata, ami az akkumulátorszint változását tartalmazza.
-     * @author zoli
      */
-    public static class BatteryPartialHostData extends PartialBaseData<HostData, Integer> {
+    public static class BatteryPartialHostData extends BatteryPartialBaseData<HostData> {
 
         /**
          * Részadat inicializálása és beállítása.
@@ -151,16 +151,12 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
             super(data);
         }
         
-        /**
-         * Alkalmazza az akkumulátorszintet a paraméterben megadott adaton.
-         * @param d a teljes adat, amin a módosítást alkalmazni kell
-         */
-        @Override
-        public void apply(HostData d) {
-            if (d != null) d.setBatteryLevel(data);
-        }
-        
     }
+    
+    /**
+     * GPS koordináta.
+     */
+    private Point3D gpsPosition;
     
     /**
      * Gravitációs mező.
@@ -214,6 +210,13 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     }
 
     /**
+     * Megadja a GPS koordinátát.
+     */
+    public Point3D getGpsPosition() {
+        return gpsPosition;
+    }
+    
+    /**
      * Megadja a gravitációs mező erősségét.
      */
     public Point3D getGravitationalField() {
@@ -265,17 +268,16 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
         if (controll == null) controll = new Controll(0, 0);
         this.controll = controll;
     }
-
+    
     /**
      * Beállítja a GPS koordinátát.
      * Még mielőtt megváltozna az adat, az előző adat eltárolódik.
      */
-    @Override
     public void setGpsPosition(Point3D gpsPosition) {
         lastGpsChangeDate = gpsChangeDate;
         gpsChangeDate = new Date();
         this.lastGpsPosition = getGpsPosition();
-        super.setGpsPosition(gpsPosition);
+        this.gpsPosition = gpsPosition;
     }
 
     /**
@@ -301,6 +303,7 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
         if (d != null) {
             setControll(d.getControll());
             setStreaming(d.isStreaming());
+            setGpsPosition(d.getGpsPosition());
             setGravitationalField(d.getGravitationalField());
             setMagneticField(d.getMagneticField());
             super.update(d);

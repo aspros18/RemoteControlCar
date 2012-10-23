@@ -7,34 +7,15 @@ package org.dyndns.fzoli.rccar.model;
 public abstract class BaseData<D extends BaseData, PD extends PartialBaseData> extends Data<D, PD> {
 
     /**
-     * GPS koordináta.
-     */
-    private Point3D gpsPosition;
-    
-    /**
      * Akkumulátor szint százalékban.
      */
     private Integer batteryLevel;
-    
-    /**
-     * Megadja a GPS koordinátát.
-     */
-    public Point3D getGpsPosition() {
-        return gpsPosition;
-    }
     
     /**
      * Megadja a host akkumulátorszintjét százalékban.
      */
     public Integer getBatteryLevel() {
         return batteryLevel;
-    }
-    
-    /**
-     * Beállítja a GPS koordinátát.
-     */
-    public void setGpsPosition(Point3D gpsPosition) {
-        this.gpsPosition = gpsPosition;
     }
     
     /**
@@ -51,7 +32,6 @@ public abstract class BaseData<D extends BaseData, PD extends PartialBaseData> e
     @Override
     public void update(D d) {
         if (d != null) {
-            setGpsPosition(d.getGpsPosition());
             setBatteryLevel(d.getBatteryLevel());
         }
     }

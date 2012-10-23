@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
+import org.dyndns.fzoli.rccar.model.controller.HostState;
 import org.dyndns.fzoli.rccar.model.host.HostData;
 
 /**
@@ -59,12 +60,14 @@ public class HostStorage {
     
     public ControllerData createControllerData() {
         ControllerData d = new ControllerData(getChatMessages());
-        d.setBatteryLevel(HOST_DATA.getBatteryLevel());
-        d.setGpsPosition(HOST_DATA.getGpsPosition());
         d.setHostName(HOST_NAME);
-        d.setSpeed(0); // TODO
-        d.setWay(0); // TODO
+        d.setHostState(createHostState());
+        d.setBatteryLevel(HOST_DATA.getBatteryLevel());
         return d;
+    }
+    
+    private HostState createHostState() {
+        return null; //TODO
     }
     
 }

@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import org.dyndns.fzoli.rccar.model.BaseData;
+import org.dyndns.fzoli.rccar.model.BatteryPartialBaseData;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
-import org.dyndns.fzoli.rccar.model.Point3D;
 
 /**
  * A híd a vezérlőnek ezen osztály objektumait küldi, amikor adatot közöl.
@@ -17,8 +17,6 @@ import org.dyndns.fzoli.rccar.model.Point3D;
  * @author zoli
  */
 public class ControllerData extends BaseData<ControllerData, PartialBaseData<ControllerData, ?>> {
-    
-    //TODO: HostState osztály készítése, ami tartalmazza a GPS koordinátát, a pillanatnyi sebességet és az északtól való eltérést (a gps többé nem közös adat), és az akkuszintre közös osztályt vissza
     
     /**
      * A ControllerData részadata.
@@ -63,96 +61,55 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     }
     
     /**
-     * A ControllerData részadata, ami a GPS pozíció változását tartalmazza.
+     * A ControllerData részadata, ami a jármű helyzetváltozását tartalmazza.
      */
-    public static class GpsPartialControllerData extends PartialControllerData<Point3D> {
+    public static class HostStatePartialControllerData extends PartialControllerData<HostState> {
 
         /**
          * Részadat inicializálása és beállítása.
-         * @param data a GPS koordináta
+         * @param data az aktuális helyzet
          */
-        public GpsPartialControllerData(Point3D data) {
+        public HostStatePartialControllerData(HostState data) {
             super(data);
         }
 
         /**
-         * Alkalmazza a GPS koordinátát a paraméterben megadott adaton.
+         * Alkalmazza az új állapotot a paraméterben megadott adaton.
          * @param d a teljes adat, amin a módosítást alkalmazni kell
          */
         @Override
         public void apply(ControllerData d) {
             if (d != null) {
-                d.setGpsPosition(data);
+                d.setHostState(data);
             }
         }
         
     }
     
     /**
-     * A HostData részadata, ami az akkumulátorszint változását tartalmazza.
-     * @author zoli
+     * A ControllerData részadata, ami az akkumulátorszint változását tartalmazza.
      */
-    public static class IntegerPartialControllerData extends PartialBaseData<ControllerData, Integer> {
+    public static class BatteryPartialControllerData extends BatteryPartialBaseData<ControllerData> {
 
-        /**
-         * A ControllerData Integer változóinak megfeleltetett felsorolás.
-         */
-        public static enum IntegerType {
-            BATTERY_LEVEL,
-            SPEED,
-            WAY
-        }
-        
-        /**
-         * Megmondja, melyik adatról van szó.
-         */
-        public final IntegerType type;
-        
         /**
          * Részadat inicializálása és beállítása.
          * @param data az akkumulátorszint
          */
-        public IntegerPartialControllerData(Integer data, IntegerType type) {
+        public BatteryPartialControllerData(Integer data) {
             super(data);
-            this.type = type;
-        }
-
-        /**
-         * Alkalmazza a új részadatot a paraméterben megadott adaton.
-         * @param d a teljes adat, amin a módosítást alkalmazni kell
-         */
-        @Override
-        public void apply(ControllerData d) {
-            if (d != null && type != null) {
-                switch (type) {
-                    case BATTERY_LEVEL:
-                        d.setBatteryLevel(data);
-                        break;
-                    case SPEED:
-                        d.setSpeed(data);
-                        break;
-                    case WAY:
-                        d.setWay(data);
-                }
-            }
         }
         
     }
-    
-    /**
-     * Északtól fokban való eltérés.
-     */
-    private Integer way;
-    
-    /**
-     * Pillanatnyi sebesség km/h-ban.
-     */
-    private Integer speed;
 
     /**
      * Az aktuális jármű neve.
      */
     private String hostName;
+    
+    /**
+     * A jármű pillanatnyi állapota.
+     */
+    private HostState hostState;
     
     /**
      * A kiválasztott hoszthoz tartozó chatüzenetek tárolója.
@@ -168,26 +125,19 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
         if (chatMessages == null) throw new NullPointerException();
         CHAT_MESSAGES = chatMessages;
     }
-    
-    /**
-     * Az északtól fokban megadott eltérést adja meg.
-     */
-    public Integer getWay() {
-        return way;
-    }
-
-    /**
-     * A pillanatnyi sebességet km/h-ban adja vissza.
-     */
-    public Integer getSpeed() {
-        return speed;
-    }
 
     /**
      * Az aktuális jármű nevét adja vissza.
      */
     public String getHostName() {
         return hostName;
+    }
+    
+    /**
+     * A jármű pillanatnyi állapotát adja vissz.
+     */
+    public HostState getHostState() {
+        return hostState;
     }
     
     /**
@@ -216,22 +166,6 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
             CHAT_MESSAGES.addAll(l);
         }
     }
-    
-    /**
-     * Beállítja az északtól való eltérést.
-     * @param way fokban megadott eltérés
-     */
-    public void setWay(Integer way) {
-        this.way = way;
-    }
-
-    /**
-     * Beállítja a pillanatnyi sebességet.
-     * @param speed km/h-ban megadott érték
-     */
-    public void setSpeed(Integer speed) {
-        this.speed = speed;
-    }
 
     /**
      * Beállítja az aktuális jármű nevét.
@@ -241,6 +175,14 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     }
 
     /**
+     * Beállítja a jármű pillanatnyi állapotát.
+     * @param hostState a jármű pillanatnyi állapota
+     */
+    public void setHostState(HostState hostState) {
+        this.hostState = hostState;
+    }
+    
+    /**
      * Frissíti az adatokat a megadott adatokra.
      * @param d az új adatok
      */
@@ -249,8 +191,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
         if (d != null) {
             addChatMessages(d.getChatMessages());
             setHostName(d.getHostName());
-            setSpeed(d.getSpeed());
-            setWay(d.getWay());
+            setHostState(d.getHostState());
             super.update(d);
         }
     }

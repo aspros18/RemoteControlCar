@@ -18,6 +18,8 @@ import org.dyndns.fzoli.rccar.model.Point3D;
  */
 public class ControllerData extends BaseData<ControllerData, PartialBaseData<ControllerData, ?>> {
     
+    //TODO: HostState osztály készítése, ami tartalmazza a GPS koordinátát, a pillanatnyi sebességet és az északtól való eltérést (a gps többé nem közös adat), és az akkuszintre közös osztályt vissza
+    
     /**
      * A ControllerData részadata.
      * Egy ControllerPartialData objektumot átadva a ControllerData objektumnak, egyszerű frissítést lehet végrehajtani.

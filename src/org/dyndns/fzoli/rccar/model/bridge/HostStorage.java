@@ -12,6 +12,8 @@ import org.dyndns.fzoli.rccar.model.host.HostData;
  */
 public class HostStorage {
     
+    //TODO: tárolni kell, ki az aktuális irányító és azt is, kik szeretnének irányítani
+    
     private final String HOST_NAME;
     private final HostData HOST_DATA = new HostData();
     private final List<String> CONTROLLERS = new ArrayList<String>(); //TODO: String helyett saját osztály, amiben szerepel a név és az admin prioritás

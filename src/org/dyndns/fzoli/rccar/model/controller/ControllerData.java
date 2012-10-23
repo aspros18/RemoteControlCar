@@ -10,6 +10,7 @@ import org.dyndns.fzoli.rccar.model.PartialBaseData;
 /**
  * A híd a vezérlőnek ezen osztály objektumait küldi, amikor adatot közöl.
  * Tartalmazza a kiválasztott autó nevét,
+ * hogy a járművel van-e kiépített kapcsolat, <- TODO --!>
  * hogy a vezérlő vezérli-e az autót, <- TODO --!>
  * hogy a vezérlő szeretné-e vezérelni az autót, <-- TODO --!>
  * az autóhoz tartozó chatüzeneteket egy listában,

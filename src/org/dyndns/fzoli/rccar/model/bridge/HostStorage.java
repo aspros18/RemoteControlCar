@@ -9,6 +9,8 @@ import org.dyndns.fzoli.rccar.model.host.HostData;
 
 /**
  * Egy konkrét jármű összes adatát tartalmazó osztály.
+ * Amikor egy jármű kapcsolódik a hídhoz, létrejön ezen osztály egy példánya,
+ * és a létrejött példány bekerül az elérhető járművek listájába.
  * Amikor a vezérlő kapcsolódik a hídhoz, a híd megnézi, hány jármű érhető el.
  * Ha csak 1 jármű, akkor automatikusan kiválasztja azt az egyet,
  * ha több érhető el, listát kap róla a vezérlő és választhat járművet.

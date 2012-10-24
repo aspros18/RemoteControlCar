@@ -124,9 +124,10 @@ public class HostStorage {
     
     public ControllerData createControllerData() {
         ControllerData d = new ControllerData(getChatMessages());
-        d.setHostName(HOST_NAME);
         d.setHostState(createHostState());
+        d.setHostName(HOST_NAME);
         d.setBatteryLevel(HOST_DATA.getBatteryLevel());
+        //TODO: a többi setter befejezése
         return d;
     }
     

@@ -8,6 +8,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JScrollPane;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
 
 /**
@@ -39,7 +40,7 @@ public class HostSelectionFrame extends JFrame {
      * Beállítja a komponenseket még a megjelenés előtt.
      */
     private void initFrame() {
-        add(LIST);
+        add(new JScrollPane(LIST));
         setMinimumSize(new Dimension(300, 200));
         pack();
         setLocationRelativeTo(this);
@@ -50,12 +51,13 @@ public class HostSelectionFrame extends JFrame {
      * Eltávolítja az adatokat, majd újra feltölti a friss adatokat és ha volt, beállítja az előtte kiválasztott elemet.
      */
     private void refresh() {
-        String selected = LIST.getSelectedValue();
         DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) LIST.getModel();
+        String selected = LIST.getSelectedValue();
         model.removeAllElements();
         for (String host: LIST_MODEL.getHosts()) {
             model.addElement(host);
         }
+        if (model.getIndexOf(selected) == -1 && model.getSize() != 0) selected = model.getElementAt(0);
         LIST.setSelectedValue(selected, true);
     }
     

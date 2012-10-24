@@ -17,7 +17,14 @@ public class ControllerSideMessageProcess extends MessageProcess {
     @Override
     protected void onStart() {
         HostList l = new HostList();
-        l.addHost("teszt");
+        l.addHost("teszt1");
+        l.addHost("teszt2");
+        l.addHost("teszt3");
+        l.addHost("teszt4");
+        l.addHost("teszt5");
+        l.addHost("teszt6");
+        l.addHost("teszt7");
+        l.addHost("teszt8");
         sendMessage(l);
         new Thread(new Runnable() {
 
@@ -26,7 +33,7 @@ public class ControllerSideMessageProcess extends MessageProcess {
                 int counter = 0;
                 while (!getSocket().isClosed()) {
                     counter++;
-                    sendMessage(new HostList.PartialHostList("teszt2", counter % 2 == 0 ? HostList.PartialHostList.ChangeType.REMOVE : HostList.PartialHostList.ChangeType.ADD));
+                    sendMessage(new HostList.PartialHostList("teszt9", counter % 2 == 0 ? HostList.PartialHostList.ChangeType.REMOVE : HostList.PartialHostList.ChangeType.ADD));
                     try {
                         Thread.sleep(5000);
                     }

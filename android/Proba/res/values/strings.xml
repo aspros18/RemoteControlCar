@@ -1,0 +1,7 @@
+<resources>
+
+    <string name="app_name">Próba</string>
+    <string name="hello_world">Helló világ!</string>
+    <string name="menu_settings">Beállítások</string>
+
+</resources>

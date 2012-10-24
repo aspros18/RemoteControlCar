@@ -1,20 +1,21 @@
 package org.dyndns.fzoli.rccar.host;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
 /**
  * Főablak.
  * Innen érhetőek el a beállítások, indítható ill. állítható le a program.
  */
-public class MainActivity extends Activity {
+public class MainActivity extends SherlockActivity {
 	
 	private Button btStart, btStop;
 	private boolean running = false;
@@ -88,7 +89,7 @@ public class MainActivity extends Activity {
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_main, menu);
+		getSupportMenuInflater().inflate(R.menu.activity_main, menu);
 		return true;
 	}
 

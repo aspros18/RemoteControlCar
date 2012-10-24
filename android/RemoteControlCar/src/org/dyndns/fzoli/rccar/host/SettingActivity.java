@@ -7,12 +7,13 @@ import java.util.regex.Pattern;
 
 import org.dyndns.fzoli.android.preference.TextWatcherAdapter;
 
+import com.actionbarsherlock.app.SherlockPreferenceActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
-import android.preference.PreferenceActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.SparseArray;
@@ -24,7 +25,7 @@ import android.widget.Toast;
  * Azért, hogy a 7-es API-n is elfusson a program, a régebbi rendszereken is működő metódusokat használom.
  * @see android.preference.PreferenceFragment
  */
-public class SettingActivity extends PreferenceActivity {
+public class SettingActivity extends SherlockPreferenceActivity {
 	
 	/**
 	 * A preferences.xml fájlban megadott id és kulcs párokat tartalmazó felsorolás. 

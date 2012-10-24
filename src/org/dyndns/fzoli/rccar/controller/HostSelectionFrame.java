@@ -10,6 +10,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
+import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
 
 /**
@@ -46,6 +47,8 @@ public class HostSelectionFrame extends JFrame {
      * Beállítja a komponenseket még a megjelenés előtt.
      */
     private void initFrame() {
+        setTitle("Járműválasztó");
+        setIconImage(R.getIconImage());
         add(PANE);
         setMinimumSize(new Dimension(300, 200));
         pack();

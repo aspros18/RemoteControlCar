@@ -106,7 +106,7 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
             case KEY_CONN_DISCONNECT:
                 return new BridgeDisconnectProcess(this);
             case KEY_CONN_DUMMY:
-                return new MessageTestProcess(this);
+                return new ControllerSideMessageProcess(this);
         }
         return null;
     }

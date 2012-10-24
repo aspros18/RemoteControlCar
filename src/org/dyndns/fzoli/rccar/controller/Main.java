@@ -47,6 +47,33 @@ public class Main {
     };
     
     /**
+     * Eseményfigyelő, ami akkor fut le, ha ki szeretnének lépni a programból.
+     */
+    private static final ActionListener AL_EXIT = new ActionListener() {
+
+        /**
+         * Ha a kilépésre kattintottak.
+         * A program azonnal végetér, ha nincs kiépítve kapcsolat,
+         * egyébként megkérdezi a felhasználót, hogy biztos ki akar-e lépni
+         * és csak akkor lép ki, ha Igen a válasza.
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (CONN.isConnected()) { // ha van kiépített kapcsolat
+                // megkérdi, biztos-e a kilépésben
+                int opt = OptionPane.showYesNoDialog(R.getIconImage(), "Biztos, hogy kilép a programból?", "Megerősítés");
+                // ha igen, akkor a program kilép
+                if (opt == 0) System.exit(0);
+            }
+            else { // ha nincs kiépített kapcsolat
+                // a program kilép
+                System.exit(0);
+            }
+        }
+
+    };
+    
+    /**
      * A konfigurációt tartalmazó objektum.
      */
     private static final Config CONFIG = Config.getInstance();
@@ -65,6 +92,11 @@ public class Main {
      * Kapcsolódásjelző- és kezelő ablak.
      */
     private static final ConnectionProgressFrame PROGRESS_FRAME;
+    
+    /**
+     * Járműválasztó ablak.
+     */
+    private static final HostSelectionFrame SELECTION_FRAME;
     
     /**
      * Segédváltozó kapcsolódás kérés detektálására.
@@ -86,6 +118,7 @@ public class Main {
         // hogy később ne menjen el ezzel a hasznos idő
         PROGRESS_FRAME = new ConnectionProgressFrame();
         CONFIG_EDITOR = new ConfigEditorWindow(CONFIG);
+        SELECTION_FRAME = new HostSelectionFrame(AL_EXIT);
     }
     
     /**
@@ -120,29 +153,7 @@ public class Main {
         SystemTrayIcon.addMenuSeparator();
         
         // kilépés opció hozzáadása
-        SystemTrayIcon.addMenuItem("Kilépés", new ActionListener() {
-
-            /**
-             * Ha a kilépésre kattintottak.
-             * A program azonnal végetér, ha nincs kiépítve kapcsolat,
-             * egyébként megkérdezi a felhasználót, hogy biztos ki akar-e lépni
-             * és csak akkor lép ki, ha Igen a válasza.
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (CONN.isConnected()) { // ha van kiépített kapcsolat
-                    // megkérdi, biztos-e a kilépésben
-                    int opt = OptionPane.showYesNoDialog(R.getIconImage(), "Biztos, hogy kilép a programból?", "Megerősítés");
-                    // ha igen, akkor a program kilép
-                    if (opt == 0) System.exit(0);
-                }
-                else { // ha nincs kiépített kapcsolat
-                    // a program kilép
-                    System.exit(0);
-                }
-            }
-            
-        });
+        SystemTrayIcon.addMenuItem("Kilépés", AL_EXIT);
         
         // a rendszerikon megjelenítése
         SystemTrayIcon.setVisible(true);
@@ -203,6 +214,13 @@ public class Main {
     public static void showConnectionStatus(Status status) {
         if (connecting && status != Status.CONNECTING) return;
         PROGRESS_FRAME.setStatus(status);
+    }
+    
+    /**
+     * TODO - Megjeleníti a járműválasztó ablakot és elrejti a járművel kapcsolatos ablakokat.
+     */
+    public static void showHostSelectionFrame() {
+        SELECTION_FRAME.setVisible(true);
     }
     
     /**

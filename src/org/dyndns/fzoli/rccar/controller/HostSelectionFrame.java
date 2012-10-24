@@ -1,15 +1,24 @@
 package org.dyndns.fzoli.rccar.controller;
 
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
 
@@ -35,11 +44,17 @@ public class HostSelectionFrame extends JFrame {
     private final HostList LIST_MODEL = new HostList();
     
     /**
+     * Jármű kiválasztó gomb.
+     */
+    private final JButton BT_SELECT = new JButton("Kiválasztás");
+    
+    /**
      * Konstruktor
      * @param alExit az ablak bezárásakor lefutó eseményfigyelő
      */
     public HostSelectionFrame(ActionListener alExit) {
         initFrame();
+        initComponents();
         setExitListener(alExit);
     }
     
@@ -49,10 +64,54 @@ public class HostSelectionFrame extends JFrame {
     private void initFrame() {
         setTitle("Járműválasztó");
         setIconImage(R.getIconImage());
-        add(PANE);
+        setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.weightx = 1;
+        c.weighty = 1;
+        
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(5, 0, 0, 0);
+        add(new JLabel("Válasszon járművet a listából.", SwingConstants.CENTER), c);
+        
+        c.gridy = 1;
+        c.weighty = Integer.MAX_VALUE;
+        c.fill = GridBagConstraints.BOTH;
+        c.insets = new Insets(5, 5, 5, 5);
+        add(PANE, c);
+        
+        c.gridy = 2;
+        c.weighty = 1;
+        c.fill = GridBagConstraints.NONE;
+        c.insets = new Insets(0, 0, 5, 0);
+        add(BT_SELECT, c);
+        
         setMinimumSize(new Dimension(300, 200));
         pack();
         setLocationRelativeTo(this);
+    }
+    
+    /**
+     * Komponensek alapértelmezett beállításainak felüldefiniálása és eseményfigyelők hozzáadása.
+     */
+    private void initComponents() {
+        LIST.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        LIST.addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                String host = LIST.getSelectedValue();
+                BT_SELECT.setEnabled(host != null);
+            }
+            
+        });
+        BT_SELECT.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ; //TODO
+            }
+            
+        });
     }
     
     /**

@@ -222,15 +222,16 @@ public class Main {
      * @param l a teljes lista, ami az összes jármű nevét tartalmazza
      */
     public static void showHostSelectionFrame(HostList l) {
+        SELECTION_FRAME.setHosts(l);
         SELECTION_FRAME.setVisible(true);
     }
     
     /**
-     * TODO - A járműválasztó ablakot frissíti a lista módosulása alapján.
+     * A járműválasztó ablakot frissíti a lista módosulása alapján.
      * @param l a lista részhalmaza, ami egy jármű változását tartalmazza
      */
-    public static void updateHostSelectionFrame(HostList.PartialHostList l) {
-        ;
+    public static void updateHostSelectionFrame(HostList.PartialHostList change) {
+        SELECTION_FRAME.setHost(change);
     }
     
     /**

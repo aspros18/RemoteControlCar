@@ -19,6 +19,24 @@ public class ControllerSideMessageProcess extends MessageProcess {
         HostList l = new HostList();
         l.addHost("teszt");
         sendMessage(l);
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                int counter = 0;
+                while (!getSocket().isClosed()) {
+                    counter++;
+                    sendMessage(new HostList.PartialHostList("teszt2", counter % 2 == 0 ? HostList.PartialHostList.ChangeType.REMOVE : HostList.PartialHostList.ChangeType.ADD));
+                    try {
+                        Thread.sleep(5000);
+                    }
+                    catch (InterruptedException ex) {
+                        ;
+                    }
+                }
+            }
+            
+        }).start();
     }
 
     @Override

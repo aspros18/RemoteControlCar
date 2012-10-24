@@ -106,12 +106,22 @@ public class HostList extends Data<HostList, HostList.PartialHostList> {
     }
     
     /**
+     * Az összes járművet eltávolítja a listából.
+     */
+    public void removeHosts() {
+        synchronized (HOSTS) {
+            HOSTS.clear();
+        }
+    }
+    
+    /**
      * Feltölti a listát a másik lista elemeivel.
      * @param d a másik lista
      */
     @Override
     public void update(HostList d) {
         if (d != null) {
+            removeHosts();
             addHosts(d.getHosts());
         }
     }

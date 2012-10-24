@@ -10,9 +10,9 @@ import org.dyndns.fzoli.rccar.model.PartialBaseData;
 /**
  * A híd a vezérlőnek ezen osztály objektumait küldi, amikor adatot közöl.
  * Tartalmazza a kiválasztott autó nevét,
- * hogy a járművel van-e kiépített kapcsolat, <- TODO --!>
- * hogy a vezérlő vezérli-e az autót, <- TODO --!>
- * hogy a vezérlő szeretné-e vezérelni az autót, <-- TODO --!>
+ * hogy a járművel van-e kiépített kapcsolat,
+ * hogy a vezérlő vezérli-e az autót,
+ * hogy a vezérlő szeretné-e vezérelni az autót,
  * az autóhoz tartozó chatüzeneteket egy listában,
  * az autó gps helyzetét, pillanatnyi sebességét, északtól való eltérését és az akkuszintjét.
  * @author zoli
@@ -88,6 +88,57 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     }
     
     /**
+     * A ControllerData részadata, ami egy boolean érték változását tartalmazza.
+     */
+    public static class BoolenPartialControllerData extends PartialControllerData<Boolean> {
+
+        /**
+         * A ControllerData Boolean változóinak megfeleltetett felsorolás.
+         */
+        public static enum BooleanType {
+            HOST_CONNECTED,
+            CONTROLLING,
+            WANT_CONTROLL
+        }
+        
+        /**
+         * Megmondja, melyik adatról van szó.
+         */
+        private final BooleanType type;
+        
+        /**
+         * Részadat inicializálása és beállítása.
+         * @param data a boolean érték
+         * @param type melyik változó
+         */
+        public BoolenPartialControllerData(Boolean data, BooleanType type) {
+            super(data);
+            this.type = type;
+        }
+
+        /**
+         * Alkalmazza az új logikai értéket.
+         * @param d a teljes adat, amin a módosítást alkalmazni kell
+         */
+        @Override
+        public void apply(ControllerData d) {
+            if (d != null && type != null) {
+                switch (type) {
+                    case HOST_CONNECTED:
+                        d.setHostConnected(data);
+                        break;
+                    case CONTROLLING:
+                        d.setControlling(data);
+                        break;
+                    case WANT_CONTROLL:
+                        d.setWantControl(data);
+                }
+            }
+        }
+        
+    }
+    
+    /**
      * A ControllerData részadata, ami az akkumulátorszint változását tartalmazza.
      */
     public static class BatteryPartialControllerData extends BatteryPartialBaseData<ControllerData> {
@@ -111,6 +162,21 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
      * A jármű pillanatnyi állapota.
      */
     private HostState hostState;
+    
+    /**
+     * A jármű kapcsolódva van-e a hídhoz.
+     */
+    private Boolean hostConnected;
+    
+    /**
+     * Vezérelhető-e a jármű.
+     */
+    private Boolean controlling;
+    
+    /**
+     * Van-e igény a jármű vezérlésére.
+     */
+    private Boolean wantControl;
     
     /**
      * A kiválasztott hoszthoz tartozó chatüzenetek tárolója.
@@ -149,6 +215,27 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
             return new ArrayList<ChatMessage>(CHAT_MESSAGES);
         }
     }
+
+    /**
+     * Megadja azt, hogy a jármű kapcsolódva van-e.
+     */
+    public Boolean isHostConnected() {
+        return hostConnected;
+    }
+
+    /**
+     * Megadja azt, hogy a jármű vezérlése elérhető-e.
+     */
+    public Boolean isControlling() {
+        return controlling;
+    }
+    
+    /**
+     * Megadja azt, hogy szeretné-e a felhasználó vezérelni az autót.
+     */
+    public Boolean isWantControl() {
+        return wantControl;
+    }
     
     /**
      * Chatüzenetet ad hozzá a tárolóhoz.
@@ -182,6 +269,27 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     public void setHostState(HostState hostState) {
         this.hostState = hostState;
     }
+
+    /**
+     * Beállítja azt, hogy a jármű kapcsolódva van-e.
+     */
+    public void setHostConnected(Boolean hostConnected) {
+        this.hostConnected = hostConnected;
+    }
+
+    /**
+     * Beállítja azt, hogy a jármű vezérlése elérhető-e.
+     */
+    public void setControlling(Boolean controlling) {
+        this.controlling = controlling;
+    }
+
+    /**
+     * Beállítja azt, hogy szeretné-e a felhasználó vezérelni az autót.
+     */
+    public void setWantControl(Boolean wantControl) {
+        this.wantControl = wantControl;
+    }
     
     /**
      * Frissíti az adatokat a megadott adatokra.
@@ -193,6 +301,9 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
             addChatMessages(d.getChatMessages());
             setHostName(d.getHostName());
             setHostState(d.getHostState());
+            setHostConnected(d.isHostConnected());
+            setControlling(d.isControlling());
+            setWantControl(d.isWantControl());
             super.update(d);
         }
     }

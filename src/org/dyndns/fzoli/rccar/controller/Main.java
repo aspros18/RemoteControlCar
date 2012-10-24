@@ -11,6 +11,7 @@ import org.dyndns.fzoli.rccar.controller.ConnectionProgressFrame.Status;
 import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.setDefaultSplashMessage;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.controller.socket.ConnectionHelper;
+import org.dyndns.fzoli.rccar.model.controller.HostList;
 import org.dyndns.fzoli.ui.OptionPane;
 import org.dyndns.fzoli.ui.SystemTrayIcon;
 import static org.dyndns.fzoli.ui.SystemTrayIcon.showMessage;
@@ -218,9 +219,18 @@ public class Main {
     
     /**
      * TODO - Megjeleníti a járműválasztó ablakot és elrejti a járművel kapcsolatos ablakokat.
+     * @param l a teljes lista, ami az összes jármű nevét tartalmazza
      */
-    public static void showHostSelectionFrame() {
+    public static void showHostSelectionFrame(HostList l) {
         SELECTION_FRAME.setVisible(true);
+    }
+    
+    /**
+     * TODO - A járműválasztó ablakot frissíti a lista módosulása alapján.
+     * @param l a lista részhalmaza, ami egy jármű változását tartalmazza
+     */
+    public static void updateHostSelectionFrame(HostList.PartialHostList l) {
+        ;
     }
     
     /**

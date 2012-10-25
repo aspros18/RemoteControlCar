@@ -1,0 +1,1007 @@
+[Main]
+FileType=CIR
+Version=10.01
+Program=Micro-Cap
+Component Version=10.00
+Shape Version=10.01
+Screen=1024,768
+MCAPVersion=10.0.9.1
+Key ID=Demo
+NLCnt=62
+TXCnt=1
+
+[shapedef]
+Name=And.root
+Line=0,0,9,0
+Line=0,16,9,16
+Line=9,20,9,-4
+Line=27,20,9,20
+Line=9,-4,27,-4
+Line=40,8,48,8
+Arc=12,-4,40,20 , 28,32,28,-16
+
+[shapedef]
+Name=And2
+Root="And.root",0,0,0
+
+[shapedef]
+Name=Animated Meter
+Animated Meter=0,-16,128,96
+BColor=#000000
+FColor=#E4E4E4
+Current=-16,64,0,64
+
+[shapedef]
+Name=Battery
+Line=0,0,22,0
+Line=22,-3,22,3
+Line=26,-7,26,7
+Line=26,0,48,0
+Current=32,8,16,8
+
+[shapedef]
+Name=Bjt.root
+Line=0,0,13,0
+Rectangle=13,-12,15,12
+Current=32,-24,32,-16
+Current=32,24,32,16
+Current=0,-8,8,-8
+PolyOpen=3
+PolyLine=24,-24
+PolyLine=24,-12
+PolyLine=14,-2
+PolyOpen=3
+PolyLine=24,24
+PolyLine=24,12
+PolyLine=14,2
+
+[shapedef]
+Name=Ground
+Line=0,0,12,0
+Line=12,-8,12,8
+Line=18,-4,18,4
+Line=24,0,24,0
+
+[shapedef]
+Name=NPN
+Root="Bjt.root",0,0,0
+PolyClosed=3
+PolyLine=20,12
+PolyLine=24,12
+PolyLine=24,8
+
+[shapedef]
+Name=Or.root
+Line=42,8,48,8
+Line=0,0,10,0
+Line=0,16,10,16
+Line=24,-4,6,-4
+Line=6,20,24,20
+Arc=5,-4,43,34 , 42,8,24,-4
+Arc=0,-4,12,20 , 6,20,6,-4
+Arc=5,-18,43,20 , 24,20,42,8
+
+[shapedef]
+Name=SwitchAnim
+Switch=-16,-16,32,32
+
+[shapedef]
+Name=Xor.root
+Root="Or.root",0,16,0
+Arc=-4,12,8,36 , 2,36,2,12
+
+[shapedef]
+Name=Xor2
+Root="Xor.root",0,-16,0
+
+[compdef]
+Name=NPN
+Definition=NPN
+Shape=NPN
+Mask=4097
+Used=4
+memo=NPN Transistor
+Label Offset=37,-17,-14,33
+PinCnt=3
+Pin="Collector",3,-3,4,14
+Pin="Base",0,0,-18,-3
+Pin="Emitter",3,3,5,1
+
+[compdef]
+Name=Ground
+Definition=Ground
+Shape=Ground
+Mask=1793
+Used=15
+memo=Ground
+Label Offset=0,0,0,0
+PinCnt=1
+Pin="PinA",0,0,-3,-7
+
+[compdef]
+Name=Animated Meter
+Definition=ANIMATED METER
+Shape=Animated Meter
+Mask=4096
+Used=4
+memo=Animated Digital/Analog Volt/Amp Meter
+Label Offset=68,98,19,51
+PinCnt=2
+Pin="Plus",0,9,-24,4
+Pin="Minus",0,11,-30,6
+
+[compdef]
+Name=Animated Digital Switch
+Definition=DIGITAL SWITCH
+Shape=SwitchAnim
+Mask=4096
+Used=5
+memo=Animated Digital Switch
+Label Offset=14,24,22,-5
+PinCnt=1
+Pin="Out",4,1,-15,-4
+
+[compdef]
+Name=Battery
+Definition=Battery
+Shape=Battery
+Mask=4865
+Used=7
+memo=Battery
+Label Offset=19,7,10,13
+PinCnt=2
+Pin="Plus",6,0,-4,-5
+Pin="Minus",0,0,-10,-5
+
+[compdef]
+Name=And2
+Definition=AND
+Shape=And2
+Mask=4867
+Used=5
+Data1=2
+memo=2 Input Generic AND Gate
+Label Offset=12,21,8,8
+PinCnt=3
+Pin="In0",0,0,-6,-1
+Pin="In1",0,2,-6,-1
+Pin="Out",6,1,-7,-1
+
+[compdef]
+Name=Xor
+Definition=XOR
+Shape=Xor2
+Mask=4096
+Used=2
+Data1=2
+memo=Generic XOR Gate
+Label Offset=14,4,8,11
+PinCnt=3
+Pin="In1",0,0,-10,-3
+Pin="In2",0,2,-10,-1
+Pin="Out",6,1
+
+[Circuit]
+Window Placement=2,3, -1,-1, -8,-30, 0,0,640,406
+Default Object=Color=#000080
+Default Object Font=Height=-15,FStyle=0,Color=#000080,Name=Arial
+Default Object Apply Border To Text=No
+Default Object Apply Fill To Text=No
+WinBackGround Color=#FFFFFF
+Select Color=#FF0000
+Anchor Color=#000000
+Select Box Color=#000080
+Grid Text Color=Height=-12,FStyle=0,Color=#0000FF,Name=Verdana
+Component Color=#0000FF
+Attribute Text=Height=-12,FStyle=0,Color=#008000,Name=Verdana
+Wire Color=#008000
+Bus Color=#008000
+Pin Connection=Height=-10,FStyle=0,Color=#FF0000,Name=Arial
+Node Number=Height=-11,FStyle=0,Color=#FF00FF,Name=Arial
+Node Voltage Color=Height=-11,FStyle=0,Color=#000000,Name=Arial
+Dynamic AC Voltage Color=#E4E4E4
+Text Banner Text=Height=-15,FStyle=0,Color=#800000,Name=Arial
+Title Block Background=#C0C0C0
+Current=Height=-11,FStyle=0,Color=#0000FF,Name=Arial
+Power/Condition=Height=-11,FStyle=0,Color=#FF0000,Name=Arial
+Digital Path Color=#FF0000
+Title Block=Height=-15,FStyle=0,Color=#000000,Name=Arial
+Title Block Border=#000000
+Disabled	Color=#C0C0C0
+KeyWord Color=#0000FF
+Error	Color=#FF0000
+Search Color=#FFFF00
+Grid Color=#000000
+Digital 0 Color=#000000
+Digital R Color=#FFFF00
+Digital F Color=#FFFF00
+Digital 1 Color=#FF0000
+Digital X Color=#C0C0C0
+Digital Z Color=#808080
+NodeVoltageFormat=3
+PathDelayFormat=3
+WarningFormat=3
+GridTextFormulaFormat=3
+SpiceType=AMBIGUOUS
+Block Select Color=#51F998
+TitleBlock Field_1=$name
+TitleBlock Field_2=$user $company
+TitleBlock Field_3
+TitleBlock Field_4=$date
+TitleBlock Field_5=Page $page of $maxpage
+TitleBlock One Title=False
+Title_Block_Border=False
+Title_Block=False
+Show Nodes=False
+Show Voltages=True
+Show Current=False
+Show Power=False
+Show Condition=False
+Show Pin Connections=False
+Show Cross=False
+Show Attribute Text=True
+Show Grid Text=True
+
+[Wire]
+Grids=21,22,32,22
+
+[Comp]
+Name=NPN
+Grid=18,30
+
+[Attr]
+ON=20,-6,PART
+V=Q1
+Style=8192
+
+[Attr]
+ON=37,-5,MODEL
+V=A
+
+[Attr]
+ON=0,44,POWER
+V=5V
+
+[Attr]
+ON=0,0,PACKAGE
+V=TO-39
+
+[Wire]
+Grids=21,22,21,27
+
+[Wire]
+Grids=42,22,42,27
+
+[Comp]
+Name=NPN
+Grid=45,30
+Rot=6
+
+[Attr]
+ON=-33,-6,PART
+V=Q3
+Style=8192
+
+[Attr]
+ON=37,5,MODEL
+V=A
+
+[Attr]
+ON=0,44,POWER
+V=5V
+
+[Attr]
+ON=0,0,PACKAGE
+V
+
+[Wire]
+Grids=21,33,21,40
+
+[Wire]
+Grids=42,33,42,40
+
+[Comp]
+Name=NPN
+Grid=18,45
+
+[Attr]
+ON=20,-6,PART
+V=Q4
+Style=8192
+
+[Attr]
+ON=37,-5,MODEL
+V=A
+
+[Attr]
+ON=0,0,PACKAGE
+V
+
+[Comp]
+Name=NPN
+Grid=45,45
+Rot=6
+
+[Attr]
+ON=-32,-5,PART
+V=Q2
+Style=8192
+
+[Attr]
+ON=37,5,MODEL
+V=A
+
+[Attr]
+ON=0,0,PACKAGE
+V
+
+[Wire]
+Grids=21,48,21,53
+
+[Wire]
+Grids=21,53,32,53
+
+[Wire]
+Grids=42,48,42,53
+
+[Wire]
+Grids=32,53,32,58
+
+[Wire]
+Grids=32,53,42,53
+
+[Comp]
+Name=Ground
+Grid=32,13
+Rot=5
+
+[Wire]
+Grids=4,58,32,58
+
+[Wire]
+Grids=4,14,4,58
+
+[Wire]
+Grids=4,14,32,14
+
+[Wire]
+Grids=9,45,18,45
+
+[Wire]
+Grids=9,9,9,45
+
+[Wire]
+Grids=9,9,51,9
+
+[Wire]
+Grids=51,9,51,30
+
+[Wire]
+Grids=45,30,51,30
+
+[Wire]
+Grids=15,30,18,30
+
+[Wire]
+Grids=15,30,15,62
+
+[Wire]
+Grids=15,62,51,62
+
+[Wire]
+Grids=51,45,51,62
+
+[Wire]
+Grids=45,45,51,45
+
+[Wire]
+Grids=32,22,42,22
+
+[Wire]
+Grids=32,20,32,22
+
+[Comp]
+Name=Animated Meter
+Grid=23,31
+
+[Attr]
+ON=52,82,PART
+V=Meter1
+Style=8192
+
+[Attr]
+ON=4,36,LOW
+V=1
+
+[Attr]
+ON=108,36,HIGH
+V=10
+
+[Attr]
+ON=68,134,SCALE
+V=None
+
+[Attr]
+ON=68,146,AUTOSCALE
+V=On
+
+[Attr]
+ON=68,158,ANALOG OR DIGITAL
+V=Digital
+
+[Attr]
+ON=68,170,AMPS OR VOLTS
+V=Volts
+
+[Attr]
+ON=0,0,PACKAGE
+V
+
+[Wire]
+Grids=21,40,23,40
+
+[Wire]
+Grids=21,40,21,42
+
+[Wire]
+Grids=23,42,23,45
+
+[Wire]
+Grids=23,45,40,45
+
+[Wire]
+Grids=40,40,42,40
+
+[Wire]
+Grids=40,40,40,45
+
+[Wire]
+Grids=42,40,42,42
+
+[Comp]
+Name=Animated Digital Switch
+Grid=83,46
+Rot=2
+
+[Attr]
+ON=14,24,PART
+V=U1
+Style=8192
+
+[Attr]
+ON=14,36,I/O MODEL
+V=IO_STD
+
+[Attr]
+ON=14,48,IO_LEVEL
+V=0
+
+[Attr]
+ON=14,60,POWER NODE
+V=$G_DPWR
+
+[Attr]
+ON=14,72,GROUND NODE
+V=$G_DGND
+
+[Attr]
+ON=14,84,STATE
+V=1
+
+[Attr]
+ON=0,0,PACKAGE
+V
+
+[Comp]
+Name=Animated Digital Switch
+Grid=83,31
+Rot=2
+
+[Attr]
+ON=14,24,PART
+V=U2
+Style=8192
+
+[Attr]
+ON=14,36,I/O MODEL
+V=IO_STD
+
+[Attr]
+ON=14,48,IO_LEVEL
+V=0
+
+[Attr]
+ON=14,60,POWER NODE
+V=$G_DPWR
+
+[Attr]
+ON=14,72,GROUND NODE
+V=$G_DGND
+
+[Attr]
+ON=14,84,STATE
+V=0
+
+[Attr]
+ON=0,0,PACKAGE
+V
+
+[Comp]
+Name=Battery
+Grid=32,14
+Rot=1
+
+[Attr]
+ON=-23,18,PART
+V=V1
+Style=8192
+
+[Attr]
+ON=-24,-37,VALUE
+V=5V
+
+[Attr]
+ON=0,0,PACKAGE
+V
+
+[Comp]
+Name=And2
+Grid=60,31
+Rot=2
+
+[Attr]
+ON=-29,-14,PART
+V=U5
+Style=8192
+
+[Attr]
+ON=-56,-32,TIMING MODEL
+V=DLY_TTL
+
+[Attr]
+ON=-45,-44,I/O MODEL
+V=IO_STD
+
+[Attr]
+ON=-14,-56,MNTYMXDLY
+V=0
+
+[Attr]
+ON=-14,-68,IO_LEVEL
+V=0
+
+[Attr]
+ON=-58,-80,POWER NODE
+V=$G_DPWR
+
+[Attr]
+ON=-58,-92,GROUND NODE
+V=$G_DGND
+
+[Attr]
+ON=0,0,PACKAGE
+V
+
+[Comp]
+Name=And2
+Grid=60,46
+Rot=2
+
+[Attr]
+ON=-30,-14,PART
+V=U6
+Style=8192
+
+[Attr]
+ON=-56,-32,TIMING MODEL
+V=DLY_TTL
+
+[Attr]
+ON=-45,-44,I/O MODEL
+V=IO_STD
+
+[Attr]
+ON=-14,-56,MNTYMXDLY
+V=0
+
+[Attr]
+ON=-14,-68,IO_LEVEL
+V=0
+
+[Attr]
+ON=-58,-80,POWER NODE
+V=$G_DPWR
+
+[Attr]
+ON=-58,-92,GROUND NODE
+V=$G_DGND
+
+[Attr]
+ON=0,0,PACKAGE
+V
+
+[Wire]
+Grids=60,29,66,29
+
+[Wire]
+Grids=60,46,66,46
+
+[Wire]
+Grids=60,31,76,31
+
+[Wire]
+Grids=72,30,79,30
+
+[Wire]
+Grids=79,30,79,31
+
+[Wire]
+Grids=72,45,79,45
+
+[Wire]
+Grids=60,44,75,44
+
+[Wire]
+Grids=79,44,79,45
+
+[Wire]
+Grids=72,28,75,28
+
+[Wire]
+Grids=75,28,75,44
+
+[Wire]
+Grids=75,44,79,44
+
+[Wire]
+Grids=72,47,76,47
+
+[Wire]
+Grids=76,31,76,47
+
+[Wire]
+Grids=76,31,79,31
+
+[Comp]
+Name=Xor
+Grid=72,30
+Rot=2
+
+[Attr]
+ON=-32,-13,PART
+V=U4
+Style=8192
+
+[Attr]
+ON=14,16,TIMING MODEL
+V=DLY_TTL
+
+[Attr]
+ON=14,28,I/O MODEL
+V=IO_STD
+
+[Attr]
+ON=14,40,MNTYMXDLY
+V=0
+
+[Attr]
+ON=14,52,IO_LEVEL
+V=0
+
+[Attr]
+ON=14,64,POWER NODE
+V=$G_DPWR
+
+[Attr]
+ON=14,76,GROUND NODE
+V=$G_DGND
+
+[Attr]
+ON=0,0,PACKAGE
+V
+
+[Comp]
+Name=Xor
+Grid=72,47
+Rot=2
+
+[Attr]
+ON=-32,-13,PART
+V=U3
+Style=8192
+
+[Attr]
+ON=14,16,TIMING MODEL
+V=DLY_TTL
+
+[Attr]
+ON=14,28,I/O MODEL
+V=IO_STD
+
+[Attr]
+ON=14,40,MNTYMXDLY
+V=0
+
+[Attr]
+ON=14,52,IO_LEVEL
+V=0
+
+[Attr]
+ON=14,64,POWER NODE
+V=$G_DPWR
+
+[Attr]
+ON=14,76,GROUND NODE
+V=$G_DGND
+
+[Attr]
+ON=0,0,PACKAGE
+V
+
+[Wire]
+Grids=32,13,32,14
+
+[Wire]
+Grids=51,30,54,30
+
+[Wire]
+Grids=51,45,54,45
+
+[Node Offsets]
+Section=0
+;Node,Page,GridX,GridY,OffsetX,OffsetY
+Offset=2,0,18,30,-16,-8
+Offset=4,0,45,30,17,-8
+
+[Grid Text]
+Text="Dynamic DC"
+Text="Temperature=27"
+Text="Displaying DC Voltages"
+BannerDC=True
+Grid=1,8
+Height=-15
+Color=#800000
+Font=Arial
+CFill=#C0C0C0
+CBorder=#000000
+
+[Schematic]
+CurrentSection 0=0
+CurrentSection 1=0
+CurrentSection 2=0
+CurrentSection 3=0
+Splitter.xs=0
+Splitter.ys=0
+TextQuad=4099
+Scale=1
+PrinterScale=1
+GridUser=10
+ShapeGroups="Main","Euro","Polarity","Electrolytic","GroundArrow","DeMorgan"
+CalcRMS=False
+CalcAVG=False
+CalcPeak=False
+CalcVoltage=True
+DisplayMeasure=Last
+
+[Tools]
+Pos=Top
+FILESAVEASOLD=No
+BOM=No
+FILEPCB=No
+PROBE=Yes
+SELECT=Yes
+COMP=Yes
+TEXT=Yes
+WIRE=Yes
+WIRED=Yes
+BUS=Yes
+GRAPHIC=Yes
+LINE=No
+ELLIPSE=No
+RECT=No
+DIAM=No
+ARC=No
+PIE=No
+LEFTBRK=No
+RIGHTBRK=No
+BOTHBRK=No
+META=No
+FLAG=No
+INFO=Yes
+HELP=Yes
+HELP_SPICE=No
+LINK=No
+REGION_ENABLE=Yes
+DIGTRC=No
+DIGTRC2=No
+DIGALL=No
+GRIDTEXT=Yes
+COMPTEXT=Yes
+NODE=Yes
+MEASURED=Yes
+NODEV=Yes
+CURRENT=Yes
+POWER=Yes
+CONDITIN=Yes
+PIN=Yes
+CROSS=No
+GRID=No
+BORDER=No
+TITLE=No
+RUBBER=Yes
+PROPERTY=Yes
+STEP=Yes
+MIRROR=Yes
+ROTATE=Yes
+FLIPY=Yes
+FLIPX=Yes
+CIR_MAKEMACRO=No
+CLEARCUTWIRE=No
+FINDCOMP=Yes
+FIND=Yes
+REPEAT=No
+REPLACE=No
+MODEL=Yes
+CIR2CKT=No
+ATTDISP=No
+ENABLE=No
+DISABLE=No
+TOFRONT=No
+TOBACK=No
+SELNEXT=No
+PAGEADD=No
+PAGEADDTEXT=No
+ADDSECTION=No
+PAGEDEL=No
+ZOOMIN=Yes
+ZOOMOUT=Yes
+GOTOFLAG=No
+UPLEVEL=Yes
+COLOR=No
+FONT=No
+DM_LAST=No
+DM_RMS=No
+DM_AVG=No
+DM_PEAK=No
+GRID_NONE=No
+GRID_NORMAL=No
+GRID_BOLD_5=No
+GRID_BOLD_6=No
+GRID_BOLD_USER=No
+SPLITCIRTEXTH=No
+SPLITCIRTEXTV=No
+SPACE_SPLITTERS_EVENLY=No
+NORMALCIR=No
+RENAMEDEFINE=No
+RENAMECMP=No
+ATTALIGN=No
+RESETNODEPOS=No
+FIT2STANDARD=No
+NODESNAP=No
+MOVETEXT=No
+TEXTINC=No
+TOGGLETEXT=No
+TOGGLEMODE=No
+TOLERANCE=No
+ALIGNLEFT=No
+ALIGNRIGHT=No
+ALIGNTOP=No
+ALIGNBOTTOM=No
+
+[Section]
+Index=0
+Name="circuit3"
+Type=Main
+Enable=True
+CurrentPage 0=0
+CurrentPage 1=0
+CurrentPage 2=0
+CurrentPage 3=0
+TabSize 0=425
+TabSize 1=425
+TabSize 2=425
+TabSize 3=425
+
+[Page]
+Index=0
+Section=0
+Print=True
+Enable=True
+Name=Main
+Scale 0=1
+Scale 1=1
+Scale 2=1
+Scale 3=1
+Grid=18,30
+
+[Page]
+Index=1
+Section=0
+Type=Text
+Print=False
+Enable=True
+Name=Text
+
+[Page]
+Index=2
+Section=0
+Type=Text
+Print=False
+Enable=True
+Name=Models
+
+[Page]
+Index=3
+Section=0
+Type=Info
+Print=False
+Enable=True
+Name=Info
+
+[Text Area]
+Section=0
+Page=1
+Font=Height=-15,FStyle=0,Color=#000000,Name=Courier New
+Comment Color=#008000
+Background Color=#FFFFFF
+
+[Text Area]
+Section=0
+Page=2
+Font=Height=-15,FStyle=0,Color=#000000,Name=Courier New
+Comment Color=#008000
+Background Color=#FFFFFF
+Text=
+Text=.MODEL A NPN ()
+
+[Limits]
+Analysis=DynamicAC
+FirstValueDisplay=Mag
+SecondValueDisplay=PhaseDeg
+PlaceText=True
+
+[Limits]
+Analysis=DynamicDC
+Temp=27
+SliderPer=10
+PlaceText=True
+TextGrid=1,8
+
+[Pane]
+Analysis=Transient
+
+[Pane]
+Analysis=AC
+
+[Pane]
+Analysis=DC
+
+[Pane]
+Analysis=HmDistortion
+
+[Pane]
+Analysis=ImDistortion
+
+[OPMethods]
+Analysis=Transient
+Standard Newton-Raphson=0,0
+Source Stepping=0,0
+Diagonal Gmin Stepping=0,0
+Junction Gmin Stepping=0,0
+Pseudo Transient=0,0
+
+[OPMethods]
+Analysis=AC
+Standard Newton-Raphson=0,0
+Source Stepping=0,0
+Diagonal Gmin Stepping=0,0
+Junction Gmin Stepping=0,0
+Pseudo Transient=0,0
+
+[OPMethods]
+Analysis=DC
+Standard Newton-Raphson=0,0
+Source Stepping=0,0
+Diagonal Gmin Stepping=0,0
+Junction Gmin Stepping=0,0
+Pseudo Transient=0,0

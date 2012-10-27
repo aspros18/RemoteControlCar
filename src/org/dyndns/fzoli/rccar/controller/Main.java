@@ -204,8 +204,6 @@ public class Main {
         }
     }
     
-    
-    
     /**
      * Beállítja a kapcsolatjelző ablakon a látható ikont és szöveget.
      * Ha nincs megadva státusz, akkor az ablak eltűnik, egyébként a megadott státusz jelenik meg.
@@ -215,6 +213,7 @@ public class Main {
     public static void showConnectionStatus(Status status) {
         if (connecting && status != Status.CONNECTING) return;
         PROGRESS_FRAME.setStatus(status);
+        SELECTION_FRAME.setVisible(false);
     }
     
     /**

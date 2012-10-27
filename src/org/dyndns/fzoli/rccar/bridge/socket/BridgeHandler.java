@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.bridge.socket;
 
 import java.awt.TrayIcon;
+import java.io.EOFException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import javax.net.ssl.SSLHandshakeException;
@@ -88,6 +89,9 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
         }
         catch (SocketTimeoutException e) {
             showWarning("Socket időtúllépés", e.getMessage());
+        }
+        catch (EOFException e) {
+            showWarning("Socket váratlan vég", e.getMessage());
         }
         catch (Exception e) {
             // nem várt hiba jelzése

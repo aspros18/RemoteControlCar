@@ -182,13 +182,18 @@ abstract class ArrowPanel extends JPanel {
     
     private int tmpX = 0, tmpY = 0;
     private boolean leftOn = false;
+    private Integer codeX, codeY;
     
     private void refresh(Integer x, Integer y) {
         if ((x != null && y != null && leftOn) || (x == null && y == null && !leftOn)) {
-            if (x != null) al.setRelativeX(x);
-            else al.setPercentX(0);
-            if (y != null) al.setRelativeY(y);
-            else al.setPercentY(0);
+            if (codeX == null) {
+                if (x != null) al.setRelativeX(x);
+                else al.setPercentX(0);
+            }
+            if (codeY == null) {
+                if (y != null) al.setRelativeY(y);
+                else al.setPercentY(0);
+            }
             repaint();
             fireChange();
         }
@@ -241,8 +246,6 @@ abstract class ArrowPanel extends JPanel {
 
         addKeyListener(new KeyAdapter() {
 
-            private Integer codeX, codeY;
-
             @Override
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
@@ -292,13 +295,19 @@ abstract class ArrowPanel extends JPanel {
             }
 
             private void resetX(KeyEvent e) {
-                if (codeX.equals(e.getKeyCode())) al.setPercentX(0);
+                if (codeX != null && codeX.equals(e.getKeyCode())) {
+                    al.setPercentX(0);
+                    codeX = null;
+                }
             }
 
             private void resetY(KeyEvent e) {
-                if (codeY.equals(e.getKeyCode())) al.setPercentY(0);
+                if (codeY != null && codeY.equals(e.getKeyCode())) {
+                    al.setPercentY(0);
+                    codeY = null;
+                }
             }
-
+            
         });
     }
     

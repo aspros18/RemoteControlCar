@@ -28,6 +28,8 @@ public class MainActivity extends IOIOSherlockActivity {
 	private Button btStart, btStop;
 	private boolean running = false;
 	
+	private int mX = 0, mY = 0;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -58,8 +60,6 @@ public class MainActivity extends IOIOSherlockActivity {
 		final ArrowView arrow = (ArrowView) findViewById(R.id.arrow);
 		tvMessage.setText("0 ; 0");
 		arrow.setOnTouchListener(new View.OnTouchListener() {
-			
-			private int mX = 0, mY = 0;
 			
 			@Override
 			public boolean onTouch(View v, MotionEvent e) {
@@ -128,12 +128,20 @@ public class MainActivity extends IOIOSherlockActivity {
 			
 			@Override
 			protected void setup() throws ConnectionLostException, InterruptedException {
-				led_out = ioio_.openDigitalOutput(IOIO.LED_PIN);
+				led_out = ioio_.openDigitalOutput(IOIO.LED_PIN, true);
 			}
 			
+			/**
+			 * Ez alapján arra jutottam, hogy ez a metódus, mint egy ciklus, állandóan ismétlődik, amíg van kapcsolat az IC-vel.
+			 * A beépített LED, akkor világít, ha a digitális kimenetre logikai hamis van küldve, egyébként nem világít.
+			 * Ezért, amikor megnyitom a digitális kimenetet, a kezdőérték true, hogy ne villágítson a led a loop metódus meghívása előtt.
+			 * A LED világítása csak akkor változik meg a tesztben, ha nincs kanyarodás.
+			 * Tehát a LED akkor kezd el világítani, ha nincs kanyarodás + teljes előre menet van,
+			 * és akkor alszik el, ha nincs kanyarodás + nem teljes előre menet van.
+			 */
 			@Override
 			public void loop() throws ConnectionLostException, InterruptedException {
-				led_out.write(!running);
+				if (mX == 0) led_out.write(mY != 100);
 				Thread.sleep(20);
 			}
 			

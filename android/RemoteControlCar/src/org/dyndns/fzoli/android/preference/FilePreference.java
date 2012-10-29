@@ -8,6 +8,9 @@ import android.net.Uri;
 import android.preference.Preference;
 import android.util.AttributeSet;
 
+/**
+ * @author zoli
+ */
 public class FilePreference extends Preference {
 
 	/**

@@ -1175,7 +1175,8 @@ containing a value of this type.
         public static final int Widget_Sherlock_TextView_SpinnerItem=0x7f0b0032;
     }
     public static final class xml {
-        public static final int preferences=0x7f040000;
+        public static final int accessory_filter=0x7f040000;
+        public static final int preferences=0x7f040001;
     }
     public static final class styleable {
         /**  Attributes used to style the Action Bar. 

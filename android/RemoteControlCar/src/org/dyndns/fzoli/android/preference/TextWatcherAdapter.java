@@ -7,6 +7,7 @@ import android.text.TextWatcher;
  * Kódrövidítés céljából létrehozott osztály.
  * Implementálja a TextWatcher interfész összes metódusát.
  * Az összes metódus semmittevő.
+ * @author zoli
  */
 public abstract class TextWatcherAdapter implements TextWatcher {
 

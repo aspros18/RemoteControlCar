@@ -24,6 +24,7 @@ import android.widget.Toast;
  * A deprecated metódusokat a 16-os API-tól a {@code PreferenceFragment} osztály tartalmazza, de annak használatához minimum 11-es API kell.
  * Azért, hogy a 7-es API-n is elfusson a program, a régebbi rendszereken is működő metódusokat használom.
  * @see android.preference.PreferenceFragment
+ * @author zoli
  */
 public class SettingActivity extends SherlockPreferenceActivity {
 	

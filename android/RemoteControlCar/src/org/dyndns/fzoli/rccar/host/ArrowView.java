@@ -8,6 +8,9 @@ import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.View;
 
+/**
+ * @author zoli
+ */
 public class ArrowView extends View {
 
 	private final int stroke = 2;

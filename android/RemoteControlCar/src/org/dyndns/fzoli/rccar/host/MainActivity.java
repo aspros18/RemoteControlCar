@@ -1,5 +1,13 @@
 package org.dyndns.fzoli.rccar.host;
 
+import ioio.lib.api.DigitalOutput;
+import ioio.lib.api.IOIO;
+import ioio.lib.api.exception.ConnectionLostException;
+import ioio.lib.util.BaseIOIOLooper;
+import ioio.lib.util.IOIOLooper;
+
+import org.dyndns.fzoli.android.ioio.IOIOSherlockActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -7,15 +15,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 /**
  * Főablak.
  * Innen érhetőek el a beállítások, indítható ill. állítható le a program.
+ * @author zoli
  */
-public class MainActivity extends SherlockActivity {
+public class MainActivity extends IOIOSherlockActivity {
 	
 	private Button btStart, btStop;
 	private boolean running = false;
@@ -110,6 +118,26 @@ public class MainActivity extends SherlockActivity {
 		running = b;
 		btStart.setEnabled(!b);
 		btStop.setEnabled(b);
+	}
+
+	@Override
+	public IOIOLooper createIOIOLooper(String connectionType, Object extra) {
+		return new BaseIOIOLooper() {
+			
+			private DigitalOutput led_out;
+			
+			@Override
+			protected void setup() throws ConnectionLostException, InterruptedException {
+				led_out = ioio_.openDigitalOutput(IOIO.LED_PIN);
+			}
+			
+			@Override
+			public void loop() throws ConnectionLostException, InterruptedException {
+				led_out.write(!running);
+				Thread.sleep(20);
+			}
+			
+		};
 	}
 
 }

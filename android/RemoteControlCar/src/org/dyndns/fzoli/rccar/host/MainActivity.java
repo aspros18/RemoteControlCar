@@ -2,6 +2,7 @@ package org.dyndns.fzoli.rccar.host;
 
 import ioio.lib.api.DigitalOutput;
 import ioio.lib.api.IOIO;
+import ioio.lib.api.PwmOutput;
 import ioio.lib.api.exception.ConnectionLostException;
 import ioio.lib.util.BaseIOIOLooper;
 import ioio.lib.util.IOIOLooper;
@@ -77,9 +78,9 @@ public class MainActivity extends IOIOSherlockActivity {
 				int y = arrow.getPercentY();
 				
 				arrow.setPercentX((x > 0 ? 100 : x == 0 ? 0 : -100));
-				arrow.setPercentY((y > 0 ? 100 : y == 0 ? 0 : -100));
+				//arrow.setPercentY((y > 0 ? 100 : y == 0 ? 0 : -100));
 				x = arrow.getPercentX();
-				y = arrow.getPercentY();
+				//y = arrow.getPercentY();
 				
 				if (mX != x || mY != y) {
 					mX = x;
@@ -124,6 +125,7 @@ public class MainActivity extends IOIOSherlockActivity {
 	public IOIOLooper createIOIOLooper(String connectionType, Object extra) {
 		return new BaseIOIOLooper() {
 			
+			private PwmOutput pwm;
 			private DigitalOutput outLed, outLeft, outRight, outFront, outBack;
 			
 			@Override
@@ -133,6 +135,7 @@ public class MainActivity extends IOIOSherlockActivity {
 				outBack = ioio_.openDigitalOutput(11, false);
 				outLeft = ioio_.openDigitalOutput(12, false);
 				outRight = ioio_.openDigitalOutput(13, false);
+				pwm = ioio_.openPwmOutput(14, 1000);
 			}
 			
 			/**
@@ -146,6 +149,7 @@ public class MainActivity extends IOIOSherlockActivity {
 				outLed.write(!running);
 				handle(mX, outLeft, outRight);
 				handle(mY, outBack, outFront);
+				pwm.setDutyCycle((float)(mY / 100.0));
 				Thread.sleep(20);
 			}
 			

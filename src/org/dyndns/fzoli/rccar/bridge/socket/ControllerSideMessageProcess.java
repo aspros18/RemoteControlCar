@@ -17,14 +17,9 @@ public class ControllerSideMessageProcess extends MessageProcess {
     @Override
     protected void onStart() {
         HostList l = new HostList();
-        l.addHost("teszt1");
-        l.addHost("teszt2");
-        l.addHost("teszt3");
-        l.addHost("teszt4");
-        l.addHost("teszt5");
-        l.addHost("teszt6");
-        l.addHost("teszt7");
-        l.addHost("teszt8");
+        for (int i = 1; i <= 8; i++) {
+            l.getHosts().add("teszt" + i);
+        }
         sendMessage(l);
         new Thread(new Runnable() {
 

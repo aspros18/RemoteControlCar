@@ -108,7 +108,7 @@ public class HostSelectionFrame extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                ; //TODO
+                BT_SELECT.setEnabled(false); //TODO
             }
             
         });

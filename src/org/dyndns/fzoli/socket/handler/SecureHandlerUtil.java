@@ -3,6 +3,7 @@ package org.dyndns.fzoli.socket.handler;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLPeerUnverifiedException;
@@ -52,7 +53,7 @@ class SecureHandlerUtil {
      * A paraméterben átadott listát leszűri.
      */
     public static List<SecureProcess> getSecureProcesses(List<Process> processes) {
-        List<SecureProcess> ls = new ArrayList<SecureProcess>();
+        List<SecureProcess> ls = Collections.synchronizedList(new ArrayList<SecureProcess>());
         for (Process proc : processes) {
             if (proc instanceof SecureProcess)
                 ls.add((SecureProcess) proc);

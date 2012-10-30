@@ -1,7 +1,7 @@
 package org.dyndns.fzoli.rccar.model.controller;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.dyndns.fzoli.rccar.model.BaseData;
 import org.dyndns.fzoli.rccar.model.BatteryPartialBaseData;
@@ -190,7 +190,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
      */
     public ControllerData(List<ChatMessage> chatMessages) {
         if (chatMessages == null) throw new NullPointerException();
-        CHAT_MESSAGES = chatMessages;
+        CHAT_MESSAGES = Collections.synchronizedList(chatMessages);
     }
 
     /**
@@ -211,9 +211,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
      * A kiválasztott hoszthoz tartozó chatüzenetek listáját adja meg.
      */
     public List<ChatMessage> getChatMessages() {
-        synchronized(CHAT_MESSAGES) {
-            return new ArrayList<ChatMessage>(CHAT_MESSAGES);
-        }
+        return CHAT_MESSAGES;
     }
 
     /**
@@ -235,24 +233,6 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
      */
     public Boolean isWantControl() {
         return wantControl;
-    }
-    
-    /**
-     * Chatüzenetet ad hozzá a tárolóhoz.
-     */
-    public void addChatMessage(ChatMessage m) {
-        if (m != null) synchronized(CHAT_MESSAGES) {
-            CHAT_MESSAGES.add(m);
-        }
-    }
-    
-    /**
-     * Több chatüzenetet ad hozzá a tárolóhoz.
-     */
-    public void addChatMessages(List<ChatMessage> l) {
-        if (l != null) synchronized(CHAT_MESSAGES) {
-            CHAT_MESSAGES.addAll(l);
-        }
     }
 
     /**
@@ -298,7 +278,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     @Override
     public void update(ControllerData d) {
         if (d != null) {
-            addChatMessages(d.getChatMessages());
+            getChatMessages().addAll(d.getChatMessages());
             setHostName(d.getHostName());
             setHostState(d.getHostState());
             setHostConnected(d.isHostConnected());

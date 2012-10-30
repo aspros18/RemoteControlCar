@@ -3,6 +3,7 @@ package org.dyndns.fzoli.socket;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import javax.net.ssl.SSLSocket;
@@ -29,7 +30,7 @@ public abstract class ClientConnectionHelper {
     /**
      * A kiépített kapcsolatokat tartalmazó lista.
      */
-    private final List<SSLSocket> CONNECTIONS = new ArrayList<SSLSocket>();
+    private final List<SSLSocket> CONNECTIONS = Collections.synchronizedList(new ArrayList<SSLSocket>());
     
     /**
      * Eseménykezelő, ami lefut, ha sikerült az első kapcsolódás.

@@ -35,7 +35,7 @@ public class ChatMessage extends PartialBaseData<ControllerData, String> {
     @Override
     public void apply(ControllerData d) {
         if (d != null) {
-            d.addChatMessage(this);
+            d.getChatMessages().add(this);
         }
     }
     

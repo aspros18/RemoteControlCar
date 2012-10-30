@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.dyndns.fzoli.socket.process.Process;
 
@@ -17,7 +18,7 @@ public abstract class AbstractClientHandler extends AbstractHandler {
 
     private final Integer deviceId, connectionId;
     
-    private final static List<Process> PROCESSES = new ArrayList<Process>();
+    private final static List<Process> PROCESSES = Collections.synchronizedList(new ArrayList<Process>());
     
     /**
      * A kliens oldali kapcsolatkezelő konstruktora.
@@ -47,9 +48,7 @@ public abstract class AbstractClientHandler extends AbstractHandler {
      */
     @Override
     public List<Process> getProcesses() {
-        synchronized(PROCESSES) {
-            return new ArrayList<Process>(PROCESSES);
-        }
+        return PROCESSES;
     }
     
     /**

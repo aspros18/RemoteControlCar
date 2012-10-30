@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.model.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.dyndns.fzoli.rccar.model.Data;
 import org.dyndns.fzoli.rccar.model.PartialData;
@@ -51,10 +52,10 @@ public class HostList extends Data<HostList, HostList.PartialHostList> {
             if (d != null && type != null) {
                 switch (type) {
                     case ADD:
-                        d.addHost(data);
+                        d.getHosts().add(data);
                         break;
                     case REMOVE:
-                        d.removeHost(data);
+                        d.getHosts().remove(data);
                 }
             }
         }
@@ -64,54 +65,13 @@ public class HostList extends Data<HostList, HostList.PartialHostList> {
     /**
      * Az elérhető járművek listája.
      */
-    private final List<String> HOSTS = new ArrayList<String>();
+    private final List<String> HOSTS = Collections.synchronizedList(new ArrayList<String>());
     
     /**
      * Az elérhető járművekkel tér vissza.
      */
     public List<String> getHosts() {
-        synchronized (HOSTS) {
-            return new ArrayList<String>(HOSTS);
-        }
-    }
-    
-    /**
-     * Hozzáad egy járművet a listához.
-     * @param host a jármű neve
-     */
-    public void addHost(String host) {
-        if (host != null) synchronized (HOSTS) {
-            HOSTS.add(host);
-        }
-    }
-    
-    /**
-     * Hozzáad több járművet a listához.
-     * @param hosta a járművek nevei
-     */
-    public void addHosts(List<String> hosts) {
-        if (hosts != null) synchronized (HOSTS) {
-            HOSTS.addAll(hosts);
-        }
-    }
-    
-    /**
-     * Eltávolít egy járművet a listából.
-     * @param host a jármű neve
-     */
-    public void removeHost(String host) {
-        if (host != null) synchronized (HOSTS) {
-            HOSTS.remove(host);
-        }
-    }
-    
-    /**
-     * Az összes járművet eltávolítja a listából.
-     */
-    public void removeHosts() {
-        synchronized (HOSTS) {
-            HOSTS.clear();
-        }
+        return HOSTS;
     }
     
     /**
@@ -121,8 +81,8 @@ public class HostList extends Data<HostList, HostList.PartialHostList> {
     @Override
     public void update(HostList d) {
         if (d != null) {
-            removeHosts();
-            addHosts(d.getHosts());
+            getHosts().clear();
+            getHosts().addAll(d.getHosts());
         }
     }
     

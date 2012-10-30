@@ -2,6 +2,7 @@ package org.dyndns.fzoli.socket.handler;
 
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.dyndns.fzoli.socket.handler.event.HandlerListener;
 import org.dyndns.fzoli.socket.process.Process;
@@ -15,7 +16,7 @@ public abstract class AbstractHandler implements Handler {
     
     private final Socket SOCKET;
     
-    private final List<HandlerListener> LISTENERS = new ArrayList<HandlerListener>();
+    private final List<HandlerListener> LISTENERS = Collections.synchronizedList(new ArrayList<HandlerListener>());
     
     /**
      * @param socket Socket, amin keresztül folyik a kommunikáció.
@@ -29,9 +30,7 @@ public abstract class AbstractHandler implements Handler {
      */
     @Override
     public List<HandlerListener> getHandlerListeners() {
-        synchronized(LISTENERS) {
-            return new ArrayList<HandlerListener>(LISTENERS);
-        }
+        return LISTENERS;
     }
 
     /**

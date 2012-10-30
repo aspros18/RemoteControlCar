@@ -6,6 +6,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JLabel;
@@ -23,7 +24,7 @@ public class IconTextPanel extends JPanel {
     /**
      * A paneleket tartalmazó lista.
      */
-    private static final List<IconTextPanel> panels = new ArrayList<IconTextPanel>();
+    private static final List<IconTextPanel> panels = Collections.synchronizedList(new ArrayList<IconTextPanel>());
 
     /**
      * A panelen megjelenő komponensek.

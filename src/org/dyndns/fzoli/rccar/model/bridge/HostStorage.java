@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.model.bridge;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
@@ -41,12 +42,12 @@ public class HostStorage {
     /**
      * Vezérlők, melyek ezt a járművet választották ki.
      */
-    private final List<String> CONTROLLERS = new ArrayList<String>();
+    private final List<String> CONTROLLERS = Collections.synchronizedList(new ArrayList<String>());
     
     /**
      * A járműhöz tartozó chatüzenetek.
      */
-    private final List<ChatMessage> CHAT_MESSAGES = new ArrayList<ChatMessage>();
+    private final List<ChatMessage> CHAT_MESSAGES = Collections.synchronizedList(new ArrayList<ChatMessage>());
 
     /**
      * A jelenlegi jármű irányító.
@@ -56,7 +57,7 @@ public class HostStorage {
     /**
      * A járművet irányítani akarók.
      */
-    private final List<String> OWNERS = new ArrayList<String>();
+    private final List<String> OWNERS = Collections.synchronizedList(new ArrayList<String>());
     
     public HostStorage(String hostName) {
         HOST_NAME = hostName;
@@ -71,55 +72,19 @@ public class HostStorage {
     }
 
     public List<String> getOwners() {
-        synchronized(OWNERS) {
-            return new ArrayList<String>(OWNERS);
-        }
+        return OWNERS;
     }
     
     public List<String> getControllers() {
-        synchronized(CONTROLLERS) {
-            return new ArrayList<String>(CONTROLLERS);
-        }
+        return CONTROLLERS;
     }
 
     public void setOwner(String owner) {
         this.owner = owner;
     }
     
-    public void addOwner(String owner) {
-        if (owner != null) synchronized(OWNERS) {
-            OWNERS.add(owner);
-        }
-    }
-    
-    public void removeOwner(String owner) {
-        if (owner != null) synchronized(OWNERS) {
-            OWNERS.remove(owner);
-        }
-    }
-    
-    public void addController(String c) {
-        if (c != null) synchronized(CONTROLLERS) {
-            CONTROLLERS.add(c);
-        }
-    }
-    
-    public void removeController(String c) {
-        if (c != null) synchronized(CONTROLLERS) {
-            CONTROLLERS.remove(c);
-        }
-    }
-    
     public List<ChatMessage> getChatMessages() {
-        synchronized(CHAT_MESSAGES) {
-            return new ArrayList<ChatMessage>(CHAT_MESSAGES);
-        }
-    }
-    
-    public void addChatMessage(ChatMessage m) {
-        if (m != null) synchronized(CHAT_MESSAGES) {
-            CHAT_MESSAGES.add(m);
-        }
+        return CHAT_MESSAGES;
     }
     
     public ControllerData createControllerData() {

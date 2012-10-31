@@ -49,6 +49,11 @@ public class HostSelectionFrame extends JFrame {
     private final JButton BT_SELECT = new JButton("Kiválasztás");
     
     /**
+     * Megadja, hogy ki lett-e már választva egy hoszt.
+     */
+    private boolean selected;
+    
+    /**
      * Konstruktor
      * @param alExit az ablak bezárásakor lefutó eseményfigyelő
      */
@@ -100,7 +105,7 @@ public class HostSelectionFrame extends JFrame {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 String host = LIST.getSelectedValue();
-                BT_SELECT.setEnabled(host != null);
+                BT_SELECT.setEnabled(host != null && !selected);
             }
             
         });
@@ -108,10 +113,21 @@ public class HostSelectionFrame extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                BT_SELECT.setEnabled(false); //TODO
+                selected = true;
+                BT_SELECT.setEnabled(false);
+                //TODO
             }
             
         });
+    }
+
+    /**
+     * Ha az ablak megjelenését kérik, akkor még nincs kiválasztva a hoszt.
+     */
+    @Override
+    public void setVisible(boolean b) {
+        if (b) selected = false;
+        super.setVisible(b);
     }
     
     /**

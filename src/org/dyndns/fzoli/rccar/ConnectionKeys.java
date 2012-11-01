@@ -22,8 +22,13 @@ public interface ConnectionKeys {
     int KEY_CONN_DISCONNECT = 0;
     
     /**
-     * A tesztelés idejére készített DUMMY-feldolgozó kapcsolatazonosítója.
+     * Üzenetküldő és fogadó szál kapcsolatazonosítója.
      */
-    int KEY_CONN_CONTROLLER_MESSAGE = 1;
+    int KEY_CONN_MESSAGE = 1;
+    
+    /**
+     * Csak a tesztelés idejére.
+     */
+    int KEY_CONN_DUMMY = 2;
     
 }

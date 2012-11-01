@@ -36,7 +36,7 @@ public class ServerDisconnectTest implements ConnectionKeys {
                                     }
 
                                 };
-                            case KEY_CONN_CONTROLLER_MESSAGE:
+                            case KEY_CONN_DUMMY:
                                 return new DummyProcess(this);
                         }
                         return null;

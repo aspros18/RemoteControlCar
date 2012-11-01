@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import org.dyndns.fzoli.socket.ServerProcesses;
+import org.dyndns.fzoli.socket.handler.exception.HandlerException;
 import org.dyndns.fzoli.socket.process.Process;
 
 /**
@@ -17,8 +17,6 @@ import org.dyndns.fzoli.socket.process.Process;
 public abstract class AbstractServerHandler extends AbstractHandler {
 
     private Integer deviceId, connectionId;
-    
-    private final static List<Process> PROCESSES = Collections.synchronizedList(new ArrayList<Process>());
     
     /**
      * A szerver oldali kapcsolatkezelő konstruktora.
@@ -31,16 +29,9 @@ public abstract class AbstractServerHandler extends AbstractHandler {
     /**
      * Azokat az adatfeldolgozókat adja vissza, melyek még dolgoznak.
      */
-    public static List<Process> getProcesses() {
-        return PROCESSES;
-    }
-
-    /**
-     * Azokat az adatfeldolgozókat adja vissza, melyek még dolgoznak.
-     */
     @Override
-    public List<Process> getProcessList() {
-        return getProcesses();
+    public List<Process> getProcesses() {
+        return ServerProcesses.getProcesses();
     }
     
     /**
@@ -150,17 +141,13 @@ public abstract class AbstractServerHandler extends AbstractHandler {
             fireProcessSelected();
             
             // adatfeldolgozó hozzáadása a listához
-            synchronized(PROCESSES) {
-                PROCESSES.add(proc);
-            }
+            getProcesses().add(proc);
             
             // adatfeldolgozó futtatása
             proc.run();
             
             // adatfeldolgozó eltávolítása a listából
-            synchronized(PROCESSES) {
-                PROCESSES.remove(proc);
-            }
+            getProcesses().remove(proc);
             
             // kapcsolat bezárása
             in.close();

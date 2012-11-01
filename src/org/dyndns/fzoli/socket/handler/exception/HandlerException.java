@@ -1,4 +1,4 @@
-package org.dyndns.fzoli.socket.handler;
+package org.dyndns.fzoli.socket.handler.exception;
 
 /**
  * A Handler adatfeldolgozása közben fellépő kivétel.

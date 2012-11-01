@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import org.dyndns.fzoli.socket.ClientProcesses;
+import org.dyndns.fzoli.socket.handler.exception.HandlerException;
 import org.dyndns.fzoli.socket.process.Process;
 
 /**
@@ -17,11 +17,6 @@ import org.dyndns.fzoli.socket.process.Process;
 public abstract class AbstractClientHandler extends AbstractHandler {
 
     private final Integer deviceId, connectionId;
-    
-    /**
-     * A még aktív feldolgozókat tartalmazó lista.
-     */
-    private final static List<Process> PROCESSES = Collections.synchronizedList(new ArrayList<Process>());
     
     /**
      * A kliens oldali kapcsolatkezelő konstruktora.
@@ -45,50 +40,13 @@ public abstract class AbstractClientHandler extends AbstractHandler {
     private void checkId(String name, int id) {
         if (id < 0 || id > 255) throw new IllegalArgumentException(name + " ID needs to be between 1 and 255");
     }
-    
-    /**
-     * Azokat az adatfeldolgozókat adja vissza, melyek még dolgoznak.
-     */
-    public static List<Process> getProcesses() {
-        return PROCESSES;
-    }
-    
-    /**
-     * Kapcsolatazonosító alapján megkeresi az adatfeldolgozót.
-     * @param connectionId kapcsolatazonosító
-     * @return null, ha nincs találat, egyébként adatfeldolgozó objektum
-     */
-    public static Process findProcess(int connectionId) {
-        return findProcess(connectionId, Process.class);
-    }
-    
-    /**
-     * Kapcsolatazonosító alapján megkeresi az adatfeldolgozót.
-     * @param connectionId kapcsolatazonosító
-     * @param clazz az adatfeldolgozó típusa
-     * @return null, ha nincs találat, egyébként adatfeldolgozó objektum
-     */
-    public static <T extends Process> T findProcess(int connectionId, Class<T> clazz) {
-        List<Process> ls = getProcesses();
-        for (Process p : ls) {
-            if (p.getConnectionId().equals(connectionId)) {
-                try {
-                    return (T) p;
-                }
-                catch (ClassCastException ex) {
-                    return null;
-                }
-            }
-        }
-        return null;
-    }
 
     /**
      * Azokat az adatfeldolgozókat adja vissza, melyek még dolgoznak.
      */
     @Override
-    public List<Process> getProcessList() {
-        return getProcesses();
+    public List<Process> getProcesses() {
+        return ClientProcesses.getProcesses();
     }
     
     /**
@@ -177,17 +135,13 @@ public abstract class AbstractClientHandler extends AbstractHandler {
             fireProcessSelected();
             
             // adatfeldolgozó hozzáadása a listához
-            synchronized(PROCESSES) {
-                PROCESSES.add(proc);
-            }
+            getProcesses().add(proc);
             
             // adatfeldolgozó futtatása
             proc.run();
             
             // adatfeldolgozó eltávolítása a listából
-            synchronized(PROCESSES) {
-                PROCESSES.remove(proc);
-            }
+            getProcesses().remove(proc);
             
             // kapcsolat bezárása
             in.close();

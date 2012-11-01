@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import org.dyndns.fzoli.socket.handler.exception.HandlerException;
+import org.dyndns.fzoli.socket.handler.exception.RemoteHandlerException;
 
 /**
  * AbstractClientHandler és AbstractServerHandler implementálásához.

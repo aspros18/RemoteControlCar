@@ -7,7 +7,7 @@ import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.controller.ConnectionProgressFrame.Status;
 import static org.dyndns.fzoli.rccar.controller.Main.showConnectionStatus;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
-import org.dyndns.fzoli.socket.handler.RemoteHandlerException;
+import org.dyndns.fzoli.socket.handler.exception.RemoteHandlerException;
 import org.dyndns.fzoli.socket.process.SecureProcess;
 
 /**

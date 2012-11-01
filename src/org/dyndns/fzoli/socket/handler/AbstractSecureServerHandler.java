@@ -2,6 +2,7 @@ package org.dyndns.fzoli.socket.handler;
 
 import java.util.List;
 import javax.net.ssl.SSLSocket;
+import org.dyndns.fzoli.socket.handler.exception.MultipleCertificateException;
 import org.dyndns.fzoli.socket.process.SecureProcess;
 
 /**
@@ -24,50 +25,9 @@ public abstract class AbstractSecureServerHandler extends AbstractServerHandler 
     /**
      * Azokat a biztonságos adatfeldolgozókat adja vissza, melyek még dolgoznak.
      */
-    public static List<SecureProcess> getSecureProcesses() {
-        return SecureHandlerUtil.getSecureProcesses(getProcesses());
-    }
-
-    /**
-     * Megkeresi az adatfeldolgozót a paraméterek alapján.
-     * @param remoteName tanúsítvány common name
-     * @param deviceId eszközazonosító
-     * @param connectionId kapcsolatazonosító
-     * @return null, ha nincs találat, egyébként adatfeldolgozó objektum
-     */
-    public static SecureProcess findProcess(String remoteName, int deviceId, int connectionId) {
-        return findProcess(remoteName, deviceId, connectionId, SecureProcess.class);
-    }
-    
-    /**
-     * Megkeresi az adatfeldolgozót a paraméterek alapján.
-     * @param remoteName tanúsítvány common name
-     * @param deviceId eszközazonosító
-     * @param connectionId kapcsolatazonosító
-     * @param clazz az adatfeldolgozó típusa
-     * @return null, ha nincs találat, egyébként adatfeldolgozó objektum
-     */
-    public static <T extends SecureProcess> T findProcess(String remoteName, int deviceId, int connectionId, Class<T> clazz) {
-        List<SecureProcess> procs = getSecureProcesses();
-        for (SecureProcess proc : procs) {
-            if (SecureHandlerUtil.isCertEqual(proc.getHandler(), remoteName, deviceId, connectionId)) {
-                try {
-                    return (T) proc;
-                }
-                catch (ClassCastException ex) {
-                    return null;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Azokat a biztonságos adatfeldolgozókat adja vissza, melyek még dolgoznak.
-     */
     @Override
-    public List<SecureProcess> getSecureProcessList() {
-        return getSecureProcesses();
+    public List<SecureProcess> getSecureProcesses() {
+        return SecureHandlerUtil.getSecureProcesses(getProcesses());
     }
     
     /**
@@ -77,6 +37,17 @@ public abstract class AbstractSecureServerHandler extends AbstractServerHandler 
     @Override
     public boolean isCertEqual(SecureHandler handler) {
         return SecureHandlerUtil.isCertEqual(this, handler);
+    }
+
+    /**
+     * Igaz, ha ugyan azzal a tanúsítvánnyal és azonosítókkal rendelkezik a feldolgozó, mint a paraméterben megadottak.
+     * @param remoteName tanúsítvány common name
+     * @param deviceId eszközazonosító
+     * @param connectionId kapcsolatazonosító
+     */
+    @Override
+    public boolean isCertEqual(String remoteName, int deviceId, int connectionId) {
+        return SecureHandlerUtil.isCertEqual(this, remoteName, deviceId, connectionId);
     }
     
     /**

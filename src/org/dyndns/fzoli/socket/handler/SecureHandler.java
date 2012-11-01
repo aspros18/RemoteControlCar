@@ -14,12 +14,20 @@ public interface SecureHandler extends Handler, SecureSocketter {
     /**
      * Azokat a biztonságos adatfeldolgozókat adja vissza, melyek még dolgoznak.
      */
-    public List<SecureProcess> getSecureProcessList();
+    public List<SecureProcess> getSecureProcesses();
     
     /**
      * Igaz, ha ugyan azzal a tanúsítvánnyal és azonosítókkal rendelkezik a megadott feldolgozó.
      * @param handler a másik feldolgozó
      */
     public boolean isCertEqual(SecureHandler handler);
+    
+    /**
+     * Igaz, ha ugyan azzal a tanúsítvánnyal és azonosítókkal rendelkezik a feldolgozó, mint a paraméterben megadottak.
+     * @param remoteName tanúsítvány common name
+     * @param deviceId eszközazonosító
+     * @param connectionId kapcsolatazonosító
+     */
+    public boolean isCertEqual(String remoteName, int deviceId, int connectionId);
     
 }

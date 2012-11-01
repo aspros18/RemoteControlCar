@@ -15,7 +15,7 @@ public interface Handler extends Socketter {
     /**
      * Azokat az adatfeldolgozókat adja vissza, melyek még dolgoznak.
      */
-    public List<Process> getProcessList();
+    public List<Process> getProcesses();
     
     /**
      * A kapcsolatkezelő eseményfigyelőit adja vissza.

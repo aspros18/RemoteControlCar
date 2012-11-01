@@ -27,16 +27,9 @@ public abstract class AbstractSecureClientHandler extends AbstractClientHandler 
     /**
      * Azokat a biztonságos adatfeldolgozókat adja vissza, melyek még dolgoznak.
      */
-    public static List<SecureProcess> getSecureProcesses() {
-        return SecureHandlerUtil.getSecureProcesses(getProcesses());
-    }
-
-    /**
-     * Azokat a biztonságos adatfeldolgozókat adja vissza, melyek még dolgoznak.
-     */
     @Override
-    public List<SecureProcess> getSecureProcessList() {
-        return getSecureProcesses();
+    public List<SecureProcess> getSecureProcesses() {
+        return SecureHandlerUtil.getSecureProcesses(getProcesses());
     }
 
     /**
@@ -46,6 +39,17 @@ public abstract class AbstractSecureClientHandler extends AbstractClientHandler 
     @Override
     public boolean isCertEqual(SecureHandler handler) {
         return SecureHandlerUtil.isCertEqual(this, handler);
+    }
+
+    /**
+     * Igaz, ha ugyan azzal a tanúsítvánnyal és azonosítókkal rendelkezik a feldolgozó, mint a paraméterben megadottak.
+     * @param remoteName tanúsítvány common name
+     * @param deviceId eszközazonosító
+     * @param connectionId kapcsolatazonosító
+     */
+    @Override
+    public boolean isCertEqual(String remoteName, int deviceId, int connectionId) {
+        return SecureHandlerUtil.isCertEqual(this, remoteName, deviceId, connectionId);
     }
     
     /**

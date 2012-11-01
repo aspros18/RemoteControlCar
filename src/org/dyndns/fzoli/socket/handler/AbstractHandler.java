@@ -24,7 +24,7 @@ public abstract class AbstractHandler implements Handler {
     public AbstractHandler(Socket socket) {
         SOCKET = socket;
     }
-
+    
     /**
      * A kapcsolatkezelő eseményfigyelőit adja vissza.
      */

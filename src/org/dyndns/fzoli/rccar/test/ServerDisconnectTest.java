@@ -6,7 +6,7 @@ import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
-import org.dyndns.fzoli.socket.handler.SecureHandlerException;
+import org.dyndns.fzoli.socket.handler.exception.SecureHandlerException;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
 import org.dyndns.fzoli.socket.process.impl.ServerDisconnectProcess;
 

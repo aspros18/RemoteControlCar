@@ -33,7 +33,19 @@ public abstract class AbstractSecureServerProcess extends AbstractSecureProcess 
      * @return null, ha nincs találat, egyébként adatfeldolgozó objektum
      */
     protected SecureProcess findProcess(String remoteName, int deviceId, int connectionId) {
-        return getHandler().findProcess(remoteName, deviceId, connectionId);
+        return findProcess(remoteName, deviceId, connectionId, SecureProcess.class);
+    }
+    
+    /**
+     * Megkeresi az adatfeldolgozót a paraméterek alapján.
+     * @param remoteName tanúsítvány common name
+     * @param deviceId eszközazonosító
+     * @param connectionId kapcsolatazonosító
+     * @param clazz az adatfeldolgozó típusa
+     * @return null, ha nincs találat, egyébként adatfeldolgozó objektum
+     */
+    protected <T extends SecureProcess> T findProcess(String remoteName, int deviceId, int connectionId, Class<T> clazz) {
+        return getHandler().findProcess(remoteName, deviceId, connectionId, clazz);
     }
     
 }

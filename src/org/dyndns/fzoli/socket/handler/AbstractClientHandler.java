@@ -75,10 +75,25 @@ public abstract class AbstractClientHandler extends AbstractHandler {
      * @return null, ha nincs találat, egyébként adatfeldolgozó objektum
      */
     public Process findProcess(int connectionId) {
+        return findProcess(connectionId, Process.class);
+    }
+    
+    /**
+     * Kapcsolatazonosító alapján megkeresi az adatfeldolgozót.
+     * @param connectionId kapcsolatazonosító
+     * @param clazz az adatfeldolgozó típusa
+     * @return null, ha nincs találat, egyébként adatfeldolgozó objektum
+     */
+    public <T extends Process> T findProcess(int connectionId, Class<T> clazz) {
         List<Process> ls = getProcesses();
         for (Process p : ls) {
             if (p.getConnectionId().equals(connectionId)) {
-                return p;
+                try {
+                    return (T) p;
+                }
+                catch (ClassCastException ex) {
+                    return null;
+                }
             }
         }
         return null;

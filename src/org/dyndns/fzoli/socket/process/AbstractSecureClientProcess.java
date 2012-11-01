@@ -31,7 +31,17 @@ public abstract class AbstractSecureClientProcess extends AbstractSecureProcess 
      * @return null, ha nincs találat, egyébként adatfeldolgozó objektum
      */
     protected Process findProcess(int connectionId) {
-        return getHandler().findProcess(connectionId);
+        return findProcess(connectionId, Process.class);
+    }
+    
+    /**
+     * Kapcsolatazonosító alapján megkeresi az adatfeldolgozót.
+     * @param connectionId kapcsolatazonosító
+     * @param clazz az adatfeldolgozó típusa
+     * @return null, ha nincs találat, egyébként adatfeldolgozó objektum
+     */
+    protected <T extends Process> T findProcess(int connectionId, Class<T> clazz) {
+        return getHandler().findProcess(connectionId, clazz);
     }
     
 }

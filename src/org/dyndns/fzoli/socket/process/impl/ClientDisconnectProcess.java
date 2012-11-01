@@ -4,15 +4,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import org.dyndns.fzoli.socket.handler.SecureHandler;
-import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
+import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
+import org.dyndns.fzoli.socket.process.AbstractSecureClientProcess;
 
 /**
  * Az osztály a szerverrel kiépített kapcsolatot arra használja, hogy
  * másodpercenként ellenőrizze, hogy megszakadt-e a kapcsolat.
  * @author zoli
  */
-public class ClientDisconnectProcess extends AbstractSecureProcess implements DisconnectProcess {
+public class ClientDisconnectProcess extends AbstractSecureClientProcess implements DisconnectProcess {
 
     /**
      * Konstruktorban beállított konstansok.
@@ -32,7 +32,7 @@ public class ClientDisconnectProcess extends AbstractSecureProcess implements Di
      * @param waiting két ellenőrzés között eltelt idő
      * @throws NullPointerException ha handler null
      */
-    public ClientDisconnectProcess(SecureHandler handler, int timeout1, int timeout2, int waiting) {
+    public ClientDisconnectProcess(AbstractSecureClientHandler handler, int timeout1, int timeout2, int waiting) {
         super(handler);
         this.timeout1 = timeout1;
         this.timeout2 = timeout2;

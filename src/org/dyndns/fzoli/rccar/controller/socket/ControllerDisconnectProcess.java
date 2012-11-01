@@ -3,7 +3,7 @@ package org.dyndns.fzoli.rccar.controller.socket;
 import org.dyndns.fzoli.rccar.controller.ConnectionProgressFrame.Status;
 import static org.dyndns.fzoli.rccar.controller.Main.showConnectionStatus;
 import org.dyndns.fzoli.rccar.test.DisconnectProcessTester;
-import org.dyndns.fzoli.socket.handler.SecureHandler;
+import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
 import org.dyndns.fzoli.socket.process.impl.ClientDisconnectProcess;
 
 /**
@@ -14,7 +14,7 @@ public class ControllerDisconnectProcess extends ClientDisconnectProcess {
     
     private final DisconnectProcessTester TESTER = new DisconnectProcessTester();
     
-    public ControllerDisconnectProcess(SecureHandler handler) {
+    public ControllerDisconnectProcess(AbstractSecureClientHandler handler) {
         super(handler, 1000, 10000, 250); // 1 és 10 mp időtúllépés, 250 ms sleep
     }
 

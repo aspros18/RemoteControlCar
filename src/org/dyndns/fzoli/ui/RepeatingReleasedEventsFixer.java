@@ -1,4 +1,4 @@
-package org.dyndns.fzoli.rccar.test;
+package org.dyndns.fzoli.ui;
 
 import java.awt.AWTEvent;
 import java.awt.Component;
@@ -58,7 +58,7 @@ Mode of operation</h3>
  *
  * @author <a href="http://endre.stolsvik.com/">Endre Stølsvik</a>
  */
-class RepeatingReleasedEventsFixer implements AWTEventListener {
+public class RepeatingReleasedEventsFixer implements AWTEventListener {
     
     private static RepeatingReleasedEventsFixer installed;
  

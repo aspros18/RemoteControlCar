@@ -18,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import org.dyndns.fzoli.ui.RepeatingReleasedEventsFixer;
 
 abstract class ArrowComponent extends BufferedImage {
 

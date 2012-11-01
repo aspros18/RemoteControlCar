@@ -51,7 +51,7 @@ public class ClientDisconnectTest implements ConnectionKeys {
                         }
                         
                     };
-                case KEY_CONN_DUMMY:
+                case KEY_CONN_CONTROLLER_MESSAGE:
                     return new DummyProcess(this);
             }
             return null;
@@ -77,7 +77,7 @@ public class ClientDisconnectTest implements ConnectionKeys {
     
     public static void main(String[] args) throws Exception {
         final String url = getIP();
-        new ClientConnectionHelper(5, new int[] {KEY_CONN_DISCONNECT, KEY_CONN_DUMMY}) {
+        new ClientConnectionHelper(5, new int[] {KEY_CONN_DISCONNECT, KEY_CONN_CONTROLLER_MESSAGE}) {
 
             @Override
             protected SSLSocket createConnection() throws GeneralSecurityException, IOException {

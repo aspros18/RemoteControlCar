@@ -24,6 +24,6 @@ public interface ConnectionKeys {
     /**
      * A tesztelés idejére készített DUMMY-feldolgozó kapcsolatazonosítója.
      */
-    int KEY_CONN_DUMMY = 1;
+    int KEY_CONN_CONTROLLER_MESSAGE = 1;
     
 }

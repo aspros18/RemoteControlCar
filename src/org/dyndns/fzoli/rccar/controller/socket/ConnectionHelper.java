@@ -32,7 +32,7 @@ public class ConnectionHelper extends ClientConnectionHelper implements Connecti
      * TODO: Egyelőre teszt.
      */
     public ConnectionHelper(Config config) {
-        super(KEY_DEV_CONTROLLER, new int[] {KEY_CONN_DISCONNECT, KEY_CONN_DUMMY});
+        super(KEY_DEV_CONTROLLER, new int[] {KEY_CONN_DISCONNECT, KEY_CONN_CONTROLLER_MESSAGE});
         CONFIG = config;
     }
 

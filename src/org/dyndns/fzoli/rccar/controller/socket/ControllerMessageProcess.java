@@ -5,21 +5,21 @@ import static org.dyndns.fzoli.rccar.controller.Main.updateHostSelectionFrame;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
-import org.dyndns.fzoli.socket.handler.SecureHandler;
-import org.dyndns.fzoli.socket.process.impl.MessageProcess;
+import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
+import org.dyndns.fzoli.socket.process.impl.ClientMessageProcess;
 
 /**
  *
  * @author zoli
  */
-public class ControllerMessageProcess extends MessageProcess {
+public class ControllerMessageProcess extends ClientMessageProcess {
 
-    public ControllerMessageProcess(SecureHandler handler) {
+    public ControllerMessageProcess(AbstractSecureClientHandler handler) {
         super(handler);
     }
 
     @Override
-    protected void onMessage(Object o) {
+    public void onMessage(Object o) {
         if (o instanceof HostList) {
             showHostSelectionFrame((HostList) o);
         }

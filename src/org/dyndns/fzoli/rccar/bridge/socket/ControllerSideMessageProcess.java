@@ -1,21 +1,21 @@
 package org.dyndns.fzoli.rccar.bridge.socket;
 
 import org.dyndns.fzoli.rccar.model.controller.HostList;
-import org.dyndns.fzoli.socket.handler.SecureHandler;
-import org.dyndns.fzoli.socket.process.impl.MessageProcess;
+import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
+import org.dyndns.fzoli.socket.process.impl.ServerMessageProcess;
 
 /**
  *
  * @author zoli
  */
-public class ControllerSideMessageProcess extends MessageProcess {
+public class ControllerSideMessageProcess extends ServerMessageProcess {
 
-    public ControllerSideMessageProcess(SecureHandler handler) {
+    public ControllerSideMessageProcess(AbstractSecureServerHandler handler) {
         super(handler);
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         HostList l = new HostList();
         for (int i = 1; i <= 8; i++) {
             l.getHosts().add("teszt" + i);
@@ -42,7 +42,7 @@ public class ControllerSideMessageProcess extends MessageProcess {
     }
 
     @Override
-    protected void onMessage(Object o) {
+    public void onMessage(Object o) {
         ;
     }
     

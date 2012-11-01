@@ -1,5 +1,7 @@
 package org.dyndns.fzoli.socket.process;
 
+import java.util.List;
+import org.dyndns.fzoli.socket.handler.AbstractClientHandler;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
 
 /**
@@ -26,12 +28,26 @@ public abstract class AbstractSecureClientProcess extends AbstractSecureProcess 
     }
     
     /**
+     * Azokat az adatfeldolgozókat adja vissza, melyek még dolgoznak.
+     */
+    protected static List<Process> getProcesses() {
+        return AbstractClientHandler.getProcesses();
+    }
+    
+    /**
+     * Azokat a biztonságos adatfeldolgozókat adja vissza, melyek még dolgoznak.
+     */
+    protected static List<SecureProcess> getSecureProcesses() {
+        return AbstractSecureClientHandler.getSecureProcesses();
+    }
+    
+    /**
      * Kapcsolatazonosító alapján megkeresi az adatfeldolgozót.
      * @param connectionId kapcsolatazonosító
      * @return null, ha nincs találat, egyébként adatfeldolgozó objektum
      */
-    protected Process findProcess(int connectionId) {
-        return findProcess(connectionId, Process.class);
+    protected static Process findProcess(int connectionId) {
+        return AbstractClientHandler.findProcess(connectionId);
     }
     
     /**
@@ -40,8 +56,8 @@ public abstract class AbstractSecureClientProcess extends AbstractSecureProcess 
      * @param clazz az adatfeldolgozó típusa
      * @return null, ha nincs találat, egyébként adatfeldolgozó objektum
      */
-    protected <T extends Process> T findProcess(int connectionId, Class<T> clazz) {
-        return getHandler().findProcess(connectionId, clazz);
+    protected static <T extends Process> T findProcess(int connectionId, Class<T> clazz) {
+        return AbstractClientHandler.findProcess(connectionId, clazz);
     }
     
 }

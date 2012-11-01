@@ -24,20 +24,10 @@ public abstract class AbstractSecureServerHandler extends AbstractServerHandler 
     /**
      * Azokat a biztonságos adatfeldolgozókat adja vissza, melyek még dolgoznak.
      */
-    @Override
-    public List<SecureProcess> getSecureProcesses() {
+    public static List<SecureProcess> getSecureProcesses() {
         return SecureHandlerUtil.getSecureProcesses(getProcesses());
     }
 
-    /**
-     * Igaz, ha ugyan azzal a tanúsítvánnyal és azonosítókkal rendelkezik a megadott feldolgozó.
-     * @param handler a másik feldolgozó
-     */
-    @Override
-    public boolean isCertEqual(SecureHandler handler) {
-        return SecureHandlerUtil.isCertEqual(this, handler);
-    }
-    
     /**
      * Megkeresi az adatfeldolgozót a paraméterek alapján.
      * @param remoteName tanúsítvány common name
@@ -45,7 +35,7 @@ public abstract class AbstractSecureServerHandler extends AbstractServerHandler 
      * @param connectionId kapcsolatazonosító
      * @return null, ha nincs találat, egyébként adatfeldolgozó objektum
      */
-    public SecureProcess findProcess(String remoteName, int deviceId, int connectionId) {
+    public static SecureProcess findProcess(String remoteName, int deviceId, int connectionId) {
         return findProcess(remoteName, deviceId, connectionId, SecureProcess.class);
     }
     
@@ -57,7 +47,7 @@ public abstract class AbstractSecureServerHandler extends AbstractServerHandler 
      * @param clazz az adatfeldolgozó típusa
      * @return null, ha nincs találat, egyébként adatfeldolgozó objektum
      */
-    public <T extends SecureProcess> T findProcess(String remoteName, int deviceId, int connectionId, Class<T> clazz) {
+    public static <T extends SecureProcess> T findProcess(String remoteName, int deviceId, int connectionId, Class<T> clazz) {
         List<SecureProcess> procs = getSecureProcesses();
         for (SecureProcess proc : procs) {
             if (SecureHandlerUtil.isCertEqual(proc.getHandler(), remoteName, deviceId, connectionId)) {
@@ -70,6 +60,23 @@ public abstract class AbstractSecureServerHandler extends AbstractServerHandler 
             }
         }
         return null;
+    }
+
+    /**
+     * Azokat a biztonságos adatfeldolgozókat adja vissza, melyek még dolgoznak.
+     */
+    @Override
+    public List<SecureProcess> getSecureProcessList() {
+        return getSecureProcesses();
+    }
+    
+    /**
+     * Igaz, ha ugyan azzal a tanúsítvánnyal és azonosítókkal rendelkezik a megadott feldolgozó.
+     * @param handler a másik feldolgozó
+     */
+    @Override
+    public boolean isCertEqual(SecureHandler handler) {
+        return SecureHandlerUtil.isCertEqual(this, handler);
     }
     
     /**

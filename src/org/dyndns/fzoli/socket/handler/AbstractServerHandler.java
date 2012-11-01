@@ -31,9 +31,16 @@ public abstract class AbstractServerHandler extends AbstractHandler {
     /**
      * Azokat az adatfeldolgozókat adja vissza, melyek még dolgoznak.
      */
-    @Override
-    public List<Process> getProcesses() {
+    public static List<Process> getProcesses() {
         return PROCESSES;
+    }
+
+    /**
+     * Azokat az adatfeldolgozókat adja vissza, melyek még dolgoznak.
+     */
+    @Override
+    public List<Process> getProcessList() {
+        return getProcesses();
     }
     
     /**

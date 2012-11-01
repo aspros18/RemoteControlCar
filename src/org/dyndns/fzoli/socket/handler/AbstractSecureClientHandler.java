@@ -27,9 +27,16 @@ public abstract class AbstractSecureClientHandler extends AbstractClientHandler 
     /**
      * Azokat a biztonságos adatfeldolgozókat adja vissza, melyek még dolgoznak.
      */
-    @Override
-    public List<SecureProcess> getSecureProcesses() {
+    public static List<SecureProcess> getSecureProcesses() {
         return SecureHandlerUtil.getSecureProcesses(getProcesses());
+    }
+
+    /**
+     * Azokat a biztonságos adatfeldolgozókat adja vissza, melyek még dolgoznak.
+     */
+    @Override
+    public List<SecureProcess> getSecureProcessList() {
+        return getSecureProcesses();
     }
 
     /**

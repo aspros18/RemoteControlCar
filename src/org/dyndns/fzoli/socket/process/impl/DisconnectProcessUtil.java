@@ -69,7 +69,7 @@ class DisconnectProcessUtil {
      * Az összes aktív kapcsolatfeldolgozót leállítja, mely ugyan ahhoz az eszközhöz tartozik.
      */
     public void onDisconnect() {
-        List<SecureProcess> procs = proc.getHandler().getSecureProcesses();
+        List<SecureProcess> procs = proc.getHandler().getSecureProcessList();
         for (SecureProcess prc : procs) { // végigmegy a biztonságos kapcsolatfeldolgozókon ...
             try {
                 // ... és ha megegyező eszközazonosítóval és Common Name mezővel rendelkeznek ...

@@ -14,7 +14,7 @@ public interface SecureHandler extends Handler, SecureSocketter {
     /**
      * Azokat a biztonságos adatfeldolgozókat adja vissza, melyek még dolgoznak.
      */
-    public List<SecureProcess> getSecureProcesses();
+    public List<SecureProcess> getSecureProcessList();
     
     /**
      * Igaz, ha ugyan azzal a tanúsítvánnyal és azonosítókkal rendelkezik a megadott feldolgozó.

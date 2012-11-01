@@ -18,6 +18,9 @@ public abstract class AbstractClientHandler extends AbstractHandler {
 
     private final Integer deviceId, connectionId;
     
+    /**
+     * A még aktív feldolgozókat tartalmazó lista.
+     */
     private final static List<Process> PROCESSES = Collections.synchronizedList(new ArrayList<Process>());
     
     /**
@@ -42,13 +45,50 @@ public abstract class AbstractClientHandler extends AbstractHandler {
     private void checkId(String name, int id) {
         if (id < 0 || id > 255) throw new IllegalArgumentException(name + " ID needs to be between 1 and 255");
     }
+    
+    /**
+     * Azokat az adatfeldolgozókat adja vissza, melyek még dolgoznak.
+     */
+    public static List<Process> getProcesses() {
+        return PROCESSES;
+    }
+    
+    /**
+     * Kapcsolatazonosító alapján megkeresi az adatfeldolgozót.
+     * @param connectionId kapcsolatazonosító
+     * @return null, ha nincs találat, egyébként adatfeldolgozó objektum
+     */
+    public static Process findProcess(int connectionId) {
+        return findProcess(connectionId, Process.class);
+    }
+    
+    /**
+     * Kapcsolatazonosító alapján megkeresi az adatfeldolgozót.
+     * @param connectionId kapcsolatazonosító
+     * @param clazz az adatfeldolgozó típusa
+     * @return null, ha nincs találat, egyébként adatfeldolgozó objektum
+     */
+    public static <T extends Process> T findProcess(int connectionId, Class<T> clazz) {
+        List<Process> ls = getProcesses();
+        for (Process p : ls) {
+            if (p.getConnectionId().equals(connectionId)) {
+                try {
+                    return (T) p;
+                }
+                catch (ClassCastException ex) {
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
 
     /**
      * Azokat az adatfeldolgozókat adja vissza, melyek még dolgoznak.
      */
     @Override
-    public List<Process> getProcesses() {
-        return PROCESSES;
+    public List<Process> getProcessList() {
+        return getProcesses();
     }
     
     /**
@@ -67,36 +107,6 @@ public abstract class AbstractClientHandler extends AbstractHandler {
     @Override
     public Integer getDeviceId() {
         return deviceId;
-    }
-    
-    /**
-     * Kapcsolatazonosító alapján megkeresi az adatfeldolgozót.
-     * @param connectionId kapcsolatazonosító
-     * @return null, ha nincs találat, egyébként adatfeldolgozó objektum
-     */
-    public Process findProcess(int connectionId) {
-        return findProcess(connectionId, Process.class);
-    }
-    
-    /**
-     * Kapcsolatazonosító alapján megkeresi az adatfeldolgozót.
-     * @param connectionId kapcsolatazonosító
-     * @param clazz az adatfeldolgozó típusa
-     * @return null, ha nincs találat, egyébként adatfeldolgozó objektum
-     */
-    public <T extends Process> T findProcess(int connectionId, Class<T> clazz) {
-        List<Process> ls = getProcesses();
-        for (Process p : ls) {
-            if (p.getConnectionId().equals(connectionId)) {
-                try {
-                    return (T) p;
-                }
-                catch (ClassCastException ex) {
-                    return null;
-                }
-            }
-        }
-        return null;
     }
     
     /**

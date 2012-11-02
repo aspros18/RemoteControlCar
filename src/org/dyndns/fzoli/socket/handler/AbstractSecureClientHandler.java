@@ -2,6 +2,7 @@ package org.dyndns.fzoli.socket.handler;
 
 import java.util.List;
 import javax.net.ssl.SSLSocket;
+import org.dyndns.fzoli.socket.Processes;
 import org.dyndns.fzoli.socket.process.SecureProcess;
 
 /**
@@ -86,6 +87,15 @@ public abstract class AbstractSecureClientHandler extends AbstractClientHandler 
     protected void onException(Exception ex) {
         SecureHandlerUtil.onException(ex);
         super.onException(ex);
+    }
+
+    /**
+     * Ha a kiválasztott Process null, fel kell dolgozni.
+     * Bezárja az összes többi kapcsolatot, ami már létre lett hozva a szerverrel.
+     */
+    @Override
+    protected void onProcessNull() {
+        Processes.closeProcesses(getSecureProcesses(), getDeviceId(), getRemoteCommonName());
     }
     
     /**

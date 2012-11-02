@@ -79,6 +79,13 @@ public abstract class AbstractClientHandler extends AbstractHandler {
     }
     
     /**
+     * Ha a kiválasztott Process null, fel kell dolgozni.
+     */
+    protected void onProcessNull() {
+        ;
+    }
+    
+    /**
      * Megpróbálja az üzenetet fogadni a szervertől.
      * Ha a szerver oldalon hiba keletkezett, kivételt dob.
      * @throws IOException ha nem sikerült a fogadás
@@ -131,17 +138,23 @@ public abstract class AbstractClientHandler extends AbstractHandler {
             // adatfeldolgozó kiválasztása
             Process proc = selectProcess();
             
-            // jelzés, hogy kiválasztódott a Process
-            fireProcessSelected();
-            
-            // adatfeldolgozó hozzáadása a listához
-            getProcesses().add(proc);
-            
-            // adatfeldolgozó futtatása
-            proc.run();
-            
-            // adatfeldolgozó eltávolítása a listából
-            getProcesses().remove(proc);
+            if (proc != null) {
+                // jelzés, hogy kiválasztódott a Process
+                fireProcessSelected();
+
+                // adatfeldolgozó hozzáadása a listához
+                getProcesses().add(proc);
+
+                // adatfeldolgozó futtatása
+                proc.run();
+
+                // adatfeldolgozó eltávolítása a listából
+                getProcesses().remove(proc);
+            }
+            else {
+                // ha nem lett kiválasztva Process, jelzés
+                onProcessNull();
+            }
             
             // kapcsolat bezárása
             in.close();

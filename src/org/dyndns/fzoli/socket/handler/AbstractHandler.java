@@ -58,7 +58,7 @@ public abstract class AbstractHandler implements Handler {
      * A metódus csak akkor hívható meg, amikor már ismert a kapcsolatazonosító és eszközazonosító,
      */
     protected abstract Process selectProcess();
-
+    
     /**
      * Miután az eszközazonosító és a kapcsolatazonosító közlése megtörtént,
      * lefut ez az inicializáló metódus, ami után a konkrét feldolgozás történik meg.

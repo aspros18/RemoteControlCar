@@ -182,11 +182,12 @@ abstract class ArrowPanel extends JPanel {
     private final ArrowLine al;
     
     private int tmpX = 0, tmpY = 0;
-    private boolean leftOn = false;
+    private Integer tmpMX, tmpMY;
+    private boolean btLeft = false;
     private Integer codeX, codeY;
     
     private void refresh(Integer x, Integer y) {
-        if ((x != null && y != null && leftOn) || (x == null && y == null && !leftOn)) {
+        if ((x != null && y != null && btLeft) || (x == null && y == null && !btLeft)) {
             if (codeX == null) {
                 if (x != null) al.setRelativeX(x);
                 else al.setPercentX(0);
@@ -198,6 +199,8 @@ abstract class ArrowPanel extends JPanel {
             repaint();
             fireChange();
         }
+        tmpMX = x;
+        tmpMY = y;
     }
     
     public ArrowPanel(int size) {
@@ -233,13 +236,13 @@ abstract class ArrowPanel extends JPanel {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON1) leftOn = true;
+                if (e.getButton() == MouseEvent.BUTTON1) btLeft = true;
                 refresh(e.getX(), e.getY());
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON1) leftOn = false;
+                if (e.getButton() == MouseEvent.BUTTON1) btLeft = false;
                 refresh(null, null);
             }
 
@@ -297,14 +300,16 @@ abstract class ArrowPanel extends JPanel {
 
             private void resetX(KeyEvent e) {
                 if (codeX != null && codeX.equals(e.getKeyCode())) {
-                    al.setPercentX(0);
+                    if (tmpMX != null) al.setRelativeX(tmpMX);
+                    else al.setPercentX(0);
                     codeX = null;
                 }
             }
 
             private void resetY(KeyEvent e) {
                 if (codeY != null && codeY.equals(e.getKeyCode())) {
-                    al.setPercentY(0);
+                    if (tmpMY != null) al.setRelativeY(tmpMY);
+                    else al.setPercentY(0);
                     codeY = null;
                 }
             }

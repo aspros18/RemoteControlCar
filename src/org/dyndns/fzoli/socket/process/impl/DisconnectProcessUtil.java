@@ -4,6 +4,7 @@ import java.net.SocketException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import org.dyndns.fzoli.socket.Processes;
 import org.dyndns.fzoli.socket.process.SecureProcess;
 
 /**
@@ -70,17 +71,7 @@ class DisconnectProcessUtil {
      */
     public void onDisconnect() {
         List<SecureProcess> procs = proc.getHandler().getSecureProcesses();
-        for (SecureProcess prc : procs) { // végigmegy a biztonságos kapcsolatfeldolgozókon ...
-            try {
-                // ... és ha megegyező eszközazonosítóval és Common Name mezővel rendelkeznek ...
-                if (prc.getDeviceId().equals(proc.getDeviceId()) && prc.getRemoteCommonName().equals(proc.getRemoteCommonName())) {
-                    prc.getSocket().close(); // ... bezárja a kapcsolatukat
-                }
-            }
-            catch (Exception ex) { // ha nem sikerült bezárni a socketet, akkor már zárva volt
-                ;
-            }
-        }
+        Processes.closeProcesses(procs, proc.getDeviceId(), proc.getRemoteCommonName());
     }
     
 }

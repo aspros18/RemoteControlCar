@@ -1,5 +1,7 @@
 package org.dyndns.fzoli.rccar.controller.socket;
 
+import org.dyndns.fzoli.rccar.controller.ConnectionProgressFrame;
+import org.dyndns.fzoli.rccar.controller.Main;
 import static org.dyndns.fzoli.rccar.controller.Main.showHostSelectionFrame;
 import static org.dyndns.fzoli.rccar.controller.Main.updateHostSelectionFrame;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
@@ -28,6 +30,7 @@ public class ControllerMessageProcess extends ClientMessageProcess {
         }
         else if (o instanceof ControllerData) {
             //TODO
+            Main.showConnectionStatus(ConnectionProgressFrame.Status.DISCONNECTED);
         }
         else if (o instanceof PartialBaseData) {
             //TODO

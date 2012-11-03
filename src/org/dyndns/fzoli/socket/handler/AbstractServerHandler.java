@@ -97,7 +97,7 @@ public abstract class AbstractServerHandler extends AbstractHandler {
      * @throws RemoteHandlerException ha a kliens oldalon hiba keletkezett
      */
     private void readStatus(InputStream in) throws IOException {
-        AbstractHandlerUtil.readStatus(in);
+        HandlerUtil.readStatus(in);
     }
     
     /**
@@ -106,7 +106,7 @@ public abstract class AbstractServerHandler extends AbstractHandler {
      * @throws IOException ha nem sikerült a kimenetre írni
      */
     private void runInit(OutputStream out) throws IOException, Exception {
-        AbstractHandlerUtil.runInit(this, out);
+        HandlerUtil.runInit(this, out);
     }
     
     /**

@@ -12,7 +12,7 @@ import org.dyndns.fzoli.socket.handler.exception.RemoteHandlerException;
  * AbstractClientHandler és AbstractServerHandler implementálásához.
  * @author zoli
  */
-class AbstractHandlerUtil {
+class HandlerUtil {
     
     /**
      * Az inicializáló metódust kivételkezelten meghívja és közli a távoli eszköznek az eredményt.

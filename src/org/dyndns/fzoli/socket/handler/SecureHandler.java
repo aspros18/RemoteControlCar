@@ -30,4 +30,9 @@ public interface SecureHandler extends Handler, SecureSocketter {
      */
     public boolean isCertEqual(String remoteName, int deviceId, int connectionId);
     
+    /**
+     * Bezárja a kapcsolatkezelőhöz tartozó kapcsolatfeldolgozók kapcsolatait.
+     */
+    public void closeProcesses();
+    
 }

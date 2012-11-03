@@ -40,7 +40,7 @@ class SecureHandlerUtil {
     
     /**
      * Igaz, ha ugyan azzal a tanúsítvánnyal és azonosítókkal rendelkezik a feldolgozó, mint a paraméterben megadottak.
-     * @param h a feldolgozó
+     * @param h a kapcsolatkezelő
      * @param remoteName tanúsítvány common name
      * @param deviceId eszközazonosító
      * @param connectionId kapcsolatazonosító
@@ -54,6 +54,25 @@ class SecureHandlerUtil {
      */
     public static List<SecureProcess> getSecureProcesses(List<Process> processes) {
         return Processes.getProcesses(processes, SecureProcess.class);
+    }
+    
+    /**
+     * Bezárja a kapcsolatkezelőhöz tartozó kapcsolatfeldolgozók kapcsolatait.
+     * @param h a kapcsolatkezelő
+     */
+    public static void closeProcesses(SecureHandler h) { //TODO: még valami: ha bármely Handlerben kivétel képződik, jó lenne mindkét oldalnak bezárnia a már megkezdett kapcsolatokat. Tehát kliens oldalon megjelenik a kapcsolad megszakadt ablak, a szerver oldalon meg a klienssel a kapcsolat lezárul és törlődik mindegyik.
+        List<SecureProcess> procs = h.getSecureProcesses();
+        for (SecureProcess prc : procs) { // végigmegy a biztonságos kapcsolatfeldolgozókon ...
+            try {
+                // ... és ha megegyező eszközazonosítóval és Common Name mezővel rendelkeznek ...
+                if (prc.getDeviceId().equals(h.getDeviceId()) && prc.getRemoteCommonName().equals(h.getRemoteCommonName())) {
+                    prc.getSocket().close(); // ... bezárja a kapcsolatukat
+                }
+            }
+            catch (Exception ex) { // ha nem sikerült bezárni a socketet, akkor már zárva volt
+                ;
+            }
+        }
     }
     
     /**

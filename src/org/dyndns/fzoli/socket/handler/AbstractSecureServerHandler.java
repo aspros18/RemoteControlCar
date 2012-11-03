@@ -2,7 +2,6 @@ package org.dyndns.fzoli.socket.handler;
 
 import java.util.List;
 import javax.net.ssl.SSLSocket;
-import org.dyndns.fzoli.socket.Processes;
 import org.dyndns.fzoli.socket.handler.exception.MultipleCertificateException;
 import org.dyndns.fzoli.socket.process.SecureProcess;
 
@@ -102,7 +101,7 @@ public abstract class AbstractSecureServerHandler extends AbstractServerHandler 
     @Override
     protected void onProcessNull() {
         super.onProcessNull();
-        Processes.closeProcesses(getSecureProcesses(), getDeviceId(), getRemoteCommonName());
+        closeProcesses();
     }
 
     /**
@@ -111,6 +110,14 @@ public abstract class AbstractSecureServerHandler extends AbstractServerHandler 
      */
     @Override
     protected abstract SecureProcess selectProcess();
+
+    /**
+     * Bezárja a kapcsolatkezelőhöz tartozó kapcsolatfeldolgozók kapcsolatait.
+     */
+    @Override
+    public void closeProcesses() {
+        SecureHandlerUtil.closeProcesses(this);
+    }
     
     /**
      * @return SSLSocket, amin keresztül folyik a titkosított kommunikáció.

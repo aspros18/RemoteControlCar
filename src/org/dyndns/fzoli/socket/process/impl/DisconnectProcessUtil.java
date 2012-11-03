@@ -1,11 +1,8 @@
 package org.dyndns.fzoli.socket.process.impl;
 
 import java.net.SocketException;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import org.dyndns.fzoli.socket.Processes;
-import org.dyndns.fzoli.socket.process.SecureProcess;
 
 /**
  * Segédosztály a DisconnectProcess interfész implementálásához.
@@ -70,8 +67,7 @@ class DisconnectProcessUtil {
      * Az összes aktív kapcsolatfeldolgozót leállítja, mely ugyan ahhoz az eszközhöz tartozik.
      */
     public void onDisconnect() {
-        List<SecureProcess> procs = proc.getHandler().getSecureProcesses();
-        Processes.closeProcesses(procs, proc.getDeviceId(), proc.getRemoteCommonName());
+        proc.getHandler().closeProcesses();
     }
     
 }

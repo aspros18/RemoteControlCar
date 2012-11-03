@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.dyndns.fzoli.socket.process.Process;
-import org.dyndns.fzoli.socket.process.SecureProcess;
 
 /**
  * Az aktív kapcsolatfeldolgozókat tároló osztályok őse.
@@ -35,26 +34,6 @@ public class Processes {
             }
         }
         return ls;
-    }
-    
-    /**
-     * Bezárja az összes kapcsolatot, melyre illik a szűrő feltétel.
-     * @param procs a kapcsolatokat tartalmazó lista
-     * @param deviceId szűrőfeltétel
-     * @param remoteCommonName szűrőfeltétel
-     */
-    public static void closeProcesses(List<SecureProcess> procs, int deviceId, String remoteCommonName) { //TODO: nem itt a helye, hanem a Handler Util osztályában! és még valami: ha bármely Handlerben kivétel képződik, jó lenne mindkét oldalnak bezárnia a már megkezdett kapcsolatokat. Tehát kliens oldalon megjelenik a kapcsolad megszakadt ablak, a szerver oldalon meg a klienssel a kapcsolat lezárul és törlődik mindegyik.
-        for (SecureProcess prc : procs) { // végigmegy a biztonságos kapcsolatfeldolgozókon ...
-            try {
-                // ... és ha megegyező eszközazonosítóval és Common Name mezővel rendelkeznek ...
-                if (prc.getDeviceId().equals(deviceId) && prc.getRemoteCommonName().equals(remoteCommonName)) {
-                    prc.getSocket().close(); // ... bezárja a kapcsolatukat
-                }
-            }
-            catch (Exception ex) { // ha nem sikerült bezárni a socketet, akkor már zárva volt
-                ;
-            }
-        }
     }
     
 }

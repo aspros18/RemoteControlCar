@@ -2,7 +2,7 @@ package org.dyndns.fzoli.rccar.bridge.socket;
 
 import static org.dyndns.fzoli.rccar.bridge.Main.VAL_CONN_LOG;
 import org.dyndns.fzoli.rccar.test.DisconnectProcessTester;
-import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
+import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.impl.ServerDisconnectProcess;
 import static org.dyndns.fzoli.ui.SystemTrayIcon.showMessage;
 
@@ -19,7 +19,7 @@ public class BridgeDisconnectProcess extends ServerDisconnectProcess {
     
     private final DisconnectProcessTester TESTER = new DisconnectProcessTester();
     
-    public BridgeDisconnectProcess(AbstractSecureServerHandler handler) {
+    public BridgeDisconnectProcess(SecureHandler handler) {
         super(handler, 1000, 10000, 250); // 1 és 10 mp időtúllépés, 250 ms sleep
     }
 

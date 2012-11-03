@@ -60,7 +60,7 @@ class SecureHandlerUtil {
      * Bezárja a kapcsolatkezelőhöz tartozó kapcsolatfeldolgozók kapcsolatait.
      * @param h a kapcsolatkezelő
      */
-    public static void closeProcesses(SecureHandler h) { //TODO: még valami: ha bármely Handlerben kivétel képződik, jó lenne mindkét oldalnak bezárnia a már megkezdett kapcsolatokat. Tehát kliens oldalon megjelenik a kapcsolad megszakadt ablak, a szerver oldalon meg a klienssel a kapcsolat lezárul és törlődik mindegyik.
+    public static void closeProcesses(SecureHandler h) {
         List<SecureProcess> procs = h.getSecureProcesses();
         for (SecureProcess prc : procs) { // végigmegy a biztonságos kapcsolatfeldolgozókon ...
             try {

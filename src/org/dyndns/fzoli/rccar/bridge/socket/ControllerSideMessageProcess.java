@@ -4,21 +4,23 @@ import java.util.ArrayList;
 import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
-import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
-import org.dyndns.fzoli.socket.process.impl.ServerMessageProcess;
+import org.dyndns.fzoli.socket.handler.SecureHandler;
+import org.dyndns.fzoli.socket.process.impl.MessageProcess;
 
 /**
  *
  * @author zoli
  */
-public class ControllerSideMessageProcess extends ServerMessageProcess {
-
-    public ControllerSideMessageProcess(AbstractSecureServerHandler handler) {
+public class ControllerSideMessageProcess extends MessageProcess {
+    
+    private String selected;
+    
+    public ControllerSideMessageProcess(SecureHandler handler) {
         super(handler);
     }
 
     @Override
-    public void onStart() {
+    protected void onStart() {
         HostList l = new HostList();
         for (int i = 1; i <= 8; i++) {
             l.getHosts().add("teszt" + i);
@@ -43,11 +45,9 @@ public class ControllerSideMessageProcess extends ServerMessageProcess {
             
         }).start();
     }
-
-    private String selected;
     
     @Override
-    public void onMessage(Object o) {
+    protected void onMessage(Object o) {
         if (o instanceof ControllerData.HostNamePartialControllerData) {
             ControllerData.HostNamePartialControllerData msg = (ControllerData.HostNamePartialControllerData) o;
             selected = msg.data;

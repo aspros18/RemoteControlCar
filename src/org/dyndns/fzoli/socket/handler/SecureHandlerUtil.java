@@ -30,9 +30,18 @@ class SecureHandlerUtil {
     }
     
     /**
+     * Ha a kiválasztott Process null, fel kell dolgozni.
+     * Bezárja az összes többi kapcsolatot, ami már létre lett hozva a másik oldallal.
+     * @param h a kapcsolatkezelő
+     */
+    public static void onProcessNull(SecureHandler h) {
+        h.closeProcesses();
+    }
+    
+    /**
      * Igaz, ha ugyan azzal a tanúsítvánnyal és azonosítókkal rendelkezik a két feldolgozó.
-     * @param h1 az egyik feldolgozó
-     * @param h2 a másik feldolgozó
+     * @param h1 az egyik kapcsolatkezelő
+     * @param h2 a másik kapcsolatkezelő
      */
     public static boolean isCertEqual(SecureHandler h1, SecureHandler h2) {
         return isCertEqual(h1, h2.getRemoteCommonName(), h2.getDeviceId(), h2.getConnectionId());

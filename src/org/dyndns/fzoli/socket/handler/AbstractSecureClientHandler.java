@@ -95,7 +95,7 @@ public abstract class AbstractSecureClientHandler extends AbstractClientHandler 
     @Override
     protected void onProcessNull() {
         super.onProcessNull();
-        closeProcesses();
+        SecureHandlerUtil.onProcessNull(this);
     }
     
     /**

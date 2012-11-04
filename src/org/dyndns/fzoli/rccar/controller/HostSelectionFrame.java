@@ -20,11 +20,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import org.dyndns.fzoli.rccar.ConnectionKeys;
 import org.dyndns.fzoli.rccar.controller.resource.R;
-import org.dyndns.fzoli.rccar.controller.socket.ControllerMessageProcess;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
-import org.dyndns.fzoli.socket.ClientProcesses;
 
 /**
  * TODO - Járműválasztó ablak.
@@ -115,7 +112,7 @@ public class HostSelectionFrame extends JFrame {
                 selected = true;
                 BT_SELECT.setEnabled(false);
                 //TODO
-                ClientProcesses.findProcess(ConnectionKeys.KEY_CONN_MESSAGE, ControllerMessageProcess.class).sendMessage(new ControllerData.HostNamePartialControllerData(LIST.getSelectedValue()));
+                ControllerModels.sendMessage(new ControllerData.HostNamePartialControllerData(LIST.getSelectedValue()));
             }
             
         });

@@ -1,14 +1,18 @@
 package org.dyndns.fzoli.rccar.controller;
 
+import java.io.Serializable;
+import org.dyndns.fzoli.rccar.ConnectionKeys;
 import static org.dyndns.fzoli.rccar.controller.Main.showHostSelectionFrame;
+import org.dyndns.fzoli.rccar.controller.socket.ControllerMessageProcess;
 import org.dyndns.fzoli.rccar.model.Data;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.PartialData;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
+import org.dyndns.fzoli.socket.ClientProcesses;
 
 /**
- *
+ * A vezérlő oldalán tárolja az adatokat és üzenhet a hídnak.
  * @author zoli
  */
 public class ControllerModels {
@@ -43,6 +47,16 @@ public class ControllerModels {
         else if (data instanceof PartialBaseData) {
             //TODO
         }
+    }
+    
+    /**
+     * Üzenet küldése a hídnak.
+     * Ha nincs kialakítva üzenetküldésre alkalmas kapcsolat, nem küld üzenetet.
+     */
+    public static void sendMessage(Serializable msg) {
+        if (msg == null) return;
+        ControllerMessageProcess cmp = ClientProcesses.findProcess(ConnectionKeys.KEY_CONN_MESSAGE, ControllerMessageProcess.class);
+        if (cmp != null) cmp.sendMessage(msg);
     }
     
 }

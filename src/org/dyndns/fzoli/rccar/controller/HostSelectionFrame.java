@@ -21,10 +21,9 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.dyndns.fzoli.rccar.controller.resource.R;
-import org.dyndns.fzoli.rccar.model.controller.ControllerData;
 
 /**
- * TODO - Járműválasztó ablak.
+ * Járműválasztó ablak.
  * @author zoli
  */
 public class HostSelectionFrame extends JFrame {
@@ -111,8 +110,7 @@ public class HostSelectionFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 selected = true;
                 BT_SELECT.setEnabled(false);
-                //TODO
-                ControllerModels.sendMessage(new ControllerData.HostNamePartialControllerData(LIST.getSelectedValue()));
+                ControllerModels.getData().setHostName(LIST.getSelectedValue());
             }
             
         });

@@ -26,7 +26,25 @@ public class ControllerModels {
      * A kiválasztott jármű adatai.
      * TODO: adat megváltozás esetén üzenetküldés és public helyett private legyen a sendMessage
      */
-    private static final ControllerData DATA = new ControllerData();
+    private static final ControllerData DATA = new ControllerData() {
+
+        /**
+         * Beállítja az aktuális jármű nevét és üzen a hídnak.
+         */
+        @Override
+        public void setHostName(String hostName) {
+            super.setHostName(hostName);
+            sendMessage(new ControllerData.HostNamePartialControllerData(hostName));
+        }
+        
+    };
+
+    /**
+     * A kiválasztott jármű adatai.
+     */
+    public static ControllerData getData() {
+        return DATA;
+    }
     
     /**
      * Teljes model lecserélése.
@@ -37,7 +55,7 @@ public class ControllerModels {
             showHostSelectionFrame(HOST_LIST);
         }
         else if (data instanceof ControllerData) {
-            //TODO
+            //TODO: csak teszt
             Main.showConnectionStatus(ConnectionProgressFrame.Status.DISCONNECTED);
         }
     }
@@ -59,7 +77,7 @@ public class ControllerModels {
      * Üzenet küldése a hídnak.
      * Ha nincs kialakítva üzenetküldésre alkalmas kapcsolat, nem küld üzenetet.
      */
-    public static void sendMessage(Serializable msg) {
+    private static void sendMessage(Serializable msg) {
         if (msg == null) return;
         ControllerMessageProcess cmp = ClientProcesses.findProcess(ConnectionKeys.KEY_CONN_MESSAGE, ControllerMessageProcess.class);
         if (cmp != null) cmp.sendMessage(msg);

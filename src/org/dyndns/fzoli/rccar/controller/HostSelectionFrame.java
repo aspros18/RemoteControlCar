@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -23,7 +24,6 @@ import org.dyndns.fzoli.rccar.ConnectionKeys;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.controller.socket.ControllerMessageProcess;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
-import org.dyndns.fzoli.rccar.model.controller.HostList;
 import org.dyndns.fzoli.socket.ClientProcesses;
 
 /**
@@ -33,7 +33,7 @@ import org.dyndns.fzoli.socket.ClientProcesses;
 public class HostSelectionFrame extends JFrame {
 
     /**
-     * A felületi komponens.
+     * A felületen megjelenő lista.
      */
     private final JList<String> LIST = new JList<String>(new DefaultComboBoxModel<String>());
     
@@ -41,11 +41,6 @@ public class HostSelectionFrame extends JFrame {
      * Scroll.
      */
     private final JScrollPane PANE = new JScrollPane(LIST);
-    
-    /**
-     * A felületi komponens modelje.
-     */
-    private final HostList LIST_MODEL = new HostList();
     
     /**
      * Jármű kiválasztó gomb.
@@ -131,20 +126,23 @@ public class HostSelectionFrame extends JFrame {
      */
     @Override
     public void setVisible(boolean b) {
-        if (b) selected = false;
+        if (b) {
+            selected = false;
+            BT_SELECT.setEnabled(true);
+        }
         super.setVisible(b);
     }
     
     /**
-     * Frissíti a felületi komponenst a modelje alapján.
+     * Frissíti a felület listáját a paraméter alapján.
      * Eltávolítja az adatokat, majd újra feltölti a friss adatokat és ha volt, beállítja az előtte kiválasztott elemet és a scrollt.
      */
-    private void refresh() {
+    public void refresh(List<String> list) {
         DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) LIST.getModel();
         Point scroll = PANE.getViewport().getViewPosition();
         String selected = LIST.getSelectedValue();
         model.removeAllElements();
-        for (String host: LIST_MODEL.getHosts()) {
+        for (String host: list) {
             model.addElement(host);
         }
         if (model.getIndexOf(selected) == -1 && model.getSize() != 0) {
@@ -153,22 +151,6 @@ public class HostSelectionFrame extends JFrame {
         }
         LIST.setSelectedValue(selected, false);
         PANE.getViewport().setViewPosition(scroll);
-    }
-    
-    /**
-     * Lista alapján beállítja a felületi komponenst.
-     */
-    public void setHosts(HostList list) {
-        LIST_MODEL.update(list);
-        refresh();
-    }
-    
-    /**
-     * A lista módosulása alapján frissíti a felületet.
-     */
-    public void setHost(HostList.PartialHostList change) {
-        if (change != null) change.apply(LIST_MODEL);
-        refresh();
     }
     
     /**

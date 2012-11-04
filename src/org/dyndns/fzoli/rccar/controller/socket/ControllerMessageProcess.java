@@ -1,17 +1,13 @@
 package org.dyndns.fzoli.rccar.controller.socket;
 
-import org.dyndns.fzoli.rccar.controller.ConnectionProgressFrame;
-import org.dyndns.fzoli.rccar.controller.Main;
-import static org.dyndns.fzoli.rccar.controller.Main.showHostSelectionFrame;
-import static org.dyndns.fzoli.rccar.controller.Main.updateHostSelectionFrame;
-import org.dyndns.fzoli.rccar.model.PartialBaseData;
-import org.dyndns.fzoli.rccar.model.controller.ControllerData;
-import org.dyndns.fzoli.rccar.model.controller.HostList;
+import org.dyndns.fzoli.rccar.controller.ControllerModels;
+import org.dyndns.fzoli.rccar.model.Data;
+import org.dyndns.fzoli.rccar.model.PartialData;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.impl.MessageProcess;
 
 /**
- *
+ * A vezérlő üzenetküldő és üzenetfogadó osztálya.
  * @author zoli
  */
 public class ControllerMessageProcess extends MessageProcess {
@@ -20,20 +16,16 @@ public class ControllerMessageProcess extends MessageProcess {
         super(handler);
     }
 
+    /**
+     * Az üzenet feldolgozását a ControllerModels végzi.
+     */
     @Override
     protected void onMessage(Object o) {
-        if (o instanceof HostList) {
-            showHostSelectionFrame((HostList) o);
+        if (o instanceof Data) {
+            ControllerModels.update((Data) o);
         }
-        else if (o instanceof HostList.PartialHostList) {
-            updateHostSelectionFrame((HostList.PartialHostList) o);
-        }
-        else if (o instanceof ControllerData) {
-            //TODO
-            Main.showConnectionStatus(ConnectionProgressFrame.Status.DISCONNECTED);
-        }
-        else if (o instanceof PartialBaseData) {
-            //TODO
+        else if (o instanceof PartialData) {
+            ControllerModels.update((PartialData) o);
         }
     }
     

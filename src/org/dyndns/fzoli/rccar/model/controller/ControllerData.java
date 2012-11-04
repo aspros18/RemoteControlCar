@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.model.controller;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.dyndns.fzoli.rccar.model.BaseData;
@@ -185,6 +186,15 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
 
     /**
      * A vezérlő adatainak inicializálása.
+     * Vezérlő oldalnak.
+     */
+    public ControllerData() {
+        CHAT_MESSAGES = Collections.synchronizedList(new ArrayList<ChatMessage>()); //TODO: a lista módosulása esetén lehessen majd üzenetet küldetni
+    }
+
+    /**
+     * A vezérlő adatainak inicializálása.
+     * Híd oldalnak.
      * @param chatMessages az üzeneteket tartalmazó lista
      * @throws NullPointerException ha az üzeneteket tartalmazó lista null
      */

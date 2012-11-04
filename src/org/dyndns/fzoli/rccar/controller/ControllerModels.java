@@ -23,6 +23,12 @@ public class ControllerModels {
     private static final HostList HOST_LIST = new HostList();
     
     /**
+     * A kiválasztott jármű adatai.
+     * TODO: adat megváltozás esetén üzenetküldés és public helyett private legyen a sendMessage
+     */
+    private static final ControllerData DATA = new ControllerData();
+    
+    /**
      * Teljes model lecserélése.
      */
     public static void update(Data data) {

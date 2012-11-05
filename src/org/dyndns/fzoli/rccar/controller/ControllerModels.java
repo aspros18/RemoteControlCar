@@ -50,13 +50,13 @@ public class ControllerModels {
      * Teljes model lecserélése.
      */
     public static void update(Data data) {
-        if (data instanceof HostList) {
-            HOST_LIST.update((HostList) data);
-            showHostSelectionFrame(HOST_LIST);
+        if (data instanceof HostList) { // ha teljes járműlista érkezett
+            HOST_LIST.update((HostList) data); // járműlista frissítése
+            showHostSelectionFrame(HOST_LIST); // felület frissítése
         }
-        else if (data instanceof ControllerData) {
-            //TODO: csak teszt
-            Main.showConnectionStatus(ConnectionProgressFrame.Status.DISCONNECTED);
+        else if (data instanceof ControllerData) { // ha teljes járműadat érkezett
+            HOST_LIST.getHosts().clear(); // járműlista kiürítése, memória felszabadítás
+            Main.showConnectionStatus(ConnectionProgressFrame.Status.DISCONNECTED); // TODO: csak teszt
         }
     }
     
@@ -64,11 +64,11 @@ public class ControllerModels {
      * Részmodel alapján a model frissítése.
      */
     public static void update(PartialData data) {
-        if (data instanceof HostList.PartialHostList) {
-            ((HostList.PartialHostList) data).apply(HOST_LIST);
-            showHostSelectionFrame(HOST_LIST);
+        if (data instanceof HostList.PartialHostList) { // ha a járműlista változott
+            ((HostList.PartialHostList) data).apply(HOST_LIST); // járműlista frissítése
+            showHostSelectionFrame(HOST_LIST); // felület frissítése
         }
-        else if (data instanceof PartialBaseData) {
+        else if (data instanceof PartialBaseData) { // ha a kiválasztott jármű adata változott meg
             //TODO
         }
     }
@@ -78,9 +78,9 @@ public class ControllerModels {
      * Ha nincs kialakítva üzenetküldésre alkalmas kapcsolat, nem küld üzenetet.
      */
     private static void sendMessage(Serializable msg) {
-        if (msg == null) return;
-        ControllerMessageProcess cmp = ClientProcesses.findProcess(ConnectionKeys.KEY_CONN_MESSAGE, ControllerMessageProcess.class);
-        if (cmp != null) cmp.sendMessage(msg);
+        if (msg == null) return; // nincs mit küldeni
+        ControllerMessageProcess cmp = ClientProcesses.findProcess(ConnectionKeys.KEY_CONN_MESSAGE, ControllerMessageProcess.class); // üzenetküldő referencia megszerzése
+        if (cmp != null) cmp.sendMessage(msg); // ha van mivel küldeni, küldés
     }
     
 }

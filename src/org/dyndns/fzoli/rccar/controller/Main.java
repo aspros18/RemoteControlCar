@@ -100,6 +100,11 @@ public class Main {
     private static final HostSelectionFrame SELECTION_FRAME;
     
     /**
+     * A kiválasztott járműhöz tartozó ablakok konténere.
+     */
+    private static final ControllerWindows CONTROLLER_WINDOWS;
+    
+    /**
      * Segédváltozó kapcsolódás kérés detektálására.
      */
     private static boolean connecting = false;
@@ -120,6 +125,7 @@ public class Main {
         PROGRESS_FRAME = new ConnectionProgressFrame();
         CONFIG_EDITOR = new ConfigEditorWindow(CONFIG);
         SELECTION_FRAME = new HostSelectionFrame(AL_EXIT);
+        CONTROLLER_WINDOWS = new ControllerWindows();
     }
     
     /**
@@ -205,7 +211,7 @@ public class Main {
     }
     
     /**
-     * Beállítja a kapcsolatjelző ablakon a látható ikont és szöveget.
+     * Beállítja a kapcsolatjelző ablakon a látható ikont és szöveget, majd elrejti a többi ablakot.
      * Ha nincs megadva státusz, akkor az ablak eltűnik, egyébként a megadott státusz jelenik meg.
      * Ha éppen kapcsolódás van, csak a kapcsolódás státusz állítható be.
      * @param status a kapcsolat státusza
@@ -214,15 +220,25 @@ public class Main {
         if (connecting && status != Status.CONNECTING) return;
         PROGRESS_FRAME.setStatus(status);
         SELECTION_FRAME.setVisible(false);
+        CONTROLLER_WINDOWS.setVisible(false);
     }
     
     /**
-     * TODO - Megjeleníti a járműválasztó ablakot és elrejti a járművel kapcsolatos ablakokat.
+     * Megjeleníti a járműválasztó ablakot és elrejti a járművel kapcsolatos ablakokat.
      * @param l a teljes lista, ami az összes jármű nevét tartalmazza
      */
     public static void showHostSelectionFrame(HostList l) {
         SELECTION_FRAME.refresh(l.getHosts());
         SELECTION_FRAME.setVisible(true);
+        CONTROLLER_WINDOWS.setVisible(false);
+    }
+    
+    /**
+     * A kiválasztott járműhöz tartozó ablakokat jeleníti meg és elrejti a járműválasztót.
+     */
+    public static void showControllerWindows() {
+        CONTROLLER_WINDOWS.setVisible(true);
+        SELECTION_FRAME.setVisible(false);
     }
     
     /**

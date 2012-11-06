@@ -2,6 +2,7 @@ package org.dyndns.fzoli.rccar.controller;
 
 import java.io.Serializable;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
+import static org.dyndns.fzoli.rccar.controller.Main.showControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.Main.showHostSelectionFrame;
 import org.dyndns.fzoli.rccar.controller.socket.ControllerMessageProcess;
 import org.dyndns.fzoli.rccar.model.Data;
@@ -24,7 +25,6 @@ public class ControllerModels {
     
     /**
      * A kiválasztott jármű adatai.
-     * TODO: adat megváltozás esetén üzenetküldés és public helyett private legyen a sendMessage
      */
     private static final ControllerData DATA = new ControllerData() {
 
@@ -56,7 +56,7 @@ public class ControllerModels {
         }
         else if (data instanceof ControllerData) { // ha teljes járműadat érkezett
             HOST_LIST.getHosts().clear(); // járműlista kiürítése, memória felszabadítás
-            Main.showConnectionStatus(ConnectionProgressFrame.Status.DISCONNECTED); // TODO: csak teszt
+            showControllerWindows(); // járművel kapcsoltos ablakok megjelenítése
         }
     }
     

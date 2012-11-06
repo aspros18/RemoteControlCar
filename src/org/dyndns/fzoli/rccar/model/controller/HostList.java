@@ -14,7 +14,7 @@ import org.dyndns.fzoli.rccar.model.PartialData;
  * @author zoli
  */
 public class HostList extends Data<HostList, HostList.PartialHostList> {
-
+    
     /**
      * A lista változását tartalmazza.
      */

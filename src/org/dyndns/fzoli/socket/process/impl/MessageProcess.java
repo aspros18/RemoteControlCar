@@ -177,7 +177,7 @@ public abstract class MessageProcess extends AbstractSecureProcess {
      * Kivétel keletkezett az egyik üzenet elküldésekor / inicializálás közben / megszakadt a kapcsolat.
      */
     protected void onException(Exception ex) {
-        ;
+        throw new RuntimeException(ex);
     }
     
     /**

@@ -1,16 +1,16 @@
 package org.dyndns.fzoli.rccar.controller;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dialog;
-import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
 import static org.dyndns.fzoli.rccar.controller.ControllerModels.getData;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 
@@ -45,14 +45,22 @@ public class ControllerWindows {
          */
         private static final ImageIcon icController2 = new ImageIcon(R.getImage("controller2.png"));
         
+        /**
+         * Teljesen fekete képkocka. TODO: miért fehér?
+         */
+        private static final ImageIcon icBlack = new ImageIcon(new BufferedImage(640, 480, BufferedImage.TYPE_INT_ARGB) {
+            {
+                getGraphics().setColor(Color.BLACK);
+                getGraphics().fillRect(0, 0, getWidth(), getHeight());
+            }
+        });
+        
         public ControllerFrame() {
             super("Főablak");
             setIconImage(R.getIconImage());
             setLayout(new BorderLayout());
             
-            lbImage = new JLabel("Teszt");
-            lbImage.setHorizontalAlignment(SwingConstants.CENTER);
-            lbImage.setPreferredSize(new Dimension(640, 480));
+            lbImage = new JLabel(icBlack);
             add(lbImage, BorderLayout.CENTER);
             
             JToolBar tbButtons = new JToolBar("Opciók");
@@ -62,6 +70,7 @@ public class ControllerWindows {
             btControll = createButton(tbButtons, "", icController1.getImage());
             
             pack();
+            setMinimumSize(getSize());
         }
         
         /**

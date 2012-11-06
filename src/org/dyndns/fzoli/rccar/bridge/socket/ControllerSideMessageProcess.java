@@ -5,13 +5,12 @@ import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
-import org.dyndns.fzoli.socket.process.impl.MessageProcess;
 
 /**
  *
  * @author zoli
  */
-public class ControllerSideMessageProcess extends MessageProcess {
+public class ControllerSideMessageProcess extends BridgeMessageProcess {
     
     private String selected;
     

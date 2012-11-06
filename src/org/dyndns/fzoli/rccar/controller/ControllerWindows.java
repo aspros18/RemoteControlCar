@@ -1,9 +1,12 @@
 package org.dyndns.fzoli.rccar.controller;
 
+import java.awt.BorderLayout;
 import java.awt.Dialog;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import static org.dyndns.fzoli.rccar.controller.ControllerModels.getData;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 
 /**
@@ -17,12 +20,26 @@ public class ControllerWindows {
      */
     private static class ControllerFrame extends JFrame {
 
+        /**
+         * A képkockát megjelenítő címke.
+         */
+        private JLabel lbImage;
+        
         public ControllerFrame() {
             super("Főablak");
             setIconImage(R.getIconImage());
-            JLabel lbImage = new JLabel("test");
+            setLayout(new BorderLayout());
+            lbImage = new JLabel("");
+            lbImage.setHorizontalAlignment(SwingConstants.CENTER);
             add(lbImage);
-            pack();
+            setSize(200, 100);
+        }
+        
+        /**
+         * Frissíti az ablak tartalmát a model alapján.
+         */
+        public void refresh() {
+            lbImage.setText(getData().getHostName());
         }
         
     }
@@ -43,7 +60,7 @@ public class ControllerWindows {
      * Főablak.
      * Tartalmazza a kameraképet és a vezérlőgombokat.
      */
-    private final JFrame MAIN_FRAME = new ControllerFrame();
+    private final ControllerFrame MAIN_FRAME = new ControllerFrame();
     
     /**
      * Az ablakok pozícionálása.
@@ -57,6 +74,13 @@ public class ControllerWindows {
      */
     public void setVisible(boolean b) {
         MAIN_FRAME.setVisible(b);
+    }
+    
+    /**
+     * Frissíti az ablakok tartalmát a modelük alapján.
+     */
+    public void refresh() {
+        MAIN_FRAME.refresh();
     }
     
 }

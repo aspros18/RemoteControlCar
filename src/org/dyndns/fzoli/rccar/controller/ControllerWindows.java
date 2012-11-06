@@ -61,6 +61,7 @@ public class ControllerWindows {
             super("Főablak");
             setIconImage(R.getIconImage());
             setLayout(new BorderLayout());
+            setResizable(false);
             
             lbImage = new JLabel(icBlack);
             add(lbImage, BorderLayout.CENTER);
@@ -72,7 +73,6 @@ public class ControllerWindows {
             btControll = createButton(tbButtons, "", icController1.getImage());
             
             pack();
-//            setMinimumSize(getSize()); //TODO: miért van "margója" a labelnek?
         }
         
         /**

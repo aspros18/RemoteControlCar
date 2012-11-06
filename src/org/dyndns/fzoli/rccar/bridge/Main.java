@@ -14,7 +14,6 @@ import static org.dyndns.fzoli.rccar.UIUtil.showPasswordInput;
 import org.dyndns.fzoli.rccar.UncaughtExceptionHandler;
 import static org.dyndns.fzoli.rccar.UncaughtExceptionHandler.showException;
 import org.dyndns.fzoli.rccar.bridge.resource.R;
-import org.dyndns.fzoli.rccar.bridge.socket.BridgeDisconnectProcess;
 import org.dyndns.fzoli.rccar.bridge.socket.BridgeHandler;
 import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.closeSplashScreen;
 import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.setDefaultSplashMessage;
@@ -85,7 +84,7 @@ public class Main {
             SystemTrayIcon.setIcon("Mobile-RC híd", R.getBridgeImage());
             
             // kapcsolatjelzés beállító opció létrehozása és beállítása
-            final CheckboxMenuItem miConnLog = new CheckboxMenuItem(VAL_CONN_LOG, BridgeDisconnectProcess.isLogEnabled());
+            final CheckboxMenuItem miConnLog = new CheckboxMenuItem(VAL_CONN_LOG, ConnectionAlert.isLogEnabled());
             miConnLog.addItemListener(new ItemListener() {
 
                 /**
@@ -94,9 +93,9 @@ public class Main {
                 @Override
                 public void itemStateChanged(ItemEvent e) {
                     // naplózás beállítása az ellenkezőjére, mint volt
-                    BridgeDisconnectProcess.setLogEnabled(!BridgeDisconnectProcess.isLogEnabled());
+                    ConnectionAlert.setLogEnabled(!ConnectionAlert.isLogEnabled());
                     // a megváltozott opció frissítése
-                    miConnLog.setState(BridgeDisconnectProcess.isLogEnabled());
+                    miConnLog.setState(ConnectionAlert.isLogEnabled());
                 }
 
             });
@@ -191,15 +190,15 @@ public class Main {
         if (args.length == 1) {
             if (args[0].equals("-v")) {
                 BridgeHandler.setWarnEnabled(true);
-                BridgeDisconnectProcess.setLogEnabled(false);
+                ConnectionAlert.setLogEnabled(false);
             }
             else if (args[0].equals("-vv")) {
                 BridgeHandler.setWarnEnabled(true);
-                BridgeDisconnectProcess.setLogEnabled(true);
+                ConnectionAlert.setLogEnabled(true);
             }
             else if (args[0].equals("-m")) {
                 BridgeHandler.setWarnEnabled(false);
-                BridgeDisconnectProcess.setLogEnabled(false);
+                ConnectionAlert.setLogEnabled(false);
             }
         }
     }

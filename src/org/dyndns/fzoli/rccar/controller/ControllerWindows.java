@@ -2,9 +2,14 @@ package org.dyndns.fzoli.rccar.controller;
 
 import java.awt.BorderLayout;
 import java.awt.Dialog;
+import java.awt.Dimension;
+import java.awt.Image;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import static org.dyndns.fzoli.rccar.controller.ControllerModels.getData;
 import org.dyndns.fzoli.rccar.controller.resource.R;
@@ -31,8 +36,24 @@ public class ControllerWindows {
             setLayout(new BorderLayout());
             lbImage = new JLabel("");
             lbImage.setHorizontalAlignment(SwingConstants.CENTER);
-            add(lbImage);
-            setSize(200, 100);
+            lbImage.setPreferredSize(new Dimension(640, 480));
+            add(lbImage, BorderLayout.CENTER);
+            JToolBar tbButtons = new JToolBar("Opciók");
+            add(tbButtons, BorderLayout.SOUTH);
+            tbButtons.setFloatable(false);
+            createButton(tbButtons, "Teszt", R.getIconImage());
+            pack();
+        }
+        
+        /**
+         * Panelhez gyárt gombot.
+         */
+        private JButton createButton(JToolBar tb, String text, Image img) {
+            JButton bt = new JButton(new ImageIcon(img));
+            tb.add(bt);
+            bt.setToolTipText(text);
+            bt.setFocusable(false);
+            return bt;
         }
         
         /**

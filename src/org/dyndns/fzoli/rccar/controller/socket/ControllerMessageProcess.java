@@ -32,7 +32,7 @@ public class ControllerMessageProcess extends MessageProcess {
             System.exit(1);
         }
         catch (Exception e) {
-            super.onException(e);
+            ; // a többi hiba nem érdekes
         }
     }
 

@@ -3,6 +3,7 @@ package org.dyndns.fzoli.rccar.controller;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dialog;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
@@ -46,12 +47,13 @@ public class ControllerWindows {
         private static final ImageIcon icController2 = new ImageIcon(R.getImage("controller2.png"));
         
         /**
-         * Teljesen fekete képkocka. TODO: miért fehér?
+         * Teljesen fekete képkocka.
          */
-        private static final ImageIcon icBlack = new ImageIcon(new BufferedImage(640, 480, BufferedImage.TYPE_INT_ARGB) {
+        private static final ImageIcon icBlack = new ImageIcon(new BufferedImage(640, 480, BufferedImage.TYPE_INT_RGB) {
             {
-                getGraphics().setColor(Color.BLACK);
-                getGraphics().fillRect(0, 0, getWidth(), getHeight());
+                Graphics g = getGraphics();
+                g.setColor(Color.BLACK);
+                g.fillRect(0, 0, getWidth(), getHeight());
             }
         });
         
@@ -70,7 +72,7 @@ public class ControllerWindows {
             btControll = createButton(tbButtons, "", icController1.getImage());
             
             pack();
-            setMinimumSize(getSize());
+//            setMinimumSize(getSize()); //TODO: miért van "margója" a labelnek?
         }
         
         /**

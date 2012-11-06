@@ -1,6 +1,5 @@
 package org.dyndns.fzoli.rccar.bridge.socket;
 
-import java.io.EOFException;
 import java.io.InvalidClassException;
 import org.dyndns.fzoli.rccar.bridge.ConnectionAlert;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
@@ -34,11 +33,8 @@ public abstract class BridgeMessageProcess extends MessageProcess {
             ConnectionAlert.log(getRemoteCommonName() + " túl régi kliens programot használ");
             getHandler().closeProcesses();
         }
-        catch (EOFException e) {
-            ; // nem érdekes hiba
-        }
         catch (Exception e) {
-            super.onException(e);
+            ; // a többi hiba nem érdekes
         }
     }
     

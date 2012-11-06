@@ -35,5 +35,13 @@ public class BaseData<D extends BaseData, PD extends PartialBaseData> extends Da
             setBatteryLevel(d.getBatteryLevel());
         }
     }
+
+    /**
+     * Kinullázza az adatokat, így felszabadulhat a memória.
+     */
+    @Override
+    public void clear() {
+        batteryLevel = null;
+    }
     
 }

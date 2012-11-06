@@ -33,8 +33,8 @@ public class ControllerModels {
          */
         @Override
         public void setHostName(String hostName) {
+            if (!equals(getHostName(), hostName)) sendMessage(new ControllerData.HostNamePartialControllerData(hostName));
             super.setHostName(hostName);
-            sendMessage(new ControllerData.HostNamePartialControllerData(hostName));
         }
         
     };
@@ -52,10 +52,12 @@ public class ControllerModels {
     public static void update(Data data) {
         if (data instanceof HostList) { // ha teljes járműlista érkezett
             HOST_LIST.update((HostList) data); // járműlista frissítése
+            DATA.clear(); // adatmodell kiürítése, memória felszabadítás
             showHostSelectionFrame(HOST_LIST); // felület frissítése
         }
         else if (data instanceof ControllerData) { // ha teljes járműadat érkezett
-            HOST_LIST.getHosts().clear(); // járműlista kiürítése, memória felszabadítás
+            DATA.update((ControllerData) data); // adatmodell frissítése
+            HOST_LIST.clear(); // járműlista kiürítése, memória felszabadítás
             showControllerWindows(); // járművel kapcsoltos ablakok megjelenítése
         }
     }

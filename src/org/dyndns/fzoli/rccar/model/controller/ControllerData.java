@@ -298,4 +298,18 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
         }
     }
     
+    /**
+     * Kinullázza az adatokat.
+     */
+    @Override
+    public void clear() {
+        getChatMessages().clear();
+        hostName = null;
+        hostState = null;
+        hostConnected = null;
+        controlling = null;
+        wantControl = null;
+        super.clear();
+    }
+    
 }

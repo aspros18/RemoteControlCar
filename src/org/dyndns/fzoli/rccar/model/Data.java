@@ -19,6 +19,16 @@ public abstract class Data<D extends Data, PD extends PartialData> implements Se
     }
     
     /**
+     * Két objektumról állapítja meg, hogy egyenlőek-e.
+     * @return True, ha a két objektum egyenlő vagy mindkét paraméter null, egyébként false.
+     */
+    protected boolean equals(Object o1, Object o2) {
+        if (o1 == null && o2 == null) return true;
+        if (o1 == null ^ o2 == null) return false;
+        return o1.equals(o2);
+    }
+    
+    /**
      * Egy adat frissítése részhalmaz segítségével.
      */
     public void update(PD pd) {
@@ -29,5 +39,10 @@ public abstract class Data<D extends Data, PD extends PartialData> implements Se
      * Az összes adat frissítése adatmodell segítségével.
      */
     public abstract void update(D d);
+    
+    /**
+     * Kinullázza az adatokat, így felszabadulhat a memória.
+     */
+    public abstract void clear();
     
 }

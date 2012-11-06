@@ -86,4 +86,12 @@ public class HostList extends Data<HostList, HostList.PartialHostList> {
         }
     }
     
+    /**
+     * Kinullázza az adatokat, így felszabadulhat a memória.
+     */
+    @Override
+    public void clear() {
+        HOSTS.clear();
+    }
+    
 }

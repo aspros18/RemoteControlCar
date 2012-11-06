@@ -30,18 +30,37 @@ public class ControllerWindows {
          */
         private JLabel lbImage;
         
+        /**
+         * Vezérlőgomb.
+         */
+        private JButton btControll;
+        
+        /**
+         * Vezérlőgomb ikonja, amikor átadható a vezérlés.
+         */
+        private static final ImageIcon icController1 = new ImageIcon(R.getImage("controller1.png"));
+        
+        /**
+         * Vezérlőgomb ikonja, amikor kérhető a vezérlés.
+         */
+        private static final ImageIcon icController2 = new ImageIcon(R.getImage("controller2.png"));
+        
         public ControllerFrame() {
             super("Főablak");
             setIconImage(R.getIconImage());
             setLayout(new BorderLayout());
-            lbImage = new JLabel("");
+            
+            lbImage = new JLabel("Teszt");
             lbImage.setHorizontalAlignment(SwingConstants.CENTER);
             lbImage.setPreferredSize(new Dimension(640, 480));
             add(lbImage, BorderLayout.CENTER);
+            
             JToolBar tbButtons = new JToolBar("Opciók");
             add(tbButtons, BorderLayout.SOUTH);
             tbButtons.setFloatable(false);
-            createButton(tbButtons, "Teszt", R.getIconImage());
+            
+            btControll = createButton(tbButtons, "", icController1.getImage());
+            
             pack();
         }
         
@@ -58,9 +77,18 @@ public class ControllerWindows {
         
         /**
          * Frissíti az ablak tartalmát a model alapján.
+         * Az alábbi táblázat alapján XNOR művelet dönti el, hogy ktív-e a gomb
+         * és az első opció dönti el az ikon típusát:
+         *    vezérli? akarja?  esemény
+         *    i        i        lemondás aktív
+         *    h        i        kérés inaktív
+         *    i        h        lemondás inaktív
+         *    h        h        kérés aktív
          */
         public void refresh() {
-            lbImage.setText(getData().getHostName());
+            btControll.setIcon(getData().isControlling() ? icController1 : icController2);
+            btControll.setToolTipText(getData().isControlling() ? "Vezérlés átadása" : "Vezérlés kérése");
+            btControll.setEnabled(!(getData().isControlling() ^ getData().isWantControl()));
         }
         
     }

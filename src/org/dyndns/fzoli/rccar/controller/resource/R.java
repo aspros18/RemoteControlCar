@@ -58,7 +58,7 @@ public class R {
      * Beolvassa a képfájlt és cacheli a memóriában.
      * @throws RuntimeException ha a forrás fájl nem található
      */
-    private static BufferedImage getImage(String name) {
+    public static BufferedImage getImage(String name) {
         synchronized (IMAGES) {
             BufferedImage img = IMAGES.get(name);
             if (img != null) return img;

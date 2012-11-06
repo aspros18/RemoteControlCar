@@ -53,6 +53,9 @@ public class ControllerSideMessageProcess extends MessageProcess {
             selected = msg.data;
             ControllerData data = new ControllerData(new ArrayList<ChatMessage>());
             data.setHostName(selected);
+            data.setHostConnected(true);
+            data.setControlling(true);
+            data.setWantControl(false);
             sendMessage(data);
         }
     }

@@ -20,6 +20,7 @@ public class ControllerSideMessageProcess extends BridgeMessageProcess {
 
     @Override
     protected void onStart() {
+        selected = null;
         HostList l = new HostList();
         for (int i = 1; i <= 8; i++) {
             l.getHosts().add("teszt" + i);
@@ -50,12 +51,17 @@ public class ControllerSideMessageProcess extends BridgeMessageProcess {
         if (o instanceof ControllerData.HostNamePartialControllerData) {
             ControllerData.HostNamePartialControllerData msg = (ControllerData.HostNamePartialControllerData) o;
             selected = msg.data;
-            ControllerData data = new ControllerData(new ArrayList<ChatMessage>());
-            data.setHostName(selected);
-            data.setHostConnected(true);
-            data.setControlling(true);
-            data.setWantControl(false);
-            sendMessage(data);
+            if (selected != null) {
+                ControllerData data = new ControllerData(new ArrayList<ChatMessage>());
+                data.setHostName(selected);
+                data.setHostConnected(true);
+                data.setControlling(true);
+                data.setWantControl(false);
+                sendMessage(data);
+            }
+            else {
+                onStart();
+            }
         }
     }
     

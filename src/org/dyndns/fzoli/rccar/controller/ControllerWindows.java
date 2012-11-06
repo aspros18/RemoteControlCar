@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -59,24 +61,41 @@ public class ControllerWindows {
         
         public ControllerFrame() {
             super("Főablak");
+            setDefaultCloseOperation(HIDE_ON_CLOSE);
             setIconImage(R.getIconImage());
             setLayout(new BorderLayout());
             setResizable(false);
             
-            lbImage = new JLabel(icBlack);
+            lbImage = new JLabel(icBlack); // amíg nincs MJPEG stream, fekete
             add(lbImage, BorderLayout.CENTER);
             
-            JToolBar tbButtons = new JToolBar("Opciók");
-            add(tbButtons, BorderLayout.SOUTH);
-            tbButtons.setFloatable(false);
+            JToolBar tbButtons = new JToolBar();
+            add(tbButtons, BorderLayout.SOUTH); // az ablak aljára kerülnek a gombok ...
+            tbButtons.setFloatable(false); // ... és nem lehet őket onnan elmozdítani
             
-            btControll = createButton(tbButtons, "", icController1.getImage());
+            btControll = createButton(tbButtons, "", icController1.getImage()); // vezérlő gomb létrehozása és megjelenítése
             
-            pack();
+            pack(); // ablak méretének optimalizálása
+            
+            addWindowListener(new WindowAdapter() {
+
+                /**
+                 * A főablak bezárásakor nem lesz kiválasztva jármű.
+                 * Amikor a szerver megkapja, hogy nincs jármű kiválasztva,
+                 * elküldi a teljes jármű listát és a kliens megjeleníti a
+                 * járműválasztó ablakot újra.
+                 */
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    getData().setHostName(null);
+                }
+                
+            });
         }
         
         /**
          * Panelhez gyárt gombot.
+         * A panelen lévő gombok nem fogadnak eseményt.
          */
         private JButton createButton(JToolBar tb, String text, Image img) {
             JButton bt = new JButton(new ImageIcon(img));

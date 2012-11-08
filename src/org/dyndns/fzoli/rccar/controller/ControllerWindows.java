@@ -58,6 +58,11 @@ public class ControllerWindows {
         private JToggleButton btChat, btRadar, btArrow;
         
         /**
+         * Sebességnövekedés aktiváló/deaktiváló gomb.
+         */
+        private JToggleButton btIncrease;
+        
+        /**
          * Vezérlőgomb ikonja, amikor átadható a vezérlés.
          */
         private static final ImageIcon IC_CONTROLLER1 = R.getImageIcon("controller1.png");
@@ -66,6 +71,11 @@ public class ControllerWindows {
          * Vezérlőgomb ikonja, amikor kérhető a vezérlés.
          */
         private static final ImageIcon IC_CONTROLLER2 = R.getImageIcon("controller2.png");
+        
+        /**
+         * Növekedést jelző ikon.
+         */
+        private static final ImageIcon IC_INCREASE = R.getImageIcon("increase.png");
         
         /**
          * Teljesen fekete képkocka.
@@ -97,6 +107,8 @@ public class ControllerWindows {
             btArrow = createButton(tbButtons, "Vezérlő", IC_ARROWS, JToggleButton.class); // vezérlő ablak láthatóság szabályzó gomb
             btRadar = createButton(tbButtons, "Radar", IC_MAP, JToggleButton.class); // radar ablak láthatóság szabályzó gomb
             btChat = createButton(tbButtons, "Chat", IC_CHAT, JToggleButton.class); // chat ablak láthatóság szabályzó gomb
+            tbButtons.addSeparator(); // szeparátor
+            btIncrease = createButton(tbButtons, "Növekedő sebesség", IC_INCREASE, JToggleButton.class); // chat ablak láthatóság szabályzó gomb
             
             // kezdetben mindhárom ablak látható, ezért az alapértelmezett érték az, hogy be vannak nyomódva a gombok
             btArrow.setSelected(true);
@@ -145,7 +157,7 @@ public class ControllerWindows {
         
         /**
          * Frissíti az ablak tartalmát a model alapján.
-         * Az alábbi táblázat alapján XNOR művelet dönti el, hogy ktív-e a gomb
+         * Az alábbi táblázat alapján XNOR művelet dönti el, hogy aktív-e a gomb
          * és az első opció dönti el az ikon típusát:
          *    vezérli? akarja?  esemény
          *    i        i        lemondás aktív

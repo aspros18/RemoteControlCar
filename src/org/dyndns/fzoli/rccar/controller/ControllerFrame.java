@@ -55,6 +55,16 @@ public class ControllerFrame extends JFrame {
     private JToggleButton btIncrease;
 
     /**
+     * Pillanatnyi sebességet mutató címke.
+     */
+    private JLabel lbSpeed;
+    
+    /**
+     * Akkumulátor-szintet mutató folyamatjelző.
+     */
+    private JProgressBar pbAccu;
+    
+    /**
      * Toolbar.
      */
     private JToolBar tb;
@@ -131,13 +141,14 @@ public class ControllerFrame extends JFrame {
         c.weightx = Integer.MAX_VALUE; // a panel a maradék hely teljes kitöltésével ...
         tb.add(pStat, c); // ... hozzáadódik a toolbarhoz, mint utolsó komponens
         
-        // TODO: még csak design teszt
-        pStat.add(new JLabel("Sebesség: 20 km/h"));
-        JProgressBar pb = new JProgressBar();
-        pb.setString("Akku: 100%");
-        pb.setStringPainted(true);
-        pb.setValue(100);
-        pStat.add(pb);
+        lbSpeed = new JLabel("Sebesség: 20 km/h"); // TODO: tesztszöveg törlése
+        pStat.add(lbSpeed); // sebesség kijelző inicializálása, hozzáadás az ablakhoz
+        
+        pbAccu = new JProgressBar(); // akkumulátor-szint kijelző inicializálása
+        pbAccu.setString("Akku: 100%"); // TODO: tesztszöveg törlése
+        pbAccu.setStringPainted(true); // a beállított szöveg jelenjen meg
+        pbAccu.setValue(100); // TODO: tesztsor törlése
+        pStat.add(pbAccu); // hozzáadás az ablakhoz
         
         pack(); // ablak méretének optimalizálása
         

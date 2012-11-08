@@ -2,6 +2,7 @@ package org.dyndns.fzoli.rccar.controller;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -104,7 +105,7 @@ public class ControllerFrame extends JFrame {
         setIconImage(R.getIconImage());
         setLayout(new BorderLayout());
         setTitle("Főablak");
-        setResizable(false);
+//        setResizable(false);
 
         lbImage = new JLabel(IC_BLACK_BG); // amíg nincs MJPEG stream, fekete
         add(lbImage, BorderLayout.CENTER);
@@ -122,10 +123,16 @@ public class ControllerFrame extends JFrame {
         btIncrease = createButton("Növekedő sebesség", IC_INCREASE, JToggleButton.class); // chat ablak láthatóság szabályzó gomb
 
         JPanel pStat = new JPanel(); // a statisztika panel ...
-        pStat.setOpaque(false); // átlátszó és ...
+        pStat.setOpaque(false); // ... átlátszó és ...
+        pStat.setLayout(new FlowLayout(FlowLayout.RIGHT, 8, 0)); // ... jobbra igazítva kerülnek rá a komponensek 8 pixel hézaggal
         GridBagConstraints c = getGbc();
-        c.weightx = Integer.MAX_VALUE; // a maradék hely teljes kitöltésével ...
-        tb.add(pStat, c); // hozzáadódik a toolbarhoz, mint utolsó komponens
+        c.fill = GridBagConstraints.HORIZONTAL; // a panel magasságban minimális, hogy a toolbar közepén legyen
+        c.weightx = Integer.MAX_VALUE; // a panel a maradék hely teljes kitöltésével ...
+        tb.add(pStat, c); // ... hozzáadódik a toolbarhoz, mint utolsó komponens
+        
+        // teszt:
+        pStat.add(new JLabel("Teszt"));
+        pStat.add(new JLabel("Teszt2"));
         
         pack(); // ablak méretének optimalizálása
         
@@ -147,7 +154,7 @@ public class ControllerFrame extends JFrame {
     
     /**
      * A komponensek alapértelmezéseinek beállítása.
-     * - A toolbar nem helyezhető át és a gomboknak nem fest ikont.
+     * - A toolbar nem helyezhető át és a gomboknak nem fest szegélyt, míg nem kerül egér föléjük.
      * - Kezdetben mindhárom ablak látható, ezért az alapértelmezett érték az, hogy be vannak nyomódva a gombok.
      */
     private void setComponents() {

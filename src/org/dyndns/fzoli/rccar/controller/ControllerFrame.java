@@ -16,6 +16,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JSeparator;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
@@ -130,9 +131,13 @@ public class ControllerFrame extends JFrame {
         c.weightx = Integer.MAX_VALUE; // a panel a maradék hely teljes kitöltésével ...
         tb.add(pStat, c); // ... hozzáadódik a toolbarhoz, mint utolsó komponens
         
-        // teszt:
-        pStat.add(new JLabel("Teszt"));
-        pStat.add(new JLabel("Teszt2"));
+        // TODO: még csak design teszt
+        pStat.add(new JLabel("Sebesség: 20 km/h"));
+        JProgressBar pb = new JProgressBar();
+        pb.setString("Akku: 100%");
+        pb.setStringPainted(true);
+        pb.setValue(100);
+        pStat.add(pb);
         
         pack(); // ablak méretének optimalizálása
         

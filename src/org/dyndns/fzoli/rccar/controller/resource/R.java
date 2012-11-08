@@ -55,7 +55,17 @@ public class R {
     }
     
     /**
+     * Fájlnév alapján betölti a képet és ikont ad vissza.
+     * @param name a fájl neve
+     * @throws RuntimeException ha a forrás fájl nem található
+     */
+    public static ImageIcon getImageIcon(String name) {
+        return new ImageIcon(getImage(name));
+    }
+    
+    /**
      * Beolvassa a képfájlt és cacheli a memóriában.
+     * @param name a fájl neve
      * @throws RuntimeException ha a forrás fájl nem található
      */
     public static BufferedImage getImage(String name) {

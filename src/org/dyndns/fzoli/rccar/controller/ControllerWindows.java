@@ -4,15 +4,16 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import static org.dyndns.fzoli.rccar.controller.ControllerModels.getData;
 import org.dyndns.fzoli.rccar.controller.resource.R;
@@ -39,14 +40,34 @@ public class ControllerWindows {
         private JButton btControll;
         
         /**
+         * Ablakmegjelenítő- és elrejtő gombok.
+         */
+        private JToggleButton btChat, btRadar, btArrow;
+        
+        /**
          * Vezérlőgomb ikonja, amikor átadható a vezérlés.
          */
-        private static final ImageIcon icController1 = new ImageIcon(R.getImage("controller1.png"));
+        private static final ImageIcon icController1 = R.getImageIcon("controller1.png");
         
         /**
          * Vezérlőgomb ikonja, amikor kérhető a vezérlés.
          */
-        private static final ImageIcon icController2 = new ImageIcon(R.getImage("controller2.png"));
+        private static final ImageIcon icController2 = R.getImageIcon("controller2.png");
+        
+        /**
+         * A chatablak ikonja.
+         */
+        private static final ImageIcon icChat = R.getImageIcon("chat.png");
+        
+        /**
+         * A vezérlőablak ikonja.
+         */
+        private static final ImageIcon icArrows = R.getImageIcon("arrows.png");
+        
+        /**
+         * A radarablak ikonja.
+         */
+        private static final ImageIcon icMap = R.getImageIcon("map.png");
         
         /**
          * Teljesen fekete képkocka.
@@ -73,7 +94,11 @@ public class ControllerWindows {
             add(tbButtons, BorderLayout.SOUTH); // az ablak aljára kerülnek a gombok ...
             tbButtons.setFloatable(false); // ... és nem lehet őket onnan elmozdítani
             
-            btControll = createButton(tbButtons, "", icController1.getImage()); // vezérlő gomb létrehozása és megjelenítése
+            btControll = createButton(tbButtons, "", icController1, JButton.class); // vezérlés kérő gomb
+            tbButtons.addSeparator(); // szeparátor
+            btArrow = createButton(tbButtons, "Vezérlő", icArrows, JToggleButton.class); // vezérlő ablak láthatóság szabályzó gomb
+            btRadar = createButton(tbButtons, "Radar", icMap, JToggleButton.class); // radar ablak láthatóság szabályzó gomb
+            btChat = createButton(tbButtons, "Chat", icChat, JToggleButton.class); // chat ablak láthatóság szabályzó gomb
             
             pack(); // ablak méretének optimalizálása
             
@@ -95,14 +120,24 @@ public class ControllerWindows {
         
         /**
          * Panelhez gyárt gombot.
-         * A panelen lévő gombok nem fogadnak eseményt.
+         * A panelen lévő gombok nem fókuszálhatóak.
+         * @param tb a panel, amihez hozzáadódik a gomb
+         * @param text a gomb tooltip szövege
+         * @param img a gomb ikonja
+         * @param clazz a gomb típusa
          */
-        private JButton createButton(JToolBar tb, String text, Image img) {
-            JButton bt = new JButton(new ImageIcon(img));
-            tb.add(bt);
-            bt.setToolTipText(text);
-            bt.setFocusable(false);
-            return bt;
+        private <T extends AbstractButton> T createButton(JToolBar tb, String text, ImageIcon img, Class<T> clazz) {
+            try {
+                T bt = clazz.newInstance();
+                bt.setIcon(img);
+                tb.add(bt);
+                bt.setToolTipText(text);
+                bt.setFocusable(false);
+                return bt;
+            }
+            catch (Exception ex) {
+                return null;
+            }
         }
         
         /**

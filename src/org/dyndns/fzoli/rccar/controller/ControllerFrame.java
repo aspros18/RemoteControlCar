@@ -2,9 +2,9 @@ package org.dyndns.fzoli.rccar.controller;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -14,8 +14,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 import static org.dyndns.fzoli.rccar.controller.ControllerModels.getData;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_ARROWS;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_CHAT;
@@ -53,6 +56,11 @@ public class ControllerFrame extends JFrame {
      * Toolbar.
      */
     private JToolBar tb;
+    
+    /**
+     * Oszlopszámláló az elrendezés-menedzser megszorításához.
+     */
+    private int colCounter = 0;
     
     /**
      * Vezérlőgomb ikonja, amikor átadható a vezérlés.
@@ -102,7 +110,7 @@ public class ControllerFrame extends JFrame {
         add(lbImage, BorderLayout.CENTER);
 
         tb = new JToolBar();
-        tb.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 2));
+        tb.setLayout(new GridBagLayout());
         add(tb, BorderLayout.SOUTH); // az ablak aljára kerül a toolbar
 
         btControll = createButton(null, IC_CONTROLLER1, JButton.class); // vezérlés kérő gomb
@@ -113,8 +121,14 @@ public class ControllerFrame extends JFrame {
         addSeparator(); // szeparátor
         btIncrease = createButton("Növekedő sebesség", IC_INCREASE, JToggleButton.class); // chat ablak láthatóság szabályzó gomb
 
+        JPanel pStat = new JPanel(); // a statisztika panel ...
+        pStat.setOpaque(false); // átlátszó és ...
+        GridBagConstraints c = getGbc();
+        c.weightx = Integer.MAX_VALUE; // a maradék hely teljes kitöltésével ...
+        tb.add(pStat, c); // hozzáadódik a toolbarhoz, mint utolsó komponens
+        
         pack(); // ablak méretének optimalizálása
-
+        
         addWindowListener(new WindowAdapter() {
 
             /**
@@ -146,6 +160,19 @@ public class ControllerFrame extends JFrame {
     }
     
     /**
+     * A toolbar elrendezés-menedzserének a megszorítása.
+     */
+    private GridBagConstraints getGbc() {
+        GridBagConstraints c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.LINE_START;
+        c.fill = GridBagConstraints.BOTH;
+        c.insets = new Insets(2, 2, 2, 2);
+        c.gridx = colCounter;
+        colCounter++;
+        return c;
+    }
+    
+    /**
      * Panelhez gyárt gombot.
      * A panelen lévő gombok nem fókuszálhatóak.
      * @param tb a panel, amihez hozzáadódik a gomb
@@ -155,12 +182,13 @@ public class ControllerFrame extends JFrame {
      */
     private <T extends AbstractButton> T createButton(String text, ImageIcon img, Class<T> clazz) {
         try {
+            GridBagConstraints c = getGbc();
             T bt = clazz.newInstance();
-            tb.add(bt);
+            tb.add(bt, c);
             bt.setIcon(img);
             bt.setToolTipText(text);
             bt.setFocusable(false);
-            bt.setMargin(new Insets(2, 2, 2, 2));
+            bt.setMargin(c.insets);
             return bt;
         }
         catch (Exception ex) {
@@ -172,7 +200,7 @@ public class ControllerFrame extends JFrame {
      * Szeparátor hozzáadása a toolbarhoz.
      */
     private void addSeparator() {
-        tb.addSeparator(new Dimension(8, 24));
+        tb.add(new JSeparator(SwingConstants.VERTICAL), getGbc());
     }
     
     /**

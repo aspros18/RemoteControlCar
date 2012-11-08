@@ -21,6 +21,8 @@ import org.dyndns.fzoli.rccar.controller.resource.R;
 
 /**
  * A jármű főablaka.
+ * Tartalmazza a kameraképet, a vezérlőgombokat,
+ * valamint a jármű pillanatnyi sebességét és akkumulátorszintjét.
  */
 public class ControllerFrame extends JFrame {
 

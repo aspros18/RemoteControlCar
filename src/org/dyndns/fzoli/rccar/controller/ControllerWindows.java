@@ -26,7 +26,6 @@ public class ControllerWindows {
     
     /**
      * Főablak.
-     * Tartalmazza a kameraképet és a vezérlőgombokat.
      */
     private final ControllerFrame MAIN_FRAME = new ControllerFrame();
     

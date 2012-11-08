@@ -2,7 +2,6 @@ package org.dyndns.fzoli.rccar.controller;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dialog;
 import java.awt.Graphics;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -10,7 +9,6 @@ import java.awt.image.BufferedImage;
 import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JToggleButton;
@@ -23,6 +21,21 @@ import org.dyndns.fzoli.rccar.controller.resource.R;
  * @author zoli
  */
 public class ControllerWindows {
+    
+    /**
+     * A chatablak ikonja.
+     */
+    private static final ImageIcon IC_CHAT = R.getImageIcon("chat.png");
+
+    /**
+     * A vezérlőablak ikonja.
+     */
+    private static final ImageIcon IC_ARROWS = R.getImageIcon("arrows.png");
+
+    /**
+     * A radarablak ikonja.
+     */
+    private static final ImageIcon IC_MAP = R.getImageIcon("map.png");
     
     /**
      * A főablak.
@@ -47,32 +60,17 @@ public class ControllerWindows {
         /**
          * Vezérlőgomb ikonja, amikor átadható a vezérlés.
          */
-        private static final ImageIcon icController1 = R.getImageIcon("controller1.png");
+        private static final ImageIcon IC_CONTROLLER1 = R.getImageIcon("controller1.png");
         
         /**
          * Vezérlőgomb ikonja, amikor kérhető a vezérlés.
          */
-        private static final ImageIcon icController2 = R.getImageIcon("controller2.png");
-        
-        /**
-         * A chatablak ikonja.
-         */
-        private static final ImageIcon icChat = R.getImageIcon("chat.png");
-        
-        /**
-         * A vezérlőablak ikonja.
-         */
-        private static final ImageIcon icArrows = R.getImageIcon("arrows.png");
-        
-        /**
-         * A radarablak ikonja.
-         */
-        private static final ImageIcon icMap = R.getImageIcon("map.png");
+        private static final ImageIcon IC_CONTROLLER2 = R.getImageIcon("controller2.png");
         
         /**
          * Teljesen fekete képkocka.
          */
-        private static final ImageIcon icBlack = new ImageIcon(new BufferedImage(640, 480, BufferedImage.TYPE_INT_RGB) {
+        private static final ImageIcon IC_BLACK_BG = new ImageIcon(new BufferedImage(640, 480, BufferedImage.TYPE_INT_RGB) {
             {
                 Graphics g = getGraphics();
                 g.setColor(Color.BLACK);
@@ -87,18 +85,23 @@ public class ControllerWindows {
             setLayout(new BorderLayout());
             setResizable(false);
             
-            lbImage = new JLabel(icBlack); // amíg nincs MJPEG stream, fekete
+            lbImage = new JLabel(IC_BLACK_BG); // amíg nincs MJPEG stream, fekete
             add(lbImage, BorderLayout.CENTER);
             
             JToolBar tbButtons = new JToolBar();
             add(tbButtons, BorderLayout.SOUTH); // az ablak aljára kerülnek a gombok ...
             tbButtons.setFloatable(false); // ... és nem lehet őket onnan elmozdítani
             
-            btControll = createButton(tbButtons, "", icController1, JButton.class); // vezérlés kérő gomb
+            btControll = createButton(tbButtons, null, IC_CONTROLLER1, JButton.class); // vezérlés kérő gomb
             tbButtons.addSeparator(); // szeparátor
-            btArrow = createButton(tbButtons, "Vezérlő", icArrows, JToggleButton.class); // vezérlő ablak láthatóság szabályzó gomb
-            btRadar = createButton(tbButtons, "Radar", icMap, JToggleButton.class); // radar ablak láthatóság szabályzó gomb
-            btChat = createButton(tbButtons, "Chat", icChat, JToggleButton.class); // chat ablak láthatóság szabályzó gomb
+            btArrow = createButton(tbButtons, "Vezérlő", IC_ARROWS, JToggleButton.class); // vezérlő ablak láthatóság szabályzó gomb
+            btRadar = createButton(tbButtons, "Radar", IC_MAP, JToggleButton.class); // radar ablak láthatóság szabályzó gomb
+            btChat = createButton(tbButtons, "Chat", IC_CHAT, JToggleButton.class); // chat ablak láthatóság szabályzó gomb
+            
+            // kezdetben mindhárom ablak látható, ezért az alapértelmezett érték az, hogy be vannak nyomódva a gombok
+            btArrow.setSelected(true);
+            btRadar.setSelected(true);
+            btChat.setSelected(true);
             
             pack(); // ablak méretének optimalizálása
             
@@ -151,21 +154,9 @@ public class ControllerWindows {
          *    h        h        kérés aktív
          */
         public void refresh() {
-            btControll.setIcon(getData().isControlling() ? icController1 : icController2);
+            btControll.setIcon(getData().isControlling() ? IC_CONTROLLER1 : IC_CONTROLLER2);
             btControll.setToolTipText(getData().isControlling() ? "Vezérlés átadása" : "Vezérlés kérése");
             btControll.setEnabled(!(getData().isControlling() ^ getData().isWantControl()));
-        }
-        
-    }
-    
-    /**
-     * A dialógusablakok közös őse.
-     */
-    private static class ControllerDialog extends JDialog {
-
-        public ControllerDialog(Dialog owner, String title) {
-            super(owner, title);
-            setIconImage(R.getIconImage());
         }
         
     }

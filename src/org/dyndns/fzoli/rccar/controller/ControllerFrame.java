@@ -2,7 +2,10 @@ package org.dyndns.fzoli.rccar.controller;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.Insets;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -76,7 +79,7 @@ public class ControllerFrame extends JFrame {
             g.fillRect(0, 0, getWidth(), getHeight());
         }
     });
-
+    
     /**
      * Konstruktor.
      */
@@ -99,14 +102,15 @@ public class ControllerFrame extends JFrame {
         add(lbImage, BorderLayout.CENTER);
 
         tb = new JToolBar();
+        tb.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 2));
         add(tb, BorderLayout.SOUTH); // az ablak aljára kerül a toolbar
 
         btControll = createButton(null, IC_CONTROLLER1, JButton.class); // vezérlés kérő gomb
-        tb.addSeparator(); // szeparátor
+        addSeparator(); // szeparátor
         btArrow = createButton("Vezérlő", IC_ARROWS, JToggleButton.class); // vezérlő ablak láthatóság szabályzó gomb
         btMap = createButton("Térkép", IC_MAP, JToggleButton.class); // radar ablak láthatóság szabályzó gomb
         btChat = createButton("Chat", IC_CHAT, JToggleButton.class); // chat ablak láthatóság szabályzó gomb
-        tb.addSeparator(); // szeparátor
+        addSeparator(); // szeparátor
         btIncrease = createButton("Növekedő sebesség", IC_INCREASE, JToggleButton.class); // chat ablak láthatóság szabályzó gomb
 
         pack(); // ablak méretének optimalizálása
@@ -156,6 +160,7 @@ public class ControllerFrame extends JFrame {
             bt.setIcon(img);
             bt.setToolTipText(text);
             bt.setFocusable(false);
+            bt.setMargin(new Insets(2, 2, 2, 2));
             return bt;
         }
         catch (Exception ex) {
@@ -163,6 +168,13 @@ public class ControllerFrame extends JFrame {
         }
     }
 
+    /**
+     * Szeparátor hozzáadása a toolbarhoz.
+     */
+    private void addSeparator() {
+        tb.addSeparator(new Dimension(8, 24));
+    }
+    
     /**
      * Frissíti az ablak tartalmát a model alapján.
      * Az alábbi táblázat alapján XNOR művelet dönti el, hogy aktív-e a gomb

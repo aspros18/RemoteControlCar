@@ -247,13 +247,13 @@ public class ConfigEditorFrame extends ModalFrame {
     public ConfigEditorFrame(Config config) {
         CONFIG = config;
         initComponents();
-        initWindow();
+        initFrame();
     }
     
     /**
      * Inicializálja az ablakot.
      */
-    private void initWindow() {
+    private void initFrame() {
         setTitle("Kapcsolatbeállító"); // címsor szöveg beállítása
         setIconImage(R.getIconImage()); // címsor ikon beállítása
         setLayout(new GridBagLayout()); // elrendezésmenedzser megadása

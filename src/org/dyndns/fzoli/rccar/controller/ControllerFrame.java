@@ -72,11 +72,22 @@ public class ControllerFrame extends JFrame {
         }
     });
 
+    /**
+     * Konstruktor.
+     */
     public ControllerFrame() {
-        super("Főablak");
+        initFrame();
+        setComponents();
+    }
+
+    /**
+     * Az ablak komponenseinek létrehozása és a felület létrehozása.
+     */
+    private void initFrame() {
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         setIconImage(R.getIconImage());
         setLayout(new BorderLayout());
+        setTitle("Főablak");
         setResizable(false);
 
         lbImage = new JLabel(IC_BLACK_BG); // amíg nincs MJPEG stream, fekete
@@ -93,11 +104,6 @@ public class ControllerFrame extends JFrame {
         btChat = createButton(tbButtons, "Chat", IC_CHAT, JToggleButton.class); // chat ablak láthatóság szabályzó gomb
         tbButtons.addSeparator(); // szeparátor
         btIncrease = createButton(tbButtons, "Növekedő sebesség", IC_INCREASE, JToggleButton.class); // chat ablak láthatóság szabályzó gomb
-
-        // kezdetben mindhárom ablak látható, ezért az alapértelmezett érték az, hogy be vannak nyomódva a gombok
-        btArrow.setSelected(true);
-        btMap.setSelected(true);
-        btChat.setSelected(true);
 
         pack(); // ablak méretének optimalizálása
 
@@ -116,7 +122,17 @@ public class ControllerFrame extends JFrame {
 
         });
     }
-
+    
+    /**
+     * A komponensek alapértelmezéseinek beállítása.
+     * Kezdetben mindhárom ablak látható, ezért az alapértelmezett érték az, hogy be vannak nyomódva a gombok.
+     */
+    private void setComponents() {
+        btArrow.setSelected(true);
+        btMap.setSelected(true);
+        btChat.setSelected(true);
+    }
+    
     /**
      * Panelhez gyárt gombot.
      * A panelen lévő gombok nem fókuszálhatóak.
@@ -125,7 +141,7 @@ public class ControllerFrame extends JFrame {
      * @param img a gomb ikonja
      * @param clazz a gomb típusa
      */
-    private <T extends AbstractButton> T createButton(JToolBar tb, String text, ImageIcon img, Class<T> clazz) {
+    private static <T extends AbstractButton> T createButton(JToolBar tb, String text, ImageIcon img, Class<T> clazz) {
         try {
             T bt = clazz.newInstance();
             bt.setIcon(img);

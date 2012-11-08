@@ -35,7 +35,7 @@ import org.dyndns.fzoli.ui.RegexPatternFormatter;
  * A vezérlő konfigurációját beállító dialógusablak.
  * @author zoli
  */
-public class ConfigEditorWindow extends ModalFrame {
+public class ConfigEditorFrame extends ModalFrame {
     
     /**
      * A dialógusablak lapfüleinek tartalma ebbe a panelbe kerül bele.
@@ -244,7 +244,7 @@ public class ConfigEditorWindow extends ModalFrame {
      * Konstruktor.
      * @param config konfiguráció, amit használ az ablak.
      */
-    public ConfigEditorWindow(Config config) {
+    public ConfigEditorFrame(Config config) {
         CONFIG = config;
         initComponents();
         initWindow();

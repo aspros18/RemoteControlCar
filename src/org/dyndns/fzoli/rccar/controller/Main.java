@@ -87,7 +87,7 @@ public class Main {
     /**
      * Konfiguráció-szerkesztő ablak.
      */
-    private static final ConfigEditorWindow CONFIG_EDITOR;
+    private static final ConfigEditorFrame CONFIG_EDITOR;
     
     /**
      * Kapcsolódásjelző- és kezelő ablak.
@@ -123,7 +123,7 @@ public class Main {
         // előinicializálom az ablakokat, míg a nyitóképernyő fent van,
         // hogy később ne menjen el ezzel a hasznos idő
         PROGRESS_FRAME = new ConnectionProgressFrame();
-        CONFIG_EDITOR = new ConfigEditorWindow(CONFIG);
+        CONFIG_EDITOR = new ConfigEditorFrame(CONFIG);
         SELECTION_FRAME = new HostSelectionFrame(AL_EXIT);
         CONTROLLER_WINDOWS = new ControllerWindows();
     }

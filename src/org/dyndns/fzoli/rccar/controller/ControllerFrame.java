@@ -47,6 +47,11 @@ public class ControllerFrame extends JFrame {
     private JToggleButton btIncrease;
 
     /**
+     * Toolbar.
+     */
+    private JToolBar tb;
+    
+    /**
      * Vezérlőgomb ikonja, amikor átadható a vezérlés.
      */
     private static final ImageIcon IC_CONTROLLER1 = R.getImageIcon("controller1.png");
@@ -93,17 +98,16 @@ public class ControllerFrame extends JFrame {
         lbImage = new JLabel(IC_BLACK_BG); // amíg nincs MJPEG stream, fekete
         add(lbImage, BorderLayout.CENTER);
 
-        JToolBar tbButtons = new JToolBar();
-        add(tbButtons, BorderLayout.SOUTH); // az ablak aljára kerülnek a gombok ...
-        tbButtons.setFloatable(false); // ... és nem lehet őket onnan elmozdítani
+        tb = new JToolBar();
+        add(tb, BorderLayout.SOUTH); // az ablak aljára kerül a toolbar
 
-        btControll = createButton(tbButtons, null, IC_CONTROLLER1, JButton.class); // vezérlés kérő gomb
-        tbButtons.addSeparator(); // szeparátor
-        btArrow = createButton(tbButtons, "Vezérlő", IC_ARROWS, JToggleButton.class); // vezérlő ablak láthatóság szabályzó gomb
-        btMap = createButton(tbButtons, "Térkép", IC_MAP, JToggleButton.class); // radar ablak láthatóság szabályzó gomb
-        btChat = createButton(tbButtons, "Chat", IC_CHAT, JToggleButton.class); // chat ablak láthatóság szabályzó gomb
-        tbButtons.addSeparator(); // szeparátor
-        btIncrease = createButton(tbButtons, "Növekedő sebesség", IC_INCREASE, JToggleButton.class); // chat ablak láthatóság szabályzó gomb
+        btControll = createButton(null, IC_CONTROLLER1, JButton.class); // vezérlés kérő gomb
+        tb.addSeparator(); // szeparátor
+        btArrow = createButton("Vezérlő", IC_ARROWS, JToggleButton.class); // vezérlő ablak láthatóság szabályzó gomb
+        btMap = createButton("Térkép", IC_MAP, JToggleButton.class); // radar ablak láthatóság szabályzó gomb
+        btChat = createButton("Chat", IC_CHAT, JToggleButton.class); // chat ablak láthatóság szabályzó gomb
+        tb.addSeparator(); // szeparátor
+        btIncrease = createButton("Növekedő sebesség", IC_INCREASE, JToggleButton.class); // chat ablak láthatóság szabályzó gomb
 
         pack(); // ablak méretének optimalizálása
 
@@ -125,9 +129,13 @@ public class ControllerFrame extends JFrame {
     
     /**
      * A komponensek alapértelmezéseinek beállítása.
-     * Kezdetben mindhárom ablak látható, ezért az alapértelmezett érték az, hogy be vannak nyomódva a gombok.
+     * - A toolbar nem helyezhető át és a gomboknak nem fest ikont.
+     * - Kezdetben mindhárom ablak látható, ezért az alapértelmezett érték az, hogy be vannak nyomódva a gombok.
      */
     private void setComponents() {
+        tb.setFloatable(false);
+        tb.setRollover(true);
+        
         btArrow.setSelected(true);
         btMap.setSelected(true);
         btChat.setSelected(true);
@@ -141,11 +149,11 @@ public class ControllerFrame extends JFrame {
      * @param img a gomb ikonja
      * @param clazz a gomb típusa
      */
-    private static <T extends AbstractButton> T createButton(JToolBar tb, String text, ImageIcon img, Class<T> clazz) {
+    private <T extends AbstractButton> T createButton(String text, ImageIcon img, Class<T> clazz) {
         try {
             T bt = clazz.newInstance();
-            bt.setIcon(img);
             tb.add(bt);
+            bt.setIcon(img);
             bt.setToolTipText(text);
             bt.setFocusable(false);
             return bt;

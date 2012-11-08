@@ -105,7 +105,7 @@ public class ControllerWindows {
             btControll = createButton(tbButtons, null, IC_CONTROLLER1, JButton.class); // vezérlés kérő gomb
             tbButtons.addSeparator(); // szeparátor
             btArrow = createButton(tbButtons, "Vezérlő", IC_ARROWS, JToggleButton.class); // vezérlő ablak láthatóság szabályzó gomb
-            btRadar = createButton(tbButtons, "Radar", IC_MAP, JToggleButton.class); // radar ablak láthatóság szabályzó gomb
+            btRadar = createButton(tbButtons, "Térkép", IC_MAP, JToggleButton.class); // radar ablak láthatóság szabályzó gomb
             btChat = createButton(tbButtons, "Chat", IC_CHAT, JToggleButton.class); // chat ablak láthatóság szabályzó gomb
             tbButtons.addSeparator(); // szeparátor
             btIncrease = createButton(tbButtons, "Növekedő sebesség", IC_INCREASE, JToggleButton.class); // chat ablak láthatóság szabályzó gomb

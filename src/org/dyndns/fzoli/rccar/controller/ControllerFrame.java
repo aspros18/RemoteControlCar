@@ -101,12 +101,12 @@ public class ControllerFrame extends JFrame {
      * Az ablak komponenseinek létrehozása és a felület létrehozása.
      */
     private void initFrame() {
+        setResizable(false);
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         setIconImage(R.getIconImage());
         setLayout(new BorderLayout());
         setTitle("Főablak");
-//        setResizable(false);
-
+        
         lbImage = new JLabel(IC_BLACK_BG); // amíg nincs MJPEG stream, fekete
         add(lbImage, BorderLayout.CENTER);
 

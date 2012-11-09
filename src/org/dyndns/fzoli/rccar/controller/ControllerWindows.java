@@ -15,7 +15,7 @@ public class ControllerWindows {
      * Az ablakok felsorolása.
      * Láthatóság beállításához szükséges.
      */
-    public enum Windows {
+    public enum WindowType {
         CONTROLL,
         CHAT,
         MAP
@@ -44,7 +44,7 @@ public class ControllerWindows {
     /**
      * Chatablak.
      */
-    private final ChatDialog DIALOG_CHAT = new ChatDialog(FRAME_MAIN);
+    private final ChatDialog DIALOG_CHAT = new ChatDialog(FRAME_MAIN, this);
     
     /**
      * Az ablakok pozícionálása, szükség esetén átméretezése.
@@ -59,11 +59,11 @@ public class ControllerWindows {
     }
     
     /**
-     * A megadott ablak megjelenítése/eltüntetése.
+     * A megadott ablak megjelenítése/eltüntetése és esemény küldése a főablaknak.
      * @param w az ablak
      * @param b true esetén megjelenik, egyébként eltűnik
      */
-    public void setVisible(Windows w, boolean b) {
+    public void setVisible(WindowType w, boolean b) {
         if (w != null) {
             switch (w) {
                 case CONTROLL:
@@ -75,6 +75,7 @@ public class ControllerWindows {
                 case MAP:
                     //TODO
             }
+            FRAME_MAIN.onWindowClosed(w);
         }
     }
     

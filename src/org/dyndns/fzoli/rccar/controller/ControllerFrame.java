@@ -28,7 +28,7 @@ import static org.dyndns.fzoli.rccar.controller.ControllerModels.getData;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_ARROWS;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_CHAT;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_MAP;
-import org.dyndns.fzoli.rccar.controller.ControllerWindows.Windows;
+import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 
 /**
@@ -195,12 +195,14 @@ public class ControllerFrame extends JFrame {
 
             @Override
             public void stateChanged(ChangeEvent e) {
-                Windows window = null;
-                Object src = e.getSource();
-                if (src == btControll) window = Windows.CONTROLL;
-                else if (src == btChat) window = Windows.CHAT;
-                else if (src == btMap) window = Windows.MAP;
-                WINDOWS.setVisible(window, btChat.isSelected());
+                if (WINDOWS != null) {
+                    WindowType window = null;
+                    Object src = e.getSource();
+                    if (src == btControll) window = WindowType.CONTROLL;
+                    else if (src == btChat) window = WindowType.CHAT;
+                    else if (src == btMap) window = WindowType.MAP;
+                    WINDOWS.setVisible(window, btChat.isSelected());
+                }
             }
             
         });
@@ -274,6 +276,25 @@ public class ControllerFrame extends JFrame {
         Dimension fullSize = getSize();
         Dimension paneSize = getContentPane().getSize();
         return new Dimension(fullSize.width - paneSize.width, fullSize.height - paneSize.height);
+    }
+    
+    /**
+     * Ha a felhasználó bezárja az egyik ablakot, a hozzá tartozó gomb kijelölését le kell venni.
+     * Ez egy eseményfeldolgozó metódus.
+     */
+    public void onWindowClosed(WindowType w) {
+        if (w != null) {
+            switch (w) {
+                case CONTROLL:
+                    btControll.setSelected(false);
+                    break;
+                case CHAT:
+                    btChat.setSelected(false);
+                    break;
+                case MAP:
+                    btMap.setSelected(false);
+            }
+        }
     }
     
 }

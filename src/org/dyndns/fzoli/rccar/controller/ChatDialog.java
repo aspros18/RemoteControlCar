@@ -24,6 +24,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_CHAT;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
 import org.dyndns.fzoli.ui.UIUtil;
@@ -86,6 +87,8 @@ public class ChatDialog extends AbstractDialog {
             setLayout(new BorderLayout());
             setBorder(BorderFactory.createEtchedBorder());
             final JLabel lb1 = new JLabel("<html>" + createMessageString(new Date(), "controller", "üzenet", false, false) + "</html>");
+            lb1.setVerticalAlignment(SwingConstants.TOP);
+            lb1.setHorizontalAlignment(SwingConstants.LEFT);
             final JTextArea lb2 = new JTextArea();
             lb2.setLineWrap(true);
             lb2.setBorder(BorderFactory.createLineBorder(getBackground(), 5));

@@ -106,7 +106,7 @@ public class ChatDialog extends AbstractDialog {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if (!lb2.getText().trim().isEmpty()) {
-                        lb1.setText("<html>" + lb1.getText().substring(6, lb1.getText().length() - 7) + createMessageString(new Date(), "controller", lb2.getText().trim(), true, true) + "</html>");
+                        lb1.setText("<html>" + lb1.getText().substring(6, lb1.getText().length() - 7) + createMessageString(new Date(), "controller", lb2.getText(), true, true) + "</html>");
                         lb2.setText("");
                     }
                 }
@@ -128,10 +128,22 @@ public class ChatDialog extends AbstractDialog {
         }
     };
     
+    /**
+     * Dátumformázó a chatüzenetek elküldésének idejének kijelzésére.
+     */
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss");
     
+    /**
+     * Egy chatüzenet HTML kódját adja vissza.
+     * @param date az üzenet elküldésének ideje
+     * @param name az üzenet feladója
+     * @param message az üzenet tartalma
+     * @param newline új sor jellel kezdődjön-e a kód
+     * @param dot legyen-e név helyett három pont
+     */
     private String createMessageString(Date date, String name, String message, boolean newline, boolean dot) {
-        return (newline ? "<br>" : "") + "<span style=\"color:gray\">[" + DATE_FORMAT.format(date) + "]&nbsp;</span><span style=\"color:rgb(0,128,255);font-weight:800\">" + (dot ? "..." : (name + ':')) + "&nbsp;</span>" + message;
+        boolean startNewline = message.indexOf("\n") == 0; // ha új sorral kezdődik az üzenet, egy újsor jel bent marad
+        return (newline ? "<br>" : "") + "<span style=\"color:gray\">[" + DATE_FORMAT.format(date) + "]&nbsp;</span><span style=\"color:rgb(0,128,255);font-weight:800\">" + (dot ? "..." : (name + ':')) + "&nbsp;</span>" + (startNewline ? "<br>" : "") + message.trim().replace("\n", "<br>");
     }
     
     public ChatDialog(Window owner, final ControllerWindows windows) {

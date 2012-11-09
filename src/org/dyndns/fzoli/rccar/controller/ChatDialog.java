@@ -85,7 +85,7 @@ public class ChatDialog extends AbstractDialog {
             setBackground(Color.WHITE);
             setLayout(new BorderLayout());
             setBorder(BorderFactory.createEtchedBorder());
-            final JLabel lb1 = new JLabel("<html>" + createMessageString(new Date(), "controller", "üzenet") + "</html>");
+            final JLabel lb1 = new JLabel("<html>" + createMessageString(new Date(), "controller", "üzenet", false) + "</html>");
             final JTextArea lb2 = new JTextArea();
             lb2.setLineWrap(true);
             lb2.setBorder(BorderFactory.createLineBorder(getBackground(), 5));
@@ -102,28 +102,31 @@ public class ChatDialog extends AbstractDialog {
                 
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    lb1.setText("<html>" + lb1.getText().substring(6, lb1.getText().length() - 7) + createMessageString(new Date(), "controller", lb2.getText(), true) + "</html>");
                     lb2.setText("");
-                    System.out.println(lb1.getText().substring(6, lb1.getText().length() - 7));
                 }
                 
             });
             
-            JScrollPane pane = new JScrollPane(lb2);
-            pane.setViewportBorder(null);
-            pane.setPreferredSize(new Dimension(490, 50));
-            pane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-            add(createSplitPane(JSplitPane.VERTICAL_SPLIT, lb1, pane));
+            JScrollPane pane1 = new JScrollPane(lb1);
+            pane1.setViewportBorder(null);
+            pane1.setMinimumSize(lb1.getMinimumSize());
+            pane1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+            
+            JScrollPane pane2 = new JScrollPane(lb2);
+            pane2.setViewportBorder(null);
+            pane2.setMinimumSize(lb2.getMinimumSize());
+            pane2.setPreferredSize(new Dimension(490, 50));
+            pane2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+            add(createSplitPane(JSplitPane.VERTICAL_SPLIT, pane1, pane2));
             setPreferredSize(new Dimension(490, 200));
         }
     };
     
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss");
     
-    private int messageCounter = 0;
-    
-    private String createMessageString(Date date, String name, String message) {
-        messageCounter++;
-        return (messageCounter > 1 ? "" : "<br>") + "<span style=\"color:gray\">[" + DATE_FORMAT.format(date) + "]&nbsp;</span><span style=\"color:rgb(0,128,255);font-weight:800\">" + name + ":&nbsp;</span>" + message;
+    private String createMessageString(Date date, String name, String message, boolean newline) {
+        return (newline ? "<br>" : "") + "<span style=\"color:gray\">[" + DATE_FORMAT.format(date) + "]&nbsp;</span><span style=\"color:rgb(0,128,255);font-weight:800\">" + name + ":&nbsp;</span>" + message;
     }
     
     public ChatDialog(Window owner, final ControllerWindows windows) {

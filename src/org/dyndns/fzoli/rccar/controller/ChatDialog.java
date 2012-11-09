@@ -19,13 +19,16 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
+import javax.swing.text.StyledDocument;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_CHAT;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
 import org.dyndns.fzoli.ui.UIUtil;
@@ -83,6 +86,18 @@ public class ChatDialog extends AbstractDialog {
     };
     
     /**
+     * Formázott dokumentum az üzenetek megjelenítéséhez.
+     */
+    private StyledDocument doc;
+    
+    /**
+     * A formázott dokumentum stílusainak kulcsai.
+     */
+    private static final String KEY_DATE = "date",
+                                KEY_NAME = "name",
+                                KEY_REGULAR = "regualar";
+    
+    /**
      * Az üzenetkijelző és üzenetküldő panel.
      */
     private final JPanel PANEL_MESSAGES = new JPanel() {
@@ -91,9 +106,23 @@ public class ChatDialog extends AbstractDialog {
             setLayout(new BorderLayout());
             setBorder(BorderFactory.createEtchedBorder());
             
-            final JLabel lb1 = new JLabel("<html>" + createMessageString(new Date(), "controller", "üzenet", false, false) + "</html>");
-            lb1.setVerticalAlignment(SwingConstants.TOP);
-            lb1.setHorizontalAlignment(SwingConstants.LEFT);
+            final JTextPane lb1 = new JTextPane();
+            lb1.setFocusable(false);
+            lb1.setEditable(false);
+            
+            doc = lb1.getStyledDocument();
+            
+            Style def = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
+            Style regular = doc.addStyle(KEY_REGULAR, def);
+            
+            Style date = doc.addStyle(KEY_DATE, regular);
+            StyleConstants.setForeground(date, Color.GRAY);
+            
+            Style name = doc.addStyle(KEY_NAME, regular);
+            StyleConstants.setBold(name, true);
+            StyleConstants.setForeground(name, new Color(0, 128, 255));
+            
+            addMessage(new Date(), "controller", "üzenet", false, false);
             
             final JTextArea lb2 = new JTextArea();
             lb2.setLineWrap(true);
@@ -122,10 +151,9 @@ public class ChatDialog extends AbstractDialog {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if (!lb2.getText().trim().isEmpty()) {
-                        lb1.setText("<html>" + lb1.getText().substring(6, lb1.getText().length() - 7) + createMessageString(new Date(), "controller", lb2.getText(), true, true) + "</html>");
+                        addMessage(new Date(), "controller", lb2.getText(), true, true);
                         lb2.setText("");
-                        JScrollBar vertical = pane1.getVerticalScrollBar();
-                        vertical.setValue(vertical.getMaximum());
+                        lb1.select(doc.getLength(), doc.getLength());
                     }
                 }
                 
@@ -150,9 +178,16 @@ public class ChatDialog extends AbstractDialog {
      * @param newline új sor jellel kezdődjön-e a kód
      * @param dot legyen-e név helyett három pont
      */
-    private String createMessageString(Date date, String name, String message, boolean newline, boolean dot) {
-        boolean startNewline = message.indexOf("\n") == 0; // ha új sorral kezdődik az üzenet, egy újsor jel bent marad
-        return (newline ? "<br>" : "") + "<span style=\"color:gray\">[" + DATE_FORMAT.format(date) + "]&nbsp;</span><span style=\"color:rgb(0,128,255);font-weight:800\">" + (dot ? "..." : (name + ':')) + "&nbsp;</span>" + (startNewline ? "<br>" : "") + message.trim().replace("\n", "<br>");
+    private void addMessage(Date date, String name, String message, boolean newline, boolean dot) {
+        try {
+            boolean startNewline = message.indexOf("\n") == 0; // ha új sorral kezdődik az üzenet, egy újsor jel bent marad
+            doc.insertString(doc.getLength(), (newline ? "\n" : "") + '[' + DATE_FORMAT.format(date) + "] ", doc.getStyle("date"));
+            doc.insertString(doc.getLength(), (dot ? "..." : (name + ':')) + ' ', doc.getStyle("name"));
+            doc.insertString(doc.getLength(), (startNewline ? "\n" : "") + message.trim(), doc.getStyle("regular"));
+        }
+        catch (Exception ex) {
+            ;
+        }
     }
     
     public ChatDialog(Window owner, final ControllerWindows windows) {

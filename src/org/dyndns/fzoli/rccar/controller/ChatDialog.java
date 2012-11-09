@@ -19,6 +19,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
@@ -68,12 +69,15 @@ public class ChatDialog extends AbstractDialog {
         {
             setLayout(new BorderLayout());
             setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createLineBorder(LIST_CONTROLLERS.getBackground(), 4)));
+            
             JLabel lb = new JLabel("Jelenlévők");
             lb.setOpaque(true);
             lb.setBackground(LIST_CONTROLLERS.getBackground());
             lb.setFont(new Font(lb.getFont().getFontName(), Font.BOLD, lb.getFont().getSize()));
+            
             add(lb, BorderLayout.NORTH);
             add(LIST_CONTROLLERS, BorderLayout.CENTER);
+            
             setPreferredSize(new Dimension(150 - DIVIDER_SIZE, 200));
         }
     };
@@ -86,12 +90,25 @@ public class ChatDialog extends AbstractDialog {
             setBackground(Color.WHITE);
             setLayout(new BorderLayout());
             setBorder(BorderFactory.createEtchedBorder());
+            
             final JLabel lb1 = new JLabel("<html>" + createMessageString(new Date(), "controller", "üzenet", false, false) + "</html>");
             lb1.setVerticalAlignment(SwingConstants.TOP);
             lb1.setHorizontalAlignment(SwingConstants.LEFT);
+            
             final JTextArea lb2 = new JTextArea();
             lb2.setLineWrap(true);
             lb2.setBorder(BorderFactory.createLineBorder(getBackground(), 5));
+            
+            final JScrollPane pane1 = new JScrollPane(lb1);
+            pane1.setViewportBorder(null);
+            pane1.setMinimumSize(lb1.getMinimumSize());
+            pane1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+            
+            final JScrollPane pane2 = new JScrollPane(lb2);
+            pane2.setViewportBorder(null);
+            pane2.setMinimumSize(lb2.getMinimumSize());
+            pane2.setPreferredSize(new Dimension(490, 50));
+            pane2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
             
             final String SUBMIT = "text-submit";
             InputMap input = lb2.getInputMap();
@@ -99,7 +116,6 @@ public class ChatDialog extends AbstractDialog {
             KeyStroke shiftEnter = KeyStroke.getKeyStroke("shift ENTER");
             input.put(shiftEnter, input.get(enter));
             input.put(enter, SUBMIT);
-
             ActionMap actions = lb2.getActionMap();
             actions.put(SUBMIT, new AbstractAction() {
                 
@@ -108,22 +124,15 @@ public class ChatDialog extends AbstractDialog {
                     if (!lb2.getText().trim().isEmpty()) {
                         lb1.setText("<html>" + lb1.getText().substring(6, lb1.getText().length() - 7) + createMessageString(new Date(), "controller", lb2.getText(), true, true) + "</html>");
                         lb2.setText("");
+                        JScrollBar vertical = pane1.getVerticalScrollBar();
+                        vertical.setValue(vertical.getMaximum());
                     }
                 }
                 
             });
             
-            JScrollPane pane1 = new JScrollPane(lb1);
-            pane1.setViewportBorder(null);
-            pane1.setMinimumSize(lb1.getMinimumSize());
-            pane1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-            
-            JScrollPane pane2 = new JScrollPane(lb2);
-            pane2.setViewportBorder(null);
-            pane2.setMinimumSize(lb2.getMinimumSize());
-            pane2.setPreferredSize(new Dimension(490, 50));
-            pane2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
             add(createSplitPane(JSplitPane.VERTICAL_SPLIT, pane1, pane2));
+            
             setPreferredSize(new Dimension(490, 200));
         }
     };

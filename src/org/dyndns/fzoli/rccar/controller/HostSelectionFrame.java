@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
-import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -31,7 +31,7 @@ public class HostSelectionFrame extends JFrame {
     /**
      * A felületen megjelenő lista.
      */
-    private final JList<String> LIST = new JList<String>(new DefaultComboBoxModel<String>());
+    private final JList<String> LIST = new JList<String>(new DefaultListModel<String>());
     
     /**
      * Scroll.
@@ -133,14 +133,14 @@ public class HostSelectionFrame extends JFrame {
      * Eltávolítja az adatokat, majd újra feltölti a friss adatokat és ha volt, beállítja az előtte kiválasztott elemet és a scrollt.
      */
     public void refresh(List<String> list) {
-        DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) LIST.getModel();
+        DefaultListModel<String> model = (DefaultListModel<String>) LIST.getModel();
         Point scroll = PANE.getViewport().getViewPosition();
         String selected = LIST.getSelectedValue();
         model.removeAllElements();
         for (String host: list) {
             model.addElement(host);
         }
-        if (model.getIndexOf(selected) == -1 && model.getSize() != 0) {
+        if (model.indexOf(selected) == -1 && model.getSize() != 0) {
             selected = model.getElementAt(0);
             scroll = new Point(0, 0);
         }

@@ -102,8 +102,10 @@ public class ChatDialog extends AbstractDialog {
                 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    lb1.setText("<html>" + lb1.getText().substring(6, lb1.getText().length() - 7) + createMessageString(new Date(), "controller", lb2.getText(), true, true) + "</html>");
-                    lb2.setText("");
+                    if (!lb2.getText().trim().isEmpty()) {
+                        lb1.setText("<html>" + lb1.getText().substring(6, lb1.getText().length() - 7) + createMessageString(new Date(), "controller", lb2.getText().trim(), true, true) + "</html>");
+                        lb2.setText("");
+                    }
                 }
                 
             });

@@ -25,6 +25,11 @@ import org.dyndns.fzoli.ui.UIUtil;
 public class ChatDialog extends AbstractDialog {
 
     /**
+     * Az elválasztóvonalak szélessége.
+     */
+    private static final int DIVIDER_SIZE = 4;
+    
+    /**
      * A vezérlők listája.
      */
     private final JList<String> LIST_CONTROLLERS = new JList<String>(new DefaultListModel<String>()) {
@@ -58,6 +63,7 @@ public class ChatDialog extends AbstractDialog {
             lb.setFont(new Font(lb.getFont().getFontName(), Font.BOLD, lb.getFont().getSize()));
             add(lb, BorderLayout.NORTH);
             add(LIST_CONTROLLERS, BorderLayout.CENTER);
+            setPreferredSize(new Dimension(150 - DIVIDER_SIZE, 200));
         }
     };
     
@@ -68,6 +74,7 @@ public class ChatDialog extends AbstractDialog {
         {
             setBackground(Color.WHITE);
             setBorder(BorderFactory.createEtchedBorder());
+            setPreferredSize(new Dimension(490, 200));
         }
     };
     
@@ -75,17 +82,22 @@ public class ChatDialog extends AbstractDialog {
         super(owner, "Chat", windows);
         setIconImage(IC_CHAT.getImage());
         
-        JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, PANEL_MESSAGES, PANEL_CONTROLLERS);
-        pane.setContinuousLayout(true);
-        pane.setDividerSize(4);
-        pane.setBorder(null);
-        add(pane);
+        add(createSplitPane(JSplitPane.HORIZONTAL_SPLIT, PANEL_MESSAGES, PANEL_CONTROLLERS));
         
-        PANEL_MESSAGES.setPreferredSize(new Dimension(490, 200));
-        LIST_CONTROLLERS.setPreferredSize(new Dimension(150 - 4, 200));
         pack();
     }
-
+    
+    /**
+     * Két komponens mérete állítható SplitPane segítségével.
+     */
+    private JSplitPane createSplitPane(int orientation, Component c1, Component c2) {
+        JSplitPane pane = new JSplitPane(orientation, c1, c2);
+        pane.setContinuousLayout(true);
+        pane.setDividerSize(DIVIDER_SIZE);
+        pane.setBorder(null);
+        return pane;
+    }
+    
     /**
      * Az ablak típusát adja vissza.
      * Az ablak azonosításához szükséges.

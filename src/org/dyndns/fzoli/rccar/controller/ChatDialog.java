@@ -129,8 +129,8 @@ public class ChatDialog extends AbstractDialog {
             lb2.setBorder(BorderFactory.createLineBorder(getBackground(), 5));
             
             final JScrollPane pane1 = new JScrollPane(lb1);
-            pane1.setViewportBorder(null);
-            pane1.setMinimumSize(lb1.getMinimumSize());
+            pane1.setViewportBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createEmptyBorder(-2, -2, 0, -2)));
+            pane1.setMinimumSize(new Dimension(1, 30));
             pane1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
             
             final JScrollPane pane2 = new JScrollPane(lb2);

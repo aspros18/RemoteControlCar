@@ -2,6 +2,7 @@ package org.dyndns.fzoli.rccar.controller;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -21,10 +22,13 @@ import javax.swing.JSeparator;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import static org.dyndns.fzoli.rccar.controller.ControllerModels.getData;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_ARROWS;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_CHAT;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_MAP;
+import org.dyndns.fzoli.rccar.controller.ControllerWindows.Windows;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 
 /**
@@ -101,9 +105,15 @@ public class ControllerFrame extends JFrame {
     });
     
     /**
+     * A járműhöz tartozó ablakok konténere.
+     */
+    public final ControllerWindows WINDOWS;
+    
+    /**
      * Konstruktor.
      */
-    public ControllerFrame() {
+    public ControllerFrame(ControllerWindows windows) {
+        WINDOWS = windows;
         initFrame();
         setComponents();
     }
@@ -180,6 +190,20 @@ public class ControllerFrame extends JFrame {
         btArrow.setSelected(true);
         btMap.setSelected(true);
         btChat.setSelected(true);
+        
+        btChat.addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                Windows window = null;
+                Object src = e.getSource();
+                if (src == btControll) window = Windows.CONTROLL;
+                else if (src == btChat) window = Windows.CHAT;
+                else if (src == btMap) window = Windows.MAP;
+                WINDOWS.setVisible(window, btChat.isSelected());
+            }
+            
+        });
     }
     
     /**
@@ -242,4 +266,14 @@ public class ControllerFrame extends JFrame {
         btControll.setEnabled(!(getData().isControlling() ^ getData().isWantControl()));
     }
 
+    /**
+     * Megadja az ablak keretének méretét.
+     * A többi ablak kezdeti pozíciójának beállításához ismerni kell az ablakkeret méretét.
+     */
+    public Dimension getBorderSize() {
+        Dimension fullSize = getSize();
+        Dimension paneSize = getContentPane().getSize();
+        return new Dimension(fullSize.width - paneSize.width, fullSize.height - paneSize.height);
+    }
+    
 }

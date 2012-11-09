@@ -75,7 +75,7 @@ public class ControllerWindows {
                 case MAP:
                     //TODO
             }
-            FRAME_MAIN.onWindowClosed(w);
+            if (!b) FRAME_MAIN.onWindowClosed(w);
         }
     }
     

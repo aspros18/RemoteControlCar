@@ -7,6 +7,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
@@ -83,7 +85,7 @@ public class ChatDialog extends AbstractDialog {
             setBackground(Color.WHITE);
             setLayout(new BorderLayout());
             setBorder(BorderFactory.createEtchedBorder());
-            final JLabel lb1 = new JLabel("Teszt");
+            final JLabel lb1 = new JLabel("<html>" + createMessageString(new Date(), "controller", "üzenet") + "</html>");
             final JTextArea lb2 = new JTextArea();
             lb2.setLineWrap(true);
             lb2.setBorder(BorderFactory.createLineBorder(getBackground(), 5));
@@ -101,6 +103,7 @@ public class ChatDialog extends AbstractDialog {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     lb2.setText("");
+                    System.out.println(lb1.getText().substring(6, lb1.getText().length() - 7));
                 }
                 
             });
@@ -113,6 +116,15 @@ public class ChatDialog extends AbstractDialog {
             setPreferredSize(new Dimension(490, 200));
         }
     };
+    
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss");
+    
+    private int messageCounter = 0;
+    
+    private String createMessageString(Date date, String name, String message) {
+        messageCounter++;
+        return (messageCounter > 1 ? "" : "<br>") + "<span style=\"color:gray\">[" + DATE_FORMAT.format(date) + "]&nbsp;</span><span style=\"color:rgb(0,128,255);font-weight:800\">" + name + ":&nbsp;</span>" + message;
+    }
     
     public ChatDialog(Window owner, final ControllerWindows windows) {
         super(owner, "Chat", windows);

@@ -2,6 +2,7 @@ package org.dyndns.fzoli.rccar.controller;
 
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
+import java.awt.Window;
 import javax.swing.ImageIcon;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 
@@ -84,8 +85,19 @@ public class ControllerWindows {
      * @param b true esetén megjelenik, egyébként eltűnik
      */
     public void setVisible(boolean b) {
-        FRAME_MAIN.setVisible(b);
-        DIALOG_CHAT.setVisible(b);
+        setVisible(FRAME_MAIN, b);
+        setVisible(DIALOG_CHAT, b);
+    }
+    
+    /**
+     * Az ablak láthatóságát módosítja, ha még nem változott.
+     * @param w az ablak
+     * @param b true esetén megjelenik, egyébként eltűnik
+     */
+    private static void setVisible(Window w, boolean b) {
+        if (w.isVisible() ^ b) {
+            w.setVisible(b);
+        }
     }
     
     /**

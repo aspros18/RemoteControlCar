@@ -24,11 +24,16 @@ import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 
 /**
- *
+ * System Tray tesztelése.
+ * - SWT eseménykezelők tesztelése.
+ * - Ha az SWT nem érhető el, AWT használata.
  * @author zoli
  */
 public class SwtSystemTrayTest {
     
+    /**
+     * Tesztikon.
+     */
     private static final BufferedImage IMG_TEST = new BufferedImage(300, 300, BufferedImage.TYPE_INT_ARGB) {
         {
             Graphics2D g = (Graphics2D) getGraphics();
@@ -40,6 +45,10 @@ public class SwtSystemTrayTest {
         }
     };
     
+    /**
+     * AWT kép (BufferedImage) konvertálása SWT képadatra.
+     * http://dev.eclipse.org/viewcvs/viewvc.cgi/org.eclipse.swt.snippets/src/org/eclipse/swt/snippets/Snippet156.java?view=co
+     */
     private static ImageData convertToSWT(BufferedImage bufferedImage) {
 	if (bufferedImage.getColorModel() instanceof DirectColorModel) {
 		DirectColorModel colorModel = (DirectColorModel)bufferedImage.getColorModel();
@@ -85,6 +94,9 @@ public class SwtSystemTrayTest {
 	return null;
     }
     
+    /**
+     * Megadja, hogy használható-e az SWT rendszerikon.
+     */
     private static boolean isSwtTrayAvailable() {
         try {
             Class.forName("org.eclipse.swt.widgets.Tray", false, SwtSystemTrayTest.class.getClassLoader());

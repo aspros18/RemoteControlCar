@@ -17,15 +17,16 @@ import org.eclipse.swt.widgets.TrayItem;
 public class SwtSystemTrayTest {
     
     public static void main(String[] args) throws Exception {
-        Display display = new Display();
-        Shell shell = new Shell(display);
+        final Display display = new Display();
+        final Shell shell = new Shell(display);
         
-        Image image = new Image(display, Test.class.getResource("icon.png").toURI().getPath());
+        final Image image = new Image(display, Test.class.getResource("icon.png").toURI().getPath());
         
         final Tray tray = display.getSystemTray();
         if (tray == null) {
           System.out.println("The system tray is not available");
-        } else {
+        }
+        else {
           final ToolTip tip = new ToolTip(shell, SWT.BALLOON | SWT.ICON_ERROR);
           tip.setText("Balloon Title goes here.");
           tip.setMessage("Balloon Message Goes Here!");
@@ -59,14 +60,18 @@ public class SwtSystemTrayTest {
           });
           final Menu menu = new Menu(shell, SWT.POP_UP);
           for (int i = 0; i < 8; i++) {
-            MenuItem mi = new MenuItem(menu, SWT.PUSH);
-            if (i == 6)
+            final MenuItem mi = new MenuItem(menu, SWT.PUSH);
+            if (i == 6) {
               new MenuItem(menu, SWT.SEPARATOR);
+            }
             mi.setText("Item" + i);
             mi.addListener(SWT.Selection, new Listener() {
                 @Override
                 public void handleEvent(Event event) {
                     System.out.println("selection " + event.widget);
+                    if (mi.getText().equals("Item7")) {
+                        shell.dispose();
+                    }
                 }
             });
             if (i == 0)
@@ -80,11 +85,12 @@ public class SwtSystemTrayTest {
           });
           item.setImage(image);
         }
-        shell.setBounds(50, 50, 300, 200);
-        shell.open();
+//        shell.setBounds(50, 50, 300, 200);
+//        shell.open();
         while (!shell.isDisposed()) {
-          if (!display.readAndDispatch())
+          if (!display.readAndDispatch()) {
             display.sleep();
+          }
         }
         image.dispose();
         display.dispose();

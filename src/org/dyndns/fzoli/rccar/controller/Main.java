@@ -229,8 +229,10 @@ public class Main {
      */
     public static void showHostSelectionFrame(HostList l) {
         SELECTION_FRAME.refresh(l.getHosts());
-        SELECTION_FRAME.setVisible(true);
-        CONTROLLER_WINDOWS.setVisible(false);
+        if (!SELECTION_FRAME.isVisible()) {
+            SELECTION_FRAME.setVisible(true);
+            CONTROLLER_WINDOWS.setVisible(false);
+        }
     }
     
     /**

@@ -29,7 +29,7 @@ class AwtTrayIcon implements TrayIcon {
     public PopupMenu createPopupMenu() {
         java.awt.PopupMenu menu = new java.awt.PopupMenu();
         icon.setPopupMenu(menu);
-        return new AwtPopupMenu(menu);
+        return new AwtPopupMenu(icon, menu);
     }
 
     @Override

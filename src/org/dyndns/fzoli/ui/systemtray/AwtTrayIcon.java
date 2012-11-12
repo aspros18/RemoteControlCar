@@ -3,6 +3,8 @@ package org.dyndns.fzoli.ui.systemtray;
 import java.awt.AWTException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
@@ -18,6 +20,8 @@ class AwtTrayIcon implements TrayIcon {
     private final java.awt.SystemTray tray;
     
     private boolean visible = true;
+    
+    private ActionListener evt;
     
     public AwtTrayIcon(java.awt.SystemTray tray, java.awt.TrayIcon icon) {
         this.icon = icon;
@@ -35,13 +39,15 @@ class AwtTrayIcon implements TrayIcon {
     @Override
     public void setOnClickListener(final Runnable r) {
         if (r != null) {
-            icon.addActionListener(new ActionListener() {
+            icon.addMouseListener(new MouseAdapter() {
 
                 @Override
-                public void actionPerformed(ActionEvent e) {
-                    r.run();
+                public void mouseClicked(MouseEvent e) {
+                    if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
+                        r.run();
+                    }
                 }
-
+                
             });
         }
     }
@@ -50,9 +56,9 @@ class AwtTrayIcon implements TrayIcon {
     public void displayMessage(String title, String msg, IconType ic) {
         displayMessage(title, msg, ic, null);
     }
-
+    
     @Override
-    public void displayMessage(String title, String msg, IconType ic, Runnable onClick) {
+    public void displayMessage(String title, String msg, IconType ic, final Runnable onClick) {
         java.awt.TrayIcon.MessageType type = null;
         switch (ic) {
             case INFO:
@@ -65,6 +71,20 @@ class AwtTrayIcon implements TrayIcon {
                 type = java.awt.TrayIcon.MessageType.ERROR;
         }
         icon.displayMessage(title, msg, type);
+        if (evt != null) {
+            icon.removeActionListener(evt);
+        }
+        if (onClick != null) {
+            evt = new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    onClick.run();
+                }
+
+            };
+            icon.addActionListener(evt);
+        }
     }
 
     @Override

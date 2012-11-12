@@ -55,10 +55,12 @@ public final class SystemTrayProvider {
 
             @Override
             public void run() {
+                System.out.println("display message");
                 icon.displayMessage("Title", "Message", IconType.INFO, new Runnable() {
 
                     @Override
                     public void run() {
+                        System.out.println("dispose");
                         tray.dispose();
                     }
 

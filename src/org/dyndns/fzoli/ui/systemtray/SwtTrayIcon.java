@@ -25,7 +25,8 @@ class SwtTrayIcon implements TrayIcon {
     private final Display display;
     private final Tray tray;
     
-    private Listener l, l2;
+    private SwtPopupMenu menu;
+    private Listener l;
     
     public SwtTrayIcon(Display display, Shell shell, Tray tray) {
         this.shell = shell;
@@ -36,26 +37,18 @@ class SwtTrayIcon implements TrayIcon {
     
     @Override
     public PopupMenu createPopupMenu() {
-        if (l != null) item.removeListener(SWT.MenuDetect, l);
-        final SwtPopupMenu menu = new SwtPopupMenu(shell);
-        item.addListener(SWT.MenuDetect, new Listener() {
-            
-            @Override
-            public void handleEvent(Event event) {
-                menu.setVisible(true);
-            }
-            
-        });
+        if (menu != null) menu.setVisible(false);
+        menu = new SwtPopupMenu(shell, item);
         return menu;
     }
     
     @Override
     public void setOnClickListener(final Runnable r) {
-        if (l2 != null) {
-            item.removeListener(SWT.DefaultSelection, l2);
+        if (l != null) {
+            item.removeListener(SWT.DefaultSelection, l);
         }
         if (r != null) {
-            l2 = new Listener() {
+            l = new Listener() {
 
                 @Override
                 public void handleEvent(Event event) {
@@ -63,7 +56,7 @@ class SwtTrayIcon implements TrayIcon {
                 }
 
             };
-            item.addListener(SWT.DefaultSelection, l2);
+            item.addListener(SWT.DefaultSelection, l);
         }
     }
     

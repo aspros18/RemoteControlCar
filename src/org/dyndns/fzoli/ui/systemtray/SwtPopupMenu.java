@@ -6,6 +6,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TrayItem;
 
 /**
  *
@@ -15,13 +16,38 @@ class SwtPopupMenu implements PopupMenu {
 
     private final Menu menu;
     
-    public SwtPopupMenu(Shell shell) {
-        menu = new Menu(shell, SWT.POP_UP);
+    private final TrayItem item;
+    
+    private final Listener l;
+    
+    private boolean visible = false;
+    
+    public SwtPopupMenu(Shell shell, TrayItem item) {
+        this.item = item;
+        this.menu = new Menu(shell, SWT.POP_UP);
+        this.l = new Listener() {
+
+            @Override
+            public void handleEvent(Event event) {
+                menu.setVisible(true);
+            }
+
+        };
+        setVisible(true);
     }
     
     @Override
     public void setVisible(boolean b) {
-        menu.setVisible(b);
+        if (visible ^ b) {
+            visible = b;
+            if (!b) {
+                item.removeListener(SWT.MenuDetect, l);
+                menu.setVisible(false);
+            }
+            else {
+                item.addListener(SWT.MenuDetect, l);
+            }
+        }
     }
     
     @Override

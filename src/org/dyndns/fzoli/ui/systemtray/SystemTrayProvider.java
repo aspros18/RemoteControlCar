@@ -40,7 +40,7 @@ public final class SystemTrayProvider {
         final TrayIcon icon = tray.addTrayIcon();
         icon.setImage(R.class.getResourceAsStream("icon.png"));
         icon.setToolTip("Tooltip");
-        PopupMenu menu = icon.createPopupMenu();
+        final PopupMenu menu = icon.createPopupMenu();
         menu.addMenuItem("Test1", new Runnable() {
 
             @Override

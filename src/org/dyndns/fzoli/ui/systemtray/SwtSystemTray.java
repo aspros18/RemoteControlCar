@@ -5,7 +5,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tray;
 
 /**
- *
+ * Az SWT SystemTray adaptere.
  * @author zoli
  */
 final class SwtSystemTray implements SystemTray {

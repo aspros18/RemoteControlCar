@@ -9,7 +9,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TrayItem;
 
 /**
- *
+ * Az SWT PopupMenu adaptere.
  * @author zoli
  */
 class SwtPopupMenu implements PopupMenu {

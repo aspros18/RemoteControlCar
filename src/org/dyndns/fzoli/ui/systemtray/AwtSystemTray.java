@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Az alapértelmezett AWT SystemTray adaptere.
  * @author zoli
  */
 class AwtSystemTray implements SystemTray {

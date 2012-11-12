@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 
 /**
- *
+ * Az SWT TrayIcon adaptere.
  * @author zoli
  */
 class SwtTrayIcon implements TrayIcon {

@@ -10,7 +10,7 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 /**
- *
+ * Az alapértelmezett AWT TrayIcon adaptere.
  * @author zoli
  */
 class AwtTrayIcon implements TrayIcon {

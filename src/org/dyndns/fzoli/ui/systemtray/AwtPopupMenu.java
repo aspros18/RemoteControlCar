@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- *
+ * Az alapértelmezett AWT PopupMenu adaptere.
  * @author zoli
  */
 class AwtPopupMenu implements PopupMenu {

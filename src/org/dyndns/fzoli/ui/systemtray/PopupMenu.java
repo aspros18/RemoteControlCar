@@ -4,9 +4,7 @@ package org.dyndns.fzoli.ui.systemtray;
  *
  * @author zoli
  */
-public interface PopupMenu {
-    
-    public void setVisible(boolean b);
+public interface PopupMenu extends Visibility {
     
     public void addSeparator();
     

@@ -6,7 +6,7 @@ import java.io.InputStream;
  *
  * @author zoli
  */
-public interface TrayIcon {
+public interface TrayIcon extends Visibility {
     
     public enum IconType {
         INFO, WARNING, ERROR
@@ -23,7 +23,5 @@ public interface TrayIcon {
     public void setImage(InputStream in);
     
     public void setToolTip(String text);
-    
-    public void setVisible(boolean b);
     
 }

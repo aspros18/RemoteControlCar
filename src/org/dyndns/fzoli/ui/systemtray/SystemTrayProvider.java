@@ -1,19 +1,24 @@
 package org.dyndns.fzoli.ui.systemtray;
 
-import org.dyndns.fzoli.rccar.controller.resource.R;
-import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
-
 /**
- *
+ * Rendszerikont biztosító osztály.
+ * Ha az SWT elérhető, SWT rendszerikon, egyébként AWT rendszerikon jön létre.
  * @author zoli
  */
 public final class SystemTrayProvider {
 
+    /**
+     * A létrehozott rendszerikon referenciája.
+     */
     private static SystemTray st;
     
     private SystemTrayProvider() {
     }
     
+    /**
+     * A rendszerikon referenciáját adja vissza.
+     * Ha még nincs létrehozva, létrejön a rendszerikon.
+     */
     public static SystemTray getSystemTray() {
         if (st == null) {
             if (isSwtTrayAvailable()) st = new SwtSystemTray();
@@ -33,42 +38,6 @@ public final class SystemTrayProvider {
         catch (ClassNotFoundException ex) {
             return false;
         }
-    }
-    
-    public static void main(String[] args) {
-        final SystemTray tray = getSystemTray();
-        final TrayIcon icon = tray.addTrayIcon();
-        icon.setImage(R.class.getResourceAsStream("icon.png"));
-        icon.setToolTip("Tooltip");
-        final PopupMenu menu = icon.createPopupMenu();
-        menu.addMenuItem("Test1", new Runnable() {
-
-            @Override
-            public void run() {
-                System.out.println("Test1");
-            }
-            
-        });
-        menu.addSeparator();
-        menu.addMenuItem("Test2", null);
-        icon.setOnClickListener(new Runnable() {
-
-            @Override
-            public void run() {
-                System.out.println("display message");
-                icon.displayMessage("Title", "Message", IconType.INFO, new Runnable() {
-
-                    @Override
-                    public void run() {
-                        System.out.println("dispose");
-                        tray.dispose();
-                    }
-
-                });
-            }
-            
-        });
-        tray.start();
     }
     
 }

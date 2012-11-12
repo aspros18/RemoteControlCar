@@ -39,11 +39,18 @@ public final class SystemTrayProvider {
         final SystemTray tray = getSystemTray();
         final TrayIcon icon = tray.addTrayIcon();
         icon.setImage(R.class.getResourceAsStream("icon.png"));
-        icon.setToolTip("SWT tooltip");
+        icon.setToolTip("Tooltip");
         PopupMenu menu = icon.createPopupMenu();
-        menu.addMenuItem("Nothing1", null);
+        menu.addMenuItem("Test1", new Runnable() {
+
+            @Override
+            public void run() {
+                System.out.println("Test1");
+            }
+            
+        });
         menu.addSeparator();
-        menu.addMenuItem("Nothing2", null);
+        menu.addMenuItem("Test2", null);
         icon.setOnClickListener(new Runnable() {
 
             @Override

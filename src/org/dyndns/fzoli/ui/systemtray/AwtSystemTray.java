@@ -1,29 +1,73 @@
 package org.dyndns.fzoli.ui.systemtray;
 
+import java.awt.AWTException;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author zoli
  */
 class AwtSystemTray implements SystemTray {
 
+    private final java.awt.SystemTray tray;
+    
+    private final List<java.awt.TrayIcon> icons = new ArrayList<java.awt.TrayIcon>();
+    
+    private boolean disposed = false;
+    
+    public AwtSystemTray() {
+        if (java.awt.SystemTray.isSupported()) {
+             tray = java.awt.SystemTray.getSystemTray();
+        }
+        else {
+            tray = null;
+        }
+    }
+
     @Override
     public boolean isSupported() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return tray != null;
     }
 
     @Override
     public TrayIcon addTrayIcon() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (!isSupported() || disposed) return null;
+        java.awt.TrayIcon icon = new java.awt.TrayIcon(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB));
+        try {
+            tray.add(icon);
+        }
+        catch (AWTException ex) {
+            icon = null;
+            return null;
+        }
+        synchronized(icons) {
+            icons.add(icon);
+        }
+        return new AwtTrayIcon(icon);
     }
 
     @Override
     public void dispose() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        synchronized(icons) {
+            disposed = true;
+            for (java.awt.TrayIcon icon : icons) {
+                tray.remove(icon);
+            }
+        }
     }
 
     @Override
     public void start() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        while (!disposed) {
+            try {
+                Thread.sleep(100);
+            }
+            catch (InterruptedException ex) {
+                ;
+            }
+        }
     }
     
 }

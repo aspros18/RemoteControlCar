@@ -8,6 +8,12 @@ import java.io.InputStream;
  */
 class AwtTrayIcon implements TrayIcon {
 
+    private final java.awt.TrayIcon icon;
+    
+    public AwtTrayIcon(java.awt.TrayIcon icon) {
+        this.icon = icon;
+    }
+
     @Override
     public PopupMenu createPopupMenu() {
         throw new UnsupportedOperationException("Not supported yet.");

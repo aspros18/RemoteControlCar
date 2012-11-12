@@ -60,7 +60,9 @@ public final class SystemTray {
         icon.setImage(R.class.getResourceAsStream("icon.png"));
         icon.setToolTip("SWT tooltip");
         PopupMenu menu = icon.createPopupMenu();
-        menu.addMenuItem("Nothing", null);
+        menu.addMenuItem("Nothing1", null);
+        menu.addSeparator();
+        menu.addMenuItem("Nothing2", null);
         icon.setOnClickListener(new Runnable() {
 
             @Override

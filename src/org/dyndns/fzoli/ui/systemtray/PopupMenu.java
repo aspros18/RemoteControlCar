@@ -23,6 +23,10 @@ public class PopupMenu {
         menu.setVisible(b);
     }
     
+    public void addSeparator() {
+        new MenuItem(menu, SWT.SEPARATOR);
+    }
+    
     public void addMenuItem(String text, final Runnable r) {
         final MenuItem mi = new MenuItem(menu, SWT.PUSH);
         mi.setText(text);

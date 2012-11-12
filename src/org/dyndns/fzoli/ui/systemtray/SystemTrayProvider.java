@@ -15,8 +15,24 @@ public final class SystemTrayProvider {
     }
     
     public static SystemTray getSystemTray() {
-        if (st == null) st = new SwtSystemTray();
+        if (st == null) {
+            if (isSwtTrayAvailable()) st = new SwtSystemTray();
+            else st = new AwtSystemTray();
+        }
         return st;
+    }
+    
+    /**
+     * Megadja, hogy használható-e az SWT rendszerikon.
+     */
+    private static boolean isSwtTrayAvailable() {
+        try {
+            Class.forName("org.eclipse.swt.widgets.Tray", false, SystemTrayProvider.class.getClassLoader());
+            return true;
+        }
+        catch (ClassNotFoundException ex) {
+            return false;
+        }
     }
     
     public static void main(String[] args) {

@@ -6,6 +6,12 @@ package org.dyndns.fzoli.ui.systemtray;
  */
 class AwtPopupMenu implements PopupMenu {
 
+    final java.awt.PopupMenu menu;
+    
+    public AwtPopupMenu(java.awt.PopupMenu menu) {
+        this.menu = menu;
+    }
+
     @Override
     public void setVisible(boolean b) {
         throw new UnsupportedOperationException("Not supported yet.");

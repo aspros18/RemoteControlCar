@@ -45,7 +45,7 @@ class AwtSystemTray implements SystemTray {
         synchronized(icons) {
             icons.add(icon);
         }
-        return new AwtTrayIcon(icon);
+        return new AwtTrayIcon(tray, icon);
     }
 
     @Override

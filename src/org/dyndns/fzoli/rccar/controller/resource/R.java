@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.controller.resource;
 
 import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import javax.imageio.ImageIO;
@@ -25,6 +26,13 @@ public class R {
      */
     public static BufferedImage getIconImage() {
         return getImage("icon.png");
+    }
+    
+    /**
+     * A program ikonjának folyamát adja vissza.
+     */
+    public static InputStream getIconImageStream() {
+        return getStream("icon.png");
     }
     
     /**
@@ -73,7 +81,7 @@ public class R {
             BufferedImage img = IMAGES.get(name);
             if (img != null) return img;
             try {
-                img = ImageIO.read(R.class.getResourceAsStream(name));
+                img = ImageIO.read(getStream(name));
                 IMAGES.put(name, img);
                 return img;
             }
@@ -81,6 +89,14 @@ public class R {
                 throw new RuntimeException(ex);
             }
         }
+    }
+    
+    /**
+     * A fájl bejövő folyamát adja vissza.
+     * @param name a fájl neve
+     */
+    public static InputStream getStream(String name) {
+        return R.class.getResourceAsStream(name);
     }
     
 }

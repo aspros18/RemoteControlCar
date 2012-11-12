@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.bridge.resource;
 
 import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 /**
@@ -15,11 +16,18 @@ public class R {
      */
     public static BufferedImage getBridgeImage() {
         try {
-            return ImageIO.read(R.class.getResourceAsStream("bridge.png"));
+            return ImageIO.read(getBridgeImageStream());
         }
         catch (Exception ex) {
             throw new RuntimeException(ex);
         }
+    }
+    
+    /**
+     * Egy hidat ábrázoló kép folyamát adja vissza.
+     */
+    public static InputStream getBridgeImageStream() {
+        return R.class.getResourceAsStream("bridge.png");
     }
     
 }

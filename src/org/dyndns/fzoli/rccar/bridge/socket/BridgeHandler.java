@@ -1,6 +1,5 @@
 package org.dyndns.fzoli.rccar.bridge.socket;
 
-import java.awt.TrayIcon;
 import java.io.EOFException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
@@ -13,6 +12,7 @@ import org.dyndns.fzoli.socket.handler.exception.MultipleCertificateException;
 import org.dyndns.fzoli.socket.handler.exception.RemoteHandlerException;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
 import static org.dyndns.fzoli.ui.SystemTrayIcon.showMessage;
+import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 
 /**
  * A híd kapcsolatkezelője.
@@ -50,7 +50,7 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
      */
     private void showWarning(String message) {
         if (getConnectionId() == null || getConnectionId().equals(0))
-            if (getSocket() != null && isWarnEnabled()) showMessage(VAL_WARNING, message + " a " + getSocket().getInetAddress().getHostName() + " címről.", TrayIcon.MessageType.WARNING);
+            if (getSocket() != null && isWarnEnabled()) showMessage(VAL_WARNING, message + " a " + getSocket().getInetAddress().getHostName() + " címről.", IconType.WARNING);
     }
     
     /**

@@ -55,10 +55,10 @@ class SwtPopupMenu implements PopupMenu {
         new MenuItem(menu, SWT.SEPARATOR);
     }
     
-    @Override
-    public void addMenuItem(String text, final Runnable r) {
-        final MenuItem mi = new MenuItem(menu, SWT.PUSH);
+    private void addMenuItem(String text, final Runnable r, int type, boolean checked) {
+        final MenuItem mi = new MenuItem(menu, type);
         mi.setText(text);
+        mi.setSelection(checked);
         if (r != null) {
             mi.addListener(SWT.Selection, new Listener() {
 
@@ -69,6 +69,16 @@ class SwtPopupMenu implements PopupMenu {
 
             });
         }
+    }
+    
+    @Override
+    public void addMenuItem(String text, final Runnable r) {
+        addMenuItem(text, r, SWT.PUSH, false);
+    }
+
+    @Override
+    public void addCheckboxMenuItem(String text, boolean checked, Runnable r) {
+        addMenuItem(text, r, SWT.CHECK, checked);
     }
     
 }

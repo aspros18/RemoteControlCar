@@ -2,13 +2,11 @@ package org.dyndns.fzoli.rccar;
 
 import java.awt.Dialog;
 import java.awt.Image;
-import java.awt.TrayIcon;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import org.dyndns.fzoli.exceptiondialog.UncaughtExceptionDialog;
 import org.dyndns.fzoli.exceptiondialog.UncaughtExceptionParameters;
 import org.dyndns.fzoli.exceptiondialog.event.UncaughtExceptionAdapter;
 import org.dyndns.fzoli.ui.SystemTrayIcon;
+import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 
 /**
  * A program nem várt hibáit kezeli le.
@@ -115,13 +113,13 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
                 showExceptionDialog(t, ex);
             }
             else {
-                SystemTrayIcon.showMessage(title, "További részletekért kattintson ide.", TrayIcon.MessageType.ERROR, new ActionListener() {
-
+                SystemTrayIcon.showMessage(title, "További részletekért kattintson ide.", IconType.ERROR, new Runnable() {
+                    
                     @Override
-                    public void actionPerformed(ActionEvent e) {
+                    public void run() {
                         showExceptionDialog(t, ex);
                     }
-
+                    
                 });
             }
         }

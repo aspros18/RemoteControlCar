@@ -32,6 +32,12 @@ final class SwtSystemTray implements SystemTray {
     
     @Override
     public void start() {
+        start(null);
+    }
+    
+    @Override
+    public void start(Thread t) {
+        if (t != null) t.start();
         if (isSupported()) {
             try {
                 while (!shell.isDisposed()) {
@@ -44,6 +50,9 @@ final class SwtSystemTray implements SystemTray {
             catch (Exception ex) {
                 ;
             }
+        }
+        else {
+            if (t != null) t.start();
         }
     }
     

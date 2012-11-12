@@ -1,10 +1,5 @@
 package org.dyndns.fzoli.rccar.bridge;
 
-import java.awt.CheckboxMenuItem;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.security.KeyStoreException;
@@ -81,65 +76,47 @@ public class Main {
     private static void setSystemTrayIcon() {
         if (SystemTrayIcon.isSupported() && !CONFIG.isHidden()) {
             // az ikon beállítása
-            SystemTrayIcon.setIcon("Mobile-RC híd", R.getBridgeImage());
+            SystemTrayIcon.setIcon("Mobile-RC híd", R.getBridgeImageStream());
             
-            // kapcsolatjelzés beállító opció létrehozása és beállítása
-            final CheckboxMenuItem miConnLog = new CheckboxMenuItem(VAL_CONN_LOG, ConnectionAlert.isLogEnabled());
-            miConnLog.addItemListener(new ItemListener() {
+            // kapcsolatjelzés beállító opció hozzáadása
+            SystemTrayIcon.addCheckboxMenuItem(VAL_CONN_LOG, ConnectionAlert.isLogEnabled(), new Runnable() {
 
-                /**
-                 * Ha a naplózás beállítását kérik.
-                 */
                 @Override
-                public void itemStateChanged(ItemEvent e) {
+                public void run() {
                     // naplózás beállítása az ellenkezőjére, mint volt
                     ConnectionAlert.setLogEnabled(!ConnectionAlert.isLogEnabled());
-                    // a megváltozott opció frissítése
-                    miConnLog.setState(ConnectionAlert.isLogEnabled());
                 }
-
-            });
-
-            // figyelmeztetés beállító opció létrehozása és beállítása
-            final CheckboxMenuItem miWarnLog = new CheckboxMenuItem(VAL_WARNING, BridgeHandler.isWarnEnabled());
-            miWarnLog.addItemListener(new ItemListener() {
-
-                /**
-                 * Ha a naplózás beállítását kérik.
-                 */
-                @Override
-                public void itemStateChanged(ItemEvent e) {
-                    // warn beállítása az ellenkezőjére, mint volt
-                    BridgeHandler.setWarnEnabled(!BridgeHandler.isWarnEnabled());
-                    // a megváltozott opció frissítése
-                    miWarnLog.setState(BridgeHandler.isWarnEnabled());
-                }
-
+                
             });
 
             // figyelmeztetés beállító opció hozzáadása
-            SystemTrayIcon.addMenuItem(miWarnLog);
+            SystemTrayIcon.addCheckboxMenuItem(VAL_WARNING, BridgeHandler.isWarnEnabled(), new Runnable() {
 
-            // kapcsolatjelzés beállító opció hozzáadása
-            SystemTrayIcon.addMenuItem(miConnLog);
-
+                @Override
+                public void run() {
+                    // warn beállítása az ellenkezőjére, mint volt
+                    BridgeHandler.setWarnEnabled(!BridgeHandler.isWarnEnabled());
+                }
+                
+            });
+            
             // szeparátor hozzáadása a menühöz
             SystemTrayIcon.addMenuSeparator();
 
             // kilépés opció hozzáadása
-            SystemTrayIcon.addMenuItem("Kilépés", new ActionListener() {
+            SystemTrayIcon.addMenuItem("Kilépés", new Runnable() {
 
                 /**
                  * Ha a kilépésre kattintottak.
                  */
                 @Override
-                public void actionPerformed(ActionEvent e) {
+                public void run() {
                     // a program kilép
                     System.exit(0);
                 }
-
+                
             });
-
+            
             // a rendszerikon megjelenítése
             SystemTrayIcon.setVisible(true);
         }
@@ -230,18 +207,25 @@ public class Main {
      * @throws RuntimeException ha nem várt kivétel képződik
      */
     private static void runServer() {
-        final SSLServerSocket ss = createServerSocket();
-        while (!ss.isClosed()) { // ameddig nincs lezárva a socket szerver
-            SSLSocket s = null;
-            try {
-                s = (SSLSocket) ss.accept(); // kliensre várakozik, és ha kapcsolódtak, ...
-                new Thread(new BridgeHandler(s)).start(); // ... új szálban kezeli a kapcsolatot
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                final SSLServerSocket ss = createServerSocket();
+                while (!ss.isClosed()) { // ameddig nincs lezárva a socket szerver
+                    SSLSocket s = null;
+                    try {
+                        s = (SSLSocket) ss.accept(); // kliensre várakozik, és ha kapcsolódtak, ...
+                        new Thread(new BridgeHandler(s)).start(); // ... új szálban kezeli a kapcsolatot
+                    }
+                    catch (Exception ex) {
+                        // ha bármilyen kivétel keletkezik, nem áll le a szerver, csak közli a kivételt
+                        showException(ex);
+                    }
+                }
             }
-            catch (Exception ex) {
-                // ha bármilyen kivétel keletkezik, nem áll le a szerver, csak közli a kivételt
-                showException(ex);
-            }
-        }
+            
+        }).start();
     }
     
     /**
@@ -263,6 +247,7 @@ public class Main {
             }
             readArguments(args);
             runServer();
+            SystemTrayIcon.start();
         }
         else {
             final StringBuilder msg = new StringBuilder();

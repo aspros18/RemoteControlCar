@@ -1,12 +1,11 @@
 package org.dyndns.fzoli.ui;
 
-import java.awt.Image;
-import java.awt.MenuItem;
-import java.awt.PopupMenu;
-import java.awt.SystemTray;
-import java.awt.TrayIcon;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
+import java.io.InputStream;
+import org.dyndns.fzoli.ui.systemtray.PopupMenu;
+import org.dyndns.fzoli.ui.systemtray.SystemTray;
+import org.dyndns.fzoli.ui.systemtray.SystemTrayProvider;
+import org.dyndns.fzoli.ui.systemtray.TrayIcon;
+import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 
 /**
  * Ha van grafikus felület, rendszerikont jelenít meg.
@@ -42,14 +41,30 @@ public class SystemTrayIcon {
      */
     static {
         try {
-            tray = SystemTray.getSystemTray();
-            menu = new PopupMenu();
-            icon = new TrayIcon(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB), null, menu);
-            icon.setImageAutoSize(true);
+            tray = SystemTrayProvider.getSystemTray();
+            if (tray.isSupported()) {
+                icon = tray.addTrayIcon();
+                menu = icon.createPopupMenu();
+            }
         }
         catch (Exception ex) {
             ;
         }
+    }
+    
+    /**
+     * GUI frissítés indítása.
+     * @param t a szál, ami elindul, ha a rendszerikon működőképes.
+     */
+    public static void start(Thread t) {
+        if (isSupported()) tray.start(t);
+    }
+    
+    /**
+     * GUI frissítés indítása.
+     */
+    public static void start() {
+        start(null);
     }
     
     /**
@@ -73,21 +88,21 @@ public class SystemTrayIcon {
      * @param label a menüben megjelenő szöveg
      * @param callback eseménykezelő
      */
-    public static void addMenuItem(String label, ActionListener callback) {
+    public static void addMenuItem(String label, Runnable callback) {
         if (isSupported()) {
-            MenuItem mi = new MenuItem(label);
-            mi.addActionListener(callback);
-            menu.add(mi);
+            menu.addMenuItem(label, callback);
         }
     }
     
     /**
-     * Menüelemet ad hozzá a rendszerikon menüjéhez, ha az támogatott.
-     * @param mi a menüelem
+     * Checkbox Menüelemet ad hozzá a rendszerikon menüjéhez, ha az támogatott.
+     * @param label a menüben megjelenő szöveg
+     * @param checked kezdőérték
+     * @param callback eseménykezelő
      */
-    public static void addMenuItem(MenuItem mi) {
+    public static void addCheckboxMenuItem(String label, boolean checked, Runnable callback) {
         if (isSupported()) {
-            menu.add(mi);
+            menu.addCheckboxMenuItem(label, checked, callback);
         }
     }
     
@@ -106,10 +121,10 @@ public class SystemTrayIcon {
      * @param img az a kép, ami megjelenik az ikonban
      * @throws NullPointerException ha a kép null
      */
-    public static void setIcon(String tooltip, Image img) {
+    public static void setIcon(String tooltip, InputStream in) {
         if (isSupported()) {
             icon.setToolTip(tooltip);
-            icon.setImage(img);
+            icon.setImage(in);
         }
     }
     
@@ -119,17 +134,9 @@ public class SystemTrayIcon {
      * valamint ha látható ikont eltűnésre vagy nem látható ikont megjelenésre kérnek.
      */
     public static void setVisible(boolean visible) {
-        if (SystemTrayIcon.visible ^ visible && isSupported()) {
-            synchronized (tray) { // amíg a művelet végre nem hajtódik, lefoglalom az objektumot
-                try {
-                    if (visible) tray.add(icon); // megjelenítés esetén hozzáadás
-                    else tray.remove(icon); // elrejtés esetén eltávolítás
-                    SystemTrayIcon.visible = visible; // ha minden sikerült, módosítható a láthatóságot kezelő változó
-                }
-                catch (Exception ex) { // kivétel esetén semmi nem változik
-                    ;
-                }
-            }
+        if (isSupported()) {
+//            SystemTrayIcon.visible = visible; //TODO: amíg nincs megoldva a rendszerikon támogatás, buborékablak konzolra...
+            icon.setVisible(visible);
         }
     }
     
@@ -142,7 +149,7 @@ public class SystemTrayIcon {
      * @return ha az üzenet a rendszerikonban jelent meg, true, ha a konzolon, false
      */
     public static boolean showMessage(String title, String text) {
-        return showMessage(title, text, TrayIcon.MessageType.INFO);
+        return showMessage(title, text, IconType.INFO);
     }
     
     /**
@@ -153,7 +160,7 @@ public class SystemTrayIcon {
      * @param type az ikon típusa
      * @return ha az üzenet a rendszerikonban jelent meg, true, ha a konzolon, false
      */
-    public static boolean showMessage(String title, String text, TrayIcon.MessageType type) {
+    public static boolean showMessage(String title, String text, IconType type) {
         return showMessage(title, text, type, null);
     }
     
@@ -166,18 +173,13 @@ public class SystemTrayIcon {
      * @param callback opcionális eseménykezelő, ami akkor fut le, ha az üzenetre kattintanak
      * @return ha az üzenet a rendszerikonban jelent meg, true, ha a konzolon, false
      */
-    public static boolean showMessage(String title, String text, TrayIcon.MessageType type, ActionListener callback) {
+    public static boolean showMessage(String title, String text, IconType type, Runnable callback) {
         if (visible && isSupported()) {
-            synchronized (icon) { // amíg az üzenet nem jelent meg, nem fogad több kérést
-                ActionListener[] ls = icon.getActionListeners();
-                if (ls.length == 1) icon.removeActionListener(ls[0]); // az előző eseménykezelő eltávolítása, ha van
-                if (callback != null) icon.addActionListener(callback); // új eseménykezelő hozzáadása, ha van
-                icon.displayMessage(title, text, type); // üzenet megjelenítése
-            }
+            icon.displayMessage(title, text, type, callback);
             return true;
         }
         else { // ha az ikon nem támogatott vagy nem látható, konzolra megy az üzenet
-            UIUtil.print(title, text, TrayIcon.MessageType.ERROR == type ? System.err : System.out);
+            UIUtil.print(title, text, IconType.ERROR == type ? System.err : System.out);
             return false;
         }
     }

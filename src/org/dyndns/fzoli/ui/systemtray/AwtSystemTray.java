@@ -60,6 +60,12 @@ class AwtSystemTray implements SystemTray {
 
     @Override
     public void start() {
+        start(null);
+    }
+
+    @Override
+    public void start(Thread t) {
+        if (t != null) t.start();
         while (!disposed) {
             try {
                 Thread.sleep(100);

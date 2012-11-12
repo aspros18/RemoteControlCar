@@ -27,4 +27,10 @@ public interface SystemTray {
      */
     public void start();
     
+    /**
+     * A frissítést elvégző metódus indítása.
+     * Miután elindult a rendszerikon szolgáltatás, a szálat elindítja.
+     */
+    public void start(Thread t);
+    
 }

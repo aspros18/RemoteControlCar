@@ -1,8 +1,11 @@
 package org.dyndns.fzoli.ui.systemtray;
 
+import java.awt.CheckboxMenuItem;
 import java.awt.MenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 /**
  * Az alapértelmezett AWT PopupMenu adaptere.
@@ -41,6 +44,22 @@ class AwtPopupMenu implements PopupMenu {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    r.run();
+                }
+
+            });
+        }
+        menu.add(item);
+    }
+
+    @Override
+    public void addCheckboxMenuItem(String text, boolean checked, final Runnable r) {
+        final java.awt.CheckboxMenuItem item = new CheckboxMenuItem(text, checked);
+        if (r != null) {
+            item.addItemListener(new ItemListener() {
+
+                @Override
+                public void itemStateChanged(ItemEvent e) {
                     r.run();
                 }
 

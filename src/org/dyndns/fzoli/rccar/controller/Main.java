@@ -1,7 +1,6 @@
 package org.dyndns.fzoli.rccar.controller;
 
 import java.awt.GraphicsEnvironment;
-import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Timer;
@@ -17,6 +16,7 @@ import org.dyndns.fzoli.ui.SystemTrayIcon;
 import static org.dyndns.fzoli.ui.SystemTrayIcon.showMessage;
 import org.dyndns.fzoli.ui.UIUtil;
 import static org.dyndns.fzoli.ui.UIUtil.setSystemLookAndFeel;
+import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 
 /**
  * A vezérlő indító osztálya.
@@ -35,12 +35,12 @@ public class Main {
     private static final String LS = System.getProperty("line.separator");
     
     /**
-     * Eseményfigyelő, ami esemény hatására megjeleníti a kapcsolatbeállító ablakot.
+     * Callback, ami megjeleníti a kapcsolatbeállító ablakot.
      */
-    private static final ActionListener AL_SETTING = new ActionListener() {
+    private static final Runnable CALLBACK_SETTING = new Runnable() {
 
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void run() {
             // kapcsolatbeállító ablak megjelenítése
             showSettingDialog(false, null);
         }
@@ -48,10 +48,10 @@ public class Main {
     };
     
     /**
-     * Eseményfigyelő, ami akkor fut le, ha ki szeretnének lépni a programból.
+     * Callback, ami akkor fut le, ha ki szeretnének lépni a programból.
      */
-    private static final ActionListener AL_EXIT = new ActionListener() {
-
+    private static final Runnable CALLBACK_EXIT = new Runnable() {
+        
         /**
          * Ha a kilépésre kattintottak.
          * A program azonnal végetér, ha nincs kiépítve kapcsolat,
@@ -59,7 +59,7 @@ public class Main {
          * és csak akkor lép ki, ha Igen a válasza.
          */
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void run() {
             if (CONN.isConnected()) { // ha van kiépített kapcsolat
                 // megkérdi, biztos-e a kilépésben
                 int opt = OptionPane.showYesNoDialog(R.getIconImage(), "Biztos, hogy kilép a programból?", "Megerősítés");
@@ -70,6 +70,18 @@ public class Main {
                 // a program kilép
                 System.exit(0);
             }
+        }
+
+    };
+    
+    /**
+     * Eseményfigyelő, ami akkor fut le, ha ki szeretnének lépni a programból.
+     */
+    private static final ActionListener AL_EXIT = new ActionListener() {
+        
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            CALLBACK_EXIT.run();
         }
 
     };
@@ -142,15 +154,15 @@ public class Main {
      */
     private static void setSystemTrayIcon() {
         // az ikon beállítása
-        SystemTrayIcon.setIcon("Mobile-RC", R.getIconImage());
+        SystemTrayIcon.setIcon("Mobile-RC", R.getIconImageStream());
         
         // kapcsolatbeállítás opció hozzáadása
-        SystemTrayIcon.addMenuItem("Kapcsolatbeállítás", AL_SETTING);
+        SystemTrayIcon.addMenuItem("Kapcsolatbeállítás", CALLBACK_SETTING);
         
-        SystemTrayIcon.addMenuItem("Újrakapcsolódás", new ActionListener() {
+        SystemTrayIcon.addMenuItem("Újrakapcsolódás", new Runnable() {
 
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void run() {
                 reconnect();
             }
             
@@ -160,7 +172,7 @@ public class Main {
         SystemTrayIcon.addMenuSeparator();
         
         // kilépés opció hozzáadása
-        SystemTrayIcon.addMenuItem("Kilépés", AL_EXIT);
+        SystemTrayIcon.addMenuItem("Kilépés", CALLBACK_EXIT);
         
         // a rendszerikon megjelenítése
         SystemTrayIcon.setVisible(true);
@@ -193,7 +205,7 @@ public class Main {
      * @param text a megjelenő szöveg
      */
     private static void showSettingWarning(String text) {
-        showMessage(VAL_WARNING, text, TrayIcon.MessageType.WARNING, AL_SETTING);
+        showMessage(VAL_WARNING, text, IconType.WARNING, CALLBACK_SETTING);
     }
     
     /**
@@ -299,17 +311,24 @@ public class Main {
             System.err.println("A program futtatásához grafikus környezetre van szükség." + LS + "A program kilép.");
             System.exit(1); // hibakóddal lép ki
         }
-        if (!CONFIG.isFileExists()) { // ha a tanúsítvány fájlok egyike nem létezik
-            showSettingError((CONFIG.isDefault() ? "Az alapértelmezett konfiguráció nem használható, mert" : "A konfiguráció") + " nem létező fájlra hivatkozik." + LS + "A folytatás előtt a hibát helyre kell hozni.");
-            showSettingDialog(true, 1); // kényszerített beállítás és tanúsítvány lapfül előtérbe hozása
-        }
-        if (CONFIG.isCertDefault()) { // figyelmeztetés
-            showSettingWarning("Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!");
-        }
-        if (CONFIG.isDefault()) { // figyelmeztetés
-            showSettingWarning("A konfiguráció beállítása a menüből érhető el. Most ide kattintva is megteheti.");
-        }
-        runClient(); // és végül a lényeg
+        SystemTrayIcon.start(new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                if (!CONFIG.isFileExists()) { // ha a tanúsítvány fájlok egyike nem létezik
+                    showSettingError((CONFIG.isDefault() ? "Az alapértelmezett konfiguráció nem használható, mert" : "A konfiguráció") + " nem létező fájlra hivatkozik." + LS + "A folytatás előtt a hibát helyre kell hozni.");
+                    showSettingDialog(true, 1); // kényszerített beállítás és tanúsítvány lapfül előtérbe hozása
+                }
+                if (CONFIG.isCertDefault()) { // figyelmeztetés
+                    showSettingWarning("Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!");
+                }
+                if (CONFIG.isDefault()) { // figyelmeztetés
+                    showSettingWarning("A konfiguráció beállítása a menüből érhető el. Most ide kattintva is megteheti.");
+                }
+                runClient(); // és végül a lényeg
+            }
+            
+        }));
     }
     
 }

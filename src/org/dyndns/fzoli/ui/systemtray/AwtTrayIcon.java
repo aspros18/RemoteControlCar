@@ -79,7 +79,7 @@ class AwtTrayIcon implements TrayIcon {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    //TODO: csak akkor fusson le, ha az üzenetre kattintottak és nem az ikonra duplán);
+                    //TODO: csak akkor fusson le, ha az üzenetre kattintottak és nem az ikonra duplán
                     onClick.run();
                 }
 

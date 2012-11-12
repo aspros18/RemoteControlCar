@@ -63,12 +63,12 @@ class AwtTrayIconAdapter implements TrayIconAdapter {
     }
 
     @Override
-    public PopupMenu getPopupMenu() {
+    public PopupMenuAdapter getPopupMenu() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void setPopupMenu(PopupMenu menu) {
+    public PopupMenuAdapter createPopupMenu() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

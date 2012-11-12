@@ -1,7 +1,6 @@
 package org.dyndns.fzoli.ui.systemtray;
 
 import java.awt.Image;
-import java.awt.PopupMenu;
 import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
@@ -32,9 +31,9 @@ public interface TrayIconAdapter {
     
     public void setToolTip(String toolTip);
     
-    public PopupMenu getPopupMenu();
+    public PopupMenuAdapter getPopupMenu();
     
-    public void setPopupMenu(PopupMenu menu);
+    public PopupMenuAdapter createPopupMenu();
     
     public void displayMessage(String title, String message, MessageType type);
     

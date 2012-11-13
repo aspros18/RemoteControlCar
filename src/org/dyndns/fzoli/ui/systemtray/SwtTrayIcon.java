@@ -66,31 +66,38 @@ class SwtTrayIcon implements TrayIcon {
     }
     
     @Override
-    public void displayMessage(String title, String msg, IconType icon, final Runnable onClick) {
-        int i = SWT.ICON_INFORMATION;
-        switch (icon) {
-            case WARNING:
-                i = SWT.ICON_WARNING;
-                break;
-            case ERROR:
-                i = SWT.ICON_ERROR;
-                break;
-        }
-        final ToolTip tip = new ToolTip(shell, SWT.BALLOON | i);
-        tip.setText(title);
-        tip.setMessage(msg);
-        if (onClick != null) {
-            tip.addSelectionListener(new SelectionAdapter() {
+    public void displayMessage(final String title, final String msg, final IconType icon, final Runnable onClick) {
+        display.syncExec(new Runnable() {
 
-                @Override
-                public void widgetSelected(SelectionEvent se) {
-                    onClick.run();
+            @Override
+            public void run() {
+                int i = SWT.ICON_INFORMATION;
+                switch (icon) {
+                    case WARNING:
+                        i = SWT.ICON_WARNING;
+                        break;
+                    case ERROR:
+                        i = SWT.ICON_ERROR;
+                        break;
                 }
+                final ToolTip tip = new ToolTip(shell, SWT.BALLOON | i);
+                tip.setText(title);
+                tip.setMessage(msg);
+                if (onClick != null) {
+                    tip.addSelectionListener(new SelectionAdapter() {
 
-            });
-        }
-        item.setToolTip(tip);
-        tip.setVisible(true);
+                        @Override
+                        public void widgetSelected(SelectionEvent se) {
+                            onClick.run();
+                        }
+
+                    });
+                }
+                item.setToolTip(tip);
+                tip.setVisible(true);
+            }
+            
+        });
     }
     
     @Override

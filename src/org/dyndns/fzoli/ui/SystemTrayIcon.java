@@ -135,7 +135,7 @@ public class SystemTrayIcon {
      */
     public static void setVisible(boolean visible) {
         if (isSupported()) {
-//            SystemTrayIcon.visible = visible; //TODO: amíg nincs megoldva a rendszerikon támogatás, buborékablak konzolra...
+            SystemTrayIcon.visible = visible;
             icon.setVisible(visible);
         }
     }

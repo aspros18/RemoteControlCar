@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Tray;
  * Az SWT SystemTray adaptere.
  * @author zoli
  */
-final class SwtSystemTray implements SystemTray {
+class SwtSystemTray implements SystemTray {
     
     private final Display display = new Display();
     private final Shell shell = new Shell(display);
@@ -27,7 +27,16 @@ final class SwtSystemTray implements SystemTray {
     
     @Override
     public void dispose() {
-        if (isSupported()) shell.dispose();
+        if (isSupported()) {
+            display.syncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    shell.dispose();
+                }
+                
+            });
+        }
     }
     
     @Override
@@ -41,8 +50,13 @@ final class SwtSystemTray implements SystemTray {
         if (isSupported()) {
             try {
                 while (!shell.isDisposed()) {
-                    if (!display.readAndDispatch()) {
-                        display.sleep();
+                    try {
+                        if (!display.readAndDispatch()) {
+                            display.sleep();
+                        }
+                    }
+                    catch (Exception ex) {
+                        break;
                     }
                 }
                 display.dispose();

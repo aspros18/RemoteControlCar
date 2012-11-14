@@ -66,14 +66,10 @@ public class Main {
                 int opt = OptionPane.showYesNoDialog(R.getIconImage(), "Biztos, hogy kilép a programból?", "Megerősítés");
                 // ha igen, akkor a program kilép
                 if (opt == 0) {
-                    // TODO: swt leállítása, nem illik ide, de a még fennálló bugot orvosolja (kilépés opció fagyás)
-                    SwtDisplayProvider.dispose(); //TODO: újabb hibát szűl, de legalább nem fagy ki
                     System.exit(0);
                 }
             }
             else { // ha nincs kiépített kapcsolat
-                // TODO: swt leállítása, nem illik ide, de a még fennálló bugot orvosolja (kilépés opció fagyás)
-                SwtDisplayProvider.dispose(); //TODO: újabb hibát szűl, de legalább nem fagy ki
                 // a program kilép
                 System.exit(0);
             }

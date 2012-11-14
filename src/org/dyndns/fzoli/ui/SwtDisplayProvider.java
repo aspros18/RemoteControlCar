@@ -11,23 +11,6 @@ import org.eclipse.swt.widgets.Tray;
  * @author zoli
  */
 public final class SwtDisplayProvider {
-
-    /**
-     * Osztály inicializálása.
-     */
-    static {
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-
-            /**
-             * A program leállása előtt az SWT display megszüntetése.
-             */
-            @Override
-            public void run() {
-                dispose();
-            }
-            
-        }));
-    }
     
     /**
      * Szinkronizált inicializáláshoz Runnable implementáció.

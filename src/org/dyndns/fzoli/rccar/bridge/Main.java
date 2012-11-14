@@ -112,8 +112,6 @@ public class Main {
                  */
                 @Override
                 public void run() {
-                    // TODO: swt leállítása, nem illik ide, de a még fennálló bugot orvosolja (kilépés opció fagyás)
-                    SwtDisplayProvider.dispose();
                     // a program kilép
                     System.exit(0);
                 }

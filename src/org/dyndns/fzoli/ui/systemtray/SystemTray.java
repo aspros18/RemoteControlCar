@@ -21,16 +21,4 @@ public interface SystemTray {
      */
     public void dispose();
     
-    /**
-     * A frissítést elvégző metódus indítása.
-     * A main metódusba ajánlott utolsó utasításnak.
-     */
-    public void start();
-    
-    /**
-     * A frissítést elvégző metódus indítása.
-     * Miután elindult a rendszerikon szolgáltatás, a szálat elindítja.
-     */
-    public void start(Thread t);
-    
 }

@@ -207,25 +207,18 @@ public class Main {
      * @throws RuntimeException ha nem várt kivétel képződik
      */
     private static void runServer() {
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                final SSLServerSocket ss = createServerSocket();
-                while (!ss.isClosed()) { // ameddig nincs lezárva a socket szerver
-                    SSLSocket s = null;
-                    try {
-                        s = (SSLSocket) ss.accept(); // kliensre várakozik, és ha kapcsolódtak, ...
-                        new Thread(new BridgeHandler(s)).start(); // ... új szálban kezeli a kapcsolatot
-                    }
-                    catch (Exception ex) {
-                        // ha bármilyen kivétel keletkezik, nem áll le a szerver, csak közli a kivételt
-                        showException(ex);
-                    }
-                }
+        final SSLServerSocket ss = createServerSocket();
+        while (!ss.isClosed()) { // ameddig nincs lezárva a socket szerver
+            SSLSocket s = null;
+            try {
+                s = (SSLSocket) ss.accept(); // kliensre várakozik, és ha kapcsolódtak, ...
+                new Thread(new BridgeHandler(s)).start(); // ... új szálban kezeli a kapcsolatot
             }
-            
-        }).start();
+            catch (Exception ex) {
+                // ha bármilyen kivétel keletkezik, nem áll le a szerver, csak közli a kivételt
+                showException(ex);
+            }
+        }
     }
     
     /**
@@ -247,7 +240,6 @@ public class Main {
             }
             readArguments(args);
             runServer();
-            SystemTrayIcon.start();
         }
         else {
             final StringBuilder msg = new StringBuilder();

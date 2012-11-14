@@ -28,45 +28,8 @@ class SwtSystemTray implements SystemTray {
     @Override
     public void dispose() {
         if (isSupported()) {
-            display.syncExec(new Runnable() {
-
-                @Override
-                public void run() {
-                    shell.dispose();
-                }
-                
-            });
-        }
-    }
-    
-    @Override
-    public void start() {
-        start(null);
-    }
-    
-    @Override
-    public void start(Thread t) {
-        if (t != null) t.start();
-        if (isSupported()) {
-            try {
-                while (!shell.isDisposed()) {
-                    try {
-                        if (!display.readAndDispatch()) {
-                            display.sleep();
-                        }
-                    }
-                    catch (Exception ex) {
-                        break;
-                    }
-                }
-                display.dispose();
-            }
-            catch (Exception ex) {
-                ;
-            }
-        }
-        else {
-            if (t != null) t.start();
+            shell.dispose();
+            tray.dispose();
         }
     }
     

@@ -21,18 +21,9 @@ public final class SystemTrayProvider {
      */
     public static SystemTray getSystemTray() {
         if (st == null) {
-            if (isSwtTrayAvailable()) st = new SwtSystemTray();
-            else st = new AwtSystemTray();
-            if (st.isSupported()) {
-                Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        st.dispose();
-                    }
-
-                }));
-            }
+            //TODO: komment kiszedése
+            /*if (isSwtTrayAvailable()) st = new SwtSystemTray();
+            else */st = new AwtSystemTray();
         }
         return st;
     }

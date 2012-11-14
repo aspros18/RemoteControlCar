@@ -48,7 +48,6 @@ public class SystemTrayTest {
             }
             
         });
-        tray.start();
     }
     
 }

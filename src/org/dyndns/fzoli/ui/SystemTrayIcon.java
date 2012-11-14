@@ -53,21 +53,6 @@ public class SystemTrayIcon {
     }
     
     /**
-     * GUI frissítés indítása.
-     * @param t a szál, ami elindul, ha a rendszerikon működőképes.
-     */
-    public static void start(Thread t) {
-        if (isSupported()) tray.start(t);
-    }
-    
-    /**
-     * GUI frissítés indítása.
-     */
-    public static void start() {
-        start(null);
-    }
-    
-    /**
      * Értéke megadja, hogy támogatott-e a rendszerikon az adott rendszeren.
      * @return true, ha támogatott a rendszerikon
      */

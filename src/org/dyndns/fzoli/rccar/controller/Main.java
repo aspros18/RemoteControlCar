@@ -311,24 +311,17 @@ public class Main {
             System.err.println("A program futtatásához grafikus környezetre van szükség." + LS + "A program kilép.");
             System.exit(1); // hibakóddal lép ki
         }
-        SystemTrayIcon.start(new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                if (!CONFIG.isFileExists()) { // ha a tanúsítvány fájlok egyike nem létezik
-                    showSettingError((CONFIG.isDefault() ? "Az alapértelmezett konfiguráció nem használható, mert" : "A konfiguráció") + " nem létező fájlra hivatkozik." + LS + "A folytatás előtt a hibát helyre kell hozni.");
-                    showSettingDialog(true, 1); // kényszerített beállítás és tanúsítvány lapfül előtérbe hozása
-                }
-                if (CONFIG.isCertDefault()) { // figyelmeztetés
-                    showSettingWarning("Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!");
-                }
-                if (CONFIG.isDefault()) { // figyelmeztetés
-                    showSettingWarning("A konfiguráció beállítása a menüből érhető el. Most ide kattintva is megteheti.");
-                }
-                runClient(); // és végül a lényeg
-            }
-            
-        }));
+        if (!CONFIG.isFileExists()) { // ha a tanúsítvány fájlok egyike nem létezik
+            showSettingError((CONFIG.isDefault() ? "Az alapértelmezett konfiguráció nem használható, mert" : "A konfiguráció") + " nem létező fájlra hivatkozik." + LS + "A folytatás előtt a hibát helyre kell hozni.");
+            showSettingDialog(true, 1); // kényszerített beállítás és tanúsítvány lapfül előtérbe hozása
+        }
+        if (CONFIG.isCertDefault()) { // figyelmeztetés
+            showSettingWarning("Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!");
+        }
+        if (CONFIG.isDefault()) { // figyelmeztetés
+            showSettingWarning("A konfiguráció beállítása a menüből érhető el. Most ide kattintva is megteheti.");
+        }
+        runClient(); // és végül a lényeg
     }
     
 }

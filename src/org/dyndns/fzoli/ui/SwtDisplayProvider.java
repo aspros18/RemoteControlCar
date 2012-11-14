@@ -120,10 +120,16 @@ public final class SwtDisplayProvider {
                         notifyAll(); // jelzés, hogy kész az inicializálás
                     }
                     // GUI frissítés elindítása:
-                    while (!display.isDisposed()) {
-                        if (!display.readAndDispatch()) {
-                            display.sleep();
+                    try {
+                        while (!display.isDisposed()) {
+                            if (!display.readAndDispatch()) {
+                                display.sleep();
+                            }
                         }
+                    }
+                    catch (Exception ex) {
+                        System.out.println("Miért?!");
+                        ex.printStackTrace();
                     }
                 }
 

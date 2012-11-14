@@ -25,6 +25,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
@@ -130,11 +131,13 @@ public class ChatDialog extends AbstractDialog {
             Dimension minSize = new Dimension(200, 32);
             
             final JScrollPane pane1 = new JScrollPane(lb1);
+            pane1.setBorder(null);
             pane1.setViewportBorder(BorderFactory.createEtchedBorder());
             pane1.setMinimumSize(minSize);
             pane1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
             
             final JScrollPane pane2 = new JScrollPane(lb2);
+            pane2.setBorder(null);
             pane2.setViewportBorder(BorderFactory.createEtchedBorder());
             pane2.setMinimumSize(minSize);
             pane2.setPreferredSize(new Dimension(490, 50));
@@ -207,6 +210,7 @@ public class ChatDialog extends AbstractDialog {
      */
     private static JSplitPane createSplitPane(int orientation, Component c1, Component c2) {
         JSplitPane pane = new JSplitPane(orientation, c1, c2);
+        ((BasicSplitPaneUI) pane.getUI()).getDivider().setBorder(null);
         pane.setContinuousLayout(true);
         pane.setDividerSize(DIVIDER_SIZE);
         pane.setResizeWeight(1.0);

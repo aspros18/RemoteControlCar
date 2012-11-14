@@ -13,7 +13,6 @@ import org.dyndns.fzoli.rccar.bridge.socket.BridgeHandler;
 import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.closeSplashScreen;
 import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.setDefaultSplashMessage;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
-import org.dyndns.fzoli.ui.SwtDisplayProvider;
 import org.dyndns.fzoli.ui.SystemTrayIcon;
 import org.dyndns.fzoli.ui.UIUtil;
 import static org.dyndns.fzoli.ui.UIUtil.setSystemLookAndFeel;

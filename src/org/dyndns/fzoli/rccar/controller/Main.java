@@ -12,7 +12,6 @@ import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.controller.socket.ConnectionHelper;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
 import org.dyndns.fzoli.ui.OptionPane;
-import org.dyndns.fzoli.ui.SwtDisplayProvider;
 import org.dyndns.fzoli.ui.SystemTrayIcon;
 import static org.dyndns.fzoli.ui.SystemTrayIcon.showMessage;
 import org.dyndns.fzoli.ui.UIUtil;

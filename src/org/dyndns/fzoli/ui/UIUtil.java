@@ -67,10 +67,17 @@ public class UIUtil {
     public static void setSystemLookAndFeel() {
         if (!GraphicsEnvironment.isHeadless()) {
             try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                // Linuxra GTK LAF beállítása
+                UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
             }
             catch (Exception ex) {
-                ;
+                // Ha nem Linuxon fut a program, rendszer LAF beállítása
+                try {
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                }
+                catch (Exception e) {
+                    ;
+                }
             }
         }
     }

@@ -1,6 +1,8 @@
 package org.dyndns.fzoli.ui.systemtray;
 
+import org.dyndns.fzoli.ui.SwtDisplayProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
@@ -18,13 +20,23 @@ class SwtPopupMenu implements PopupMenu {
     
     private final TrayItem item;
     
+    private final Display display;
+    
     private final Listener l;
     
     private boolean visible = false;
     
-    public SwtPopupMenu(Shell shell, TrayItem item) {
+    public SwtPopupMenu(Display display, final Shell shell, TrayItem item) {
         this.item = item;
-        this.menu = new Menu(shell, SWT.POP_UP);
+        this.display = display;
+        this.menu = SwtDisplayProvider.syncReturn(new SwtDisplayProvider.RunnableReturn<Menu>() {
+
+            @Override
+            protected Menu createReturn() {
+                return new Menu(shell, SWT.POP_UP);
+            }
+            
+        });
         this.l = new Listener() {
 
             @Override
@@ -37,38 +49,59 @@ class SwtPopupMenu implements PopupMenu {
     }
     
     @Override
-    public void setVisible(boolean b) {
+    public void setVisible(final boolean b) {
         if (visible ^ b) {
             visible = b;
-            if (!b) {
-                item.removeListener(SWT.MenuDetect, l);
-                menu.setVisible(false);
-            }
-            else {
-                item.addListener(SWT.MenuDetect, l);
-            }
+            display.syncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (!b) {
+                        item.removeListener(SWT.MenuDetect, l);
+                        menu.setVisible(false);
+                    }
+                    else {
+                        item.addListener(SWT.MenuDetect, l);
+                    }
+                }
+                
+            });
         }
     }
     
     @Override
     public void addSeparator() {
-        new MenuItem(menu, SWT.SEPARATOR);
+        display.syncExec(new Runnable() {
+
+            @Override
+            public void run() {
+                new MenuItem(menu, SWT.SEPARATOR);
+            }
+            
+        });
     }
     
-    private void addMenuItem(String text, final Runnable r, int type, boolean checked) {
-        final MenuItem mi = new MenuItem(menu, type);
-        mi.setText(text);
-        mi.setSelection(checked);
-        if (r != null) {
-            mi.addListener(SWT.Selection, new Listener() {
+    private void addMenuItem(final String text, final Runnable r, final int type, final boolean checked) {
+        display.syncExec(new Runnable() {
 
-                @Override
-                public void handleEvent(Event event) {
-                    r.run();
+            @Override
+            public void run() {
+                final MenuItem mi = new MenuItem(menu, type);
+                mi.setText(text);
+                mi.setSelection(checked);
+                if (r != null) {
+                    mi.addListener(SWT.Selection, new Listener() {
+
+                        @Override
+                        public void handleEvent(Event event) {
+                            r.run();
+                        }
+
+                    });
                 }
-
-            });
-        }
+            }
+            
+        });
     }
     
     @Override

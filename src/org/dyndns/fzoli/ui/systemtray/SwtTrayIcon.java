@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.ui.systemtray;
 
 import java.io.InputStream;
+import org.dyndns.fzoli.ui.SwtDisplayProvider;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -28,36 +29,50 @@ class SwtTrayIcon implements TrayIcon {
     private SwtPopupMenu menu;
     private Listener l;
     
-    public SwtTrayIcon(Display display, Shell shell, Tray tray) {
+    public SwtTrayIcon(Display display, Shell shell, final Tray tray) {
         this.shell = shell;
         this.tray = tray;
         this.display = display;
-        this.item = new TrayItem(tray, SWT.NONE);
+        this.item = SwtDisplayProvider.syncReturn(new SwtDisplayProvider.RunnableReturn<TrayItem>() {
+
+            @Override
+            protected TrayItem createReturn() {
+                return new TrayItem(tray, SWT.NONE);
+            }
+            
+        });
     }
     
     @Override
     public PopupMenu createPopupMenu() {
         if (menu != null) menu.setVisible(false);
-        menu = new SwtPopupMenu(shell, item);
+        menu = new SwtPopupMenu(display, shell, item);
         return menu;
     }
     
     @Override
     public void setOnClickListener(final Runnable r) {
-        if (l != null) {
-            item.removeListener(SWT.DefaultSelection, l);
-        }
-        if (r != null) {
-            l = new Listener() {
+        display.syncExec(new Runnable() {
 
-                @Override
-                public void handleEvent(Event event) {
-                    r.run();
+            @Override
+            public void run() {
+                if (l != null) {
+                    item.removeListener(SWT.DefaultSelection, l);
                 }
+                if (r != null) {
+                    l = new Listener() {
 
-            };
-            item.addListener(SWT.DefaultSelection, l);
-        }
+                        @Override
+                        public void handleEvent(Event event) {
+                            r.run();
+                        }
+
+                    };
+                    item.addListener(SWT.DefaultSelection, l);
+                }
+            }
+            
+        });
     }
     
     @Override
@@ -101,18 +116,38 @@ class SwtTrayIcon implements TrayIcon {
     }
     
     @Override
-    public void setImage(InputStream in) {
-        item.setImage(new Image(display, in));
+    public void setImage(final InputStream in) {
+        display.syncExec(new Runnable() {
+
+            @Override
+            public void run() {
+                item.setImage(new Image(display, in));
+            }
+        });
     }
     
     @Override
-    public void setToolTip(String text) {
-        item.setToolTipText(text);
+    public void setToolTip(final String text) {
+        display.syncExec(new Runnable() {
+
+            @Override
+            public void run() {
+                item.setToolTipText(text);
+            }
+            
+        });
     }
     
     @Override
-    public void setVisible(boolean b) {
-        item.setVisible(b);
+    public void setVisible(final boolean b) {
+        display.syncExec(new Runnable() {
+
+            @Override
+            public void run() {
+                item.setVisible(b);
+            }
+            
+        });
     }
     
 }

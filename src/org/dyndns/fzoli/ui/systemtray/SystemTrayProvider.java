@@ -21,9 +21,8 @@ public final class SystemTrayProvider {
      */
     public static SystemTray getSystemTray() {
         if (st == null) {
-            //TODO: komment kiszedése
-            /*if (isSwtTrayAvailable()) st = new SwtSystemTray();
-            else */st = new AwtSystemTray();
+            if (isSwtTrayAvailable()) st = new SwtSystemTray();
+            else st = new AwtSystemTray();
         }
         return st;
     }

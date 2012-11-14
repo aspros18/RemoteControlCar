@@ -54,9 +54,9 @@ public class ControllerWindows {
         //TODO: még nem teljes
         Rectangle screenSize = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
         int usedHeight = Math.min(screenSize.height, FRAME_MAIN.getHeight() + DIALOG_CHAT.getHeight());
-        FRAME_MAIN.setLocation((int)(screenSize.width / 2.0 - FRAME_MAIN.getHeight() / 2.0), (int)(screenSize.height / 2.0 - usedHeight / 2.0));
-        DIALOG_CHAT.setLocation(FRAME_MAIN.getLocation().x, FRAME_MAIN.getHeight() + FRAME_MAIN.getBorderSize().height);
-        DIALOG_CHAT.setSize(FRAME_MAIN.getWidth(), Math.min(DIALOG_CHAT.getHeight(), screenSize.height - FRAME_MAIN.getHeight()));
+        FRAME_MAIN.setLocation((int)(screenSize.width / 2.0 - FRAME_MAIN.getWidth() / 2.0), (int)(screenSize.height / 2.0 - usedHeight / 2.0));
+        DIALOG_CHAT.setLocation((int)(screenSize.width / 2.0 - DIALOG_CHAT.getWidth() / 2.0), FRAME_MAIN.getHeight() + FRAME_MAIN.getBorderSize().height);
+        DIALOG_CHAT.setSize(DIALOG_CHAT.getWidth(), Math.min(DIALOG_CHAT.getHeight(), screenSize.height - FRAME_MAIN.getHeight()));
     }
     
     /**

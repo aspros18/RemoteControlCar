@@ -13,6 +13,7 @@ import org.dyndns.fzoli.rccar.bridge.socket.BridgeHandler;
 import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.closeSplashScreen;
 import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.setDefaultSplashMessage;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
+import org.dyndns.fzoli.ui.SwtDisplayProvider;
 import org.dyndns.fzoli.ui.SystemTrayIcon;
 import org.dyndns.fzoli.ui.UIUtil;
 import static org.dyndns.fzoli.ui.UIUtil.setSystemLookAndFeel;
@@ -111,6 +112,8 @@ public class Main {
                  */
                 @Override
                 public void run() {
+                    // TODO: swt leállítása, nem illik ide, de a még fennálló bugot orvosolja (kilépés opció fagyás)
+                    SwtDisplayProvider.dispose();
                     // a program kilép
                     System.exit(0);
                 }

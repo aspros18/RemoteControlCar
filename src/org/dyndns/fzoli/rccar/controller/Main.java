@@ -12,6 +12,7 @@ import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.controller.socket.ConnectionHelper;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
 import org.dyndns.fzoli.ui.OptionPane;
+import org.dyndns.fzoli.ui.SwtDisplayProvider;
 import org.dyndns.fzoli.ui.SystemTrayIcon;
 import static org.dyndns.fzoli.ui.SystemTrayIcon.showMessage;
 import org.dyndns.fzoli.ui.UIUtil;
@@ -64,9 +65,15 @@ public class Main {
                 // megkérdi, biztos-e a kilépésben
                 int opt = OptionPane.showYesNoDialog(R.getIconImage(), "Biztos, hogy kilép a programból?", "Megerősítés");
                 // ha igen, akkor a program kilép
-                if (opt == 0) System.exit(0);
+                if (opt == 0) {
+                    // TODO: swt leállítása, nem illik ide, de a még fennálló bugot orvosolja (kilépés opció fagyás)
+                    SwtDisplayProvider.dispose(); //TODO: újabb hibát szűl, de legalább nem fagy ki
+                    System.exit(0);
+                }
             }
             else { // ha nincs kiépített kapcsolat
+                // TODO: swt leállítása, nem illik ide, de a még fennálló bugot orvosolja (kilépés opció fagyás)
+                SwtDisplayProvider.dispose(); //TODO: újabb hibát szűl, de legalább nem fagy ki
                 // a program kilép
                 System.exit(0);
             }

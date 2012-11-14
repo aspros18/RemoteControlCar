@@ -111,8 +111,7 @@ public final class SwtDisplayProvider {
                         }
                     }
                     catch (Exception ex) {
-                        System.out.println("Miért?!");
-                        ex.printStackTrace();
+                        ;
                     }
                 }
 

@@ -42,7 +42,7 @@ public class ChatDialog extends AbstractDialog {
     /**
      * Az elválasztóvonalak szélessége.
      */
-    private static final int DIVIDER_SIZE = 4;
+    private static final int DIVIDER_SIZE = 5, MARGIN = 2;
     
     /**
      * A vezérlők listája.
@@ -81,7 +81,7 @@ public class ChatDialog extends AbstractDialog {
             add(lb, BorderLayout.NORTH);
             add(LIST_CONTROLLERS, BorderLayout.CENTER);
             
-            setPreferredSize(new Dimension(150 - DIVIDER_SIZE, 200));
+            setPreferredSize(new Dimension(150 - DIVIDER_SIZE - 2 * MARGIN, 200 - 2 * MARGIN));
         }
     };
     
@@ -104,7 +104,6 @@ public class ChatDialog extends AbstractDialog {
         {
             setBackground(Color.WHITE);
             setLayout(new BorderLayout());
-            setBorder(BorderFactory.createEtchedBorder());
             
             final JTextPane lb1 = new JTextPane();
             lb1.setFocusable(false);
@@ -128,14 +127,16 @@ public class ChatDialog extends AbstractDialog {
             lb2.setLineWrap(true);
             lb2.setBorder(BorderFactory.createLineBorder(getBackground(), 5));
             
+            Dimension minSize = new Dimension(200, 32);
+            
             final JScrollPane pane1 = new JScrollPane(lb1);
-            pane1.setViewportBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createEmptyBorder(-2, -2, 0, -2)));
-            pane1.setMinimumSize(new Dimension(1, 30));
+            pane1.setViewportBorder(BorderFactory.createEtchedBorder());
+            pane1.setMinimumSize(minSize);
             pane1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
             
             final JScrollPane pane2 = new JScrollPane(lb2);
-            pane2.setViewportBorder(null);
-            pane2.setMinimumSize(lb2.getMinimumSize());
+            pane2.setViewportBorder(BorderFactory.createEtchedBorder());
+            pane2.setMinimumSize(minSize);
             pane2.setPreferredSize(new Dimension(490, 50));
             pane2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
             
@@ -161,7 +162,7 @@ public class ChatDialog extends AbstractDialog {
             
             add(createSplitPane(JSplitPane.VERTICAL_SPLIT, pane1, pane2));
             
-            setPreferredSize(new Dimension(490, 200));
+            setPreferredSize(new Dimension(490, 200 - 2 * MARGIN));
         }
     };
     
@@ -194,7 +195,9 @@ public class ChatDialog extends AbstractDialog {
         super(owner, "Chat", windows);
         setIconImage(IC_CHAT.getImage());
         
-        add(createSplitPane(JSplitPane.HORIZONTAL_SPLIT, PANEL_MESSAGES, PANEL_CONTROLLERS));
+        JSplitPane pane = createSplitPane(JSplitPane.HORIZONTAL_SPLIT, PANEL_MESSAGES, PANEL_CONTROLLERS);
+        pane.setBorder(BorderFactory.createEmptyBorder(MARGIN, MARGIN, MARGIN, MARGIN));
+        add(pane);
         
         pack();
     }
@@ -228,6 +231,7 @@ public class ChatDialog extends AbstractDialog {
         JDialog d = new ChatDialog(null, null);
         d.setLocationRelativeTo(d);
         d.setVisible(true);
+        System.out.println(d.getContentPane().getSize());
     }
     
 }

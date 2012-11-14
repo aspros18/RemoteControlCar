@@ -106,11 +106,11 @@ public class ChatDialog extends AbstractDialog {
             setBackground(Color.WHITE);
             setLayout(new BorderLayout());
             
-            final JTextPane lb1 = new JTextPane();
-            lb1.setFocusable(false);
-            lb1.setEditable(false);
+            final JTextPane tpMessages = new JTextPane();
+            tpMessages.setFocusable(false);
+            tpMessages.setEditable(false);
             
-            doc = lb1.getStyledDocument();
+            doc = tpMessages.getStyledDocument();
             
             Style def = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
             Style regular = doc.addStyle(KEY_REGULAR, def);
@@ -124,46 +124,46 @@ public class ChatDialog extends AbstractDialog {
             
             addMessage(new Date(), "controller", "üzenet", false, false);
             
-            final JTextArea lb2 = new JTextArea();
-            lb2.setLineWrap(true);
-            lb2.setBorder(BorderFactory.createLineBorder(getBackground(), 5));
+            final JTextArea tpSender = new JTextArea();
+            tpSender.setLineWrap(true);
+            tpSender.setBorder(BorderFactory.createLineBorder(getBackground(), 5));
             
             Dimension minSize = new Dimension(200, 32);
             
-            final JScrollPane pane1 = new JScrollPane(lb1);
-            pane1.setBorder(null);
-            pane1.setViewportBorder(BorderFactory.createEtchedBorder());
-            pane1.setMinimumSize(minSize);
-            pane1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+            final JScrollPane paneMessages = new JScrollPane(tpMessages);
+            paneMessages.setBorder(null);
+            paneMessages.setViewportBorder(BorderFactory.createEtchedBorder());
+            paneMessages.setMinimumSize(minSize);
+            paneMessages.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
             
-            final JScrollPane pane2 = new JScrollPane(lb2);
-            pane2.setBorder(null);
-            pane2.setViewportBorder(BorderFactory.createEtchedBorder());
-            pane2.setMinimumSize(minSize);
-            pane2.setPreferredSize(new Dimension(490, 50));
-            pane2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+            final JScrollPane paneSender = new JScrollPane(tpSender);
+            paneSender.setBorder(null);
+            paneSender.setViewportBorder(BorderFactory.createEtchedBorder());
+            paneSender.setMinimumSize(minSize);
+            paneSender.setPreferredSize(new Dimension(490, 50));
+            paneSender.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
             
             final String SUBMIT = "text-submit";
-            InputMap input = lb2.getInputMap();
+            InputMap input = tpSender.getInputMap();
             KeyStroke enter = KeyStroke.getKeyStroke("ENTER");
             KeyStroke shiftEnter = KeyStroke.getKeyStroke("shift ENTER");
             input.put(shiftEnter, input.get(enter));
             input.put(enter, SUBMIT);
-            ActionMap actions = lb2.getActionMap();
+            ActionMap actions = tpSender.getActionMap();
             actions.put(SUBMIT, new AbstractAction() {
                 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (!lb2.getText().trim().isEmpty()) {
-                        addMessage(new Date(), "controller", lb2.getText(), true, true);
-                        lb2.setText("");
-                        lb1.select(doc.getLength(), doc.getLength());
+                    if (!tpSender.getText().trim().isEmpty()) {
+                        addMessage(new Date(), "controller", tpSender.getText(), true, true);
+                        tpSender.setText("");
+                        tpMessages.select(doc.getLength(), doc.getLength());
                     }
                 }
                 
             });
             
-            add(createSplitPane(JSplitPane.VERTICAL_SPLIT, pane1, pane2));
+            add(createSplitPane(JSplitPane.VERTICAL_SPLIT, paneMessages, paneSender));
             
             setPreferredSize(new Dimension(490, 200 - 2 * MARGIN));
         }

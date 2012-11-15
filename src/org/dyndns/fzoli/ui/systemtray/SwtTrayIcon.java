@@ -24,14 +24,12 @@ class SwtTrayIcon implements TrayIcon {
     private final TrayItem item;
     private final Shell shell;
     private final Display display;
-    private final Tray tray;
     
     private SwtPopupMenu menu;
     private Listener l;
     
     public SwtTrayIcon(Display display, Shell shell, final Tray tray) {
         this.shell = shell;
-        this.tray = tray;
         this.display = display;
         this.item = SwtDisplayProvider.syncReturn(new SwtDisplayProvider.RunnableReturn<TrayItem>() {
 

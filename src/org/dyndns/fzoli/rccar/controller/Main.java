@@ -68,8 +68,7 @@ public class Main {
                     System.exit(0);
                 }
             }
-            else { // ha nincs kiépített kapcsolat
-                // a program kilép
+            else { // ha nincs kiépített kapcsolat, a program kilép
                 System.exit(0);
             }
         }
@@ -175,9 +174,6 @@ public class Main {
         
         // kilépés opció hozzáadása
         SystemTrayIcon.addMenuItem("Kilépés", CALLBACK_EXIT);
-        
-        // a rendszerikon megjelenítése
-        SystemTrayIcon.setVisible(true);
     }
     
     /**

@@ -45,6 +45,7 @@ public class SystemTrayIcon {
             if (tray.isSupported()) {
                 icon = tray.addTrayIcon();
                 menu = icon.createPopupMenu();
+                visible = true;
             }
         }
         catch (Exception ex) {

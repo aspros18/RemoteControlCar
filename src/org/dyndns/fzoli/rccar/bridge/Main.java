@@ -116,9 +116,6 @@ public class Main {
                 }
                 
             });
-            
-            // a rendszerikon megjelenítése
-            SystemTrayIcon.setVisible(true);
         }
     }
     

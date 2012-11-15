@@ -32,6 +32,11 @@ class AwtPopupMenu implements PopupMenu {
     }
 
     @Override
+    public boolean isVisible() {
+        return visible;
+    }
+    
+    @Override
     public void addSeparator() {
         menu.addSeparator();
     }

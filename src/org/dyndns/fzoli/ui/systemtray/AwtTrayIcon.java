@@ -19,14 +19,22 @@ class AwtTrayIcon implements TrayIcon {
     
     private final java.awt.SystemTray tray;
     
+    private final SystemTray st;
+    
     private boolean visible = true;
     
     private ActionListener evt;
     
-    public AwtTrayIcon(java.awt.SystemTray tray, java.awt.TrayIcon icon) {
+    public AwtTrayIcon(SystemTray st, java.awt.SystemTray tray, java.awt.TrayIcon icon) {
+        this.st = st;
         this.icon = icon;
         this.tray = tray;
         icon.setImageAutoSize(true);
+    }
+
+    @Override
+    public SystemTray getSystemTray() {
+        return st;
     }
 
     @Override
@@ -115,6 +123,11 @@ class AwtTrayIcon implements TrayIcon {
                 ;
             }
         }
+    }
+
+    @Override
+    public boolean isVisible() {
+        return visible;
     }
     
 }

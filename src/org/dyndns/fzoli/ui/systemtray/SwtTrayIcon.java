@@ -25,10 +25,15 @@ class SwtTrayIcon implements TrayIcon {
     private final Shell shell;
     private final Display display;
     
+    private final SystemTray st;
+    
     private SwtPopupMenu menu;
     private Listener l;
     
-    public SwtTrayIcon(Display display, Shell shell, final Tray tray) {
+    private boolean visible = true;
+    
+    public SwtTrayIcon(SystemTray st, Display display, Shell shell, final Tray tray) {
+        this.st = st;
         this.shell = shell;
         this.display = display;
         this.item = SwtDisplayProvider.syncReturn(new SwtDisplayProvider.RunnableReturn<TrayItem>() {
@@ -39,6 +44,11 @@ class SwtTrayIcon implements TrayIcon {
             }
             
         });
+    }
+
+    @Override
+    public SystemTray getSystemTray() {
+        return st;
     }
     
     @Override
@@ -138,6 +148,7 @@ class SwtTrayIcon implements TrayIcon {
     
     @Override
     public void setVisible(final boolean b) {
+        visible = b;
         display.syncExec(new Runnable() {
 
             @Override
@@ -146,6 +157,11 @@ class SwtTrayIcon implements TrayIcon {
             }
             
         });
+    }
+
+    @Override
+    public boolean isVisible() {
+        return visible;
     }
     
 }

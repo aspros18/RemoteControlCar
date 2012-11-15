@@ -40,7 +40,7 @@ class SwtSystemTray implements SystemTray {
     @Override
     public TrayIcon addTrayIcon() {
         if (!isSupported()) return null;
-        return new SwtTrayIcon(display, shell, tray);
+        return new SwtTrayIcon(this, display, shell, tray);
     }
     
     @Override

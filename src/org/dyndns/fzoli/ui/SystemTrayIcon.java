@@ -25,11 +25,6 @@ public class SystemTrayIcon {
     private static PopupMenu menu;
     
     /**
-     * Kezdetben a rendszerikon nem látszódik.
-     */
-    private static boolean visible = false;
-    
-    /**
      * Nincs szükség az osztály példányosítására.
      */
     private SystemTrayIcon() {
@@ -45,7 +40,6 @@ public class SystemTrayIcon {
             if (tray.isSupported()) {
                 icon = tray.addTrayIcon();
                 menu = icon.createPopupMenu();
-                visible = true;
             }
         }
         catch (Exception ex) {
@@ -66,7 +60,7 @@ public class SystemTrayIcon {
      * A rendszerikon nem tehető láthatóvá olyan rendszeren, ahol nem támogatott.
      */
     public static boolean isVisible() {
-        return visible;
+        return isSupported() && icon.isVisible();
     }
     
     /**
@@ -121,7 +115,6 @@ public class SystemTrayIcon {
      */
     public static void setVisible(boolean visible) {
         if (isSupported()) {
-            SystemTrayIcon.visible = visible;
             icon.setVisible(visible);
         }
     }
@@ -160,7 +153,7 @@ public class SystemTrayIcon {
      * @return ha az üzenet a rendszerikonban jelent meg, true, ha a konzolon, false
      */
     public static boolean showMessage(String title, String text, IconType type, Runnable callback) {
-        if (visible && isSupported()) {
+        if (isVisible()) {
             icon.displayMessage(title, text, type, callback);
             return true;
         }

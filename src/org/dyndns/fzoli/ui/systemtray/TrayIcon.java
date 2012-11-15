@@ -18,6 +18,11 @@ public interface TrayIcon extends Visibility {
     }
     
     /**
+     * Az ikonhoz tartozó SystemTray.
+     */
+    public SystemTray getSystemTray();
+    
+    /**
      * Létrehozza a menüt, ami egyből felkerül a rendszerikonra.
      */
     public PopupMenu createPopupMenu();

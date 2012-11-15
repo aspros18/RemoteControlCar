@@ -13,4 +13,9 @@ interface Visibility {
      */
     public void setVisible(boolean b);
     
+    /**
+     * Megadja, látható-e a komponens.
+     */
+    public boolean isVisible();
+    
 }

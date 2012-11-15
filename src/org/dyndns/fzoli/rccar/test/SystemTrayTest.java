@@ -40,8 +40,8 @@ public class SystemTrayTest {
 
                     @Override
                     public void run() {
-                        System.out.println("dispose");
-                        tray.dispose();
+                        tray.dispose(); // KELL!
+                        // shutdown hookban nem fog menni...
                     }
 
                 });

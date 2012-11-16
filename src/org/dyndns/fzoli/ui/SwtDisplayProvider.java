@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.ui;
 
+import java.awt.GraphicsEnvironment;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Tray;
 
@@ -99,7 +100,7 @@ public final class SwtDisplayProvider {
                 @Override
                 public void run() {
                     synchronized(this) { // runnable lefoglalása
-                        display = new Display(); // display inicializálás
+                        if (!GraphicsEnvironment.isHeadless()) display = new Display(); // display inicializálás, ha van GUI
                         notifyAll(); // jelzés, hogy kész az inicializálás
                     }
                     // GUI frissítés elindítása:

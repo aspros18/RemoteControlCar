@@ -133,12 +133,21 @@ public class Main {
         setSystemLookAndFeel();
         setExceptionHandler();
         setSystemTrayIcon();
-        // előinicializálom az ablakokat, míg a nyitóképernyő fent van,
-        // hogy később ne menjen el ezzel a hasznos idő
-        PROGRESS_FRAME = new ConnectionProgressFrame();
-        CONFIG_EDITOR = new ConfigEditorFrame(CONFIG);
-        SELECTION_FRAME = new HostSelectionFrame(AL_EXIT);
-        CONTROLLER_WINDOWS = new ControllerWindows();
+        if (!GraphicsEnvironment.isHeadless()) {
+            // előinicializálom az ablakokat, míg a nyitóképernyő fent van,
+            // hogy később ne menjen el ezzel a hasznos idő
+            PROGRESS_FRAME = new ConnectionProgressFrame();
+            CONFIG_EDITOR = new ConfigEditorFrame(CONFIG);
+            SELECTION_FRAME = new HostSelectionFrame(AL_EXIT);
+            CONTROLLER_WINDOWS = new ControllerWindows();
+        }
+        else {
+            // ha nincs GUI, nincsenek ablakok
+            PROGRESS_FRAME = null;
+            CONFIG_EDITOR = null;
+            SELECTION_FRAME = null;
+            CONTROLLER_WINDOWS = null;
+        }
     }
     
     /**

@@ -104,7 +104,7 @@ public class ControllerWindows {
         else {
             // a chatablak kezdetben látható és a főablak alatt helyezkedik el
             FRAME_MAIN.setWindowVisibility(WindowType.CHAT, true);
-            DIALOG_CHAT.setLocation(FRAME_MAIN.getX(), FRAME_MAIN.getHeight() + FRAME_MAIN.getBorderSize().height);
+            DIALOG_CHAT.setLocation(FRAME_MAIN.getX(), FRAME_MAIN.getY() + FRAME_MAIN.getHeight());
         }
         FRAME_MAIN.setDialogEvent(true); // eseménykezelő aktiválása
     }

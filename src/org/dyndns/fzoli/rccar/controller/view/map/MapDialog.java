@@ -19,6 +19,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JLayeredPane;
 import javax.swing.SwingUtilities;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows;
+import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_MAP;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
 import org.dyndns.fzoli.rccar.controller.view.AbstractDialog;
 import org.dyndns.fzoli.rccar.model.Point3D;
@@ -73,6 +74,7 @@ public class MapDialog extends AbstractDialog {
     
     public MapDialog(final Window owner, ControllerWindows windows, final MapLoadListener callback) {
         super(owner, "Térkép", windows);
+        setIconImage(IC_MAP.getImage());
         
         final JLayeredPane radarPane = new JLayeredPane();
         radarPane.setPreferredSize(new Dimension(RADAR_SIZE, RADAR_SIZE));

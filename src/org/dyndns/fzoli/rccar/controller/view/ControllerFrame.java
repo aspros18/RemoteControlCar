@@ -182,15 +182,11 @@ public class ControllerFrame extends JFrame {
     /**
      * A komponensek alapértelmezéseinek beállítása.
      * - A toolbar nem helyezhető át és a gomboknak nem fest szegélyt, míg nem kerül egér föléjük.
-     * - Kezdetben mindhárom ablak látható, ezért az alapértelmezett érték az, hogy be vannak nyomódva a gombok.
+     * - A három másik dialógusablakhoz tartozik három gomb és rájuk kattintva a hozzájuk tartozó ablak jelenk meg vagy tűnik el.
      */
     private void setComponents() {
         tb.setFloatable(false);
         tb.setRollover(true);
-        
-        btArrow.setSelected(true);
-        btMap.setSelected(true);
-        btChat.setSelected(true);
         
         ChangeListener clDialogs = new ChangeListener() {
 
@@ -285,22 +281,46 @@ public class ControllerFrame extends JFrame {
     }
     
     /**
-     * Ha a felhasználó bezárja az egyik ablakot, a hozzá tartozó gomb kijelölését le kell venni.
-     * Ez egy eseményfeldolgozó metódus.
+     * Megadja, hogy az ablakhoz tartozó gomb be van-e nyomódva.
+     * Ha nincs paraméter megadva, false.
+     * @param w az ablak
      */
-    public void onWindowClosed(WindowType w) {
+    public boolean getWindowVisibility(WindowType w) {
+        JToggleButton bt = getButton(w);
+        if (bt != null) return bt.isSelected();
+        return false;
+    }
+    
+    /**
+     * Ha valamelyik dialógus megjelenik vagy bezárult, a gombok frissítése.
+     * Az alábbi esetekben hívódik meg:
+     * - Kezdetben egyes dialógusok láthatók, mások meg nem.
+     * - Ha a felhasználó bezárja az egyik ablakot, a hozzá tartozó gomb kijelölését le kell venni.
+     * @param w az ablak
+     * @param visible true esetén kiválasztódik a gomb
+     */
+    public void setWindowVisibility(WindowType w, boolean visible) {
+        JToggleButton bt = getButton(w);
+        if (bt != null) bt.setSelected(visible);
+    }
+    
+    /**
+     * Az ablakhoz tartozó gombot adja vissza.
+     * @param w az ablak
+     * @return ha a paraméter nem null az ablakhoz tartozó gomb, egyébkénz null
+     */
+    private JToggleButton getButton(WindowType w) {
         if (w != null) {
             switch (w) {
                 case CONTROLL:
-                    btControll.setSelected(false);
-                    break;
+                    return btArrow;
                 case CHAT:
-                    btChat.setSelected(false);
-                    break;
+                    return btChat;
                 case MAP:
-                    btMap.setSelected(false);
+                    return btMap;
             }
         }
+        return null;
     }
     
 }

@@ -50,7 +50,6 @@ public class ChatDialog extends AbstractDialog {
      */
     private final JList<String> LIST_CONTROLLERS = new JList<String>(new DefaultListModel<String>()) {
         {
-            ((DefaultListModel)getModel()).addElement("controller"); // TODO: tesztsor
             setCellRenderer(new DefaultListCellRenderer() {
 
                 /**
@@ -82,6 +81,7 @@ public class ChatDialog extends AbstractDialog {
             add(lb, BorderLayout.NORTH);
             add(LIST_CONTROLLERS, BorderLayout.CENTER);
             
+            setMinimumSize(new Dimension(100, 1));
             setPreferredSize(new Dimension(150 - DIVIDER_SIZE - 2 * MARGIN, 200 - 2 * MARGIN));
         }
     };
@@ -97,6 +97,11 @@ public class ChatDialog extends AbstractDialog {
     private static final String KEY_DATE = "date",
                                 KEY_NAME = "name",
                                 KEY_REGULAR = "regualar";
+    
+    /**
+     * Dátumformázó a chatüzenetek elküldésének idejének kijelzésére.
+     */
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss");
     
     /**
      * Az üzenetkijelző és üzenetküldő panel.
@@ -121,8 +126,6 @@ public class ChatDialog extends AbstractDialog {
             Style name = doc.addStyle(KEY_NAME, regular);
             StyleConstants.setBold(name, true);
             StyleConstants.setForeground(name, new Color(0, 128, 255));
-            
-            addMessage(new Date(), "controller", "üzenet", false, false);
             
             final JTextArea tpSender = new JTextArea();
             tpSender.setLineWrap(true);
@@ -169,20 +172,43 @@ public class ChatDialog extends AbstractDialog {
         }
     };
     
-    /**
-     * Dátumformázó a chatüzenetek elküldésének idejének kijelzésére.
-     */
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss");
+    public ChatDialog(Window owner, final ControllerWindows windows) {
+        super(owner, "Chat", windows);
+        setIconImage(IC_CHAT.getImage());
+        setMinimumSize(new Dimension(420, 120));
+        
+        JSplitPane pane = createSplitPane(JSplitPane.HORIZONTAL_SPLIT, PANEL_MESSAGES, PANEL_CONTROLLERS);
+        pane.setBorder(BorderFactory.createEmptyBorder(MARGIN, MARGIN, MARGIN, MARGIN));
+        add(pane);
+        
+        pack();
+        
+        //TESZT:
+        addMessage(new Date(), "controller", "üzenet", false, false);
+        setControllerVisible("controller", true);
+    }
     
     /**
-     * Egy chatüzenet HTML kódját adja vissza.
+     * A jelenlévők listájához ad hozzá vagy abból vesz el.
+     * Ugyan azt a nevet csak egyszer adja hozzá a listához.
+     * @param name a beállítandó név
+     * @param visible true esetén hozzáadás, egyébként elvevés
+     */
+    public void setControllerVisible(String name, boolean visible) {
+        DefaultListModel model = (DefaultListModel) LIST_CONTROLLERS.getModel();
+        if (visible && !model.contains(name)) model.addElement(name);
+        if (!visible && model.contains(name)) model.removeElement(name);
+    }
+    
+    /**
+     * Chatüzenetet jelenít meg.
      * @param date az üzenet elküldésének ideje
      * @param name az üzenet feladója
      * @param message az üzenet tartalma
      * @param newline új sor jellel kezdődjön-e a kód
      * @param dot legyen-e név helyett három pont
      */
-    private void addMessage(Date date, String name, String message, boolean newline, boolean dot) {
+    public void addMessage(Date date, String name, String message, boolean newline, boolean dot) {
         try {
             boolean startNewline = message.indexOf("\n") == 0; // ha új sorral kezdődik az üzenet, egy újsor jel bent marad
             doc.insertString(doc.getLength(), (newline ? "\n" : "") + '[' + DATE_FORMAT.format(date) + "] ", doc.getStyle("date"));
@@ -192,17 +218,6 @@ public class ChatDialog extends AbstractDialog {
         catch (Exception ex) {
             ;
         }
-    }
-    
-    public ChatDialog(Window owner, final ControllerWindows windows) {
-        super(owner, "Chat", windows);
-        setIconImage(IC_CHAT.getImage());
-        
-        JSplitPane pane = createSplitPane(JSplitPane.HORIZONTAL_SPLIT, PANEL_MESSAGES, PANEL_CONTROLLERS);
-        pane.setBorder(BorderFactory.createEmptyBorder(MARGIN, MARGIN, MARGIN, MARGIN));
-        add(pane);
-        
-        pack();
     }
     
     /**

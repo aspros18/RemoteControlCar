@@ -5,6 +5,8 @@ import java.awt.Rectangle;
 import java.awt.Window;
 import javax.swing.ImageIcon;
 import org.dyndns.fzoli.rccar.controller.resource.R;
+import org.dyndns.fzoli.rccar.controller.view.ChatDialog;
+import org.dyndns.fzoli.rccar.controller.view.ControllerFrame;
 
 /**
  * A járművel kapcsolatos ablakok konténere.

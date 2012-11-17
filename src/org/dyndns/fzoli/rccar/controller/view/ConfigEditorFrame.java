@@ -1,4 +1,4 @@
-package org.dyndns.fzoli.rccar.controller;
+package org.dyndns.fzoli.rccar.controller.view;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -23,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.dyndns.fzoli.rccar.controller.Config;
 import static org.dyndns.fzoli.rccar.controller.Main.runClient;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.ui.FilePanel;

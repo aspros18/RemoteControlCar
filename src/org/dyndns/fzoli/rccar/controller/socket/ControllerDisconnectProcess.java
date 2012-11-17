@@ -1,7 +1,7 @@
 package org.dyndns.fzoli.rccar.controller.socket;
 
-import org.dyndns.fzoli.rccar.controller.ConnectionProgressFrame.Status;
 import static org.dyndns.fzoli.rccar.controller.Main.showConnectionStatus;
+import org.dyndns.fzoli.rccar.controller.view.ConnectionProgressFrame.Status;
 import org.dyndns.fzoli.rccar.test.DisconnectProcessTester;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.impl.ClientDisconnectProcess;

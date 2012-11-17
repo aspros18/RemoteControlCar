@@ -1,9 +1,10 @@
-package org.dyndns.fzoli.rccar.controller;
+package org.dyndns.fzoli.rccar.controller.view;
 
 import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JDialog;
+import org.dyndns.fzoli.rccar.controller.ControllerWindows;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
 
 /**

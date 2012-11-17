@@ -1,4 +1,4 @@
-package org.dyndns.fzoli.rccar.controller;
+package org.dyndns.fzoli.rccar.controller.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -24,6 +24,7 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.dyndns.fzoli.rccar.controller.ControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.ControllerModels.getData;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_ARROWS;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_CHAT;

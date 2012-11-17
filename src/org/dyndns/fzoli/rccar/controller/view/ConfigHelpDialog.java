@@ -1,4 +1,4 @@
-package org.dyndns.fzoli.rccar.controller;
+package org.dyndns.fzoli.rccar.controller.view;
 
 import java.awt.Color;
 import java.awt.Dimension;

@@ -2,7 +2,6 @@ package org.dyndns.fzoli.rccar.controller.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -277,15 +276,15 @@ public class ControllerFrame extends JFrame {
         btControll.setEnabled(!(getData().isControlling() ^ getData().isWantControl()));
     }
 
-    /**
-     * Megadja az ablak keretének méretét.
-     * A többi ablak kezdeti pozíciójának beállításához ismerni kell az ablakkeret méretét.
-     */
-    public Dimension getBorderSize() {
-        Dimension fullSize = getSize();
-        Dimension paneSize = getContentPane().getSize();
-        return new Dimension(fullSize.width - paneSize.width, fullSize.height - paneSize.height);
-    }
+//    /**
+//     * Megadja az ablak keretének méretét.
+//     * A többi ablak kezdeti pozíciójának beállításához ismerni kell az ablakkeret méretét.
+//     */
+//    public Dimension getBorderSize() {
+//        Dimension fullSize = getSize();
+//        Dimension paneSize = getContentPane().getSize();
+//        return new Dimension(fullSize.width - paneSize.width, fullSize.height - paneSize.height);
+//    }
     
     /**
      * Megadja, hogy az ablakhoz tartozó gomb be van-e nyomódva.

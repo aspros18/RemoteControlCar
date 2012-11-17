@@ -87,25 +87,24 @@ public class ControllerWindows {
         final Window BIGGER_WINDOW = DIALOG_MAP.getWidth() >= DIALOG_MAP.getWidth() ? DIALOG_MAP : DIALOG_MAP; // megnézi, hogy a térkép vagy a vezérlő dialógus a nagyobb
         int emptyWidth = SCREEN_SIZE.width - (FRAME_MAIN.getWidth() + BIGGER_WINDOW.getWidth()); // maradék szélesség a két ablakkal együtt
         
-        // főablak pozíciójának beállítása: ha a maradék szélesség negatív, szélességileg a képernyő közepére egyedül, egyébként a másik ablakkal. magasságilag ugyan ez a logika, csak a csetablakkal
-        FRAME_MAIN.setLocation((SCREEN_SIZE.width / 2) - ((FRAME_MAIN.getWidth() + (emptyWidth < 0 ? 0 : BIGGER_WINDOW.getWidth())) / 2), (SCREEN_SIZE.height / 2) - ((FRAME_MAIN.getHeight() + (emptyHeight < 0 ? 0 : DIALOG_CHAT.getHeight())) / 2));
+        boolean isEmptyWidth = emptyWidth >= 0; // van-e szabad hely a képernyőn szélességében ...
+        boolean isEmptyHeight = emptyHeight >= 0; // ... és magasságában
         
-        if (emptyWidth < 0) { // ha nem fér ki a két ablak szélességileg
-            // mindkét dialógus (térkép és vezérlő) kezdetben láthatatlan és a főablak jobb felső sarka felé húznak
-            FRAME_MAIN.setWindowVisibility(WindowType.MAP, false);
-            FRAME_MAIN.setWindowVisibility(WindowType.CONTROLL, false);
-        }
-        else {
-            // mindkét dialógus kezdetben látható és a főablaktól jobbra helyezkednek el
-            FRAME_MAIN.setWindowVisibility(WindowType.MAP, true);
-            FRAME_MAIN.setWindowVisibility(WindowType.CONTROLL, true);
-        }
+        // főablak pozíciójának beállítása: ha a maradék szélesség negatív, szélességileg a képernyő közepére egyedül, egyébként a másik ablakkal. magasságilag ugyan ez a logika, csak a csetablakkal
+        FRAME_MAIN.setLocation((SCREEN_SIZE.width / 2) - ((FRAME_MAIN.getWidth() + (!isEmptyWidth ? 0 : BIGGER_WINDOW.getWidth())) / 2), (SCREEN_SIZE.height / 2) - ((FRAME_MAIN.getHeight() + (!isEmptyHeight ? 0 : DIALOG_CHAT.getHeight())) / 2));
+        
+        // térkép- és vezérlőablak láthatóságának beállítása: ha elférnek a főablak mellett, akkor kezdetben láthatóak, egyébként meg nem
+        FRAME_MAIN.setWindowVisibility(WindowType.MAP, isEmptyWidth);
+        FRAME_MAIN.setWindowVisibility(WindowType.CONTROLL, isEmptyWidth);
+        
+        // térkép- és vezérlőablak kezdőpozíciója: ha elférnek a főablak mellett, akkor a főablak mellé (jobb oldalra) kerülnek, egyébként meg a főablak jobb széléhez lesznek igazítva
+        DIALOG_MAP.setLocation(FRAME_MAIN.getX() + FRAME_MAIN.getWidth() - (isEmptyWidth ? 0 : DIALOG_MAP.getWidth()), FRAME_MAIN.getY());
         
         // chatablak láthatóságának beállítása: akkor látható, ha kifér a főablakkal együtt
-        FRAME_MAIN.setWindowVisibility(WindowType.CHAT, emptyHeight >= 0);
-        // chatablak pozíciójának beállítása: ha kifér a főablakkal együtt, akkor a főablak alá, egyébként a főablak aljára
+        FRAME_MAIN.setWindowVisibility(WindowType.CHAT, isEmptyHeight);
         
-        DIALOG_CHAT.setLocation(FRAME_MAIN.getX(), FRAME_MAIN.getY() + (FRAME_MAIN.getHeight() - (emptyHeight >= 0 ? 0 : DIALOG_CHAT.getHeight())));
+        // chatablak pozíciójának beállítása: ha kifér a főablakkal együtt, akkor a főablak alá, egyébként a főablak aljára
+        DIALOG_CHAT.setLocation(FRAME_MAIN.getX(), FRAME_MAIN.getY() + FRAME_MAIN.getHeight() - (isEmptyHeight ? 0 : DIALOG_CHAT.getHeight()));
         FRAME_MAIN.setDialogEvent(true); // eseménykezelő aktiválása
     }
     

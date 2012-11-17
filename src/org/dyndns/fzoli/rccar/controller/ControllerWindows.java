@@ -75,6 +75,7 @@ public class ControllerWindows {
         //TODO: még nem teljes
         final Rectangle SCREEN_SIZE = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
         int emptyHeight = SCREEN_SIZE.height - (FRAME_MAIN.getHeight() + DIALOG_CHAT.getHeight()); // maradék magasság a két ablakkal együtt
+        
         if (emptyHeight < 0) { // ha nem fér ki a főablak és a chatablak (a két ablak) magasságilag
             emptyHeight = SCREEN_SIZE.height - FRAME_MAIN.getHeight(); // maradék magasság csak a főablakkal
             if (emptyHeight >= DIALOG_CHAT.getMinimumSize().height) { // ha a maradék magasság elég nagy a chatablaknak
@@ -82,10 +83,13 @@ public class ControllerWindows {
                 emptyHeight = 0; // az átméretezéssel a maradék hely pontosan nulla lett
             }
         }
+        
         final Window BIGGER_WINDOW = DIALOG_MAP.getWidth() >= DIALOG_MAP.getWidth() ? DIALOG_MAP : DIALOG_MAP; // megnézi, hogy a térkép vagy a vezérlő dialógus a nagyobb
         int emptyWidth = SCREEN_SIZE.width - (FRAME_MAIN.getWidth() + BIGGER_WINDOW.getWidth()); // maradék szélesség a két ablakkal együtt
+        
         // főablak pozíciójának beállítása: ha a maradék szélesség negatív, szélességileg a képernyő közepére egyedül, egyébként a másik ablakkal. magasságilag ugyan ez a logika, csak a csetablakkal
         FRAME_MAIN.setLocation((SCREEN_SIZE.width / 2) - ((FRAME_MAIN.getWidth() + (emptyWidth < 0 ? 0 : BIGGER_WINDOW.getWidth())) / 2), (SCREEN_SIZE.height / 2) - ((FRAME_MAIN.getHeight() + (emptyHeight < 0 ? 0 : DIALOG_CHAT.getHeight())) / 2));
+        
         if (emptyWidth < 0) { // ha nem fér ki a két ablak szélességileg
             // mindkét dialógus (térkép és vezérlő) kezdetben láthatatlan és a főablak jobb felső sarka felé húznak
             FRAME_MAIN.setWindowVisibility(WindowType.MAP, false);
@@ -96,16 +100,12 @@ public class ControllerWindows {
             FRAME_MAIN.setWindowVisibility(WindowType.MAP, true);
             FRAME_MAIN.setWindowVisibility(WindowType.CONTROLL, true);
         }
-        if (emptyHeight < 0) { // ha nem fér ki a főablak és a chatablak
-            // a chatablak kezdetben nem látható ...
-            // ... és a főablak jobb alsó sarkában végződik
-            FRAME_MAIN.setWindowVisibility(WindowType.CHAT, false);
-        }
-        else {
-            // a chatablak kezdetben látható és a főablak alatt helyezkedik el
-            FRAME_MAIN.setWindowVisibility(WindowType.CHAT, true);
-            DIALOG_CHAT.setLocation(FRAME_MAIN.getX(), FRAME_MAIN.getY() + FRAME_MAIN.getHeight());
-        }
+        
+        // chatablak láthatóságának beállítása: akkor látható, ha kifér a főablakkal együtt
+        FRAME_MAIN.setWindowVisibility(WindowType.CHAT, emptyHeight >= 0);
+        // chatablak pozíciójának beállítása: ha kifér a főablakkal együtt, akkor a főablak alá, egyébként a főablak aljára
+        
+        DIALOG_CHAT.setLocation(FRAME_MAIN.getX(), FRAME_MAIN.getY() + (FRAME_MAIN.getHeight() - (emptyHeight >= 0 ? 0 : DIALOG_CHAT.getHeight())));
         FRAME_MAIN.setDialogEvent(true); // eseménykezelő aktiválása
     }
     

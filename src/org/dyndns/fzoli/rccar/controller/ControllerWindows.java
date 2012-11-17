@@ -7,6 +7,7 @@ import java.awt.Window;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import org.dyndns.fzoli.rccar.controller.resource.R;
+import org.dyndns.fzoli.rccar.controller.view.ArrowDialog;
 import org.dyndns.fzoli.rccar.controller.view.ChatDialog;
 import org.dyndns.fzoli.rccar.controller.view.ControllerFrame;
 import org.dyndns.fzoli.rccar.controller.view.map.MapDialog;
@@ -55,6 +56,11 @@ public class ControllerWindows {
     private final ChatDialog DIALOG_CHAT = new ChatDialog(FRAME_MAIN, this);
     
     /**
+     * Vezérlőablak.
+     */
+    private final ArrowDialog DIALOG_ARROWS = new ArrowDialog(FRAME_MAIN, this);
+    
+    /**
      * Térkép dialógus.
      */
     private final MapDialog DIALOG_MAP = new MapDialog(FRAME_MAIN, this, new MapLoadListener() {
@@ -72,7 +78,6 @@ public class ControllerWindows {
      * Az ablakok pozícionálása, szükség esetén átméretezése.
      */
     public ControllerWindows() {
-        //TODO: még nem teljes
         final Rectangle SCREEN_SIZE = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
         int emptyHeight = SCREEN_SIZE.height - (FRAME_MAIN.getHeight() + DIALOG_CHAT.getHeight()); // maradék magasság a két ablakkal együtt
         
@@ -102,6 +107,7 @@ public class ControllerWindows {
         
         // térkép- és vezérlőablak kezdőpozíciója: ha elférnek a főablak mellett, akkor a főablak mellé (jobb oldalra) kerülnek, egyébként meg a főablak jobb széléhez lesznek igazítva
         DIALOG_MAP.setLocation(FRAME_MAIN.getX() + FRAME_MAIN.getWidth() - (isEmptyWidth ? 0 : DIALOG_MAP.getWidth()), FRAME_MAIN.getY());
+        DIALOG_ARROWS.setLocation(DIALOG_MAP.getX(), DIALOG_MAP.getY() + DIALOG_MAP.getHeight()); // a térkép alá kerül a vezérlő ablak
         
         // chatablak láthatóságának beállítása: akkor látható, ha kifér a főablakkal együtt
         FRAME_MAIN.setWindowVisibility(WindowType.CHAT, isEmptyHeight);
@@ -120,7 +126,7 @@ public class ControllerWindows {
         if (w != null) {
             switch (w) {
                 case CONTROLL:
-                    //TODO
+                    DIALOG_ARROWS.setVisible(b);
                     break;
                 case CHAT:
                     DIALOG_CHAT.setVisible(b);
@@ -142,10 +148,12 @@ public class ControllerWindows {
         if (b) {
             if (FRAME_MAIN.getWindowVisibility(WindowType.CHAT)) setVisible(DIALOG_CHAT, true);
             if (FRAME_MAIN.getWindowVisibility(WindowType.MAP)) setVisible(DIALOG_MAP, true);
+            if (FRAME_MAIN.getWindowVisibility(WindowType.CONTROLL)) setVisible(DIALOG_ARROWS, true);
         }
         else {
             setVisible(DIALOG_CHAT, false);
             setVisible(DIALOG_MAP, false);
+            setVisible(DIALOG_ARROWS, false);
         }
         FRAME_MAIN.requestFocus();
     }

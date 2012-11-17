@@ -82,6 +82,9 @@ public class ControllerWindows {
                 DIALOG_CHAT.setSize(DIALOG_CHAT.getWidth(), emptyHeight); // magasság beállítása teljes helykitöltésre
                 emptyHeight = 0; // az átméretezéssel a maradék hely pontosan nulla lett
             }
+            else {
+                emptyHeight = -1; // nem elég a képernyő felbontása magasságban
+            }
         }
         
         final Window BIGGER_WINDOW = DIALOG_MAP.getWidth() >= DIALOG_MAP.getWidth() ? DIALOG_MAP : DIALOG_MAP; // megnézi, hogy a térkép vagy a vezérlő dialógus a nagyobb

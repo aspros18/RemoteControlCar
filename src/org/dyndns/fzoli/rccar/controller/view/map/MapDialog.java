@@ -64,14 +64,14 @@ public class MapDialog extends AbstractDialog {
     private final JWebBrowser webBrowser;
 
     public MapDialog(Window owner, ControllerWindows windows) {
-        this(owner, null, windows);
+        this(owner, windows, null);
     }
     
     public MapDialog(MapLoadListener callback, ControllerWindows windows) {
-        this(null, callback, windows);
+        this(null, windows, callback);
     }
     
-    public MapDialog(final Window owner, final MapLoadListener callback, ControllerWindows windows) {
+    public MapDialog(final Window owner, ControllerWindows windows, final MapLoadListener callback) {
         super(owner, "Térkép", windows);
         
         final JLayeredPane radarPane = new JLayeredPane();

@@ -24,8 +24,8 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.dyndns.fzoli.rccar.controller.ControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.ControllerModels.getData;
+import org.dyndns.fzoli.rccar.controller.ControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_ARROWS;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_CHAT;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_MAP;
@@ -192,21 +192,26 @@ public class ControllerFrame extends JFrame {
         btMap.setSelected(true);
         btChat.setSelected(true);
         
-        btChat.addChangeListener(new ChangeListener() {
+        ChangeListener clDialogs = new ChangeListener() {
 
             @Override
             public void stateChanged(ChangeEvent e) {
                 if (WINDOWS != null) {
                     WindowType window = null;
-                    Object src = e.getSource();
-                    if (src == btControll) window = WindowType.CONTROLL;
+                    JToggleButton src = (JToggleButton) e.getSource();
+                    if (src == btArrow) window = WindowType.CONTROLL;
                     else if (src == btChat) window = WindowType.CHAT;
                     else if (src == btMap) window = WindowType.MAP;
-                    WINDOWS.setVisible(window, btChat.isSelected());
+                    WINDOWS.setVisible(window, src.isSelected());
                 }
             }
-            
-        });
+                           
+        };
+        
+        btArrow.addChangeListener(clDialogs);
+        btChat.addChangeListener(clDialogs);
+        btMap.addChangeListener(clDialogs);
+        
     }
     
     /**

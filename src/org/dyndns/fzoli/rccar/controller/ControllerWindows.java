@@ -7,6 +7,8 @@ import javax.swing.ImageIcon;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.controller.view.ChatDialog;
 import org.dyndns.fzoli.rccar.controller.view.ControllerFrame;
+import org.dyndns.fzoli.rccar.controller.view.map.MapDialog;
+import org.dyndns.fzoli.rccar.controller.view.map.MapLoadListener;
 
 /**
  * A járművel kapcsolatos ablakok konténere.
@@ -50,6 +52,20 @@ public class ControllerWindows {
     private final ChatDialog DIALOG_CHAT = new ChatDialog(FRAME_MAIN, this);
     
     /**
+     * Térkép dialógus.
+     */
+    private final MapDialog DIALOG_MAP = new MapDialog(FRAME_MAIN, this, new MapLoadListener() {
+
+        @Override
+        public void loadFinished(MapDialog radar) {
+            //TESZT:
+            radar.setArrow(null);
+            radar.setPosition(47.35021, 19.10236);
+        }
+        
+    });
+    
+    /**
      * Az ablakok pozícionálása, szükség esetén átméretezése.
      */
     public ControllerWindows() {
@@ -76,7 +92,7 @@ public class ControllerWindows {
                     DIALOG_CHAT.setVisible(b);
                     break;
                 case MAP:
-                    //TODO
+                    DIALOG_MAP.setVisible(b);
             }
             if (!b) FRAME_MAIN.onWindowClosed(w);
         }
@@ -89,6 +105,7 @@ public class ControllerWindows {
     public void setVisible(boolean b) {
         setVisible(FRAME_MAIN, b);
         setVisible(DIALOG_CHAT, b);
+        setVisible(DIALOG_MAP, b);
     }
     
     /**

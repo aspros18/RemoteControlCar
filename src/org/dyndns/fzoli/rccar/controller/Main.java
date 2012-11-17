@@ -1,10 +1,12 @@
 package org.dyndns.fzoli.rccar.controller;
 
+import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.swing.SwingUtilities;
 import org.dyndns.fzoli.rccar.UncaughtExceptionHandler;
 import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.setDefaultSplashMessage;
 import org.dyndns.fzoli.rccar.controller.resource.R;
@@ -102,22 +104,22 @@ public class Main {
     /**
      * Konfiguráció-szerkesztő ablak.
      */
-    private static final ConfigEditorFrame CONFIG_EDITOR;
+    private static ConfigEditorFrame CONFIG_EDITOR;
     
     /**
      * Kapcsolódásjelző- és kezelő ablak.
      */
-    private static final ConnectionProgressFrame PROGRESS_FRAME;
+    private static ConnectionProgressFrame PROGRESS_FRAME;
     
     /**
      * Járműválasztó ablak.
      */
-    private static final HostSelectionFrame SELECTION_FRAME;
+    private static HostSelectionFrame SELECTION_FRAME;
     
     /**
      * A kiválasztott járműhöz tartozó ablakok konténere.
      */
-    private static final ControllerWindows CONTROLLER_WINDOWS;
+    private static ControllerWindows CONTROLLER_WINDOWS;
     
     /**
      * Segédváltozó kapcsolódás kérés detektálására.
@@ -127,29 +129,13 @@ public class Main {
     /**
      * Még mielőtt lefutna a main metódus,
      * a nyitóképernyő szövege megjelenik és a rendszer LAF,
-     * a kivételkezelő valamint a rendszerikon beállítódik
-     * és inicilizálódnak azok az ablakok, melyek jó eséllyel használva lesznek.
+     * és a kivételkezelő valamint a rendszerikon beállítódik.
      */
     static {
         setDefaultSplashMessage();
         setSystemLookAndFeel();
         setExceptionHandler();
         setSystemTrayIcon();
-        if (!GraphicsEnvironment.isHeadless()) {
-            // előinicializálom az ablakokat, míg a nyitóképernyő fent van,
-            // hogy később ne menjen el ezzel a hasznos idő
-            PROGRESS_FRAME = new ConnectionProgressFrame();
-            CONFIG_EDITOR = new ConfigEditorFrame(CONFIG);
-            SELECTION_FRAME = new HostSelectionFrame(AL_EXIT);
-            CONTROLLER_WINDOWS = new ControllerWindows();
-        }
-        else {
-            // ha nincs GUI, nincsenek ablakok
-            PROGRESS_FRAME = null;
-            CONFIG_EDITOR = null;
-            SELECTION_FRAME = null;
-            CONTROLLER_WINDOWS = null;
-        }
     }
     
     /**
@@ -320,17 +306,32 @@ public class Main {
             System.err.println("A program futtatásához grafikus környezetre van szükség." + LS + "A program kilép.");
             System.exit(1); // hibakóddal lép ki
         }
-        if (!CONFIG.isFileExists()) { // ha a tanúsítvány fájlok egyike nem létezik
-            showSettingError((CONFIG.isDefault() ? "Az alapértelmezett konfiguráció nem használható, mert" : "A konfiguráció") + " nem létező fájlra hivatkozik." + LS + "A folytatás előtt a hibát helyre kell hozni.");
-            showSettingDialog(true, 1); // kényszerített beállítás és tanúsítvány lapfül előtérbe hozása
-        }
-        if (CONFIG.isCertDefault()) { // figyelmeztetés
-            showSettingWarning("Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!");
-        }
-        if (CONFIG.isDefault()) { // figyelmeztetés
-            showSettingWarning("A konfiguráció beállítása a menüből érhető el. Most ide kattintva is megteheti.");
-        }
-        runClient(); // és végül a lényeg
+        NativeInterface.open(); // a natív böngésző támogatás igényli
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                // előinicializálom az ablakokat, míg a nyitóképernyő fent van,
+                // hogy később ne menjen el ezzel a hasznos idő
+                PROGRESS_FRAME = new ConnectionProgressFrame();
+                CONFIG_EDITOR = new ConfigEditorFrame(CONFIG);
+                SELECTION_FRAME = new HostSelectionFrame(AL_EXIT);
+                CONTROLLER_WINDOWS = new ControllerWindows();
+                if (!CONFIG.isFileExists()) { // ha a tanúsítvány fájlok egyike nem létezik
+                    showSettingError((CONFIG.isDefault() ? "Az alapértelmezett konfiguráció nem használható, mert" : "A konfiguráció") + " nem létező fájlra hivatkozik." + LS + "A folytatás előtt a hibát helyre kell hozni.");
+                    showSettingDialog(true, 1); // kényszerített beállítás és tanúsítvány lapfül előtérbe hozása
+                }
+                if (CONFIG.isCertDefault()) { // figyelmeztetés
+                    showSettingWarning("Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!");
+                }
+                if (CONFIG.isDefault()) { // figyelmeztetés
+                    showSettingWarning("A konfiguráció beállítása a menüből érhető el. Most ide kattintva is megteheti.");
+                }
+                runClient(); // és végül a lényeg
+            }
+
+        });
+        NativeInterface.runEventPump(); // a natív böngésző támogatás igényli
     }
     
 }

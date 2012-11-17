@@ -25,6 +25,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -87,6 +88,11 @@ public class ChatDialog extends AbstractDialog {
     };
     
     /**
+     * Az üzeneteket megjelenítő komponens.
+     */
+    private JTextPane tpMessages;
+    
+    /**
      * Formázott dokumentum az üzenetek megjelenítéséhez.
      */
     private StyledDocument doc;
@@ -111,7 +117,7 @@ public class ChatDialog extends AbstractDialog {
             setBackground(Color.WHITE);
             setLayout(new BorderLayout());
             
-            final JTextPane tpMessages = new JTextPane();
+            tpMessages = new JTextPane();
             tpMessages.setFocusable(false);
             tpMessages.setEditable(false);
             
@@ -158,9 +164,8 @@ public class ChatDialog extends AbstractDialog {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if (!tpSender.getText().trim().isEmpty()) {
-                        addMessage(new Date(), "controller", tpSender.getText(), true, true);
+                        addMessage(new Date(), "controller", tpSender.getText()); //TODO
                         tpSender.setText("");
-                        tpMessages.select(doc.getLength(), doc.getLength());
                     }
                 }
                 
@@ -171,6 +176,11 @@ public class ChatDialog extends AbstractDialog {
             setPreferredSize(new Dimension(490, 200 - 2 * MARGIN));
         }
     };
+    
+    /**
+     * Az utolsó üzenetküldő neve.
+     */
+    private String lastSender;
     
     public ChatDialog(Window owner, final ControllerWindows windows) {
         super(owner, "Chat", windows);
@@ -184,7 +194,7 @@ public class ChatDialog extends AbstractDialog {
         pack();
         
         //TESZT:
-        addMessage(new Date(), "controller", "üzenet", false, false);
+        addMessage(new Date(), "controller", "üzenet");
         setControllerVisible("controller", true);
     }
     
@@ -201,19 +211,21 @@ public class ChatDialog extends AbstractDialog {
     }
     
     /**
-     * Chatüzenetet jelenít meg.
+     * Chatüzenetet jelenít meg és a scrollt beállítja.
      * @param date az üzenet elküldésének ideje
      * @param name az üzenet feladója
      * @param message az üzenet tartalma
      * @param newline új sor jellel kezdődjön-e a kód
      * @param dot legyen-e név helyett három pont
      */
-    public void addMessage(Date date, String name, String message, boolean newline, boolean dot) {
+    public void addMessage(Date date, String name, String message) {
         try {
             boolean startNewline = message.indexOf("\n") == 0; // ha új sorral kezdődik az üzenet, egy újsor jel bent marad
-            doc.insertString(doc.getLength(), (newline ? "\n" : "") + '[' + DATE_FORMAT.format(date) + "] ", doc.getStyle("date"));
-            doc.insertString(doc.getLength(), (dot ? "..." : (name + ':')) + ' ', doc.getStyle("name"));
+            doc.insertString(doc.getLength(), (lastSender != null ? "\n" : "") + '[' + DATE_FORMAT.format(date) + "] ", doc.getStyle("date"));
+            doc.insertString(doc.getLength(), (name.equals(lastSender) ? "..." : (name + ':')) + ' ', doc.getStyle("name"));
             doc.insertString(doc.getLength(), (startNewline ? "\n" : "") + message.trim(), doc.getStyle("regular"));
+            lastSender = name;
+            tpMessages.select(doc.getLength(), doc.getLength());
         }
         catch (Exception ex) {
             ;
@@ -246,11 +258,18 @@ public class ChatDialog extends AbstractDialog {
      * Teszt.
      */
     public static void main(String[] args) {
-        UIUtil.setSystemLookAndFeel();
-        JDialog d = new ChatDialog(null, null);
-        d.setLocationRelativeTo(d);
-        d.setVisible(true);
-        System.out.println(d.getContentPane().getSize());
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                UIUtil.setSystemLookAndFeel();
+                JDialog d = new ChatDialog(null, null);
+                d.setLocationRelativeTo(d);
+                d.setVisible(true);
+                System.out.println(d.getContentPane().getSize());
+            }
+            
+        });
     }
     
 }

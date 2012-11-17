@@ -26,6 +26,7 @@ import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -123,7 +124,6 @@ public class ChatDialog extends AbstractDialog {
             tpMessages.setEditable(false);
             
             doc = tpMessages.getStyledDocument();
-            
             Style def = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
             Style regular = doc.addStyle(KEY_REGULAR, def);
             
@@ -136,6 +136,7 @@ public class ChatDialog extends AbstractDialog {
             
             final JTextArea tpSender = new JTextArea();
             tpSender.setLineWrap(true);
+            tpSender.setFont(UIManager.getDefaults().getFont("Label.font"));
             tpSender.setBorder(BorderFactory.createLineBorder(getBackground(), 5));
             
             Dimension minSize = new Dimension(200, 32);

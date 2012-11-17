@@ -106,6 +106,7 @@ public class ControllerWindows {
         setVisible(FRAME_MAIN, b);
         setVisible(DIALOG_CHAT, b);
         setVisible(DIALOG_MAP, b);
+        FRAME_MAIN.requestFocus();
     }
     
     /**

@@ -40,6 +40,12 @@ import org.dyndns.fzoli.rccar.controller.resource.R;
 public class ControllerFrame extends JFrame {
 
     /**
+     * Dialógusablak láthatóság állító aktivitása.
+     * Kezdetben inaktív az eseményjelzés.
+     */
+    private boolean dialogEvent = false;
+    
+    /**
      * A képkockát megjelenítő címke.
      */
     private JLabel lbImage;
@@ -193,6 +199,7 @@ public class ControllerFrame extends JFrame {
             @Override
             public void stateChanged(ChangeEvent e) {
                 if (WINDOWS != null) {
+                    if (!dialogEvent) return;
                     WindowType window = null;
                     JToggleButton src = (JToggleButton) e.getSource();
                     if (src == btArrow) window = WindowType.CONTROLL;
@@ -302,6 +309,13 @@ public class ControllerFrame extends JFrame {
     public void setWindowVisibility(WindowType w, boolean visible) {
         JToggleButton bt = getButton(w);
         if (bt != null) bt.setSelected(visible);
+    }
+    
+    /**
+     * Dialógusablakokat megjelenítő/elrejtő esemény aktiválása/inaktiválása.
+     */
+    public void setDialogEvent(boolean active) {
+        dialogEvent = active;
     }
     
     /**

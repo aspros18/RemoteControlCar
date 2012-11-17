@@ -15,8 +15,6 @@ import org.dyndns.fzoli.ui.UIUtil;
 
 /**
  * A járművel kapcsolatos ablakok konténere.
- * TODO: a program indulásakor ne jelenjenek meg az ablakok!
- * TODO: a kapcsolódáskezelő se ugorjon fel üresen a program indulásakor...
  * @author zoli
  */
 public class ControllerWindows {
@@ -108,6 +106,7 @@ public class ControllerWindows {
             FRAME_MAIN.setWindowVisibility(WindowType.CHAT, true);
             DIALOG_CHAT.setLocation(FRAME_MAIN.getX(), FRAME_MAIN.getHeight() + FRAME_MAIN.getBorderSize().height);
         }
+        FRAME_MAIN.setDialogEvent(true); // eseménykezelő aktiválása
     }
     
     /**

@@ -185,7 +185,7 @@ public class ChatDialog extends AbstractDialog {
     public ChatDialog(Window owner, final ControllerWindows windows) {
         super(owner, "Chat", windows);
         setIconImage(IC_CHAT.getImage());
-        setMinimumSize(new Dimension(420, 120));
+        setMinimumSize(new Dimension(420, 125));
         
         JSplitPane pane = createSplitPane(JSplitPane.HORIZONTAL_SPLIT, PANEL_MESSAGES, PANEL_CONTROLLERS);
         pane.setBorder(BorderFactory.createEmptyBorder(MARGIN, MARGIN, MARGIN, MARGIN));

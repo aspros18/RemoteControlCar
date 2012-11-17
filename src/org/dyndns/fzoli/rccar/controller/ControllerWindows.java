@@ -16,6 +16,7 @@ import org.dyndns.fzoli.ui.UIUtil;
 /**
  * A járművel kapcsolatos ablakok konténere.
  * TODO: a program indulásakor ne jelenjenek meg az ablakok!
+ * TODO: a kapcsolódáskezelő se ugorjon fel üresen a program indulásakor...
  * @author zoli
  */
 public class ControllerWindows {

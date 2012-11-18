@@ -350,6 +350,10 @@ abstract class ArrowPanel extends JPanel {
     
 }
 
+/**
+ * Vezérlő ablak.
+ * @author zoli
+ */
 public class ArrowDialog extends AbstractDialog {
 
     static {

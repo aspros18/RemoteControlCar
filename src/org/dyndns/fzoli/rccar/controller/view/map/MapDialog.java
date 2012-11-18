@@ -25,7 +25,7 @@ import org.dyndns.fzoli.rccar.controller.view.AbstractDialog;
 import org.dyndns.fzoli.rccar.model.Point3D;
 
 /**
- *
+ * Térkép ablak.
  * @author zoli
  */
 public class MapDialog extends AbstractDialog {

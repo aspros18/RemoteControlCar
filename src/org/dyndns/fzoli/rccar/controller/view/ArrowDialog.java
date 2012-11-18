@@ -264,7 +264,7 @@ abstract class ArrowPanel extends JPanel {
     private final ArrowLimit aLim;
     private final ArrowLine aLin;
     
-    public boolean increase = false;
+    public boolean controlling = true, increase = false;
     
     private int tmpX = 0, tmpY = 0;
     private boolean btLeft = false, btRight = false;
@@ -293,6 +293,7 @@ abstract class ArrowPanel extends JPanel {
         }
         
         private void refresh(Integer x, Integer y) {
+            if (!controlling) return;
             if (btRight && y != null) {
                 int ry = Math.abs(aLin.getRelativeY(y));
                 aLim.setMaxY(ry == 0 ? null : ry);
@@ -342,6 +343,7 @@ abstract class ArrowPanel extends JPanel {
 
         @Override
         public void keyPressed(KeyEvent e) {
+            if (!controlling) return;
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_LEFT:
                     setX(e, true);
@@ -373,6 +375,7 @@ abstract class ArrowPanel extends JPanel {
 
         @Override
         public void keyReleased(KeyEvent e) {
+            if (!controlling) return;
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_LEFT:
                     resetX(e);

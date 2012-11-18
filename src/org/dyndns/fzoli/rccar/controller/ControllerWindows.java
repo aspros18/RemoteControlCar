@@ -12,7 +12,6 @@ import org.dyndns.fzoli.rccar.controller.view.ChatDialog;
 import org.dyndns.fzoli.rccar.controller.view.ControllerFrame;
 import org.dyndns.fzoli.rccar.controller.view.map.MapDialog;
 import org.dyndns.fzoli.rccar.controller.view.map.MapLoadListener;
-import org.dyndns.fzoli.ui.ModalFrame;
 import org.dyndns.fzoli.ui.UIUtil;
 
 /**

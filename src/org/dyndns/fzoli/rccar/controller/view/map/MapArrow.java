@@ -15,7 +15,7 @@ import org.dyndns.fzoli.ui.RotateablePolygon;
  * A térképen megjelenő nyíl.
  * @author zoli
  */
-public class MapArrow extends BufferedImage {
+class MapArrow extends BufferedImage {
 
     /**
      * A nyíl mérete.
@@ -28,7 +28,7 @@ public class MapArrow extends BufferedImage {
     private final Graphics2D g;
     
     /**
-     * A nyíl mérete és iránya alapján a poligon pontjai.
+     * A nyíl mérete alapján az északra mutató nyíl pontjai.
      */
     private final Point[] points;
 

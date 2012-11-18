@@ -126,7 +126,7 @@ public class ControllerFrame extends JFrame {
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         setIconImage(R.getIconImage());
         setLayout(new BorderLayout());
-        setTitle("Főablak");
+        setTitle("Mobile-RC");
         
         lbImage = new JLabel(IC_BLACK_BG); // amíg nincs MJPEG stream, fekete
         add(lbImage, BorderLayout.CENTER);

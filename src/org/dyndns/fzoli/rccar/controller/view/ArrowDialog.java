@@ -94,12 +94,17 @@ class Arrow extends ArrowComponent {
     
 }
 
+
+
+
+
 /**
  * A középső rétegben megjelenő sebességkorlátot jelző vonal.
  */
 class ArrowLimit extends ArrowComponent {
 
     private Integer maxY = null;
+    private boolean fullX = false, fullY = false;
     
     public ArrowLimit(int size) {
         super(size);
@@ -110,7 +115,7 @@ class ArrowLimit extends ArrowComponent {
         Graphics2D g = (Graphics2D) getGraphics();
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
         g.fillRect(0, 0, getWidth(), getHeight());
-        if (maxY != null) {
+        if (!fullY && maxY != null) {
             g.setColor(Color.RED);
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
             int start = getWidth() / 2 - getWidth() / 20;
@@ -118,6 +123,14 @@ class ArrowLimit extends ArrowComponent {
             g.fillRect(start, getRelativeMaxY(true), stop, 2);
             g.fillRect(start, getRelativeMaxY(false), stop, 2);
         }
+    }
+
+    boolean isFullX() {
+        return fullX;
+    }
+
+    boolean isFullY() {
+        return fullY;
     }
     
     Integer getRelativeMaxY(boolean up) {
@@ -127,7 +140,7 @@ class ArrowLimit extends ArrowComponent {
     Integer getMaxY() {
         return maxY;
     }
-
+    
     void setMaxY(Integer maxY) {
         this.maxY = maxY;
         paint();
@@ -252,8 +265,6 @@ abstract class ArrowPanel extends JPanel {
     private final ArrowLimit aLim;
     private final ArrowLine aLin;
     
-    private boolean fullX = false, fullY = false;
-    
     private int tmpX = 0, tmpY = 0;
     private Integer tmpMX, tmpMY;
     private boolean btLeft = false, btRight = false;
@@ -263,7 +274,7 @@ abstract class ArrowPanel extends JPanel {
         if ((x != null && y != null && btLeft) || (x == null && y == null && !btLeft)) {
             if (codeX == null) {
                 if (x != null) {
-                    if (fullX) {
+                    if (aLim.isFullX()) {
                         int rx = aLin.getRelativeX(x);
                         aLin.setPercentX(rx > 0 ? 100 : rx == 0 ? 0 : -100);
                     }
@@ -278,7 +289,7 @@ abstract class ArrowPanel extends JPanel {
             if (codeY == null) {
                 if (y != null) {
                     int ry = aLin.getRelativeY(y);
-                    if (fullY) {
+                    if (aLim.isFullY()) {
                         aLin.setPercentY(ry > 0 ? 100 : ry == 0 ? 0 : -100);
                     }
                     else {
@@ -406,7 +417,7 @@ abstract class ArrowPanel extends JPanel {
 
             private void setY(KeyEvent e, boolean up) {
                 codeY = e.getKeyCode();
-                if (aLim.getMaxY() != null) aLin.setRelativeY(aLim.getRelativeMaxY(up));
+                if (!aLim.isFullY() && aLim.getMaxY() != null) aLin.setRelativeY(aLim.getRelativeMaxY(up));
                 else aLin.setYCo((up ? 1 : -1) * aLin.fromPercent(100));
             }
 

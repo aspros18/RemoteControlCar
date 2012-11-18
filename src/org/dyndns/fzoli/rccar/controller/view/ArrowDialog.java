@@ -111,22 +111,22 @@ class ArrowLine extends ArrowComponent {
         return createPercent(y);
     }
     
-    private void setX(int x) {
+    public void setXCo(int x) {
         this.x = x;
         paint();
     }
 
-    private void setY(int y) {
+    public void setYCo(int y) {
         this.y = y;
         paint();
     }
     
     public void setPercentX(int x) {
-        setX(fromPercent(x));
+        setXCo(fromPercent(x));
     }
     
     public void setPercentY(int y) {
-        setY(fromPercent(y));
+        setYCo(fromPercent(y));
     }
     
     public int getRelativeX(int x) {
@@ -144,11 +144,11 @@ class ArrowLine extends ArrowComponent {
     }
     
     public void setRelativeX(int x) {
-        setX(getRelativeX(x));
+        setXCo(getRelativeX(x));
     }
     
     public void setRelativeY(int y) {
-        setY(getRelativeY(y));
+        setYCo(getRelativeY(y));
     }
     
     private int getMax() {
@@ -208,8 +208,10 @@ class ArrowLine extends ArrowComponent {
  */
 abstract class ArrowPanel extends JPanel {
 
+    private final Arrow ar;
     private final ArrowLine al;
     
+    private Integer maxY = null;
     private boolean fullX = false, fullY = false;
     
     private int tmpX = 0, tmpY = 0;
@@ -235,12 +237,14 @@ abstract class ArrowPanel extends JPanel {
             }
             if (codeY == null) {
                 if (y != null) {
+                    int ry = al.getRelativeY(y);
                     if (fullY) {
-                        int ry = al.getRelativeY(y);
                         al.setPercentY(ry > 0 ? 100 : ry == 0 ? 0 : -100);
                     }
                     else {
-                        al.setRelativeY(y);
+                        int cy = ry;
+                        if (maxY != null) cy = ry >= 0 ? ry > maxY ? maxY : ry : ry < -1 * maxY ? -1 * maxY : ry;
+                        al.setYCo(cy);
                     }
                 }
                 else {
@@ -263,10 +267,11 @@ abstract class ArrowPanel extends JPanel {
         pane.setPreferredSize(new Dimension(size, size));
         pane.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
 
-        JLabel lbBg = new JLabel(new ImageIcon(new Arrow(size)));
+        ar = new Arrow(size);
+        JLabel lbBg = new JLabel(new ImageIcon(ar));
         pane.add(lbBg, JLayeredPane.POPUP_LAYER);
         lbBg.setBounds(0, 0, size, size);
-
+        
         al = new ArrowLine(size);
         JLabel lbLn = new JLabel(new ImageIcon(al));
         pane.add(lbLn, JLayeredPane.DEFAULT_LAYER);
@@ -287,7 +292,12 @@ abstract class ArrowPanel extends JPanel {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON1) btLeft = true;
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    btLeft = true;
+                }
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    
+                }
                 refresh(e.getX(), e.getY());
             }
 

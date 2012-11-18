@@ -383,7 +383,7 @@ public class ArrowDialog extends AbstractDialog {
         setIconImage(IC_ARROWS.getImage());
         setResizable(false);
         
-        add(new ArrowPanel(200) {
+        add(new ArrowPanel(200) { //TODO: teszt
 
             @Override
             protected void onChange(int x, int y) {
@@ -395,11 +395,17 @@ public class ArrowDialog extends AbstractDialog {
         pack();
     }
 
+    /**
+     * Az ablak típusa: vezérlő ablak.
+     */
     @Override
     public WindowType getWindowType() {
         return WindowType.CONTROLL;
     }
     
+    /**
+     * Teszt.
+     */
     public static void main(String[] args) {
         new ArrowDialog(null, null).setVisible(true);
     }

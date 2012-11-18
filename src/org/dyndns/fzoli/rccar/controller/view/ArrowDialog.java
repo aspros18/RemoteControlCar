@@ -38,6 +38,24 @@ abstract class ArrowComponent extends BufferedImage {
      */
     protected abstract void paint();
     
+    protected int getMax() {
+        return getWidth() / 2 - getWidth() / 40;
+    }
+    
+    public int getRelativeX(int x) {
+        int s = x > getWidth() / 2 ? getWidth() / 20 - 1 : 1;
+        x = x + (-1 * getMax() - s);
+        if (!(x <= 0 ^ s != 1)) x = 0;
+        return x;
+    }
+    
+    public int getRelativeY(int y) {
+        int s = y > getWidth() / 2 ? getWidth() / 20 - 1 : -1;
+        y = getMax() - y + s;
+        if (!(y <= 0 ^ s == -1)) y = 0;
+        return y;
+    }
+    
     /**
      * Polygon elkészítése.
      */
@@ -72,6 +90,47 @@ class Arrow extends ArrowComponent {
         g.setColor(Color.BLACK);
         g.draw(arrow);
         g.dispose();
+    }
+    
+}
+
+/**
+ * A középső rétegben megjelenő sebességkorlátot jelző vonal.
+ */
+class ArrowLimit extends ArrowComponent {
+
+    private Integer maxY = null;
+    
+    public ArrowLimit(int size) {
+        super(size);
+    }
+
+    @Override
+    protected void paint() {
+        Graphics2D g = (Graphics2D) getGraphics();
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
+        g.fillRect(0, 0, getWidth(), getHeight());
+        if (maxY != null) {
+            g.setColor(Color.RED);
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+            int start = getWidth() / 2 - getWidth() / 20;
+            int stop = getWidth() / 10;
+            g.fillRect(start, getRelativeMaxY(true), stop, 2);
+            g.fillRect(start, getRelativeMaxY(false), stop, 2);
+        }
+    }
+    
+    Integer getRelativeMaxY(boolean up) {
+        return getRelativeY((up ? 1 : -1) * maxY) + (up ? 0 : (getWidth() / 20));
+    }
+    
+    Integer getMaxY() {
+        return maxY;
+    }
+
+    void setMaxY(Integer maxY) {
+        this.maxY = maxY;
+        paint();
     }
     
 }
@@ -129,30 +188,12 @@ class ArrowLine extends ArrowComponent {
         setYCo(fromPercent(y));
     }
     
-    public int getRelativeX(int x) {
-        int s = x > getWidth() / 2 ? getWidth() / 20 - 1 : 1;
-        x = x + (-1 * getMax() - s);
-        if (!(x <= 0 ^ s != 1)) x = 0;
-        return x;
-    }
-    
-    public int getRelativeY(int y) {
-        int s = y > getWidth() / 2 ? getWidth() / 20 - 1 : -1;
-        y = getMax() - y + s;
-        if (!(y <= 0 ^ s == -1)) y = 0;
-        return y;
-    }
-    
     public void setRelativeX(int x) {
         setXCo(getRelativeX(x));
     }
     
     public void setRelativeY(int y) {
         setYCo(getRelativeY(y));
-    }
-    
-    private int getMax() {
-        return getWidth() / 2 - getWidth() / 40;
     }
     
     int fromPercent(int i) {
@@ -208,15 +249,14 @@ class ArrowLine extends ArrowComponent {
  */
 abstract class ArrowPanel extends JPanel {
 
-    private final Arrow ar;
-    private final ArrowLine al;
+    private final ArrowLimit aLim;
+    private final ArrowLine aLin;
     
-    private Integer maxY = null;
     private boolean fullX = false, fullY = false;
     
     private int tmpX = 0, tmpY = 0;
     private Integer tmpMX, tmpMY;
-    private boolean btLeft = false;
+    private boolean btLeft = false, btRight = false;
     private Integer codeX, codeY;
     
     private void refresh(Integer x, Integer y) {
@@ -224,31 +264,31 @@ abstract class ArrowPanel extends JPanel {
             if (codeX == null) {
                 if (x != null) {
                     if (fullX) {
-                        int rx = al.getRelativeX(x);
-                        al.setPercentX(rx > 0 ? 100 : rx == 0 ? 0 : -100);
+                        int rx = aLin.getRelativeX(x);
+                        aLin.setPercentX(rx > 0 ? 100 : rx == 0 ? 0 : -100);
                     }
                     else {
-                        al.setRelativeX(x);
+                        aLin.setRelativeX(x);
                     }
                 }
                 else {
-                    al.setPercentX(0);
+                    aLin.setPercentX(0);
                 }
             }
             if (codeY == null) {
                 if (y != null) {
-                    int ry = al.getRelativeY(y);
+                    int ry = aLin.getRelativeY(y);
                     if (fullY) {
-                        al.setPercentY(ry > 0 ? 100 : ry == 0 ? 0 : -100);
+                        aLin.setPercentY(ry > 0 ? 100 : ry == 0 ? 0 : -100);
                     }
                     else {
                         int cy = ry;
-                        if (maxY != null) cy = ry >= 0 ? ry > maxY ? maxY : ry : ry < -1 * maxY ? -1 * maxY : ry;
-                        al.setYCo(cy);
+                        if (aLim.getMaxY() != null) cy = ry >= 0 ? ry > aLim.getMaxY() ? aLim.getMaxY() : ry : ry < -1 * aLim.getMaxY() ? -1 * aLim.getMaxY() : ry;
+                        aLin.setYCo(cy);
                     }
                 }
                 else {
-                    al.setPercentY(0);
+                    aLin.setPercentY(0);
                 }
             }
             repaint();
@@ -256,11 +296,15 @@ abstract class ArrowPanel extends JPanel {
         }
         tmpMX = x;
         tmpMY = y;
+        if (btRight) {
+            setMaxY(y);
+            repaint();
+        }
     }
     
     private void setMaxY(int my) {
-        int ry = Math.abs(al.getRelativeY(my));
-        maxY = ry == 0 ? null : ry;
+        int ry = Math.abs(aLin.getRelativeY(my));
+        aLim.setMaxY(ry == 0 ? null : ry);
     }
     
     public ArrowPanel(int size) {
@@ -271,14 +315,18 @@ abstract class ArrowPanel extends JPanel {
         JLayeredPane pane = new JLayeredPane();
         pane.setPreferredSize(new Dimension(size, size));
         pane.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
-
-        ar = new Arrow(size);
-        JLabel lbBg = new JLabel(new ImageIcon(ar));
-        pane.add(lbBg, JLayeredPane.POPUP_LAYER);
+        
+        JLabel lbBg = new JLabel(new ImageIcon(new Arrow(size)));
+        pane.add(lbBg, JLayeredPane.DRAG_LAYER);
         lbBg.setBounds(0, 0, size, size);
         
-        al = new ArrowLine(size);
-        JLabel lbLn = new JLabel(new ImageIcon(al));
+        aLim = new ArrowLimit(size);
+        JLabel lbLm = new JLabel(new ImageIcon(aLim));
+        pane.add(lbLm, JLayeredPane.POPUP_LAYER);
+        lbLm.setBounds(0, 0, size, size);
+        
+        aLin = new ArrowLine(size);
+        JLabel lbLn = new JLabel(new ImageIcon(aLin));
         pane.add(lbLn, JLayeredPane.DEFAULT_LAYER);
         lbLn.setBounds(0, 0, size, size);
 
@@ -297,18 +345,15 @@ abstract class ArrowPanel extends JPanel {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON1) {
-                    btLeft = true;
-                }
-                if (e.getButton() == MouseEvent.BUTTON3) {
-                    setMaxY(e.getY());
-                }
+                if (e.getButton() == MouseEvent.BUTTON1) btLeft = true;
+                if (e.getButton() == MouseEvent.BUTTON3) btRight = true;
                 refresh(e.getX(), e.getY());
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) btLeft = false;
+                if (e.getButton() == MouseEvent.BUTTON3) btRight = false;
                 refresh(null, null);
             }
 
@@ -356,26 +401,27 @@ abstract class ArrowPanel extends JPanel {
 
             private void setX(KeyEvent e, boolean left) {
                 codeX = e.getKeyCode();
-                al.setPercentX(left ? -100 : 100);
+                aLin.setPercentX(left ? -100 : 100);
             }
 
             private void setY(KeyEvent e, boolean up) {
                 codeY = e.getKeyCode();
-                al.setYCo(maxY != null ? (up ? 1 : -1) * al.fromPercent(maxY) : (up ? 1 : -1) * al.fromPercent(100));
+                if (aLim.getMaxY() != null) aLin.setRelativeY(aLim.getRelativeMaxY(up));
+                else aLin.setYCo((up ? 1 : -1) * aLin.fromPercent(100));
             }
 
             private void resetX(KeyEvent e) {
                 if (codeX != null && codeX.equals(e.getKeyCode())) {
-                    if (tmpMX != null) al.setRelativeX(tmpMX);
-                    else al.setPercentX(0);
+                    if (tmpMX != null) aLin.setRelativeX(tmpMX);
+                    else aLin.setPercentX(0);
                     codeX = null;
                 }
             }
 
             private void resetY(KeyEvent e) {
                 if (codeY != null && codeY.equals(e.getKeyCode())) {
-                    if (tmpMY != null) al.setRelativeY(tmpMY);
-                    else al.setPercentY(0);
+                    if (tmpMY != null) aLin.setRelativeY(tmpMY);
+                    else aLin.setPercentY(0);
                     codeY = null;
                 }
             }
@@ -384,19 +430,19 @@ abstract class ArrowPanel extends JPanel {
     }
     
     public int getPercentX() {
-        return al.getPercentX();
+        return aLin.getPercentX();
     }
     
     public int getPercentY() {
-        return al.getPercentY();
+        return aLin.getPercentY();
     }
     
     public void setPercentX(int x) {
-        al.setPercentX(x);
+        aLin.setPercentX(x);
     }
     
     public void setPercentY(int y) {
-        al.setPercentY(y);
+        aLin.setPercentY(y);
     }
     
     private void fireChange() {

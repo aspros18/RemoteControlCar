@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
@@ -73,17 +74,24 @@ public class ChatDialog extends AbstractDialog {
      */
     private final JPanel PANEL_CONTROLLERS = new JPanel() {
         {
-            setLayout(new BorderLayout());
+            setLayout(new GridLayout());
             LIST_CONTROLLERS.setBackground(Color.WHITE);
-            setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createLineBorder(LIST_CONTROLLERS.getBackground(), 4)));
+            setBorder(null);
+            
+            JPanel panel = new JPanel(new BorderLayout());
+            JScrollPane pane = new JScrollPane(panel);
+            pane.setBorder(null);
+            pane.setViewportBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createLineBorder(LIST_CONTROLLERS.getBackground(), 4)));
+            pane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+            add(pane);
             
             JLabel lb = new JLabel("Jelenlévők");
             lb.setOpaque(true);
             lb.setBackground(LIST_CONTROLLERS.getBackground());
             lb.setFont(new Font(lb.getFont().getFontName(), Font.BOLD, lb.getFont().getSize()));
             
-            add(lb, BorderLayout.NORTH);
-            add(LIST_CONTROLLERS, BorderLayout.CENTER);
+            panel.add(lb, BorderLayout.NORTH);
+            panel.add(LIST_CONTROLLERS, BorderLayout.CENTER);
             
             setMinimumSize(new Dimension(100, 1));
             setPreferredSize(new Dimension(150 - DIVIDER_SIZE - 2 * MARGIN, 200 - 2 * MARGIN));
@@ -200,6 +208,9 @@ public class ChatDialog extends AbstractDialog {
         //TESZT:
         addMessage(new Date(), "controller", "üzenet");
         setControllerVisible("controller", true);
+        for (int i = 2; i <= 7; i++) {
+            setControllerVisible("controller" + i, true);
+        }
     }
     
     /**

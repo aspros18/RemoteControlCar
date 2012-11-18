@@ -352,12 +352,14 @@ abstract class ArrowPanel extends JPanel {
 
 public class ArrowDialog extends AbstractDialog {
 
+    static {
+        RepeatingReleasedEventsFixer.install(); // Linux bill. eseményjelzés javítása
+    }
+    
     public ArrowDialog(Window owner, ControllerWindows windows) {
         super(owner, "Vezérlő", windows);
         setIconImage(IC_ARROWS.getImage());
         setResizable(false);
-        
-        RepeatingReleasedEventsFixer.install();
         
         add(new ArrowPanel(200) {
 
@@ -374,6 +376,10 @@ public class ArrowDialog extends AbstractDialog {
     @Override
     public WindowType getWindowType() {
         return WindowType.CONTROLL;
+    }
+    
+    public static void main(String[] args) {
+        new ArrowDialog(null, null).setVisible(true);
     }
     
 }

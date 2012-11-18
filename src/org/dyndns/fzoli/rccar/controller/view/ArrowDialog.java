@@ -8,7 +8,6 @@ import java.awt.Graphics2D;
 import java.awt.GridBagLayout;
 import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.awt.Window;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -506,18 +505,21 @@ public class ArrowDialog extends AbstractDialog {
 
     };
     
-    public ArrowDialog(Window owner, ControllerWindows windows) {
+    public ArrowDialog(ControllerFrame owner, ControllerWindows windows) {
         super(owner, "Vezérlő", windows);
-        setIconImage(IC_ARROWS.getImage());
-        setResizable(false);
         
+        // ikon beállítása és panel hozzáadása
+        setIconImage(IC_ARROWS.getImage());
         add(ARROW_PANEL);
         
+        // átméretezés tiltása, ablak méretének minimalizálása
+        setResizable(false);
         pack();
-    }
-    
-    public KeyListener getKeyListener() {
-        return ARROW_PANEL.LISTENER_KEY;
+        
+        // a főablak is képes irányítani nyilakkal a járművet
+        if (owner != null) {
+            owner.addKeyListener(ARROW_PANEL.LISTENER_KEY);
+        }
     }
     
     /**

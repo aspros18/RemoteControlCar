@@ -1,6 +1,5 @@
 package org.dyndns.fzoli.rccar.controller.view;
 
-import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JDialog;
@@ -20,7 +19,7 @@ public abstract class AbstractDialog extends JDialog {
      * @param title a címsor felirata
      * @param windows az ablakok konténere
      */
-    public AbstractDialog(Window owner, String title, final ControllerWindows windows) {
+    public AbstractDialog(ControllerFrame owner, String title, final ControllerWindows windows) {
         super(owner, title);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -31,6 +30,18 @@ public abstract class AbstractDialog extends JDialog {
             }
             
         });
+    }
+
+    /**
+     * A főablak referenciája.
+     */
+    public ControllerFrame getControllerFrame() {
+        try {
+            return (ControllerFrame) getOwner();
+        }
+        catch (Exception ex) {
+            return null;
+        }
     }
     
     /**

@@ -6,7 +6,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -194,7 +193,7 @@ public class ChatDialog extends AbstractDialog {
      */
     private String lastSender;
     
-    public ChatDialog(Window owner, final ControllerWindows windows) {
+    public ChatDialog(ControllerFrame owner, final ControllerWindows windows) {
         super(owner, "Chat", windows);
         setIconImage(IC_CHAT.getImage());
         setMinimumSize(new Dimension(420, 125));

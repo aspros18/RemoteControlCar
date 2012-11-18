@@ -9,7 +9,6 @@ import chrriis.dj.nativeswing.swtimpl.components.WebBrowserEvent;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -22,6 +21,7 @@ import org.dyndns.fzoli.rccar.controller.ControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_MAP;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
 import org.dyndns.fzoli.rccar.controller.view.AbstractDialog;
+import org.dyndns.fzoli.rccar.controller.view.ControllerFrame;
 import org.dyndns.fzoli.rccar.model.Point3D;
 
 /**
@@ -92,7 +92,7 @@ public class MapDialog extends AbstractDialog {
      */
     private final JWebBrowser webBrowser;
 
-    public MapDialog(Window owner, ControllerWindows windows) {
+    public MapDialog(ControllerFrame owner, ControllerWindows windows) {
         this(owner, windows, null);
     }
     
@@ -100,7 +100,7 @@ public class MapDialog extends AbstractDialog {
         this(null, windows, callback);
     }
     
-    public MapDialog(final Window owner, ControllerWindows windows, final MapLoadListener callback) {
+    public MapDialog(final ControllerFrame owner, ControllerWindows windows, final MapLoadListener callback) {
         super(owner, "Térkép", windows);
         setIconImage(IC_MAP.getImage());
         

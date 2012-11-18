@@ -314,4 +314,14 @@ public class ControllerFrame extends JFrame {
         return null;
     }
     
+    /**
+     * Folyamatos növekedés gomb referenciát ad meg.
+     * A vezérlő dialógus használja az alábbi célokból:
+     * - eseménykezelőt ad hozzá
+     * - ha a jármű sebessége nem állítható, a gombot inaktívvá kell tudni tenni
+     */
+    public JToggleButton getIncreaseButton() {
+        return btIncrease;
+    }
+    
 }

@@ -8,6 +8,8 @@ import java.awt.Graphics2D;
 import java.awt.GridBagLayout;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -18,6 +20,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_ARROWS;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
@@ -260,6 +263,8 @@ abstract class ArrowPanel extends JPanel {
 
     private final ArrowLimit aLim;
     private final ArrowLine aLin;
+    
+    public boolean increase = false;
     
     private int tmpX = 0, tmpY = 0;
     private boolean btLeft = false, btRight = false;
@@ -505,6 +510,15 @@ public class ArrowDialog extends AbstractDialog {
 
     };
     
+    private final ItemListener LISTENER_INCREASE = new ItemListener() {
+
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            ARROW_PANEL.increase = ((JToggleButton) e.getItem()).isSelected();
+        }
+        
+    };
+    
     public ArrowDialog(ControllerFrame owner, ControllerWindows windows) {
         super(owner, "Vezérlő", windows);
         
@@ -516,9 +530,11 @@ public class ArrowDialog extends AbstractDialog {
         setResizable(false);
         pack();
         
-        // a főablak is képes irányítani nyilakkal a járművet
         if (owner != null) {
+            // a főablak is képes irányítani nyilakkal a járművet
             owner.addKeyListener(ARROW_PANEL.LISTENER_KEY);
+            // folyamatos sebességadás átállításának figyelése
+            owner.getIncreaseButton().addItemListener(LISTENER_INCREASE);
         }
     }
     

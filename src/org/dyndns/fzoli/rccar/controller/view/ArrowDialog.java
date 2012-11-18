@@ -129,18 +129,26 @@ class ArrowLine extends ArrowComponent {
         setY(fromPercent(y));
     }
     
-    public void setRelativeX(int x) {
+    public int getRelativeX(int x) {
         int s = x > getWidth() / 2 ? getWidth() / 20 - 1 : 1;
         x = x + (-1 * getMax() - s);
         if (!(x <= 0 ^ s != 1)) x = 0;
-        setX(x);
+        return x;
     }
     
-    public void setRelativeY(int y) {
+    public int getRelativeY(int y) {
         int s = y > getWidth() / 2 ? getWidth() / 20 - 1 : -1;
         y = getMax() - y + s;
         if (!(y <= 0 ^ s == -1)) y = 0;
-        setY(y);
+        return y;
+    }
+    
+    public void setRelativeX(int x) {
+        setX(getRelativeX(x));
+    }
+    
+    public void setRelativeY(int y) {
+        setY(getRelativeY(y));
     }
     
     private int getMax() {
@@ -202,6 +210,8 @@ abstract class ArrowPanel extends JPanel {
 
     private final ArrowLine al;
     
+    private boolean fullX = false, fullY = false;
+    
     private int tmpX = 0, tmpY = 0;
     private Integer tmpMX, tmpMY;
     private boolean btLeft = false;
@@ -210,12 +220,32 @@ abstract class ArrowPanel extends JPanel {
     private void refresh(Integer x, Integer y) {
         if ((x != null && y != null && btLeft) || (x == null && y == null && !btLeft)) {
             if (codeX == null) {
-                if (x != null) al.setRelativeX(x);
-                else al.setPercentX(0);
+                if (x != null) {
+                    if (fullX) {
+                        int rx = al.getRelativeX(x);
+                        al.setPercentX(rx > 0 ? 100 : rx == 0 ? 0 : -100);
+                    }
+                    else {
+                        al.setRelativeX(x);
+                    }
+                }
+                else {
+                    al.setPercentX(0);
+                }
             }
             if (codeY == null) {
-                if (y != null) al.setRelativeY(y);
-                else al.setPercentY(0);
+                if (y != null) {
+                    if (fullY) {
+                        int ry = al.getRelativeY(y);
+                        al.setPercentY(ry > 0 ? 100 : ry == 0 ? 0 : -100);
+                    }
+                    else {
+                        al.setRelativeY(y);
+                    }
+                }
+                else {
+                    al.setPercentY(0);
+                }
             }
             repaint();
             fireChange();

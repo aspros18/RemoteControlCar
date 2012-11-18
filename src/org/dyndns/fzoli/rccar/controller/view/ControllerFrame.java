@@ -37,12 +37,6 @@ import org.dyndns.fzoli.rccar.controller.resource.R;
  * valamint a jármű pillanatnyi sebességét és akkumulátorszintjét.
  */
 public class ControllerFrame extends JFrame {
-
-    /**
-     * Dialógusablak láthatóság állító aktivitása.
-     * Kezdetben inaktív az eseményjelzés.
-     */
-    private boolean dialogEvent = false;
     
     /**
      * A képkockát megjelenítő címke.
@@ -190,26 +184,27 @@ public class ControllerFrame extends JFrame {
      * - A három másik dialógusablakhoz tartozik három gomb és rájuk kattintva a hozzájuk tartozó ablak jelenk meg vagy tűnik el.
      */
     private void setComponents() {
-        tb.setFloatable(false);
-        tb.setRollover(true);
+        tb.setFloatable(false); // a toolbar nem mozgatható
+        tb.setRollover(true); // a gomboknak nem fest szegélyt a toolbar
         
         ChangeListener clDialogs = new ChangeListener() {
 
             @Override
             public void stateChanged(ChangeEvent e) {
                 if (WINDOWS != null) {
-                    if (!dialogEvent) return;
-                    WindowType window = null;
-                    JToggleButton src = (JToggleButton) e.getSource();
+                    if (!isVisible()) return; // FONTOS: ha az ablak nem látható, esemény eldobása
+                    JToggleButton src = (JToggleButton) e.getSource(); // a gomb, melyre kattintottak
+                    WindowType window = null; // a gombhoz tartozó ablak típusa
                     if (src == btArrow) window = WindowType.CONTROLL;
                     else if (src == btChat) window = WindowType.CHAT;
                     else if (src == btMap) window = WindowType.MAP;
-                    WINDOWS.setVisible(window, src.isSelected());
+                    WINDOWS.setVisible(window, src.isSelected()); // a dialógus ablak láthatóságának módosítása
                 }
             }
                            
         };
         
+        // mindhárom gombra érvényes a fenti eseményfigyelő
         btArrow.addChangeListener(clDialogs);
         btChat.addChangeListener(clDialogs);
         btMap.addChangeListener(clDialogs);
@@ -275,16 +270,6 @@ public class ControllerFrame extends JFrame {
         btControll.setToolTipText(getData().isControlling() ? "Vezérlés átadása" : "Vezérlés kérése");
         btControll.setEnabled(!(getData().isControlling() ^ getData().isWantControl()));
     }
-
-//    /**
-//     * Megadja az ablak keretének méretét.
-//     * A többi ablak kezdeti pozíciójának beállításához ismerni kell az ablakkeret méretét.
-//     */
-//    public Dimension getBorderSize() {
-//        Dimension fullSize = getSize();
-//        Dimension paneSize = getContentPane().getSize();
-//        return new Dimension(fullSize.width - paneSize.width, fullSize.height - paneSize.height);
-//    }
     
     /**
      * Megadja, hogy az ablakhoz tartozó gomb be van-e nyomódva.
@@ -308,13 +293,6 @@ public class ControllerFrame extends JFrame {
     public void setWindowVisibility(WindowType w, boolean visible) {
         JToggleButton bt = getButton(w);
         if (bt != null) bt.setSelected(visible);
-    }
-    
-    /**
-     * Dialógusablakokat megjelenítő/elrejtő esemény aktiválása/inaktiválása.
-     */
-    public void setDialogEvent(boolean active) {
-        dialogEvent = active;
     }
     
     /**

@@ -12,6 +12,7 @@ import org.dyndns.fzoli.rccar.controller.view.ChatDialog;
 import org.dyndns.fzoli.rccar.controller.view.ControllerFrame;
 import org.dyndns.fzoli.rccar.controller.view.map.MapDialog;
 import org.dyndns.fzoli.rccar.controller.view.map.MapLoadListener;
+import org.dyndns.fzoli.ui.ModalFrame;
 import org.dyndns.fzoli.ui.UIUtil;
 
 /**
@@ -114,7 +115,6 @@ public class ControllerWindows {
         
         // chatablak pozíciójának beállítása: ha kifér a főablakkal együtt, akkor a főablak alá, egyébként a főablak aljára
         DIALOG_CHAT.setLocation(FRAME_MAIN.getX(), FRAME_MAIN.getY() + FRAME_MAIN.getHeight() - (isEmptyHeight ? 0 : DIALOG_CHAT.getHeight()));
-        FRAME_MAIN.setDialogEvent(true); // eseménykezelő aktiválása
     }
     
     /**
@@ -149,13 +149,13 @@ public class ControllerWindows {
             if (FRAME_MAIN.getWindowVisibility(WindowType.CHAT)) setVisible(DIALOG_CHAT, true);
             if (FRAME_MAIN.getWindowVisibility(WindowType.MAP)) setVisible(DIALOG_MAP, true);
             if (FRAME_MAIN.getWindowVisibility(WindowType.CONTROLL)) setVisible(DIALOG_ARROWS, true);
+            FRAME_MAIN.requestFocus();
         }
         else {
             setVisible(DIALOG_CHAT, false);
             setVisible(DIALOG_MAP, false);
             setVisible(DIALOG_ARROWS, false);
         }
-        FRAME_MAIN.requestFocus();
     }
     
     /**

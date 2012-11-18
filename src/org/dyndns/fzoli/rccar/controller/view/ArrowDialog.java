@@ -11,6 +11,7 @@ import java.awt.Rectangle;
 import java.awt.Window;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -93,10 +94,6 @@ class Arrow extends ArrowComponent {
     }
     
 }
-
-
-
-
 
 /**
  * A középső rétegben megjelenő sebességkorlátot jelző vonal.
@@ -270,53 +267,141 @@ abstract class ArrowPanel extends JPanel {
     private boolean btLeft = false, btRight = false;
     private Integer codeX, codeY;
     
-    private void refresh(Integer x, Integer y) {
-        if ((x != null && y != null && btLeft) || (x == null && y == null && !btLeft)) {
-            if (codeX == null) {
-                if (x != null) {
-                    if (aLim.isFullX()) {
-                        int rx = aLin.getRelativeX(x);
-                        aLin.setPercentX(rx > 0 ? 100 : rx == 0 ? 0 : -100);
-                    }
-                    else {
-                        aLin.setRelativeX(x);
-                    }
-                }
-                else {
-                    aLin.setPercentX(0);
-                }
+    private final MouseAdapter LISTENER_MOUSE = new MouseAdapter() {
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            if (e.getButton() == MouseEvent.BUTTON1) btLeft = true;
+            if (e.getButton() == MouseEvent.BUTTON3) btRight = true;
+            refresh(e.getX(), e.getY());
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            if (e.getButton() == MouseEvent.BUTTON1) btLeft = false;
+            if (e.getButton() == MouseEvent.BUTTON3) btRight = false;
+            refresh(null, null);
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            refresh(e.getX(), e.getY());
+        }
+        
+        private void refresh(Integer x, Integer y) {
+            if (btRight && y != null) {
+                int ry = Math.abs(aLin.getRelativeY(y));
+                aLim.setMaxY(ry == 0 ? null : ry);
+                repaint();
             }
-            if (codeY == null) {
-                if (y != null) {
-                    int ry = aLin.getRelativeY(y);
-                    if (aLim.isFullY()) {
-                        aLin.setPercentY(ry > 0 ? 100 : ry == 0 ? 0 : -100);
+            if ((x != null && y != null && btLeft) || (x == null && y == null && !btLeft)) {
+                if (codeX == null) {
+                    if (x != null) {
+                        if (aLim.isFullX()) {
+                            int rx = aLin.getRelativeX(x);
+                            aLin.setPercentX(rx > 0 ? 100 : rx == 0 ? 0 : -100);
+                        }
+                        else {
+                            aLin.setRelativeX(x);
+                        }
                     }
                     else {
-                        int cy = ry;
-                        if (aLim.getMaxY() != null) cy = ry >= 0 ? ry > aLim.getMaxY() ? aLim.getMaxY() : ry : ry < -1 * aLim.getMaxY() ? -1 * aLim.getMaxY() : ry;
-                        aLin.setYCo(cy);
+                        aLin.setPercentX(0);
                     }
                 }
-                else {
-                    aLin.setPercentY(0);
+                if (codeY == null) {
+                    if (y != null) {
+                        int ry = aLin.getRelativeY(y);
+                        if (aLim.isFullY()) {
+                            aLin.setPercentY(ry > 0 ? 100 : ry == 0 ? 0 : -100);
+                        }
+                        else {
+                            int cy = ry;
+                            if (aLim.getMaxY() != null) cy = ry >= 0 ? ry > aLim.getMaxY() ? aLim.getMaxY() : ry : ry < -1 * aLim.getMaxY() ? -1 * aLim.getMaxY() : ry;
+                            aLin.setYCo(cy);
+                        }
+                    }
+                    else {
+                        aLin.setPercentY(0);
+                    }
                 }
+                tmpMX = x;
+                tmpMY = y;
+                repaint();
+                fireChange();
+            }
+        }
+        
+    };
+    
+    private final KeyListener LISTENER_KEY = new KeyAdapter() {
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_LEFT:
+                    setX(e, true);
+                    break;
+                case KeyEvent.VK_RIGHT:
+                    setX(e, false);
+                    break;
+                case KeyEvent.VK_UP:
+                    setY(e, true);
+                    break;
+                case KeyEvent.VK_DOWN:
+                    setY(e, false);
             }
             repaint();
             fireChange();
         }
-        tmpMX = x;
-        tmpMY = y;
-        if (btRight) {
-            setMaxY(y);
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_LEFT:
+                    resetX(e);
+                    break;
+                case KeyEvent.VK_RIGHT:
+                    resetX(e);
+                    break;
+                case KeyEvent.VK_UP:
+                    resetY(e);
+                    break;
+                case KeyEvent.VK_DOWN:
+                    resetY(e);
+            }
             repaint();
+            fireChange();
         }
-    }
-    
-    private void setMaxY(int my) {
-        int ry = Math.abs(aLin.getRelativeY(my));
-        aLim.setMaxY(ry == 0 ? null : ry);
-    }
+
+        private void setX(KeyEvent e, boolean left) {
+            codeX = e.getKeyCode();
+            aLin.setPercentX(left ? -100 : 100);
+        }
+
+        private void setY(KeyEvent e, boolean up) {
+            codeY = e.getKeyCode();
+            if (!aLim.isFullY() && aLim.getMaxY() != null) aLin.setRelativeY(aLim.getRelativeMaxY(up));
+            else aLin.setYCo((up ? 1 : -1) * aLin.fromPercent(100));
+        }
+
+        private void resetX(KeyEvent e) {
+            if (codeX != null && codeX.equals(e.getKeyCode())) {
+                if (tmpMX != null) aLin.setRelativeX(tmpMX);
+                else aLin.setPercentX(0);
+                codeX = null;
+            }
+        }
+
+        private void resetY(KeyEvent e) {
+            if (codeY != null && codeY.equals(e.getKeyCode())) {
+                if (tmpMY != null) aLin.setRelativeY(tmpMY);
+                else aLin.setPercentY(0);
+                codeY = null;
+            }
+        }
+
+    };
     
     public ArrowPanel(int size) {
         super(new GridBagLayout());
@@ -343,101 +428,9 @@ abstract class ArrowPanel extends JPanel {
 
         add(pane);
 
-        pane.addMouseMotionListener(new MouseAdapter() {
-
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                refresh(e.getX(), e.getY());
-            }
-
-        });
-
-        pane.addMouseListener(new MouseAdapter() {
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON1) btLeft = true;
-                if (e.getButton() == MouseEvent.BUTTON3) btRight = true;
-                refresh(e.getX(), e.getY());
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON1) btLeft = false;
-                if (e.getButton() == MouseEvent.BUTTON3) btRight = false;
-                refresh(null, null);
-            }
-
-        });
-
-        addKeyListener(new KeyAdapter() {
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_LEFT:
-                        setX(e, true);
-                        break;
-                    case KeyEvent.VK_RIGHT:
-                        setX(e, false);
-                        break;
-                    case KeyEvent.VK_UP:
-                        setY(e, true);
-                        break;
-                    case KeyEvent.VK_DOWN:
-                        setY(e, false);
-                }
-                repaint();
-                fireChange();
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_LEFT:
-                        resetX(e);
-                        break;
-                    case KeyEvent.VK_RIGHT:
-                        resetX(e);
-                        break;
-                    case KeyEvent.VK_UP:
-                        resetY(e);
-                        break;
-                    case KeyEvent.VK_DOWN:
-                        resetY(e);
-                }
-                repaint();
-                fireChange();
-            }
-
-            private void setX(KeyEvent e, boolean left) {
-                codeX = e.getKeyCode();
-                aLin.setPercentX(left ? -100 : 100);
-            }
-
-            private void setY(KeyEvent e, boolean up) {
-                codeY = e.getKeyCode();
-                if (!aLim.isFullY() && aLim.getMaxY() != null) aLin.setRelativeY(aLim.getRelativeMaxY(up));
-                else aLin.setYCo((up ? 1 : -1) * aLin.fromPercent(100));
-            }
-
-            private void resetX(KeyEvent e) {
-                if (codeX != null && codeX.equals(e.getKeyCode())) {
-                    if (tmpMX != null) aLin.setRelativeX(tmpMX);
-                    else aLin.setPercentX(0);
-                    codeX = null;
-                }
-            }
-
-            private void resetY(KeyEvent e) {
-                if (codeY != null && codeY.equals(e.getKeyCode())) {
-                    if (tmpMY != null) aLin.setRelativeY(tmpMY);
-                    else aLin.setPercentY(0);
-                    codeY = null;
-                }
-            }
-            
-        });
+        pane.addMouseMotionListener(LISTENER_MOUSE);
+        pane.addMouseListener(LISTENER_MOUSE);
+        addKeyListener(LISTENER_KEY);
     }
     
     public int getPercentX() {

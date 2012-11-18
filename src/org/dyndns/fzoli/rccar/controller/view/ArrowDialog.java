@@ -23,6 +23,9 @@ import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_ARROWS;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
 import org.dyndns.fzoli.ui.RepeatingReleasedEventsFixer;
 
+/**
+ * A vezérlőpanel rétege.
+ */
 abstract class ArrowComponent extends BufferedImage {
 
     public ArrowComponent(int size) {
@@ -30,8 +33,14 @@ abstract class ArrowComponent extends BufferedImage {
         paint();
     }
     
+    /**
+     * Kirajzolás.
+     */
     protected abstract void paint();
     
+    /**
+     * Polygon elkészítése.
+     */
     protected Polygon createPolygon() {
         final int size = Math.min(getWidth(), getHeight()) - 1;
         final int s2 = size / 2, s10 = size / 20, s20 = size / 40;
@@ -42,6 +51,9 @@ abstract class ArrowComponent extends BufferedImage {
     
 }
 
+/**
+ * A felső rétegben megjelenő nyíl.
+ */
 class Arrow extends ArrowComponent {
 
     public Arrow(int size) {
@@ -64,6 +76,9 @@ class Arrow extends ArrowComponent {
     
 }
 
+/**
+ * Az alsó rétegben megjelenő, nyilat kitöltő vonal.
+ */
 class ArrowLine extends ArrowComponent {
     
     private int x = 0, y = 0;
@@ -180,6 +195,9 @@ class ArrowLine extends ArrowComponent {
     
 }
 
+/**
+ * A nyíl rétegeit egyesítő panel.
+ */
 abstract class ArrowPanel extends JPanel {
 
     private final ArrowLine al;

@@ -26,20 +26,45 @@ import org.dyndns.fzoli.rccar.model.Point3D;
 
 /**
  * Térkép ablak.
+ * Google Map alapú térkép.
+ * Natív böngésző segítségével jelenik meg.
  * @author zoli
  */
 public class MapDialog extends AbstractDialog {
     
+    /**
+     * A térkép kezdőpozíciója (0, 0, 0) valahol az óceánon.
+     */
     private Point3D position = new Point3D(0, 0, 0);
     
+    /**
+     * Új sor jel az aktuális rendszeren.
+     */
     private static final String LS = System.getProperty("line.separator");
     
+    /**
+     * A térképhez tartozó méretek.
+     */
     private final int MAP_WIDTH = 400, MAP_HEIGHT = 300, RADAR_SIZE = 200, ARROW_SIZE = 30;
+    
+    /**
+     * A térkép nyila.
+     */
     private final MapArrow ARROW = new MapArrow(ARROW_SIZE);
     
+    /**
+     * Ideignlenes könyvtár.
+     */
     private final File TMP_DIR = new File(System.getProperty("user.dir"), "tmp");
+    
+    /**
+     * A nyilat ábrázoló png kép helye az ideignlenes könyvtárban.
+     */
     private final File ARROW_FILE = new File(TMP_DIR, "arrow.png");
     
+    /**
+     * A térképet megjelenítő HTML kód.
+     */
     private final String HTML_SOURCE =
             "<!DOCTYPE html>" + LS +
             "<html>" + LS +
@@ -76,12 +101,14 @@ public class MapDialog extends AbstractDialog {
         super(owner, "Térkép", windows);
         setIconImage(IC_MAP.getImage());
         
-        final JLayeredPane radarPane = new JLayeredPane();
-        radarPane.setPreferredSize(new Dimension(RADAR_SIZE, RADAR_SIZE));
+        final JLayeredPane mapPane = new JLayeredPane(); // a komponens pontos pozíciójának beállítására használom
+        mapPane.setPreferredSize(new Dimension(RADAR_SIZE, RADAR_SIZE)); // a méret megadása
         webBrowser = new JWebBrowser();
         Component webComponent = new NativeComponentWrapper(webBrowser).createEmbeddableComponent();
-        radarPane.add(webComponent, JLayeredPane.DEFAULT_LAYER);
-        webComponent.setBounds((-1 * (MAP_WIDTH / 2)) + (RADAR_SIZE / 2), (-1 * (MAP_HEIGHT / 2)) + (RADAR_SIZE / 2), MAP_WIDTH, MAP_HEIGHT);
+        mapPane.add(webComponent, JLayeredPane.DEFAULT_LAYER); // a böngésző a méretezett pane-re kerül
+        webComponent.setBounds((-1 * (MAP_WIDTH / 2)) + (RADAR_SIZE / 2), (-1 * (MAP_HEIGHT / 2)) + (RADAR_SIZE / 2), MAP_WIDTH, MAP_HEIGHT); // és a pozíciója úgy van beállítva, hogy a Google reklám ne látszódjon
+        
+        // a natív böngésző lecsupaszítása
         webBrowser.setBarsVisible(false);
         webBrowser.setButtonBarVisible(false);
         webBrowser.setLocationBarVisible(false);
@@ -89,13 +116,16 @@ public class MapDialog extends AbstractDialog {
         webBrowser.setStatusBarVisible(false);
         webBrowser.setJavascriptEnabled(true);
         webBrowser.setDefaultPopupMenuRegistered(false);
+        
+        // HTML forráskód betöltése
         webBrowser.setHTMLContent(HTML_SOURCE);
         
+        // várakozás a térkép api betöltésére
         webBrowser.addWebBrowserListener(new WebBrowserAdapter() {
             
             @Override
             public void loadingProgressChanged(WebBrowserEvent e) {
-                if (e.getWebBrowser().getLoadingProgress() == 100) {
+                if (e.getWebBrowser().getLoadingProgress() == 100) { // ha letöltődött a script
                     try {
                         // Google API betöltési ideje max. 1,5 másodperc
                         Thread.sleep(1500);
@@ -103,23 +133,15 @@ public class MapDialog extends AbstractDialog {
                     catch(Exception ex) {
                         ;
                     }
-                    e.getWebBrowser().executeJavascript(createInitScript());
-                    if (callback == null) setVisible(true);
-                    else callback.loadFinished(MapDialog.this);
+                    e.getWebBrowser().executeJavascript(createInitScript()); // térkép inicializálás
+                    if (callback == null) setVisible(true); // ablak megjelenítése, ha nincs eseményfigyelő
+                    else callback.loadFinished(MapDialog.this); // egyébként eseményfigyelő futtatása
                 }
             }
             
         });
         
-        addWindowStateListener(new WindowAdapter() {
-
-            @Override
-            public void windowClosed(WindowEvent e) {
-                super.windowClosed(e);
-            }
-            
-        });
-        
+        // a program leállása előtt az ideignlenes könyvtár rekurzív törlése
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             
             @Override
@@ -129,10 +151,9 @@ public class MapDialog extends AbstractDialog {
             
         }));
         
-        getContentPane().add(radarPane, BorderLayout.CENTER);
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        setResizable(false);
-        pack();
+        getContentPane().add(mapPane, BorderLayout.CENTER); // térkép középre igazíása
+        setResizable(false); // ablak átméretezésének tiltása
+        pack(); // minimum méret beállítása
     }
     
     public Point3D getPosition() {
@@ -143,10 +164,20 @@ public class MapDialog extends AbstractDialog {
         return ARROW.getRotation();
     }
     
+    /**
+     * A térkép pozíciójának beállítása.
+     * @param latitude szélesség
+     * @param longitude hosszúság
+     */
     public void setPosition(double latitude, double longitude) {
         setPosition(new Point3D(latitude, longitude, 0));
     }
     
+    /**
+     * A térkép pozíciójának beállítása.
+     * JavaScript alapú metódus.
+     * @param pos GPS koordináta
+     */
     public void setPosition(final Point3D pos) {
         SwingUtilities.invokeLater(new Runnable() {
             
@@ -159,16 +190,22 @@ public class MapDialog extends AbstractDialog {
         });
     }
     
+    /**
+     * Az iránymutató nyíl irányának megadása.
+     * Legenerálja a képet, elmenti az ideignlenes könyvtárba, majd
+     * JavaScript segítségével beállítja az új képet.
+     * @param rotation északtól való eltérés
+     */
     public void setArrow(final Double rotation) {
         SwingUtilities.invokeLater(new Runnable() {
             
             @Override
             public void run() {
                 try {
-                    ARROW.setRotation(rotation);
-                    if (!TMP_DIR.isDirectory()) TMP_DIR.mkdir();
-                    ImageIO.write(ARROW, "png", ARROW_FILE);
-                    webBrowser.executeJavascript("document.getElementById('arrow').innerHTML = '<img src=\"" + ARROW_FILE.toURI().toURL() + "?nocache=" + Math.random() + "\" />';");
+                    ARROW.setRotation(rotation); // nyíl frissítése
+                    if (!TMP_DIR.isDirectory()) TMP_DIR.mkdir(); // tmp könyvtár létrehozása, ha nem létezik
+                    ImageIO.write(ARROW, "png", ARROW_FILE); // png formátumban a nyíl mentése a tmp könyvtárba
+                    webBrowser.executeJavascript("document.getElementById('arrow').innerHTML = '<img src=\"" + ARROW_FILE.toURI().toURL() + "?nocache=" + Math.random() + "\" />';"); // a kép frissítése a böngészőben
                 }
                 catch(Exception ex) {
                     throw new RuntimeException(ex);
@@ -178,6 +215,10 @@ public class MapDialog extends AbstractDialog {
         });
     }
     
+    /**
+     * Az irányjelző nyíl eltüntetése.
+     * JavaScript alapú metódus.
+     */
     public void removeArrow() {
         SwingUtilities.invokeLater(new Runnable() {
             
@@ -189,6 +230,9 @@ public class MapDialog extends AbstractDialog {
         });
     }
     
+    /**
+     * A Google Map inicializáló JavaScript kódja.
+     */
     private String createInitScript() {
         return "var mapOptions = {" + LS +
                "  zoom: 17," + LS +
@@ -199,21 +243,31 @@ public class MapDialog extends AbstractDialog {
                "var map = new google.maps.Map(document.getElementById(\"map_canvas\"), mapOptions);";
     }
     
+    /**
+     * Rekurzívan törli a megadott fájlt.
+     */
     private static void delete(File f) {
-        if (f.isDirectory()) {
-            for (File c : f.listFiles())
-                delete(c);
+        if (f.isDirectory()) { // ha könyvtár
+            for (File c : f.listFiles()) { // a benne lévő összes fájl...
+                delete(c); // ... rekurzív törlése
+            }
         }
-        if (f.exists()) {
-            f.delete();
+        if (f.exists()) { // ha a fájlnak már nincs gyermeke és még létezik...
+            f.delete(); // ... a fájl törlése
         }
     }
 
+    /**
+     * Az ablak típusa: térkép.
+     */
     @Override
     public WindowType getWindowType() {
         return WindowType.MAP;
     }
     
+    /**
+     * Teszt.
+     */
     public static void main(String[] args) {
         UIUtils.setPreferredLookAndFeel();
         NativeInterface.open();

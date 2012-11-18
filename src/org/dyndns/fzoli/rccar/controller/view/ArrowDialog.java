@@ -111,12 +111,12 @@ class ArrowLine extends ArrowComponent {
         return createPercent(y);
     }
     
-    public void setXCo(int x) {
+    void setXCo(int x) {
         this.x = x;
         paint();
     }
 
-    public void setYCo(int y) {
+    void setYCo(int y) {
         this.y = y;
         paint();
     }
@@ -155,7 +155,7 @@ class ArrowLine extends ArrowComponent {
         return getWidth() / 2 - getWidth() / 40;
     }
     
-    private int fromPercent(int i) {
+    int fromPercent(int i) {
         return (int)Math.round((getMax() + (i < 0 ? 1 : 0)) * (i / 100.0));
     }
     
@@ -258,6 +258,11 @@ abstract class ArrowPanel extends JPanel {
         tmpMY = y;
     }
     
+    private void setMaxY(int my) {
+        int ry = Math.abs(al.getRelativeY(my));
+        maxY = ry == 0 ? null : ry;
+    }
+    
     public ArrowPanel(int size) {
         super(new GridBagLayout());
         setBackground(Color.WHITE);
@@ -296,7 +301,7 @@ abstract class ArrowPanel extends JPanel {
                     btLeft = true;
                 }
                 if (e.getButton() == MouseEvent.BUTTON3) {
-                    
+                    setMaxY(e.getY());
                 }
                 refresh(e.getX(), e.getY());
             }
@@ -356,7 +361,7 @@ abstract class ArrowPanel extends JPanel {
 
             private void setY(KeyEvent e, boolean up) {
                 codeY = e.getKeyCode();
-                al.setPercentY(up ? 100 : -100);
+                al.setYCo(maxY != null ? (up ? 1 : -1) * al.fromPercent(maxY) : (up ? 1 : -1) * al.fromPercent(100));
             }
 
             private void resetX(KeyEvent e) {

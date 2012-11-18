@@ -114,6 +114,9 @@ public class ControllerWindows {
         
         // chatablak pozíciójának beállítása: ha kifér a főablakkal együtt, akkor a főablak alá, egyébként a főablak aljára
         DIALOG_CHAT.setLocation(FRAME_MAIN.getX(), FRAME_MAIN.getY() + FRAME_MAIN.getHeight() - (isEmptyHeight ? 0 : DIALOG_CHAT.getHeight()));
+        
+        // a főablak is képes irányítani nyilakkal a járművet
+        FRAME_MAIN.addKeyListener(DIALOG_ARROWS.getKeyListener());
     }
     
     /**

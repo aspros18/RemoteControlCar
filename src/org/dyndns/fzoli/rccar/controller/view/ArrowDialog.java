@@ -267,7 +267,7 @@ abstract class ArrowPanel extends JPanel {
     private Integer tmpMX, tmpMY;
     private Integer codeX, codeY;
     
-    final MouseAdapter LISTENER_MOUSE = new MouseAdapter() {
+    private final MouseAdapter LISTENER_MOUSE = new MouseAdapter() {
 
         @Override
         public void mousePressed(MouseEvent e) {
@@ -514,10 +514,6 @@ public class ArrowDialog extends AbstractDialog {
         add(ARROW_PANEL);
         
         pack();
-    }
-
-    public MouseAdapter getMouseListener() {
-        return ARROW_PANEL.LISTENER_MOUSE;
     }
     
     public KeyListener getKeyListener() {

@@ -43,14 +43,14 @@ abstract class ArrowComponent extends BufferedImage {
         return getWidth() / 2 - getWidth() / 40;
     }
     
-    public int getRelativeX(int x) {
+    protected int getRelativeX(int x) {
         int s = x > getWidth() / 2 ? getWidth() / 20 - 1 : 1;
         x = x + (-1 * getMax() - s);
         if (!(x <= 0 ^ s != 1)) x = 0;
         return x;
     }
     
-    public int getRelativeY(int y) {
+    protected int getRelativeY(int y) {
         int s = y > getWidth() / 2 ? getWidth() / 20 - 1 : -1;
         y = getMax() - y + s;
         if (!(y <= 0 ^ s == -1)) y = 0;
@@ -263,11 +263,11 @@ abstract class ArrowPanel extends JPanel {
     private final ArrowLine aLin;
     
     private int tmpX = 0, tmpY = 0;
-    private Integer tmpMX, tmpMY;
     private boolean btLeft = false, btRight = false;
+    private Integer tmpMX, tmpMY;
     private Integer codeX, codeY;
     
-    private final MouseAdapter LISTENER_MOUSE = new MouseAdapter() {
+    final MouseAdapter LISTENER_MOUSE = new MouseAdapter() {
 
         @Override
         public void mousePressed(MouseEvent e) {
@@ -325,16 +325,16 @@ abstract class ArrowPanel extends JPanel {
                         aLin.setPercentY(0);
                     }
                 }
-                tmpMX = x;
-                tmpMY = y;
                 repaint();
                 fireChange();
+                tmpMX = x;
+                tmpMY = y;
             }
         }
         
     };
     
-    private final KeyListener LISTENER_KEY = new KeyAdapter() {
+    final KeyListener LISTENER_KEY = new KeyAdapter() {
 
         @Override
         public void keyPressed(KeyEvent e) {
@@ -349,6 +349,18 @@ abstract class ArrowPanel extends JPanel {
                     setY(e, true);
                     break;
                 case KeyEvent.VK_DOWN:
+                    setY(e, false);
+                    break;
+                case KeyEvent.VK_A:
+                    setX(e, true);
+                    break;
+                case KeyEvent.VK_D:
+                    setX(e, false);
+                    break;
+                case KeyEvent.VK_W:
+                    setY(e, true);
+                    break;
+                case KeyEvent.VK_S:
                     setY(e, false);
             }
             repaint();
@@ -368,6 +380,18 @@ abstract class ArrowPanel extends JPanel {
                     resetY(e);
                     break;
                 case KeyEvent.VK_DOWN:
+                    resetY(e);
+                    break;
+                case KeyEvent.VK_A:
+                    resetX(e);
+                    break;
+                case KeyEvent.VK_D:
+                    resetX(e);
+                    break;
+                case KeyEvent.VK_W:
+                    resetY(e);
+                    break;
+                case KeyEvent.VK_S:
                     resetY(e);
             }
             repaint();
@@ -468,28 +492,38 @@ abstract class ArrowPanel extends JPanel {
  * @author zoli
  */
 public class ArrowDialog extends AbstractDialog {
-
+    
     static {
         RepeatingReleasedEventsFixer.install(); // Linux bill. eseményjelzés javítása
     }
+    
+    private final ArrowPanel ARROW_PANEL = new ArrowPanel(200) { //TODO: teszt
+
+        @Override
+        protected void onChange(int x, int y) {
+            System.out.println(x + " ; " + y);
+        }
+
+    };
     
     public ArrowDialog(Window owner, ControllerWindows windows) {
         super(owner, "Vezérlő", windows);
         setIconImage(IC_ARROWS.getImage());
         setResizable(false);
         
-        add(new ArrowPanel(200) { //TODO: teszt
-
-            @Override
-            protected void onChange(int x, int y) {
-                System.out.println(x + " ; " + y);
-            }
-
-        });
+        add(ARROW_PANEL);
         
         pack();
     }
 
+    public MouseAdapter getMouseListener() {
+        return ARROW_PANEL.LISTENER_MOUSE;
+    }
+    
+    public KeyListener getKeyListener() {
+        return ARROW_PANEL.LISTENER_KEY;
+    }
+    
     /**
      * Az ablak típusa: vezérlő ablak.
      */

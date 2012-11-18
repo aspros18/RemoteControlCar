@@ -87,6 +87,9 @@ public class MapDialog extends AbstractDialog {
             "  </body>" + LS +
             "</html>";
     
+    /**
+     * A natív böngésző.
+     */
     private final JWebBrowser webBrowser;
 
     public MapDialog(Window owner, ControllerWindows windows) {
@@ -156,10 +159,16 @@ public class MapDialog extends AbstractDialog {
         pack(); // minimum méret beállítása
     }
     
+    /**
+     * A térkép pozíciója.
+     */
     public Point3D getPosition() {
         return position;
     }
     
+    /**
+     * A nyíl iránya.
+     */
     public Double getArrowRotation() {
         return ARROW.getRotation();
     }
@@ -194,7 +203,7 @@ public class MapDialog extends AbstractDialog {
      * Az iránymutató nyíl irányának megadása.
      * Legenerálja a képet, elmenti az ideignlenes könyvtárba, majd
      * JavaScript segítségével beállítja az új képet.
-     * @param rotation északtól való eltérés
+     * @param rotation északtól való eltérés, vagy null, ha nincs irány megadva
      */
     public void setArrow(final Double rotation) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -281,7 +290,7 @@ public class MapDialog extends AbstractDialog {
 
                     @Override
                     public void loadFinished(final MapDialog radar) {
-                        radar.setArrow(null);
+                        radar.setArrow(null); // kezdetben nincs irány ...
                         timer.schedule(new TimerTask() {
                             
                             double angle = 0;
@@ -292,19 +301,20 @@ public class MapDialog extends AbstractDialog {
                                 radar.setArrow(angle);
                             }
                             
-                        }, 5000, 1000);
-                        radar.setPosition(47.35021, 19.10236);
-                        radar.setVisible(true);
+                        }, 5000, 1000); // ... 5 másodperccel később másodpercenként változik az irány
+                        radar.setPosition(47.35021, 19.10236); // a hely Dunaharaszti egyik utcája
+                        radar.setVisible(true); // az ablak megjelenítése 
                     }
                     
                 }, null);
                 
+                // az ablak bezárásakor:
                 radar.addWindowListener(new WindowAdapter() {
 
                     @Override
                     public void windowClosing(WindowEvent e) {
-                        timer.cancel();
-                        System.exit(0);
+                        timer.cancel(); // időzítő leállítása
+                        System.exit(0); // kilépés a programból
                     }
                     
                 });

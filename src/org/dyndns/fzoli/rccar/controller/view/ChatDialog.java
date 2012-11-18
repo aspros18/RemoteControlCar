@@ -74,6 +74,7 @@ public class ChatDialog extends AbstractDialog {
     private final JPanel PANEL_CONTROLLERS = new JPanel() {
         {
             setLayout(new BorderLayout());
+            LIST_CONTROLLERS.setBackground(Color.WHITE);
             setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createLineBorder(LIST_CONTROLLERS.getBackground(), 4)));
             
             JLabel lb = new JLabel("Jelenlévők");
@@ -120,6 +121,7 @@ public class ChatDialog extends AbstractDialog {
             setLayout(new BorderLayout());
             
             tpMessages = new JTextPane();
+            tpMessages.setBackground(getBackground());
             tpMessages.setFocusable(false);
             tpMessages.setEditable(false);
             

@@ -194,7 +194,33 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
      * Alapértelmezetten a jármű áll.
      */
     private Controll controll = new Controll(0, 0);
+    
+    /**
+     * Megadja, hogy pontosan szabályozható-e a az irány.
+     */
+    private boolean fullX = false;
+    
+    /**
+     * Megadja, hogy pontosan szabályozható-e a a sebesség.
+     */
+    private boolean fullY = false;
 
+    /**
+     * Megadja, hogy pontosan szabályozható-e a az irány.
+     * True esetén csak 0 vagy 100 lehet az érték.
+     */
+    public boolean isFullX() {
+        return fullX;
+    }
+
+    /**
+     * Megadja, hogy pontosan szabályozható-e a a sebesség.
+     * True esetén csak 0 vagy 100 lehet az érték.
+     */
+    public boolean isFullY() {
+        return fullY;
+    }
+    
     /**
      * Megadja, hogy folyamatban van-e a streamelés.
      */
@@ -252,6 +278,20 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     }
 
     /**
+     * Beállítja, hogy pontosan szabályozható-e a az irány.
+     */
+    public void setFullX(boolean fullX) {
+        this.fullX = fullX;
+    }
+
+    /**
+     * Beállítja, hogy pontosan szabályozható-e a a sebesség.
+     */
+    public void setFullY(boolean fullY) {
+        this.fullY = fullY;
+    }
+
+    /**
      * Beállítja, van-e streamelés.
      * @param streaming ha null, (az alapértelmezett) false állítódik be
      */
@@ -301,6 +341,8 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     @Override
     public void update(HostData d) {
         if (d != null) {
+            setFullX(d.isFullX());
+            setFullY(d.isFullY());
             setControll(d.getControll());
             setStreaming(d.isStreaming());
             setGpsPosition(d.getGpsPosition());

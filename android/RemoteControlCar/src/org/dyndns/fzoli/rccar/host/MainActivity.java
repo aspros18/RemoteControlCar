@@ -31,6 +31,8 @@ public class MainActivity extends SherlockActivity {
 	
 	private static boolean wasRun = false;
 	
+	private static final int REQ_SETTING = 0;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -72,7 +74,13 @@ public class MainActivity extends SherlockActivity {
 			
 		});
 	}
-
+	
+	@Override
+	protected void onDestroy() {
+		unbindService(false);
+		super.onDestroy();
+	}
+	
 	private boolean repaintArrow(Integer mx, Integer my) {
 		if (binder == null) return false;
 		if (mx == null || my == null) {
@@ -121,17 +129,31 @@ public class MainActivity extends SherlockActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.menu_settings:
-				startActivity(new Intent(this, SettingActivity.class));
+				setRunning(false, false);
+				startActivityForResult(new Intent(this, SettingActivity.class), REQ_SETTING);
 		}
 		return super.onOptionsItemSelected(item);
 	}
 	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		switch (requestCode) {
+			case REQ_SETTING:
+				if (wasRun) setRunning(true);
+		}
+	}
+	
 	private void setRunning(boolean b) {
+		setRunning(b, true);
+	}
+	
+	private void setRunning(boolean b, boolean save) {
 		if (b) bindService();
 		else unbindService();		
 		btStart.setEnabled(!b);
 		btStop.setEnabled(b);
-		wasRun = b;
+		if (save) wasRun = b;
 	}
 	
 	private void bindService() {
@@ -163,6 +185,10 @@ public class MainActivity extends SherlockActivity {
 	}
 	
 	private void unbindService() {
+		unbindService(true);
+	}
+	
+	private void unbindService(boolean stop) {
 		if (conn != null) {
 			if (binder != null) {
 				binder.setListener(null);
@@ -171,7 +197,7 @@ public class MainActivity extends SherlockActivity {
 			ServiceConnection tmp = conn;
 			conn = null;
 			unbindService(tmp);
-			stopService(new Intent(this, ConnectionService.class));
+			if (stop) stopService(new Intent(this, ConnectionService.class));
 		}
 	}
 	

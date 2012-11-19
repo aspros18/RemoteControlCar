@@ -276,7 +276,7 @@ abstract class ArrowPanel extends JPanel {
     private final ArrowLimit aLim;
     private final ArrowLine aLin;
     
-    public boolean controlling = true, increase = false;
+    public boolean controlling = true, increase = false, fixLimit = false;
     
     private int tmpX = 0, tmpY = 0;
     private boolean btLeft = false, btRight = false;
@@ -306,7 +306,7 @@ abstract class ArrowPanel extends JPanel {
         
         private void refresh(Integer x, Integer y) {
             if (!controlling) return;
-            if (btRight && y != null) {
+            if (btRight && y != null && !fixLimit) {
                 int ry = Math.abs(aLin.getRelativeY(y));
                 aLim.setMaxY(ry == 0 ? null : ry);
                 repaint();
@@ -429,14 +429,17 @@ abstract class ArrowPanel extends JPanel {
                 apply();
             }
             else if (timerIncrease == null) {
+                fixLimit = true;
                 timerIncrease = new Timer(0, new ActionListener() {
 
                     private int i = 0;
 
+                    private final int max = 110;
+                    
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         i += 5;
-                        if (i >= 100) timerIncrease.stop();
+                        if (i >= max) timerIncrease.stop();
                         if (isMaxYLimit()) aLin.setRelativeY(aLim.getRelativeMaxY(i, up));
                         else aLin.setRelativeY(aLim.getRelativeY(i, up));
                         apply();
@@ -461,6 +464,7 @@ abstract class ArrowPanel extends JPanel {
             if (timerIncrease != null) {
                 timerIncrease.stop();
                 timerIncrease = null;
+                fixLimit = false;
             }
             if (codeY != null && codeY.equals(e.getKeyCode())) {
                 if (tmpMY != null) aLin.setRelativeY(tmpMY);

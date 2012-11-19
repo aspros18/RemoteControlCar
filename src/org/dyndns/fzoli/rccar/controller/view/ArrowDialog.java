@@ -276,10 +276,10 @@ abstract class ArrowPanel extends JPanel {
     private final ArrowLimit aLim;
     private final ArrowLine aLin;
     
-    public boolean controlling = true, increase = false, fixLimit = false;
+    public boolean controlling = true, increase = false;
     
     private int tmpX = 0, tmpY = 0;
-    private boolean btLeft = false, btRight = false;
+    private boolean btLeft = false, btRight = false, fixLimit = false;
     private Integer tmpMX, tmpMY;
     private Integer codeX, codeY;
     

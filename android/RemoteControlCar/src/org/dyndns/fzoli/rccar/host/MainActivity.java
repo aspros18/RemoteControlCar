@@ -87,10 +87,14 @@ public class MainActivity extends SherlockActivity {
 		int x = arrow.getPercentX();
 		int y = arrow.getPercentY();
 		
-		arrow.setPercentX((x > 0 ? 100 : x == 0 ? 0 : -100));
-		//arrow.setPercentY((y > 0 ? 100 : y == 0 ? 0 : -100));
-		x = arrow.getPercentX();
-		//y = arrow.getPercentY();
+		if (binder.isFullX()) {
+			arrow.setPercentX((x > 0 ? 100 : x == 0 ? 0 : -100));
+			x = arrow.getPercentX();
+		}
+		if (binder.isFullY()) {
+			arrow.setPercentY((y > 0 ? 100 : y == 0 ? 0 : -100));
+			y = arrow.getPercentY();
+		}
 		
 		if (binder.getX() != x || binder.getY() != y) {
 			binder.setX(x, false);

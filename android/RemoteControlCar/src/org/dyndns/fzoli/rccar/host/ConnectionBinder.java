@@ -10,7 +10,17 @@ public class ConnectionBinder extends Binder {
 	
 	private int mX = 0, mY = 0;
 	
+	private boolean fullX = true, fullY = false;
+	
 	private Listener mListener;
+	
+	public boolean isFullX() {
+		return fullX;
+	}
+	
+	public boolean isFullY() {
+		return fullY;
+	}
 	
 	public int getX() {
 		return mX;

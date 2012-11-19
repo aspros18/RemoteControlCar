@@ -268,6 +268,7 @@ class ArrowLine extends ArrowComponent {
     
 }
 
+
 /**
  * A nyíl rétegeit egyesítő panel.
  */
@@ -276,7 +277,7 @@ abstract class ArrowPanel extends JPanel {
     private final ArrowLimit aLim;
     private final ArrowLine aLin;
     
-    public boolean controlling = true, increase = false;
+    private boolean controlling = true, increase = false;
     
     private int tmpX = 0, tmpY = 0;
     private boolean btLeft = false, btRight = false, fixLimit = false;
@@ -307,9 +308,7 @@ abstract class ArrowPanel extends JPanel {
         private void refresh(Integer x, Integer y) {
             if (!controlling) return;
             if (btRight && y != null && !fixLimit) {
-                int ry = Math.abs(aLin.getRelativeY(y));
-                aLim.setMaxY(ry == 0 ? null : ry);
-                repaint();
+                setMaxY(y);
             }
             if ((x != null && y != null && btLeft) || (x == null && y == null && !btLeft)) {
                 if (codeX == null) {
@@ -350,6 +349,8 @@ abstract class ArrowPanel extends JPanel {
         }
         
     };
+    
+    private Timer timerIncrease;
     
     final KeyListener LISTENER_KEY = new KeyAdapter() {
 
@@ -418,8 +419,6 @@ abstract class ArrowPanel extends JPanel {
             aLin.setPercentX(left ? -100 : 100);
             apply();
         }
-
-        private Timer timerIncrease;
         
         private void setY(KeyEvent e, final boolean up) {
             codeY = e.getKeyCode();
@@ -461,11 +460,7 @@ abstract class ArrowPanel extends JPanel {
         }
 
         private void resetY(KeyEvent e) {
-            if (timerIncrease != null) {
-                timerIncrease.stop();
-                timerIncrease = null;
-                fixLimit = false;
-            }
+            stopIncrease();
             if (codeY != null && codeY.equals(e.getKeyCode())) {
                 if (tmpMY != null) aLin.setRelativeY(tmpMY);
                 else aLin.setPercentY(0);
@@ -513,6 +508,33 @@ abstract class ArrowPanel extends JPanel {
         pane.addMouseMotionListener(LISTENER_MOUSE);
         pane.addMouseListener(LISTENER_MOUSE);
         addKeyListener(LISTENER_KEY);
+    }
+
+    public void setMaxY(int y) {
+        int ry = Math.abs(aLin.getRelativeY(y));
+        aLim.setMaxY(ry == 0 ? null : ry);
+        repaint();
+    }
+    
+    private void stopIncrease() {
+        if (timerIncrease != null) {
+            timerIncrease.stop();
+            timerIncrease = null;
+            fixLimit = false;
+        }
+    }
+    
+    public void setControlling(boolean controlling) {
+        this.controlling = controlling;
+        if (!controlling) {
+            stopIncrease();
+            setPercentX(0);
+            setPercentY(0);
+        }
+    }
+
+    public void setIncrease(boolean increase) {
+        this.increase = increase;
     }
     
     public int getPercentX() {
@@ -568,7 +590,7 @@ public class ArrowDialog extends AbstractDialog {
 
         @Override
         public void itemStateChanged(ItemEvent e) {
-            ARROW_PANEL.increase = ((JToggleButton) e.getItem()).isSelected();
+            ARROW_PANEL.setIncrease(((JToggleButton) e.getItem()).isSelected());
         }
         
     };
@@ -589,6 +611,23 @@ public class ArrowDialog extends AbstractDialog {
             owner.addKeyListener(ARROW_PANEL.LISTENER_KEY);
             // folyamatos sebességadás átállításának figyelése
             owner.getIncreaseButton().addItemListener(LISTENER_INCREASE);
+        }
+    }
+    
+    public void setControlling(boolean b) {
+        ControllerFrame owner = getControllerFrame();
+        ARROW_PANEL.setControlling(b);
+        if (b) {
+            if (owner != null) {
+                owner.getIncreaseButton().setEnabled(true);
+            }
+        }
+        else {
+            ARROW_PANEL.setMaxY(0);
+            if (owner != null) {
+                owner.getIncreaseButton().setSelected(false);
+                owner.getIncreaseButton().setEnabled(false);
+            }
         }
     }
     

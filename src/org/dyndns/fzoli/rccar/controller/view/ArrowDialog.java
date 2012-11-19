@@ -8,6 +8,8 @@ import java.awt.Graphics2D;
 import java.awt.GridBagLayout;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
@@ -21,6 +23,7 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
+import javax.swing.Timer;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_ARROWS;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
@@ -133,7 +136,16 @@ class ArrowLimit extends ArrowComponent {
     }
     
     Integer getRelativeMaxY(boolean up) {
-        return getRelativeY((up ? 1 : -1) * maxY) + (up ? 0 : (getWidth() / 20));
+        return getRelativeMaxY(maxY, up);
+    }
+    
+    Integer getRelativeMaxY(int y, boolean up) {
+        if (y > maxY) y = maxY;
+        return getRelativeY(y, up);
+    }
+    
+    Integer getRelativeY(int y, boolean up) {
+        return getRelativeY((up ? 1 : -1) * y) + (up ? 0 : (getWidth() / 20));
     }
     
     Integer getMaxY() {
@@ -369,8 +381,6 @@ abstract class ArrowPanel extends JPanel {
                 case KeyEvent.VK_S:
                     setY(e, false);
             }
-            repaint();
-            fireChange();
         }
 
         @Override
@@ -401,19 +411,41 @@ abstract class ArrowPanel extends JPanel {
                 case KeyEvent.VK_S:
                     resetY(e);
             }
-            repaint();
-            fireChange();
         }
 
         private void setX(KeyEvent e, boolean left) {
             codeX = e.getKeyCode();
             aLin.setPercentX(left ? -100 : 100);
+            apply();
         }
 
-        private void setY(KeyEvent e, boolean up) {
+        private Timer timerIncrease;
+        
+        private void setY(KeyEvent e, final boolean up) {
             codeY = e.getKeyCode();
-            if (!aLim.isFullY() && aLim.getMaxY() != null) aLin.setRelativeY(aLim.getRelativeMaxY(up));
-            else aLin.setYCo((up ? 1 : -1) * aLin.fromPercent(100));
+            if (!increase) {
+                if (isMaxYLimit()) aLin.setRelativeY(aLim.getRelativeMaxY(up));
+                else aLin.setPercentY(up ? 100 : -100);
+                apply();
+            }
+            else if (timerIncrease == null) {
+                timerIncrease = new Timer(0, new ActionListener() {
+
+                    private int i = 0;
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        i += 5;
+                        if (i >= 100) timerIncrease.stop();
+                        if (isMaxYLimit()) aLin.setRelativeY(aLim.getRelativeMaxY(i, up));
+                        else aLin.setRelativeY(aLim.getRelativeY(i, up));
+                        apply();
+                    }
+
+                });
+                timerIncrease.setDelay(150);
+                timerIncrease.start();
+            }
         }
 
         private void resetX(KeyEvent e) {
@@ -422,16 +454,31 @@ abstract class ArrowPanel extends JPanel {
                 else aLin.setPercentX(0);
                 codeX = null;
             }
+            apply();
         }
 
         private void resetY(KeyEvent e) {
+            if (timerIncrease != null) {
+                timerIncrease.stop();
+                timerIncrease = null;
+            }
             if (codeY != null && codeY.equals(e.getKeyCode())) {
                 if (tmpMY != null) aLin.setRelativeY(tmpMY);
                 else aLin.setPercentY(0);
                 codeY = null;
             }
+            apply();
         }
 
+        private boolean isMaxYLimit() {
+            return !aLim.isFullY() && aLim.getMaxY() != null;
+        }
+        
+        private void apply() {
+            repaint();
+            fireChange();
+        }
+        
     };
     
     public ArrowPanel(int size) {

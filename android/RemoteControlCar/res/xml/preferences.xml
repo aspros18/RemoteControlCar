@@ -33,6 +33,13 @@
             android:summary="@string/summary_key" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/category_other">
+        <ListPreference
+            android:key="vehicle"
+            android:title="@string/title_vehicle"
+            android:summary="@string/summary_vehicle"
+            android:defaultValue="0"
+            android:entries="@array/vehicleNames"
+            android:entryValues="@array/vehicleIndexes" />
         <EditTextPreference
             android:key="refresh_interval"
             android:title="@string/title_refresh_interval"

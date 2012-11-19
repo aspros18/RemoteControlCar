@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="vehicleNames">
+        <item name="prototype">Prototype</item>
+    </string-array>
+    <string-array name="vehicleIndexes">
+        <item name="prototype">0</item>
+    </string-array>
+</resources>

@@ -22,16 +22,14 @@ import com.actionbarsherlock.view.MenuItem;
  */
 public class MainActivity extends SherlockActivity {
 	
+	private static final int REQ_SETTING = 0;
+	
 	private Button btStart, btStop;
 	private TextView tvMessage;
 	private ArrowView arrow;
 	
 	private ConnectionBinder binder;
 	private ServiceConnection conn;
-	
-	private static boolean wasRun = false;
-	
-	private static final int REQ_SETTING = 0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +38,7 @@ public class MainActivity extends SherlockActivity {
 		btStart = (Button) findViewById(R.id.bt_start);
 		btStop = (Button) findViewById(R.id.bt_stop);
 		
-		setRunning(wasRun || false);
+		setRunning(ConnectionService.isStarted(this) || false);
 		
 		btStart.setOnClickListener(new View.OnClickListener() {
 			
@@ -140,7 +138,7 @@ public class MainActivity extends SherlockActivity {
 		super.onActivityResult(requestCode, resultCode, data);
 		switch (requestCode) {
 			case REQ_SETTING:
-				if (wasRun) setRunning(true);
+				if (ConnectionService.isStarted(this)) setRunning(true);
 		}
 	}
 	
@@ -153,7 +151,7 @@ public class MainActivity extends SherlockActivity {
 		else unbindService();		
 		btStart.setEnabled(!b);
 		btStop.setEnabled(b);
-		if (save) wasRun = b;
+		if (save) ConnectionService.setStarted(this, b);
 	}
 	
 	private void bindService() {

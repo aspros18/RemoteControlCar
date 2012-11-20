@@ -9,6 +9,8 @@ import android.util.AttributeSet;
 import android.view.View;
 
 /**
+ * Jármű vezérlőparancs megjelenítő nyíl.
+ * Tesztelés idejére a jármű irányítására is használatos.
  * @author zoli
  */
 public class ArrowView extends View {
@@ -36,10 +38,16 @@ public class ArrowView extends View {
 		initView();
 	}
 	
+	/**
+	 * Az irány százalékban kifejezve.
+	 */
 	public int getPercentX() {
 		return createPercent(x);
 	}
 	
+	/**
+	 * A sebesség százalékban kifejezve.
+	 */
 	public int getPercentY() {
 		return createPercent(y);
 	}
@@ -55,24 +63,39 @@ public class ArrowView extends View {
 		return i;
 	}
 	
+	/**
+	 * Beállítja a pixelben megadott irányt és újrarajzolja a nyilat.
+	 */
 	public void setX(int x) {
 		this.x = chkMax(x);
 		invalidate();
 	}
 	
+	/**
+	 * Beállítja a pixelben megadott sebességet és újrarajzolja a nyilat.
+	 */
 	public void setY(int y) {
 		this.y = chkMax(y);
 		invalidate();
 	}
 	
+	/**
+	 * Beállítja a százalékban megadott irányt és újrarajzolja a nyilat.
+	 */
 	public void setPercentX(int x) {
 		setX(fromPercent(x));
 	}
 	
+	/**
+	 * Beállítja a százalékban megadott sebességet és újrarajzolja a nyilat.
+	 */
 	public void setPercentY(int y) {
 		setY(fromPercent(y));
 	}
 	
+	/**
+	 * Az egér pozíciója alapján kikalkulálja a pixelben megadott irányt és alkalmazza azt.
+	 */
 	public void setRelativeX(int x) {
 		int s = x > s2 ? s10 : 0;
 		x = x - a - s + 1;
@@ -80,6 +103,9 @@ public class ArrowView extends View {
 		setX(x);
 	}
 	
+	/**
+	 * Az egér pozíciója alapján kikalkulálja a pixelben megadott sebességet és alkalmazza azt.
+	 */
 	public void setRelativeY(int y) {
 		int s = y > s2 ? s10 : 0;
 		y = a - y + s - 1;
@@ -95,6 +121,9 @@ public class ArrowView extends View {
 		return (int) Math.round(100 * i / (double) getMax(true));
 	}
 	
+	/**
+	 * A komponens méretének megállapítása és a hely lefoglalása.
+	 */
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) { 
 		int measuredWidth = measure(widthMeasureSpec);
@@ -153,6 +182,9 @@ public class ArrowView extends View {
 		borderPath.close();
 	}
 	
+	/**
+	 * A komponens kirajzolása aktuális adatok alapján.
+	 */
 	@Override
 	protected void onDraw(Canvas canvas) {
 		canvas.drawRect(a, a, b, b, mainPaint);

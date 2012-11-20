@@ -5,14 +5,28 @@ import org.dyndns.fzoli.rccar.model.host.HostData;
 
 import android.os.Binder;
 
+/**
+ * A service és az activity közötti kommunikációt megvalósító osztály.
+ * @author zoli
+ */
 public class ConnectionBinder extends Binder {
 	
+	/**
+	 * Amikor új vezérlőparancs érkezik az activity felületén látható nyilat újra kell rajzolni.
+	 * Erre egy eseményfigyelőt implementálok az activityben.
+	 */
 	public static interface Listener {
 		public void onChange(int x, int y);
 	}
 	
+	/**
+	 * A jármű adatai.
+	 */
 	private final HostData DATA = new HostData();
 	
+	/**
+	 * Az activity eseményfigyelője.
+	 */
 	private Listener mListener;
 	
 	private Control getControl() {

@@ -63,7 +63,7 @@ public class ConnectionBinder extends Binder {
 	}
 	
 	public void setY(int y, boolean remote) {
-		getControl().setX(y);
+		getControl().setY(y);
 		fireChange(remote);
 	}
 	

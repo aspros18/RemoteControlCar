@@ -1,4 +1,4 @@
-package org.dyndns.fzoli.exceptiondialog.event;
+package org.dyndns.fzoli.ui.exceptiondialog.event;
 
 /**
  * A nem kezelt kivételek esetén létrejövő esemény.

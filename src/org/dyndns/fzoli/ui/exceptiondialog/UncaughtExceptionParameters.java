@@ -1,4 +1,4 @@
-package org.dyndns.fzoli.exceptiondialog;
+package org.dyndns.fzoli.ui.exceptiondialog;
 
 import java.awt.Component;
 import java.awt.Image;

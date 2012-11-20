@@ -1,4 +1,4 @@
-package org.dyndns.fzoli.exceptiondialog;
+package org.dyndns.fzoli.ui.exceptiondialog;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -6,10 +6,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
-import org.dyndns.fzoli.exceptiondialog.event.UncaughtExceptionEvent;
-import org.dyndns.fzoli.exceptiondialog.event.UncaughtExceptionListener;
-import org.dyndns.fzoli.exceptiondialog.event.UncaughtExceptionSource;
 import org.dyndns.fzoli.ui.LookAndFeelIcon;
+import org.dyndns.fzoli.ui.exceptiondialog.event.UncaughtExceptionEvent;
+import org.dyndns.fzoli.ui.exceptiondialog.event.UncaughtExceptionListener;
+import org.dyndns.fzoli.ui.exceptiondialog.event.UncaughtExceptionSource;
 
 /**
  * Exception megjelenítő dialógusablak.

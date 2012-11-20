@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import org.dyndns.fzoli.rccar.model.BaseData;
 import org.dyndns.fzoli.rccar.model.BatteryPartialBaseData;
-import org.dyndns.fzoli.rccar.model.Controll;
+import org.dyndns.fzoli.rccar.model.Control;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.Point3D;
 
@@ -40,13 +40,13 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     /**
      * A HostData vezérlő részadata, ami az autó irányításában játszik szerepet.
      */
-    public static class ControllPartialHostData extends PartialHostData<Controll> {
+    public static class ControlPartialHostData extends PartialHostData<Control> {
 
         /**
          * Részadat inicializálása és beállítása.
          * @param data a vezérlőjel
          */
-        public ControllPartialHostData(Controll data) {
+        public ControlPartialHostData(Control data) {
             super(data);
         }
 
@@ -56,7 +56,7 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
         @Override
         public void apply(HostData d) {
             if (d != null) {
-                d.setControll(data);
+                d.setControl(data);
             }
         }
         
@@ -193,7 +193,7 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
      * Vezérlőjel.
      * Alapértelmezetten a jármű áll.
      */
-    private Controll controll = new Controll(0, 0);
+    private Control control = new Control(0, 0);
     
     /**
      * Megadja, hogy pontosan szabályozható-e a az irány.
@@ -231,8 +231,8 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     /**
      * Az autó vezérlőjelét adja vissza.
      */
-    public Controll getControll() {
-        return controll;
+    public Control getControl() {
+        return control;
     }
 
     /**
@@ -304,9 +304,9 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
      * Beállítja az autó vezérlőjelét.
      * @param controll ha null, (az alapértelmezett) 0;0 állítódik be
      */
-    public void setControll(Controll controll) {
-        if (controll == null) controll = new Controll(0, 0);
-        this.controll = controll;
+    public void setControl(Control controll) {
+        if (controll == null) controll = new Control(0, 0);
+        this.control = controll;
     }
     
     /**
@@ -343,7 +343,7 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
         if (d != null) {
             setFullX(d.isFullX());
             setFullY(d.isFullY());
-            setControll(d.getControll());
+            setControl(d.getControl());
             setStreaming(d.isStreaming());
             setGpsPosition(d.getGpsPosition());
             setGravitationalField(d.getGravitationalField());

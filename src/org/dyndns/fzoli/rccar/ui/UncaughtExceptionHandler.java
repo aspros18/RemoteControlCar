@@ -1,11 +1,11 @@
-package org.dyndns.fzoli.rccar;
+package org.dyndns.fzoli.rccar.ui;
 
 import java.awt.Dialog;
 import java.awt.Image;
-import org.dyndns.fzoli.exceptiondialog.UncaughtExceptionDialog;
-import org.dyndns.fzoli.exceptiondialog.UncaughtExceptionParameters;
-import org.dyndns.fzoli.exceptiondialog.event.UncaughtExceptionAdapter;
-import org.dyndns.fzoli.ui.SystemTrayIcon;
+import org.dyndns.fzoli.ui.exceptiondialog.UncaughtExceptionDialog;
+import org.dyndns.fzoli.ui.exceptiondialog.UncaughtExceptionParameters;
+import org.dyndns.fzoli.ui.exceptiondialog.event.UncaughtExceptionAdapter;
+import org.dyndns.fzoli.ui.systemtray.SystemTrayIcon;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 
 /**

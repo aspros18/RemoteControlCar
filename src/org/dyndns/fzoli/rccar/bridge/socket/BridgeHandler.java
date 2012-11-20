@@ -11,7 +11,7 @@ import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
 import org.dyndns.fzoli.socket.handler.exception.MultipleCertificateException;
 import org.dyndns.fzoli.socket.handler.exception.RemoteHandlerException;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
-import static org.dyndns.fzoli.ui.SystemTrayIcon.showMessage;
+import static org.dyndns.fzoli.ui.systemtray.SystemTrayIcon.showMessage;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 
 /**

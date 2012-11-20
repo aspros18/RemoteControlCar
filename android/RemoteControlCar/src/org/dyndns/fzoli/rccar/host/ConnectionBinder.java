@@ -1,5 +1,8 @@
 package org.dyndns.fzoli.rccar.host;
 
+import org.dyndns.fzoli.rccar.model.Control;
+import org.dyndns.fzoli.rccar.model.host.HostData;
+
 import android.os.Binder;
 
 public class ConnectionBinder extends Binder {
@@ -8,26 +11,28 @@ public class ConnectionBinder extends Binder {
 		public void onChange(int x, int y);
 	}
 	
-	private int mX = 0, mY = 0;
-	
-	private boolean fullX = true, fullY = false;
+	private final HostData DATA = new HostData();
 	
 	private Listener mListener;
 	
+	private Control getControl() {
+		return DATA.getControl();
+	}
+	
 	public boolean isFullX() {
-		return fullX;
+		return DATA.isFullX();
 	}
 	
 	public boolean isFullY() {
-		return fullY;
+		return DATA.isFullY();
 	}
 	
 	public int getX() {
-		return mX;
+		return getControl().getX();
 	}
 	
 	public int getY() {
-		return mY;
+		return getControl().getY();
 	}
 	
 	public void setX(int x) {
@@ -38,18 +43,23 @@ public class ConnectionBinder extends Binder {
 		setY(y, true);
 	}
 	
-	public void setX(int x, boolean fire) {
-		mX = x;
-		fireListener(fire);
+	public void setX(int x, boolean remote) {
+		getControl().setX(x);
+		fireChange(remote);
 	}
 	
-	public void setY(int y, boolean fire) {
-		mY = y;
-		fireListener(fire);
+	public void setY(int y, boolean remote) {
+		getControl().setX(y);
+		fireChange(remote);
 	}
 	
-	private void fireListener(boolean fire) {
-		if (fire && isListener()) mListener.onChange(mX, mY);
+	private void fireChange(boolean remote) {
+		if (remote) {
+			if (isListener()) mListener.onChange(getX(), getY());
+		}
+		else {
+			//TODO: küldés szervernek
+		}
 	}
 	
 	public boolean isListener() {

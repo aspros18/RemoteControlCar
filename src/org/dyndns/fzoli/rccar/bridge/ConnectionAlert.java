@@ -1,7 +1,7 @@
 package org.dyndns.fzoli.rccar.bridge;
 
 import static org.dyndns.fzoli.rccar.bridge.Main.VAL_CONN_LOG;
-import static org.dyndns.fzoli.ui.SystemTrayIcon.showMessage;
+import static org.dyndns.fzoli.ui.systemtray.SystemTrayIcon.showMessage;
 
 /**
  * Sockettel kapcsolatos figyelmeztetésjelző osztály.

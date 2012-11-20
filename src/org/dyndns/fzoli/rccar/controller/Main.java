@@ -7,7 +7,6 @@ import java.awt.event.ActionListener;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.SwingUtilities;
-import org.dyndns.fzoli.rccar.UncaughtExceptionHandler;
 import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.setDefaultSplashMessage;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.controller.socket.ConnectionHelper;
@@ -15,11 +14,12 @@ import org.dyndns.fzoli.rccar.controller.view.ConnectionProgressFrame;
 import org.dyndns.fzoli.rccar.controller.view.ConnectionProgressFrame.Status;
 import org.dyndns.fzoli.rccar.controller.view.config.ConfigEditorFrame;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
+import org.dyndns.fzoli.rccar.ui.UncaughtExceptionHandler;
 import org.dyndns.fzoli.ui.OptionPane;
-import org.dyndns.fzoli.ui.SystemTrayIcon;
-import static org.dyndns.fzoli.ui.SystemTrayIcon.showMessage;
 import org.dyndns.fzoli.ui.UIUtil;
 import static org.dyndns.fzoli.ui.UIUtil.setSystemLookAndFeel;
+import org.dyndns.fzoli.ui.systemtray.SystemTrayIcon;
+import static org.dyndns.fzoli.ui.systemtray.SystemTrayIcon.showMessage;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 
 /**

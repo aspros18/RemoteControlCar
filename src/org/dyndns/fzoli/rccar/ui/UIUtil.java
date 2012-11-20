@@ -1,4 +1,4 @@
-package org.dyndns.fzoli.rccar;
+package org.dyndns.fzoli.rccar.ui;
 
 import java.awt.Image;
 import org.dyndns.fzoli.ui.OptionPane;

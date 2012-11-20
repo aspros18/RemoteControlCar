@@ -1,14 +1,12 @@
-package org.dyndns.fzoli.ui;
+package org.dyndns.fzoli.ui.systemtray;
 
 import java.io.InputStream;
-import org.dyndns.fzoli.ui.systemtray.PopupMenu;
-import org.dyndns.fzoli.ui.systemtray.SystemTray;
-import org.dyndns.fzoli.ui.systemtray.SystemTrayProvider;
-import org.dyndns.fzoli.ui.systemtray.TrayIcon;
+import org.dyndns.fzoli.ui.UIUtil;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 
 /**
- * Ha van grafikus felület, rendszerikont jelenít meg.
+ * Ha van grafikus felület, egy konkrét rendszerikont jelenít meg, melyet a programon belül könnyen el lehet érni.
+ * Az osztály egyetlen rendszerikont jelenít meg, nem tud többet megjeleníteni és megszüntetni sem azt az egyet.
  * Több funkciója is van az ikonnak:
  * - a felhasználó látja, hogy a program fut még akkor is, ha háttérben van
  * - a felhasználó ha nem konzolból indította a programot, csak itt képes leállítani, ha a háttérben fut

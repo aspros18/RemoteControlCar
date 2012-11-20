@@ -5,17 +5,17 @@ import java.io.PrintStream;
 import java.security.KeyStoreException;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
-import static org.dyndns.fzoli.rccar.UIUtil.showPasswordInput;
-import org.dyndns.fzoli.rccar.UncaughtExceptionHandler;
-import static org.dyndns.fzoli.rccar.UncaughtExceptionHandler.showException;
 import org.dyndns.fzoli.rccar.bridge.resource.R;
 import org.dyndns.fzoli.rccar.bridge.socket.BridgeHandler;
 import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.closeSplashScreen;
 import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.setDefaultSplashMessage;
+import static org.dyndns.fzoli.rccar.ui.UIUtil.showPasswordInput;
+import org.dyndns.fzoli.rccar.ui.UncaughtExceptionHandler;
+import static org.dyndns.fzoli.rccar.ui.UncaughtExceptionHandler.showException;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
-import org.dyndns.fzoli.ui.SystemTrayIcon;
 import org.dyndns.fzoli.ui.UIUtil;
 import static org.dyndns.fzoli.ui.UIUtil.setSystemLookAndFeel;
+import org.dyndns.fzoli.ui.systemtray.SystemTrayIcon;
 
 /**
  * A híd indító osztálya.

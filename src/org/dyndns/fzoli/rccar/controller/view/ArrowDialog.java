@@ -535,6 +535,7 @@ abstract class ArrowPanel extends JPanel {
 
     public void setIncrease(boolean increase) {
         this.increase = increase;
+        stopIncrease();
     }
     
     public int getPercentX() {

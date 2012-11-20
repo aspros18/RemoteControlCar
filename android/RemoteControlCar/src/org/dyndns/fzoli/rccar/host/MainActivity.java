@@ -25,7 +25,7 @@ public class MainActivity extends SherlockActivity {
 	private static final int REQ_SETTING = 0;
 	
 	private Button btStart, btStop;
-	private TextView tvMessage;
+	private TextView tvX, tvY;
 	private ArrowView arrow;
 	
 	private ConnectionBinder binder;
@@ -37,6 +37,11 @@ public class MainActivity extends SherlockActivity {
 		setContentView(R.layout.activity_main);
 		btStart = (Button) findViewById(R.id.bt_start);
 		btStop = (Button) findViewById(R.id.bt_stop);
+		arrow = (ArrowView) findViewById(R.id.arrow);
+		tvX = (TextView) findViewById(R.id.tv_x);
+		tvY = (TextView) findViewById(R.id.tv_y);
+		
+		setXYText(0, 0);
 		
 		setRunning(ConnectionService.isStarted(this) || false);
 		
@@ -48,6 +53,7 @@ public class MainActivity extends SherlockActivity {
 			}
 			
 		});
+		
 		btStop.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -57,17 +63,12 @@ public class MainActivity extends SherlockActivity {
 			
 		});
 		
-		tvMessage = (TextView) findViewById(R.id.tv_message);
-		arrow = (ArrowView) findViewById(R.id.arrow);
-		
-		tvMessage.setText("0 ; 0");
-		
 		arrow.setOnTouchListener(new View.OnTouchListener() {
 			
 			@Override
 			public boolean onTouch(View v, MotionEvent e) {
-				if (e.getAction() == MotionEvent.ACTION_UP) return repaintArrow(null, null);
-				else return repaintArrow((int)e.getX(), (int)e.getY());
+				if (e.getAction() == MotionEvent.ACTION_UP) return repaintArrow(null, null, false);
+				else return repaintArrow((int)e.getX(), (int)e.getY(), false);
 			}
 			
 		});
@@ -79,34 +80,47 @@ public class MainActivity extends SherlockActivity {
 		super.onDestroy();
 	}
 	
-	private boolean repaintArrow(Integer mx, Integer my) {
+	private void setXYText(int x, int y) {
+		tvX.setText(Integer.toString(x));
+		tvY.setText(Integer.toString(y));
+	}
+	
+	private boolean repaintArrow(Integer mx, Integer my, boolean percent) {
 		if (binder == null) return false;
+		
 		if (mx == null || my == null) {
 			arrow.setX(0);
 			arrow.setY(0);
 		}
 		else {
-			arrow.setRelativeX(mx);
-			arrow.setRelativeY(my);
+			if (percent) {
+				arrow.setPercentX(mx);
+				arrow.setPercentY(my);
+			}
+			else {
+				arrow.setRelativeX(mx);
+				arrow.setRelativeY(my);
+			}
 		}
 		
 		int x = arrow.getPercentX();
 		int y = arrow.getPercentY();
 		
 		if (binder.isFullX()) {
-			arrow.setPercentX((x > 0 ? 100 : x == 0 ? 0 : -100));
+			arrow.setPercentX(x > 0 ? 100 : x == 0 ? 0 : -100);
 			x = arrow.getPercentX();
 		}
 		if (binder.isFullY()) {
-			arrow.setPercentY((y > 0 ? 100 : y == 0 ? 0 : -100));
+			arrow.setPercentY(y > 0 ? 100 : y == 0 ? 0 : -100);
 			y = arrow.getPercentY();
 		}
 		
 		if (binder.getX() != x || binder.getY() != y) {
 			binder.setX(x, false);
 			binder.setY(y, false);
-			tvMessage.setText(x + " ; " + y);
+			setXYText(x, y);
 		}
+		
 		return true;
 	}
 	
@@ -168,11 +182,12 @@ public class MainActivity extends SherlockActivity {
 			@Override
 			public void onServiceConnected(ComponentName n, IBinder b) {
 				binder = (ConnectionBinder) b;
+				repaintArrow(binder.getX(), binder.getY(), true);
 				binder.setListener(new ConnectionBinder.Listener() {
 					
 					@Override
 					public void onChange(int x, int y) {
-						repaintArrow(x, y);
+						repaintArrow(x, y, true);
 					}
 					
 				});

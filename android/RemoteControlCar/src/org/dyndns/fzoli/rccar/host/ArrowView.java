@@ -58,6 +58,7 @@ public class ArrowView extends View {
 	}
 	
 	private int chkMax(int i) {
+		if (i == 0) return 0;
 		if (i > getMax(true)) return getMax(true);
 		if (i < getMax(false)) return getMax(false);
 		return i;

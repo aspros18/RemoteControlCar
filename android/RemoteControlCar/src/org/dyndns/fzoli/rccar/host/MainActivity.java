@@ -207,6 +207,7 @@ public class MainActivity extends SherlockActivity {
 				binder.setListener(null);
 				binder = null;
 			}
+			repaintArrow(0, 0, true);
 			ServiceConnection tmp = conn;
 			conn = null;
 			unbindService(tmp);

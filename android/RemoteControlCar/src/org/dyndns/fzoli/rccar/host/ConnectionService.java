@@ -64,7 +64,7 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	public void updateNotificationText() {
-		setNotificationText("Vehicle " + (LOOPER.isConnected() ? "" : "NOT") + " OK");
+		setNotificationText("Vehicle " + (isVehicleConnected() ? "" : "NOT") + " OK");
 	}
 	
 	private void removeNotification() {
@@ -72,6 +72,10 @@ public class ConnectionService extends IOIOService {
 		nm = null;
 		notification = null;
 		contentIntent = null;
+	}
+	
+	public boolean isVehicleConnected() {
+		return LOOPER.isConnected();
 	}
 	
 	private static SharedPreferences getSharedPreferences(Context context) {

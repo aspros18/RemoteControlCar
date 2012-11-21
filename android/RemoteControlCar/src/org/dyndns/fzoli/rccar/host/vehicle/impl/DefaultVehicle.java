@@ -1,42 +1,42 @@
-package org.dyndns.fzoli.rccar.host;
+package org.dyndns.fzoli.rccar.host.vehicle.impl;
 
 import ioio.lib.api.DigitalOutput;
-import ioio.lib.api.IOIO;
 import ioio.lib.api.PwmOutput;
 import ioio.lib.api.exception.ConnectionLostException;
-import ioio.lib.util.BaseIOIOLooper;
 
-public class IOIOVehicleLooper extends BaseIOIOLooper {
-	
-	private final ConnectionBinder BINDER;
-	
-	private boolean connected = false;
-	
+import org.dyndns.fzoli.rccar.host.ConnectionBinder;
+import org.dyndns.fzoli.rccar.host.vehicle.AbstractVehicle;
+
+/**
+ * @author zoli
+ */
+public class DefaultVehicle extends AbstractVehicle {
+
 	private PwmOutput pwm;
 	private DigitalOutput outLeft, outRight, outFront, outBack;
 	
-	public IOIOVehicleLooper(ConnectionBinder binder) {
-		BINDER = binder;
+	public DefaultVehicle(ConnectionBinder binder) {
+		super(binder);
+	}
+
+	@Override
+	public boolean isFullX() {
+		return true;
+	}
+
+	@Override
+	public boolean isFullY() {
+		return true;
 	}
 	
 	@Override
 	protected void setup() throws ConnectionLostException, InterruptedException {
-		updateState(true);
-		ioio_.openDigitalOutput(IOIO.LED_PIN, !true);
+		super.setup();
 		outFront = ioio_.openDigitalOutput(10, false);
 		outBack = ioio_.openDigitalOutput(11, false);
 		outLeft = ioio_.openDigitalOutput(12, false);
 		outRight = ioio_.openDigitalOutput(13, false);
 		pwm = ioio_.openPwmOutput(14, 1000);
-	}
-	
-	@Override
-	public void disconnected() {
-		updateState(false);
-	}
-	
-	public boolean isConnected() {
-		return connected;
 	}
 	
 	/**
@@ -47,9 +47,9 @@ public class IOIOVehicleLooper extends BaseIOIOLooper {
 	 */
 	@Override
 	public void loop() throws ConnectionLostException, InterruptedException {
-		handle(BINDER.getX(), outLeft, outRight);
-		handle(BINDER.getY(), outBack, outFront);
-		pwm.setDutyCycle((float)(BINDER.getY() / 100.0));
+		handle(getX(), outLeft, outRight);
+		handle(getY(), outBack, outFront);
+		pwm.setDutyCycle((float)(getY() / 100.0));
 		Thread.sleep(20);
 	}
 	
@@ -69,11 +69,6 @@ public class IOIOVehicleLooper extends BaseIOIOLooper {
 			outMinus.write(false);
 			outPlus.write(true);
 		}
-	}
-	
-	private void updateState(boolean connected) {
-		this.connected = connected;
-		BINDER.getService().updateNotificationText();
 	}
 	
 }

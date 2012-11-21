@@ -1,5 +1,8 @@
 package org.dyndns.fzoli.rccar.host;
 
+import org.dyndns.fzoli.rccar.host.vehicle.Vehicle;
+import org.dyndns.fzoli.rccar.host.vehicle.Vehicles;
+
 import ioio.lib.util.android.IOIOService;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -16,7 +19,8 @@ public class ConnectionService extends IOIOService {
 	private final static String KEY_STARTED = "started";
 	
 	private final ConnectionBinder BINDER = new ConnectionBinder(this);
-	private final IOIOVehicleLooper LOOPER = new IOIOVehicleLooper(BINDER);
+	
+	private Vehicle vehicle;
 	
 	private NotificationManager nm;
 	private Notification notification;
@@ -28,8 +32,8 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	@Override
-	public IOIOVehicleLooper createIOIOLooper() {
-		return LOOPER;
+	public Vehicle createIOIOLooper() {
+		return vehicle = Vehicles.createVehicle(BINDER, Integer.parseInt(getSharedPreferences(this).getString("vehicle", "0")));
 	}
 	
 	@Override
@@ -81,7 +85,7 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	public boolean isVehicleConnected() {
-		return LOOPER.isConnected();
+		return vehicle.isConnected();
 	}
 	
 	private static SharedPreferences getSharedPreferences(Context context) {

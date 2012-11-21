@@ -1,6 +1,9 @@
 package org.dyndns.fzoli.rccar.host;
 
 import ioio.lib.util.android.IOIOService;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,9 +11,20 @@ import android.preference.PreferenceManager;
 
 public class ConnectionService extends IOIOService {
 	
+	private final static int ID_NOTIFY = 0;
+	
 	private final static String KEY_STARTED = "started";
 	
 	private final ConnectionBinder BINDER = new ConnectionBinder();
+	
+	private NotificationManager nm;
+	private Notification notification;
+	private PendingIntent contentIntent;
+	
+	@Override
+	public ConnectionBinder onBind(Intent intent) {
+		return BINDER;
+	}
 	
 	@Override
 	public IOIOVehicleLooper createIOIOLooper() {
@@ -18,8 +32,36 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	@Override
-	public ConnectionBinder onBind(Intent intent) {
-		return BINDER;
+	public void onStart(Intent intent, int startId) {
+		super.onStart(intent, startId);
+		if (startId == 1) {
+			initNotification();
+			setNotificationText("Test");
+		}
+	}
+	
+	@Override
+	public void onDestroy() {
+		removeNotification();
+		super.onDestroy();
+	}
+	
+	@SuppressWarnings("deprecation")
+	private void initNotification() {
+		nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		notification = new Notification(R.drawable.ic_launcher, getString(R.string.app_name), System.currentTimeMillis());
+		contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+		notification.flags |= Notification.FLAG_ONGOING_EVENT;
+	}
+	
+	@SuppressWarnings("deprecation")
+	private void setNotificationText(String s) {
+		notification.setLatestEventInfo(getApplicationContext(), getString(R.string.app_name), s, contentIntent);
+		nm.notify(ID_NOTIFY, notification);
+	}
+	
+	private void removeNotification() {
+		nm.cancel(ID_NOTIFY);
 	}
 	
 	public static SharedPreferences getSharedPreferences(Context context) {

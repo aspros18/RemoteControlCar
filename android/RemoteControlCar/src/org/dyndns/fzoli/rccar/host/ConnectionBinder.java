@@ -24,10 +24,20 @@ public class ConnectionBinder extends Binder {
 	 */
 	private final HostData DATA = new HostData();
 	
+	private final ConnectionService SERVICE;
+	
 	/**
 	 * Az activity eseményfigyelője.
 	 */
 	private Listener mListener;
+	
+	public ConnectionBinder(ConnectionService service) {
+		SERVICE = service;
+	}
+	
+	public ConnectionService getService() {
+		return SERVICE;
+	}
 	
 	private Control getControl() {
 		return DATA.getControl();

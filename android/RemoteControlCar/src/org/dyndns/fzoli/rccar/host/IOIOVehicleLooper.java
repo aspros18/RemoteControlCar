@@ -10,6 +10,8 @@ public class IOIOVehicleLooper extends BaseIOIOLooper {
 	
 	private final ConnectionBinder BINDER;
 	
+	private boolean connected = false;
+	
 	private PwmOutput pwm;
 	private DigitalOutput outLed, outLeft, outRight, outFront, outBack;
 	
@@ -19,12 +21,22 @@ public class IOIOVehicleLooper extends BaseIOIOLooper {
 	
 	@Override
 	protected void setup() throws ConnectionLostException, InterruptedException {
+		updateState(true);
 		outLed = ioio_.openDigitalOutput(IOIO.LED_PIN, true);
 		outFront = ioio_.openDigitalOutput(10, false);
 		outBack = ioio_.openDigitalOutput(11, false);
 		outLeft = ioio_.openDigitalOutput(12, false);
 		outRight = ioio_.openDigitalOutput(13, false);
 		pwm = ioio_.openPwmOutput(14, 1000);
+	}
+	
+	@Override
+	public void disconnected() {
+		updateState(false);
+	}
+	
+	public boolean isConnected() {
+		return connected;
 	}
 	
 	/**
@@ -58,6 +70,11 @@ public class IOIOVehicleLooper extends BaseIOIOLooper {
 			outMinus.write(false);
 			outPlus.write(true);
 		}
+	}
+	
+	private void updateState(boolean connected) {
+		this.connected = connected;
+		BINDER.getService().updateNotificationText();
 	}
 	
 }

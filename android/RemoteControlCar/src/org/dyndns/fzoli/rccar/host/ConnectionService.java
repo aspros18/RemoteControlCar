@@ -15,7 +15,8 @@ public class ConnectionService extends IOIOService {
 	
 	private final static String KEY_STARTED = "started";
 	
-	private final ConnectionBinder BINDER = new ConnectionBinder();
+	private final ConnectionBinder BINDER = new ConnectionBinder(this);
+	private final IOIOVehicleLooper LOOPER = new IOIOVehicleLooper(BINDER);
 	
 	private NotificationManager nm;
 	private Notification notification;
@@ -28,7 +29,7 @@ public class ConnectionService extends IOIOService {
 	
 	@Override
 	public IOIOVehicleLooper createIOIOLooper() {
-		return new IOIOVehicleLooper(BINDER);
+		return LOOPER;
 	}
 	
 	@Override
@@ -36,7 +37,7 @@ public class ConnectionService extends IOIOService {
 		super.onStart(intent, startId);
 		if (startId == 1) {
 			initNotification();
-			setNotificationText("Test");
+			updateNotificationText();
 		}
 	}
 	
@@ -58,6 +59,10 @@ public class ConnectionService extends IOIOService {
 	private void setNotificationText(String s) {
 		notification.setLatestEventInfo(getApplicationContext(), getString(R.string.app_name), s, contentIntent);
 		nm.notify(ID_NOTIFY, notification);
+	}
+	
+	public void updateNotificationText() {
+		setNotificationText("Vehicle " + (LOOPER.isConnected() ? "" : "NOT") + " OK");
 	}
 	
 	private void removeNotification() {

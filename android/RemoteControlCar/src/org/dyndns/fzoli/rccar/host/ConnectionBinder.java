@@ -86,7 +86,7 @@ public class ConnectionBinder extends Binder {
 		}
 	}
 	
-	public boolean isListener() {
+	private boolean isListener() {
 		return mListener != null;
 	}
 	

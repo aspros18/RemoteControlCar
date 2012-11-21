@@ -13,7 +13,7 @@ public class IOIOVehicleLooper extends BaseIOIOLooper {
 	private boolean connected = false;
 	
 	private PwmOutput pwm;
-	private DigitalOutput outLed, outLeft, outRight, outFront, outBack;
+	private DigitalOutput outLeft, outRight, outFront, outBack;
 	
 	public IOIOVehicleLooper(ConnectionBinder binder) {
 		BINDER = binder;
@@ -22,7 +22,7 @@ public class IOIOVehicleLooper extends BaseIOIOLooper {
 	@Override
 	protected void setup() throws ConnectionLostException, InterruptedException {
 		updateState(true);
-		outLed = ioio_.openDigitalOutput(IOIO.LED_PIN, true);
+		ioio_.openDigitalOutput(IOIO.LED_PIN, !true);
 		outFront = ioio_.openDigitalOutput(10, false);
 		outBack = ioio_.openDigitalOutput(11, false);
 		outLeft = ioio_.openDigitalOutput(12, false);
@@ -47,7 +47,6 @@ public class IOIOVehicleLooper extends BaseIOIOLooper {
 	 */
 	@Override
 	public void loop() throws ConnectionLostException, InterruptedException {
-		outLed.write(!BINDER.isListener());
 		handle(BINDER.getX(), outLeft, outRight);
 		handle(BINDER.getY(), outBack, outFront);
 		pwm.setDutyCycle((float)(BINDER.getY() / 100.0));

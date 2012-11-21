@@ -57,8 +57,10 @@ public class ConnectionService extends IOIOService {
 	
 	@SuppressWarnings("deprecation")
 	private void setNotificationText(String s) {
-		notification.setLatestEventInfo(getApplicationContext(), getString(R.string.app_name), s, contentIntent);
-		nm.notify(ID_NOTIFY, notification);
+		if (nm != null && notification != null && contentIntent != null) {
+			notification.setLatestEventInfo(getApplicationContext(), getString(R.string.app_name), s, contentIntent);
+			nm.notify(ID_NOTIFY, notification);
+		}
 	}
 	
 	public void updateNotificationText() {
@@ -67,9 +69,12 @@ public class ConnectionService extends IOIOService {
 	
 	private void removeNotification() {
 		nm.cancel(ID_NOTIFY);
+		nm = null;
+		notification = null;
+		contentIntent = null;
 	}
 	
-	public static SharedPreferences getSharedPreferences(Context context) {
+	private static SharedPreferences getSharedPreferences(Context context) {
 		PreferenceManager.setDefaultValues(context, R.xml.preferences, false);
 		return PreferenceManager.getDefaultSharedPreferences(context);
 	}

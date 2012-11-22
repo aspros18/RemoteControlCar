@@ -162,7 +162,7 @@ public class MainActivity extends SherlockActivity {
 	
 	private void setRunning(boolean b, boolean save) {
 		if (b) bindService();
-		else unbindService();		
+		else unbindService();
 		btStart.setEnabled(!b);
 		btStop.setEnabled(b);
 		if (save) ConnectionService.setStarted(this, b);

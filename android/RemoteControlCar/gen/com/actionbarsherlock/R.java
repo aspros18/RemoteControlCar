@@ -1071,6 +1071,7 @@ containing a value of this type.
         public static final int category_other=0x7f0a0014;
         public static final int category_path=0x7f0a0012;
         public static final int category_security=0x7f0a0013;
+        public static final int local_mode=0x7f0a0027;
         public static final int menu_settings=0x7f0a0010;
         public static final int summary_address=0x7f0a001d;
         public static final int summary_ca=0x7f0a001f;

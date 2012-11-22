@@ -31,4 +31,23 @@ public interface ConnectionKeys {
      */
     int KEY_CONN_DUMMY = 2;
     
+    /**
+     * Az első időtúllépés a kapcsolatban, amikoris a jármű felkészül a kapcsolat megszakadására, tehát megáll.
+     * Időkorlát: 1 másodperc
+     */
+    int DC_TIMEOUT1 = 1000;
+    
+    /**
+     * A második időtúllépés, amikoris a kapcsolat megszakadt, olyan hosszú ideje nem jött válasz.
+     * A host ekkor az összes kapcsolatot bezárja, és megpróbál újra kapcsolódni.
+     * Időkorlát: 10 másodperc
+     */
+    int DC_TIMEOUT2 = 10000;
+    
+    /**
+     * Két üzenetváltás között eltelt idő, amit mindkét oldalon ki kell várni a pontos eredmény érdekében.
+     * Várakozási idő: 250 ezredmásodperc
+     */
+    int DC_DELAY = 250;
+    
 }

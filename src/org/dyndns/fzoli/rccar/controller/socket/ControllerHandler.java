@@ -4,6 +4,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocket;
+import org.dyndns.fzoli.rccar.ConnectionKeys;
 import static org.dyndns.fzoli.rccar.controller.Main.showConnectionStatus;
 import org.dyndns.fzoli.rccar.controller.view.ConnectionProgressFrame.Status;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
@@ -14,7 +15,7 @@ import org.dyndns.fzoli.socket.process.SecureProcess;
  * A vezérlő kapcsolatkezelője.
  * @author zoli
  */
-public class ControllerHandler extends AbstractSecureClientHandler {
+public class ControllerHandler extends AbstractSecureClientHandler implements ConnectionKeys {
 
     /**
      * Szép konstruktor.
@@ -52,11 +53,12 @@ public class ControllerHandler extends AbstractSecureClientHandler {
     @Override
     protected SecureProcess selectProcess() {
         switch (getConnectionId()) {
-            case 0:
+            case KEY_CONN_DISCONNECT:
                 return new ControllerDisconnectProcess(this);
-            default:
+            case KEY_CONN_MESSAGE:
                 return new ControllerMessageProcess(this);
         }
+        return null;
     }
     
 }

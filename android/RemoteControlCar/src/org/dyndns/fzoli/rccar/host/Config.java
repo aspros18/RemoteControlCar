@@ -14,7 +14,7 @@ public class Config implements org.dyndns.fzoli.rccar.clients.ClientConfig {
 	
 	@Override
 	public boolean isCorrect() {
-		return false;
+		return getCAFile() != null && getCertFile() != null && getKeyFile() != null;
 	}
 	
 	@Override

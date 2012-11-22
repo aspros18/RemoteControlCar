@@ -13,7 +13,7 @@ import org.dyndns.fzoli.resource.MD5Checksum;
  * Ha a fájl nem létezik, létrehozza az alapértelmezett adatokkal.
  * @author zoli
  */
-public class Config implements Serializable {
+public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.ClientConfig {
     
     /**
      * Változók deklarálása és az alapértelmezések beállítása.
@@ -62,6 +62,7 @@ public class Config implements Serializable {
     /**
      * A szerver címe.
      */
+    @Override
     public String getAddress() {
         return address;
     }
@@ -69,13 +70,15 @@ public class Config implements Serializable {
     /**
      * A szerver portja.
      */
-    public int getPort() {
+    @Override
+    public Integer getPort() {
         return port;
     }
 
     /**
      * Az egyetlen megbízható tanúsítvány-kiállító.
      */
+    @Override
     public File getCAFile() {
         return getFile(ca);
     }
@@ -83,6 +86,7 @@ public class Config implements Serializable {
     /**
      * Az a tanúsítvány, amivel a program kapcsolódik a szerverhez.
      */
+    @Override
     public File getCertFile() {
         return getFile(cert);
     }
@@ -90,6 +94,7 @@ public class Config implements Serializable {
     /**
      * A tanúsítvány titkos kulcsa.
      */
+    @Override
     public File getKeyFile() {
         return getFile(key);
     }
@@ -97,6 +102,7 @@ public class Config implements Serializable {
     /**
      * A tanúsítvány jelszava.
      */
+    @Override
     public char[] getPassword() {
         return password;
     }
@@ -303,6 +309,18 @@ public class Config implements Serializable {
         catch (Exception ex) {
             return false;
         }
+    }
+
+    /**
+     * Megadja, hogy a konfiguráció helyes-e.
+     * A vezérlő program konfigurációja alapértelmezetten helyesen van beállítva és
+     * a grafikus felület nem enged meg helytelen beállítást, ezért csak azt kell vizsgálni, hogy
+     * a tanúsítvány-fájlok léteznek-e.
+     * @return true esetén használható a konfiguráció
+     */
+    @Override
+    public boolean isCorrect() {
+        return isFileExists();
     }
     
 }

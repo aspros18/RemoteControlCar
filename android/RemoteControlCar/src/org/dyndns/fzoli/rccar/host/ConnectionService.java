@@ -74,7 +74,7 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	public void updateNotificationText() {
-		setNotificationText("Vehicle " + (isVehicleConnected() ? "" : "NOT") + " OK");
+		setNotificationText("Vehicle" + (isVehicleConnected() ? "" : " NOT") + " OK");
 	}
 	
 	private void removeNotification() {

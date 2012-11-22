@@ -20,7 +20,7 @@ import java.util.Map;
  * A fölösleges szóközöket az objektumot létrehozó metódus levágja.
  * @author zoli
  */
-public class Config {
+public class Config implements org.dyndns.fzoli.rccar.Config {
     
     private Map<String, String> values;
     
@@ -94,6 +94,7 @@ public class Config {
      * A SocketServer ezen a porton figyel.
      * @return port vagy kivétel esetén NULL
      */
+    @Override
     public Integer getPort() {
         try {
             int port = Integer.parseInt(getValues().get(KEY_PORT));
@@ -113,6 +114,7 @@ public class Config {
      * Ez az egyelten CA, amit a szerver és kliens socketek elfogadnak.
      * @return fájl vagy NULL, ha a fájl nem létezik
      */
+    @Override
     public File getCAFile() {
         return createFile(KEY_CA);
     }
@@ -122,6 +124,7 @@ public class Config {
      * A CA által kiállított érvényes tanúsítvány helye.
      * @return fájl vagy NULL, ha a fájl nem létezik
      */
+    @Override
     public File getCertFile() {
         return createFile(KEY_CERT);
     }
@@ -131,6 +134,7 @@ public class Config {
      * A CA által kiállított érvényes tanúsítvány titkos kulcsának helye.
      * @return fájl vagy NULL, ha a fájl nem létezik
      */
+    @Override
     public File getKeyFile() {
         return createFile(KEY_KEY);
     }
@@ -139,6 +143,7 @@ public class Config {
      * Az opcionális tanúsítvány jelszó értékét adja vissza.
      * Ha nincs megadva, üres karakterlánccal tér vissza.
      */
+    @Override
     public char[] getPassword() {
         if (password != null) return password;
         if (getValues() == null || getValues().get(KEY_PASSWORD) == null) return new char[] {};
@@ -175,6 +180,7 @@ public class Config {
     /**
      * @return true, ha minden érték meg van adva és érvényes, egyébként false
      */
+    @Override
     public boolean isCorrect() {
         return getPort() != null &&
                getCAFile() != null &&

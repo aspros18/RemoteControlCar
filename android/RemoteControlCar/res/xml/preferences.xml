@@ -47,5 +47,11 @@
             android:maxLength="4"
             android:inputType="number"
             android:defaultValue="1000" />
+        <EditTextPreference
+            android:key="password"
+            android:title="@string/title_password"
+            android:summary="@string/summary_password"
+            android:inputType="textUri"
+            android:defaultValue="" />
     </PreferenceCategory>
 </PreferenceScreen>

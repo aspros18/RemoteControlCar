@@ -1,48 +1,30 @@
 package org.dyndns.fzoli.rccar.controller.socket;
 
-import java.io.IOException;
 import java.net.ConnectException;
 import java.net.NoRouteToHostException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.security.GeneralSecurityException;
 import java.security.KeyStoreException;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
-import org.dyndns.fzoli.rccar.controller.Config;
+import org.dyndns.fzoli.rccar.clients.AbstractConnectionHelper;
+import org.dyndns.fzoli.rccar.clients.ClientConfig;
 import static org.dyndns.fzoli.rccar.controller.Main.showConnectionStatus;
 import org.dyndns.fzoli.rccar.controller.view.ConnectionProgressFrame.Status;
-import org.dyndns.fzoli.socket.ClientConnectionHelper;
-import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
 
 /**
  * A vezérlő kliens híd szerverhez való kapcsolódását oldja meg.
  * @author zoli
  */
-public class ConnectionHelper extends ClientConnectionHelper implements ConnectionKeys {
-    
-    /**
-     * A vezérlő konfigurációja.
-     */
-    private final Config CONFIG;
-    
+public class ConnectionHelper extends AbstractConnectionHelper implements ConnectionKeys {
+
     /**
      * Konstruktor.
      * TODO: Egyelőre teszt.
      */
-    public ConnectionHelper(Config config) {
-        super(KEY_DEV_CONTROLLER, new int[] {KEY_CONN_DISCONNECT, KEY_CONN_MESSAGE});
-        CONFIG = config;
-    }
-
-    /**
-     * Socket létrehozása.
-     * Kapcsolódás a híd szerverhez a konfiguráció alapján.
-     */
-    @Override
-    protected SSLSocket createConnection() throws GeneralSecurityException, IOException {
-        return SSLSocketUtil.createClientSocket(CONFIG.getAddress(), CONFIG.getPort(), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile(), CONFIG.getPassword());
+    public ConnectionHelper(ClientConfig config) {
+        super(config, KEY_DEV_CONTROLLER, new int[] {KEY_CONN_DISCONNECT, KEY_CONN_MESSAGE});
     }
 
     /**

@@ -10,6 +10,7 @@
     <string name="title_ca">Authority</string>
     <string name="title_crt">Certificate</string>
     <string name="title_key">Key</string>
+    <string name="title_password">Certificate password</string>
     <string name="title_refresh_interval">Refresh interval</string>
     <string name="title_vehicle">Vehicle</string>
     <string name="summary_address">Edit server address</string>
@@ -17,6 +18,7 @@
     <string name="summary_ca">Search Certificate Authority</string>
     <string name="summary_crt">Search public key</string>
     <string name="summary_key">Search private key</string>
+    <string name="summary_password">Edit optional password</string>
     <string name="summary_refresh_interval">Edit refresh interval</string>
     <string name="summary_vehicle">Select vehicle</string>
     <string name="text_start">Start</string>

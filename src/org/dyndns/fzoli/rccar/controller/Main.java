@@ -317,7 +317,7 @@ public class Main {
                 CONFIG_EDITOR = new ConfigEditorFrame(CONFIG);
                 SELECTION_FRAME = new HostSelectionFrame(AL_EXIT);
                 CONTROLLER_WINDOWS = new ControllerWindows();
-                if (!CONFIG.isFileExists()) { // ha a tanúsítvány fájlok egyike nem létezik
+                if (!CONFIG.isCorrect()) { // ha a tanúsítvány fájlok egyike nem létezik
                     showSettingError((CONFIG.isDefault() ? "Az alapértelmezett konfiguráció nem használható, mert" : "A konfiguráció") + " nem létező fájlra hivatkozik." + LS + "A folytatás előtt a hibát helyre kell hozni.");
                     showSettingDialog(true, 1); // kényszerített beállítás és tanúsítvány lapfül előtérbe hozása
                 }

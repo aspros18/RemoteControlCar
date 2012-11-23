@@ -8,10 +8,17 @@ public class ConnectionIntentReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		String action = intent.getAction();
-		if (action == null) action = "";
-		if (action.equals("android.intent.action.BOOT_COMPLETED")) {
-			if (ConnectionService.isStarted(context)) context.startService(new Intent(context, ConnectionService.class));
+		if (ConnectionService.isStarted(context)) {
+			String action = intent.getAction();
+			if (action == null) action = "";
+			Intent serviceIntent = new Intent(context, ConnectionService.class);
+			if (action.equals("android.intent.action.BOOT_COMPLETED")) {
+				context.startService(serviceIntent);
+			}
+			else if (action.equals("android.net.conn.CONNECTIVITY_CHANGE")) {
+				serviceIntent.putExtra(ConnectionService.KEY_EVENT, ConnectionService.EVT_CONNECTIVITY_CHANGE);
+				context.startService(serviceIntent);
+			}
 		}
 	}
 

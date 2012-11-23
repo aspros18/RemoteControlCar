@@ -20,4 +20,6 @@
     <string name="summary_refresh_interval">Frissítési időköz megadása</string>
     <string name="summary_vehicle">Jármű kiválasztása</string>
     <string name="local_mode">Helyi üzemmód!</string>
+    <string name="set_config">Kérem, adjon meg érvényes konfigurációt.</string>
+    <string name="set_network">Kérem, válasszon ki egy hálózatot.</string>
 </resources>

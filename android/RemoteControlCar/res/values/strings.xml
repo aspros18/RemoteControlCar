@@ -24,4 +24,6 @@
     <string name="text_start">Start</string>
     <string name="text_stop">Stop</string>
     <string name="local_mode">Local mode!</string>
+    <string name="set_config">Please, set a correct configuration.</string>
+    <string name="set_network">Please, select a wireless network.</string>
 </resources>

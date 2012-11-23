@@ -16,7 +16,13 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
 	public ConnectionHelper(ClientConfig config) {
 		super(config, KEY_DEV_HOST, new int[] {KEY_CONN_DISCONNECT, KEY_CONN_MESSAGE});
 	}
-
+	
+	@Override
+	public void connect() {
+		// TODO: a kapcsolódáskor null pointer exception. a hiba a createConnect metódusban keresendő az ősben
+		//super.connect();
+	}
+	
 	@Override
 	protected AbstractSecureClientHandler createHandler(SSLSocket socket, int deviceId, int connectionId) {
 		return new HostHandler(socket, deviceId, connectionId);

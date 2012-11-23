@@ -16,7 +16,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.widget.Toast;
 
 public class ConnectionService extends IOIOService {
 	
@@ -51,18 +50,17 @@ public class ConnectionService extends IOIOService {
 		return vehicle = Vehicles.createVehicle(BINDER, Integer.parseInt(getSharedPreferences(this).getString("vehicle", "0")));
 	}
 	
-	private ConnectionHelper createConnectionHelper(boolean warning) {
+	private ConnectionHelper createConnectionHelper() {
 		config = createConfig(this);
 		if (!config.isCorrect() || !isNetworkAvailable()) {
-			if (warning) Toast.makeText(this, R.string.local_mode, Toast.LENGTH_SHORT).show();
 			return null;
 		}
 		return conn = new ConnectionHelper(config);
 	}
 	
-	private void connect(boolean warning) {
+	private void connect() {
 		disconnect();
-		if (createConnectionHelper(warning) != null) conn.connect();
+		if (createConnectionHelper() != null) conn.connect();
 	}
 	
 	private void disconnect() {
@@ -74,7 +72,7 @@ public class ConnectionService extends IOIOService {
 		super.onStart(intent, startId);
 		if (startId == 1) {
 			initNotification();
-			connect(true);
+			connect();
 			updateNotificationText();
 			setNotificationsVisible(true);
 		}
@@ -87,7 +85,7 @@ public class ConnectionService extends IOIOService {
 			String event = intent.getStringExtra(KEY_EVENT);
 			if (event.equals(EVT_CONNECTIVITY_CHANGE)) {
 				if (startId != 1) setNetworkNotificationVisible(true);
-				if (isNetworkAvailable()) connect(false);
+				if (isNetworkAvailable()) connect();
 				else disconnect();
 			}
 		}
@@ -119,7 +117,7 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	public void updateNotificationText() {
-		setNotificationText("Vehicle" + (isVehicleConnected() ? "" : " NOT") + " OK" + (config.isCorrect() ? "" : "; " + getString(R.string.local_mode)));
+		setNotificationText(getString(R.string.vehicle) + ": " + getString(isVehicleConnected() ? R.string.exists : R.string.not_exists) + "; " + getString(R.string.bridge) + ": " + getString(isBridgeConnected() ? R.string.connected : R.string.not_connected));
 	}
 	
 	private void removeNotification() {
@@ -157,11 +155,16 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	private void removeNotification(int key) {
+		if (nm == null) initNotification();
 		nm.cancel(key);
 	}
 	
 	public boolean isVehicleConnected() {
 		return vehicle.isConnected();
+	}
+	
+	private boolean isBridgeConnected() {
+		return conn != null && conn.isConnected();
 	}
 	
 	private boolean isWarningsEnabled() {

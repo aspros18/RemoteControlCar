@@ -12,8 +12,10 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 
@@ -22,8 +24,11 @@ public class ConnectionService extends IOIOService {
 	private final static int ID_NOTIFY = 0;
 	private final static int ID_NOTIFY_CONFIG = 1;
 	private final static int ID_NOTIFY_NETWORK = 2;
+	private final static int ID_NOTIFY_INST_CAM = 3;
 	
 	private final static String KEY_STARTED = "started";
+	
+	private final static String PACKAGE_CAM = "com.pas.webcam";
 	
 	public final static String KEY_EVENT = "event";
 	public final static String EVT_CONNECTIVITY_CHANGE = "connectivity change";
@@ -117,7 +122,7 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	public void updateNotificationText() {
-		setNotificationText(getString(R.string.vehicle) + ": " + getString(isVehicleConnected() ? R.string.exists : R.string.not_exists) + "; " + getString(R.string.bridge) + ": " + getString(isBridgeConnected() ? R.string.connected : R.string.not_connected));
+		setNotificationText(getString(R.string.vehicle) + ": " + getString(isVehicleConnected() ? R.string.exists : R.string.not_exists) + "; " + getString(R.string.bridge_conn) + ": " + getString(isBridgeConnected() ? R.string.exists : R.string.not_exists) + '.');
 	}
 	
 	private void removeNotification() {
@@ -128,12 +133,12 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	@SuppressWarnings("deprecation")
-	private void addNotification(int resText, Intent intent, int key) {
+	private void addNotification(int resText, Intent intent, int key, boolean removable) {
 		removeNotification(key);
 		if (isWarningsEnabled()) {
 			Notification notification = new Notification(R.drawable.ic_launcher, getString(resText), System.currentTimeMillis());
-			notification.flags |= Notification.FLAG_NO_CLEAR;
-			PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+			notification.flags |= removable ? Notification.FLAG_AUTO_CANCEL : Notification.FLAG_NO_CLEAR;
+			PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, removable ? PendingIntent.FLAG_ONE_SHOT : PendingIntent.FLAG_UPDATE_CURRENT);
 			notification.setLatestEventInfo(getApplicationContext(), getString(R.string.app_name), getString(resText), contentIntent);
 			nm.notify(key, notification);
 		}
@@ -142,16 +147,22 @@ public class ConnectionService extends IOIOService {
 	private void setNotificationsVisible(boolean visible) {
 		setConfigNotificationVisible(visible);
 		setNetworkNotificationVisible(visible);
+		setCamInstallNotificationVisible(visible);
 	}
 	
 	private void setConfigNotificationVisible(boolean visible) {
-		if (visible && !config.isCorrect()) addNotification(R.string.set_config, new Intent(this, MainActivity.class), ID_NOTIFY_CONFIG);
+		if (visible && !config.isCorrect()) addNotification(R.string.set_config, new Intent(this, MainActivity.class), ID_NOTIFY_CONFIG, false);
 		else removeNotification(ID_NOTIFY_CONFIG);
 	}
 	
 	private void setNetworkNotificationVisible(boolean visible) {
-		if (visible && !isNetworkAvailable()) addNotification(R.string.set_network, new Intent(Settings.ACTION_WIRELESS_SETTINGS), ID_NOTIFY_NETWORK);
+		if (visible && !isNetworkAvailable()) addNotification(R.string.set_network, new Intent(Settings.ACTION_WIRELESS_SETTINGS), ID_NOTIFY_NETWORK, false);
 		else removeNotification(ID_NOTIFY_NETWORK);
+	}
+	
+	private void setCamInstallNotificationVisible(boolean visible) {
+		if (visible && !isAppInstalled(PACKAGE_CAM)) addNotification(R.string.install_cam, new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://details?id=" + PACKAGE_CAM)), ID_NOTIFY_INST_CAM, true);
+		else removeNotification(ID_NOTIFY_INST_CAM);
 	}
 	
 	private void removeNotification(int key) {
@@ -185,6 +196,18 @@ public class ConnectionService extends IOIOService {
 			/* Null or Permission Denied */
 			return null;
 		}
+	}
+	
+	private boolean isAppInstalled(String packageName) {
+	    PackageManager pm = getPackageManager();
+	    boolean installed = false;
+	    try {
+	       pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
+	       installed = true;
+	    } catch (PackageManager.NameNotFoundException e) {
+	       installed = false;
+	    }
+	    return installed;
 	}
 	
 	private static SharedPreferences getSharedPreferences(Context context) {

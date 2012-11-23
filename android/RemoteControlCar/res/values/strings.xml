@@ -27,10 +27,9 @@
     <string name="text_stop">Stop</string>
     <string name="set_config">Please, set a correct configuration.</string>
     <string name="set_network">Please, select a wireless network.</string>
+    <string name="install_cam">Please, install the IP Webcam app.</string>
     <string name="vehicle">Vehicle</string>
-    <string name="bridge">Bridge</string>
+    <string name="bridge_conn">Bridge connection</string>
     <string name="exists">exists</string>
     <string name="not_exists">not exists</string>
-    <string name="connected">connected</string>
-    <string name="not_connected">not connected</string>
 </resources>

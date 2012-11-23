@@ -21,12 +21,11 @@
     <string name="summary_refresh_interval">Frissítési időköz megadása</string>
     <string name="summary_vehicle">Jármű kiválasztása</string>
     <string name="summary_warnings">Figyelmeztetések tiltása vagy engedélyezése</string>
-    <string name="set_config">Kérem, adjon meg érvényes konfigurációt.</string>
+    <string name="set_config">Kérem, állítsa be jól a konfigurációt.</string>
     <string name="set_network">Kérem, válasszon ki egy hálózatot.</string>
+    <string name="install_cam">Telepítse az IP Webcam alkalmazást.</string>
     <string name="vehicle">Jármű</string>
-    <string name="bridge">Híd</string>
+    <string name="bridge_conn">Híd kapcsolat</string>
     <string name="exists">van</string>
     <string name="not_exists">nincs</string>
-    <string name="connected">kapcsolódva</string>
-    <string name="not_connected">nincs kapcsolódva</string>
 </resources>

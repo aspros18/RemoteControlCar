@@ -47,6 +47,16 @@ public class Config implements org.dyndns.fzoli.rccar.clients.ClientConfig {
     	return createFile("key");
     }
     
+	@Override
+    public String toString() {
+    	return "Correct: " + isCorrect() +
+    			"; Address: " + getAddress() +
+    			"; Port: " + getPort() +
+    			"; CA: " + getCAFile() +
+    			"; CRT: " + getCertFile() +
+    			"; KEY: " + getKeyFile();
+    }
+    
     private File createFile(String key) {
     	String path = PREFERENCES.getString(key, null);
     	if (path == null) return null;

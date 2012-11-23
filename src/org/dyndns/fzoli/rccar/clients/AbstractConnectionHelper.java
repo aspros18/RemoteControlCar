@@ -16,7 +16,7 @@ public abstract class AbstractConnectionHelper extends ClientConnectionHelper {
     /**
      * Konfiguráció a kapcsolódáshoz.
      */
-    private ClientConfig CONFIG;
+    protected final ClientConfig CONFIG;
     
     /**
      * Egyszerű kapcsolódást megvalósító osztály konstruktora.

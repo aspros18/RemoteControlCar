@@ -152,6 +152,10 @@ public abstract class ClientConnectionHelper {
     private void runHandler(int connectionId, boolean addListener) {
         try {
             SSLSocket conn = createConnection();
+            if (conn == null) {
+                disconnect();
+                return;
+            }
             synchronized(CONNECTIONS) {
                 CONNECTIONS.add(conn);
             }

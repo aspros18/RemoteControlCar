@@ -51,7 +51,12 @@
             android:key="password"
             android:title="@string/title_password"
             android:summary="@string/summary_password"
-            android:inputType="textUri"
+            android:inputType="textPassword"
             android:defaultValue="" />
+        <CheckBoxPreference
+            android:key="warnings"
+            android:title="@string/title_warnings"
+            android:summary="@string/summary_warnings"
+            android:defaultValue="true" />
     </PreferenceCategory>
 </PreferenceScreen>

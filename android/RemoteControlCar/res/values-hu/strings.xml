@@ -11,6 +11,7 @@
     <string name="title_password">Tanúsítvány jelszó</string>
     <string name="title_refresh_interval">Frissítési időköz</string>
     <string name="title_vehicle">Jármű</string>
+    <string name="title_warnings">Figyelmeztetések</string>
     <string name="summary_address">Szerver cím megadása</string>
     <string name="summary_port">Szerver port megadása</string>
     <string name="summary_ca">Certificate Authority tallózása</string>
@@ -19,6 +20,7 @@
     <string name="summary_password">Opcionális jelszó megadása</string>
     <string name="summary_refresh_interval">Frissítési időköz megadása</string>
     <string name="summary_vehicle">Jármű kiválasztása</string>
+    <string name="summary_warnings">Figyelmeztetések tiltása vagy engedélyezése</string>
     <string name="local_mode">Helyi üzemmód!</string>
     <string name="set_config">Kérem, adjon meg érvényes konfigurációt.</string>
     <string name="set_network">Kérem, válasszon ki egy hálózatot.</string>

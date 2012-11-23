@@ -1071,20 +1071,21 @@ containing a value of this type.
         public static final int category_other=0x7f0a0014;
         public static final int category_path=0x7f0a0012;
         public static final int category_security=0x7f0a0013;
-        public static final int local_mode=0x7f0a0027;
+        public static final int local_mode=0x7f0a0029;
         public static final int menu_settings=0x7f0a0010;
-        public static final int set_config=0x7f0a0028;
-        public static final int set_network=0x7f0a0029;
-        public static final int summary_address=0x7f0a001d;
-        public static final int summary_ca=0x7f0a001f;
-        public static final int summary_crt=0x7f0a0020;
-        public static final int summary_key=0x7f0a0021;
-        public static final int summary_password=0x7f0a0022;
-        public static final int summary_port=0x7f0a001e;
-        public static final int summary_refresh_interval=0x7f0a0023;
-        public static final int summary_vehicle=0x7f0a0024;
-        public static final int text_start=0x7f0a0025;
-        public static final int text_stop=0x7f0a0026;
+        public static final int set_config=0x7f0a002a;
+        public static final int set_network=0x7f0a002b;
+        public static final int summary_address=0x7f0a001e;
+        public static final int summary_ca=0x7f0a0020;
+        public static final int summary_crt=0x7f0a0021;
+        public static final int summary_key=0x7f0a0022;
+        public static final int summary_password=0x7f0a0023;
+        public static final int summary_port=0x7f0a001f;
+        public static final int summary_refresh_interval=0x7f0a0024;
+        public static final int summary_vehicle=0x7f0a0025;
+        public static final int summary_warnings=0x7f0a0026;
+        public static final int text_start=0x7f0a0027;
+        public static final int text_stop=0x7f0a0028;
         public static final int title_address=0x7f0a0015;
         public static final int title_ca=0x7f0a0017;
         public static final int title_crt=0x7f0a0018;
@@ -1093,6 +1094,7 @@ containing a value of this type.
         public static final int title_port=0x7f0a0016;
         public static final int title_refresh_interval=0x7f0a001b;
         public static final int title_vehicle=0x7f0a001c;
+        public static final int title_warnings=0x7f0a001d;
         public static final int wrong_value=0x7f0a0011;
     }
     public static final class style {

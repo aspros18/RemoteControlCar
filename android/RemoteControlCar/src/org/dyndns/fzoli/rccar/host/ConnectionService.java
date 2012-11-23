@@ -132,11 +132,13 @@ public class ConnectionService extends IOIOService {
 	@SuppressWarnings("deprecation")
 	private void addNotification(int resText, Intent intent, int key) {
 		removeNotification(key);
-		Notification notification = new Notification(R.drawable.ic_launcher, getString(resText), System.currentTimeMillis());
-		notification.flags |= Notification.FLAG_AUTO_CANCEL;
-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
-		notification.setLatestEventInfo(getApplicationContext(), getString(R.string.app_name), getString(resText), contentIntent);
-		nm.notify(key, notification);
+		if (isWarningsEnabled()) {
+			Notification notification = new Notification(R.drawable.ic_launcher, getString(resText), System.currentTimeMillis());
+			notification.flags |= Notification.FLAG_NO_CLEAR;
+			PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+			notification.setLatestEventInfo(getApplicationContext(), getString(R.string.app_name), getString(resText), contentIntent);
+			nm.notify(key, notification);
+		}
 	}
 	
 	private void setNotificationsVisible(boolean visible) {
@@ -160,6 +162,10 @@ public class ConnectionService extends IOIOService {
 	
 	public boolean isVehicleConnected() {
 		return vehicle.isConnected();
+	}
+	
+	private boolean isWarningsEnabled() {
+		return getSharedPreferences(this).getBoolean("warnings", true);
 	}
 	
 	private boolean isNetworkAvailable() {

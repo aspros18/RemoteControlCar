@@ -1,0 +1,15 @@
+320x240		resolution
+1024x768	photo resolution
+32		quality
+Landscape	orientation
+No limit	FPS limit
+Default		focus mode
+
+IPv4		primary address family
+8080		port
+
+Enabled		audio mode
+false		disable notification
+true		prevent going to sleep
+false		stream on device boot
+

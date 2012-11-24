@@ -23,6 +23,7 @@
     <string name="summary_warnings">Figyelmeztetések tiltása vagy engedélyezése</string>
     <string name="set_config">Kérem, állítsa be jól a konfigurációt.</string>
     <string name="set_network">Kérem, válasszon ki egy hálózatot.</string>
+    <string name="set_gps">Kérem, engedélyezze a GPS szenzort.</string>
     <string name="install_cam">Telepítse az IP Webcam alkalmazást.</string>
     <string name="vehicle">Jármű</string>
     <string name="bridge_conn">Híd kapcsolat</string>

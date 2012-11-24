@@ -26,13 +26,19 @@ public class ConnectionService extends IOIOService {
 	private final static int ID_NOTIFY_CONFIG = 1;
 	private final static int ID_NOTIFY_NETWORK = 2;
 	private final static int ID_NOTIFY_INST_CAM = 3;
+	private final static int ID_NOTIFY_GPS_ENABLE = 4;
 	
 	private final static String KEY_STARTED = "started";
 	
 	private final static String PACKAGE_CAM = "com.pas.webcam";
 	
 	public final static String KEY_EVENT = "event";
-	public final static String EVT_CONNECTIVITY_CHANGE = "connectivity change";
+	public final static String EVT_CONNECTIVITY_CHANGE = ConnectivityManager.CONNECTIVITY_ACTION;
+	public final static String EVT_GPS_SENSOR_CHANGE = LocationManager.PROVIDERS_CHANGED_ACTION;
+	
+	@SuppressWarnings("deprecation")
+	public final static String EVT_APP_INSTALL = Intent.ACTION_PACKAGE_INSTALL;
+	public final static String EVT_APP_ADDED = Intent.ACTION_PACKAGE_ADDED;
 	
 	private final ConnectionBinder BINDER = new ConnectionBinder(this);
 	
@@ -59,15 +65,21 @@ public class ConnectionService extends IOIOService {
 	
 	private ConnectionHelper createConnectionHelper() {
 		config = createConfig(this);
-		if (!config.isCorrect() || !isNetworkAvailable()) {
+		if (!config.isCorrect() || !isNetworkAvailable() || !isAppInstalled(PACKAGE_CAM)) {
 			return null;
 		}
 		return conn = new ConnectionHelper(config);
 	}
 	
 	private void connect() {
-		disconnect();
-		if (createConnectionHelper() != null) conn.connect();
+		connect(false);
+	}
+	
+	private void connect(boolean reconnect) {
+		if (conn == null || reconnect) {
+			disconnect();
+			if (createConnectionHelper() != null) conn.connect();
+		}
 	}
 	
 	private void disconnect() {
@@ -94,6 +106,15 @@ public class ConnectionService extends IOIOService {
 				if (startId != 1) setNetworkNotificationVisible(true);
 				if (isNetworkAvailable()) connect();
 				else disconnect();
+			}
+			else if (event.equals(EVT_GPS_SENSOR_CHANGE)) {
+				if (startId != 1) setGpsEnableNotificationVisible(true);
+			}
+			else if (event.equals(EVT_APP_ADDED) || event.equals(EVT_APP_INSTALL)) {
+				if (startId != 1) {
+					setCamInstallNotificationVisible(true);
+					connect();
+				}
 			}
 		}
 		return START_STICKY;
@@ -149,6 +170,7 @@ public class ConnectionService extends IOIOService {
 	private void setNotificationsVisible(boolean visible) {
 		setConfigNotificationVisible(visible);
 		setNetworkNotificationVisible(visible);
+		setGpsEnableNotificationVisible(visible);
 		setCamInstallNotificationVisible(visible);
 	}
 	
@@ -163,8 +185,13 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	private void setCamInstallNotificationVisible(boolean visible) {
-		if (visible && !isAppInstalled(PACKAGE_CAM)) addNotification(R.string.install_cam, new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://details?id=" + PACKAGE_CAM)), ID_NOTIFY_INST_CAM, true);
+		if (visible && !isAppInstalled(PACKAGE_CAM)) addNotification(R.string.install_cam, new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://details?id=" + PACKAGE_CAM)), ID_NOTIFY_INST_CAM, false);
 		else removeNotification(ID_NOTIFY_INST_CAM);
+	}
+	
+	private void setGpsEnableNotificationVisible(boolean visible) {
+		if (visible && !isGpsEnabled()) addNotification(R.string.set_gps, new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS), ID_NOTIFY_GPS_ENABLE, false);
+		else removeNotification(ID_NOTIFY_GPS_ENABLE);
 	}
 	
 	private void removeNotification(int key) {

@@ -86,13 +86,17 @@ public class MainActivity extends SherlockActivity {
 	}
 	
 	private boolean repaintArrow(Integer mx, Integer my, boolean percent) {
-		if (binder == null || !binder.getService().isVehicleConnected()) return false;
-		
 		if (mx == null || my == null) {
+			if (binder == null) {
+				return false;
+			}
 			arrow.setX(0);
 			arrow.setY(0);
 		}
 		else {
+			if (binder == null || !binder.getService().isVehicleConnected()) {
+				return false;
+			}
 			if (percent) {
 				arrow.setPercentX(mx);
 				arrow.setPercentY(my);

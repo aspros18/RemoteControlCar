@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -40,6 +41,7 @@ public class ConnectionService extends IOIOService {
 	private ConnectionHelper conn;
 	
 	private ConnectivityManager cm;
+	private LocationManager lm;
 	
 	private NotificationManager nm;
 	private Notification notification;
@@ -196,6 +198,11 @@ public class ConnectionService extends IOIOService {
 			/* Null or Permission Denied */
 			return null;
 		}
+	}
+	
+	private boolean isGpsEnabled() {
+		if (lm == null) lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+		return lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
 	}
 	
 	private boolean isAppInstalled(String packageName) {

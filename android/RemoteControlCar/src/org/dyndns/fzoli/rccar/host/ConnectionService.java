@@ -159,7 +159,7 @@ public class ConnectionService extends IOIOService {
 	private void addNotification(int resText, Intent intent, int key, boolean removable) {
 		removeNotification(key);
 		if (isWarningsEnabled()) {
-			Notification notification = new Notification(R.drawable.ic_launcher, getString(resText), System.currentTimeMillis());
+			Notification notification = new Notification(R.drawable.ic_warning, getString(resText), System.currentTimeMillis());
 			notification.flags |= removable ? Notification.FLAG_AUTO_CANCEL : Notification.FLAG_NO_CLEAR;
 			PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, removable ? PendingIntent.FLAG_ONE_SHOT : PendingIntent.FLAG_UPDATE_CURRENT);
 			notification.setLatestEventInfo(getApplicationContext(), getString(R.string.app_name), getString(resText), contentIntent);

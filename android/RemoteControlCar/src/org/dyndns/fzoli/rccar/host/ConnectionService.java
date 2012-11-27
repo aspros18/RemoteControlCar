@@ -65,7 +65,7 @@ public class ConnectionService extends IOIOService {
 	
 	private ConnectionHelper createConnectionHelper() {
 		config = createConfig(this);
-		if (!config.isCorrect() || !isNetworkAvailable() || !isAppInstalled(PACKAGE_CAM)) {
+		if (isOfflineMode() || !config.isCorrect() || !isNetworkAvailable() || !isAppInstalled(PACKAGE_CAM)) {
 			return null;
 		}
 		return conn = new ConnectionHelper(config);
@@ -145,7 +145,7 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	public void updateNotificationText() {
-		setNotificationText(getString(R.string.vehicle) + ": " + getString(isVehicleConnected() ? R.string.exists : R.string.not_exists) + "; " + getString(R.string.bridge_conn) + ": " + getString(isBridgeConnected() ? R.string.exists : R.string.not_exists) + '.');
+		setNotificationText(getString(R.string.vehicle) + ": " + getString(isVehicleConnected() ? R.string.exists : R.string.not_exists) + "; " + (isOfflineMode() ? getString(R.string.title_offline) : (getString(R.string.bridge_conn) + ": " + getString(isBridgeConnected() ? R.string.exists : R.string.not_exists))) + '.');
 	}
 	
 	private void removeNotification() {
@@ -155,16 +155,20 @@ public class ConnectionService extends IOIOService {
 		contentIntent = null;
 	}
 	
+	private void addOnlineNotification(int resText, Intent intent, int key, boolean removable) {
+		if (!isOfflineMode()) {
+			addNotification(resText, intent, key, removable);
+		}
+	}
+	
 	@SuppressWarnings("deprecation")
 	private void addNotification(int resText, Intent intent, int key, boolean removable) {
 		removeNotification(key);
-		if (isWarningsEnabled()) {
-			Notification notification = new Notification(R.drawable.ic_warning, getString(resText), System.currentTimeMillis());
-			notification.flags |= removable ? Notification.FLAG_AUTO_CANCEL : Notification.FLAG_NO_CLEAR;
-			PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, removable ? PendingIntent.FLAG_ONE_SHOT : PendingIntent.FLAG_UPDATE_CURRENT);
-			notification.setLatestEventInfo(getApplicationContext(), getString(R.string.app_name), getString(resText), contentIntent);
-			nm.notify(key, notification);
-		}
+		Notification notification = new Notification(R.drawable.ic_warning, getString(resText), System.currentTimeMillis());
+		notification.flags |= removable ? Notification.FLAG_AUTO_CANCEL : Notification.FLAG_NO_CLEAR;
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, removable ? PendingIntent.FLAG_ONE_SHOT : PendingIntent.FLAG_UPDATE_CURRENT);
+		notification.setLatestEventInfo(getApplicationContext(), getString(R.string.app_name), getString(resText), contentIntent);
+		nm.notify(key, notification);
 	}
 	
 	private void setNotificationsVisible(boolean visible) {
@@ -175,22 +179,22 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	private void setConfigNotificationVisible(boolean visible) {
-		if (visible && !config.isCorrect()) addNotification(R.string.set_config, new Intent(this, MainActivity.class), ID_NOTIFY_CONFIG, false);
+		if (visible && !config.isCorrect()) addOnlineNotification(R.string.set_config, new Intent(this, MainActivity.class), ID_NOTIFY_CONFIG, false);
 		else removeNotification(ID_NOTIFY_CONFIG);
 	}
 	
 	private void setNetworkNotificationVisible(boolean visible) {
-		if (visible && !isNetworkAvailable()) addNotification(R.string.set_network, new Intent(Settings.ACTION_WIRELESS_SETTINGS), ID_NOTIFY_NETWORK, false);
+		if (visible && !isNetworkAvailable()) addOnlineNotification(R.string.set_network, new Intent(Settings.ACTION_WIRELESS_SETTINGS), ID_NOTIFY_NETWORK, false);
 		else removeNotification(ID_NOTIFY_NETWORK);
 	}
 	
 	private void setCamInstallNotificationVisible(boolean visible) {
-		if (visible && !isAppInstalled(PACKAGE_CAM)) addNotification(R.string.install_cam, new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://details?id=" + PACKAGE_CAM)), ID_NOTIFY_INST_CAM, false);
+		if (visible && !isAppInstalled(PACKAGE_CAM)) addOnlineNotification(R.string.install_cam, new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://details?id=" + PACKAGE_CAM)), ID_NOTIFY_INST_CAM, false);
 		else removeNotification(ID_NOTIFY_INST_CAM);
 	}
 	
 	private void setGpsEnableNotificationVisible(boolean visible) {
-		if (visible && !isGpsEnabled()) addNotification(R.string.set_gps, new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS), ID_NOTIFY_GPS_ENABLE, false);
+		if (visible && !isGpsEnabled()) addOnlineNotification(R.string.set_gps, new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS), ID_NOTIFY_GPS_ENABLE, false);
 		else removeNotification(ID_NOTIFY_GPS_ENABLE);
 	}
 	
@@ -207,8 +211,8 @@ public class ConnectionService extends IOIOService {
 		return conn != null && conn.isConnected();
 	}
 	
-	private boolean isWarningsEnabled() {
-		return getSharedPreferences(this).getBoolean("warnings", true);
+	private boolean isOfflineMode() {
+		return getSharedPreferences(this).getBoolean("offline", false);
 	}
 	
 	private boolean isNetworkAvailable() {

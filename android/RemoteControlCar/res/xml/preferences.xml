@@ -54,9 +54,9 @@
             android:inputType="textPassword"
             android:defaultValue="" />
         <CheckBoxPreference
-            android:key="warnings"
-            android:title="@string/title_warnings"
-            android:summary="@string/summary_warnings"
-            android:defaultValue="true" />
+            android:key="offline"
+            android:title="@string/title_offline"
+            android:summary="@string/summary_offline"
+            android:defaultValue="false" />
     </PreferenceCategory>
 </PreferenceScreen>

@@ -109,7 +109,8 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
             case KEY_CONN_DISCONNECT:
                 return new BridgeDisconnectProcess(this);
             case KEY_CONN_MESSAGE:
-                return new ControllerSideMessageProcess(this);
+                if (getDeviceId().equals(KEY_DEV_CONTROLLER)) return new ControllerSideMessageProcess(this);
+                else return new HostSideMessageProcess(this);
         }
         return null;
     }

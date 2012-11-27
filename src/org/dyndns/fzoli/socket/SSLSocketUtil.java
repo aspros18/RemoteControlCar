@@ -3,6 +3,8 @@ package org.dyndns.fzoli.socket;
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.HashMap;
+import java.util.Map;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
 import org.apache.commons.ssl.KeyMaterial;
@@ -15,6 +17,12 @@ import org.apache.commons.ssl.TrustMaterial;
  * @author zoli
  */
 public class SSLSocketUtil {
+    
+    /**
+     * Kliens kapcsolatok létrehozását segítő SSLClient objektumok tárolója.
+     * Cache szerepet tölt be, hogy ugyan azokhoz a fájlokhoz ne kelljen újra példányosítást végrehajtani több kapcsolat nyitásakor.
+     */
+    private static final Map<String, SSLClient> CLIENT_CACHE = new HashMap<String, SSLClient>();
     
     /**
      * SSL Server socket létrehozása.
@@ -42,17 +50,51 @@ public class SSLSocketUtil {
      * @param crt az egyetlen megbízható CA által kiállított tanúsítvány
      * @param key a tanúsítvány titkos kulcsa
      * @param passwd a használandó tanúsítvány jelszava, ha van, egyébként null
+     * @throws NullPointerException ha a jelszó kivételével nincs megadva az egyik paraméter
      */
     public static SSLSocket createClientSocket(String host, int port, File ca, File crt, File key, char[] passwd) throws GeneralSecurityException, IOException {
         if (passwd == null) passwd = new char[] {}; // ha nincs jelszó megadva, üres jelszó létrehozása
-        SSLClient client = new SSLClient(); // SSL kliens socket létrehozására kell
-        client.setKeyMaterial(new KeyMaterial(crt, key, passwd)); //publikus és privát kulcs megadása a kapcsolathoz
-        client.setTrustMaterial(new TrustMaterial(ca)); // csak a megadott CA és az ő általa kiállított tanusítványok legyenek megbízhatóak
-        client.setCheckHostname(false); // hostname ellenőrzés kikapcsolása, minden más engedélyezése
-        client.setCheckExpiry(true); // lejárat ellenőrzés
-        client.setCheckCRL(true); // visszavonás ellenőrzés
+        String cacheId = getCacheId(ca, crt, key); // cache id generálása
+        SSLClient client;
+        synchronized (CLIENT_CACHE) {
+            client = CLIENT_CACHE.get(cacheId); // a múltban létrehozott SSLClient objektum megszerzése, ha van
+            if (client == null) { // ha még nem volt létrehozva, létrehozás és beállítás
+                client = new SSLClient(); // SSL kliens socket létrehozására kell
+                client.setKeyMaterial(new KeyMaterial(crt, key, passwd)); //publikus és privát kulcs megadása a kapcsolathoz
+                client.setTrustMaterial(new TrustMaterial(ca)); // csak a megadott CA és az ő általa kiállított tanusítványok legyenek megbízhatóak
+                client.setCheckHostname(false); // hostname ellenőrzés kikapcsolása, minden más engedélyezése
+                client.setCheckExpiry(true); // lejárat ellenőrzés
+                client.setCheckCRL(true); // visszavonás ellenőrzés
+                CLIENT_CACHE.put(cacheId, client); // cachelés a memóriába
+            }
+        }
         SSLSocket s = (SSLSocket) client.createSocket(host, port); // kliens socket létrehozása és kapcsolódás
         return s;
+    }
+    
+    /**
+     * A tanúsítványfájlok alapján cachelt objektumot ad vissza, ha van.
+     */
+    public static SSLClient getClientCache(File ca, File crt, File key) {
+        synchronized (CLIENT_CACHE) {
+            return CLIENT_CACHE.get(getCacheId(ca, crt, key));
+        }
+    }
+    
+    /**
+     * A tanúsítványfájlok alapján cachelt objektumot állít be.
+     */
+    public static void setClientCache(File ca, File crt, File key, SSLClient client) {
+        synchronized (CLIENT_CACHE) {
+            CLIENT_CACHE.put(getCacheId(ca, crt, key), client);
+        }
+    }
+    
+    /**
+     * Cache ID generátor.
+     */
+    private static String getCacheId(File ca, File crt, File key) {
+        return ca.getAbsolutePath() + crt.getAbsolutePath() + key.getAbsolutePath();
     }
     
 }

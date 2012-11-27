@@ -50,6 +50,11 @@ public abstract class ClientConnectionHelper {
     };
     
     /**
+     * Kapcsolódás megszakítására létrehozott segédváltozó.
+     */
+    private boolean cancelled;
+    
+    /**
      * Egyszerű kapcsolódást megvalósító osztály konstruktora.
      * @param deviceId eszközazonosító
      * @param connectionIds kapcsolatazonosítókat tartalmazó tömb
@@ -152,7 +157,7 @@ public abstract class ClientConnectionHelper {
     private void runHandler(int connectionId, boolean addListener) {
         try {
             SSLSocket conn = createConnection();
-            if (conn == null) {
+            if (conn == null || cancelled) {
                 disconnect();
                 return;
             }
@@ -178,6 +183,7 @@ public abstract class ClientConnectionHelper {
      * Ha a kapcsolódás folyamatban van már, nem csinál semmit.
      */
     public void connect() {
+        cancelled = false;
         if (isConnecting() || isConnected()) return;
         new Thread(new Runnable() {
 
@@ -193,6 +199,7 @@ public abstract class ClientConnectionHelper {
      * A kapcsolatok bezárása.
      */
     public void disconnect() {
+        cancelled = true;
         synchronized(CONNECTIONS) {
             Iterator<SSLSocket> it = CONNECTIONS.iterator();
             while (it.hasNext()) {

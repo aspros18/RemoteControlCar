@@ -7,7 +7,7 @@ import javax.net.ssl.SSLSocket;
 
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import org.dyndns.fzoli.rccar.clients.AbstractConnectionHelper;
-import org.dyndns.fzoli.rccar.clients.ClientConfig;
+import org.dyndns.fzoli.rccar.host.ConnectionService;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
 
 import android.util.Log;
@@ -18,8 +18,11 @@ import android.util.Log;
  */
 public class ConnectionHelper extends AbstractConnectionHelper implements ConnectionKeys {
 
-	public ConnectionHelper(ClientConfig config) {
-		super(config, KEY_DEV_HOST, new int[] {KEY_CONN_DISCONNECT, KEY_CONN_MESSAGE});
+	private final ConnectionService SERVICE;
+	
+	public ConnectionHelper(ConnectionService service) {
+		super(service.getConfig(), KEY_DEV_HOST, new int[] {KEY_CONN_DISCONNECT, KEY_CONN_MESSAGE});
+		SERVICE = service;
 	}
 	
 	@Override
@@ -35,14 +38,20 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
 	}
 	
 	@Override
-	public void connect() {
-		// TODO: a kapcsolódáskor null pointer exception. a hiba a createConnect metódusban keresendő az ősben
-		super.connect();
+	public void disconnect() {
+		super.disconnect();
+		SERVICE.updateNotificationText();
+	}
+	
+	@Override
+	protected void onConnected() {
+		super.onConnected();
+		SERVICE.updateNotificationText();
 	}
 	
 	@Override
 	protected AbstractSecureClientHandler createHandler(SSLSocket socket, int deviceId, int connectionId) {
-		return new HostHandler(socket, deviceId, connectionId);
+		return new HostHandler(SERVICE, socket, deviceId, connectionId);
 	}
 
 }

@@ -53,6 +53,14 @@ public class ConnectionService extends IOIOService {
 	private Notification notification;
 	private PendingIntent contentIntent;
 	
+	public Config getConfig() {
+		return config;
+	}
+	
+	public ConnectionBinder getBinder() {
+		return BINDER;
+	}
+	
 	@Override
 	public ConnectionBinder onBind(Intent intent) {
 		return BINDER;
@@ -68,7 +76,7 @@ public class ConnectionService extends IOIOService {
 		if (isOfflineMode() || !config.isCorrect() || !isNetworkAvailable() || !isAppInstalled(PACKAGE_CAM)) {
 			return null;
 		}
-		return conn = new ConnectionHelper(config);
+		return conn = new ConnectionHelper(this);
 	}
 	
 	private void connect() {

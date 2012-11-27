@@ -6,31 +6,36 @@
             android:title="@string/title_address"
             android:summary="@string/summary_address"
             android:inputType="textUri"
-            android:defaultValue="10.0.2.2" />
+            android:defaultValue="10.0.2.2"
+            android:dependency="offline" />
         <EditTextPreference
             android:key="port"
             android:title="@string/title_port"
             android:summary="@string/summary_port"
             android:maxLength="5"
             android:inputType="number"
-            android:defaultValue="8443" />
+            android:defaultValue="8443"
+            android:dependency="offline" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/category_security">
         <org.dyndns.fzoli.android.preference.FilePreference
             android:id="@+id/file_ca"
             android:key="ca"
             android:title="@string/title_ca"
-            android:summary="@string/summary_ca" />
+            android:summary="@string/summary_ca"
+            android:dependency="offline" />
         <org.dyndns.fzoli.android.preference.FilePreference
             android:id="@+id/file_crt"
             android:key="crt"
             android:title="@string/title_crt"
-            android:summary="@string/summary_crt" />
+            android:summary="@string/summary_crt"
+            android:dependency="offline" />
         <org.dyndns.fzoli.android.preference.FilePreference
             android:id="@+id/file_key"
             android:key="key"
             android:title="@string/title_key"
-            android:summary="@string/summary_key" />
+            android:summary="@string/summary_key"
+            android:dependency="offline" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/category_other">
         <ListPreference
@@ -46,17 +51,20 @@
             android:summary="@string/summary_refresh_interval"
             android:maxLength="4"
             android:inputType="number"
-            android:defaultValue="1000" />
+            android:defaultValue="1000"
+            android:dependency="offline" />
         <EditTextPreference
             android:key="password"
             android:title="@string/title_password"
             android:summary="@string/summary_password"
             android:inputType="textPassword"
-            android:defaultValue="" />
+            android:defaultValue=""
+            android:dependency="offline" />
         <CheckBoxPreference
             android:key="offline"
             android:title="@string/title_offline"
             android:summary="@string/summary_offline"
-            android:defaultValue="false" />
+            android:defaultValue="false"
+            android:disableDependentsState="true" />
     </PreferenceCategory>
 </PreferenceScreen>

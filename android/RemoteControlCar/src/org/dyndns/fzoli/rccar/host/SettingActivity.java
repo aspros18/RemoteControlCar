@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import org.dyndns.fzoli.android.preference.TextWatcherAdapter;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
+import com.actionbarsherlock.view.MenuItem;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -123,9 +124,19 @@ public class SettingActivity extends SherlockPreferenceActivity {
 	@SuppressWarnings("deprecation")
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true); // vissza nyíl az ikon mellé
 		addPreferencesFromResource(R.xml.preferences);
 		initEditTextPreferences();
 		initFilePreferences();
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case android.R.id.home:
+				finish(); // vissza nyílra kattintva, activity bezárása
+		}
+		return super.onOptionsItemSelected(item);
 	}
 	
 	/**

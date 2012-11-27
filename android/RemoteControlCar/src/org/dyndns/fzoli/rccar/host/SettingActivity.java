@@ -3,9 +3,12 @@ package org.dyndns.fzoli.rccar.host;
 import static org.dyndns.fzoli.android.preference.FilePreference.getPath;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.dyndns.fzoli.android.preference.TextWatcherAdapter;
+import org.dyndns.fzoli.socket.SSLSocketUtil;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.actionbarsherlock.view.MenuItem;
@@ -116,6 +119,11 @@ public class SettingActivity extends SherlockPreferenceActivity {
 	};
 
 	/**
+	 * Az activity megnyitásakor aktuális fájlok értékei.
+	 */
+	private final Map<String, String> OLD_FILES = new HashMap<String, String>();
+	
+	/**
 	 * Ez a metódus fut le, amikor létrejön az Activity.
 	 * - Legenerálódik a nézet a preferences.xml fájl alapján.
 	 * - A fájlkereső opciók címsora alatt megjelennek az aktuálisan beállított fájlok nevei.
@@ -151,6 +159,10 @@ public class SettingActivity extends SherlockPreferenceActivity {
 		if (data != null) {
 			String key = KEYS.get(requestCode);
 			String path = getPath(this, data.getData());
+			String old_path = OLD_FILES.get(key);
+			if (path != null && old_path != null && !old_path.equals(path)) {
+				SSLSocketUtil.clearClientCache();
+			}
 			getPreferenceManager().getSharedPreferences().edit().putString(key, path).commit();
 			showFileName(key, path);
 		}
@@ -177,6 +189,7 @@ public class SettingActivity extends SherlockPreferenceActivity {
 			String path = getPreferenceManager().getSharedPreferences().getString(key, null);
 			if (path != null) {
 				showFileName(key, path);
+				OLD_FILES.put(key, path);
 			}
 		}
 	}

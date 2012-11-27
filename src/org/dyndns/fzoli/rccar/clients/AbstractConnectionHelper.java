@@ -5,6 +5,7 @@ import java.security.GeneralSecurityException;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.socket.ClientConnectionHelper;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
+import org.dyndns.fzoli.socket.SSLSocketUtil.Callback;
 
 /**
  * Kliens oldalra egyszerű kapcsolódást megvalósító osztály.
@@ -35,7 +36,14 @@ public abstract class AbstractConnectionHelper extends ClientConnectionHelper {
      */
     @Override
     protected SSLSocket createConnection() throws GeneralSecurityException, IOException {
-        return SSLSocketUtil.createClientSocket(CONFIG.getAddress(), CONFIG.getPort(), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile(), CONFIG.getPassword());
+        return SSLSocketUtil.createClientSocket(CONFIG.getAddress(), CONFIG.getPort(), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile(), CONFIG.getPassword(), new Callback() {
+
+            @Override
+            public boolean onConnect() {
+                return !isCancelled();
+            }
+            
+        });
     }
     
 }

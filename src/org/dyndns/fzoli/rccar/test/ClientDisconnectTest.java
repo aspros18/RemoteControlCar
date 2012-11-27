@@ -81,7 +81,7 @@ public class ClientDisconnectTest implements ConnectionKeys {
 
             @Override
             protected SSLSocket createConnection() throws GeneralSecurityException, IOException {
-                return SSLSocketUtil.createClientSocket(url, 8443, new File("test-certs/ca.crt"), new File("test-certs/controller.crt"), new File("test-certs/controller.key"), new char[]{});
+                return SSLSocketUtil.createClientSocket(url, 8443, new File("test-certs/ca.crt"), new File("test-certs/controller.crt"), new File("test-certs/controller.key"), new char[]{}, null);
             }
 
             @Override

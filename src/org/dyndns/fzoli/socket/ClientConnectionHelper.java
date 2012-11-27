@@ -175,6 +175,13 @@ public abstract class ClientConnectionHelper {
             onException(ex, connectionId);
         }
     }
+
+    /**
+     * Kapcsolat kialakításakor megadható callback segédmetódusa.
+     */
+    protected boolean isCancelled() {
+        return cancelled;
+    }
     
     /**
      * Kapcsolódás a szerverhez.

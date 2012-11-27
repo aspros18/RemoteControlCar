@@ -19,6 +19,19 @@ import org.apache.commons.ssl.TrustMaterial;
 public class SSLSocketUtil {
     
     /**
+     * Callback, amivel megszakítható a kapcsolódás, ha idő közben a kliens meggondolja magát.
+     */
+    public static interface Callback {
+        
+        /**
+         * A kapcsolódás előtt fut le.
+         * @return true, ha a kapcsolódás elindulhat egyébként false
+         */
+        public boolean onConnect();
+        
+    }
+    
+    /**
      * Kliens kapcsolatok létrehozását segítő SSLClient objektumok tárolója.
      * Cache szerepet tölt be, hogy ugyan azokhoz a fájlokhoz ne kelljen újra példányosítást végrehajtani több kapcsolat nyitásakor.
      */
@@ -52,7 +65,7 @@ public class SSLSocketUtil {
      * @param passwd a használandó tanúsítvány jelszava, ha van, egyébként null
      * @throws NullPointerException ha a jelszó kivételével nincs megadva az egyik paraméter
      */
-    public static SSLSocket createClientSocket(String host, int port, File ca, File crt, File key, char[] passwd) throws GeneralSecurityException, IOException {
+    public static SSLSocket createClientSocket(String host, int port, File ca, File crt, File key, char[] passwd, Callback callback) throws GeneralSecurityException, IOException {
         if (passwd == null) passwd = new char[] {}; // ha nincs jelszó megadva, üres jelszó létrehozása
         String cacheId = getCacheId(ca, crt, key); // cache id generálása
         SSLClient client;
@@ -68,8 +81,8 @@ public class SSLSocketUtil {
                 CLIENT_CACHE.put(cacheId, client); // cachelés a memóriába
             }
         }
-        SSLSocket s = (SSLSocket) client.createSocket(host, port); // kliens socket létrehozása és kapcsolódás
-        return s;
+        if (callback != null && !callback.onConnect()) return null; // a kapcsolódás megszakítása, ha kell
+        return (SSLSocket) client.createSocket(host, port); // kliens socket létrehozása és kapcsolódás
     }
     
     /**
@@ -87,6 +100,15 @@ public class SSLSocketUtil {
     public static void setClientCache(File ca, File crt, File key, SSLClient client) {
         synchronized (CLIENT_CACHE) {
             CLIENT_CACHE.put(getCacheId(ca, crt, key), client);
+        }
+    }
+    
+    /**
+     * Kiüríti a cachet memória-helyfelszabadítás céljából.
+     */
+    public static void clearClientCache() {
+        synchronized (CLIENT_CACHE) {
+            CLIENT_CACHE.clear();
         }
     }
     

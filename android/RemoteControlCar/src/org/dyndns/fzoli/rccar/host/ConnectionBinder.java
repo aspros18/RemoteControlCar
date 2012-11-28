@@ -100,7 +100,7 @@ public class ConnectionBinder extends Binder {
 	
 	public void setListener(Listener listener) {
 		mListener = listener;
-		if (listener != null && getService().isConnectionCreated()) {
+		if (listener != null && getService().isConnectionCreated() && !getService().isBridgeConnected()) {
 			listener.onConnectionStateChange(true);
 		}
 	}

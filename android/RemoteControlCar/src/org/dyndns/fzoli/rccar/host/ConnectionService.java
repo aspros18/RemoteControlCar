@@ -280,7 +280,7 @@ public class ConnectionService extends IOIOService {
 		return vehicle.isConnected();
 	}
 	
-	private boolean isBridgeConnected() {
+	public boolean isBridgeConnected() {
 		return conn != null && conn.isConnected();
 	}
 	

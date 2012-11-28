@@ -71,9 +71,14 @@ public class SettingActivity extends SherlockPreferenceActivity {
 	private static final Pattern PT_ADDRESS = Pattern.compile("^[a-z\\d]{1}[\\w\\.\\d]{0,18}[a-z\\d]{1}$", Pattern.CASE_INSENSITIVE);
 	
 	/**
-	 * Csak azokat a karaktereket engedi meg leütni, melyek biztosan használhatóak.
+	 * A felhasználónév és jelszó ellenőrzésére használt regex.
 	 */
-	private static final TextWatcher TW_ADDRESS = new TextWatcherAdapter() {
+	private static final Pattern PT_LOGIN = Pattern.compile("^[a-z_.\\d]{0,20}$", Pattern.CASE_INSENSITIVE);
+	
+	/**
+	 * Szöveg alapú bevitelimező validáláshoz segédosztály.
+	 */
+	private static abstract class StringWatcherAdapter extends TextWatcherAdapter {
     	
 		/**
 		 * Az előző szöveg.
@@ -82,19 +87,31 @@ public class SettingActivity extends SherlockPreferenceActivity {
 		private String tmp;
 
 		@Override
-		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+		public final void beforeTextChanged(CharSequence s, int start, int count, int after) {
 			tmp = s.toString(); // még mielőtt változik a szöveg, elmentődik a régi
 		}
 
 		@Override
-		public void afterTextChanged(Editable s) {
+		public final void afterTextChanged(Editable s) {
 			String text = s.toString(); // miután megváltozott a szöveg
-			if (text.length() < 2 || text.endsWith(".")) return; // ha a szöveg nem felel meg a követelményeknek, de később még megfelelhet, nincs ellenőrzés 
-			if (!PT_ADDRESS.matcher(text).matches()) {
+			if (skipValidate(text)) return; // ha a szöveg nem felel meg a követelményeknek, de később még megfelelhet, nincs ellenőrzés 
+			if (!isValid(text)) {
 				resetText(s); // ha nem felel meg a szöveg a követelményeknek, visszaállítás
 			}
 		}
 
+		/**
+		 * Ha a szöveg nem felel meg a követelményeknek, de még megfelelhet, true.
+		 */
+		protected boolean skipValidate(String text) {
+			return false;
+		}
+		
+		/**
+		 * Ha a szöveg megfelel a követelményeknek, true.
+		 */
+		protected abstract boolean isValid(String text);
+		
 		/**
 		 * Visszaállítja a szöveget az előző állapotra, ha a szöveg eltérő.
 		 */
@@ -103,7 +120,49 @@ public class SettingActivity extends SherlockPreferenceActivity {
 		}
 
 	};
+	
+	/**
+	 * Felhasználónév és jelszó ellenőrzésre.
+	 */
+	private static final TextWatcher TW_LOGIN = new StringWatcherAdapter() {
 
+		@Override
+		protected boolean isValid(String text) {
+			return PT_LOGIN.matcher(text).matches();
+		}
+		
+	};
+	
+	/**
+	 * Csak azokat a karaktereket engedi meg leütni, melyek biztosan használhatóak a címben.
+	 */
+	private static final TextWatcher TW_ADDRESS = new StringWatcherAdapter() {
+
+		@Override
+		protected boolean skipValidate(String text) {
+			return text.length() < 2 || text.endsWith(".");
+		}
+
+		@Override
+		protected boolean isValid(String text) {
+			return PT_ADDRESS.matcher(text).matches();
+		}
+
+	};
+	
+	/**
+	 * Ha a bejelentkezési adat hibás, nem menti a módosulást.
+	 */
+	private final OnPreferenceChangeListener CL_LOGIN = new OnPreferenceChangeListener() {
+
+		public boolean onPreferenceChange(Preference preference, Object newValue) {
+			boolean ok = PT_LOGIN.matcher(newValue.toString()).matches();
+			if (!ok) showWarning();
+			return ok;
+		};
+
+	};
+	
 	/**
 	 * Ha a cím beírása félbeszakad, előfordulhat, hogy hibás az érték.
 	 * Ha az érték nem megfelelő, a szöveg nem módosul és figyelmeztetve lesz a felhasználó.
@@ -202,6 +261,8 @@ public class SettingActivity extends SherlockPreferenceActivity {
 		initEditTextPreference("port", TW_PORT, CL_PORT);
 		initEditTextPreference("refresh_interval", TW_REFRESH, CL_REFRESH);
 		initEditTextPreference("cam_port", TW_PORT, CL_PORT);
+		initEditTextPreference("cam_user", TW_LOGIN, CL_LOGIN);
+		initEditTextPreference("cam_password", TW_LOGIN, CL_LOGIN);
 	}
 	
 	/**

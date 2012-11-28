@@ -89,6 +89,7 @@ public class ConnectionService extends IOIOService {
 	private void startIPWebcam() {
 		if (isAppInstalled(PACKAGE_CAM)) {
 			SharedPreferences pref = getSharedPreferences(this);
+			String port = pref.getString("cam_port", "8080");
 			String user = pref.getString("cam_user", "");
 			String password = pref.getString("cam_password", "");
 			Intent launcher = new Intent().setAction(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME);
@@ -97,11 +98,12 @@ public class ConnectionService extends IOIOService {
 				.setClassName("com.pas.webcam", "com.pas.webcam.Rolling")
 				.putExtra("cheats", new String[] {
 						"set(Awake,true)", // ébrenlét fenntartása
+						"set(Notification,true)", // rendszerikon ne legyen rejtve
 						"set(Audio,1)", // audio stream kikapcsolása
 						"set(Video,320,240)", // videó felbontás 320x240
 						"set(DisableVideo,false)", // videó stream engedélyezése
 						"set(Quality,30)", // JPEQ képkockák minősége 30 százalék
-						"reset(Port)", // port beállítása az alapértelmezett 8080-ra
+						"set(Port," + port + ")", // figyelés beállítása a 8080-as portra
 						"set(Login," + user + ")", // felhasználónév beállítása a konfig alapján
 						"set(Password," + password + ")" // jelszó beállítása a konfig alapján
 						})
@@ -112,7 +114,7 @@ public class ConnectionService extends IOIOService {
 			    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // activity indítása új folyamatként, hogy a service elindíthassa
 			startActivity(ipwebcam); // a program indítása a fenti konfigurációval
 			try {
-				HttpURLConnection conn = (HttpURLConnection) new URL("http://127.0.0.1:8080/videofeed").openConnection(); //kapcsolat objektum létrehozása
+				HttpURLConnection conn = (HttpURLConnection) new URL("http://127.0.0.1:" + port + "/videofeed").openConnection(); //kapcsolat objektum létrehozása
 	            conn.setRequestMethod("GET"); // GET metódus beállítása
 	            conn.setRequestProperty("Authorization", Base64.encodeBase64String(new String(user + ':' + password).getBytes()));
 	            // most, hogy minden be van állítva, kapcsolódás

@@ -19,6 +19,7 @@
     <string name="summary_ca">Certificate Authority tallózása</string>
     <string name="summary_crt">Publikus kulcs tallózása</string>
     <string name="summary_key">Privát kulcs tallózása</string>
+    <string name="summary_cam_port">Szerver port megadása</string>
     <string name="summary_cam_user">Szerver felhasználónév megadása</string>
     <string name="summary_cam_password">Szerver jelszó megadása</string>
     <string name="summary_password">Opcionális jelszó megadása</string>

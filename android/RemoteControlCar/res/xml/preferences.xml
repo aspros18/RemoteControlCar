@@ -39,6 +39,14 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/category_cam">
         <EditTextPreference
+            android:key="cam_port"
+            android:title="@string/title_cam_port"
+            android:summary="@string/summary_cam_port"
+            android:maxLength="5"
+            android:inputType="number"
+            android:defaultValue="8080"
+            android:dependency="offline" />
+        <EditTextPreference
             android:key="cam_user"
             android:title="@string/title_cam_user"
             android:summary="@string/summary_cam_user"

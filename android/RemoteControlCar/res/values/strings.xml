@@ -11,6 +11,7 @@
     <string name="title_ca">Authority</string>
     <string name="title_crt">Certificate</string>
     <string name="title_key">Key</string>
+    <string name="title_cam_port">Port</string>
     <string name="title_cam_user">User</string>
     <string name="title_cam_password">Password</string>
     <string name="title_password">Certificate password</string>
@@ -22,6 +23,7 @@
     <string name="summary_ca">Search Certificate Authority</string>
     <string name="summary_crt">Search public key</string>
     <string name="summary_key">Search private key</string>
+    <string name="summary_cam_port">Edit server port</string>
     <string name="summary_cam_user">Edit server user</string>
     <string name="summary_cam_password">Edit server password</string>
     <string name="summary_password">Edit optional password</string>

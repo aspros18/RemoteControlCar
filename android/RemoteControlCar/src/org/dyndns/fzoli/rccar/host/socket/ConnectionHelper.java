@@ -27,9 +27,16 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
 	}
 	
 	@Override
+	public void connect() {
+		SERVICE.getBinder().fireConnectionStateChange(true);
+		super.connect();
+	}
+	
+	@Override
 	protected void onConnected() {
 		super.onConnected();
 		SERVICE.updateNotificationText();
+		SERVICE.getBinder().fireConnectionStateChange(false);
 	}
 	
 	@Override

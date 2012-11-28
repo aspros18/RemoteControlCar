@@ -1,7 +1,9 @@
 package org.dyndns.fzoli.rccar.host;
 
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -189,9 +191,30 @@ public class MainActivity extends SherlockActivity {
 				repaintArrow(binder.getX(), binder.getY(), true);
 				binder.setListener(new ConnectionBinder.Listener() {
 					
+					private ProgressDialog dialog;
+					
 					@Override
-					public void onChange(int x, int y) {
+					public void onArrowChange(int x, int y) {
 						repaintArrow(x, y, true);
+					}
+					
+					@Override
+					public void onConnectionStateChange(boolean connecting) {
+						if (connecting) {
+							if (dialog != null) dialog.dismiss();
+							dialog = ProgressDialog.show(MainActivity.this, getString(R.string.title_connecting), getString(R.string.message_connecting), true, true, new DialogInterface.OnCancelListener() {
+								
+								@Override
+								public void onCancel(DialogInterface dialog) {
+									setRunning(false);
+								}
+								
+							});
+						}
+						else if (dialog != null) {
+							dialog.dismiss();
+							dialog = null;
+						}
 					}
 					
 				});

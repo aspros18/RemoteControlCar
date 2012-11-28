@@ -16,7 +16,11 @@ public class ConnectionBinder extends Binder {
 	 * Erre egy eseményfigyelőt implementálok az activityben.
 	 */
 	public static interface Listener {
-		public void onChange(int x, int y);
+		
+		public void onArrowChange(int x, int y);
+		
+		public void onConnectionStateChange(boolean connecting);
+		
 	}
 	
 	/**
@@ -69,17 +73,21 @@ public class ConnectionBinder extends Binder {
 	
 	public void setX(int x, boolean remote) {
 		getControl().setX(x);
-		fireChange(remote);
+		fireArrowChange(remote);
 	}
 	
 	public void setY(int y, boolean remote) {
 		getControl().setY(y);
-		fireChange(remote);
+		fireArrowChange(remote);
 	}
 	
-	private void fireChange(boolean remote) {
+	public void fireConnectionStateChange(boolean connecting) {
+		if (isListener()) mListener.onConnectionStateChange(connecting);
+	}
+	
+	private void fireArrowChange(boolean remote) {
 		if (remote) {
-			if (isListener()) mListener.onChange(getX(), getY());
+			if (isListener()) mListener.onArrowChange(getX(), getY());
 		}
 		else {
 			//TODO: küldés szervernek
@@ -92,6 +100,9 @@ public class ConnectionBinder extends Binder {
 	
 	public void setListener(Listener listener) {
 		mListener = listener;
+		if (listener != null && getService().isConnectionCreated()) {
+			listener.onConnectionStateChange(true);
+		}
 	}
 	
 }

@@ -41,4 +41,6 @@
     <string name="exists">exists</string>
     <string name="not_exists">not exists</string>
     <string name="run_in_background">Run in background</string>
+    <string name="title_connecting">Please, wait</string>
+    <string name="message_connecting">Connecting to the bridge&#8230;</string>
 </resources>

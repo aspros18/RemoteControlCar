@@ -1077,6 +1077,7 @@ containing a value of this type.
         public static final int exists=0x7f0a0036;
         public static final int install_cam=0x7f0a0033;
         public static final int menu_settings=0x7f0a0010;
+        public static final int message_connecting=0x7f0a003a;
         public static final int not_exists=0x7f0a0037;
         public static final int run_in_background=0x7f0a0038;
         public static final int set_config=0x7f0a0030;
@@ -1101,6 +1102,7 @@ containing a value of this type.
         public static final int title_cam_password=0x7f0a001d;
         public static final int title_cam_port=0x7f0a001b;
         public static final int title_cam_user=0x7f0a001c;
+        public static final int title_connecting=0x7f0a0039;
         public static final int title_crt=0x7f0a0019;
         public static final int title_key=0x7f0a001a;
         public static final int title_offline=0x7f0a0021;

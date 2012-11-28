@@ -1,7 +1,13 @@
 package org.dyndns.fzoli.rccar.host;
 
+//import java.io.InputStream;
+//import java.net.ConnectException;
+//import java.net.HttpURLConnection;
+//import java.net.URL;
+
 import ioio.lib.util.android.IOIOService;
 
+//import org.apache.commons.ssl.Base64;
 import org.dyndns.fzoli.rccar.host.socket.ConnectionHelper;
 import org.dyndns.fzoli.rccar.host.vehicle.Vehicle;
 import org.dyndns.fzoli.rccar.host.vehicle.Vehicles;
@@ -19,6 +25,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+//import android.util.Log;
 
 public class ConnectionService extends IOIOService {
 	
@@ -83,8 +90,8 @@ public class ConnectionService extends IOIOService {
 		return conn = new ConnectionHelper(this);
 	}
 	
-	private void startIPWebcam() { //TODO: ez egyelőre csak teszt, nem itt a helye, hanem majd a kapcsolódáskor kell hasonlót futtatni
-		if (isAppInstalled(PACKAGE_CAM)) {
+//	private void startIPWebcam() { //TODO: ez egyelőre csak teszt, nem itt a helye, hanem majd a kapcsolódáskor kell hasonlót futtatni
+//		if (isAppInstalled(PACKAGE_CAM)) {
 //			SharedPreferences pref = getSharedPreferences(this);
 //			String port = pref.getString("cam_port", "8080");
 //			String user = pref.getString("cam_user", "");
@@ -133,14 +140,14 @@ public class ConnectionService extends IOIOService {
 //			catch (Exception ex) {
 //				Log.i("test", "error", ex);
 //			}
-		}
-	}
-	
-	private void stopIPWebcam() {
-		if (isAppInstalled(PACKAGE_CAM)) {
+//		}
+//	}
+//	
+//	private void stopIPWebcam() { //TODO: hatástalan a broadcast intent küldése. Miért?
+//		if (isAppInstalled(PACKAGE_CAM)) {
 //			sendBroadcast(new Intent("com.pas.webcam.CONTROL").putExtra("action", "stop"));
-		}
-	}
+//		}
+//	}
 	
 	private void connect() {
 		connect(false);
@@ -162,7 +169,6 @@ public class ConnectionService extends IOIOService {
 		super.onStart(intent, startId);
 		if (startId == 1) {
 			initNotification();
-			startIPWebcam();
 			connect();
 			updateNotificationText();
 			setNotificationsVisible(true);
@@ -195,7 +201,6 @@ public class ConnectionService extends IOIOService {
 	@Override
 	public void onDestroy() {
 		disconnect();
-		stopIPWebcam();
 		setNotificationsVisible(false);
 		removeNotification();
 		super.onDestroy();

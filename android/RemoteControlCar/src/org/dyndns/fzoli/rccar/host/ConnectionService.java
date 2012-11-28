@@ -1,7 +1,13 @@
 package org.dyndns.fzoli.rccar.host;
 
+import java.io.InputStream;
+import java.net.ConnectException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import ioio.lib.util.android.IOIOService;
 
+import org.apache.commons.ssl.Base64;
 import org.dyndns.fzoli.rccar.host.socket.ConnectionHelper;
 import org.dyndns.fzoli.rccar.host.vehicle.Vehicle;
 import org.dyndns.fzoli.rccar.host.vehicle.Vehicles;
@@ -19,6 +25,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.util.Log;
 
 public class ConnectionService extends IOIOService {
 	
@@ -79,6 +86,63 @@ public class ConnectionService extends IOIOService {
 		return conn = new ConnectionHelper(this);
 	}
 	
+	private void startIPWebcam() {
+		if (isAppInstalled(PACKAGE_CAM)) {
+			SharedPreferences pref = getSharedPreferences(this);
+			String user = pref.getString("cam_user", "");
+			String password = pref.getString("cam_password", "");
+			Intent launcher = new Intent().setAction(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME);
+			Intent ipwebcam = 
+				new Intent()
+				.setClassName("com.pas.webcam", "com.pas.webcam.Rolling")
+				.putExtra("cheats", new String[] {
+						"set(Awake,true)", // ébrenlét fenntartása
+						"set(Audio,1)", // audio stream kikapcsolása
+						"set(Video,320,240)", // videó felbontás 320x240
+						"set(DisableVideo,false)", // videó stream engedélyezése
+						"set(Quality,30)", // JPEQ képkockák minősége 30 százalék
+						"reset(Port)", // port beállítása az alapértelmezett 8080-ra
+						"set(Login," + user + ")", // felhasználónév beállítása a konfig alapján
+						"set(Password," + password + ")" // jelszó beállítása a konfig alapján
+						})
+				.putExtra("hidebtn1", true) // Súgó gomb elrejtése
+				.putExtra("caption2", getString(R.string.run_in_background)) // jobb oldali gomb feliratának beállítása
+				.putExtra("intent2", launcher) // jobb oldali gomb eseménykezelőjének beállítása, hogy hozza fel az asztalt
+			    .putExtra("returnto", launcher) // ha a programból kilépnek, szintén az asztal jön fel
+			    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // activity indítása új folyamatként, hogy a service elindíthassa
+			startActivity(ipwebcam); // a program indítása a fenti konfigurációval
+			try {
+				HttpURLConnection conn = (HttpURLConnection) new URL("http://127.0.0.1:8080/videofeed").openConnection(); //kapcsolat objektum létrehozása
+	            conn.setRequestMethod("GET"); // GET metódus beállítása
+	            conn.setRequestProperty("Authorization", Base64.encodeBase64String(new String(user + ':' + password).getBytes()));
+	            // most, hogy minden be van állítva, kapcsolódás
+	            conn.connect();
+	            InputStream in = conn.getInputStream(); // mjpeg stream megszerzése
+			}
+			catch (ConnectException ex) {
+				Log.i("test", "retry later", ex);
+				try {
+					Thread.sleep(2000);
+				}
+				catch (Exception e) {
+					;
+				}
+				finally {
+					startIPWebcam();
+				}
+			}
+			catch (Exception ex) {
+				Log.i("test", "error", ex);
+			}
+		}
+	}
+	
+	private void stopIPWebcam() {
+		if (isAppInstalled(PACKAGE_CAM)) {
+			sendBroadcast(new Intent("com.pas.webcam.CONTROL").putExtra("action", "stop"));
+		}
+	}
+	
 	private void connect() {
 		connect(false);
 	}
@@ -99,6 +163,7 @@ public class ConnectionService extends IOIOService {
 		super.onStart(intent, startId);
 		if (startId == 1) {
 			initNotification();
+			startIPWebcam();
 			connect();
 			updateNotificationText();
 			setNotificationsVisible(true);
@@ -131,6 +196,7 @@ public class ConnectionService extends IOIOService {
 	@Override
 	public void onDestroy() {
 		disconnect();
+		stopIPWebcam();
 		setNotificationsVisible(false);
 		removeNotification();
 		super.onDestroy();

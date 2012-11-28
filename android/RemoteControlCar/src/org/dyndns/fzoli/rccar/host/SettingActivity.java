@@ -201,6 +201,7 @@ public class SettingActivity extends SherlockPreferenceActivity {
 		initEditTextPreference("address", TW_ADDRESS, CL_ADDRESS);
 		initEditTextPreference("port", TW_PORT, CL_PORT);
 		initEditTextPreference("refresh_interval", TW_REFRESH, CL_REFRESH);
+		initEditTextPreference("cam_port", TW_PORT, CL_PORT);
 	}
 	
 	/**

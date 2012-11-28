@@ -8,6 +8,8 @@
     <string name="title_ca">Kiállító</string>
     <string name="title_crt">Tanúsítvány</string>
     <string name="title_key">Kulcs</string>
+    <string name="title_cam_user">Felhasználónév</string>
+    <string name="title_cam_password">Jelszó</string>
     <string name="title_password">Tanúsítvány jelszó</string>
     <string name="title_refresh_interval">Frissítési időköz</string>
     <string name="title_vehicle">Jármű</string>
@@ -17,6 +19,8 @@
     <string name="summary_ca">Certificate Authority tallózása</string>
     <string name="summary_crt">Publikus kulcs tallózása</string>
     <string name="summary_key">Privát kulcs tallózása</string>
+    <string name="summary_cam_user">Szerver felhasználónév megadása</string>
+    <string name="summary_cam_password">Szerver jelszó megadása</string>
     <string name="summary_password">Opcionális jelszó megadása</string>
     <string name="summary_refresh_interval">Frissítési időköz megadása</string>
     <string name="summary_vehicle">Jármű kiválasztása</string>
@@ -29,4 +33,5 @@
     <string name="bridge_conn">Híd kapcsolat</string>
     <string name="exists">van</string>
     <string name="not_exists">nincs</string>
+    <string name="run_in_background">Futtatás háttérben</string>
 </resources>

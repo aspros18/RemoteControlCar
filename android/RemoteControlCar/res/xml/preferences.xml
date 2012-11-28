@@ -37,6 +37,24 @@
             android:summary="@string/summary_key"
             android:dependency="offline" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/category_cam">
+        <EditTextPreference
+            android:key="cam_user"
+            android:title="@string/title_cam_user"
+            android:summary="@string/summary_cam_user"
+            android:maxLength="20"
+            android:inputType="text"
+            android:defaultValue=""
+            android:dependency="offline" />
+        <EditTextPreference
+            android:key="cam_password"
+            android:title="@string/title_cam_password"
+            android:summary="@string/summary_cam_password"
+            android:maxLength="20"
+            android:inputType="textPassword"
+            android:defaultValue=""
+            android:dependency="cam_user" />
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/category_other">
         <ListPreference
             android:key="vehicle"

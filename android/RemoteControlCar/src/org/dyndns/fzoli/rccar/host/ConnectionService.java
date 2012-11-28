@@ -262,7 +262,7 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	private void setNetworkNotificationVisible(boolean visible) {
-		if (visible && !isNetworkAvailable()) addOnlineNotification(R.string.set_network, new Intent(Settings.ACTION_WIRELESS_SETTINGS), ID_NOTIFY_NETWORK, false);
+		if (visible && !isNetworkAvailable() && !isNetworkConnecting()) addOnlineNotification(R.string.set_network, new Intent(Settings.ACTION_WIRELESS_SETTINGS), ID_NOTIFY_NETWORK, false);
 		else removeNotification(ID_NOTIFY_NETWORK);
 	}
 	
@@ -293,9 +293,17 @@ public class ConnectionService extends IOIOService {
 		return getSharedPreferences(this).getBoolean("offline", false);
 	}
 	
+	private boolean isNetworkConnecting() {
+		return isNetworkState(NetworkInfo.State.CONNECTING);
+	}
+	
 	private boolean isNetworkAvailable() {
+		return isNetworkState(NetworkInfo.State.CONNECTED);
+	}
+	
+	private boolean isNetworkState(NetworkInfo.State state) {
 		final NetworkInfo activeNetwork = getActiveNetworkInfo();
-		return activeNetwork != null && activeNetwork.getState() == NetworkInfo.State.CONNECTED;
+		return activeNetwork != null && state != null && activeNetwork.getState() == state;
 	}
 	
 	private NetworkInfo getActiveNetworkInfo() {

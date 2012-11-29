@@ -290,7 +290,7 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	private boolean isOfflineMode() {
-		return getSharedPreferences(this).getBoolean("offline", false);
+		return isOfflineMode(this);
 	}
 	
 	private boolean isNetworkConnecting() {
@@ -341,6 +341,10 @@ public class ConnectionService extends IOIOService {
 	
 	public static Config createConfig(Context context) {
 		return new Config(getSharedPreferences(context));
+	}
+	
+	public static boolean isOfflineMode(Context context) {
+		return getSharedPreferences(context).getBoolean("offline", false);
 	}
 	
 	public static boolean isStarted(Context context) {

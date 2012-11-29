@@ -32,6 +32,7 @@ public class MainActivity extends SherlockActivity {
 	
 	private ConnectionBinder binder;
 	private ServiceConnection conn;
+	private boolean offlineMode;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +70,8 @@ public class MainActivity extends SherlockActivity {
 			
 			@Override
 			public boolean onTouch(View v, MotionEvent e) {
-				if (e.getAction() == MotionEvent.ACTION_UP) return repaintArrow(null, null, false);
-				else return repaintArrow((int)e.getX(), (int)e.getY(), false);
+				if (e.getAction() == MotionEvent.ACTION_UP) return repaintArrow(null, null, false, false);
+				else return repaintArrow((int)e.getX(), (int)e.getY(), false, false);
 			}
 			
 		});
@@ -87,7 +88,7 @@ public class MainActivity extends SherlockActivity {
 		tvY.setText(Integer.toString(y));
 	}
 	
-	private boolean repaintArrow(Integer mx, Integer my, boolean percent) {
+	private boolean repaintArrow(Integer mx, Integer my, boolean percent, boolean force) {
 		if (mx == null || my == null) {
 			if (binder == null) {
 				return false;
@@ -96,7 +97,10 @@ public class MainActivity extends SherlockActivity {
 			arrow.setY(0);
 		}
 		else {
-			if (binder == null || !binder.getService().isVehicleConnected()) {
+			if (binder == null) {
+				return false;
+			}
+			if (!force && (!offlineMode || !binder.getService().isVehicleConnected())) {
 				return false;
 			}
 			if (percent) {
@@ -188,14 +192,15 @@ public class MainActivity extends SherlockActivity {
 			@Override
 			public void onServiceConnected(ComponentName n, IBinder b) {
 				binder = (ConnectionBinder) b;
-				repaintArrow(binder.getX(), binder.getY(), true);
+				offlineMode = ConnectionService.isOfflineMode(MainActivity.this);
+				repaintArrow(binder.getX(), binder.getY(), true, true);
 				binder.setListener(new ConnectionBinder.Listener() {
 					
 					private ProgressDialog dialog;
 					
 					@Override
 					public void onArrowChange(int x, int y) {
-						repaintArrow(x, y, true);
+						repaintArrow(x, y, true, true);
 					}
 					
 					@Override
@@ -234,7 +239,7 @@ public class MainActivity extends SherlockActivity {
 				binder.setListener(null);
 				binder = null;
 			}
-			repaintArrow(0, 0, true);
+			repaintArrow(0, 0, true, true);
 			ServiceConnection tmp = conn;
 			conn = null;
 			unbindService(tmp);

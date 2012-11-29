@@ -27,20 +27,19 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
 	@Override
 	public void disconnect() {
 		super.disconnect();
-		SERVICE.updateNotificationText();
+		update(false);
 	}
 	
 	@Override
 	public void connect() {
-		SERVICE.getBinder().fireConnectionStateChange(true);
+		update(true);
 		super.connect();
 	}
 	
 	@Override
 	protected void onConnected() {
 		super.onConnected();
-		SERVICE.updateNotificationText();
-		SERVICE.getBinder().fireConnectionStateChange(false);
+		update(false);
 	}
 	
 	@Override
@@ -59,6 +58,11 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
 		catch (Exception e) {
 			super.onException(ex, connectionId);
 		}
+	}
+	
+	private void update(boolean connecting) {
+		SERVICE.updateNotificationText();
+		SERVICE.getBinder().fireConnectionStateChange(connecting);
 	}
 	
 }

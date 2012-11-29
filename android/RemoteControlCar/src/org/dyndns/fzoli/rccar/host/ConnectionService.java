@@ -64,10 +64,6 @@ public class ConnectionService extends IOIOService {
 		return config;
 	}
 	
-	public boolean isConnectionCreated() {
-		return conn != null;
-	}
-	
 	public ConnectionBinder getBinder() {
 		return BINDER;
 	}

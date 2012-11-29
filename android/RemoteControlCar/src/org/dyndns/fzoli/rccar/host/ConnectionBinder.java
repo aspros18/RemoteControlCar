@@ -35,6 +35,12 @@ public class ConnectionBinder extends Binder {
 	 */
 	private Listener mListener;
 	
+	/**
+	 * Az utolsó állapotjelzés.
+	 * Null, ha már friss az adat vagy még nem érkezett adat.
+	 */
+	private Boolean cacheConnecting = null;
+	
 	public ConnectionBinder(ConnectionService service) {
 		SERVICE = service;
 	}
@@ -82,7 +88,13 @@ public class ConnectionBinder extends Binder {
 	}
 	
 	public void fireConnectionStateChange(boolean connecting) {
-		if (isListener()) mListener.onConnectionStateChange(connecting);
+		if (isListener()) {
+			cacheConnecting = null;
+			mListener.onConnectionStateChange(connecting);
+		}
+		else {
+			cacheConnecting = connecting;
+		}
 	}
 	
 	private void fireArrowChange(boolean remote) {
@@ -100,8 +112,11 @@ public class ConnectionBinder extends Binder {
 	
 	public void setListener(Listener listener) {
 		mListener = listener;
-		if (listener != null && getService().isConnectionCreated() && !getService().isBridgeConnected()) {
-			listener.onConnectionStateChange(true);
+		if (listener != null) {
+			if (cacheConnecting != null) synchronized (cacheConnecting) {
+				listener.onConnectionStateChange(cacheConnecting);
+				cacheConnecting = null;
+			}
 		}
 	}
 	

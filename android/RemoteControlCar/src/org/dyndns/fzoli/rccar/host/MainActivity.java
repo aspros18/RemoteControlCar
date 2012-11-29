@@ -204,22 +204,29 @@ public class MainActivity extends SherlockActivity {
 					}
 					
 					@Override
-					public void onConnectionStateChange(boolean connecting) {
-						if (connecting) {
-							if (dialog != null) dialog.dismiss();
-							dialog = ProgressDialog.show(MainActivity.this, getString(R.string.title_connecting), getString(R.string.message_connecting), true, true, new DialogInterface.OnCancelListener() {
-								
-								@Override
-								public void onCancel(DialogInterface dialog) {
-									setRunning(false);
+					public void onConnectionStateChange(final boolean connecting) {
+						runOnUiThread(new Runnable() {
+							
+							@Override
+							public void run() {
+								if (dialog != null) {
+									dialog.dismiss();
 								}
-								
-							});
-						}
-						else if (dialog != null) {
-							dialog.dismiss();
-							dialog = null;
-						}
+								if (connecting) {
+									dialog = ProgressDialog.show(MainActivity.this, getString(R.string.title_connecting), getString(R.string.message_connecting), true, true, new DialogInterface.OnCancelListener() {
+											
+										@Override
+										public void onCancel(DialogInterface dialog) {
+											setRunning(false);
+										}
+											
+									});
+								}
+								else {
+									dialog = null;
+								}
+							}
+						});
 					}
 					
 				});

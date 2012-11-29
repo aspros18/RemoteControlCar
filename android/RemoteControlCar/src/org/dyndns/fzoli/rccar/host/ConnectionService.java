@@ -149,10 +149,6 @@ public class ConnectionService extends IOIOService {
 //		}
 //	}
 	
-	private void connect() {
-		connect(false);
-	}
-	
 	private void connect(boolean reconnect) {
 		if (conn == null || reconnect) {
 			disconnect();
@@ -162,6 +158,7 @@ public class ConnectionService extends IOIOService {
 	
 	private void disconnect() {
 		if (conn != null) conn.disconnect();
+		getBinder().fireConnectionStateChange(false);
 	}
 	
 	@Override
@@ -169,7 +166,7 @@ public class ConnectionService extends IOIOService {
 		super.onStart(intent, startId);
 		if (startId == 1) {
 			initNotification();
-			connect();
+			connect(false);
 			updateNotificationText();
 			setNotificationsVisible(true);
 		}
@@ -182,7 +179,7 @@ public class ConnectionService extends IOIOService {
 			String event = intent.getStringExtra(KEY_EVENT);
 			if (event.equals(EVT_CONNECTIVITY_CHANGE)) {
 				if (startId != 1) setNetworkNotificationVisible(true);
-				if (isNetworkAvailable()) connect();
+				if (isNetworkAvailable()) connect(true);
 				else disconnect();
 			}
 			else if (event.equals(EVT_GPS_SENSOR_CHANGE)) {
@@ -191,7 +188,7 @@ public class ConnectionService extends IOIOService {
 			else if (event.equals(EVT_APP_ADDED) || event.equals(EVT_APP_INSTALL)) {
 				if (startId != 1) {
 					setCamInstallNotificationVisible(true);
-					connect();
+					connect(false);
 				}
 			}
 		}

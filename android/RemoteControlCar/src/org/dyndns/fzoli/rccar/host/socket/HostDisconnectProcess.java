@@ -5,6 +5,8 @@ import org.dyndns.fzoli.rccar.host.ConnectionService;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.impl.ClientDisconnectProcess;
 
+import android.util.Log;
+
 public class HostDisconnectProcess extends ClientDisconnectProcess implements ConnectionKeys {
 
 	private final ConnectionService SERVICE;
@@ -19,6 +21,12 @@ public class HostDisconnectProcess extends ClientDisconnectProcess implements Co
 		super.onTimeout(ex);
 		SERVICE.getBinder().setX(0, false);
 		SERVICE.getBinder().setY(0, false);
+	}
+	
+	@Override
+	public void onDisconnect(Exception ex) {
+		super.onDisconnect(ex);
+		Log.i("test", "disconnected from the bridge");
 	}
 	
 }

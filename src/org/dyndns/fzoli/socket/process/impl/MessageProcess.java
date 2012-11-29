@@ -122,12 +122,24 @@ public abstract class MessageProcess extends AbstractSecureProcess {
     private SimpleWorker worker;
     
     /**
+     * Megadja, hogy fut-e az üzenetküldő.
+     */
+    private boolean running = false;
+    
+    /**
      * Biztonságos üzenetváltásra képes adatfeldolgozó inicializálása.
      * @param handler Biztonságos kapcsolatfeldolgozó, ami létrehozza ezt az adatfeldolgozót.
      * @throws NullPointerException ha handler null
      */
     public MessageProcess(SecureHandler handler) {
         super(handler);
+    }
+
+    /**
+     * Megadja, hogy fut-e az üzenetküldő.
+     */
+    public boolean isRunning() {
+        return running;
     }
 
     /**
@@ -174,6 +186,13 @@ public abstract class MessageProcess extends AbstractSecureProcess {
     }
     
     /**
+     * A feldolgozó mostantól nem képes üzenetet küldeni.
+     */
+    protected void onStop() {
+        ;
+    }
+    
+    /**
      * Kivétel keletkezett az egyik üzenet elküldésekor / inicializálás közben / megszakadt a kapcsolat.
      */
     protected void onException(Exception ex) {
@@ -210,6 +229,7 @@ public abstract class MessageProcess extends AbstractSecureProcess {
                 
             };
             worker.start(); // dolgozó indítása
+            running = true; // az üzenetküldő elindult
             onStart(); // jelzés az utód osztályoknak, hogy lehet üzenni
             // ObjectInputStream létrehozása, ...
             final ObjectInputStream in = new ObjectInputStream(new CompressedBlockInputStream(getSocket().getInputStream()));
@@ -221,6 +241,8 @@ public abstract class MessageProcess extends AbstractSecureProcess {
             onException(ex); // ha kivétel keletkezett, jelzés
         }
         finally {
+            running = false; // az üzenetküldő leáll
+            onStop(); // jelzés az utód osztályoknak, hogy nincs több üzenetküldés
             stopWorker(); // ha befejeződött a feldolgozó futása, dolgozó leállítása
         }
     }

@@ -1,11 +1,15 @@
 package org.dyndns.fzoli.rccar.host.socket;
 
+import java.net.SocketException;
+
 import javax.net.ssl.SSLSocket;
 
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import org.dyndns.fzoli.rccar.clients.AbstractConnectionHelper;
 import org.dyndns.fzoli.rccar.host.ConnectionService;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
+
+import android.util.Log;
 
 /**
  * A hoszt kliens híd szerverhez való kapcsolódását oldja meg.
@@ -43,5 +47,18 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
 	protected AbstractSecureClientHandler createHandler(SSLSocket socket, int deviceId, int connectionId) {
 		return new HostHandler(SERVICE, socket, deviceId, connectionId);
 	}
-
+	
+	@Override
+	protected void onException(Exception ex, int connectionId) {
+		try {
+			throw ex;
+		}
+		catch (SocketException e) { // nem fut a szerver, vagy nincs útvonal hozzá
+			Log.i("test", "connection error", e);
+		}
+		catch (Exception e) {
+			super.onException(ex, connectionId);
+		}
+	}
+	
 }

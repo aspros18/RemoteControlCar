@@ -54,6 +54,7 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
 		}
 		catch (SocketException e) { // nem fut a szerver, vagy nincs útvonal hozzá
 			Log.i("test", "connection error", e);
+			SERVICE.reconnectSchedule(false);
 		}
 		catch (Exception e) {
 			super.onException(ex, connectionId);

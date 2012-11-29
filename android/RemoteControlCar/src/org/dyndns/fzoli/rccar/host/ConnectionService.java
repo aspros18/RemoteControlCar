@@ -5,6 +5,9 @@ package org.dyndns.fzoli.rccar.host;
 //import java.net.HttpURLConnection;
 //import java.net.URL;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import ioio.lib.util.android.IOIOService;
 
 //import org.apache.commons.ssl.Base64;
@@ -55,6 +58,9 @@ public class ConnectionService extends IOIOService {
 	
 	private ConnectivityManager cm;
 	private LocationManager lm;
+	
+	private final Timer CONN_TIMER = new Timer();
+	private TimerTask connTask;
 	
 	private NotificationManager nm;
 	private Notification notification;
@@ -145,10 +151,34 @@ public class ConnectionService extends IOIOService {
 //		}
 //	}
 	
+	public void reconnectSchedule(boolean now) {
+		if (now) {
+			if (connTask != null) connTask.run();
+			else reconnect();
+			connTask = null;
+		}
+		else if (connTask == null) {
+			connTask = new TimerTask() {
+				
+				@Override
+				public void run() {
+					reconnect();
+					connTask = null;
+				}
+				
+			};
+			CONN_TIMER.schedule(connTask, 25000);
+		}
+	}
+	
+	private void reconnect() {
+		if (!isBridgeConnected()) connect(true);
+	}
+	
 	private void connect(boolean reconnect) {
 		if (conn == null || reconnect) {
 			disconnect();
-			if (createConnectionHelper() != null) conn.connect();
+			if (isStarted(this) && createConnectionHelper() != null) conn.connect();
 		}
 	}
 	

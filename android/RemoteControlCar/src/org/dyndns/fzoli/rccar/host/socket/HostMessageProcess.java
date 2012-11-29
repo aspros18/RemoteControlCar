@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.host.socket;
 
 import java.io.EOFException;
+import java.io.InvalidClassException;
 
 import javax.net.ssl.SSLException;
 
@@ -24,6 +25,9 @@ public class HostMessageProcess extends MessageProcess {
 	protected void onException(Exception ex) {
 		try {
 			throw ex;
+		}
+		catch (InvalidClassException e) {
+			Log.e("test", "bridge is not compatible with this client", e);
 		}
 		catch (EOFException e) {
 			;

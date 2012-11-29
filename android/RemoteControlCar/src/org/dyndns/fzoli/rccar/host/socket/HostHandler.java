@@ -29,12 +29,14 @@ public class HostHandler extends AbstractSecureClientHandler implements Connecti
 		}
 		catch (RemoteHandlerException e) {
 			Log.i("test", "remote handler exception", e);
+			SERVICE.reconnectSchedule(false);
 		}
 		catch (SSLHandshakeException e) {
 			Log.i("test", "handshake exception", e);
+			SERVICE.reconnectSchedule(false);
 		}
 		catch (KeyStoreException e) {
-			Log.e("test", "keystore exception", e);
+			Log.e("test", "keystore error", e);
 		}
 		catch (Exception e) {
 			super.onException(e);

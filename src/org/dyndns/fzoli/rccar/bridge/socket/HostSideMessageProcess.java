@@ -20,7 +20,7 @@ public class HostSideMessageProcess extends BridgeMessageProcess {
 
     @Override
     protected void onMessage(Object o) {
-        ;
+        System.out.println(o);
     }
     
 }

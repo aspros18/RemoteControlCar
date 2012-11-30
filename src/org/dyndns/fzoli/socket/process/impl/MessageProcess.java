@@ -224,7 +224,7 @@ public abstract class MessageProcess extends AbstractSecureProcess {
                 @Override
                 protected void onException(Exception ex) {
                     // ha bármelyik üzenet küldése közben kivétel keletkezik, jelezi
-                    onException(ex);
+                    MessageProcess.this.onException(ex);
                 }
                 
             };

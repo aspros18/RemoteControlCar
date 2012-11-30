@@ -55,6 +55,7 @@ public class ControllerSideMessageProcess extends BridgeMessageProcess {
                 ControllerData data = new ControllerData(new ArrayList<ChatMessage>());
                 data.setHostName(selected);
                 data.setHostConnected(true);
+                data.setVehicleConnected(true);
                 data.setControlling(true);
                 data.setWantControl(false);
                 sendMessage(data);

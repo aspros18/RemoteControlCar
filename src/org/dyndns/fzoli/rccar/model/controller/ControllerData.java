@@ -97,6 +97,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
          * A ControllerData Boolean változóinak megfeleltetett felsorolás.
          */
         public static enum BooleanType {
+            VEHICLE_CONNECTED,
             HOST_CONNECTED,
             CONTROLLING,
             WANT_CONTROLL
@@ -125,6 +126,9 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
         public void apply(ControllerData d) {
             if (d != null && type != null) {
                 switch (type) {
+                    case VEHICLE_CONNECTED:
+                        d.setVehicleConnected(data);
+                        break;
                     case HOST_CONNECTED:
                         d.setHostConnected(data);
                         break;
@@ -168,6 +172,11 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
      * A jármű kapcsolódva van-e a hídhoz.
      */
     private Boolean hostConnected;
+    
+    /**
+     * A jármű mikrovezérlője kapcsolódva van-e a telefonhoz.
+     */
+    private Boolean vehicleConnected;
     
     /**
      * Vezérelhető-e a jármű.
@@ -232,6 +241,13 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     }
 
     /**
+     * Megadja azt, hogy a jármű kapcsolódva van-e a telefonhoz.
+     */
+    public Boolean isVehicleConnected() {
+        return vehicleConnected;
+    }
+    
+    /**
      * Megadja azt, hogy a jármű vezérlése elérhető-e.
      */
     public Boolean isControlling() {
@@ -268,6 +284,13 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     }
 
     /**
+     * Beállítja azt, hogy a jármű kapcsolódva van-e a telefonhoz.
+     */
+    public void setVehicleConnected(Boolean vehicleConnected) {
+        this.vehicleConnected = vehicleConnected;
+    }
+    
+    /**
      * Beállítja azt, hogy a jármű vezérlése elérhető-e.
      */
     public void setControlling(Boolean controlling) {
@@ -292,6 +315,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
             setHostName(d.getHostName());
             setHostState(d.getHostState());
             setHostConnected(d.isHostConnected());
+            setVehicleConnected(d.isVehicleConnected());
             setControlling(d.isControlling());
             setWantControl(d.isWantControl());
             super.update(d);

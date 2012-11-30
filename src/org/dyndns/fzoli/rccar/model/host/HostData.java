@@ -63,25 +63,46 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     }
     
     /**
-     * A HostData vezérlő részadata, ami megmondja, hogy kell-e streamelni.
+     * A HostData vezérlő részadata, ami egy boolean érték változását tartalmazza.
      */
-    public static class StreamingPartialHostData extends PartialHostData<Boolean> {
+    public static class BooleanPartialHostData extends PartialHostData<Boolean> {
 
+        /**
+         * A HostData Boolean változóinak megfeleltetett felsorolás.
+         */
+        public static enum BooleanType {
+            STREAMING,
+            VEHICLE_CONNECTED
+        }
+        
+        /**
+         * Megmondja, melyik adatról van szó.
+         */
+        private final BooleanType type;
+        
         /**
          * Részadat inicializálása és beállítása.
          * @param data a vezérlőjel
+         * @param type melyik változó
          */
-        public StreamingPartialHostData(Boolean data) {
+        public BooleanPartialHostData(Boolean data, BooleanType type) {
             super(data);
+            this.type = type;
         }
 
         /**
-         * Alkalmazza az új vezérlőjelet a paraméterben megadott adaton.
+         * Alkalmazza az új értéket a paraméterben megadott adaton.
          */
         @Override
         public void apply(HostData d) {
-            if (d != null) {
-                d.setStreaming(data);
+            if (d != null && type != null) {
+                switch (type) {
+                    case STREAMING:
+                        d.setStreaming(data);
+                        break;
+                    case VEHICLE_CONNECTED:
+                        d.setVehicleConnected(data);
+                }
             }
         }
         
@@ -190,6 +211,11 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     private Boolean streaming = false;
     
     /**
+     * Megmondja, hogy a telefonhoz csatlakoztatva van-e a jármű.
+     */
+    private Boolean vehicleConnected;
+    
+    /**
      * Vezérlőjel.
      * Alapértelmezetten a jármű áll.
      */
@@ -226,6 +252,13 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
      */
     public Boolean isStreaming() {
         return streaming;
+    }
+
+    /**
+     * Megmondja, hogy a telefonhoz csatlakoztatva van-e a jármű.
+     */
+    public Boolean isVehicleConnected() {
+        return vehicleConnected;
     }
 
     /**
@@ -299,6 +332,13 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
         if (streaming == null) streaming = false;
         this.streaming = streaming;
     }
+
+    /**
+     * Beállítja, hogy a telefonhoz csatlakoztatva van-e a jármű.
+     */
+    public void setVehicleConnected(Boolean vehicleConnected) {
+        this.vehicleConnected = vehicleConnected;
+    }
     
     /**
      * Beállítja az autó vezérlőjelét.
@@ -345,6 +385,7 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
             setFullY(d.isFullY());
             setControl(d.getControl());
             setStreaming(d.isStreaming());
+            setVehicleConnected(d.isVehicleConnected());
             setGpsPosition(d.getGpsPosition());
             setGravitationalField(d.getGravitationalField());
             setMagneticField(d.getMagneticField());

@@ -67,6 +67,10 @@ public class ConnectionService extends IOIOService {
 			ERROR = error;
 		}
 		
+		public int getNotificationId() {
+			return 100 + ordinal();
+		}
+		
 		public boolean isError() {
 			return ERROR;
 		}
@@ -332,10 +336,10 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	private void setNotificationsVisible(boolean visible) {
-		setConfigNotificationVisible(visible);
+		setConfigNotificationVisible(visible); //TODO: ez error legyen és a service álljon le, de a legjobb az lenne, ha el se lehetne indítani a servicet (kivéve local módban) és rövid idejű Toast jelezné, hogy javítani kell a konfigot (activity indulásakor és folytatásakor is)
 		setNetworkNotificationVisible(visible);
 		setGpsEnableNotificationVisible(visible);
-		setCamInstallNotificationVisible(visible);
+		setCamInstallNotificationVisible(visible); //TODO: ez is error ikonnal legyen, de a service ne álljon le
 	}
 	
 	private void setConfigNotificationVisible(boolean visible) {

@@ -26,6 +26,13 @@
     <string name="summary_refresh_interval">Frissítési időköz megadása</string>
     <string name="summary_vehicle">Jármű kiválasztása</string>
     <string name="summary_offline">Hálózati kapcsolat nélküli mód</string>
+    <string name="err_1">Sikertelen kapcsolódás</string>
+    <string name="err_2">Megszakadt a kapcsolat</string>
+    <string name="err_3">Kapcsolat elutasítva</string>
+    <string name="err_4">Érvénytelen tanúsítvány</string>
+    <string name="err_5">Az IP Webcam szerver nem érhető el</string>
+    <string name="err_6">A kliens verziója nem megfelelő</string>
+    <string name="err_7">Helytelen tanúsítvány beállítás</string>
     <string name="set_config">Kérem, állítsa be jól a konfigurációt.</string>
     <string name="set_network">Kérem, válasszon ki egy hálózatot.</string>
     <string name="set_gps">Kérem, engedélyezze a GPS szenzort.</string>

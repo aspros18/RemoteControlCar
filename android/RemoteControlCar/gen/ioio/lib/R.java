@@ -1070,20 +1070,27 @@ containing a value of this type.
          */
         public static final int abs__shareactionprovider_share_with_application=0x7f0a0009;
         public static final int app_name=0x7f0a000f;
-        public static final int bridge_conn=0x7f0a0035;
+        public static final int bridge_conn=0x7f0a003c;
         public static final int category_cam=0x7f0a0014;
         public static final int category_other=0x7f0a0015;
         public static final int category_path=0x7f0a0012;
         public static final int category_security=0x7f0a0013;
-        public static final int exists=0x7f0a0036;
-        public static final int install_cam=0x7f0a0033;
+        public static final int err_1=0x7f0a0030;
+        public static final int err_2=0x7f0a0031;
+        public static final int err_3=0x7f0a0032;
+        public static final int err_4=0x7f0a0033;
+        public static final int err_5=0x7f0a0034;
+        public static final int err_6=0x7f0a0035;
+        public static final int err_7=0x7f0a0036;
+        public static final int exists=0x7f0a003d;
+        public static final int install_cam=0x7f0a003a;
         public static final int menu_settings=0x7f0a0010;
-        public static final int message_connecting=0x7f0a003a;
-        public static final int not_exists=0x7f0a0037;
-        public static final int run_in_background=0x7f0a0038;
-        public static final int set_config=0x7f0a0030;
-        public static final int set_gps=0x7f0a0032;
-        public static final int set_network=0x7f0a0031;
+        public static final int message_connecting=0x7f0a0041;
+        public static final int not_exists=0x7f0a003e;
+        public static final int run_in_background=0x7f0a003f;
+        public static final int set_config=0x7f0a0037;
+        public static final int set_gps=0x7f0a0039;
+        public static final int set_network=0x7f0a0038;
         public static final int summary_address=0x7f0a0022;
         public static final int summary_ca=0x7f0a0024;
         public static final int summary_cam_password=0x7f0a0029;
@@ -1103,7 +1110,7 @@ containing a value of this type.
         public static final int title_cam_password=0x7f0a001d;
         public static final int title_cam_port=0x7f0a001b;
         public static final int title_cam_user=0x7f0a001c;
-        public static final int title_connecting=0x7f0a0039;
+        public static final int title_connecting=0x7f0a0040;
         public static final int title_crt=0x7f0a0019;
         public static final int title_key=0x7f0a001a;
         public static final int title_offline=0x7f0a0021;
@@ -1111,7 +1118,7 @@ containing a value of this type.
         public static final int title_port=0x7f0a0017;
         public static final int title_refresh_interval=0x7f0a001f;
         public static final int title_vehicle=0x7f0a0020;
-        public static final int vehicle=0x7f0a0034;
+        public static final int vehicle=0x7f0a003b;
         public static final int wrong_value=0x7f0a0011;
     }
     public static final class style {

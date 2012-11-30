@@ -32,6 +32,13 @@
     <string name="summary_offline">Offline mode</string>
     <string name="text_start">Start</string>
     <string name="text_stop">Stop</string>
+    <string name="err_1">Connection error</string>
+    <string name="err_2">Connection lost</string>
+    <string name="err_3">Connection refused</string>
+    <string name="err_4">Invalid certificate</string>
+    <string name="err_5">IP Webcam server unreachable</string>
+    <string name="err_6">Wrong client version</string>
+    <string name="err_7">Wrong certificate settings</string>
     <string name="set_config">Please, set a correct configuration.</string>
     <string name="set_network">Please, select a wireless network.</string>
     <string name="set_gps">Please, enable the GPS sensor.</string>

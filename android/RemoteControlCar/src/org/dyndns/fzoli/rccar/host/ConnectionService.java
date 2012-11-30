@@ -29,14 +29,15 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 //import android.util.Log;
+import android.util.Log;
 
 public class ConnectionService extends IOIOService {
 	
 	/**
 	 * A hibák beállításukkor bontják a kapcsolatot a híddal és nem távolíthatóak el a notification barról. A hibák a service leállásakor mind eltűnnek. A hibákra kattintva a főablak jelenik meg.
 	 * A figyelmeztetések (nem hibák) beállításukkor reconnect ütemezést aktiválnak és a service leállásakor vagy sikeres kapcsolódás esetén mind eltűnnek. A figyelmeztetések eltávolíthatóak és rájuk kattintva azonnal eltűnnek és lefuttatják a reconnect metódust.
-	 * A connection lost figyelmeztetés egyedülálló, tehát keletkezésekor a többi figyelmeztetés eltűnik és más figyelmeztetés létrejöttével a connection lost figyelmeztetés tűnik el.
-	 * Az other figyelmeztetéshez nem tartozik felületi komponens, tehát nem jelenik meg és nem is tűnik el.
+	 * A figyelmeztetések közül egyszerre csak egy látható.
+	 * Az other figyelmeztetés ismeretlen hibát jelöl.
 	 * A sikeres kapcsolatfelvételt a null referencia jelzi.
 	 */
 	public static enum ConnectionError {
@@ -63,8 +64,8 @@ public class ConnectionService extends IOIOService {
 			return 100 + ordinal();
 		}
 		
-		public boolean isAlone() {
-			return this == CONNECTION_LOST;
+		public boolean isVisible() {
+			return this != OTHER;
 		}
 		
 		public boolean isError() {
@@ -72,6 +73,8 @@ public class ConnectionService extends IOIOService {
 		}
 		
 	}
+	
+	private final static R.string STRINGS = new R.string();
 	
 	private final static int ID_NOTIFY = 0;
 	private final static int ID_NOTIFY_CONFIG = 1;
@@ -84,6 +87,7 @@ public class ConnectionService extends IOIOService {
 	private final static String PACKAGE_CAM = "com.pas.webcam";
 	
 	public final static String KEY_EVENT = "event";
+	public final static String EVT_RECONNECT_NOW = "reconnect now";
 	public final static String EVT_CONNECTIVITY_CHANGE = ConnectivityManager.CONNECTIVITY_ACTION;
 	public final static String EVT_GPS_SENSOR_CHANGE = LocationManager.PROVIDERS_CHANGED_ACTION;
 	
@@ -269,6 +273,9 @@ public class ConnectionService extends IOIOService {
 					connect(false);
 				}
 			}
+			else if (event.equals(EVT_RECONNECT_NOW)) {
+				reconnectSchedule(true);
+			}
 		}
 		return START_STICKY;
 	}
@@ -277,6 +284,7 @@ public class ConnectionService extends IOIOService {
 	public void onDestroy() {
 		disconnect(true);
 		setNotificationsVisible(false);
+		setConnectionError(null, true);
 		removeNotification();
 		super.onDestroy();
 	}
@@ -314,18 +322,69 @@ public class ConnectionService extends IOIOService {
 		}
 	}
 	
+	private void addNotification(int resText, Intent intentActivity, int key, boolean removable, boolean error) {
+		addNotification(resText, intentActivity, null, key, removable, error);
+	}
+	
 	@SuppressWarnings("deprecation")
-	private void addNotification(int resText, Intent intent, int key, boolean removable, boolean error) {
+	private void addNotification(int resText, Intent intentActivity, Intent intentService, int key, boolean removable, boolean error) {
 		removeNotification(key);
 		Notification notification = new Notification(error ? R.drawable.ic_error : R.drawable.ic_warning, getString(resText), System.currentTimeMillis());
 		notification.flags |= removable ? Notification.FLAG_AUTO_CANCEL : Notification.FLAG_NO_CLEAR;
-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, removable ? PendingIntent.FLAG_ONE_SHOT : PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent contentIntent;
+		int flag = removable ? PendingIntent.FLAG_ONE_SHOT : PendingIntent.FLAG_UPDATE_CURRENT;
+		if (intentActivity != null) contentIntent = PendingIntent.getActivity(this, 0, intentActivity, removable ? PendingIntent.FLAG_ONE_SHOT : flag);
+		else contentIntent = PendingIntent.getService(this, 0, intentService, flag);
 		notification.setLatestEventInfo(getApplicationContext(), getString(R.string.app_name), getString(resText), contentIntent);
 		nm.notify(key, notification);
 	}
 	
 	public void setConnectionError(ConnectionError error) {
-		
+		setConnectionError(error, false);
+	}
+
+	private void setConnectionError(ConnectionError error, boolean removeAll) {
+		updateNotificationText();
+		getBinder().fireConnectionStateChange(false);
+		ConnectionError[] errors = ConnectionError.values();
+		if (removeAll) {
+			Log.i("test", "connection msg remove");
+			// service leáll, figyelmeztetések és hibák eltüntetése
+			for (ConnectionError err : errors) {
+				removeNotification(err.getNotificationId());
+			}
+		}
+		else if (isStarted(this)) {
+			if (error == null || !error.isError()) {
+				// sikeres kapcsolódás vagy figyelmeztető üzenet, figyelmeztetések eltüntetése
+				Log.i("test", "connection warn remove");
+				for (ConnectionError err : errors) {
+					if (!err.isError()) removeNotification(err.getNotificationId());
+				}
+			}
+			if (error != null && error.isVisible()) {
+				int id;
+				try {
+					id = (Integer) R.string.class.getField("err_" + error.ordinal()).get(STRINGS);
+				}
+				catch (Exception ex) {
+					Log.i("test", "no text");
+					return;
+				}
+				if (error.isError()) {
+					Log.i("test", "add error notify");
+					// kapcsolat bontása, üzenet megjelenítése, amire kattintva a főablak jelenik meg
+					disconnect(true);
+					addNotification(id, new Intent(this, MainActivity.class), error.getNotificationId(), false, true);
+				}
+				else {
+					Log.i("test", "add warn notify");
+					// reconnect ütemezés, üzenet megjelenítése eltávolíthatóként, amire kattintva azonnali reconnect fut le
+					reconnectSchedule();
+					addNotification(id, null, new Intent(this, ConnectionService.class).putExtra(KEY_EVENT, EVT_RECONNECT_NOW), error.getNotificationId(), true, false);
+				}
+			}
+		}
 	}
 	
 	private void setNotificationsVisible(boolean visible) {

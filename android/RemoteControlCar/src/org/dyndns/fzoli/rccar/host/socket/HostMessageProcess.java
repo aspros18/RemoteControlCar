@@ -1,9 +1,6 @@
 package org.dyndns.fzoli.rccar.host.socket;
 
-import java.io.EOFException;
 import java.io.InvalidClassException;
-
-import javax.net.ssl.SSLException;
 
 import org.dyndns.fzoli.rccar.host.ConnectionService;
 import org.dyndns.fzoli.rccar.host.ConnectionService.ConnectionError;
@@ -20,7 +17,13 @@ public class HostMessageProcess extends MessageProcess {
 		super(handler);
 		SERVICE = service;
 	}
-
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		SERVICE.setConnectionError(null);
+	}
+	
 	@Override
 	protected void onMessage(Object arg0) {
 		
@@ -28,32 +31,19 @@ public class HostMessageProcess extends MessageProcess {
 
 	@Override
 	protected void onException(Exception ex) {
-//		ConnectionError err = null;
-//		try {
-//			throw ex;
-//		}
-//		catch (InvalidClassException e) {
-//			err = ConnectionError.WRONG_CLIENT_VERSION;
-//		}
-//		catch (Exception e) {
-//			err = ConnectionError.OTHER;
-//		}
-//		SERVICE.setConnectionError(err);
+		ConnectionError err = null;
 		try {
 			throw ex;
 		}
 		catch (InvalidClassException e) {
 			Log.e("test", "bridge is not compatible with this client", e);
-		}
-		catch (EOFException e) {
-			;
-		}
-		catch (SSLException e) {
-			Log.i("test", "ssl exception", e);
+			err = ConnectionError.WRONG_CLIENT_VERSION;
 		}
 		catch (Exception e) {
-			super.onException(e);
+			err = ConnectionError.OTHER;
+			Log.i("test", "unknown error", e);
 		}
+		SERVICE.setConnectionError(err);
 	}
 
 }

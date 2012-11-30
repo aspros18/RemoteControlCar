@@ -28,9 +28,7 @@ public class HostDisconnectProcess extends ClientDisconnectProcess implements Co
 	public void onDisconnect(Exception ex) {
 		super.onDisconnect(ex);
 		Log.i("test", "disconnected from the bridge");
-//		SERVICE.setConnectionError(ConnectionError.CONNECTION_LOST);
-		SERVICE.updateNotificationText();
-		SERVICE.reconnectSchedule();
+		SERVICE.setConnectionError(ConnectionError.CONNECTION_LOST);
 	}
 	
 }

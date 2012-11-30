@@ -27,46 +27,30 @@ public class HostHandler extends AbstractSecureClientHandler implements Connecti
 	
 	@Override
 	protected void onException(Exception ex) {
-//		ConnectionError err = null;
-//		try {
-//			throw ex;
-//		}
-//		catch (RemoteHandlerException e) {
-//			err = ConnectionError.CONNECTION_REFUSED;
-//		}
-//		catch (SocketTimeoutException e) {
-//			err = ConnectionError.CONNECTION_LOST;
-//		}
-//		catch (SSLHandshakeException e) {
-//			err = ConnectionError.INVALID_CERTIFICATE;
-//		}
-//		catch (SocketException e) {
-//			err = ConnectionError.CONNECTION_ERROR;
-//		}
-//		catch (KeyStoreException e) {
-//			err = ConnectionError.WRONG_CERTIFICATE_SETTINGS;
-//		}
-//		catch (Exception e) {
-//			err = ConnectionError.OTHER;
-//		}
-//		SERVICE.setConnectionError(err);
+		ConnectionError err = null;
 		try {
+			Log.i("test", "handler exception", ex);
 			throw ex;
 		}
 		catch (RemoteHandlerException e) {
-			Log.i("test", "remote handler exception", e);
-			SERVICE.reconnectSchedule();
+			err = ConnectionError.CONNECTION_REFUSED;
+		}
+		catch (SocketTimeoutException e) {
+			err = ConnectionError.CONNECTION_LOST;
 		}
 		catch (SSLHandshakeException e) {
-			Log.i("test", "handshake exception", e);
-			SERVICE.reconnectSchedule();
+			err = ConnectionError.INVALID_CERTIFICATE;
+		}
+		catch (SocketException e) {
+			err = ConnectionError.CONNECTION_ERROR;
 		}
 		catch (KeyStoreException e) {
-			Log.e("test", "keystore error", e);
+			err = ConnectionError.WRONG_CERTIFICATE_SETTINGS;
 		}
 		catch (Exception e) {
-			super.onException(e);
+			err = ConnectionError.OTHER;
 		}
+		SERVICE.setConnectionError(err);
 	}
 	
 	@Override

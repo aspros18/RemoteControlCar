@@ -31,6 +31,8 @@ public class ConfigHelpDialog extends JDialog {
         
         JScrollPane sp = new JScrollPane(taHelp); // a szöveg scrollozható ...
         sp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER); // ... de csak vertikálisan
+        sp.setBorder(null); // mindkét border eltüntetése
+        sp.setViewportBorder(null);
         add(sp); // scrollpane hozzáadása az ablakhoz
         
         pack(); // minimális méret beállítása és ...

@@ -1,5 +1,7 @@
 package org.dyndns.fzoli.rccar.host.socket;
 
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.security.KeyStoreException;
 
 import javax.net.ssl.SSLHandshakeException;
@@ -7,6 +9,7 @@ import javax.net.ssl.SSLSocket;
 
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import org.dyndns.fzoli.rccar.host.ConnectionService;
+import org.dyndns.fzoli.rccar.host.ConnectionService.ConnectionError;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
 import org.dyndns.fzoli.socket.handler.exception.RemoteHandlerException;
 import org.dyndns.fzoli.socket.process.SecureProcess;
@@ -24,16 +27,39 @@ public class HostHandler extends AbstractSecureClientHandler implements Connecti
 	
 	@Override
 	protected void onException(Exception ex) {
+//		ConnectionError err = null;
+//		try {
+//			throw ex;
+//		}
+//		catch (RemoteHandlerException e) {
+//			err = ConnectionError.CONNECTION_REFUSED;
+//		}
+//		catch (SocketTimeoutException e) {
+//			err = ConnectionError.CONNECTION_LOST;
+//		}
+//		catch (SSLHandshakeException e) {
+//			err = ConnectionError.INVALID_CERTIFICATE;
+//		}
+//		catch (SocketException e) {
+//			err = ConnectionError.CONNECTION_ERROR;
+//		}
+//		catch (KeyStoreException e) {
+//			err = ConnectionError.WRONG_CERTIFICATE_SETTINGS;
+//		}
+//		catch (Exception e) {
+//			err = ConnectionError.OTHER;
+//		}
+//		SERVICE.setConnectionError(err);
 		try {
 			throw ex;
 		}
 		catch (RemoteHandlerException e) {
 			Log.i("test", "remote handler exception", e);
-			SERVICE.reconnectSchedule(false);
+			SERVICE.reconnectSchedule();
 		}
 		catch (SSLHandshakeException e) {
 			Log.i("test", "handshake exception", e);
-			SERVICE.reconnectSchedule(false);
+			SERVICE.reconnectSchedule();
 		}
 		catch (KeyStoreException e) {
 			Log.e("test", "keystore error", e);
@@ -49,7 +75,7 @@ public class HostHandler extends AbstractSecureClientHandler implements Connecti
         	case KEY_CONN_DISCONNECT:
         		return new HostDisconnectProcess(SERVICE, this);
         	case KEY_CONN_MESSAGE:
-        		return new HostMessageProcess(this);
+        		return new HostMessageProcess(SERVICE, this);
 		}
 		return null;
 	}

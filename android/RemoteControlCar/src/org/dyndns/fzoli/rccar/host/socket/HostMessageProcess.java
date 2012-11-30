@@ -5,6 +5,8 @@ import java.io.InvalidClassException;
 
 import javax.net.ssl.SSLException;
 
+import org.dyndns.fzoli.rccar.host.ConnectionService;
+import org.dyndns.fzoli.rccar.host.ConnectionService.ConnectionError;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.impl.MessageProcess;
 
@@ -12,8 +14,11 @@ import android.util.Log;
 
 public class HostMessageProcess extends MessageProcess {
 
-	public HostMessageProcess(SecureHandler handler) {
+	private final ConnectionService SERVICE;
+	
+	public HostMessageProcess(ConnectionService service, SecureHandler handler) {
 		super(handler);
+		SERVICE = service;
 	}
 
 	@Override
@@ -23,6 +28,17 @@ public class HostMessageProcess extends MessageProcess {
 
 	@Override
 	protected void onException(Exception ex) {
+//		ConnectionError err = null;
+//		try {
+//			throw ex;
+//		}
+//		catch (InvalidClassException e) {
+//			err = ConnectionError.WRONG_CLIENT_VERSION;
+//		}
+//		catch (Exception e) {
+//			err = ConnectionError.OTHER;
+//		}
+//		SERVICE.setConnectionError(err);
 		try {
 			throw ex;
 		}

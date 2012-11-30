@@ -1,12 +1,17 @@
 package org.dyndns.fzoli.rccar.host.socket;
 
+import java.net.ConnectException;
+import java.net.NoRouteToHostException;
 import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.security.KeyStoreException;
 
 import javax.net.ssl.SSLSocket;
 
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import org.dyndns.fzoli.rccar.clients.AbstractConnectionHelper;
 import org.dyndns.fzoli.rccar.host.ConnectionService;
+import org.dyndns.fzoli.rccar.host.ConnectionService.ConnectionError;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
 
 import android.util.Log;
@@ -49,12 +54,35 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
 	
 	@Override
 	protected void onException(Exception ex, int connectionId) {
+//		ConnectionError err = null;
+//		try {
+//			throw ex;
+//		}
+//		catch (ConnectException e) {
+//			err = ConnectionError.CONNECTION_ERROR;
+//		}
+//		catch (NoRouteToHostException e) {
+//			err = ConnectionError.CONNECTION_ERROR;
+//		}
+//		catch (UnknownHostException e) {
+//			err = ConnectionError.CONNECTION_ERROR;
+//		}
+//		catch (SocketException e) {
+//			err = ConnectionError.CONNECTION_LOST;
+//		}
+//		catch (KeyStoreException e) {
+//			err = ConnectionError.WRONG_CERTIFICATE_SETTINGS;
+//		}
+//		catch (Exception e) {
+//			err = ConnectionError.OTHER;
+//		}
+//		SERVICE.setConnectionError(err);
 		try {
 			throw ex;
 		}
 		catch (SocketException e) { // nem fut a szerver, vagy nincs útvonal hozzá
 			Log.i("test", "connection error", e);
-			SERVICE.reconnectSchedule(false);
+			SERVICE.reconnectSchedule();
 		}
 		catch (Exception e) {
 			super.onException(ex, connectionId);

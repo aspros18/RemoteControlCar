@@ -2,6 +2,7 @@ package org.dyndns.fzoli.rccar.host.socket;
 
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import org.dyndns.fzoli.rccar.host.ConnectionService;
+import org.dyndns.fzoli.rccar.host.ConnectionService.ConnectionError;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.impl.ClientDisconnectProcess;
 
@@ -26,9 +27,10 @@ public class HostDisconnectProcess extends ClientDisconnectProcess implements Co
 	@Override
 	public void onDisconnect(Exception ex) {
 		super.onDisconnect(ex);
-		Log.i("test", "disconnected from the bridge, delay reconnect");
+		Log.i("test", "disconnected from the bridge");
+//		SERVICE.setConnectionError(ConnectionError.CONNECTION_LOST);
 		SERVICE.updateNotificationText();
-		SERVICE.reconnectSchedule(false);
+		SERVICE.reconnectSchedule();
 	}
 	
 }

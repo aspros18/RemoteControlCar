@@ -32,6 +32,51 @@ import android.provider.Settings;
 
 public class ConnectionService extends IOIOService {
 	
+	public static enum ConnectionError {
+		NONE,
+		OTHER,
+		CONNECTION_ERROR,
+		CONNECTION_LOST,
+		CONNECTION_REFUSED,
+		INVALID_CERTIFICATE,
+		WEB_IPCAM_UNREACHABLE(true),
+		WRONG_CLIENT_VERSION(true),
+		WRONG_CERTIFICATE_SETTINGS(Event.MAIN_ACTIVITY);
+		
+		public static enum Event {
+			MAIN_ACTIVITY
+		}
+		
+		private final Event EVENT;
+		private final boolean ERROR;
+		
+		private ConnectionError() {
+			this(false);
+		}
+		
+		private ConnectionError(boolean error) {
+			this(null, error);
+		}
+		
+		private ConnectionError(Event event) {
+			this(event, true);
+		}
+		
+		private ConnectionError(Event event, boolean error) {
+			EVENT = event;
+			ERROR = error;
+		}
+		
+		public boolean isError() {
+			return ERROR;
+		}
+		
+		public Event getEvent() {
+			return EVENT;
+		}
+		
+	}
+	
 	private final static int ID_NOTIFY = 0;
 	private final static int ID_NOTIFY_CONFIG = 1;
 	private final static int ID_NOTIFY_NETWORK = 2;
@@ -151,7 +196,11 @@ public class ConnectionService extends IOIOService {
 //		}
 //	}
 	
-	public void reconnectSchedule(boolean now) {
+	public void reconnectSchedule() {
+		reconnectSchedule(false);
+	}
+	
+	private void reconnectSchedule(boolean now) {
 		if (now) {
 			if (connTask != null) connTask.run();
 			else reconnect();
@@ -177,13 +226,19 @@ public class ConnectionService extends IOIOService {
 	
 	private void connect(boolean reconnect) {
 		if (conn == null || reconnect) {
-			disconnect();
+			disconnect(false);
 			if (isStarted(this) && createConnectionHelper() != null) conn.connect();
 		}
 	}
 	
-	private void disconnect() {
-		if (conn != null) conn.disconnect();
+	private void disconnect(boolean stop) {
+		if (connTask != null && stop) {
+			connTask.cancel();
+			connTask = null;
+		}
+		if (conn != null) {
+			conn.disconnect();
+		}
 		getBinder().fireConnectionStateChange(false);
 	}
 	
@@ -206,7 +261,7 @@ public class ConnectionService extends IOIOService {
 			if (event.equals(EVT_CONNECTIVITY_CHANGE)) {
 				if (startId != 1) setNetworkNotificationVisible(true);
 				if (isNetworkAvailable()) connect(true);
-				else disconnect();
+				else disconnect(false);
 			}
 			else if (event.equals(EVT_GPS_SENSOR_CHANGE)) {
 				if (startId != 1) setGpsEnableNotificationVisible(true);
@@ -223,7 +278,7 @@ public class ConnectionService extends IOIOService {
 	
 	@Override
 	public void onDestroy() {
-		disconnect();
+		disconnect(true);
 		setNotificationsVisible(false);
 		removeNotification();
 		super.onDestroy();
@@ -270,6 +325,10 @@ public class ConnectionService extends IOIOService {
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, removable ? PendingIntent.FLAG_ONE_SHOT : PendingIntent.FLAG_UPDATE_CURRENT);
 		notification.setLatestEventInfo(getApplicationContext(), getString(R.string.app_name), getString(resText), contentIntent);
 		nm.notify(key, notification);
+	}
+	
+	public void setConnectionError(ConnectionError error) {
+		
 	}
 	
 	private void setNotificationsVisible(boolean visible) {

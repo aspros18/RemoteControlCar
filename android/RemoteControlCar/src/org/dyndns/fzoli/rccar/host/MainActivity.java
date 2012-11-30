@@ -185,7 +185,7 @@ public class MainActivity extends SherlockActivity {
 			if (config.isCorrect()) {
 				bindService();
 			}
-			else {
+			else if (!ConnectionService.isStarted(this)) {
 				changed = false;
 				Toast.makeText(this, R.string.set_config, Toast.LENGTH_SHORT).show();
 				btStart.setEnabled(false);
@@ -211,7 +211,13 @@ public class MainActivity extends SherlockActivity {
 		if (changed) {
 			btStart.setEnabled(!running);
 			btStop.setEnabled(running);
-			if (save) ConnectionService.setStarted(this, running);
+			if (save) {
+				ConnectionService.setSuspended(false);
+				ConnectionService.setStarted(this, running);
+			}
+			else {
+				ConnectionService.setSuspended(!running);
+			}
 		}
 	}
 	

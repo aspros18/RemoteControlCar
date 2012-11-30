@@ -71,6 +71,9 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
 		catch (SocketException e) {
 			err = ConnectionError.CONNECTION_LOST;
 		}
+		catch (NullPointerException e) {
+			err = ConnectionError.WRONG_CERTIFICATE_SETTINGS;
+		}
 		catch (KeyStoreException e) {
 			err = ConnectionError.WRONG_CERTIFICATE_SETTINGS;
 		}

@@ -111,6 +111,16 @@ public class ConnectionService extends IOIOService {
 	private Notification notification;
 	private PendingIntent contentIntent;
 	
+	private static boolean suspended = false;
+	
+	public static boolean isSuspended() {
+		return suspended;
+	}
+	
+	public static void setSuspended(boolean suspended) {
+		ConnectionService.suspended = suspended;
+	}
+	
 	public Config getConfig() {
 		return config;
 	}
@@ -131,6 +141,7 @@ public class ConnectionService extends IOIOService {
 	
 	private ConnectionHelper createConnectionHelper() {
 		config = createConfig(this);
+		if (!config.isCorrect() && !isOfflineMode()) setConfigNotificationVisible(true);
 		if (isOfflineMode() || !config.isCorrect() || !isNetworkAvailable() || !isAppInstalled(PACKAGE_CAM)) {
 			return null;
 		}
@@ -227,7 +238,7 @@ public class ConnectionService extends IOIOService {
 	private void connect(boolean reconnect) {
 		if (conn == null || reconnect) {
 			disconnect(false);
-			if (isStarted(this) && createConnectionHelper() != null) conn.connect();
+			if ((isStarted(this) && !isSuspended()) && createConnectionHelper() != null) conn.connect();
 		}
 	}
 	
@@ -354,7 +365,7 @@ public class ConnectionService extends IOIOService {
 				removeNotification(err.getNotificationId());
 			}
 		}
-		else if (isStarted(this)) {
+		else if (isStarted(this) && !isSuspended()) {
 			if (error == null || !error.isError()) {
 				// sikeres kapcsolódás vagy figyelmeztető üzenet, figyelmeztetések eltüntetése
 				Log.i("test", "connection warn remove");
@@ -395,6 +406,7 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	private void setConfigNotificationVisible(boolean visible) {
+		if (config == null) return;
 		if (visible && !config.isCorrect()) addOnlineNotification(R.string.set_config, new Intent(this, MainActivity.class), ID_NOTIFY_CONFIG, true);
 		else removeNotification(ID_NOTIFY_CONFIG);
 	}

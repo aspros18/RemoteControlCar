@@ -33,8 +33,8 @@ import android.provider.Settings;
 public class ConnectionService extends IOIOService {
 	
 	/**
-	 * A hibák beállításukkor leállítják a futást (service stop + activity repaint) és csak a service indulásakor tünnek el.
-	 * A figyelmeztetések (nem hibák) a service futását nem állítják le, csak reconnect ütemezést aktiválnak és a service leállásakor vagy sikeres kapcsolódás esetén tűnnek el mind.
+	 * A hibák beállításukkor bontják a kapcsolatot a híddal és nem távolíthatóak el a notification barról. A hibák a service leállásakor mind eltűnnek. A hibákra kattintva a főablak jelenik meg.
+	 * A figyelmeztetések (nem hibák) beállításukkor reconnect ütemezést aktiválnak és a service leállásakor vagy sikeres kapcsolódás esetén mind eltűnnek. A figyelmeztetések eltávolíthatóak és rájuk kattintva azonnal eltűnnek és lefuttatják a reconnect metódust.
 	 * A connection lost figyelmeztetés egyedülálló, tehát keletkezésekor a többi figyelmeztetés eltűnik és más figyelmeztetés létrejöttével a connection lost figyelmeztetés tűnik el.
 	 * Az other figyelmeztetéshez nem tartozik felületi komponens, tehát nem jelenik meg és nem is tűnik el.
 	 * A sikeres kapcsolatfelvételt a null referencia jelzi.
@@ -47,13 +47,8 @@ public class ConnectionService extends IOIOService {
 		INVALID_CERTIFICATE,
 		WEB_IPCAM_UNREACHABLE(true),
 		WRONG_CLIENT_VERSION(true),
-		WRONG_CERTIFICATE_SETTINGS(Event.MAIN_ACTIVITY);
+		WRONG_CERTIFICATE_SETTINGS(true);
 		
-		public static enum Event {
-			MAIN_ACTIVITY
-		}
-		
-		private final Event EVENT;
 		private final boolean ERROR;
 		
 		private ConnectionError() {
@@ -61,15 +56,6 @@ public class ConnectionService extends IOIOService {
 		}
 		
 		private ConnectionError(boolean error) {
-			this(null, error);
-		}
-		
-		private ConnectionError(Event event) {
-			this(event, true);
-		}
-		
-		private ConnectionError(Event event, boolean error) {
-			EVENT = event;
 			ERROR = error;
 		}
 		
@@ -83,10 +69,6 @@ public class ConnectionService extends IOIOService {
 		
 		public boolean isError() {
 			return ERROR;
-		}
-		
-		public Event getEvent() {
-			return EVENT;
 		}
 		
 	}
@@ -252,6 +234,7 @@ public class ConnectionService extends IOIOService {
 		}
 		if (conn != null) {
 			conn.disconnect();
+			conn = null;
 		}
 		getBinder().fireConnectionStateChange(false);
 	}
@@ -325,9 +308,9 @@ public class ConnectionService extends IOIOService {
 		contentIntent = null;
 	}
 	
-	private void addOnlineNotification(int resText, Intent intent, int key, boolean removable, boolean error) {
+	private void addOnlineNotification(int resText, Intent intent, int key, boolean error) {
 		if (!isOfflineMode()) {
-			addNotification(resText, intent, key, removable, error);
+			addNotification(resText, intent, key, false, error);
 		}
 	}
 	
@@ -353,22 +336,22 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	private void setConfigNotificationVisible(boolean visible) {
-		if (visible && !config.isCorrect()) addOnlineNotification(R.string.set_config, new Intent(this, MainActivity.class), ID_NOTIFY_CONFIG, false, true);
+		if (visible && !config.isCorrect()) addOnlineNotification(R.string.set_config, new Intent(this, MainActivity.class), ID_NOTIFY_CONFIG, true);
 		else removeNotification(ID_NOTIFY_CONFIG);
 	}
 	
 	private void setNetworkNotificationVisible(boolean visible) {
-		if (visible && !isNetworkAvailable() && !isNetworkConnecting()) addOnlineNotification(R.string.set_network, new Intent(Settings.ACTION_WIRELESS_SETTINGS), ID_NOTIFY_NETWORK, false, false);
+		if (visible && !isNetworkAvailable() && !isNetworkConnecting()) addOnlineNotification(R.string.set_network, new Intent(Settings.ACTION_WIRELESS_SETTINGS), ID_NOTIFY_NETWORK, false);
 		else removeNotification(ID_NOTIFY_NETWORK);
 	}
 	
 	private void setCamInstallNotificationVisible(boolean visible) {
-		if (visible && !isAppInstalled(PACKAGE_CAM)) addOnlineNotification(R.string.install_cam, new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://details?id=" + PACKAGE_CAM)), ID_NOTIFY_INST_CAM, false, true);
+		if (visible && !isAppInstalled(PACKAGE_CAM)) addOnlineNotification(R.string.install_cam, new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://details?id=" + PACKAGE_CAM)), ID_NOTIFY_INST_CAM, true);
 		else removeNotification(ID_NOTIFY_INST_CAM);
 	}
 	
 	private void setGpsEnableNotificationVisible(boolean visible) {
-		if (visible && !isGpsEnabled()) addOnlineNotification(R.string.set_gps, new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS), ID_NOTIFY_GPS_ENABLE, false, false);
+		if (visible && !isGpsEnabled()) addOnlineNotification(R.string.set_gps, new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS), ID_NOTIFY_GPS_ENABLE, false);
 		else removeNotification(ID_NOTIFY_GPS_ENABLE);
 	}
 	

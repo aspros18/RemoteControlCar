@@ -236,11 +236,6 @@ public class MainActivity extends SherlockActivity {
 					private ProgressDialog dialog;
 					
 					@Override
-					public void onServiceError() {
-						setRunning(false, false);
-					}
-					
-					@Override
 					public void onArrowChange(int x, int y) {
 						repaintArrow(x, y, true, true);
 					}

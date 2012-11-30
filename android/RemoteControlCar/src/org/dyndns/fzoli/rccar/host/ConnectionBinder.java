@@ -17,8 +17,6 @@ public class ConnectionBinder extends Binder {
 	 */
 	public static interface Listener {
 		
-		public void onServiceError();
-		
 		public void onArrowChange(int x, int y);
 		
 		public void onConnectionStateChange(boolean connecting);
@@ -106,10 +104,6 @@ public class ConnectionBinder extends Binder {
 		else {
 			//TODO: küldés szervernek
 		}
-	}
-	
-	public void fireServiceError() {
-		if (isListener()) mListener.onServiceError();
 	}
 	
 	private boolean isListener() {

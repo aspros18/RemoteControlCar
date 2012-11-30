@@ -32,11 +32,17 @@ import android.provider.Settings;
 
 public class ConnectionService extends IOIOService {
 	
+	/**
+	 * A hibák beállításukkor leállítják a futást (service stop + activity repaint) és csak a service indulásakor tünnek el.
+	 * A figyelmeztetések (nem hibák) a service futását nem állítják le, csak reconnect ütemezést aktiválnak és a service leállásakor vagy sikeres kapcsolódás esetén tűnnek el mind.
+	 * A connection lost figyelmeztetés egyedülálló, tehát keletkezésekor a többi figyelmeztetés eltűnik és más figyelmeztetés létrejöttével a connection lost figyelmeztetés tűnik el.
+	 * Az other figyelmeztetéshez nem tartozik felületi komponens, tehát nem jelenik meg és nem is tűnik el.
+	 * A sikeres kapcsolatfelvételt a null referencia jelzi.
+	 */
 	public static enum ConnectionError {
-		NONE,
 		OTHER,
 		CONNECTION_ERROR,
-		CONNECTION_LOST,
+		CONNECTION_LOST, 
 		CONNECTION_REFUSED,
 		INVALID_CERTIFICATE,
 		WEB_IPCAM_UNREACHABLE(true),
@@ -69,6 +75,10 @@ public class ConnectionService extends IOIOService {
 		
 		public int getNotificationId() {
 			return 100 + ordinal();
+		}
+		
+		public boolean isAlone() {
+			return this == CONNECTION_LOST;
 		}
 		
 		public boolean isError() {

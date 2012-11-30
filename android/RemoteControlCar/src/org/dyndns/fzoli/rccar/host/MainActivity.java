@@ -1,5 +1,8 @@
 package org.dyndns.fzoli.rccar.host;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -12,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
@@ -34,6 +38,8 @@ public class MainActivity extends SherlockActivity {
 	private ServiceConnection conn;
 	private boolean offlineMode;
 	
+	private Config config;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -43,6 +49,7 @@ public class MainActivity extends SherlockActivity {
 		arrow = (ArrowView) findViewById(R.id.arrow);
 		tvX = (TextView) findViewById(R.id.tv_x);
 		tvY = (TextView) findViewById(R.id.tv_y);
+		config = ConnectionService.createConfig(this);
 		
 		setXYText(0, 0);
 		
@@ -166,16 +173,46 @@ public class MainActivity extends SherlockActivity {
 		}
 	}
 	
-	private void setRunning(boolean b) {
-		setRunning(b, true);
+	private void setRunning(boolean running) {
+		setRunning(running, true);
 	}
 	
-	private void setRunning(boolean b, boolean save) {
-		if (b) bindService();
-		else unbindService();
-		btStart.setEnabled(!b);
-		btStop.setEnabled(b);
-		if (save) ConnectionService.setStarted(this, b);
+	private final Timer TIMER_TOAST = new Timer();
+	
+	private void setRunning(boolean running, boolean save) {
+		boolean changed = true;
+		if (running) {
+			if (config.isCorrect()) {
+				bindService();
+			}
+			else {
+				changed = false;
+				Toast.makeText(this, R.string.set_config, Toast.LENGTH_SHORT).show();
+				btStart.setEnabled(false);
+				TIMER_TOAST.schedule(new TimerTask() {
+					
+					@Override
+					public void run() {
+						runOnUiThread(new Runnable() {
+							
+							@Override
+							public void run() {
+								btStart.setEnabled(true);
+							}
+						});
+					}
+					
+				}, 2000);
+			}
+		}
+		else {
+			unbindService();
+		}
+		if (changed) {
+			btStart.setEnabled(!running);
+			btStop.setEnabled(running);
+			if (save) ConnectionService.setStarted(this, running);
+		}
 	}
 	
 	private void bindService() {
@@ -197,6 +234,11 @@ public class MainActivity extends SherlockActivity {
 				binder.setListener(new ConnectionBinder.Listener() {
 					
 					private ProgressDialog dialog;
+					
+					@Override
+					public void onServiceError() {
+						setRunning(false, false);
+					}
 					
 					@Override
 					public void onArrowChange(int x, int y) {

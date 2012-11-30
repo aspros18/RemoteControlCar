@@ -325,16 +325,16 @@ public class ConnectionService extends IOIOService {
 		contentIntent = null;
 	}
 	
-	private void addOnlineNotification(int resText, Intent intent, int key, boolean removable) {
+	private void addOnlineNotification(int resText, Intent intent, int key, boolean removable, boolean error) {
 		if (!isOfflineMode()) {
-			addNotification(resText, intent, key, removable);
+			addNotification(resText, intent, key, removable, error);
 		}
 	}
 	
 	@SuppressWarnings("deprecation")
-	private void addNotification(int resText, Intent intent, int key, boolean removable) {
+	private void addNotification(int resText, Intent intent, int key, boolean removable, boolean error) {
 		removeNotification(key);
-		Notification notification = new Notification(R.drawable.ic_warning, getString(resText), System.currentTimeMillis());
+		Notification notification = new Notification(error ? R.drawable.ic_error : R.drawable.ic_warning, getString(resText), System.currentTimeMillis());
 		notification.flags |= removable ? Notification.FLAG_AUTO_CANCEL : Notification.FLAG_NO_CLEAR;
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, removable ? PendingIntent.FLAG_ONE_SHOT : PendingIntent.FLAG_UPDATE_CURRENT);
 		notification.setLatestEventInfo(getApplicationContext(), getString(R.string.app_name), getString(resText), contentIntent);
@@ -346,29 +346,29 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	private void setNotificationsVisible(boolean visible) {
-		setConfigNotificationVisible(visible); //TODO: ez error legyen és a service álljon le, de a legjobb az lenne, ha el se lehetne indítani a servicet (kivéve local módban) és rövid idejű Toast jelezné, hogy javítani kell a konfigot (activity indulásakor és folytatásakor is)
+		setConfigNotificationVisible(visible);
 		setNetworkNotificationVisible(visible);
 		setGpsEnableNotificationVisible(visible);
-		setCamInstallNotificationVisible(visible); //TODO: ez is error ikonnal legyen, de a service ne álljon le
+		setCamInstallNotificationVisible(visible);
 	}
 	
 	private void setConfigNotificationVisible(boolean visible) {
-		if (visible && !config.isCorrect()) addOnlineNotification(R.string.set_config, new Intent(this, MainActivity.class), ID_NOTIFY_CONFIG, false);
+		if (visible && !config.isCorrect()) addOnlineNotification(R.string.set_config, new Intent(this, MainActivity.class), ID_NOTIFY_CONFIG, false, true);
 		else removeNotification(ID_NOTIFY_CONFIG);
 	}
 	
 	private void setNetworkNotificationVisible(boolean visible) {
-		if (visible && !isNetworkAvailable() && !isNetworkConnecting()) addOnlineNotification(R.string.set_network, new Intent(Settings.ACTION_WIRELESS_SETTINGS), ID_NOTIFY_NETWORK, false);
+		if (visible && !isNetworkAvailable() && !isNetworkConnecting()) addOnlineNotification(R.string.set_network, new Intent(Settings.ACTION_WIRELESS_SETTINGS), ID_NOTIFY_NETWORK, false, false);
 		else removeNotification(ID_NOTIFY_NETWORK);
 	}
 	
 	private void setCamInstallNotificationVisible(boolean visible) {
-		if (visible && !isAppInstalled(PACKAGE_CAM)) addOnlineNotification(R.string.install_cam, new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://details?id=" + PACKAGE_CAM)), ID_NOTIFY_INST_CAM, false);
+		if (visible && !isAppInstalled(PACKAGE_CAM)) addOnlineNotification(R.string.install_cam, new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://details?id=" + PACKAGE_CAM)), ID_NOTIFY_INST_CAM, false, true);
 		else removeNotification(ID_NOTIFY_INST_CAM);
 	}
 	
 	private void setGpsEnableNotificationVisible(boolean visible) {
-		if (visible && !isGpsEnabled()) addOnlineNotification(R.string.set_gps, new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS), ID_NOTIFY_GPS_ENABLE, false);
+		if (visible && !isGpsEnabled()) addOnlineNotification(R.string.set_gps, new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS), ID_NOTIFY_GPS_ENABLE, false, false);
 		else removeNotification(ID_NOTIFY_GPS_ENABLE);
 	}
 	

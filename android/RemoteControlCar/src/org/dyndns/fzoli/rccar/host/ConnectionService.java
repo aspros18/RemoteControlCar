@@ -87,6 +87,8 @@ public class ConnectionService extends IOIOService {
 	
 	private final static String PACKAGE_CAM = "com.pas.webcam";
 	
+	public final static String LOG_TAG = "mobilerc";
+	
 	public final static String KEY_EVENT = "event";
 	public final static String EVT_RECONNECT_NOW = "reconnect now";
 	public final static String EVT_CONNECTIVITY_CHANGE = ConnectivityManager.CONNECTIVITY_ACTION;
@@ -191,7 +193,7 @@ public class ConnectionService extends IOIOService {
 //	            InputStream in = conn.getInputStream(); // mjpeg stream megszerzése
 //			}
 //			catch (ConnectException ex) {
-//				Log.i("test", "retry later", ex);
+//				Log.i(LOG_TAG, "retry later", ex);
 //				try {
 //					Thread.sleep(2000);
 //				}
@@ -203,7 +205,7 @@ public class ConnectionService extends IOIOService {
 //				}
 //			}
 //			catch (Exception ex) {
-//				Log.i("test", "error", ex);
+//				Log.i(LOG_TAG, "error", ex);
 //			}
 //		}
 //	}
@@ -369,7 +371,7 @@ public class ConnectionService extends IOIOService {
 		getBinder().fireConnectionStateChange(false);
 		ConnectionError[] errors = ConnectionError.values();
 		if (removeAll) {
-			Log.i("test", "connection msg remove");
+			Log.i(LOG_TAG, "connection msg remove");
 			// service leáll, figyelmeztetések és hibák eltüntetése
 			for (ConnectionError err : errors) {
 				removeNotification(err.getNotificationId());
@@ -378,7 +380,7 @@ public class ConnectionService extends IOIOService {
 		else if (isStarted(this) && !isSuspended()) {
 			if (error == null || !error.isError()) {
 				// sikeres kapcsolódás vagy figyelmeztető üzenet, figyelmeztetések eltüntetése
-				Log.i("test", "connection warn remove");
+				Log.i(LOG_TAG, "connection warn remove");
 				for (ConnectionError err : errors) {
 					if (!err.isError()) removeNotification(err.getNotificationId());
 				}
@@ -389,17 +391,17 @@ public class ConnectionService extends IOIOService {
 					id = (Integer) R.string.class.getField("err_" + error.ordinal()).get(STRINGS);
 				}
 				catch (Exception ex) {
-					Log.i("test", "no text");
+					Log.i(LOG_TAG, "no text");
 					return;
 				}
 				if (error.isError()) {
-					Log.i("test", "add error notify");
+					Log.i(LOG_TAG, "add error notify");
 					// kapcsolat bontása, üzenet megjelenítése, amire kattintva a főablak jelenik meg
 					disconnect(true);
 					addNotification(id, new Intent(this, MainActivity.class), error.getNotificationId(), false, true);
 				}
 				else {
-					Log.i("test", "add warn notify");
+					Log.i(LOG_TAG, "add warn notify");
 					// reconnect ütemezés, üzenet megjelenítése eltávolíthatóként, amire kattintva azonnali reconnect fut le
 					reconnectSchedule();
 					addNotification(id, null, new Intent(this, ConnectionService.class).putExtra(KEY_EVENT, EVT_RECONNECT_NOW), error.getNotificationId(), true, false);

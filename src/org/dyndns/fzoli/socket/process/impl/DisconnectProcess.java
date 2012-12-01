@@ -29,6 +29,11 @@ abstract class DisconnectProcess extends AbstractSecureProcess {
     private boolean disconnected = false;
     
     /**
+     * Megadja, hogy meg kell-e hívni a válasz érkezése előtt a timeout vége metódust.
+     */
+    private boolean timeout = false;
+    
+    /**
      * Időtúllépés detektáló konstruktora.
      * @param handler Biztonságos kapcsolatfeldolgozó, ami létrehozza ezt az adatfeldolgozót.
      * @param timeout1 az első időtúllépés ideje ezredmásodpercben (nem végzetes korlát)
@@ -98,12 +103,18 @@ abstract class DisconnectProcess extends AbstractSecureProcess {
      * Időtúllépés esetén hívódik meg.
      * Az első időtúllépés történt meg, ami még nem végzetes.
      * A metódus ha kivételt dob, az {@code onDisconnect} metódus hívódik meg.
-     * A metódus az elkapott kivételt dobja, így alapértelmezésként az első megszakadás
-     * esetén már lefut az {@code onDisconnect}
      * @param ex a hibát okozó kivétel
      * @throws Exception az {@code onDisconnect} metódusnak átadott kivétel
      */
     protected void onTimeout(final Exception ex) throws Exception {
+        ;
+    }
+    
+    /**
+     * Időtúllépés után az első válaszüzenet megérkezésekor hívódik meg.
+     * A metódus ha kivételt dob, az {@code onDisconnect} metódus hívódik meg.
+     */
+    protected void afterTimeout() throws Exception {
         ;
     }
     
@@ -128,7 +139,7 @@ abstract class DisconnectProcess extends AbstractSecureProcess {
 
                     @Override
                     public void run() { // ha letelt az idő
-                        callDisconnect(ex); // disconnect esemény hívása, ha még nem hívták meg
+                        callOnDisconnect(ex); // disconnect esemény hívása, ha még nem hívták meg
                     }
                     
                 }, getSecondTimeout());
@@ -145,9 +156,31 @@ abstract class DisconnectProcess extends AbstractSecureProcess {
     /**
      * Ha még nem lett meghívva, meghívódik az {@code onDisconnect} metódus.
      */
-    protected void callDisconnect(Exception ex) {
-        if (!disconnected) onDisconnect(ex);
-        disconnected = true;
+    protected void callOnDisconnect(Exception ex) {
+        if (!disconnected) { // ha még nem volt disconnect
+            disconnected = true; // jelzé, hogy nem kell többé hívni
+            onDisconnect(ex); // eseménykezelő hívása, hogy vége a kapcsolatnak
+        }
+    }
+    
+    /**
+     * Beállítja az időtúllépés jelzést és meghívja az {@code onTimeout} metódust.
+     */
+    protected void callOnTimeout(Exception ex) throws Exception {
+        timeout = true; // timeout jelzés aktiválása
+        onTimeout(ex); // eseménykezelő hívása, hogy időtúllépés történt
+    }
+    
+    /**
+     * Ha a válasz előtt időtúllépés volt, meghívja az {@code afterTimeout} metódust,
+     * majd meghívja az {@code afterTimeout} metódust.
+     */
+    protected void callAfterAnswer() throws Exception {
+        if (timeout) { // ha van timeout jelzés
+            timeout = false; // jelzés inaktiválása, hogy újra ne fusson ez az ág le
+            afterTimeout(); // eseménykezelő hívása, hogy még él a kapcsolat
+        }
+        afterAnswer(); // eseménykezelő hívása, hogy válasz érkezett
     }
     
 }

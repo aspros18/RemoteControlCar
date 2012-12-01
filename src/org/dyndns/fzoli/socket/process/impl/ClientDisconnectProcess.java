@@ -40,19 +40,19 @@ public class ClientDisconnectProcess extends DisconnectProcess {
                     beforeAnswer(); // olvasás előtti eseménykezelő hívása
                     in.read(); // válasz a szervertől
                     setTimeoutActive(false, null); // 2. időtúllépés inaktiválása, ha kell
-                    afterAnswer(); // olvasás utáni eseménykezelő hívása
+                    callAfterAnswer(); // olvasás utáni eseménykezelő hívása
                     out.write(1); // üzenés a szervernek ...
                     out.flush(); // ... azonnal
                 }
                 catch (SocketTimeoutException ex) { // ha az in.read() az 1. időkorláton belül nem kapott bájtot
                     setTimeoutActive(true, ex); // 2. időtúllépés aktiválása, ha kell
-                    onTimeout(ex); // időtúllépés eseménykezelő hívása
+                    callOnTimeout(ex); // időtúllépés eseménykezelő hívása
                 }
                 Thread.sleep(getWaiting()); // várakozik egy kicsit, hogy a sávszélességet ne terhelje, és hogy szinkronban legyen a szerverrel
             }
         }
         catch (Exception ex) { // ha bármilyen hiba történt
-            callDisconnect(ex); // disconnect eseménykezelő hívása, ha kell
+            callOnDisconnect(ex); // disconnect eseménykezelő hívása, ha kell
         }
     }
     

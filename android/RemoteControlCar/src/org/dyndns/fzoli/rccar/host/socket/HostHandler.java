@@ -29,7 +29,7 @@ public class HostHandler extends AbstractSecureClientHandler implements Connecti
 	protected void onException(Exception ex) {
 		ConnectionError err = null;
 		try {
-			Log.i("test", "handler exception", ex);
+			Log.i(ConnectionService.LOG_TAG, "handler exception", ex);
 			throw ex;
 		}
 		catch (RemoteHandlerException e) {

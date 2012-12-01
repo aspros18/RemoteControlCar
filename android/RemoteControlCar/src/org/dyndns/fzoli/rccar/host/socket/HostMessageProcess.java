@@ -36,12 +36,12 @@ public class HostMessageProcess extends MessageProcess {
 			throw ex;
 		}
 		catch (InvalidClassException e) {
-			Log.e("test", "bridge is not compatible with this client", e);
+			Log.e(ConnectionService.LOG_TAG, "bridge is not compatible with this client", e);
 			err = ConnectionError.WRONG_CLIENT_VERSION;
 		}
 		catch (Exception e) {
 			err = ConnectionError.OTHER;
-			Log.i("test", "unknown error", e);
+			Log.i(ConnectionService.LOG_TAG, "unknown error", e);
 		}
 		SERVICE.setConnectionError(err);
 	}

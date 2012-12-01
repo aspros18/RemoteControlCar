@@ -19,14 +19,19 @@ public class HostDisconnectProcess extends ClientDisconnectProcess implements Co
 	
 	@Override
 	protected void onTimeout(Exception ex) throws Exception {
-		super.onTimeout(ex);
 		SERVICE.getBinder().setX(0).setY(0);
+		Log.i(ConnectionService.LOG_TAG, "on timeout", ex);
+	}
+	
+	@Override
+	protected void afterTimeout() throws Exception {
+		Log.i(ConnectionService.LOG_TAG, "after timeout");
 	}
 	
 	@Override
 	protected void onDisconnect(Exception ex) {
 		super.onDisconnect(ex);
-		Log.i("test", "disconnected from the bridge");
+		Log.i(ConnectionService.LOG_TAG, "disconnected from the bridge", ex);
 		SERVICE.setConnectionError(ConnectionError.CONNECTION_LOST);
 	}
 	

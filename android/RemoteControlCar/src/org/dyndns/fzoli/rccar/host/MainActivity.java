@@ -242,8 +242,15 @@ public class MainActivity extends SherlockActivity {
 					private ProgressDialog dialog;
 					
 					@Override
-					public void onArrowChange(int x, int y) {
-						repaintArrow(x, y, true, true);
+					public void onArrowChange(final int x, final int y) {
+						runOnUiThread(new Runnable() {
+							
+							@Override
+							public void run() {
+								repaintArrow(x, y, true, true);
+							}
+							
+						});
 					}
 					
 					@Override

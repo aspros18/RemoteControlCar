@@ -56,7 +56,7 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
 	protected void onException(Exception ex, int connectionId) {
 		ConnectionError err = null;
 		try {
-			Log.i("test", "connection error", ex);
+			Log.i(ConnectionService.LOG_TAG, "connection error", ex);
 			throw ex;
 		}
 		catch (ConnectException e) {

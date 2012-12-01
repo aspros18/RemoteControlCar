@@ -4,6 +4,7 @@ import org.dyndns.fzoli.rccar.model.Control;
 import org.dyndns.fzoli.rccar.model.host.HostData;
 
 import android.os.Binder;
+import android.util.Log;
 
 /**
  * A service és az activity közötti kommunikációt megvalósító osztály.
@@ -172,6 +173,7 @@ public class ConnectionBinder extends Binder {
 	 * Ha az Activity még nem regisztrálta eseményfigyelőjét, az eseményt akkor fogja megkapni, amikor regisztrálja azt.
 	 */
 	public void fireConnectionStateChange(boolean connecting) {
+		Log.i(ConnectionService.LOG_TAG, "connecting dialog: " + connecting);
 		if (mListener != null) {
 			cacheConnecting = null;
 			mListener.onConnectionStateChange(connecting);

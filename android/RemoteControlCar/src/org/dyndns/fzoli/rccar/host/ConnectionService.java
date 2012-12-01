@@ -94,6 +94,7 @@ public class ConnectionService extends IOIOService {
 	public final static String EVT_CONNECTIVITY_CHANGE = ConnectivityManager.CONNECTIVITY_ACTION;
 	public final static String EVT_GPS_SENSOR_CHANGE = LocationManager.PROVIDERS_CHANGED_ACTION;
 	public final static String EVT_SDCARD_MOUNTED = Intent.ACTION_MEDIA_MOUNTED;
+	public final static String EVT_SHUTDOWN = Intent.ACTION_SHUTDOWN;
 	
 	@SuppressWarnings("deprecation")
 	public final static String EVT_APP_INSTALL = Intent.ACTION_PACKAGE_INSTALL;
@@ -245,6 +246,7 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	private void connect(boolean reconnect) {
+		Log.i(LOG_TAG, "connect calling");
 		if (conn == null || reconnect) {
 			disconnect(false);
 			if ((isStarted(this) && !isSuspended()) && createConnectionHelper() != null) conn.connect();
@@ -252,6 +254,7 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	private void disconnect(boolean stop) {
+		Log.i(LOG_TAG, "disconnect calling");
 		if (connTask != null && stop) {
 			connTask.cancel();
 			connTask = null;
@@ -298,6 +301,9 @@ public class ConnectionService extends IOIOService {
 			}
 			else if (event.equals(EVT_RECONNECT_NOW)) {
 				reconnectSchedule(true);
+			}
+			else if (event.equals(EVT_SHUTDOWN)) {
+				stopSelf();
 			}
 		}
 		return START_STICKY;
@@ -385,26 +391,27 @@ public class ConnectionService extends IOIOService {
 					if (!err.isError()) removeNotification(err.getNotificationId());
 				}
 			}
-			if (error != null && error.isVisible()) {
-				int id;
-				try {
-					id = (Integer) R.string.class.getField("err_" + error.ordinal()).get(STRINGS);
-				}
-				catch (Exception ex) {
-					Log.i(LOG_TAG, "no text");
-					return;
+			if (error != null) {
+				Integer id = null;
+				if (error.isVisible()) {
+					try {
+						id = (Integer) R.string.class.getField("err_" + error.ordinal()).get(STRINGS);
+					}
+					catch (Exception ex) {
+						Log.i(LOG_TAG, "no text");
+					}
 				}
 				if (error.isError()) {
 					Log.i(LOG_TAG, "add error notify");
 					// kapcsolat bontása, üzenet megjelenítése, amire kattintva a főablak jelenik meg
 					disconnect(true);
-					addNotification(id, new Intent(this, MainActivity.class), error.getNotificationId(), false, true);
+					if (id != null) addNotification(id, new Intent(this, MainActivity.class), error.getNotificationId(), false, true);
 				}
 				else {
 					Log.i(LOG_TAG, "add warn notify");
 					// reconnect ütemezés, üzenet megjelenítése eltávolíthatóként, amire kattintva azonnali reconnect fut le
 					reconnectSchedule();
-					addNotification(id, null, new Intent(this, ConnectionService.class).putExtra(KEY_EVENT, EVT_RECONNECT_NOW), error.getNotificationId(), true, false);
+					if (id != null) addNotification(id, null, new Intent(this, ConnectionService.class).putExtra(KEY_EVENT, EVT_RECONNECT_NOW), error.getNotificationId(), true, false);
 				}
 			}
 		}

@@ -21,6 +21,7 @@ public class HostMessageProcess extends MessageProcess {
 	@Override
 	protected void onStart() {
 		super.onStart();
+		Log.i(ConnectionService.LOG_TAG, "msg proc connected");
 		SERVICE.setConnectionError(null);
 	}
 	

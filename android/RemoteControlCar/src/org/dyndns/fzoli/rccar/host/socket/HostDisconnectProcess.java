@@ -20,8 +20,7 @@ public class HostDisconnectProcess extends ClientDisconnectProcess implements Co
 	@Override
 	protected void onTimeout(Exception ex) throws Exception {
 		super.onTimeout(ex);
-		SERVICE.getBinder().setX(0, false);
-		SERVICE.getBinder().setY(0, false);
+		SERVICE.getBinder().setX(0).setY(0);
 	}
 	
 	@Override

@@ -58,50 +58,94 @@ public class ConnectionBinder extends Binder {
 		SERVICE = service;
 	}
 	
+	/**
+	 * Az objektumot létrehozó Service referenciája.
+	 */
 	public ConnectionService getService() {
 		return SERVICE;
 	}
 	
+	/**
+     * Az autó vezérlőjelét adja vissza.
+     */
 	private Control getControl() {
 		return DATA.getControl();
 	}
 	
+	/**
+     * Megadja, hogy pontosan szabályozható-e a az irány.
+     * True esetén csak 0 vagy 100 lehet az érték.
+     */
 	public boolean isFullX() {
 		return DATA.isFullX();
 	}
 	
+	/**
+     * Megadja, hogy pontosan szabályozható-e a a sebesség.
+     * True esetén csak 0 vagy 100 lehet az érték.
+     */
 	public boolean isFullY() {
 		return DATA.isFullY();
 	}
 	
+	/**
+     * Irány százalékban.
+     */
 	public int getX() {
 		return getControl().getX();
 	}
 	
+	/**
+     * Sebesség százalékban.
+     */
 	public int getY() {
 		return getControl().getY();
 	}
 	
-	public void setX(int x) {
+	/**
+     * Irány megadása százalékban.
+     * Jelzi az Activitynek a módosulást.
+     * @return a másik koordináta azonnali beállítására referencia visszaadás
+     */
+	public ConnectionBinder setX(int x) {
 		setX(x, true);
+		return this;
 	}
 	
-	public void setY(int y) {
+	/**
+     * Sebesség megadása százalékban.
+     * Jelzi az Activitynek a módosulást.
+     * @return a másik koordináta azonnali beállítására referencia visszaadás
+     */
+	public ConnectionBinder setY(int y) {
 		setY(y, true);
+		return this;
 	}
 	
+	/**
+     * Irány megadása százalékban.
+     * @param remote true esetén jelzi az Activitynek a módosulást
+     */
 	public void setX(int x, boolean remote) {
 		getControl().setX(x);
 		fireArrowChange(remote);
 	}
 	
+	/**
+     * Sebesség megadása százalékban.
+     * @param remote true esetén jelzi az Activitynek a módosulást
+     */
 	public void setY(int y, boolean remote) {
 		getControl().setY(y);
 		fireArrowChange(remote);
 	}
 	
+	/**
+	 * Jelzést ad le az Activitynek, hogy megváltozott a kapcsolódás állapota.
+	 * Ha az Activity még nem regisztrálta eseményfigyelőjét, az eseményt akkor fogja megkapni, amikor regisztrálja azt.
+	 */
 	public void fireConnectionStateChange(boolean connecting) {
-		if (isListener()) {
+		if (mListener != null) {
 			cacheConnecting = null;
 			mListener.onConnectionStateChange(connecting);
 		}
@@ -110,19 +154,26 @@ public class ConnectionBinder extends Binder {
 		}
 	}
 	
+	/**
+	 * Vezérlőjel változás jelzése az Activitynek, ha kell.
+	 * Ha a felületről állították be, nem kell újra jelezni.
+	 * Ha nincs kinek jelezni, a jelzés elmarad.
+	 * @param remote true, ha a híd adja az üzenetet, false ha a felületről érkezik.
+	 */
 	private void fireArrowChange(boolean remote) {
 		if (remote) {
-			if (isListener()) mListener.onArrowChange(getX(), getY());
+			if (mListener != null) mListener.onArrowChange(getX(), getY());
 		}
 		else {
 			//TODO: küldés szervernek UPDATE: nem fog kelleni, mert csak local módban állítható a telefonon az érték
 		}
 	}
 	
-	private boolean isListener() {
-		return mListener != null;
-	}
-	
+	/**
+	 * Az Activity eseménykezelőjének felregisztrálása és leregisztrálása.
+	 * Felregisztráláskor az elmulasztott kapcsolódás állapot is elküldésre kerül.
+	 * @param listener ha null, akkor leregisztrálás, egyébként felregisztrálás
+	 */
 	public void setListener(Listener listener) {
 		mListener = listener;
 		if (listener != null) {

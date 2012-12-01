@@ -9,12 +9,12 @@ import java.io.Serializable;
 public class Control implements Serializable {
     
     /**
-     * Irány.
+     * Irány százalékban.
      */
     private int mX;
 
     /**
-     * Sebesség.
+     * Sebesség százalékban.
      */
     private int mY;
     
@@ -28,18 +28,30 @@ public class Control implements Serializable {
         mY = y;
     }
 
+    /**
+     * Irány százalékban.
+     */
     public int getX() {
         return mX;
     }
 
+    /**
+     * Sebesség százalékban.
+     */
     public int getY() {
         return mY;
     }
 
+    /**
+     * Irány megadása százalékban.
+     */
     public void setX(int x) {
         mX = x;
     }
 
+    /**
+     * Sebesség százalékban.
+     */
     public void setY(int y) {
         mY = y;
     }

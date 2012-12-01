@@ -25,63 +25,63 @@ public class Config implements org.dyndns.fzoli.rccar.clients.ClientConfig {
 	}
 	
 	/**
-     * Megadja, hogy a konfiguráció helyes-e.
-     * @return true esetén használható a konfiguráció
-     */
+	 * Megadja, hogy a konfiguráció helyes-e.
+	 * @return true esetén használható a konfiguráció
+	 */
 	@Override
 	public boolean isCorrect() {
 		return getCAFile() != null && getCertFile() != null && getKeyFile() != null;
 	}
 	
 	/**
-     * A szerver címét adja meg.
-     * Ha nincs beállítva, az android virtuális gépet futtató számítógép localhost címét adja vissza.
-     */
+	 * A szerver címét adja meg.
+	 * Ha nincs beállítva, az android virtuális gépet futtató számítógép localhost címét adja vissza.
+	 */
 	@Override
 	public String getAddress() {
 		return PREFERENCES.getString("address", "10.0.2.2");
 	}
 	
 	/**
-     * Megadja, hogy mely port legyen használva a kapcsolat kialakítására.
-     * Ha nincs beállítva, az alapértelmezett 8443 értékkel tér vissza.
-     */
+	 * Megadja, hogy mely port legyen használva a kapcsolat kialakítására.
+	 * Ha nincs beállítva, az alapértelmezett 8443 értékkel tér vissza.
+	 */
 	@Override
 	public Integer getPort() {
 		return Integer.parseInt(PREFERENCES.getString("port", "8443"));
 	}
 	
 	/**
-     * A tanúsítvány jelszavát adja vissza.
-     * Ha nincs beállítva vagy nem kell jelszó a tanúsítványhoz, üres karaktertömb adódik vissza.
-     */
+	 * A tanúsítvány jelszavát adja vissza.
+	 * Ha nincs beállítva vagy nem kell jelszó a tanúsítványhoz, üres karaktertömb adódik vissza.
+	 */
 	@Override
 	public char[] getPassword() {
 		return PREFERENCES.getString("password", "").toCharArray();
 	}
 	
 	/**
-     * A tanúsítvány kiállító kulcsfájlt adja vissza.
-     * @return null, ha a fájl nem létezik, vagy nincs beállítva
-     */
+	 * A tanúsítvány kiállító kulcsfájlt adja vissza.
+	 * @return null, ha a fájl nem létezik, vagy nincs beállítva
+	 */
 	@Override
 	public File getCAFile() {
 		return createFile("ca");
 	}
 	
 	/**
-     * A tanúsítvány publikus kulcsfájlt adja vissza.
-     * @return null, ha a fájl nem létezik, vagy nincs beállítva
-     */
+	 * A tanúsítvány publikus kulcsfájlt adja vissza.
+	 * @return null, ha a fájl nem létezik, vagy nincs beállítva
+	 */
 	@Override
     public File getCertFile() {
     	return createFile("crt");
 	}
     
 	/**
-     * A tanúsítvány privát kulcsfájlt adja vissza.
-     * @return null, ha a fájl nem létezik, vagy nincs beállítva
-     */
+	 * A tanúsítvány privát kulcsfájlt adja vissza.
+	 * @return null, ha a fájl nem létezik, vagy nincs beállítva
+	 */
 	@Override
     public File getKeyFile() {
     	return createFile("key");

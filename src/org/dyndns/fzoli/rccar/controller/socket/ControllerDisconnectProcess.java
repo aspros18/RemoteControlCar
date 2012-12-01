@@ -20,19 +20,19 @@ public class ControllerDisconnectProcess extends ClientDisconnectProcess impleme
     }
 
     @Override
-    public void onTimeout(Exception ex) throws Exception {
+    protected void onTimeout(Exception ex) throws Exception {
         super.onTimeout(ex);
         TESTER.onTimeout();
     }
 
     @Override
-    public void beforeAnswer() throws Exception {
+    protected void beforeAnswer() throws Exception {
         super.beforeAnswer();
         TESTER.beforeAnswer();
     }
     
     @Override
-    public void afterAnswer() throws Exception {
+    protected void afterAnswer() throws Exception {
         super.afterAnswer();
         TESTER.afterAnswer();
     }
@@ -43,7 +43,7 @@ public class ControllerDisconnectProcess extends ClientDisconnectProcess impleme
      * és megjeleníti a kapcsolódás hiba ablakot.
      */
     @Override
-    public void onDisconnect(Exception ex) {
+    protected void onDisconnect(Exception ex) {
         super.onDisconnect(ex);
         showConnectionStatus(Status.DISCONNECTED);
     }

@@ -19,19 +19,19 @@ public class BridgeDisconnectProcess extends ServerDisconnectProcess implements 
     }
 
     @Override
-    public void onTimeout(Exception ex) throws Exception {
+    protected void onTimeout(Exception ex) throws Exception {
         super.onTimeout(ex);
         TESTER.onTimeout();
     }
 
     @Override
-    public void beforeAnswer() throws Exception {
+    protected void beforeAnswer() throws Exception {
         super.beforeAnswer();
         TESTER.beforeAnswer();
     }
 
     @Override
-    public void afterAnswer() throws Exception {
+    protected void afterAnswer() throws Exception {
         super.afterAnswer();
         TESTER.afterAnswer();
     }
@@ -40,7 +40,7 @@ public class BridgeDisconnectProcess extends ServerDisconnectProcess implements 
      * Ha a kapcsolat létrejött, jelzi, ha kérik.
      */
     @Override
-    public void onConnect() {
+    protected void onConnect() {
         super.onConnect();
         log(true);
     }
@@ -49,7 +49,7 @@ public class BridgeDisconnectProcess extends ServerDisconnectProcess implements 
      * Ha a kapcsolat végetért, jelzi, ha kérik.
      */
     @Override
-    public void onDisconnect(Exception ex) {
+    protected void onDisconnect(Exception ex) {
         log(false);
         super.onDisconnect(ex);
     }

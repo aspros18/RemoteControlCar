@@ -18,14 +18,14 @@ public class HostDisconnectProcess extends ClientDisconnectProcess implements Co
 	}
 	
 	@Override
-	public void onTimeout(Exception ex) throws Exception {
+	protected void onTimeout(Exception ex) throws Exception {
 		super.onTimeout(ex);
 		SERVICE.getBinder().setX(0, false);
 		SERVICE.getBinder().setY(0, false);
 	}
 	
 	@Override
-	public void onDisconnect(Exception ex) {
+	protected void onDisconnect(Exception ex) {
 		super.onDisconnect(ex);
 		Log.i("test", "disconnected from the bridge");
 		SERVICE.setConnectionError(ConnectionError.CONNECTION_LOST);

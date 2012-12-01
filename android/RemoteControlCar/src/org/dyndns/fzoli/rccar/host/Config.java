@@ -74,42 +74,42 @@ public class Config implements org.dyndns.fzoli.rccar.clients.ClientConfig {
 	 * @return null, ha a fájl nem létezik, vagy nincs beállítva
 	 */
 	@Override
-    public File getCertFile() {
-    	return createFile("crt");
+	public File getCertFile() {
+		return createFile("crt");
 	}
-    
+
 	/**
 	 * A tanúsítvány privát kulcsfájlt adja vissza.
 	 * @return null, ha a fájl nem létezik, vagy nincs beállítva
 	 */
 	@Override
-    public File getKeyFile() {
-    	return createFile("key");
-    }
-    
+	public File getKeyFile() {
+		return createFile("key");
+	}
+
 	/**
 	 * Debuggoláshoz értelmes toString metódus.
 	 */
 	@Override
-    public String toString() {
-    	return "Correct: " + isCorrect() +
-    			"; Address: " + getAddress() +
-    			"; Port: " + getPort() +
-    			"; CA: " + getCAFile() +
-    			"; CRT: " + getCertFile() +
-    			"; KEY: " + getKeyFile();
-    }
-    
+	public String toString() {
+		return "Correct: " + isCorrect() +
+				"; Address: " + getAddress() +
+				"; Port: " + getPort() +
+				"; CA: " + getCAFile() +
+				"; CRT: " + getCertFile() +
+				"; KEY: " + getKeyFile();
+	}
+
 	/**
 	 * Készít egy File objektumot a beállítás kulcs alapján.
 	 * Ha az nincs beállítva vagy nem létezik a fájl, null referencia adódik vissza.
 	 */
-    private File createFile(String key) {
-    	String path = PREFERENCES.getString(key, null);
-    	if (path == null) return null;
-    	File file = new File(path);
-    	if (!file.isFile()) return null;
-    	return file;
-    }
-    
+	private File createFile(String key) {
+		String path = PREFERENCES.getString(key, null);
+		if (path == null) return null;
+		File file = new File(path);
+		if (!file.isFile()) return null;
+		return file;
+	}
+
 }

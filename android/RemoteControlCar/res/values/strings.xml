@@ -43,6 +43,7 @@
     <string name="set_network">Please, select a wireless network.</string>
     <string name="set_gps">Please, enable the GPS sensor.</string>
     <string name="install_cam">Please, install the IP Webcam app.</string>
+    <string name="sdcard_not_mounted">SD-card is not mounted.</string>
     <string name="vehicle">Vehicle</string>
     <string name="bridge_conn">Bridge connection</string>
     <string name="exists">exists</string>

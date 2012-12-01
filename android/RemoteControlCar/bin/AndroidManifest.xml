@@ -33,6 +33,10 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
             <intent-filter>
+                <action android:name="android.intent.action.MEDIA_MOUNTED" />
+                <data android:scheme="file" />
+            </intent-filter>
+            <intent-filter>
             	<action android:name="android.location.PROVIDERS_CHANGED" />
             	<category android:name="android.intent.category.DEFAULT" />
         	</intent-filter>

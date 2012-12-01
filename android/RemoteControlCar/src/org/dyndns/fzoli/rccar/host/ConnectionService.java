@@ -26,6 +26,7 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 //import android.util.Log;
@@ -90,6 +91,7 @@ public class ConnectionService extends IOIOService {
 	public final static String EVT_RECONNECT_NOW = "reconnect now";
 	public final static String EVT_CONNECTIVITY_CHANGE = ConnectivityManager.CONNECTIVITY_ACTION;
 	public final static String EVT_GPS_SENSOR_CHANGE = LocationManager.PROVIDERS_CHANGED_ACTION;
+	public final static String EVT_SDCARD_MOUNTED = Intent.ACTION_MEDIA_MOUNTED;
 	
 	@SuppressWarnings("deprecation")
 	public final static String EVT_APP_INSTALL = Intent.ACTION_PACKAGE_INSTALL;
@@ -141,7 +143,12 @@ public class ConnectionService extends IOIOService {
 	
 	private ConnectionHelper createConnectionHelper() {
 		config = createConfig(this);
-		if (!config.isCorrect() && !isOfflineMode()) setConfigNotificationVisible(true);
+		if (!config.isCorrect() && !isOfflineMode()) {
+			setConfigNotificationVisible(true);
+		}
+		else {
+			setConfigNotificationVisible(false);
+		}
 		if (isOfflineMode() || !config.isCorrect() || !isNetworkAvailable() || !isAppInstalled(PACKAGE_CAM)) {
 			return null;
 		}
@@ -284,6 +291,9 @@ public class ConnectionService extends IOIOService {
 					connect(false);
 				}
 			}
+			else if (event.equals(EVT_SDCARD_MOUNTED)) {
+				connect(false);
+			}
 			else if (event.equals(EVT_RECONNECT_NOW)) {
 				reconnectSchedule(true);
 			}
@@ -407,8 +417,13 @@ public class ConnectionService extends IOIOService {
 	
 	private void setConfigNotificationVisible(boolean visible) {
 		if (config == null) return;
-		if (visible && !config.isCorrect()) addOnlineNotification(R.string.set_config, new Intent(this, MainActivity.class), ID_NOTIFY_CONFIG, true);
-		else removeNotification(ID_NOTIFY_CONFIG);
+		if (visible && !config.isCorrect()) {
+			if (isSDCardMounted()) addOnlineNotification(R.string.set_config, new Intent(this, MainActivity.class), ID_NOTIFY_CONFIG, true);
+			else addOnlineNotification(R.string.sdcard_not_mounted, new Intent(Settings.ACTION_MEMORY_CARD_SETTINGS), ID_NOTIFY_CONFIG, false);
+		}
+		else {
+			removeNotification(ID_NOTIFY_CONFIG);
+		}
 	}
 	
 	private void setNetworkNotificationVisible(boolean visible) {
@@ -422,7 +437,7 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	private void setGpsEnableNotificationVisible(boolean visible) {
-		if (visible && !isGpsEnabled()) addOnlineNotification(R.string.set_gps, new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS), ID_NOTIFY_GPS_ENABLE, false);
+		if (visible && !isGpsEnabled()) addOnlineNotification(R.string.set_gps, new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), ID_NOTIFY_GPS_ENABLE, false);
 		else removeNotification(ID_NOTIFY_GPS_ENABLE);
 	}
 	
@@ -491,6 +506,11 @@ public class ConnectionService extends IOIOService {
 	
 	public static Config createConfig(Context context) {
 		return new Config(getSharedPreferences(context));
+	}
+	
+	private static boolean isSDCardMounted() {
+		String state = Environment.getExternalStorageState();
+	    return Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
 	}
 	
 	public static boolean isOfflineMode(Context context) {

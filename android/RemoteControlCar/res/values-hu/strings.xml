@@ -37,6 +37,7 @@
     <string name="set_network">Kérem, válasszon ki egy hálózatot.</string>
     <string name="set_gps">Kérem, engedélyezze a GPS szenzort.</string>
     <string name="install_cam">Telepítse az IP Webcam alkalmazást.</string>
+    <string name="sdcard_not_mounted">Az SD-kártya nincs felcsattolva.</string>
     <string name="vehicle">Jármű</string>
     <string name="bridge_conn">Híd kapcsolat</string>
     <string name="exists">van</string>

@@ -15,12 +15,29 @@ import android.view.View;
  */
 public class ArrowView extends View {
 
+	/**
+	 * A vonalak vastagsága.
+	 */
 	private final int stroke = 2;
 	
+	/**
+	 * Sokat használt méretek és koordináták.
+	 */
 	private int s, s2, s10, s20, a, b;
+	
+	/**
+	 * Koordináta érték pixelben.
+	 */
 	private int x = 0, y = 0;
 	
+	/**
+	 * A nyil útvonala.
+	 */
 	private Path borderPath;
+	
+	/**
+	 * Ecset a rajzoláshoz.
+	 */
 	private Paint borderPaint, mainPaint;
 	
 	public ArrowView(Context context) {
@@ -52,11 +69,21 @@ public class ArrowView extends View {
 		return createPercent(y);
 	}
 	
+	/**
+	 * Megadja a maximum pixelt az adott irányba.
+	 * @param positive true, ha az irány pozitív
+	 */
 	private int getMax(boolean positive) {
 		if (positive) return (int)(a - 1.5 * stroke);
 		else return (int)(-1 * a + 1.5 * stroke);
 	}
 	
+	/**
+	 * A paramétert ellenőrzi és javítja azt, ha kell.
+	 * A metódus nem engedi a maximum fölé a koordinátákat.
+	 * @param i ellenőrizendő érték
+	 * @return az ellenőrzött és javított koordináta
+	 */
 	private int chkMax(int i) {
 		if (i == 0) return 0;
 		if (i > getMax(true)) return getMax(true);
@@ -114,16 +141,27 @@ public class ArrowView extends View {
 		setY(y);
 	}
 	
+	/**
+	 * Százalékból képez pixelt.
+	 * @param i érték százalékban
+	 * @return érték pixelben
+	 */
 	private int fromPercent(int i) {
 		return (int) Math.round(getMax(true) * (i / 100.0));
 	}
 	
+	/**
+	 * Pixelből képez százalékot.
+	 * @param i érték pixelben
+	 * @return érték százalékban
+	 */
 	private int createPercent(int i) {
 		return (int) Math.round(100 * i / (double) getMax(true));
 	}
 	
 	/**
 	 * A komponens méretének megállapítása és a hely lefoglalása.
+	 * A komponens a felületen a lehető legnagyobb négyzetet foglalja le.
 	 */
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) { 
@@ -148,28 +186,34 @@ public class ArrowView extends View {
 		}
 	}
 	
+	/**
+	 * Ecsetek inicializálása.
+	 */
 	private void initView() {
-		borderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		borderPaint.setStyle(Paint.Style.STROKE);
-		borderPaint.setColor(Color.BLACK);
-		borderPaint.setStrokeWidth(stroke);
+		borderPaint = new Paint(Paint.ANTI_ALIAS_FLAG); // élsimítás bekapcsolva
+		borderPaint.setStyle(Paint.Style.STROKE); // vonalat rajzol
+		borderPaint.setColor(Color.BLACK); // fekete színű vonallal
+		borderPaint.setStrokeWidth(stroke); // vonal vastagság beállítása
 		
-		mainPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		mainPaint.setStyle(Paint.Style.FILL);
-		mainPaint.setColor(Color.GREEN);
+		mainPaint = new Paint(Paint.ANTI_ALIAS_FLAG); // élsimítás bekapcsolva
+		mainPaint.setStyle(Paint.Style.FILL); // teljes kitöltés
+		mainPaint.setColor(Color.GREEN); // zöld színnel
 	}
 	
+	/**
+	 * Gyakran használt értékek beállítása és a nyíl megrajzolása.
+	 */
 	private void initPath() {
-		s = getMeasuredWidth();
-		s2 = s / 2;
-		s10 = s / 10;
-		s20 = s / 20;
-		a = s2 - s20;
-		b = s2 + s20;
+		s = getMeasuredWidth(); // a négyzet oldalainak teljes hossza
+		s2 = s / 2; // a méret fele
+		s10 = s / 10; // a méret tizede
+		s20 = s / 20; // a méret huszada
+		a = s2 - s20; // a középső négyzet bal felső koordinátája
+		b = s2 + s20; // a középső négyzet jobb alsó koordinátája
 		
 		borderPath = new Path();
-		borderPath.moveTo(stroke, a);
-		borderPath.lineTo(a, a);
+		borderPath.moveTo(stroke, a); // az első vonalat innen kezdi el húzni
+		borderPath.lineTo(a, a); // az első vonal idáig húzódik és a következő innen kezdődik
 		borderPath.lineTo(a, stroke);
 		borderPath.lineTo(b, stroke);
 		borderPath.lineTo(b, a);
@@ -180,7 +224,7 @@ public class ArrowView extends View {
 		borderPath.lineTo(a, s - stroke);
 		borderPath.lineTo(a, b);
 		borderPath.lineTo(stroke, b);
-		borderPath.close();
+		borderPath.close(); // az utolsó vonalvégződésből az első vonal kezdetébe húz egy vonalat, ezzel bezárul az útvonal
 	}
 	
 	/**
@@ -188,12 +232,12 @@ public class ArrowView extends View {
 	 */
 	@Override
 	protected void onDraw(Canvas canvas) {
-		canvas.drawRect(a, a, b, b, mainPaint);
-		if (x > 0) canvas.drawRect(b, a, b + x, b, mainPaint);
-		if (x < 0) canvas.drawRect(a + x, a, a, b, mainPaint);
-		if (y > 0) canvas.drawRect(a, a - y, b, a, mainPaint);
-		if (y < 0) canvas.drawRect(a, b, b, s - a - y, mainPaint);
-		canvas.drawPath(borderPath, borderPaint);
+		canvas.drawRect(a, a, b, b, mainPaint); // a középső téglalap mindig látható
+		if (x > 0) canvas.drawRect(b, a, b + x, b, mainPaint); // x tengelyen jobbra rajzol
+		if (x < 0) canvas.drawRect(a + x, a, a, b, mainPaint); // x tengelyen balra rajzol
+		if (y > 0) canvas.drawRect(a, a - y, b, a, mainPaint); // y tengelyen felfelé rajzol
+		if (y < 0) canvas.drawRect(a, b, b, s - a - y, mainPaint); // y tengelyen lefelé rajzol
+		canvas.drawPath(borderPath, borderPaint); // a kitöltés megrajzolása után a keret megrajzolása
 	}
 	
 }

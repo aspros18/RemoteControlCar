@@ -13,12 +13,22 @@ public class ConnectionBinder extends Binder {
 	
 	/**
 	 * Amikor új vezérlőparancs érkezik az activity felületén látható nyilat újra kell rajzolni.
-	 * Erre egy eseményfigyelőt implementálok az activityben.
+	 * Ha a service elkezd kapcsolódni a szerverhez, vagy befejezi azt, az activity egy dialógus ablakot jelenít meg illetve tüntet el.
+	 * Ezekre az eseményekre egy eseményfigyelőt implementálok az activityben.
 	 */
 	public static interface Listener {
 		
+		/**
+		 * Vezérlőparancs érkezett.
+		 * @param x irány százalékos értéke
+		 * @param y sebesség százalékos értéke
+		 */
 		public void onArrowChange(int x, int y);
 		
+		/**
+		 * Kapcsolódás állapotváltozás.
+		 * @param connecting true, ha elindult a kapcsolódás egyébként végetért
+		 */
 		public void onConnectionStateChange(boolean connecting);
 		
 	}
@@ -28,6 +38,9 @@ public class ConnectionBinder extends Binder {
 	 */
 	private final HostData DATA = new HostData();
 	
+	/**
+	 * Az objektumot létrehozó Service referenciája.
+	 */
 	private final ConnectionService SERVICE;
 	
 	/**
@@ -102,7 +115,7 @@ public class ConnectionBinder extends Binder {
 			if (isListener()) mListener.onArrowChange(getX(), getY());
 		}
 		else {
-			//TODO: küldés szervernek
+			//TODO: küldés szervernek UPDATE: nem fog kelleni, mert csak local módban állítható a telefonon az érték
 		}
 	}
 	

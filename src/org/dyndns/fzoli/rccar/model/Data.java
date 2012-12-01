@@ -19,6 +19,14 @@ public abstract class Data<D extends Data, PD extends PartialData> implements Se
     }
     
     /**
+     * Adatmodell létrehozása egy másik adatmodell objektum adataival.
+     * @param data a másik adatmodell
+     */
+    protected Data(D data) {
+        if (data != null) update(data);
+    }
+    
+    /**
      * Két objektumról állapítja meg, hogy egyenlőek-e.
      * @return True, ha a két objektum egyenlő vagy mindkét paraméter null, egyébként false.
      */

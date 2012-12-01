@@ -66,75 +66,75 @@ public class ConnectionBinder extends Binder {
 	}
 	
 	/**
-     * Az autó vezérlőjelét adja vissza.
-     */
+	 * Az autó vezérlőjelét adja vissza.
+	 */
 	private Control getControl() {
 		return DATA.getControl();
 	}
 	
 	/**
-     * Megadja, hogy pontosan szabályozható-e a az irány.
-     * True esetén csak 0 vagy 100 lehet az érték.
-     */
+	 * Megadja, hogy pontosan szabályozható-e a az irány.
+	 * True esetén csak 0 vagy 100 lehet az érték.
+	 */
 	public boolean isFullX() {
 		return DATA.isFullX();
 	}
 	
 	/**
-     * Megadja, hogy pontosan szabályozható-e a a sebesség.
-     * True esetén csak 0 vagy 100 lehet az érték.
-     */
+	 * Megadja, hogy pontosan szabályozható-e a a sebesség.
+	 * True esetén csak 0 vagy 100 lehet az érték.
+	 */
 	public boolean isFullY() {
 		return DATA.isFullY();
 	}
 	
 	/**
-     * Irány százalékban.
-     */
+	 * Irány százalékban.
+	 */
 	public int getX() {
 		return getControl().getX();
 	}
 	
 	/**
-     * Sebesség százalékban.
-     */
+	 * Sebesség százalékban.
+	 */
 	public int getY() {
 		return getControl().getY();
 	}
 	
 	/**
-     * Irány megadása százalékban.
-     * Jelzi az Activitynek a módosulást.
-     * @return a másik koordináta azonnali beállítására referencia visszaadás
-     */
+	 * Irány megadása százalékban.
+	 * Jelzi az Activitynek a módosulást.
+	 * @return a másik koordináta azonnali beállítására referencia visszaadás
+	 */
 	public ConnectionBinder setX(int x) {
 		setX(x, true);
 		return this;
 	}
 	
 	/**
-     * Sebesség megadása százalékban.
-     * Jelzi az Activitynek a módosulást.
-     * @return a másik koordináta azonnali beállítására referencia visszaadás
-     */
+	 * Sebesség megadása százalékban.
+	 * Jelzi az Activitynek a módosulást.
+	 * @return a másik koordináta azonnali beállítására referencia visszaadás
+	 */
 	public ConnectionBinder setY(int y) {
 		setY(y, true);
 		return this;
 	}
 	
 	/**
-     * Irány megadása százalékban.
-     * @param remote true esetén jelzi az Activitynek a módosulást
-     */
+	 * Irány megadása százalékban.
+	 * @param remote true esetén jelzi az Activitynek a módosulást
+	 */
 	public void setX(int x, boolean remote) {
 		getControl().setX(x);
 		fireArrowChange(remote);
 	}
 	
 	/**
-     * Sebesség megadása százalékban.
-     * @param remote true esetén jelzi az Activitynek a módosulást
-     */
+	 * Sebesség megadása százalékban.
+	 * @param remote true esetén jelzi az Activitynek a módosulást
+	 */
 	public void setY(int y, boolean remote) {
 		getControl().setY(y);
 		fireArrowChange(remote);

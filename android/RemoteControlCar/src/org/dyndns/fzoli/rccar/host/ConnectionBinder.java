@@ -103,23 +103,50 @@ public class ConnectionBinder extends Binder {
 	}
 	
 	/**
+	 * Irány nullázása.
+	 * Jelzi az Activitynek a módosulást.
+	 * @return a nullázás előtti érték
+	 */
+	public int resetX() {
+		int tmp = getX();
+		setX(0);
+		return tmp;
+	}
+	
+	/**
+	 * Sebesség nullázása.
+	 * Jelzi az Activitynek a módosulást.
+	 * @return a nullázás előtti érték
+	 */
+	public int resetY() {
+		int tmp = getY();
+		setY(0);
+		return tmp;
+	}
+	
+	/**
+	 * Irány és sebesség megadása százalékban.
+	 * Jelzi az Activitynek a módosulást.
+	 */
+	public void setXY(int x, int y) {
+		setX(x);
+		setY(y);
+	}
+	
+	/**
 	 * Irány megadása százalékban.
 	 * Jelzi az Activitynek a módosulást.
-	 * @return a másik koordináta azonnali beállítására referencia visszaadás
 	 */
-	public ConnectionBinder setX(int x) {
+	public void setX(int x) {
 		setX(x, true);
-		return this;
 	}
 	
 	/**
 	 * Sebesség megadása százalékban.
 	 * Jelzi az Activitynek a módosulást.
-	 * @return a másik koordináta azonnali beállítására referencia visszaadás
 	 */
-	public ConnectionBinder setY(int y) {
+	public void setY(int y) {
 		setY(y, true);
-		return this;
 	}
 	
 	/**

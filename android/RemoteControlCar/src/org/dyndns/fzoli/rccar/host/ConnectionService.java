@@ -417,17 +417,31 @@ public class ConnectionService extends IOIOService {
 		if (!isBridgeConnected()) connect(true);
 	}
 	
+	/**
+	 * Kapcsolódás a hídhoz.
+	 * A kapcsolódás előtt új kapcsolódás segítő objektum jön létre,
+	 * és csak akkor hívódik meg a kapcsolódás, ha a segítő létrejött.
+	 * Ha nem kértek újrakapcsolódást, csak akkor fut le, ha még nincs kapcsolódás segítő.
+	 * Ha a szolgáltatás felfüggesztett vagy nincs elindítva, biztos, hogy nem kapcsolódik.
+	 * @param reconnect true esetén bontja a jelenlegi kapcsolatot és újra kapcsolódik
+	 */
 	private void connect(boolean reconnect) {
 		Log.i(LOG_TAG, "connect calling");
-		if (conn == null || reconnect) {
-			disconnect(false);
-			if ((isStarted(this) && !isSuspended()) && createConnectionHelper() != null) conn.connect();
+		if (conn == null || reconnect) { // ha nincs kapcsolódás segítő vagy újra kell kapcsolódni
+			disconnect(false); // jelenlegi kapcsolatok bontása, ha esetleg vannak
+			if ((isStarted(this) && !isSuspended()) && createConnectionHelper() != null) conn.connect(); // kapcsolódás csak akkor, ha aktív a szolgáltatás
+			else Log.i(LOG_TAG, "connect refused");
 		}
 	}
 	
-	private void disconnect(boolean stop) {
+	/**
+	 * Kapcsolat bontása a híddal.
+	 * Az Activitynek jelzi azt, hogy nincs kapcsolódás.
+	 * @param stopReconnect true esetén leállítja az időzített újrakapcsolódást is
+	 */
+	private void disconnect(boolean stopReconnect) {
 		Log.i(LOG_TAG, "disconnect calling");
-		if (connTask != null && stop) {
+		if (connTask != null && stopReconnect) {
 			connTask.cancel();
 			connTask = null;
 		}
@@ -438,6 +452,12 @@ public class ConnectionService extends IOIOService {
 		getBinder().fireConnectionStateChange(false);
 	}
 	
+	/**
+	 * A szolgáltatás indulásakor hívódik meg.
+	 * Első induláskor megjelenik az értesítés, hogy a szolgáltatás fut,
+	 * meghívódik a kapcsolódó metódus, frissül az értesítőszöveg és
+	 * végül a felmerülő egyéb problémák megjelennek. Pl. GPS engedélyezés
+	 */
 	@Override
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
@@ -535,7 +555,7 @@ public class ConnectionService extends IOIOService {
 	@SuppressWarnings("deprecation")
 	private void addNotification(int resText, Intent intentActivity, Intent intentService, int key, boolean removable, boolean error) {
 		removeNotification(key);
-		if (isSuspended()) return;
+		if (isSuspended() || !isStarted(this)) return;
 		Log.i(LOG_TAG, "add notification request: " + key);
 		Notification notification = new Notification(error ? R.drawable.ic_error : R.drawable.ic_warning, getString(resText), System.currentTimeMillis());
 		notification.flags |= removable ? Notification.FLAG_AUTO_CANCEL : Notification.FLAG_NO_CLEAR;

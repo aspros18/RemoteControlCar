@@ -22,36 +22,72 @@ import android.util.Log;
  */
 public class ConnectionHelper extends AbstractConnectionHelper implements ConnectionKeys {
 
+	/**
+	 * A szolgáltatás referenciája, hogy lehessen a változásról értesíteni és a konfiguráció is tőle kérődik le.
+	 */
 	private final ConnectionService SERVICE;
 	
+	/**
+	 * Konstruktor.
+	 * TODO: egyelőre teszt
+	 * @param service a szolgáltatás referenciája
+	 */
 	public ConnectionHelper(ConnectionService service) {
 		super(service.getConfig(), KEY_DEV_HOST, new int[] {KEY_CONN_DISCONNECT, KEY_CONN_MESSAGE});
 		SERVICE = service;
 	}
 	
+	/**
+     * A kapcsolatok bezárása.
+     * Meghívása után a szolgáltatásban frissül a kapcsolódás állapota.
+     */
 	@Override
 	public void disconnect() {
 		super.disconnect();
-		update(false);
+		updateConnectionState(false); // nincs kapcsolódás folyamatban
 	}
 	
+	/**
+	 * Kapcsolódás a hídhoz.
+	 * Meghívása előtt a szolgáltatásban frissül a kapcsolódás állapota.
+	 */
 	@Override
 	public void connect() {
-		update(true);
+		updateConnectionState(true); // kapcsolódás folyamatban
 		super.connect();
 	}
 	
+	/**
+     * Ha a kapcsolódás végetért, ez a metódus fut le.
+     * A szolgáltatásban frissül a kapcsolódás állapota.
+     */
 	@Override
 	protected void onConnected() {
 		super.onConnected();
-		update(false);
+		updateConnectionState(false); // nincs kapcsolódás folyamatban
 	}
 	
+	/**
+     * Handler példányosítása.
+     * @param socket a kapcsolat a szerverrel
+     * @param deviceId az eszközazonosító
+     * @param connectionId a kapcsolatazonosító
+     */
 	@Override
 	protected AbstractSecureClientHandler createHandler(SSLSocket socket, int deviceId, int connectionId) {
 		return new HostHandler(SERVICE, socket, deviceId, connectionId);
 	}
 	
+	/**
+     * Ha kivétel keletkezik, ebben a metódusban le lehet kezelni.
+     * A szolgáltatás univerzális kapcsolódás hibakezelő metódusát hívja meg a kivételnek megfelelően.
+     * A hibakezelő metódus megjeleníti az értesítést a felületen és a hibától függően reagál.
+     * Az OTHER hibakategória esetén nem jelenik meg értesítés a felületen.
+     * Ha a hibakategórió fatális hiba, nem lesz megismételve a kapcsolódás.
+     * További részlet: {@link ConnectionService.setConnectionError}
+     * @param ex a keletkezett kivétel
+     * @param connectionId a közben használt kapcsolatazonosító
+     */
 	@Override
 	protected void onException(Exception ex, int connectionId) {
 		ConnectionError err = null;
@@ -83,7 +119,11 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
 		SERVICE.setConnectionError(err);
 	}
 	
-	private void update(boolean connecting) {
+	/**
+	 * A kapcsolódás állapotának frissítése a szolgáltatásban.
+	 * @param connecting true esetén a kapcsolódás folyamatban van, egyébként meg nincs folyamatban.
+	 */
+	private void updateConnectionState(boolean connecting) {
 		SERVICE.updateNotificationText();
 		SERVICE.getBinder().fireConnectionStateChange(connecting);
 	}

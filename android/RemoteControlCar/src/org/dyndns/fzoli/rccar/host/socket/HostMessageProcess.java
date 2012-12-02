@@ -11,6 +11,9 @@ import android.util.Log;
 
 public class HostMessageProcess extends MessageProcess {
 
+	/**
+	 * A szolgáltatás referenciája, hogy lehessen a változásról értesíteni.
+	 */
 	private final ConnectionService SERVICE;
 	
 	public HostMessageProcess(ConnectionService service, SecureHandler handler) {
@@ -19,17 +22,19 @@ public class HostMessageProcess extends MessageProcess {
 	}
 	
 	@Override
-	protected void onStart() {
-		super.onStart();
-		Log.i(ConnectionService.LOG_TAG, "msg proc connected");
-		SERVICE.setConnectionError(null);
-	}
-	
-	@Override
 	protected void onMessage(Object arg0) {
-		
+		// TODO
 	}
 
+	/**
+	 * Ha üzenetküldés vagy fogadás közben hiba történik, ez a metódus fut le.
+	 * Itt csak egyetlen hiba az említésre méltó:
+	 * eltérő kliens és szerver verzió, tehát nem kompatibilis a kliens a szerverrel, nem lehet üzenni
+	 * A szolgáltatás univerzális kapcsolódás hibakezelő metódusát hívja meg a kivételnek megfelelően.
+     * A hibakezelő metódus megjeleníti az értesítést a felületen és a hibától függően reagál.
+     * Az OTHER hibakategória esetén nem jelenik meg értesítés a felületen.
+     * Ha a hibakategórió fatális hiba, nem lesz megismételve a kapcsolódás.
+	 */
 	@Override
 	protected void onException(Exception ex) {
 		ConnectionError err = null;

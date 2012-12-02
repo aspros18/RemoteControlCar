@@ -119,6 +119,7 @@ public class ConnectionService extends IOIOService {
 	private static boolean suspended = false;
 	
 	public static boolean isSuspended() {
+		Log.i(LOG_TAG, "suspended: " + suspended);
 		return suspended;
 	}
 	
@@ -280,7 +281,7 @@ public class ConnectionService extends IOIOService {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStartCommand(intent, flags, startId);
-		if (intent.hasExtra(KEY_EVENT)) {
+		if (intent.hasExtra(KEY_EVENT) && !isSuspended()) {
 			String event = intent.getStringExtra(KEY_EVENT);
 			if (event.equals(EVT_CONNECTIVITY_CHANGE)) {
 				if (startId != 1) setNetworkNotificationVisible(true);
@@ -303,6 +304,7 @@ public class ConnectionService extends IOIOService {
 				reconnectSchedule(true);
 			}
 			else if (event.equals(EVT_SHUTDOWN)) {
+				setSuspended(true);
 				stopSelf();
 			}
 		}
@@ -321,7 +323,7 @@ public class ConnectionService extends IOIOService {
 	@SuppressWarnings("deprecation")
 	private void initNotification() {
 		nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		notification = new Notification(R.drawable.ic_launcher, getString(R.string.app_name), System.currentTimeMillis());
+		notification = new Notification(R.drawable.ic_main, getString(R.string.app_name), System.currentTimeMillis());
 		contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
 		notification.flags |= Notification.FLAG_ONGOING_EVENT;
 	}
@@ -335,7 +337,7 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	public void updateNotificationText() {
-		setNotificationText(getString(R.string.vehicle) + ": " + getString(isVehicleConnected() ? R.string.exists : R.string.not_exists) + "; " + (isOfflineMode() ? getString(R.string.title_offline) : (getString(R.string.bridge_conn) + ": " + getString(isBridgeConnected() ? R.string.exists : R.string.not_exists))) + '.');
+		if (!isSuspended()) setNotificationText(getString(R.string.vehicle) + ": " + getString(isVehicleConnected() ? R.string.exists : R.string.not_exists) + "; " + (isOfflineMode() ? getString(R.string.title_offline) : (getString(R.string.bridge_conn) + ": " + getString(isBridgeConnected() ? R.string.exists : R.string.not_exists))) + '.');
 	}
 	
 	private void removeNotification() {
@@ -358,6 +360,8 @@ public class ConnectionService extends IOIOService {
 	@SuppressWarnings("deprecation")
 	private void addNotification(int resText, Intent intentActivity, Intent intentService, int key, boolean removable, boolean error) {
 		removeNotification(key);
+		if (isSuspended()) return;
+		Log.i(LOG_TAG, "add notification request: " + key);
 		Notification notification = new Notification(error ? R.drawable.ic_error : R.drawable.ic_warning, getString(resText), System.currentTimeMillis());
 		notification.flags |= removable ? Notification.FLAG_AUTO_CANCEL : Notification.FLAG_NO_CLEAR;
 		PendingIntent contentIntent;
@@ -402,13 +406,13 @@ public class ConnectionService extends IOIOService {
 					}
 				}
 				if (error.isError()) {
-					Log.i(LOG_TAG, "add error notify");
+					Log.i(LOG_TAG, "add error notify " + error);
 					// kapcsolat bontása, üzenet megjelenítése, amire kattintva a főablak jelenik meg
 					disconnect(true);
 					if (id != null) addNotification(id, new Intent(this, MainActivity.class), error.getNotificationId(), false, true);
 				}
 				else {
-					Log.i(LOG_TAG, "add warn notify");
+					Log.i(LOG_TAG, "add warn notify " + error);
 					// reconnect ütemezés, üzenet megjelenítése eltávolíthatóként, amire kattintva azonnali reconnect fut le
 					reconnectSchedule();
 					if (id != null) addNotification(id, null, new Intent(this, ConnectionService.class).putExtra(KEY_EVENT, EVT_RECONNECT_NOW), error.getNotificationId(), true, false);

@@ -116,7 +116,7 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
 		catch (Exception e) {
 			err = ConnectionError.OTHER;
 		}
-		SERVICE.setConnectionError(err);
+		SERVICE.onConnectionError(err);
 	}
 	
 	/**

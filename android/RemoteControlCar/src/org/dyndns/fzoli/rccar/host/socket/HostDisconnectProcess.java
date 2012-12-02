@@ -35,7 +35,7 @@ public class HostDisconnectProcess extends ClientDisconnectProcess implements Co
 	protected void onConnect() {
 		super.onConnect();
 		Log.i(ConnectionService.LOG_TAG, "connected to the bridge");
-		SERVICE.setConnectionError(null);
+		SERVICE.onConnectionError(null);
 	}
 	
 	/**
@@ -65,7 +65,7 @@ public class HostDisconnectProcess extends ClientDisconnectProcess implements Co
 	protected void onDisconnect(Exception ex) {
 		super.onDisconnect(ex);
 		Log.i(ConnectionService.LOG_TAG, "disconnected from the bridge", ex);
-		SERVICE.setConnectionError(ConnectionError.CONNECTION_LOST);
+		SERVICE.onConnectionError(ConnectionError.CONNECTION_LOST);
 		SERVICE.getBinder().resetXY();
 	}
 	

@@ -300,7 +300,7 @@ public class ConnectionService extends IOIOService {
 	 */
 	private ConnectionHelper createConnectionHelper() {
 		config = createConfig(this);
-		if (isOfflineMode() || !config.isCorrect() || !isNetworkAvailable() || !isAppInstalled(PACKAGE_CAM)) {
+		if (isOfflineMode(this) || !config.isCorrect() || !isNetworkAvailable() || !isAppInstalled(PACKAGE_CAM)) {
 			return null;
 		}
 		return conn = new ConnectionHelper(this);
@@ -525,14 +525,22 @@ public class ConnectionService extends IOIOService {
 		updateNotificationText();
 	}
 	
+	/**
+	 * Példányosítja a figyelmeztetés megjelenítéséhez szükséges menedzsert és megjeleníti a szolgáltatás fő figyelmeztetést folyamatként.
+	 */
 	@SuppressWarnings("deprecation")
 	private void initNotification() {
 		nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		notification = new Notification(R.drawable.ic_main, getString(R.string.app_name), System.currentTimeMillis());
 		contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
-		notification.flags |= Notification.FLAG_ONGOING_EVENT;
+		notification.flags |= Notification.FLAG_ONGOING_EVENT; // folyamatként jelenik meg
 	}
 	
+	/**
+	 * A szolgáltatás fő figyelmeztetésének a szövegét állítja be a paraméterben megadottra.
+	 * Ha még nincs példányosítva a fő figyelmeztetés, a metódus nem tesz semmit.
+	 * @param s a beállítandó szöveg
+	 */
 	@SuppressWarnings("deprecation")
 	private void setNotificationText(String s) {
 		if (nm != null && notification != null && contentIntent != null) {
@@ -541,10 +549,18 @@ public class ConnectionService extends IOIOService {
 		}
 	}
 	
+	/**
+	 * Frissíti a fő figyelmeztetés szövegét az alapján, hogy a jármű mikrovezérlője és a híddal való kapcsolat ki van-e alakítva.
+	 * Jelzi, hogy elérhető-e a jármű és a híd szerver kapcsolat aktív-e.
+	 * Csak akkor módosul a szöveg, ha a szolgáltatás nincs felfüggesztve és fut.
+	 */
 	public void updateNotificationText() {
-		if (!isSuspended() && isStarted(this)) setNotificationText(getString(R.string.vehicle) + ": " + getString(isVehicleConnected() ? R.string.exists : R.string.not_exists) + "; " + (isOfflineMode() ? getString(R.string.title_offline) : (getString(R.string.bridge_conn) + ": " + getString(isBridgeConnected() ? R.string.exists : R.string.not_exists))) + '.');
+		if (!isSuspended() && isStarted(this)) setNotificationText(getString(R.string.vehicle) + ": " + getString(isVehicleConnected() ? R.string.exists : R.string.not_exists) + "; " + (isOfflineMode(this) ? getString(R.string.title_offline) : (getString(R.string.bridge_conn) + ": " + getString(isBridgeConnected() ? R.string.exists : R.string.not_exists))) + '.');
 	}
 	
+	/**
+	 * A szolgáltatás fő figyelmeztetését távolítja el, és felszabadítja a változókat, hogy a GC memóriát szabadítson fel.
+	 */
 	private void removeNotification() {
 		nm.cancel(ID_NOTIFY);
 		nm = null;
@@ -552,16 +568,44 @@ public class ConnectionService extends IOIOService {
 		contentIntent = null;
 	}
 	
-	private void addOnlineNotification(int resText, Intent intent, int key, boolean error) {
-		if (!isOfflineMode()) {
-			addNotification(resText, intent, key, false, error);
+	/**
+	 * Csak akkor hívja meg a figylemeztetés megjelenítést, ha online módban van a szolgáltatás.
+	 * Ezek az üzenetek nem távolíthatóak el és rájuk kattintva sem tünnek el, csak ha megszűnik a probléma.
+	 * A figyelmeztető üzenet csak akkor jelenik meg, ha a szolgáltatás nincs felfüggesztve és el van indítva.
+	 * @param resText az üzenet azonosítója a strings.xml fájl alapján
+	 * @param intentActivity a nézet, mely meghívódik kattintásra
+	 * @param key a figyelmeztető üzenet azonosítója, ami alapján el lehet távolítani később
+	 * @param error hibaüzenet vagy figyelmeztetés ikon jelenjen meg
+	 */
+	private void addOnlineNotification(int resText, Intent intentActivity, int key, boolean error) {
+		if (!isOfflineMode(this)) {
+			addNotification(resText, intentActivity, key, false, error);
 		}
 	}
 	
+	/**
+	 * Olyan figyelmeztető üzenetet jelenít meg, melyre kattintva Activity hívódik meg.
+	 * A figyelmeztető üzenet csak akkor jelenik meg, ha a szolgáltatás nincs felfüggesztve és el van indítva.
+	 * @param resText az üzenet azonosítója a strings.xml fájl alapján
+	 * @param intentActivity a nézet, mely meghívódik kattintásra
+	 * @param key a figyelmeztető üzenet azonosítója, ami alapján el lehet távolítani később
+	 * @param removable a felhasználó legyen-e képes eltávolítani az üzenetet illetve rá kattintva tünjön-e el
+	 * @param error hibaüzenet vagy figyelmeztetés ikon jelenjen meg
+	 */
 	private void addNotification(int resText, Intent intentActivity, int key, boolean removable, boolean error) {
 		addNotification(resText, intentActivity, null, key, removable, error);
 	}
 	
+	/**
+	 * Megjelenít egy figyelmeztető üzenetet, ami hívhat szolgáltatást vagy nézetet is.
+	 * A figyelmeztető üzenet csak akkor jelenik meg, ha a szolgáltatás nincs felfüggesztve és el van indítva.
+	 * @param resText az üzenet azonosítója a strings.xml fájl alapján
+	 * @param intentActivity a nézet, mely meghívódik kattintásra
+	 * @param intentService a szolgáltatás, mely meghívódik kattintásra, ha nincs megadva nézet helyette
+	 * @param key a figyelmeztető üzenet azonosítója, ami alapján el lehet távolítani később
+	 * @param removable a felhasználó legyen-e képes eltávolítani az üzenetet illetve rá kattintva tünjön-e el
+	 * @param error hibaüzenet vagy figyelmeztetés ikon jelenjen meg
+	 */
 	@SuppressWarnings("deprecation")
 	private void addNotification(int resText, Intent intentActivity, Intent intentService, int key, boolean removable, boolean error) {
 		removeNotification(key);
@@ -577,10 +621,21 @@ public class ConnectionService extends IOIOService {
 		nm.notify(key, notification);
 	}
 	
-	public void setConnectionError(ConnectionError error) {
+	/**
+	 * Ha a kapcsolatban bármi hiba történik, vagy a hiba megszűnik, ez a metódus hívódik meg.
+	 * A hiba alapján cselekedik a metódus. További részletek: {@link ConnectionError}
+	 * @param error a kapcsolat hibája vagy null, ha megszüntek a hibák
+	 */
+	public void onConnectionError(ConnectionError error) {
 		setConnectionError(error, false);
 	}
 
+	/**
+	 * Ha a kapcsolatban bármi hiba történik, vagy a hiba megszűnik, ez a metódus hívódik meg.
+	 * A hiba alapján cselekedik a metódus. További részletek: {@link ConnectionError}
+	 * @param error a kapcsolat hibája vagy null, ha megszüntek a hibák
+	 * @param removeAll ha minden figyelmeztetést el kell távolítani, true
+	 */
 	private void setConnectionError(ConnectionError error, boolean removeAll) {
 		updateNotificationText();
 		getBinder().fireConnectionStateChange(false);
@@ -626,6 +681,10 @@ public class ConnectionService extends IOIOService {
 		}
 	}
 	
+	/**
+	 * Az összes, a nem kapcsolódással kapcsolatos figylemeztetést megjeleníti, ha kell illetve elrejti kérésre.
+	 * @param visible true esetén megjelennek a figyelmeztetések, melyeknek meg kell jelenni, egyébként mind eltűnik
+	 */
 	private void setNotificationsVisible(boolean visible) {
 		setConfigNotificationVisible(visible);
 		setNetworkNotificationVisible(visible);
@@ -633,6 +692,10 @@ public class ConnectionService extends IOIOService {
 		setCamInstallNotificationVisible(visible);
 	}
 	
+	/**
+	 * Megjelenít egy figyelmeztetést, ha a konfiguráció nem hibás, de ha az SD-kártya nem érhető el, akkor előbb azt közli.
+	 * @param visible true esetén megjeleníti a figyelmeztetést, de csak akkor, ha kell és false esetén eltünteti a figyelmeztetést
+	 */
 	private void setConfigNotificationVisible(boolean visible) {
 		if (config == null) return;
 		if (visible && !config.isCorrect()) {
@@ -644,71 +707,113 @@ public class ConnectionService extends IOIOService {
 		}
 	}
 	
+	/**
+	 * Megjelenít egy figyelmeztetést, ha egy hálózat sem érhető el.
+	 * @param visible true esetén megjeleníti a figyelmeztetést, de csak akkor, ha kell és false esetén eltünteti a figyelmeztetést
+	 */
 	private void setNetworkNotificationVisible(boolean visible) {
 		if (visible && !isNetworkAvailable() && !isNetworkConnecting()) addOnlineNotification(R.string.set_network, new Intent(Settings.ACTION_WIRELESS_SETTINGS), ID_NOTIFY_NETWORK, false);
 		else removeNotification(ID_NOTIFY_NETWORK);
 	}
 	
+	/**
+	 * Megjelenít egy figyelmeztetést, ha az IP Webcam alkalmazás nincs telepítve.
+	 * @param visible true esetén megjeleníti a figyelmeztetést, de csak akkor, ha kell és false esetén eltünteti a figyelmeztetést
+	 */
 	private void setCamInstallNotificationVisible(boolean visible) {
 		if (visible && !isAppInstalled(PACKAGE_CAM)) addOnlineNotification(R.string.install_cam, new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://details?id=" + PACKAGE_CAM)), ID_NOTIFY_INST_CAM, true);
 		else removeNotification(ID_NOTIFY_INST_CAM);
 	}
 	
+	/**
+	 * Megjelenít egy figyelmeztetést, ha a GPS szenzor nincs bekapcsolva.
+	 * @param visible true esetén megjeleníti a figyelmeztetést, de csak akkor, ha kell és false esetén eltünteti a figyelmeztetést
+	 */
 	private void setGpsEnableNotificationVisible(boolean visible) {
 		if (visible && !isGpsEnabled()) addOnlineNotification(R.string.set_gps, new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), ID_NOTIFY_GPS_ENABLE, false);
 		else removeNotification(ID_NOTIFY_GPS_ENABLE);
 	}
 	
+	/**
+	 * Eltávolítja a figyelmeztetést.
+	 * @param key a figyelmeztetés azonosítója.
+	 */
 	private void removeNotification(int key) {
 		if (nm == null) initNotification();
 		nm.cancel(key);
 	}
 	
+	/**
+	 * Az újrakapcsolódás késleltetésének értékét adja meg.
+	 */
 	private int getReconnectDelay() {
 		return Integer.parseInt(getSharedPreferences(this).getString("reconnect_delay", "20000"));
 	}
 	
+	/**
+	 * Megadja, hogy a járművet irányító mikrovezérlő kapcsolódva van-e a telefonhoz.
+	 */
 	public boolean isVehicleConnected() {
 		return vehicle.isConnected();
 	}
 	
+	/**
+	 * Megadja, hogy a híddal van-e teljesen kiépített kapcsolat.
+	 */
 	public boolean isBridgeConnected() {
 		return conn != null && conn.isConnected();
 	}
 	
-	private boolean isOfflineMode() {
-		return isOfflineMode(this);
-	}
-	
+	/**
+	 * Megmondja, hogy a hálózat kapcsolódás alatt van-e.
+	 */
 	private boolean isNetworkConnecting() {
 		return isNetworkState(NetworkInfo.State.CONNECTING);
 	}
 	
+	/**
+	 * Megmondja, hogy elérhető-e a hálózat, tehát van-e kialakítva kapcsolat.
+	 */
 	private boolean isNetworkAvailable() {
 		return isNetworkState(NetworkInfo.State.CONNECTED);
 	}
 	
+	/**
+	 * Megmondja, hogy a hálózati állapot megegyezik-e a paraméterben átadottal.
+	 * @param state a hálózati állapot, amivel az egyezést vizsgáljuk
+	 * @return true, ha egyezik, egyébként false
+	 */
 	private boolean isNetworkState(NetworkInfo.State state) {
 		final NetworkInfo activeNetwork = getActiveNetworkInfo();
 		return activeNetwork != null && state != null && activeNetwork.getState() == state;
 	}
 	
+	/**
+	 * Az aktív hálózat információit adja vissza.
+	 * @return null, ha nincs aktív hálózat, egyébként infó
+	 */
 	private NetworkInfo getActiveNetworkInfo() {
 		try {
 			if (cm == null) cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 			return cm.getActiveNetworkInfo();
 		}
 		catch (RuntimeException ex) {
-			/* Null or Permission Denied */
 			return null;
 		}
 	}
 	
+	/**
+	 * Megmondja, hogy a GPS szenzor engedélyezve van-e.
+	 */
 	private boolean isGpsEnabled() {
 		if (lm == null) lm = (LocationManager) getSystemService(LOCATION_SERVICE);
 		return lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
 	}
 	
+	/**
+	 * Megmondja, hogy az alkalmazás telepítve van-e a telefonra.
+	 * @param packageName az alkalmazás csomagjának útvonala
+	 */
 	private boolean isAppInstalled(String packageName) {
 	    PackageManager pm = getPackageManager();
 	    boolean installed = false;
@@ -721,28 +826,54 @@ public class ConnectionService extends IOIOService {
 	    return installed;
 	}
 	
+	/**
+	 * Az Androidon tárolt beállítások megszerzése.
+	 * Ha egyes beállítások még nincsenek megadva, az alapértelmezett értékek lesznek használva azokhoz.
+	 * @param context a meghívó referenciája Pl. Service, Activity
+	 */
 	private static SharedPreferences getSharedPreferences(Context context) {
 		PreferenceManager.setDefaultValues(context, R.xml.preferences, false);
 		return PreferenceManager.getDefaultSharedPreferences(context);
 	}
 	
+	/**
+	 * A kapcsolódáshoz szükséges konfiguráció példányosítása.
+	 * @param context a meghívó referenciája Pl. Service, Activity
+	 */
 	public static Config createConfig(Context context) {
 		return new Config(getSharedPreferences(context));
 	}
 	
+	/**
+	 * Megadja, hogy az SD-kártya elérhető-e.
+	 */
 	private static boolean isSDCardMounted() {
 		String state = Environment.getExternalStorageState();
 	    return Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
 	}
 	
+	/**
+	 * Megadja, hogy a szolgáltatás offline módba van-e állítva.
+	 * @param context a meghívó referenciája Pl. Service, Activity
+	 */
 	public static boolean isOfflineMode(Context context) {
 		return getSharedPreferences(context).getBoolean("offline", false);
 	}
 	
+	/**
+	 * Megadja, hogy a szolgáltatás el van/volt-e indítva.
+	 * @param context a meghívó referenciája Pl. Service, Activity
+	 */
 	public static boolean isStarted(Context context) {
 		return getSharedPreferences(context).getBoolean(KEY_STARTED, false);
 	}
 	
+	/**
+	 * Beállítja a szolgáltatás futási állapotát.
+	 * Ha a rendszer váratlanul újraindul, újra el kell indítani a szolgáltatást, ha el volt indítva.
+	 * @param context a meghívó referenciája Pl. Service, Activity
+	 * @param true esetén elindítva egyébként leállítva
+	 */
 	public static void setStarted(Context context, boolean b) {
 		getSharedPreferences(context).edit().putBoolean(KEY_STARTED, b).commit();
 	}

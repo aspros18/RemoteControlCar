@@ -49,7 +49,7 @@ public class HostMessageProcess extends MessageProcess {
 			err = ConnectionError.OTHER;
 			Log.i(ConnectionService.LOG_TAG, "unknown error", e);
 		}
-		SERVICE.setConnectionError(err);
+		SERVICE.onConnectionError(err);
 	}
 
 }

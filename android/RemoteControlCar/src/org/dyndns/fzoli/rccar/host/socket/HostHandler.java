@@ -65,7 +65,7 @@ public class HostHandler extends AbstractSecureClientHandler implements Connecti
 		catch (Exception e) {
 			err = ConnectionError.OTHER;
 		}
-		SERVICE.setConnectionError(err);
+		SERVICE.onConnectionError(err);
 	}
 	
 	/**

@@ -380,7 +380,7 @@ public class ConnectionService extends IOIOService {
 		updateNotificationText();
 		getBinder().fireConnectionStateChange(false);
 		ConnectionError[] errors = ConnectionError.values();
-		if (removeAll) {
+		if (removeAll || isSuspended()) {
 			Log.i(LOG_TAG, "connection msg remove");
 			// service leáll, figyelmeztetések és hibák eltüntetése
 			for (ConnectionError err : errors) {

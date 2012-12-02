@@ -79,6 +79,13 @@
             android:inputType="number"
             android:defaultValue="1000"
             android:dependency="offline" />
+        <ListPreference
+            android:key="reconnect_delay"
+            android:title="@string/title_reconnect_delay"
+            android:summary="@string/summary_reconnect_delay"
+            android:defaultValue="20000"
+            android:entries="@array/reconnectDelayNames"
+            android:entryValues="@array/reconnectDelayIndexes" />
         <EditTextPreference
             android:key="password"
             android:title="@string/title_password"

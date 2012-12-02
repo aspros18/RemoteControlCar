@@ -3,4 +3,12 @@
     <string-array name="vehicleNames">
         <item name="prototype">Prototípus</item>
     </string-array>
+    <string-array name="reconnectDelayNames">
+        <item name="10">10 másodperc</item>
+        <item name="20">20 másodperc</item>
+        <item name="30">30 másodperc</item>
+        <item name="60">Egy perc</item>
+        <item name="90">Másfél perc</item>
+        <item name="120">Két perc</item>
+    </string-array>
 </resources>

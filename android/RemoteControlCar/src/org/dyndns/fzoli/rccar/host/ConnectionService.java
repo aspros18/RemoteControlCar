@@ -238,7 +238,7 @@ public class ConnectionService extends IOIOService {
 				}
 				
 			};
-			CONN_TIMER.schedule(connTask, 25000);
+			CONN_TIMER.schedule(connTask, getReconnectDelay());
 		}
 	}
 	
@@ -457,6 +457,10 @@ public class ConnectionService extends IOIOService {
 	private void removeNotification(int key) {
 		if (nm == null) initNotification();
 		nm.cancel(key);
+	}
+	
+	public int getReconnectDelay() {
+		return Integer.parseInt(getSharedPreferences(this).getString("reconnect_delay", "20000"));
 	}
 	
 	public boolean isVehicleConnected() {

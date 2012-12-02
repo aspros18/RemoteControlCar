@@ -58,6 +58,7 @@ public class SSLSocketUtil {
     
     /**
      * SSL kliens socket létrehozása és kapcsolódás a szerverhez.
+     * A kapcsolódáskor az eredeti időtúllépés lesz használva.
      * @param port a szerver portja, amin hallgat
      * @param ca annak a CA-nak a tanúsítványa, amely az egyetlen megbízható tanúsítvány kiállító
      * @param crt az egyetlen megbízható CA által kiállított tanúsítvány
@@ -66,6 +67,20 @@ public class SSLSocketUtil {
      * @throws NullPointerException ha a jelszó kivételével nincs megadva az egyik paraméter
      */
     public static SSLSocket createClientSocket(String host, int port, File ca, File crt, File key, char[] passwd, Callback callback) throws GeneralSecurityException, IOException {
+        return createClientSocket(host, port, ca, crt, key, passwd, null, callback);
+    }
+    
+    /**
+     * SSL kliens socket létrehozása és kapcsolódás a szerverhez.
+     * @param port a szerver portja, amin hallgat
+     * @param ca annak a CA-nak a tanúsítványa, amely az egyetlen megbízható tanúsítvány kiállító
+     * @param crt az egyetlen megbízható CA által kiállított tanúsítvány
+     * @param key a tanúsítvány titkos kulcsa
+     * @param passwd a használandó tanúsítvány jelszava, ha van, egyébként null
+     * @param connTimeout kapcsolódáskor használt időtúllépés
+     * @throws NullPointerException ha a jelszó kivételével nincs megadva az egyik paraméter
+     */
+    public static SSLSocket createClientSocket(String host, int port, File ca, File crt, File key, char[] passwd, Integer connTimeout, Callback callback) throws GeneralSecurityException, IOException {
         if (passwd == null) passwd = new char[] {}; // ha nincs jelszó megadva, üres jelszó létrehozása
         String cacheId = getCacheId(ca, crt, key); // cache id generálása
         SSLClient client;
@@ -78,6 +93,7 @@ public class SSLSocketUtil {
                 client.setCheckHostname(false); // hostname ellenőrzés kikapcsolása, minden más engedélyezése
                 client.setCheckExpiry(true); // lejárat ellenőrzés
                 client.setCheckCRL(true); // visszavonás ellenőrzés
+                if (connTimeout != null) client.setConnectTimeout(connTimeout); // kapcsolódás időtúllépés beállítása, ha megadták
                 CLIENT_CACHE.put(cacheId, client); // cachelés a memóriába
             }
         }

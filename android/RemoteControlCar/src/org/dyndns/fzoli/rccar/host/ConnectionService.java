@@ -517,6 +517,10 @@ public class ConnectionService extends IOIOService {
 		super.onDestroy();
 	}
 	
+	/**
+	 * Ha a jármű mikrovezérlőjét csatlakoztatták vagy eltávolították.
+	 * - A figyelmeztető üzenet frissítése.
+	 */
 	public void onVehicleConnectionStateChanged() {
 		updateNotificationText();
 	}

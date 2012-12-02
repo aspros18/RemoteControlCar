@@ -272,13 +272,12 @@ public class MainActivity extends SherlockActivity {
 	 * @param save true esetén frissül a beállításokban a service állapota
 	 */
 	private void setRunning(boolean running, boolean save) {
-		boolean changed = true; // kezdetben pozitívan állok hozzá és azt mondom, sikerül a beállítás
 		if (running) { // ha futást kértek
 			if (config.isCorrect()) { // és jó a konfig
+				refreshStartStop(running, save); // felület és változók frissítése
 				bindService(); // akkor kapcsolódás a szolgáltatáshoz és elindítása
 			}
 			else if (!ConnectionService.isStarted(this)) { // ha rossz a konfig és nem fut a szolgáltatás
-				changed = false; // nem változik a beállítás ez esetben
 				Toast.makeText(this, R.string.set_config, Toast.LENGTH_SHORT).show(); // figyelmeztetés megjelenítése
 				btStart.setEnabled(false); // start gomb disabled, amíg a figyelmeztetés látható
 				TIMER_TOAST.schedule(new TimerTask() {
@@ -291,6 +290,7 @@ public class MainActivity extends SherlockActivity {
 							public void run() {
 								btStart.setEnabled(true); // letelt az idő, a start gomb újra fogad eseményt
 							}
+							
 						});
 					}
 					
@@ -298,18 +298,25 @@ public class MainActivity extends SherlockActivity {
 			}
 		}
 		else { // ha leállítást kértek
+			refreshStartStop(running, save); // felület és változók frissítése
 			unbindService(); // kapcsolat megszakítása és szolgáltatás leállítása
 		}
-		if (changed) { // ha változott a beállítás
-			btStart.setEnabled(!running); // start és stop gomb állapotának frissítése
-			btStop.setEnabled(running);
-			if (save) { // ha kérték, hogy legyen mentés
-				ConnectionService.setSuspended(false); // a szolgáltatás felfüggesztésének kikapcsolása, hogy újra működhessen
-				ConnectionService.setStarted(this, running); // az új érték mentése
-			}
-			else { // ha nem kértek mentést, egyszerű felfüggesztés illetve annak feloldása
-				ConnectionService.setSuspended(!running);
-			}
+	}
+	
+	/**
+	 * A szolgáltatás elindítása vagy leállítása előtt a felület módosítása és a szolgáltatás változóinak előkészítése.
+	 * @param running true esetén indítás, egyébként leállítás kerül lefutásra a metódus után
+	 * @param save true esetén frissül a beállításokban a service állapota
+	 */
+	private void refreshStartStop(boolean running, boolean save) {
+		btStart.setEnabled(!running); // start és stop gomb állapotának frissítése
+		btStop.setEnabled(running);
+		if (save) { // ha kérték, hogy legyen mentés
+			ConnectionService.setSuspended(false); // a szolgáltatás felfüggesztésének kikapcsolása, hogy újra működhessen
+			ConnectionService.setStarted(this, running); // az új érték mentése
+		}
+		else { // ha nem kértek mentést, egyszerű felfüggesztés illetve annak feloldása
+			ConnectionService.setSuspended(!running);
 		}
 	}
 	

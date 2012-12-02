@@ -300,12 +300,6 @@ public class ConnectionService extends IOIOService {
 	 */
 	private ConnectionHelper createConnectionHelper() {
 		config = createConfig(this);
-		if (!config.isCorrect() && !isOfflineMode()) {
-			setConfigNotificationVisible(true);
-		}
-		else {
-			setConfigNotificationVisible(false);
-		}
 		if (isOfflineMode() || !config.isCorrect() || !isNetworkAvailable() || !isAppInstalled(PACKAGE_CAM)) {
 			return null;
 		}
@@ -469,37 +463,43 @@ public class ConnectionService extends IOIOService {
 		}
 	}
 	
+	/**
+	 * A szolgáltatás elindításának hívásával üzenetet is lehet küldeni neki, nem csak elindítani.
+	 * A szolgáltatáshoz tartozik egy rendszerüzenet figyelő, ami átadja az üzeneteket a szolgáltatásnak.
+	 * Ha a felhasználó egy kapcsolathiba figyelmeztetésre kattint,
+	 * akkor is a szolgáltatás indul el reconnect üzenettel.
+	 * További infó: {@link ConnectionIntentReceiver}
+	 */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStartCommand(intent, flags, startId);
-		if (intent.hasExtra(KEY_EVENT) && !isSuspended()) {
-			String event = intent.getStringExtra(KEY_EVENT);
-			if (event.equals(EVT_CONNECTIVITY_CHANGE)) {
-				if (startId != 1) setNetworkNotificationVisible(true);
-				if (isNetworkAvailable()) connect(true);
-				else disconnect(false);
+		if (intent.hasExtra(KEY_EVENT) && !isSuspended()) { // ha van esemény üzenet és nincs felfüggesztve a szolgáltatás
+			String event = intent.getStringExtra(KEY_EVENT); // esemény megszerzése
+			if (event.equals(EVT_CONNECTIVITY_CHANGE)) { // ha a hálózati kapcsolat módosult
+				if (startId != 1) setNetworkNotificationVisible(true); // ha nem első indítás, felhasználó figyelmeztetés frissítése
+				if (isNetworkAvailable()) connect(true); // ha van hálózat, újrakapcsolódás azonnal
+				else disconnect(true); // egyébként kapcsolat bontása és időzítés törlése
 			}
-			else if (event.equals(EVT_GPS_SENSOR_CHANGE)) {
-				if (startId != 1) setGpsEnableNotificationVisible(true);
+			else if (event.equals(EVT_GPS_SENSOR_CHANGE)) { // ha a GPS elérhetősége változott
+				if (startId != 1) setGpsEnableNotificationVisible(true); // figyelmeztetés módosítása, ha nem első indítás
 			}
-			else if (event.equals(EVT_APP_ADDED) || event.equals(EVT_APP_INSTALL)) {
-				if (startId != 1) {
-					setCamInstallNotificationVisible(true);
-					connect(false);
-				}
+			else if (event.equals(EVT_APP_ADDED) || event.equals(EVT_APP_INSTALL)) { // ha az alkalmazás települt
+				if (startId != 1) setCamInstallNotificationVisible(true); // figyelmeztetés frissítése, ha nem első indítás
+				connect(false); // és újrakapcsolódás ha még nincs kapcsolódva
 			}
-			else if (event.equals(EVT_SDCARD_MOUNTED)) {
-				connect(false);
+			else if (event.equals(EVT_SDCARD_MOUNTED)) { // ha az sd kártya elérhetővé vált, olvasható a konfiguráció
+				if (startId != 1) setConfigNotificationVisible(true); // figyelmeztetés frissítése, ha nem első indítás
+				connect(false); // újrakapcsolódás, ha még nincs kapcsolat
 			}
-			else if (event.equals(EVT_RECONNECT_NOW)) {
-				reconnectSchedule(true);
+			else if (event.equals(EVT_RECONNECT_NOW)) { // azonnali újrakapcsolódás kérésre
+				reconnectSchedule(true); // azt teszi, amire kérik...
 			}
-			else if (event.equals(EVT_SHUTDOWN)) {
-				setSuspended(true);
-				stopSelf();
+			else if (event.equals(EVT_SHUTDOWN)) { // a rendszer leállítása esetén
+				setSuspended(true); // felfüggesztés
+				stopSelf(); // leállás, mely az onDestroy metódust is meghívja
 			}
 		}
-		return START_STICKY;
+		return START_STICKY; // ha a szolgáltatást bezárják (pl. kevés RAM), a rendszer újraindítja, ha tudja
 	}
 	
 	@Override
@@ -532,7 +532,7 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	public void updateNotificationText() {
-		if (!isSuspended()) setNotificationText(getString(R.string.vehicle) + ": " + getString(isVehicleConnected() ? R.string.exists : R.string.not_exists) + "; " + (isOfflineMode() ? getString(R.string.title_offline) : (getString(R.string.bridge_conn) + ": " + getString(isBridgeConnected() ? R.string.exists : R.string.not_exists))) + '.');
+		if (!isSuspended() && isStarted(this)) setNotificationText(getString(R.string.vehicle) + ": " + getString(isVehicleConnected() ? R.string.exists : R.string.not_exists) + "; " + (isOfflineMode() ? getString(R.string.title_offline) : (getString(R.string.bridge_conn) + ": " + getString(isBridgeConnected() ? R.string.exists : R.string.not_exists))) + '.');
 	}
 	
 	private void removeNotification() {

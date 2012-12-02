@@ -134,6 +134,7 @@ public class ConnectionService extends IOIOService {
 	 * ha nincs még telepítve, figyelmeztetés jelenik meg.
 	 * Erre a figyelmeztetésre kattintva megnyílik a Play áruház és behozza az alkalmazást.
 	 * Ahhoz, hogy az alkalmazást be lehessen hozni, a pontos csomag útvonalára van szükség.
+	 * Szintén kell ahhoz, hogy a program meg tudja állapítani, hogy telepítve van-e az alkalmazás.
 	 */
 	private final static String PACKAGE_CAM = "com.pas.webcam";
 	
@@ -161,7 +162,7 @@ public class ConnectionService extends IOIOService {
 						EVT_APP_ADDED = Intent.ACTION_PACKAGE_ADDED;
 	
 	/**
-	 * Összeköttetés az Activity és a Service között.
+	 * Összeköttetés az Activity és a Service között, amit a jármű mikrovezérlője is használ.
 	 */
 	private final ConnectionBinder BINDER = new ConnectionBinder(this);
 	
@@ -237,33 +238,66 @@ public class ConnectionService extends IOIOService {
 	 */
 	private static boolean suspended = false;
 	
+	/**
+	 * Megadja, hogy a szolgáltatás fel van-e függesztve.
+	 */
 	public static boolean isSuspended() {
 		Log.i(LOG_TAG, "suspended: " + suspended);
 		return suspended;
 	}
 	
+	/**
+	 * Beállítja a szolgáltatást aktívra vagy felfüggesztettre.
+	 * A felfüggesztés két helyen van használva:
+	 * 1. amikor az Android rendszer leáll, le kell állítani a szolgáltatást, de az eseménykezelő visszahívására (hogy megszakadt a kapcsolat) már nem kell reagálni
+	 * 2. amikor a szolgáltatás fut és a beállítás Activityt meghívja a felhasználó, a szolgáltatást le kell állítani, de a kapcsolat megszakadásra nem kell reagálni
+	 */
 	public static void setSuspended(boolean suspended) {
 		ConnectionService.suspended = suspended;
 	}
 	
+	/**
+	 * A kapcsolódáshoz szükséges konfiguráció.
+	 */
 	public Config getConfig() {
 		return config;
 	}
 	
+	/**
+	 * A felületet a szolgáltatással és a mikrovezérlővel összekötő binder objektum.
+	 */
 	public ConnectionBinder getBinder() {
 		return BINDER;
 	}
 	
+	/**
+	 * Amikor az Activity kapcsolódik a szolgáltatáshoz, binder referenciát kell visszaadni.
+	 * Az alkalmazásnak elég egyetlen binder objektum, ezért mindig ugyan azt adja vissza.
+	 */
 	@Override
 	public ConnectionBinder onBind(Intent intent) {
 		return BINDER;
 	}
 	
+	/**
+	 * Amikor a szolgáltatás létrejön, létre kell hozni a mikrovezérlőt irányító objektumot is.
+	 * A metódus a felhasználó beállítása alapján példányosítja az egyik járművezérlőt.
+	 * További információ: {@link Vehicles}
+	 */
 	@Override
 	public Vehicle createIOIOLooper() {
 		return vehicle = Vehicles.createVehicle(BINDER, Integer.parseInt(getSharedPreferences(this).getString("vehicle", "0")));
 	}
 	
+	/**
+	 * A hídhoz való kapcsolódás előtt példányosítani kell a kapcsolódást segítő osztályt.
+	 * A példányosítás csak akkor történik meg, ha biztonságosan kivitelezhető a kapcsolódás és online módban van a szolgáltatás.
+	 * A biztonságos kapcsolódás feltételei:
+	 * - helyes konfiguráció (helytelen konfiguráció esetén értesítés jelenik meg, ha online módban van a szolgáltatás)
+	 * - legyen elérhető hálózat (WiFi vagy mobilnet)
+	 * - telepítve legyen a kameraképet MJPEG-ben streamelő program
+	 * Ha a fenti feltételek egyike nem teljesül, akkor elmarad a példányosítás és nem lesz kapcsolódva a szolgáltatás a hídhoz.
+	 */
 	private ConnectionHelper createConnectionHelper() {
 		config = createConfig(this);
 		if (!config.isCorrect() && !isOfflineMode()) {
@@ -337,10 +371,23 @@ public class ConnectionService extends IOIOService {
 //		}
 //	}
 	
+	/**
+	 * Időzíti az újrakapcsolódást.
+	 * Akkor van rá szükség, ha nem sikerült kapcsolódni a hídhoz vagy megszakadt a kapcsolat.
+	 * A folyamatos kapcsolat érdekében a szolgáltatás addig próbálkozik, míg nem sikerül a kapcsolódás.
+	 */
 	public void reconnectSchedule() {
 		reconnectSchedule(false);
 	}
 	
+	/**
+	 * Újrakapcsolódás hívó.
+	 * Ha az újrakapcsolódást a felhasználó kezdeményezte a figyelmeztető üzenetre kattintva,
+	 * azonnali újrakapcsolódás indul meg, egyébként időzített újrakapcsolódás.
+	 * Ha az időzített újrakapcsolódás már aktiválva van és azonnali újrakapcsolódást kér a felhasználó,
+	 * az időzített folyamat fut le azonnal, de ha még nincs időzített, akkor egyszerűen meghívódik a reconnect.
+	 * @param now true esetén azonnali újrakapcsolódás, egyébként újrakapcsolódás időzítés
+	 */
 	private void reconnectSchedule(boolean now) {
 		if (now) {
 			if (connTask != null) connTask.run();
@@ -361,6 +408,11 @@ public class ConnectionService extends IOIOService {
 		}
 	}
 	
+	/**
+	 * Újrakapcsolódás a hídhoz.
+	 * Ha a híd nincs még kapcsolódva a hídhoz, meghívja a kapcsolódást úgy,
+	 * hogy a jelenlegi kapcsolatokat lezárja és kapcsolódjon újra.
+	 */
 	private void reconnect() {
 		if (!isBridgeConnected()) connect(true);
 	}

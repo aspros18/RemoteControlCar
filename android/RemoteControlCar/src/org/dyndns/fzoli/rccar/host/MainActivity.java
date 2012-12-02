@@ -146,7 +146,7 @@ public class MainActivity extends SherlockActivity {
 	}
 	
 	/**
-	 * Amikor a nézet megsemmisül, a szolgáltatással megszűnik a kapcsolat.
+	 * Amikor a nézet megsemmisül, a szolgáltatással megszűnik a kapcsolat, de a szolgáltatás fut tovább.
 	 * Ez maga után vonja azt is, hogy a Binder objektumból kikerül az eseménykezelő,
 	 * így legközelebb amikor a felület újra regisztrálja eseménykezelőjét, friss adatokhoz fog jutni,
 	 * mert az elmaradt eseményeket is megkapja utólag. Pl. folyamatban van-e a kapcsolódás a híddal
@@ -314,37 +314,52 @@ public class MainActivity extends SherlockActivity {
 	}
 	
 	/**
-	 * Kapcsolódás a szolgáltatáshoz és annak elindítása.
+	 * A szolgáltatás elindítása és kapcsolódás a szolgáltatáshoz.
 	 * A kapcsolat kialakulása után eseménykezelő beállítása a felület naprakészsége érdekében.
 	 * Ha megszakad a kapcsolat a szolgáltatással, magától újrakapcsolódik az Activity.
 	 */
 	private void bindService() {
-		unbindService();
-		startService(new Intent(this, ConnectionService.class));
+		unbindService(); // kísérlet a szolgáltatás leállítására, ha véletlen már van kialakított kapcsolat
+		startService(new Intent(this, ConnectionService.class)); // szolgáltatás elindítása a kapcsolódás előtt
 		conn = new ServiceConnection() {
 			
+			/**
+			 * Ha a szolgáltatással megszűnik a kapcsolat, újrakapcsolódás, de csak akkor, ha nem kérték a leállást.
+			 */
 			@Override
 			public void onServiceDisconnected(ComponentName n) {
-				binder = null;
-				if (conn != null) bindService();
+				binder = null; // mivel már nincs kapcsolat, a binder használata nem megbízható
+				if (conn != null) bindService(); // ha nem kérésre állt le a szolgáltatás, rekurzív újrahívás
 			}
 			
+			/**
+			 * Ha a szolgáltatással létrejött a kapcsolat:
+			 * - offline állapot változó frissítése
+			 * - felület újrarajzolása aktuális adatokkal
+			 * - eseménykezelő regisztrálása
+			 */
 			@Override
 			public void onServiceConnected(ComponentName n, IBinder b) {
-				binder = (ConnectionBinder) b;
-				offlineMode = ConnectionService.isOfflineMode(MainActivity.this);
-				repaintArrow(binder.getX(), binder.getY(), true, true);
+				binder = (ConnectionBinder) b; // a binder mostantól használható
+				offlineMode = ConnectionService.isOfflineMode(MainActivity.this); // offline mód van?
+				repaintArrow(binder.getX(), binder.getY(), true, true); // újrarajzolás friss adatokkal
 				binder.setListener(new ConnectionBinder.Listener() {
 					
-					private ProgressDialog dialog;
+					/**
+					 * Kapcsolódásjelző dialógus.
+					 */
+					private ProgressDialog dialogConn;
 					
+					/**
+					 * Ha a vezérlőjel változott, újrarajzolja a grafikus komponensét.
+					 */
 					@Override
 					public void onArrowChange(final int x, final int y) {
-						runOnUiThread(new Runnable() {
+						runOnUiThread(new Runnable() { // a felület módosítása csak a felület szálán lehetséges
 							
 							@Override
 							public void run() {
-								repaintArrow(x, y, true, true);
+								repaintArrow(x, y, true, true); // a felület szálán újrarajzolás
 							}
 							
 						});
@@ -352,16 +367,20 @@ public class MainActivity extends SherlockActivity {
 					
 					@Override
 					public void onConnectionStateChange(final boolean connecting) {
-						runOnUiThread(new Runnable() {
+						runOnUiThread(new Runnable() { // itt nem lenne kötelező a felület szálát használni, de akkor aszinkron lenne és beragadhatna a dialógus
 							
 							@Override
 							public void run() {
-								if (dialog != null) {
-									dialog.dismiss();
+								if (dialogConn != null) { // ha van már látható dialógus
+									dialogConn.dismiss(); // annak megszüntetése
 								}
-								if (connecting) {
-									dialog = ProgressDialog.show(MainActivity.this, getString(R.string.title_connecting), getString(R.string.message_connecting), true, true, new DialogInterface.OnCancelListener() {
-											
+								if (connecting) { // ha kapcsolódás van
+									// dialógus létrehozása és megjelenítése
+									dialogConn = ProgressDialog.show(MainActivity.this, getString(R.string.title_connecting), getString(R.string.message_connecting), true, true, new DialogInterface.OnCancelListener() {
+										
+										/**
+										 * Ha a dialógus ablakot megszüntetik a telefon vissza gombjának megnyomásával, a szolgáltatás leáll.
+										 */
 										@Override
 										public void onCancel(DialogInterface dialog) {
 											setRunning(false);
@@ -369,8 +388,8 @@ public class MainActivity extends SherlockActivity {
 											
 									});
 								}
-								else {
-									dialog = null;
+								else { // ha eltüntetést kértek
+									dialogConn = null; // már nem kell eltüntetni, mert minden kérés előtt eltüntetés van, csak ki kell nullázni
 								}
 							}
 						});
@@ -380,24 +399,32 @@ public class MainActivity extends SherlockActivity {
 			}
 			
 		};
+		// kapcsolódás a szolgáltatáshoz úgy, hogy a felületnél fontosabb prioritásban működjön, így memóriahiány esetén a felület hal meg előbb
 		bindService(new Intent(this, ConnectionService.class), conn, Context.BIND_IMPORTANT | Context.BIND_ABOVE_CLIENT);
 	}
 	
+	/**
+	 * Eseménykezelő levétele, kapcsolat megszakítása a szolgáltatással és annak leállítása.
+	 */
 	private void unbindService() {
 		unbindService(true);
 	}
 	
+	/**
+	 * Eseménykezelő levétele, kapcsolat megszakítása a szolgáltatással és annak leállítása, ha kérik.
+	 * @param stop true esetén leáll a service, egyébként fut tovább, csak a kapcsolat szűnik meg
+	 */
 	private void unbindService(boolean stop) {
-		if (conn != null) {
-			if (binder != null) {
-				binder.setListener(null);
-				binder = null;
+		if (conn != null) { // ha van miről lekapcsolódni
+			if (binder != null) { // ha regisztrálva van az eseménykezelő
+				binder.setListener(null); // annak eltávolítása
+				binder = null; // jelzés a GC-nek és a programnak, hogy már nincs eseménykezelő
 			}
-			repaintArrow(0, 0, true, true);
-			ServiceConnection tmp = conn;
-			conn = null;
-			unbindService(tmp);
-			if (stop) stopService(new Intent(this, ConnectionService.class));
+			repaintArrow(0, 0, true, true); // alapállapotba helyezi a felületet
+			ServiceConnection tmp = conn; // a kapcsolat ideignlenes referenciája
+			conn = null; // az osztályváltozó nullázása, hogy újra ne fusson le a metódus és jelzés a GC-nek
+			unbindService(tmp); // kapcsolat megszakítása a szolgáltatással
+			if (stop) stopService(new Intent(this, ConnectionService.class)); // ha kérik, szolgáltatás leállítása
 		}
 	}
 	

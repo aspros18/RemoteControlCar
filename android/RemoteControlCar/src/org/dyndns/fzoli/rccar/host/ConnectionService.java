@@ -495,15 +495,21 @@ public class ConnectionService extends IOIOService {
 				reconnectSchedule(true); // azt teszi, amire kérik...
 			}
 			else if (event.equals(EVT_SHUTDOWN)) { // a rendszer leállítása esetén
-				setSuspended(true); // felfüggesztés
 				stopSelf(); // leállás, mely az onDestroy metódust is meghívja
 			}
 		}
 		return START_STICKY; // ha a szolgáltatást bezárják (pl. kevés RAM), a rendszer újraindítja, ha tudja
 	}
 	
+	/**
+	 * A szolgáltatás leállítása előtt meghívódó metódus.
+	 * - Felfüggeszti a szolgáltatást.
+	 * - Lekapcsolódik a hídról, ha kell.
+	 * - Az összes figyelmeztetést eltávolítja. (fő, kapcsolódás és egyéb)
+	 */
 	@Override
 	public void onDestroy() {
+		setSuspended(true);
 		disconnect(true);
 		setNotificationsVisible(false);
 		setConnectionError(null, true);
@@ -654,7 +660,7 @@ public class ConnectionService extends IOIOService {
 		nm.cancel(key);
 	}
 	
-	public int getReconnectDelay() {
+	private int getReconnectDelay() {
 		return Integer.parseInt(getSharedPreferences(this).getString("reconnect_delay", "20000"));
 	}
 	

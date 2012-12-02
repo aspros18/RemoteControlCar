@@ -32,10 +32,16 @@ import android.provider.Settings;
 //import android.util.Log;
 import android.util.Log;
 
+/**
+ * Az alkalmazás háttérben futó szolgáltatása.
+ * A hídhoz való hálózati kapcsolódást és a jármű mikrovezérlőjéhez való kapcsolódás a fő feladatköre.
+ * A felhasználót értesíti minden fontos eseményről (warning, error). Arról is, hogy a szolgáltatás fut.
+ * @author zoli
+ */
 public class ConnectionService extends IOIOService {
 	
 	/**
-	 * A hibák beállításukkor bontják a kapcsolatot a híddal és nem távolíthatóak el a notification barról. A hibák a service leállásakor mind eltűnnek. A hibákra kattintva a főablak jelenik meg.
+	 * A fatális hibák (röviden hibák) beállításukkor bontják a kapcsolatot a híddal és nem távolíthatóak el a notification barról. A hibák a service leállásakor mind eltűnnek. A hibákra kattintva a főablak jelenik meg.
 	 * A figyelmeztetések (nem hibák) beállításukkor reconnect ütemezést aktiválnak és a service leállásakor vagy sikeres kapcsolódás esetén mind eltűnnek. A figyelmeztetések eltávolíthatóak és rájuk kattintva azonnal eltűnnek és lefuttatják a reconnect metódust.
 	 * A figyelmeztetések közül egyszerre csak egy látható.
 	 * Az other figyelmeztetés ismeretlen hibát jelöl.
@@ -51,55 +57,112 @@ public class ConnectionService extends IOIOService {
 		WRONG_CLIENT_VERSION(true),
 		WRONG_CERTIFICATE_SETTINGS(true);
 		
-		private final boolean ERROR;
+		/**
+		 * Megadja, hogy fatális hibáról van-e szó.
+		 */
+		private final boolean FATAL_ERROR;
 		
+		/**
+		 * A felsorolás konstruktora.
+		 * Alapértelmezésként nem fatális hibáról van szó.
+		 */
 		private ConnectionError() {
 			this(false);
 		}
 		
+		/**
+		 * A felsorolás konstruktora.
+		 * @param error true esetén fatális hiba
+		 */
 		private ConnectionError(boolean error) {
-			ERROR = error;
+			FATAL_ERROR = error;
 		}
 		
+		/**
+		 * A hibához kapcsolódó figyelmeztetés azonosítóját adja meg.
+		 * Generált érték a felsorolás index alapján.
+		 * Pl. 101, 102 ... 107
+		 */
 		public int getNotificationId() {
 			return 100 + ordinal();
 		}
 		
+		/**
+		 * Megadja, hogy a hibához tartozik-e felületi figyelmeztetés.
+		 * @return true esetén látható, tehát tartozik hozzá figyelmeztetés
+		 */
 		public boolean isVisible() {
 			return this != OTHER;
 		}
 		
-		public boolean isError() {
-			return ERROR;
+		/**
+		 * Megadja, hogy a hiba fatális-e.
+		 * Fatális hiba esetén nem ismétlődik meg a kapcsolódás.
+		 * @return true esetén fatális a hiba, egyébként nem
+		 */
+		public boolean isFatalError() {
+			return FATAL_ERROR;
 		}
 		
 	}
 	
+	/**
+	 * Segédváltozó ahhoz, hogy a {@code R.string} osztály Integer változóihoz hozzá lehessen férni úgy,
+	 * hogy két változó segítégével (String + Integer) lehessen megkapni a referenciát.
+	 * Pl. "err_" + key , ahol key egy változó érték, de a String konstans.
+	 */
 	private final static R.string STRINGS = new R.string();
 	
-	private final static int ID_NOTIFY = 0;
-	private final static int ID_NOTIFY_CONFIG = 1;
-	private final static int ID_NOTIFY_NETWORK = 2;
-	private final static int ID_NOTIFY_INST_CAM = 3;
-	private final static int ID_NOTIFY_GPS_ENABLE = 4;
+	/**
+	 * Konstans azonosítók azokhoz a figyelmeztetésekhez, amik nem a kapcsolódás figyelmeztetései.
+	 */
+	private final static int ID_NOTIFY = 0,
+						ID_NOTIFY_CONFIG = 1,
+						ID_NOTIFY_NETWORK = 2,
+						ID_NOTIFY_INST_CAM = 3,
+						ID_NOTIFY_GPS_ENABLE = 4;
 	
+	/**
+	 * A SharedPreference azon kulcsai, melyek kódban több helyen is használatban vannak.
+	 * Tipikus eset amikor getterben és setter metódus is írva van egy paraméterhez.
+	 */
 	private final static String KEY_STARTED = "started";
 	
+	/**
+	 * Az alkalmazásom az IP Webcam alkalmazásra támaszkodik.
+	 * Az IP Webcam alkalmazás ingyenes és a Play áruházból letölthető és
+	 * ha nincs még telepítve, figyelmeztetés jelenik meg.
+	 * Erre a figyelmeztetésre kattintva megnyílik a Play áruház és behozza az alkalmazást.
+	 * Ahhoz, hogy az alkalmazást be lehessen hozni, a pontos csomag útvonalára van szükség.
+	 */
 	private final static String PACKAGE_CAM = "com.pas.webcam";
 	
+	/**
+	 * Az Android naplózójához használt teg.
+	 */
 	public final static String LOG_TAG = "mobilerc";
 	
+	/**
+	 * A szolgáltatás az eseményeket ezzel a kulccsal várja.
+	 */
 	public final static String KEY_EVENT = "event";
-	public final static String EVT_RECONNECT_NOW = "reconnect now";
-	public final static String EVT_CONNECTIVITY_CHANGE = ConnectivityManager.CONNECTIVITY_ACTION;
-	public final static String EVT_GPS_SENSOR_CHANGE = LocationManager.PROVIDERS_CHANGED_ACTION;
-	public final static String EVT_SDCARD_MOUNTED = Intent.ACTION_MEDIA_MOUNTED;
-	public final static String EVT_SHUTDOWN = Intent.ACTION_SHUTDOWN;
 	
+	/**
+	 * A szolgáltatás ezeket az eseményeket fogadja és dolgozza fel.
+	 * A kód Android 2.1-től egészen a 4-es verzióig működőképes, ezért már elavult eseményeket is használ.
+	 */
 	@SuppressWarnings("deprecation")
-	public final static String EVT_APP_INSTALL = Intent.ACTION_PACKAGE_INSTALL;
-	public final static String EVT_APP_ADDED = Intent.ACTION_PACKAGE_ADDED;
+	public final static String EVT_RECONNECT_NOW = "reconnect now",
+						EVT_CONNECTIVITY_CHANGE = ConnectivityManager.CONNECTIVITY_ACTION,
+						EVT_GPS_SENSOR_CHANGE = LocationManager.PROVIDERS_CHANGED_ACTION,
+						EVT_SDCARD_MOUNTED = Intent.ACTION_MEDIA_MOUNTED,
+						EVT_SHUTDOWN = Intent.ACTION_SHUTDOWN,
+						EVT_APP_INSTALL = Intent.ACTION_PACKAGE_INSTALL,
+						EVT_APP_ADDED = Intent.ACTION_PACKAGE_ADDED;
 	
+	/**
+	 * Összeköttetés az Activity és a Service között.
+	 */
 	private final ConnectionBinder BINDER = new ConnectionBinder(this);
 	
 	private Vehicle vehicle;
@@ -392,11 +455,11 @@ public class ConnectionService extends IOIOService {
 			}
 		}
 		else if (isStarted(this) && !isSuspended()) {
-			if (error == null || !error.isError()) {
+			if (error == null || !error.isFatalError()) {
 				// sikeres kapcsolódás vagy figyelmeztető üzenet, figyelmeztetések eltüntetése
 				Log.i(LOG_TAG, "connection warn remove");
 				for (ConnectionError err : errors) {
-					if (!err.isError()) removeNotification(err.getNotificationId());
+					if (!err.isFatalError()) removeNotification(err.getNotificationId());
 				}
 			}
 			if (error != null) {
@@ -409,7 +472,7 @@ public class ConnectionService extends IOIOService {
 						Log.i(LOG_TAG, "no text");
 					}
 				}
-				if (error.isError()) {
+				if (error.isFatalError()) {
 					Log.i(LOG_TAG, "add error notify " + error);
 					// kapcsolat bontása, üzenet megjelenítése, amire kattintva a főablak jelenik meg
 					disconnect(true);

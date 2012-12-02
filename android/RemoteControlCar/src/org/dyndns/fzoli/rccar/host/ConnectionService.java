@@ -165,20 +165,76 @@ public class ConnectionService extends IOIOService {
 	 */
 	private final ConnectionBinder BINDER = new ConnectionBinder(this);
 	
+	/**
+	 * A felhasználó által kiválasztott jármű vezérlője.
+	 */
 	private Vehicle vehicle;
+	
+	/**
+	 * A hídhoz való kapcsolódáshoz szükséges beállítások.
+	 */
 	private Config config;
+	
+	/**
+	 * A hídhoz való kapcsolódást megvalósító objektum.
+	 */
 	private ConnectionHelper conn;
 	
+	/**
+	 * Az Android kapcsolódáskezelője.
+	 * Arra kell, hogy a szolgáltatás értesüljön arról, ha a hálózati kapcsolat kialakult vagy megszünt.
+	 * Pl. megszakadt a WiFi jel, vagy a felhasználó kiválasztott egy hálózatot és sikerült rá kapcsolódni
+	 * Addig, míg nincs hálózat, fölösleges próbálkozni kapcsolódással, úgy se fog menni.
+	 */
 	private ConnectivityManager cm;
+	
+	/**
+	 * Az Android helyzetmeghatározója.
+	 * GPS jel fogadására kell, valamint arra, hogy megtudja a szolgáltatás, hogy elérhető-e a GPS szenzor.
+	 * A hídhoz való kapcsolódásnak nem feltétele a GPS jel megléte. Ez esetben ismeretlen lesz a pozíció.
+	 */
 	private LocationManager lm;
 	
+	/**
+	 * Az újrakapcsolódás időzítésére fenntartott időzítő.
+	 * Ha a kapcsolat megszakadt a híddal vagy nem sikerült kapcsolódni rá,
+	 * újra megpróbálja a szolgáltatás a kapcsolódást későbbre időzítve.
+	 */
 	private final Timer CONN_TIMER = new Timer();
+	
+	/**
+	 * Az újrakapcsolódáshoz használt ütemezett feladat.
+	 * Egy kapcsolódáshoz egy példány használható, ezért mindig az aktuális példányt tartalmazza a változó.
+	 */
 	private TimerTask connTask;
 	
+	/**
+	 * Az Android rendszerikon kezelője.
+	 * Arra kell, hogy figyelmeztetést tudjon megjeleníteni a szolgáltatás a felhasználónak.
+	 */
 	private NotificationManager nm;
+	
+	/**
+	 * A fő rendszerikon.
+	 * Akkor látható, amikor a szolgáltatás fut.
+	 */
 	private Notification notification;
+	
+	/**
+	 * A fő rendszerikon értesítő szövege.
+	 * Jelzi, hogy ki van-e alakítva a kapcsolat a járművel és a híddal.
+	 * Ha rákattintanak a rendszerikonra, felhozza az alkalmazás főablakát.
+	 */
 	private PendingIntent contentIntent;
 	
+	/**
+	 * A szolgáltatást felfüggesztése illetve aktiválása.
+	 * Ha a szolgáltatás felfüggesztett, úgy viselkedik, mint ha nem futna.
+	 * Erre azért van szükség, mert attól, hogy a szolgáltatás még le van állítva,
+	 * az általa indított szálak még aktívak és bármikor jöhet olyan esemény, amely
+	 * nem várt hatást eredményez. Pl. híd disconnect esetén figyelmeztetés és újrakapcsolódás
+	 * Kezdetben a szolgáltatás aktív, tehát végzi a dolgát első indulástól kezdve.
+	 */
 	private static boolean suspended = false;
 	
 	public static boolean isSuspended() {

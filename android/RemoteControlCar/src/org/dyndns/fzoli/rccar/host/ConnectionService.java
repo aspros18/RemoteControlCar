@@ -320,6 +320,10 @@ public class ConnectionService extends IOIOService {
 		super.onDestroy();
 	}
 	
+	public void onVehicleConnectionStateChanged() {
+		updateNotificationText();
+	}
+	
 	@SuppressWarnings("deprecation")
 	private void initNotification() {
 		nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);

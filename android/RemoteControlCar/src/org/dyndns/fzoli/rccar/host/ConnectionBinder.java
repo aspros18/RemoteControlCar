@@ -126,6 +126,15 @@ public class ConnectionBinder extends Binder {
 	}
 	
 	/**
+	 * Irány és sebesség nullázása.
+	 * Jelzi az Activitynek a módosulást.
+	 */
+	public void resetXY() {
+		resetX();
+		resetY();
+	}
+	
+	/**
 	 * Irány és sebesség megadása százalékban.
 	 * Jelzi az Activitynek a módosulást.
 	 */

@@ -175,7 +175,7 @@ public class HostVideoProcess extends AbstractSecureProcess {
 					// Esetleg a kapcsolódás nyitás után kiolvasni egy kevés adatot és ha sikerült, akkor biztosan lehet rá kapcsolódni, így lezárni az aktuális kapcsolatot és újat nyitni, amit már biztonságosan lehet küldeni a hídnak.
 					Log.i(ConnectionService.LOG_TAG, "wth?", ex);
 					if (!getSocket().isClosed()) {
-						if (conn != null) conn.disconnect();
+						closeIPWebcamConnection(false);
 						getHandler().closeProcesses();
 						return; // ideiglenes megoldásként újrakapcsolódást idézek elő és hagyom futni az IP Webcam alkalmazást
 					}
@@ -185,10 +185,10 @@ public class HostVideoProcess extends AbstractSecureProcess {
 				SERVICE.onConnectionError(ConnectionError.WEB_IPCAM_UNREACHABLE);
 			}
 			Log.i(ConnectionService.LOG_TAG, "video process finished");
-			closeIPWebcamConnection(true); // TODO: az alkalmazás leállásával a home képernyő jön elő, ha a felhasználó azt háttérbe tette
+			closeIPWebcamConnection(true); // TODO: az alkalmazás leállásával a home képernyő jön elő
 		}
 		catch (Exception ex) {
-			Log.i(ConnectionService.LOG_TAG, "exception", ex);
+			Log.i(ConnectionService.LOG_TAG, "not important exception", ex);
 		}
 	}
 

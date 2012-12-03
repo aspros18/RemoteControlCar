@@ -77,7 +77,7 @@ public class HostHandler extends AbstractSecureClientHandler implements Connecti
         	case KEY_CONN_MESSAGE:
         		return new HostMessageProcess(SERVICE, this);
         	case KEY_CONN_VIDEO_STREAM:
-        		return new HostVideoProcess(this);
+        		return new HostVideoProcess(SERVICE, this);
 		}
 		return null;
 	}

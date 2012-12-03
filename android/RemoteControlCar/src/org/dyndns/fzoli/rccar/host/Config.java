@@ -112,4 +112,29 @@ public class Config implements org.dyndns.fzoli.rccar.clients.ClientConfig {
 		return file;
 	}
 
+	/**
+	 * Az IP Webcam program szerverének a figyelő portját adja meg.
+	 * Ha nincs beállítva, az alapértelmezett port a 8080-as.
+	 */
+	public String getCameraStreamPort() {
+		return PREFERENCES.getString("cam_port", "8080");
+	}
+	
+	/**
+	 * Az IP Webcam program szerveréhez használt felhasználónév.
+	 * Ha nincs beállítva, üres string, ami azt jelenti, nem szükséges bejelentkezni.
+	 */
+	public String getCameraStreamUser() {
+		return PREFERENCES.getString("cam_user", "");
+	}
+	
+	/**
+	 * Az IP Webcam program szerveréhez használt jelszó.
+	 * Ha nincs beállítva, üres string, csak azért, hogy ne lehessen NullPointerException.
+	 * Ha a felhasználónév üres string, lényegtelen, hogy mi az értéke a jelszónak.
+	 */
+	public String getCameraStreamPassword() {
+		return PREFERENCES.getString("cam_password", "");
+	}
+	
 }

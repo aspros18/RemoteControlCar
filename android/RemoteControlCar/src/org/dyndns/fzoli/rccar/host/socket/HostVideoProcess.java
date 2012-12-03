@@ -141,16 +141,18 @@ public class HostVideoProcess extends AbstractSecureProcess {
 					// fontos még az, hogy ebben az esetben az MJPEG streamelő alkalmazás ne legyen bezárva, mert az első megnyitáskor történik ez a hiba állandóan.
 					// A legjobb az lenne, ha a hibát lehetne elkerülni. Valami olyasmi gond lehet, hogy hibás adat érkezik az IP Webcamtól ami kiírásra kerül és hazavágja az SSL kapcsolatot.
 					Log.i(ConnectionService.LOG_TAG, "wth?", ex);
-					if (conn != null) conn.disconnect();
-					getHandler().closeProcesses();
-					return; // ideignlenes megoldásként újrakapcsolódást idézek elő és hagyom futni az IP Webcam alkalmazást
+					if (!getSocket().isClosed()) {
+						if (conn != null) conn.disconnect();
+						getHandler().closeProcesses();
+						return; // ideignlenes megoldásként újrakapcsolódást idézek elő és hagyom futni az IP Webcam alkalmazást
+					}
 				}
 			}
 			else {
 				SERVICE.onConnectionError(ConnectionError.WEB_IPCAM_UNREACHABLE);
 			}
             Log.i(ConnectionService.LOG_TAG, "video process finished");
-            closeIPWebcamConnection();
+            closeIPWebcamConnection(); // TODO: az alkalmazás leállásával a home képernyő jön elő, ha a felhasználó azt háttérbe tette
         }
         catch (Exception ex) {
             Log.i(ConnectionService.LOG_TAG, "exception", ex);

@@ -2,6 +2,7 @@ package org.dyndns.fzoli.rccar.host.socket;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -75,11 +76,21 @@ public class HostVideoProcess extends AbstractSecureProcess {
 	}
 	
 	/**
+	 * Leállítja az IP Webcam alkalmazást.
+	 */
+	private void stopIPWebcamActivity() {
+		SERVICE.sendBroadcast(new Intent("com.pas.webcam.CONTROL").putExtra("action", "stop"));
+	}
+	
+	/**
 	 * Kapcsolódik az IP Webcam alkalmazás MJPEG folyamához.
-	 * Öt alkalommal kísérli meg a kapcsolódást 2 másodperc szünetet tartva a két próbálkozás között.
+	 * Hat alkalommal kísérli meg a kapcsolódást 2 másodperc szünetet tartva a két próbálkozás között.
 	 * Ha a kapcsolódás nem sikerül, kiküldi az alkalmazást elindító utasítást az Androidnak.
 	 * Az alkalmazást a felhasználó beállítása alapján indítja el és ez alapján kapcsolódik a helyi szerverhez.
-	 * @return true, ha sikerült a kapcsolódás, egyébként false
+	 * Ha sikerült a kapcsolódás, de olvasni nem lehet a folyamból, újraindítja az IP Webcam alkalmazást,
+	 * hogy frissüljenek a konfigurációs beállításai, mert valószínűleg azzal van a gond.
+	 * Ha a harmadik kapcsolódás sem sikerül, szintén újraindítja az IP Webcam alkalmazást.
+	 * @return true, ha sikerült a kapcsolódás és a folyam olvasása, egyébként false
 	 */
 	private boolean openIPWebcamConnection() {
 		Config conf = SERVICE.getConfig();
@@ -90,23 +101,31 @@ public class HostVideoProcess extends AbstractSecureProcess {
 		String httpUrl = "http://127.0.0.1:" + port + "/videofeed"; // a szerver pontos címe
 		String authProp = "Basic " + Base64.encodeBase64String(new String(user + ':' + password).getBytes()); // a HTTP felhasználóazonosítás Base64 alapú
 		
-		for (int i = 1; i <= 5; i++) { // 5 próbálkozás a kapcsolat létrehozására
+		for (int i = 1; i <= 6; i++) { // 6 próbálkozás a kapcsolat létrehozására
 			try {
 				conn = (HttpURLConnection) new URL(httpUrl).openConnection(); //kapcsolat objektum létrehozása
 				conn.setRequestMethod("GET"); // GET metódus beállítása
 				if (user != null && !user.equals("")) conn.setRequestProperty("Authorization", authProp); // ha van azonosítás, adat beállítása
 				conn.connect(); // kapcsolódás
+				if (i != 0) { // ellenőrzés csak akkor, ha a ciklusváltozó értéke nem 0
+					conn.getInputStream().read(new byte[5120]); // olvashatóság tesztelése
+					closeIPWebcamConnection(false); // sikeres teszt, kapcsolat lezárása, de program futva hagyása
+					i = -1; // a következő ciklus futáskor a változó értéke 0 lesz
+					continue; // következő ciklusra lépés
+				}
 				return true;
 			}
-			catch (Exception ex) {
-				Log.i(ConnectionService.LOG_TAG, "retry later", ex);
-				startIPWebcamActivity(port, user, password); // IP Webcam program indítása
-				try {
-					Thread.sleep(2000); // 2 másodperc várakozás
-				}
-				catch (Exception e) {
-					;
-				}
+			catch (ConnectException ex) { // ha a kapcsolódás nem sikerült
+				Log.i(ConnectionService.LOG_TAG, "ip webcam retry", ex);
+				if (i == 3) stopIPWebcamActivity(); // ha a harmadik kapcsolódás sem sikerült, alkalmazás leállítása
+				startIPWebcamActivity(port, user, password); // IP Webcam program indítása, hátha még nem fut
+				sleep(); // 2 másodperc várakozás a program töltésére
+			}
+			catch (Exception ex) { // ha egyéb hiba, valószínűleg eltérő konfigurációval fut az IP Webcam
+				Log.i(ConnectionService.LOG_TAG, "ip webcam retry", ex);
+				stopIPWebcamActivity(); // ezért az alkalmazás leállítása
+				startIPWebcamActivity(port, user, password); // majd újra elindítása
+				sleep(); // 2 másodperc várakozás a program töltésére
 			}
 		}
 		
@@ -114,12 +133,24 @@ public class HostVideoProcess extends AbstractSecureProcess {
 	}
 
 	/**
+	 * Két másodperc szünetet tart a szál.
+	 */
+	private void sleep() {
+		try {
+			Thread.sleep(2000); // 2 másodperc várakozás
+		}
+		catch (Exception e) {
+			;
+		}
+	}
+	
+	/**
 	 * Lezárja a kapcsolatot az IP Webcam alkalmazás szerverével és leállítja az IP Webcam programot.
 	 * @param stop true esetén az IP Webcam program leáll, egyébként csak a kapcsolat zárul le
 	 */
 	private void closeIPWebcamConnection(boolean stop) {
 		if (conn != null) conn.disconnect();
-		if (stop) SERVICE.sendBroadcast(new Intent("com.pas.webcam.CONTROL").putExtra("action", "stop"));
+		if (stop) stopIPWebcamActivity();
 	}
 	
 	@Override

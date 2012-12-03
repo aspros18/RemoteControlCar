@@ -34,10 +34,10 @@ public class HostVideoProcess extends AbstractSecureProcess {
 	private HttpURLConnection conn;
 	
 	/**
-     * Biztonságos MJPEG stream küldő inicializálása.
-     * @param handler Biztonságos kapcsolatfeldolgozó, ami létrehozza ezt az adatfeldolgozót.
-     * @throws NullPointerException ha handler null
-     */
+	 * Biztonságos MJPEG stream küldő inicializálása.
+	 * @param handler Biztonságos kapcsolatfeldolgozó, ami létrehozza ezt az adatfeldolgozót.
+	 * @throws NullPointerException ha handler null
+	 */
 	public HostVideoProcess(ConnectionService service, SecureHandler handler) {
 		super(handler);
 		SERVICE = service;

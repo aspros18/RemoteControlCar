@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.host.socket;
 
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -9,6 +10,7 @@ import org.apache.commons.ssl.Base64;
 
 import org.dyndns.fzoli.rccar.host.Config;
 import org.dyndns.fzoli.rccar.host.ConnectionService;
+import org.dyndns.fzoli.rccar.host.ConnectionService.ConnectionError;
 import org.dyndns.fzoli.rccar.host.R;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
@@ -28,6 +30,11 @@ public class HostVideoProcess extends AbstractSecureProcess {
 	private final ConnectionService SERVICE;
 	
 	/**
+	 * A kiépített MJPEG stream HTTP kapcsolata.
+	 */
+	private HttpURLConnection conn;
+	
+	/**
      * Biztonságos MJPEG stream küldő inicializálása.
      * @param handler Biztonságos kapcsolatfeldolgozó, ami létrehozza ezt az adatfeldolgozót.
      * @throws NullPointerException ha handler null
@@ -37,13 +44,15 @@ public class HostVideoProcess extends AbstractSecureProcess {
 		SERVICE = service;
 	}
 
-	private HttpURLConnection conn;
-	
-	private void startIPWebcam() { // TODO: egyelőre csak teszt
-		Config conf = SERVICE.getConfig();
-		String port = conf.getCameraStreamPort();
-		String user = conf.getCameraStreamUser();
-		String password = conf.getCameraStreamPassword();
+	/**
+	 * Elindítja az IP Webcam alkalmazás szerverét a megadott paraméterekkel.
+	 * Ha a szerver már fut, a paraméterben megadott beállítások nem érvényesülnek.
+	 * Miután a szerver elindult, a kameraképet mutató Activity megjelenik egy elrejtő gombbal.
+	 * @param port a szerver portja, amin figyel
+	 * @param user a szerver eléréséhez szükséges felhasználónév (üres string esetén névtelen hozzáférés)
+	 * @param password nem névtelen hozzáférés esetén a felhasználónévhez tartozó jelszó
+	 */
+	private void startIPWebcamActivity(String port, String user, String password) {
 		Intent launcher = new Intent().setAction(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME);
 		Intent ipwebcam = 
 			new Intent()
@@ -65,35 +74,55 @@ public class HostVideoProcess extends AbstractSecureProcess {
 		    .putExtra("returnto", launcher) // ha a programból kilépnek, szintén az asztal jön fel
 		    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // activity indítása új folyamatként, hogy a service elindíthassa
 		SERVICE.startActivity(ipwebcam); // a program indítása a fenti konfigurációval
-		try {
-			conn = (HttpURLConnection) new URL("http://127.0.0.1:" + port + "/videofeed").openConnection(); //kapcsolat objektum létrehozása
-			conn.setRequestMethod("GET"); // GET metódus beállítása
-			conn.setRequestProperty("Authorization", Base64.encodeBase64String(new String(user + ':' + password).getBytes()));
-			// most, hogy minden be van állítva, kapcsolódás
-			conn.connect();
-			InputStream in = conn.getInputStream(); // mjpeg stream megszerzése
-//			while(!getSocket().isClosed()) { // tesztelés
-//				in.read();
-//			}
-		}
-		catch (ConnectException ex) {
-			Log.i(ConnectionService.LOG_TAG, "retry later", ex);
+	}
+	
+	/**
+	 * Kapcsolódik az IP Webcam alkalmazás MJPEG folyamához.
+	 * Öt alkalommal kísérli meg a kapcsolódást 2 másodperc szünetet tartva a két próbálkozás között.
+	 * Ha a kapcsolódás nem sikerül, kiküldi az alkalmazást elindító utasítást az Androidnak.
+	 * Az alkalmazást a felhasználó beállítása alapján indítja el és ez alapján kapcsolódik a helyi szerverhez.
+	 * @return true, ha sikerült a kapcsolódás, egyébként false
+	 */
+	private boolean openIPWebcamConnection() { // TODO: egyelőre csak teszt
+		Config conf = SERVICE.getConfig();
+		String port = conf.getCameraStreamPort(); // szerver port
+		String user = conf.getCameraStreamUser(); // felhasználónév
+		String password = conf.getCameraStreamPassword(); // jelszó
+		
+		String httpUrl = "http://127.0.0.1:" + port + "/videofeed"; // a szerver pontos címe
+		String authProp = Base64.encodeBase64String(new String(user + ':' + password).getBytes()); // a HTTP felhasználóazonosítás Base64 alapú
+		
+		for (int i = 1; i <= 5; i++) { // 5 próbálkozás a kapcsolat létrehozására
 			try {
-				Thread.sleep(2000);
+				conn = (HttpURLConnection) new URL(httpUrl).openConnection(); //kapcsolat objektum létrehozása
+				conn.setRequestMethod("GET"); // GET metódus beállítása
+				conn.setRequestProperty("Authorization", authProp);
+				conn.connect();
+				return true;
 			}
-			catch (Exception e) {
-				;
+			catch (ConnectException ex) {
+				Log.i(ConnectionService.LOG_TAG, "retry later", ex);
+				startIPWebcamActivity(port, user, password);
+				try {
+					Thread.sleep(2000);
+				}
+				catch (Exception e) {
+					;
+				}
 			}
-			finally {
-				startIPWebcam();
+			catch (Exception ex) {
+				return false;
 			}
 		}
-		catch (Exception ex) {
-			Log.i(ConnectionService.LOG_TAG, "error", ex);
-		}
+		return false;
 	}
 
-	private void stopIPWebcam() { //TODO: hatástalan a broadcast intent küldése. Miért?
+	/**
+	 * Lezárja a kapcsolatot az IP Webcam alkalmazás szerverével.
+	 */
+	private void closeIPWebcamConnection() {
+		if (conn != null) conn.disconnect();
+		// TODO: hatástalan a broadcast intent küldése. Nem áll le az IP Webcam. Miért?
 		SERVICE.sendBroadcast(new Intent("com.pas.webcam.CONTROL").putExtra("action", "stop"));
 	}
 	
@@ -101,10 +130,20 @@ public class HostVideoProcess extends AbstractSecureProcess {
 	public void run() {
 		try {
 			Log.i(ConnectionService.LOG_TAG, "video process started");
-			startIPWebcam();
-            getSocket().getInputStream().read();
+			if (openIPWebcamConnection()) {
+				int length;
+				byte[] buffer = new byte[2048];
+				InputStream in = conn.getInputStream();
+				OutputStream out = getSocket().getOutputStream();
+				while (!getSocket().isClosed() && ((length = in.read(buffer)) != -1)) {
+					out.write(buffer, 0, length);
+				}
+			}
+			else {
+				SERVICE.onConnectionError(ConnectionError.WEB_IPCAM_UNREACHABLE);
+			}
             Log.i(ConnectionService.LOG_TAG, "video process finished");
-            stopIPWebcam();
+            closeIPWebcamConnection();
         }
         catch (Exception ex) {
             Log.i(ConnectionService.LOG_TAG, "exception", ex);

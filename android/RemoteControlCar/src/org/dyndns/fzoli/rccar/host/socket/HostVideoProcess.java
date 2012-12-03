@@ -184,12 +184,12 @@ public class HostVideoProcess extends AbstractSecureProcess {
 			else {
 				SERVICE.onConnectionError(ConnectionError.WEB_IPCAM_UNREACHABLE);
 			}
-            Log.i(ConnectionService.LOG_TAG, "video process finished");
-            closeIPWebcamConnection(true); // TODO: az alkalmazás leállásával a home képernyő jön elő, ha a felhasználó azt háttérbe tette
-        }
-        catch (Exception ex) {
-            Log.i(ConnectionService.LOG_TAG, "exception", ex);
-        }
+			Log.i(ConnectionService.LOG_TAG, "video process finished");
+			closeIPWebcamConnection(true); // TODO: az alkalmazás leállásával a home képernyő jön elő, ha a felhasználó azt háttérbe tette
+		}
+		catch (Exception ex) {
+			Log.i(ConnectionService.LOG_TAG, "exception", ex);
+		}
 	}
 
 }

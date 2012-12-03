@@ -30,7 +30,7 @@ public abstract class BridgeMessageProcess extends MessageProcess {
             throw ex;
         }
         catch (InvalidClassException e) {
-            ConnectionAlert.log(getRemoteCommonName() + " túl régi kliens programot használ");
+            ConnectionAlert.log(getRemoteCommonName() + " a szervernek nem megfelelő verziójú kliens programot használ");
             getHandler().closeProcesses();
         }
         catch (Exception e) {

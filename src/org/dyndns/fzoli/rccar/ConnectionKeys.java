@@ -27,9 +27,14 @@ public interface ConnectionKeys {
     int KEY_CONN_MESSAGE = 1;
     
     /**
+     * MJPEG kamerakép streamelő szál kapcsolatazonosítója.
+     */
+    int KEY_CONN_VIDEO_STREAM = 2;
+    
+    /**
      * Csak a tesztelés idejére.
      */
-    int KEY_CONN_DUMMY = 2;
+    int KEY_CONN_DUMMY = 3;
     
     /**
      * Az első időtúllépés a kapcsolatban, amikoris a jármű felkészül a kapcsolat megszakadására, tehát megáll.

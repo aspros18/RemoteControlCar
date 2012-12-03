@@ -115,10 +115,11 @@ public class HostVideoProcess extends AbstractSecureProcess {
 
 	/**
 	 * Lezárja a kapcsolatot az IP Webcam alkalmazás szerverével és leállítja az IP Webcam programot.
+	 * @param stop true esetén az IP Webcam program leáll, egyébként csak a kapcsolat zárul le
 	 */
-	private void closeIPWebcamConnection() {
+	private void closeIPWebcamConnection(boolean stop) {
 		if (conn != null) conn.disconnect();
-		SERVICE.sendBroadcast(new Intent("com.pas.webcam.CONTROL").putExtra("action", "stop"));
+		if (stop) SERVICE.sendBroadcast(new Intent("com.pas.webcam.CONTROL").putExtra("action", "stop"));
 	}
 	
 	@Override
@@ -153,7 +154,7 @@ public class HostVideoProcess extends AbstractSecureProcess {
 				SERVICE.onConnectionError(ConnectionError.WEB_IPCAM_UNREACHABLE);
 			}
             Log.i(ConnectionService.LOG_TAG, "video process finished");
-            closeIPWebcamConnection(); // TODO: az alkalmazás leállásával a home képernyő jön elő, ha a felhasználó azt háttérbe tette
+            closeIPWebcamConnection(true); // TODO: az alkalmazás leállásával a home képernyő jön elő, ha a felhasználó azt háttérbe tette
         }
         catch (Exception ex) {
             Log.i(ConnectionService.LOG_TAG, "exception", ex);

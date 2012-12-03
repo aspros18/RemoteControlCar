@@ -137,8 +137,13 @@ public class HostVideoProcess extends AbstractSecureProcess {
 					}
 				}
 				catch (Exception ex) {
+					// TODO: elindul a stream olvasása rendesen, de rá nem sokkal írás hiba történik, amit már nem lehet megoldani újrakapcsolódás nélkül, ezért kell egy olyan funkció, ami egyetlen processt újrapéldányosít.
+					// fontos még az, hogy ebben az esetben az MJPEG streamelő alkalmazás ne legyen bezárva, mert az első megnyitáskor történik ez a hiba állandóan.
+					// A legjobb az lenne, ha a hibát lehetne elkerülni. Valami olyasmi gond lehet, hogy hibás adat érkezik az IP Webcamtól ami kiírásra kerül és hazavágja az SSL kapcsolatot.
 					Log.i(ConnectionService.LOG_TAG, "wth?", ex);
+					if (conn != null) conn.disconnect();
 					getHandler().closeProcesses();
+					return; // ideignlenes megoldásként újrakapcsolódást idézek elő és hagyom futni az IP Webcam alkalmazást
 				}
 			}
 			else {

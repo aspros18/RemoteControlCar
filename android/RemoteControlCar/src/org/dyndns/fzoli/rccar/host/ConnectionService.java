@@ -574,7 +574,7 @@ public class ConnectionService extends IOIOService {
 		updateNotificationText();
 		getBinder().fireConnectionStateChange(false);
 		ConnectionError[] errors = ConnectionError.values();
-		if (removeAll || isSuspended()) {
+		if (removeAll) {
 			Log.i(LOG_TAG, "connection msg remove");
 			// service leáll, figyelmeztetések és hibák eltüntetése
 			for (ConnectionError err : errors) {
@@ -601,15 +601,15 @@ public class ConnectionService extends IOIOService {
 				}
 				if (error.isFatalError()) {
 					Log.i(LOG_TAG, "add error notify " + error);
-					// kapcsolat bontása, üzenet megjelenítése, amire kattintva a főablak jelenik meg
-					disconnect(true);
 					if (id != null) addNotification(id, new Intent(this, MainActivity.class), error.getNotificationId(), false, true);
+					setSuspended(true); // szolgáltatás felfüggesztése, hogy a kapcsolódás bontása után lévő figyelmeztetés ne jelenjen meg
+					disconnect(true); // kapcsolat bontása, üzenet megjelenítése, amire kattintva a főablak jelenik meg
 				}
 				else {
 					Log.i(LOG_TAG, "add warn notify " + error);
+					if (id != null) addNotification(id, null, new Intent(this, ConnectionService.class).putExtra(KEY_EVENT, EVT_RECONNECT_NOW), error.getNotificationId(), true, false);
 					// reconnect ütemezés, üzenet megjelenítése eltávolíthatóként, amire kattintva azonnali reconnect fut le
 					reconnectSchedule();
-					if (id != null) addNotification(id, null, new Intent(this, ConnectionService.class).putExtra(KEY_EVENT, EVT_RECONNECT_NOW), error.getNotificationId(), true, false);
 				}
 			}
 		}

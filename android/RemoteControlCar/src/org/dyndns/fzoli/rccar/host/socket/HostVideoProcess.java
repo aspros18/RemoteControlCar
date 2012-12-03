@@ -145,7 +145,7 @@ public class HostVideoProcess extends AbstractSecureProcess {
 					if (!getSocket().isClosed()) {
 						if (conn != null) conn.disconnect();
 						getHandler().closeProcesses();
-						return; // ideignlenes megoldásként újrakapcsolódást idézek elő és hagyom futni az IP Webcam alkalmazást
+						return; // ideiglenes megoldásként újrakapcsolódást idézek elő és hagyom futni az IP Webcam alkalmazást
 					}
 				}
 			}

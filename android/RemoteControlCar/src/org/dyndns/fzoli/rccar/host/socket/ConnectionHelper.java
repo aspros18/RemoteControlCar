@@ -38,9 +38,9 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
 	}
 	
 	/**
-     * A kapcsolatok bezárása.
-     * Meghívása után a szolgáltatásban frissül a kapcsolódás állapota.
-     */
+	 * A kapcsolatok bezárása.
+	 * Meghívása után a szolgáltatásban frissül a kapcsolódás állapota.
+	 */
 	@Override
 	public void disconnect() {
 		super.disconnect();
@@ -58,9 +58,9 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
 	}
 	
 	/**
-     * Ha a kapcsolódás végetért, ez a metódus fut le.
-     * A szolgáltatásban frissül a kapcsolódás állapota.
-     */
+	 * Ha a kapcsolódás végetért, ez a metódus fut le.
+	 * A szolgáltatásban frissül a kapcsolódás állapota.
+	 */
 	@Override
 	protected void onConnected() {
 		super.onConnected();
@@ -68,26 +68,26 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
 	}
 	
 	/**
-     * Handler példányosítása.
-     * @param socket a kapcsolat a szerverrel
-     * @param deviceId az eszközazonosító
-     * @param connectionId a kapcsolatazonosító
-     */
+	 * Handler példányosítása.
+	 * @param socket a kapcsolat a szerverrel
+	 * @param deviceId az eszközazonosító
+	 * @param connectionId a kapcsolatazonosító
+	 */
 	@Override
 	protected AbstractSecureClientHandler createHandler(SSLSocket socket, int deviceId, int connectionId) {
 		return new HostHandler(SERVICE, socket, deviceId, connectionId);
 	}
 	
 	/**
-     * Ha kivétel keletkezik, ebben a metódusban le lehet kezelni.
-     * A szolgáltatás univerzális kapcsolódás hibakezelő metódusát hívja meg a kivételnek megfelelően.
-     * A hibakezelő metódus megjeleníti az értesítést a felületen és a hibától függően reagál.
-     * Az OTHER hibakategória esetén nem jelenik meg értesítés a felületen.
-     * Ha a hibakategórió fatális hiba, nem lesz megismételve a kapcsolódás.
-     * További részlet: {@link ConnectionService.setConnectionError}
-     * @param ex a keletkezett kivétel
-     * @param connectionId a közben használt kapcsolatazonosító
-     */
+	 * Ha kivétel keletkezik, ebben a metódusban le lehet kezelni.
+	 * A szolgáltatás univerzális kapcsolódás hibakezelő metódusát hívja meg a kivételnek megfelelően.
+	 * A hibakezelő metódus megjeleníti az értesítést a felületen és a hibától függően reagál.
+	 * Az OTHER hibakategória esetén nem jelenik meg értesítés a felületen.
+	 * Ha a hibakategórió fatális hiba, nem lesz megismételve a kapcsolódás.
+	 * További részlet: {@link ConnectionService.setConnectionError}
+	 * @param ex a keletkezett kivétel
+	 * @param connectionId a közben használt kapcsolatazonosító
+	 */
 	@Override
 	protected void onException(Exception ex, int connectionId) {
 		ConnectionError err = null;

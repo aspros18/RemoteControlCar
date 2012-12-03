@@ -23,9 +23,6 @@ public class HostHandler extends AbstractSecureClientHandler implements Connecti
 	 */
 	private final ConnectionService SERVICE;
 	
-	/**
-	 * Szép konstruktor.
-	 */
 	public HostHandler(ConnectionService service, SSLSocket socket, int deviceId, int connectionId) {
 		super(socket, deviceId, connectionId);
 		SERVICE = service;
@@ -34,11 +31,11 @@ public class HostHandler extends AbstractSecureClientHandler implements Connecti
 	/**
 	 * A kapcsolatfelvétel közben keletkezett hibák jelzése és cselekvés annak megfelelően.
 	 * A szolgáltatás univerzális kapcsolódás hibakezelő metódusát hívja meg a kivételnek megfelelően.
-     * A hibakezelő metódus megjeleníti az értesítést a felületen és a hibától függően reagál.
-     * Az OTHER hibakategória esetén nem jelenik meg értesítés a felületen.
-     * Ha a hibakategórió fatális hiba, nem lesz megismételve a kapcsolódás.
-     * További részlet: {@link ConnectionService.setConnectionError}
-     * @param ex a keletkezett kivétel
+	 * A hibakezelő metódus megjeleníti az értesítést a felületen és a hibától függően reagál.
+	 * Az OTHER hibakategória esetén nem jelenik meg értesítés a felületen.
+	 * Ha a hibakategórió fatális hiba, nem lesz megismételve a kapcsolódás.
+	 * További részlet: {@link ConnectionService.setConnectionError}
+	 * @param ex a keletkezett kivétel
 	 */
 	@Override
 	protected void onException(Exception ex) {
@@ -69,9 +66,9 @@ public class HostHandler extends AbstractSecureClientHandler implements Connecti
 	}
 	
 	/**
-     * A kapcsolatazonosító alapján eldől, melyik feldolgozót kell indítani.
-     * Egyelőre csak teszt.
-     */
+	 * A kapcsolatazonosító alapján eldől, melyik feldolgozót kell indítani.
+	 * Egyelőre csak teszt.
+	 */
 	@Override
 	protected SecureProcess selectProcess() {
 		switch (getConnectionId()) {

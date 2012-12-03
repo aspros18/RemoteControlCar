@@ -21,8 +21,12 @@ public class HostMessageProcess extends MessageProcess {
 		SERVICE = service;
 	}
 	
+	/**
+	 * A híd által küldött üzenetek feldolgozása.
+	 * @param msg az üzenet
+	 */
 	@Override
-	protected void onMessage(Object arg0) {
+	protected void onMessage(Object msg) {
 		// TODO
 	}
 
@@ -31,9 +35,9 @@ public class HostMessageProcess extends MessageProcess {
 	 * Itt csak egyetlen hiba az említésre méltó:
 	 * eltérő kliens és szerver verzió, tehát nem kompatibilis a kliens a szerverrel, nem lehet üzenni
 	 * A szolgáltatás univerzális kapcsolódás hibakezelő metódusát hívja meg a kivételnek megfelelően.
-     * A hibakezelő metódus megjeleníti az értesítést a felületen és a hibától függően reagál.
-     * Az OTHER hibakategória esetén nem jelenik meg értesítés a felületen.
-     * Ha a hibakategórió fatális hiba, nem lesz megismételve a kapcsolódás.
+	 * A hibakezelő metódus megjeleníti az értesítést a felületen és a hibától függően reagál.
+	 * Az OTHER hibakategória esetén nem jelenik meg értesítés a felületen.
+	 * Ha a hibakategórió fatális hiba, nem lesz megismételve a kapcsolódás.
 	 */
 	@Override
 	protected void onException(Exception ex) {

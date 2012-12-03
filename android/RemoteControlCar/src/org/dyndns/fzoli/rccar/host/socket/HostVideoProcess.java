@@ -90,7 +90,7 @@ public class HostVideoProcess extends AbstractSecureProcess {
 		String httpUrl = "http://127.0.0.1:" + port + "/videofeed"; // a szerver pontos címe
 		String authProp = "Basic " + Base64.encodeBase64String(new String(user + ':' + password).getBytes()); // a HTTP felhasználóazonosítás Base64 alapú
 		
-		for (int i = 1; i <= 10; i++) { // 10 próbálkozás a kapcsolat létrehozására
+		for (int i = 1; i <= 5; i++) { // 5 próbálkozás a kapcsolat létrehozására
 			try {
 				conn = (HttpURLConnection) new URL(httpUrl).openConnection(); //kapcsolat objektum létrehozása
 				conn.setRequestMethod("GET"); // GET metódus beállítása
@@ -114,11 +114,10 @@ public class HostVideoProcess extends AbstractSecureProcess {
 	}
 
 	/**
-	 * Lezárja a kapcsolatot az IP Webcam alkalmazás szerverével.
+	 * Lezárja a kapcsolatot az IP Webcam alkalmazás szerverével és leállítja az IP Webcam programot.
 	 */
 	private void closeIPWebcamConnection() {
 		if (conn != null) conn.disconnect();
-		// TODO: hatástalan a broadcast intent küldése. Nem áll le az IP Webcam. Miért?
 		SERVICE.sendBroadcast(new Intent("com.pas.webcam.CONTROL").putExtra("action", "stop"));
 	}
 	
@@ -139,11 +138,7 @@ public class HostVideoProcess extends AbstractSecureProcess {
 				}
 				catch (Exception ex) {
 					Log.i(ConnectionService.LOG_TAG, "wth?", ex);
-					closeIPWebcamConnection();
-					if (!getSocket().isClosed()) {
-						run();
-						return;
-					}
+					getHandler().closeProcesses();
 				}
 			}
 			else {

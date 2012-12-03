@@ -1128,6 +1128,8 @@ containing a value of this type.
         public static final int wrong_value=0x7f0a0011;
     }
     public static final class style {
+        /**  Az alkalmazás alapértelmezett témája fehér háttérrel. 
+         */
         public static final int AppTheme=0x7f0b0059;
         public static final int DialogWindowTitle_Sherlock=0x7f0b0036;
         public static final int DialogWindowTitle_Sherlock_Light=0x7f0b0037;

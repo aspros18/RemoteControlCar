@@ -2,12 +2,10 @@ package org.dyndns.fzoli.rccar.host.socket;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.apache.commons.ssl.Base64;
-
 import org.dyndns.fzoli.rccar.host.Config;
 import org.dyndns.fzoli.rccar.host.ConnectionService;
 import org.dyndns.fzoli.rccar.host.ConnectionService.ConnectionError;
@@ -83,37 +81,35 @@ public class HostVideoProcess extends AbstractSecureProcess {
 	 * Az alkalmazást a felhasználó beállítása alapján indítja el és ez alapján kapcsolódik a helyi szerverhez.
 	 * @return true, ha sikerült a kapcsolódás, egyébként false
 	 */
-	private boolean openIPWebcamConnection() { // TODO: egyelőre csak teszt
+	private boolean openIPWebcamConnection() {
 		Config conf = SERVICE.getConfig();
 		String port = conf.getCameraStreamPort(); // szerver port
 		String user = conf.getCameraStreamUser(); // felhasználónév
 		String password = conf.getCameraStreamPassword(); // jelszó
 		
 		String httpUrl = "http://127.0.0.1:" + port + "/videofeed"; // a szerver pontos címe
-		String authProp = Base64.encodeBase64String(new String(user + ':' + password).getBytes()); // a HTTP felhasználóazonosítás Base64 alapú
+		String authProp = "Basic " + Base64.encodeBase64String(new String(user + ':' + password).getBytes()); // a HTTP felhasználóazonosítás Base64 alapú
 		
-		for (int i = 1; i <= 5; i++) { // 5 próbálkozás a kapcsolat létrehozására
+		for (int i = 1; i <= 10; i++) { // 10 próbálkozás a kapcsolat létrehozására
 			try {
 				conn = (HttpURLConnection) new URL(httpUrl).openConnection(); //kapcsolat objektum létrehozása
 				conn.setRequestMethod("GET"); // GET metódus beállítása
-				conn.setRequestProperty("Authorization", authProp);
-				conn.connect();
+				if (user != null && !user.equals("")) conn.setRequestProperty("Authorization", authProp); // ha van azonosítás, adat beállítása
+				conn.connect(); // kapcsolódás
 				return true;
 			}
-			catch (ConnectException ex) {
+			catch (Exception ex) {
 				Log.i(ConnectionService.LOG_TAG, "retry later", ex);
-				startIPWebcamActivity(port, user, password);
+				startIPWebcamActivity(port, user, password); // IP Webcam program indítása
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(2000); // 2 másodperc várakozás
 				}
 				catch (Exception e) {
 					;
 				}
 			}
-			catch (Exception ex) {
-				return false;
-			}
 		}
+		
 		return false;
 	}
 
@@ -131,12 +127,23 @@ public class HostVideoProcess extends AbstractSecureProcess {
 		try {
 			Log.i(ConnectionService.LOG_TAG, "video process started");
 			if (openIPWebcamConnection()) {
-				int length;
-				byte[] buffer = new byte[2048];
-				InputStream in = conn.getInputStream();
-				OutputStream out = getSocket().getOutputStream();
-				while (!getSocket().isClosed() && ((length = in.read(buffer)) != -1)) {
-					out.write(buffer, 0, length);
+				try {
+					int length;
+					byte[] buffer = new byte[2048];
+					InputStream in = conn.getInputStream();
+					OutputStream out = getSocket().getOutputStream();
+					while (!getSocket().isClosed()) {
+						if (((length = in.read(buffer)) != -1)) out.write(buffer, 0, length);
+						else throw new Exception("IP Webcam closed");
+					}
+				}
+				catch (Exception ex) {
+					Log.i(ConnectionService.LOG_TAG, "wth?", ex);
+					closeIPWebcamConnection();
+					if (!getSocket().isClosed()) {
+						run();
+						return;
+					}
 				}
 			}
 			else {

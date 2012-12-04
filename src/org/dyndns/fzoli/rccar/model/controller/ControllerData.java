@@ -24,7 +24,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
      * A ControllerData részadata.
      * Egy ControllerPartialData objektumot átadva a ControllerData objektumnak, egyszerű frissítést lehet végrehajtani.
      */
-    private static abstract class PartialControllerData<T extends Serializable> extends PartialBaseData<ControllerData, T> {
+    public static abstract class PartialControllerData<T extends Serializable> extends PartialBaseData<ControllerData, T> {
         
         /**
          * Részadat inicializálása és beállítása.

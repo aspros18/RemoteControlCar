@@ -180,28 +180,6 @@ public class HostVideoProcess extends AbstractSecureProcess {
 	}
 	
 	/**
-	 * Megadja, hogy az MJPEG streamelés folyamatban van-e.
-	 * Ha nincs folyamatban, egyik {@code HostVideoProcess} objektum sem streamel.
-	 * Amint igazra vált az érték, az összes objektum elkezdi a streamelést.
-	 * Kezdetben van streamelés.
-	 */
-	private static boolean streaming = true;
-	
-	/**
-	 * Megadja, hogy az MJPEG streamelés folyamatban van-e.
-	 */
-	public static boolean isStreaming() {
-		return streaming;
-	}
-	
-	/**
-	 * Beállítja, hogy az MJPEG streamelés folyamatban legyen-e.
-	 */
-	public static void setStreaming(boolean streaming) {
-		HostVideoProcess.streaming = streaming;
-	}
-	
-	/**
 	 * Elkezdi streamelni az IP Webcam által küldött MJPEG folyamot.
 	 * Elsőként kialakítja a kapcsolatott az IP Webcam szerverével, aztán elkezdi a feltöltést.
 	 * Ha nem sikerül az IP Webcam szerveréhez kapcsolódni vagy gond van a programmal, hibát jelez a szolgáltatásnak.
@@ -219,7 +197,7 @@ public class HostVideoProcess extends AbstractSecureProcess {
 					InputStream in = conn.getInputStream();
 					OutputStream out = getSocket().getOutputStream();
 					while (!getSocket().isClosed()) { // amíg van kapcsolat, MJPEG stream olvasása és feltöltése a hídnak
-						if (!isStreaming()) { // ha nem kell streamelni
+						if (!SERVICE.getBinder().isStreaming()) { // ha nem kell streamelni
 							sleep(200); // kis várakozás
 							continue; // ciklus újrakezdése
 						}

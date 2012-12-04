@@ -3,6 +3,7 @@ package org.dyndns.fzoli.rccar.bridge.socket;
 import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.Date;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -58,6 +59,7 @@ public class HostSideVideoProcess extends AbstractSecureProcess {
             MjpegInputStream mjpegin = new MjpegInputStream(getSocket().getInputStream());
             MjpegFrame fr;
             while((fr = mjpegin.readMjpegFrame()) != null) {
+                System.out.println("frame " + new Date());
                 lb.setIcon(new ImageIcon(fr.getImage()));
             }
         }

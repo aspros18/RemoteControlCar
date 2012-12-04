@@ -90,6 +90,34 @@ public class ConnectionBinder extends Binder {
 	}
 	
 	/**
+	 * Megadja, hogy az MJPEG streamelés folyamatban van-e.
+	 * Ha nincs folyamatban, egyik {@code HostVideoProcess} objektum sem streamel.
+	 * Amint igazra vált az érték, az összes objektum elkezdi a streamelést, ha több van.
+	 * Kezdetben nincs streamelés.
+	 */
+	public boolean isStreaming() {
+		return DATA.isStreaming();
+	}
+	
+	/**
+	 * Beállítja, hogy az MJPEG streamelés folyamatban legyen-e.
+	 */
+	public void setStreaming(boolean streaming) {
+		DATA.setStreaming(streaming);
+	}
+	
+	/**
+	 * Frissíti a HostData beállításait annak egyik részadata alapján.
+	 * Ha a részadat vezérlőjel, akkor jelzi az eseményt a felületnek.
+	 */
+	public void updateHostData(HostData.PartialHostData<?> partialData) {
+		DATA.update(partialData);
+		if (partialData instanceof HostData.ControlPartialHostData) {
+			fireArrowChange(true);
+		}
+	}
+	
+	/**
 	 * Irány százalékban.
 	 */
 	public int getX() {

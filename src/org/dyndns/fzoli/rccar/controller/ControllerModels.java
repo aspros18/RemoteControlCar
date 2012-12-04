@@ -70,7 +70,7 @@ public class ControllerModels {
             ((HostList.PartialHostList) data).apply(HOST_LIST); // járműlista frissítése
             showHostSelectionFrame(HOST_LIST); // felület frissítése
         }
-        else if (data instanceof PartialBaseData) { // ha a kiválasztott jármű adata változott meg
+        else if (data instanceof ControllerData.PartialControllerData) { // ha a kiválasztott jármű adata változott meg
             //TODO
         }
     }

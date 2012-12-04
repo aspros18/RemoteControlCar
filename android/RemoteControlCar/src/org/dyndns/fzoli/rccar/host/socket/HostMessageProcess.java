@@ -4,6 +4,8 @@ import java.io.InvalidClassException;
 
 import org.dyndns.fzoli.rccar.host.ConnectionService;
 import org.dyndns.fzoli.rccar.host.ConnectionService.ConnectionError;
+import org.dyndns.fzoli.rccar.model.host.HostData;
+import org.dyndns.fzoli.rccar.model.host.HostData.PartialHostData;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.impl.MessageProcess;
 
@@ -23,11 +25,14 @@ public class HostMessageProcess extends MessageProcess {
 	
 	/**
 	 * A híd által küldött üzenetek feldolgozása.
+	 * Ha az üzenet a HostData részadata, akkor frissíti a HostData változóit.
 	 * @param msg az üzenet
 	 */
 	@Override
 	protected void onMessage(Object msg) {
-		// TODO
+		if (msg instanceof HostData.PartialHostData) {
+			SERVICE.getBinder().updateHostData((PartialHostData<?>) msg);
+		}
 	}
 
 	/**

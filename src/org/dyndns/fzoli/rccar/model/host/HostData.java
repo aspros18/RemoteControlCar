@@ -25,7 +25,7 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
      * A HostData részadata.
      * Egy HostPartialData objektumot átadva a HostData objektumnak, egyszerű frissítést lehet végrehajtani.
      */
-    private static abstract class PartialHostData<T extends Serializable> extends PartialBaseData<HostData, T> {
+    public static abstract class PartialHostData<T extends Serializable> extends PartialBaseData<HostData, T> {
 
         /**
          * Részadat inicializálása és beállítása.

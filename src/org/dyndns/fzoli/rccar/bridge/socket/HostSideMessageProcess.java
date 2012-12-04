@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.bridge.socket;
 
 import java.util.Date;
+import org.dyndns.fzoli.rccar.model.host.HostData;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 
 /**
@@ -16,6 +17,8 @@ public class HostSideMessageProcess extends BridgeMessageProcess {
     @Override
     protected void onStart() {
         System.out.println(new Date() + " host connected");
+        // MJPEG streamelés aktiválása teszt céljából:
+        sendMessage(new HostData.BooleanPartialHostData(Boolean.TRUE, HostData.BooleanPartialHostData.BooleanType.STREAMING));
     }
 
     @Override

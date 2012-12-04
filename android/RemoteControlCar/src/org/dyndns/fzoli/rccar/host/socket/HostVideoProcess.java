@@ -7,6 +7,8 @@ import java.net.HttpURLConnection;
 import java.net.SocketException;
 import java.net.URL;
 
+import javax.net.ssl.SSLException;
+
 import org.apache.commons.ssl.Base64;
 import org.dyndns.fzoli.rccar.host.Config;
 import org.dyndns.fzoli.rccar.host.ConnectionService;
@@ -127,7 +129,7 @@ public class HostVideoProcess extends AbstractSecureProcess {
 				return true;
 			}
 			catch (ConnectException ex) { // ha a kapcsolódás nem sikerült
-				Log.i(ConnectionService.LOG_TAG, "ip webcam error", ex);
+				Log.i(ConnectionService.LOG_TAG, "ip webcam open error", ex);
 				if (i == 5 && !stopped) { // az 5. próbálkozásra leállítás, ha még nem volt
 					i = 0; // újra 10 próbálkozás
 					stopped = true; // több leállítás nem kell
@@ -137,7 +139,7 @@ public class HostVideoProcess extends AbstractSecureProcess {
 				sleep(); // 2 másodperc várakozás a program töltésére
 			}
 			catch (SocketException ex) { // valószínűleg eltérő konfigurációval fut az IP Webcam vagy éppen újraindul
-				Log.i(ConnectionService.LOG_TAG, "ip webcam error", ex);
+				Log.i(ConnectionService.LOG_TAG, "ip webcam open error", ex);
 				if (!stopped) { // leállítás, ha még nem volt
 					i = 0; // újra 10 próbálkozás
 					stopped = true; // több leállítás nem kell
@@ -147,7 +149,7 @@ public class HostVideoProcess extends AbstractSecureProcess {
 				sleep(); // 2 másodperc várakozás a program töltésére
 			}
 			catch (Exception ex) { // egyéb ismeretlen hiba
-				Log.i(ConnectionService.LOG_TAG, "ip webcam error", ex);
+				Log.i(ConnectionService.LOG_TAG, "ip webcam open error", ex);
 				sleep(); // 2 másodperc várakozás a program töltésére
 			}
 		}
@@ -188,29 +190,37 @@ public class HostVideoProcess extends AbstractSecureProcess {
 					OutputStream out = getSocket().getOutputStream();
 					while (!getSocket().isClosed()) {
 						if (((length = in.read(buffer)) != -1)) out.write(buffer, 0, length);
-						else throw new Exception("IP Webcam closed");
+						else throw new Exception("IP Webcam error");
 					}
 				}
-				catch (Exception ex) {
+				catch (SSLException ex) { // a hídnaknak való streamelés közben hiba történt
+					Log.i(ConnectionService.LOG_TAG, "mjpeg streaming error");
+					// TODO: ha a socket nincs lezárva, a feldolgozó kapcsolatának lezárása és új process példányosítása új kapcsolattal
 					
-					// TODO: elindul a stream olvasása rendesen, de rá nem sokkal írás hiba történik, amit már nem lehet megoldani újrakapcsolódás nélkül, ezért kell egy olyan funkció, ami egyetlen processt újrapéldányosít.
-					// fontos még az, hogy ebben az esetben az MJPEG streamelő alkalmazás ne legyen bezárva, mert az első megnyitáskor történik ez a hiba állandóan.
-					// A legjobb az lenne, ha a hibát lehetne elkerülni. Valami olyasmi gond lehet, hogy hibás adat érkezik az IP Webcamtól ami kiírásra kerül és hazavágja az SSL kapcsolatot.
-					// Esetleg a kapcsolódás nyitás után kiolvasni egy kevés adatot és ha sikerült, akkor biztosan lehet rá kapcsolódni, így lezárni az aktuális kapcsolatot és újat nyitni, amit már biztonságosan lehet küldeni a hídnak.
-					
-					Log.i(ConnectionService.LOG_TAG, "wth?", ex);
 					if (!getSocket().isClosed()) {
-						closeIPWebcamConnection(false);
-						getHandler().closeProcesses();
-						return; // ideiglenes megoldásként újrakapcsolódást idézek elő és hagyom futni az IP Webcam alkalmazást
+						getHandler().closeProcesses(); // ideiglenes megoldásként újrakapcsolódást idézek elő minden feldolgozóra 
 					}
+					
+				}
+				catch (SocketException ex) { // a szerver leállt, nagy valószínűséggel a felhasználó állította le
+					Log.i(ConnectionService.LOG_TAG, "IP Webcam closed");
+					// TODO: mjpeg stream kapcsolat bontása, run metódus rekurzív hívása és return;
+					
+					if (!getSocket().isClosed()) {
+						getHandler().closeProcesses(); // ideiglenes megoldásként újrakapcsolódást idézek elő minden feldolgozóra 
+					}
+					
+				}
+				catch (Exception ex) { // az IP Webcam nem streamel, valószínűleg a kamerát nem tudja kezelni
+					Log.i(ConnectionService.LOG_TAG, "IP Webcam error", ex);
+					SERVICE.onConnectionError(ConnectionError.WEB_IPCAM_UNREACHABLE); // ip webcam fatális hiba hívása
 				}
 			}
 			else {
-				SERVICE.onConnectionError(ConnectionError.WEB_IPCAM_UNREACHABLE);
+				SERVICE.onConnectionError(ConnectionError.WEB_IPCAM_UNREACHABLE); // ip webcam fatális hiba hívása
 			}
 			Log.i(ConnectionService.LOG_TAG, "video process finished");
-			closeIPWebcamConnection(false); // TODO: az alkalmazás leállásával a home képernyő jön elő, ezért egyelőre az alkalmazás nem zárul be, csak a kapcsolat bontódik
+			closeIPWebcamConnection(false); // a kapcsolat bontása, de az IP Webcam futva hagyása
 		}
 		catch (Exception ex) {
 			Log.i(ConnectionService.LOG_TAG, "not important exception", ex);

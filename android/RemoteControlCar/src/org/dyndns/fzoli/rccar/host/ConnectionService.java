@@ -369,15 +369,15 @@ public class ConnectionService extends IOIOService {
 	 */
 	private void disconnect(boolean stopReconnect) {
 		Log.i(LOG_TAG, "disconnect calling");
-		if (connTask != null && stopReconnect) {
+		if (connTask != null && stopReconnect) { // újrakapcsolódás időzítő inaktiválása
 			connTask.cancel();
 			connTask = null;
 		}
-		if (conn != null) {
+		if (conn != null) { // lekapcsolódás a hídról
 			conn.disconnect();
 			conn = null;
 		}
-		getBinder().fireConnectionStateChange(false);
+		getBinder().fireConnectionStateChange(false); // jelzés az felületnek
 	}
 	
 	/**
@@ -385,15 +385,19 @@ public class ConnectionService extends IOIOService {
 	 * Első induláskor megjelenik az értesítés, hogy a szolgáltatás fut,
 	 * meghívódik a kapcsolódó metódus, frissül az értesítőszöveg és
 	 * végül a felmerülő egyéb problémák megjelennek. Pl. GPS engedélyezés
+	 * A metódus akkor is meghívódik, ha a szolgáltatást az Android rendszer leállította,
+	 * mert pl. memóriahiánya volt és van újra elég memória, hogy újra fusson.
+	 * Ezért arra is fel van készítve, hogy lehetnek előzetes beállítások.
 	 */
 	@Override
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
 		if (startId == 1) {
-			initNotification();
-			connect(false);
-			updateNotificationText();
-			setNotificationsVisible(true);
+			setSuspended(false); // a szolgáltatás aktív (ha esetleg még nem lenne az)
+			initNotification(); // fő értesítés inicializálása
+			connect(true); // kapcsolódás, ha kell újrakapcsolódás
+			updateNotificationText(); // fő értesítés szövegének frissítése
+			setNotificationsVisible(true); // egyéb értesítések megjelenítése, ha van mit
 		}
 	}
 	

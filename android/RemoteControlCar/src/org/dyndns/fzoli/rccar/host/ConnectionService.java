@@ -8,6 +8,7 @@ import ioio.lib.util.android.IOIOService;
 import org.dyndns.fzoli.rccar.host.socket.ConnectionHelper;
 import org.dyndns.fzoli.rccar.host.vehicle.Vehicle;
 import org.dyndns.fzoli.rccar.host.vehicle.Vehicles;
+import org.dyndns.fzoli.socket.process.SecureProcess;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -391,6 +392,13 @@ public class ConnectionService extends IOIOService {
 			if ((isStarted(this) && !isSuspended()) && createConnectionHelper() != null) conn.connect(); // kapcsolódás csak akkor, ha aktív a szolgáltatás
 			else Log.i(LOG_TAG, "connect refused");
 		}
+	}
+	
+	/**
+	 * A megadott kapcsolatfeldolgozó újrapéldányosítása új kapcsolat kialakításával.
+	 */
+	public void recreateProcess(SecureProcess proc) {
+		if (conn != null) conn.recreateProcess(proc);
 	}
 	
 	/**

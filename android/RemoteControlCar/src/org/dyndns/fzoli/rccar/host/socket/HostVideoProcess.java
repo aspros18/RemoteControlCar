@@ -178,6 +178,13 @@ public class HostVideoProcess extends AbstractSecureProcess {
 		if (stop) stopIPWebcamActivity();
 	}
 	
+	/**
+	 * Elkezdi streamelni az IP Webcam által küldött MJPEG folyamot.
+	 * Elsőként kialakítja a kapcsolatott az IP Webcam szerverével, aztán elkezdi a feltöltést.
+	 * Ha nem sikerül az IP Webcam szerveréhez kapcsolódni vagy gond van a programmal, hibát jelez a szolgáltatásnak.
+	 * Ha a kapcsolat létrejötte után a felhasználó leállítja az IP Webcam szerverét, újra lefut rekurzívan ez a metódus.
+	 * Ha a hídnak való feltöltés közben hiba történik, az egész kapcsolatfeldolgozó újrapéldányosítódik új kapcsolattal.
+	 */
 	@Override
 	public void run() {
 		try {
@@ -202,21 +209,19 @@ public class HostVideoProcess extends AbstractSecureProcess {
 				}
 				catch (SSLException ex) { // a hídnaknak való streamelés közben hiba történt
 					Log.i(ConnectionService.LOG_TAG, "mjpeg streaming error. socket closed: " + getSocket().isClosed(), ex);
-					// TODO: ha a socket nincs lezárva, a feldolgozó kapcsolatának lezárása és új process példányosítása új kapcsolattal
-					
+					// ha a socket nincs lezárva, a feldolgozó kapcsolatának lezárása és új process példányosítása új kapcsolattal
 					if (!getSocket().isClosed()) {
-						getHandler().closeProcesses(); // ideiglenes megoldásként újrakapcsolódást idézek elő minden feldolgozóra 
+						closeIPWebcamConnection(false);
+						SERVICE.recreateProcess(this);
+						return;
 					}
-					
 				}
 				catch (SocketException ex) { // a szerver leállt, nagy valószínűséggel a felhasználó állította le
 					Log.i(ConnectionService.LOG_TAG, "IP Webcam closed", ex);
-					// TODO: mjpeg stream kapcsolat bontása, run metódus rekurzív hívása és return;
-					
-					if (!getSocket().isClosed()) {
-						getHandler().closeProcesses(); // ideiglenes megoldásként újrakapcsolódást idézek elő minden feldolgozóra 
-					}
-					
+					// mjpeg stream kapcsolat bontása, run metódus rekurzív hívása és return;
+					closeIPWebcamConnection(false);
+					run();
+					return;
 				}
 				catch (Exception ex) { // az IP Webcam nem streamel, valószínűleg a kamerát nem tudja kezelni
 					Log.i(ConnectionService.LOG_TAG, "IP Webcam error", ex);

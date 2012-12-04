@@ -10,6 +10,7 @@ import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
 import org.dyndns.fzoli.socket.handler.Handler;
 import org.dyndns.fzoli.socket.handler.event.HandlerListener;
+import org.dyndns.fzoli.socket.process.SecureProcess;
 
 /**
  * Kliens oldalra egyszerű kapcsolódást megvalósító osztály.
@@ -200,6 +201,41 @@ public abstract class ClientConnectionHelper {
             }
             
         }).start();
+    }
+    
+    /**
+     * Egyetlen kapcsolat kialakítása a szerverrel.
+     * Nem társul a kapcsolat létrejöttéhez eseménykezelő.
+     * Ha bármi hiba történik a kapcsolódások közben, {@code onException} metódus fut le.
+     */
+    public void connect(final int connectionId) {
+        cancelled = false;
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                runHandler(connectionId, false);
+            }
+            
+        }).start();
+    }
+    
+    /**
+     * A megadott kapcsolatfeldolgozó újrapéldányosítása.
+     * Az átadott feldolgozó kapcsolatát bezárja,
+     * új kapcsolatot alakít ki az azonosítójával a szerverrel
+     * és újrapéldányosítja a feldolgozót.
+     */
+    public void recreateProcess(SecureProcess proc) {
+        if (proc != null) {
+            try {
+                proc.getSocket().close();
+            }
+            catch (Exception ex) {
+                ;
+            }
+            connect(proc.getConnectionId());
+        }
     }
     
     /**

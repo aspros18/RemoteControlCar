@@ -3,6 +3,8 @@ package org.dyndns.fzoli.rccar.host;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.dyndns.fzoli.rccar.host.socket.HostVideoProcess;
+
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -150,10 +152,18 @@ public class MainActivity extends SherlockActivity {
 	 * Ez maga után vonja azt is, hogy a Binder objektumból kikerül az eseménykezelő,
 	 * így legközelebb amikor a felület újra regisztrálja eseménykezelőjét, friss adatokhoz fog jutni,
 	 * mert az elmaradt eseményeket is megkapja utólag. Pl. folyamatban van-e a kapcsolódás a híddal
+	 * Ha a szolgáltatás nem aktív, az ablak bezárásával az IP Webcam alkalmazás is bezárul.
+	 * A tudatos felhasználó így egyszerre zárhatja be mindkét alkalmazást, de ha tudtában van annak, hogy
+	 * hamarosan újra el fogja indítani a szolgáltatást, akkor dönthet úgy, hogy az Activity bezárása helyett
+	 * egyszerűen csak háttérbe teszi azt és akkor nem zárul be az IP Webcam alkalmazás, így gyorsabb lesz a
+	 * kapcsolódás a hídhoz és a felhasználónak se jön fel újra az IP Webcam Activity.
 	 */
 	@Override
 	protected void onDestroy() {
 		unbindService(false);
+		if (!ConnectionService.isStarted(this) || ConnectionService.isSuspended()) {
+			HostVideoProcess.stopIPWebcamActivity(this);
+		}
 		super.onDestroy();
 	}
 	

@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.SocketException;
 import java.net.URL;
 
 import org.apache.commons.ssl.Base64;
@@ -14,6 +15,7 @@ import org.dyndns.fzoli.rccar.host.R;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
 
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
@@ -79,12 +81,20 @@ public class HostVideoProcess extends AbstractSecureProcess {
 	 * Leállítja az IP Webcam alkalmazást.
 	 */
 	private void stopIPWebcamActivity() {
-		SERVICE.sendBroadcast(new Intent("com.pas.webcam.CONTROL").putExtra("action", "stop"));
+		stopIPWebcamActivity(SERVICE);
+	}
+	
+	/**
+	 * Leállítja az IP Webcam alkalmazást.
+	 * @param context Activity vagy Service
+	 */
+	public static void stopIPWebcamActivity(Context context) {
+		context.sendBroadcast(new Intent("com.pas.webcam.CONTROL").putExtra("action", "stop"));
 	}
 	
 	/**
 	 * Kapcsolódik az IP Webcam alkalmazás MJPEG folyamához.
-	 * Hat alkalommal kísérli meg a kapcsolódást 2 másodperc szünetet tartva a két próbálkozás között.
+	 * Tíz alkalommal kísérli meg a kapcsolódást 2 másodperc szünetet tartva a két próbálkozás között.
 	 * Ha a kapcsolódás nem sikerül, kiküldi az alkalmazást elindító utasítást az Androidnak.
 	 * Az alkalmazást a felhasználó beállítása alapján indítja el és ez alapján kapcsolódik a helyi szerverhez.
 	 * Ha sikerült a kapcsolódás, de olvasni nem lehet a folyamból, újraindítja az IP Webcam alkalmazást,
@@ -101,7 +111,7 @@ public class HostVideoProcess extends AbstractSecureProcess {
 		String httpUrl = "http://127.0.0.1:" + port + "/videofeed"; // a szerver pontos címe
 		String authProp = "Basic " + Base64.encodeBase64String(new String(user + ':' + password).getBytes()); // a HTTP felhasználóazonosítás Base64 alapú
 		
-		for (int i = 1; i <= 6; i++) { // 6 próbálkozás a kapcsolat létrehozására
+		for (int i = 1; i <= 10; i++) { // 10 próbálkozás a kapcsolat létrehozására
 			try {
 				conn = (HttpURLConnection) new URL(httpUrl).openConnection(); //kapcsolat objektum létrehozása
 				conn.setRequestMethod("GET"); // GET metódus beállítása
@@ -116,15 +126,20 @@ public class HostVideoProcess extends AbstractSecureProcess {
 				return true;
 			}
 			catch (ConnectException ex) { // ha a kapcsolódás nem sikerült
-				Log.i(ConnectionService.LOG_TAG, "ip webcam retry", ex);
-				if (i == 3) stopIPWebcamActivity(); // ha a harmadik kapcsolódás sem sikerült, alkalmazás leállítása
+				Log.i(ConnectionService.LOG_TAG, "ip webcam error", ex);
+				if (i == 5) stopIPWebcamActivity(); // ha a harmadik kapcsolódás sem sikerült, alkalmazás leállítása
 				startIPWebcamActivity(port, user, password); // IP Webcam program indítása, hátha még nem fut
 				sleep(); // 2 másodperc várakozás a program töltésére
 			}
-			catch (Exception ex) { // ha egyéb hiba, valószínűleg eltérő konfigurációval fut az IP Webcam
-				Log.i(ConnectionService.LOG_TAG, "ip webcam retry", ex);
+			catch (SocketException ex) { // valószínűleg eltérő konfigurációval fut az IP Webcam vagy éppen újraindul
+				Log.i(ConnectionService.LOG_TAG, "ip webcam error", ex);
+				i = 0; // kezdődik elölről a ciklus
 				stopIPWebcamActivity(); // ezért az alkalmazás leállítása
 				startIPWebcamActivity(port, user, password); // majd újra elindítása
+				sleep(); // 2 másodperc várakozás a program töltésére
+			}
+			catch (Exception ex) { // egyéb ismeretlen hiba
+				Log.i(ConnectionService.LOG_TAG, "ip webcam error", ex);
 				sleep(); // 2 másodperc várakozás a program töltésére
 			}
 		}

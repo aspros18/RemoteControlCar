@@ -1,7 +1,12 @@
 package org.dyndns.fzoli.rccar.host;
 
+import java.io.Serializable;
+
+import org.dyndns.fzoli.rccar.ConnectionKeys;
+import org.dyndns.fzoli.rccar.host.socket.HostMessageProcess;
 import org.dyndns.fzoli.rccar.model.Control;
 import org.dyndns.fzoli.rccar.model.host.HostData;
+import org.dyndns.fzoli.socket.ClientProcesses;
 
 import android.os.Binder;
 import android.util.Log;
@@ -104,6 +109,13 @@ public class ConnectionBinder extends Binder {
 	 */
 	public void setStreaming(boolean streaming) {
 		DATA.setStreaming(streaming);
+	}
+	
+	/**
+	 * A jármű adatait elküldi a hídnak, ha tudja.
+	 */
+	public void sendHostData() {
+		sendMessage(DATA);
 	}
 	
 	/**
@@ -231,7 +243,8 @@ public class ConnectionBinder extends Binder {
 			if (mListener != null) mListener.onArrowChange(getX(), getY());
 		}
 		else {
-			//TODO: küldés szervernek UPDATE: nem fog kelleni, mert csak local módban állítható a telefonon az érték
+			// TODO: küldés szervernek
+			// UPDATE: nem fog kelleni, mert csak local módban állítható a telefonon az érték
 		}
 	}
 	
@@ -250,4 +263,14 @@ public class ConnectionBinder extends Binder {
 		}
 	}
 	
+	/**
+	 * Üzenet küldése a hídnak.
+	 * Ha nincs kialakítva üzenetküldésre alkalmas kapcsolat, nem küld üzenetet.
+	 */
+	private static void sendMessage(Serializable msg) {
+		if (msg == null) return; // nincs mit küldeni
+		HostMessageProcess cmp = ClientProcesses.findProcess(ConnectionKeys.KEY_CONN_MESSAGE, HostMessageProcess.class); // üzenetküldő referencia megszerzése
+		if (cmp != null) cmp.sendMessage(msg); // ha van mivel küldeni, küldés
+	}
+
 }

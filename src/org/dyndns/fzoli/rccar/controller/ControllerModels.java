@@ -6,7 +6,6 @@ import static org.dyndns.fzoli.rccar.controller.Main.showControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.Main.showHostSelectionFrame;
 import org.dyndns.fzoli.rccar.controller.socket.ControllerMessageProcess;
 import org.dyndns.fzoli.rccar.model.Data;
-import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.PartialData;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
 import org.dyndns.fzoli.rccar.model.controller.HostList;

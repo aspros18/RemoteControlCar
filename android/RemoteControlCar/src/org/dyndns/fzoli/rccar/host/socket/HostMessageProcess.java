@@ -24,6 +24,14 @@ public class HostMessageProcess extends MessageProcess {
 	}
 	
 	/**
+	 * Amint kapcsolódott a hídhoz az alkalmazás, elküldi a kiválasztott jármű adatait.
+	 */
+	@Override
+	protected void onStart() {
+		SERVICE.getBinder().sendHostData();
+	}
+	
+	/**
 	 * A híd által küldött üzenetek feldolgozása.
 	 * Ha az üzenet a HostData részadata, akkor frissíti a HostData változóit.
 	 * @param msg az üzenet

@@ -210,18 +210,6 @@ public class HostVideoProcess extends AbstractSecureProcess {
 	 */
 	@Override
 	public void run() {
-//		TESZT
-//		new Timer().schedule(new TimerTask() {
-//			
-//			@Override
-//			public void run() {
-//				while (!getSocket().isClosed()) {
-//					setStreaming(!isStreaming());
-//					sleep(20000);
-//				}
-//			}
-//			
-//		}, 10000);
 		try {
 			Log.i(ConnectionService.LOG_TAG, "video process started");
 			if (openIPWebcamConnection()) {

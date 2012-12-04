@@ -238,11 +238,19 @@ public class ConnectionService extends IOIOService {
 	private static boolean fatal = false;
 	
 	/**
+	 * Ha az Android rendszer leállítás alá kerül, akkor true az értéke.
+	 */
+	private static boolean shutdown = false;
+	
+	/**
 	 * Megadja, hogy a szolgáltatás fel van-e függesztve.
+	 * A szolgáltatás mindkenképpen fel van függesztve, ha az Android rendszer leállítás alá kerül
+	 * ezzel elkerülve azt, hogy az Activity a felfüggesztést törölje a rendszer leállásakor, amikor
+	 * a kapcsolódás állapota hamisra változik és eltűnik a dialógus.
 	 */
 	public static boolean isSuspended() {
-		Log.i(LOG_TAG, "suspended: " + suspended);
-		return suspended;
+		Log.i(LOG_TAG, "suspended: " + (shutdown || suspended));
+		return shutdown || suspended;
 	}
 	
 	/**
@@ -457,6 +465,7 @@ public class ConnectionService extends IOIOService {
 				reconnectSchedule(true); // azt teszi, amire kérik...
 			}
 			else if (event.equals(EVT_SHUTDOWN)) { // a rendszer leállítása esetén
+				shutdown = true; // jelzés, hogy a rendszer leállítás alatt van
 				stopSelf(); // leállás, mely az onDestroy metódust is meghívja
 			}
 		}

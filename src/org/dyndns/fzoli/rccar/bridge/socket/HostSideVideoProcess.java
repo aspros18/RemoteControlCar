@@ -3,7 +3,6 @@ package org.dyndns.fzoli.rccar.bridge.socket;
 import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.io.InputStream;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -33,7 +32,7 @@ public class HostSideVideoProcess extends AbstractSecureProcess {
         final JLabel lb = new JLabel(new ImageIcon());
         final JFrame frame = new JFrame() {
             {
-                setTitle("#" + getRemoteCommonName());
+                setTitle("Camera#" + getRemoteCommonName());
                 add(lb);
                 getContentPane().setPreferredSize(new Dimension(320, 240));
                 pack();

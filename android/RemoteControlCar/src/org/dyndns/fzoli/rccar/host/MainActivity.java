@@ -148,6 +148,19 @@ public class MainActivity extends SherlockActivity {
 	}
 	
 	/**
+	 * Ha az Activity megjelenik, megnézi, a szolgáltatás futása alatt keletkezett-e fatális hiba.
+	 * Ha igen, akkor azonnal leállítja a szolgáltatás futását. Ezzel a fatális hiba is törlődik,
+	 * így újra csak akkor lesz fatális hiba státusz, ha újra fatális hiba keletkezik a futás alatt.
+	 * Fatális hibaüzenetre kattintva az Activity hívása történik meg, ezzel megjelenítve azt,
+	 * így fatális hibaüzenetre kattintva végülis a szolgáltatás leáll, amint megjelenik a felület.
+	 */
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if (ConnectionService.isFatal()) setRunning(false);
+	}
+	
+	/**
 	 * Amikor a nézet megsemmisül, a szolgáltatással megszűnik a kapcsolat, de a szolgáltatás fut tovább.
 	 * Ez maga után vonja azt is, hogy a Binder objektumból kikerül az eseménykezelő,
 	 * így legközelebb amikor a felület újra regisztrálja eseménykezelőjét, friss adatokhoz fog jutni,

@@ -232,6 +232,12 @@ public class ConnectionService extends IOIOService {
 	private static boolean suspended = false;
 	
 	/**
+	 * Ha végzetes hiba történik a kapcsolódás közben, a változó értéke true.
+	 * A szolgáltatás leállásával vagy újraindulásával a változó újra false értéket vesz fel.
+	 */
+	private static boolean fatal = false;
+	
+	/**
 	 * Megadja, hogy a szolgáltatás fel van-e függesztve.
 	 */
 	public static boolean isSuspended() {
@@ -247,6 +253,23 @@ public class ConnectionService extends IOIOService {
 	 */
 	public static void setSuspended(boolean suspended) {
 		ConnectionService.suspended = suspended;
+	}
+	
+	/**
+	 * Megadja, hogy történt-e végzetes hiba.
+	 * Az Activity előtérbe kerülésekor megnézi, hogy a szolgáltatásban történt-e végzetes hiba.
+	 * Ha történt, akkor leállítja a szolgáltatás futását, ezzel eltűnnek a hibajelzések is és kézzel indítható a szolgáltatás újra.
+	 */
+	public static boolean isFatal() {
+		return fatal;
+	}
+	
+	/**
+	 * Beállítja, hogy van-e fatális hiba.
+	 * A szolgáltatás leállásakor és indulásakor az érték hamisra áll be, fatális hiba keletkezés esetén igazra.
+	 */
+	private static void setFatal(boolean fatal) {
+		ConnectionService.fatal = fatal;
 	}
 	
 	/**
@@ -393,6 +416,7 @@ public class ConnectionService extends IOIOService {
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
 		if (startId == 1) {
+			setFatal(false); // ha esetleg még nem törlődött volna a fatális hiba státusz, törlés
 			setSuspended(false); // a szolgáltatás aktív (ha esetleg még nem lenne az)
 			initNotification(); // fő értesítés inicializálása
 			connect(true); // kapcsolódás, ha kell újrakapcsolódás
@@ -441,12 +465,13 @@ public class ConnectionService extends IOIOService {
 	
 	/**
 	 * A szolgáltatás leállítása előtt meghívódó metódus.
-	 * - Felfüggeszti a szolgáltatást.
+	 * - Felfüggeszti a szolgáltatást és törli a fatális hiba státuszt.
 	 * - Lekapcsolódik a hídról, ha kell.
 	 * - Az összes figyelmeztetést eltávolítja. (fő, kapcsolódás és egyéb)
 	 */
 	@Override
 	public void onDestroy() {
+		setFatal(false);
 		setSuspended(true);
 		disconnect(true);
 		setNotificationsVisible(false);
@@ -606,6 +631,7 @@ public class ConnectionService extends IOIOService {
 				if (error.isFatalError()) {
 					Log.i(LOG_TAG, "add error notify " + error);
 					if (id != null) addNotification(id, new Intent(this, MainActivity.class), error.getNotificationId(), false, true);
+					setFatal(true);
 					setSuspended(true); // szolgáltatás felfüggesztése, hogy a kapcsolódás bontása után lévő figyelmeztetés ne jelenjen meg
 					disconnect(true); // kapcsolat bontása, üzenet megjelenítése, amire kattintva a főablak jelenik meg
 				}

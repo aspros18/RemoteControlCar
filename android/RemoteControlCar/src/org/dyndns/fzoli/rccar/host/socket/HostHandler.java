@@ -4,6 +4,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.security.KeyStoreException;
 
+import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocket;
 
@@ -52,6 +53,9 @@ public class HostHandler extends AbstractSecureClientHandler implements Connecti
 		}
 		catch (SSLHandshakeException e) {
 			err = ConnectionError.INVALID_CERTIFICATE;
+		}
+		catch (SSLException e) {
+			err = ConnectionError.CONNECTION_LOST;
 		}
 		catch (SocketException e) {
 			err = ConnectionError.CONNECTION_ERROR;

@@ -58,16 +58,6 @@ public class HostDisconnectProcess extends ClientDisconnectProcess implements Co
 		SERVICE.getBinder().setXY(lastX, lastY);
 	}
 	
-	@Override
-	protected void beforeAnswer() throws Exception {
-		Log.i(ConnectionService.LOG_TAG, "before answer");
-	}
-	
-	@Override
-	protected void afterAnswer() throws Exception {
-		Log.i(ConnectionService.LOG_TAG, "after answer");
-	}
-	
 	/**
 	 * Disconnect esetén jelzés a szolgáltatásnak, hogy a kapcsolat elveszett és megállítja a járművet.
 	 */

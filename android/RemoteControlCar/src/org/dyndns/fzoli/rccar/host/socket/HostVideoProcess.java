@@ -188,13 +188,20 @@ public class HostVideoProcess extends AbstractSecureProcess {
 					byte[] buffer = new byte[2048];
 					InputStream in = conn.getInputStream();
 					OutputStream out = getSocket().getOutputStream();
-					while (!getSocket().isClosed()) {
-						if (((length = in.read(buffer)) != -1)) out.write(buffer, 0, length);
-						else throw new Exception("IP Webcam error");
+					while (!getSocket().isClosed()) { // amíg van kapcsolat, MJPEG stream olvasása és feltöltése a hídnak
+						if (((length = in.read(buffer)) != -1)) try { // ha sikerült az olvasás és van adat
+							out.write(buffer, 0, length); // megkísérli a feltöltést
+						}
+						catch (SocketException ex) { // ha nem sikerült
+							throw new SSLException(ex); // híddal való kacsolat hibaként feldolgozás
+						}
+						else { // ha sikerült az olvasás, de nincs adat
+							throw new Exception("IP Webcam error"); // az IP Webcam alkalmazás a hibás
+						}
 					}
 				}
 				catch (SSLException ex) { // a hídnaknak való streamelés közben hiba történt
-					Log.i(ConnectionService.LOG_TAG, "mjpeg streaming error");
+					Log.i(ConnectionService.LOG_TAG, "mjpeg streaming error. socket closed: " + getSocket().isClosed(), ex);
 					// TODO: ha a socket nincs lezárva, a feldolgozó kapcsolatának lezárása és új process példányosítása új kapcsolattal
 					
 					if (!getSocket().isClosed()) {
@@ -203,7 +210,7 @@ public class HostVideoProcess extends AbstractSecureProcess {
 					
 				}
 				catch (SocketException ex) { // a szerver leállt, nagy valószínűséggel a felhasználó állította le
-					Log.i(ConnectionService.LOG_TAG, "IP Webcam closed");
+					Log.i(ConnectionService.LOG_TAG, "IP Webcam closed", ex);
 					// TODO: mjpeg stream kapcsolat bontása, run metódus rekurzív hívása és return;
 					
 					if (!getSocket().isClosed()) {
@@ -222,8 +229,9 @@ public class HostVideoProcess extends AbstractSecureProcess {
 			Log.i(ConnectionService.LOG_TAG, "video process finished");
 			closeIPWebcamConnection(false); // a kapcsolat bontása, de az IP Webcam futva hagyása
 		}
-		catch (Exception ex) {
+		catch (Exception ex) { // egyéb hiba történt
 			Log.i(ConnectionService.LOG_TAG, "not important exception", ex);
+			SERVICE.onConnectionError(ConnectionError.OTHER);
 		}
 	}
 

@@ -69,10 +69,12 @@ public class Main {
                 int opt = OptionPane.showYesNoDialog(R.getIconImage(), "Biztos, hogy kilép a programból?", "Megerősítés");
                 // ha igen, akkor a program kilép
                 if (opt == 0) {
+                    exiting = true;
                     System.exit(0);
                 }
             }
             else { // ha nincs kiépített kapcsolat, a program kilép
+                exiting = true;
                 System.exit(0);
             }
         }
@@ -100,6 +102,13 @@ public class Main {
      * A híd szerverrel építi ki a kapcsolatot.
      */
     private static final ConnectionHelper CONN = new ConnectionHelper(CONFIG);
+    
+    /**
+     * Ha az értéke true, akkor a program leállítás alatt van.
+     * Ez esetben a kapcsolódáskezelő ablak nem jelenik meg,
+     * amikor megszakad a híddal a kapcsolat.
+     */
+    private static boolean exiting = false;
     
     /**
      * Konfiguráció-szerkesztő ablak.
@@ -224,7 +233,7 @@ public class Main {
      * @param status a kapcsolat státusza
      */
     public static void showConnectionStatus(Status status) {
-        if (connecting && status != Status.CONNECTING) return;
+        if (!exiting && connecting && status != Status.CONNECTING) return;
         PROGRESS_FRAME.setStatus(status);
         SELECTION_FRAME.setVisible(false);
         CONTROLLER_WINDOWS.setVisible(false);

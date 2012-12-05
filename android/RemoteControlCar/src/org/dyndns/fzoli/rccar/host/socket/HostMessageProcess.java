@@ -13,6 +13,9 @@ import android.util.Log;
 
 public class HostMessageProcess extends MessageProcess {
 
+	// TODO: akkuszint változás észlelés és küldés a hídnak [SERVICE.getVehicle().setCallback(...);]
+	// hasonlóképpen a szenzorok eseményeinek küldésével
+	
 	/**
 	 * A szolgáltatás referenciája, hogy lehessen a változásról értesíteni.
 	 */

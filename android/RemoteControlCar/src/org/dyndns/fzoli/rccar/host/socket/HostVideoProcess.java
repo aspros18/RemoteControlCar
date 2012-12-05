@@ -210,9 +210,11 @@ public class HostVideoProcess extends AbstractSecureProcess {
 				catch (SocketException ex) { // a szerver leállt, nagy valószínűséggel a felhasználó állította le
 					Log.i(ConnectionService.LOG_TAG, "IP Webcam closed", ex);
 					// mjpeg stream kapcsolat bontása, run metódus rekurzív hívása és return;
-					closeIPWebcamConnection(false);
-					run();
-					return;
+					if (!getSocket().isClosed()) {
+						closeIPWebcamConnection(false);
+						run();
+						return;
+					}
 				}
 				catch (Exception ex) { // az IP Webcam nem streamel, valószínűleg a kamerát nem tudja kezelni
 					Log.i(ConnectionService.LOG_TAG, "IP Webcam error", ex);
@@ -225,8 +227,8 @@ public class HostVideoProcess extends AbstractSecureProcess {
 			Log.i(ConnectionService.LOG_TAG, "video process finished");
 			closeIPWebcamConnection(false); // a kapcsolat bontása, de az IP Webcam futva hagyása
 		}
-		catch (Exception ex) { // egyéb hiba történt
-			Log.i(ConnectionService.LOG_TAG, "not important exception", ex);
+		catch (Throwable t) { // egyéb hiba történt
+			Log.i(ConnectionService.LOG_TAG, "not important error", t);
 			SERVICE.onConnectionError(ConnectionError.OTHER);
 		}
 	}

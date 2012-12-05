@@ -52,6 +52,14 @@ public class DefaultVehicle extends AbstractVehicle {
 	}
 	
 	/**
+	 * Az akkumulátor töltöttségét adja vissza százalékban.
+	 * TODO: egyelőre teszt
+	 */
+	public int getBatteryLevel() {
+		return 0;
+	}
+	
+	/**
 	 * A kapcsolat létrejötte után a digitális kimenetek megszerzése.
 	 * A lábak használata:
 	 * - 10-es, előremenet
@@ -79,7 +87,7 @@ public class DefaultVehicle extends AbstractVehicle {
 		handle(getX(), outLeft, outRight);
 		handle(getY(), outBack, outFront);
 //		pwm.setDutyCycle((float)(getY() / 100.0));
-		Thread.sleep(20);
+		refresh();
 	}
 	
 	/**

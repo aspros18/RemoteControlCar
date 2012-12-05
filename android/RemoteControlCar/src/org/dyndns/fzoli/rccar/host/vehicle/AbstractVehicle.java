@@ -19,11 +19,29 @@ public abstract class AbstractVehicle extends BaseIOIOLooper implements Vehicle 
 	private boolean connected = false;
 	
 	/**
+	 * Eseménykezelő akkumulátor-szint változás detektálására.
+	 */
+	private Callback callback;
+	
+	/**
+	 * Az eseménykezelőnek utóljára jelzett akkumulátor-szint.
+	 */
+	private int oldBatteryLevel = 0;
+	
+	/**
 	 * Konstruktor.
 	 * @param service a szolgáltatás a vezérlőjelet tartalmazó objektum referenciájának megszerzéséhez
 	 */
 	public AbstractVehicle(ConnectionService service) {
 		SERVICE = service;
+	}
+	
+	/**
+	 * Eseménykezelő beállítása az akkumulátor-szint változás detektálására.
+	 */
+	@Override
+	public void setCallback(Callback callback) {
+		this.callback = callback;
 	}
 	
 	/**
@@ -61,6 +79,20 @@ public abstract class AbstractVehicle extends BaseIOIOLooper implements Vehicle 
 	protected void setup() throws ConnectionLostException, InterruptedException {
 		updateState(true); // állapotváltozás jelzése a szolgáltatásnak
 		ioio_.openDigitalOutput(IOIO.LED_PIN, !true); // a LED bekapcsolása
+	}
+	
+	/**
+	 * Ha az akkumulátor-szint változott, meghívja az eseménykezelőt, végül vár 20 ezredmásodpercet.
+	 */
+	protected void refresh() throws InterruptedException {
+		if (callback != null) { // ha van eseménykezelő
+			int level = getBatteryLevel();
+			if (level != oldBatteryLevel) { // ha változott az akkuszint
+				oldBatteryLevel = level; // akkuszint frissítése
+				callback.onBatteryLevelChanged(level); // callback hívása
+			}
+		}
+		Thread.sleep(20); // 20 ms szünet
 	}
 	
 	/**

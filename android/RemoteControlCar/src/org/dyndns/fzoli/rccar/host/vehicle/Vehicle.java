@@ -8,6 +8,14 @@ import ioio.lib.util.IOIOLooper;
  */
 public interface Vehicle extends IOIOLooper {
 	
+	public interface Callback {
+		
+		public void onBatteryLevelChanged(int level);
+		
+	}
+	
+	public void setCallback(Callback callback);
+	
 	/**
 	 * Megadja, hogy támogatva van-e a precíz kormányzás.
 	 * @return true esetén nem támogatott és csak 0 vagy 100 százalék állítható be
@@ -35,5 +43,10 @@ public interface Vehicle extends IOIOLooper {
 	 * Az aktuális sebesség százalékban.
 	 */
 	public int getY();
+	
+	/**
+	 * Az akkumulátor töltöttségét adja vissza százalékban.
+	 */
+	public int getBatteryLevel();
 	
 }

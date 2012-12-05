@@ -113,50 +113,52 @@ public class HostVideoProcess extends AbstractSecureProcess {
 		String httpUrl = "http://127.0.0.1:" + port + "/videofeed"; // a szerver pontos címe
 		String authProp = "Basic " + Base64.encodeBase64String(new String(user + ':' + password).getBytes()); // a HTTP felhasználóazonosítás Base64 alapú
 		
+//		int err = -1; // kezdetben nincs kivétel
 		boolean stopped = false; // kezdetben még nem lett leállítva az IP Webcam
 		for (int i = 1; i <= 10; i++) { // 10 próbálkozás a kapcsolat létrehozására
 			try {
-				conn = (HttpURLConnection) new URL(httpUrl).openConnection(); //kapcsolat objektum létrehozása
-				conn.setRequestMethod("GET"); // GET metódus beállítása
-				if (user != null && !user.equals("")) conn.setRequestProperty("Authorization", authProp); // ha van azonosítás, adat beállítása
-				conn.connect(); // kapcsolódás
-				if (i != 0) { // ellenőrzés csak akkor, ha a ciklusváltozó értéke nem 0
-					conn.getInputStream().read(new byte[5120]); // olvashatóság tesztelése
-					closeIPWebcamConnection(false); // sikeres teszt, kapcsolat lezárása, de program futva hagyása
-					i = -1; // a következő ciklus futáskor a változó értéke 0 lesz
-					continue; // következő ciklusra lépés
-				}
-				return true;
+//				try {
+					conn = (HttpURLConnection) new URL(httpUrl).openConnection(); //kapcsolat objektum létrehozása
+					conn.setRequestMethod("GET"); // GET metódus beállítása
+					if (user != null && !user.equals("")) conn.setRequestProperty("Authorization", authProp); // ha van azonosítás, adat beállítása
+					conn.connect(); // kapcsolódás
+					if (i != 0) { // ellenőrzés csak akkor, ha a ciklusváltozó értéke nem 0
+						conn.getInputStream().read(new byte[5120]); // olvashatóság tesztelése
+						closeIPWebcamConnection(false); // kapcsolat lezárása, de program futva hagyása
+						i = -1; // az olvasás teszt sikeres volt, a következő ciklus futáskor a változó értéke 0 lesz, hogy ne legyen újra olvasás
+						continue; // következő ciklusra lépés
+					}
+					return true;
+//				}
+//				catch (ConnectException ex) {
+//					if (err == 1) { // ha SocketException volt előbb és most ConnectException van, biztosan újraindult a szerver (talán felhasználó által)
+//						Log.i(ConnectionService.LOG_TAG, "ip webcam closed");
+//						i = 0; // ezért újra 10 próbálkozás a kapcsolatra
+//					}
+//					err = 0; // ConnectException
+//					throw ex;
+//				}
+//				catch (SocketException ex) {
+//					err = 1; // SocketException
+//					throw ex;
+//				}
 			}
-			catch (ConnectException ex) { // ha a kapcsolódás nem sikerült
-				Log.i(ConnectionService.LOG_TAG, "ip webcam open error", ex);
-				if (i == 5 && !stopped) { // az 5. próbálkozásra leállítás, ha még nem volt
-					i = 0; // újra 10 próbálkozás
-					stopped = true; // több leállítás nem kell
-					stopIPWebcamActivity(); // ha a harmadik kapcsolódás sem sikerült, alkalmazás leállítása
-				}
-				startIPWebcamActivity(port, user, password); // IP Webcam program indítása, hátha még nem fut
-				sleep(2000); // 2 másodperc várakozás a program töltésére
-			}
-			catch (SocketException ex) { // valószínűleg eltérő konfigurációval fut az IP Webcam vagy éppen újraindul
+			catch (Exception ex) { // ha a kapcsolódás (ConnectException) vagy az olvasás (SocketException) nem sikerült
 				Log.i(ConnectionService.LOG_TAG, "ip webcam open error", ex);
 				if (!stopped) { // leállítás, ha még nem volt
 					i = 0; // újra 10 próbálkozás
 					stopped = true; // több leállítás nem kell
-					stopIPWebcamActivity(); // az alkalmazás leállítása
+					stopIPWebcamActivity(); // alkalmazás leállítása
+					sleep(500); // kis várakozás az alkalmazás indítása előtt
 				}
-				startIPWebcamActivity(port, user, password); // majd újra elindítása
-				sleep(2000); // 2 másodperc várakozás a program töltésére
-			}
-			catch (Exception ex) { // egyéb ismeretlen hiba
-				Log.i(ConnectionService.LOG_TAG, "ip webcam open error", ex);
+				startIPWebcamActivity(port, user, password); // IP Webcam program indítása
 				sleep(2000); // 2 másodperc várakozás a program töltésére
 			}
 		}
 		
 		return false;
 	}
-
+	
 	/**
 	 * Szünetet tart a szál.
 	 * @param delay ezredmásodpercben megadott idő
@@ -204,7 +206,7 @@ public class HostVideoProcess extends AbstractSecureProcess {
 						if (((length = in.read(buffer)) != -1)) try { // ha sikerült az olvasás és van adat
 							out.write(buffer, 0, length); // megkísérli a feltöltést
 						}
-						catch (SocketException ex) { // ha nem sikerült
+						catch (SocketException ex) { // ha nem sikerült az írás
 							throw new SSLException(ex); // híddal való kacsolat hibaként feldolgozás
 						}
 						else { // ha sikerült az olvasás, de nincs adat

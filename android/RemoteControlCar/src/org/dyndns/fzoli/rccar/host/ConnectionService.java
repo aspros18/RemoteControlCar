@@ -301,6 +301,7 @@ public class ConnectionService extends IOIOService {
 	 * A felületet a szolgáltatással és a mikrovezérlővel összekötő binder objektum.
 	 */
 	public ConnectionBinder getBinder() {
+		if (binder == null) binder = new ConnectionBinder(this);
 		return binder;
 	}
 	
@@ -310,7 +311,7 @@ public class ConnectionService extends IOIOService {
 	 */
 	@Override
 	public ConnectionBinder onBind(Intent intent) {
-		return binder;
+		return getBinder();
 	}
 	
 	/**
@@ -425,7 +426,7 @@ public class ConnectionService extends IOIOService {
 			conn.disconnect();
 			conn = null;
 		}
-		if (getBinder() != null) getBinder().fireConnectionStateChange(false); // jelzés az felületnek
+		getBinder().fireConnectionStateChange(false); // jelzés az felületnek
 	}
 	
 	/**
@@ -441,7 +442,6 @@ public class ConnectionService extends IOIOService {
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
 		if (startId == 1) {
-			binder = new ConnectionBinder(this); // binder inicializálása
 			setFatal(false); // ha esetleg még nem törlődött volna a fatális hiba státusz, törlés
 			setSuspended(false); // a szolgáltatás aktív (ha esetleg még nem lenne az)
 			initNotification(); // fő értesítés inicializálása
@@ -628,7 +628,7 @@ public class ConnectionService extends IOIOService {
 	 */
 	private void setConnectionError(ConnectionError error, boolean removeAll) {
 		updateNotificationText();
-		if (getBinder() != null) getBinder().fireConnectionStateChange(false);
+		getBinder().fireConnectionStateChange(false);
 		ConnectionError[] errors = ConnectionError.values();
 		if (removeAll) {
 			Log.i(LOG_TAG, "connection msg remove");

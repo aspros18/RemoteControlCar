@@ -4,14 +4,14 @@ import ioio.lib.api.IOIO;
 import ioio.lib.api.exception.ConnectionLostException;
 import ioio.lib.util.BaseIOIOLooper;
 
-import org.dyndns.fzoli.rccar.host.ConnectionBinder;
+import org.dyndns.fzoli.rccar.host.ConnectionService;
 
 public abstract class AbstractVehicle extends BaseIOIOLooper implements Vehicle {
 	
 	/**
-	 * A vezérlőjelet tartalmazó objektum referenciája.
+	 * A vezérlőjelet tartalmazó objektum referenciája a szolgáltatáson keresztül érhető el.
 	 */
-	private final ConnectionBinder BINDER;
+	private final ConnectionService SERVICE;
 	
 	/**
 	 * Megadja, hogy van-e kapcsolat a mikrovezérlővel.
@@ -20,10 +20,10 @@ public abstract class AbstractVehicle extends BaseIOIOLooper implements Vehicle 
 	
 	/**
 	 * Konstruktor.
-	 * @param binder a vezérlőjelet tartalmazó objektum referenciája
+	 * @param service a szolgáltatás a vezérlőjelet tartalmazó objektum referenciájának megszerzéséhez
 	 */
-	public AbstractVehicle(ConnectionBinder binder) {
-		BINDER = binder;
+	public AbstractVehicle(ConnectionService service) {
+		SERVICE = service;
 	}
 	
 	/**
@@ -40,7 +40,8 @@ public abstract class AbstractVehicle extends BaseIOIOLooper implements Vehicle 
 	 */
 	@Override
 	public int getX() {
-		return BINDER.getX();
+		if (SERVICE.getBinder() == null) return 0;
+		return SERVICE.getBinder().getX();
 	}
 	
 	/**
@@ -48,7 +49,8 @@ public abstract class AbstractVehicle extends BaseIOIOLooper implements Vehicle 
 	 */
 	@Override
 	public int getY() {
-		return BINDER.getY();
+		if (SERVICE.getBinder() == null) return 0;
+		return SERVICE.getBinder().getY();
 	}
 	
 	/**
@@ -75,7 +77,7 @@ public abstract class AbstractVehicle extends BaseIOIOLooper implements Vehicle 
 	 */
 	private void updateState(boolean connected) {
 		this.connected = connected; // új érték beállítása
-		BINDER.getService().onVehicleConnectionStateChanged(); // majd jelzés a szolgáltatásnak
+		SERVICE.onVehicleConnectionStateChanged(); // majd jelzés a szolgáltatásnak
 	}
 	
 }

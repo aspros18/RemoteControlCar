@@ -1,6 +1,6 @@
 package org.dyndns.fzoli.rccar.host.vehicle;
 
-import org.dyndns.fzoli.rccar.host.ConnectionBinder;
+import org.dyndns.fzoli.rccar.host.ConnectionService;
 import org.dyndns.fzoli.rccar.host.vehicle.impl.DefaultVehicle;
 
 /**
@@ -14,13 +14,13 @@ public class Vehicles {
 
 	/**
 	 * Járművezérlő gyártása.
-	 * @param binder szükséges referecia a járművezérlő példányosításához
+	 * @param service szükséges referecia a járművezérlő példányosításához
 	 * @param index ez alapján dől el, melyik járművezérlő jöjjön létre
 	 */
-	public static Vehicle createVehicle(ConnectionBinder binder, int index) {
+	public static Vehicle createVehicle(ConnectionService service, int index) {
 		switch (index) {
 			default: // még nem tudok mással szolgálni
-				return new DefaultVehicle(binder);
+				return new DefaultVehicle(service);
 		}
 	}
 

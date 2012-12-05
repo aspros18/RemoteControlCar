@@ -28,7 +28,7 @@ public class HostMessageProcess extends MessageProcess {
 	 */
 	@Override
 	protected void onStart() {
-		SERVICE.getBinder().sendHostData();
+		SERVICE.getBinder().sendHostData(this);
 	}
 	
 	/**

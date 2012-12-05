@@ -1,12 +1,8 @@
 package org.dyndns.fzoli.rccar.host;
 
-import java.io.Serializable;
-
-import org.dyndns.fzoli.rccar.ConnectionKeys;
 import org.dyndns.fzoli.rccar.host.socket.HostMessageProcess;
 import org.dyndns.fzoli.rccar.model.Control;
 import org.dyndns.fzoli.rccar.model.host.HostData;
-import org.dyndns.fzoli.socket.ClientProcesses;
 
 import android.os.Binder;
 import android.util.Log;
@@ -60,8 +56,15 @@ public class ConnectionBinder extends Binder {
 	 */
 	private Boolean cacheConnecting = null;
 	
+	/**
+	 * Konstruktor.
+	 * A jármű kezdeti paramétereit állítja be és a változókat.
+	 * @param service a szolgáltatás objektuma
+	 */
 	public ConnectionBinder(ConnectionService service) {
 		SERVICE = service;
+		DATA.setFullX(SERVICE.getVehicle().isFullX());
+		DATA.setFullY(SERVICE.getVehicle().isFullY());
 	}
 	
 	/**
@@ -80,7 +83,7 @@ public class ConnectionBinder extends Binder {
 	
 	/**
 	 * Megadja, hogy pontosan szabályozható-e a az irány.
-	 * True esetén csak 0 vagy 100 lehet az érték.
+	 * True esetén csak 0 vagy +-100 lehet az érték.
 	 */
 	public boolean isFullX() {
 		return DATA.isFullX();
@@ -88,7 +91,7 @@ public class ConnectionBinder extends Binder {
 	
 	/**
 	 * Megadja, hogy pontosan szabályozható-e a a sebesség.
-	 * True esetén csak 0 vagy 100 lehet az érték.
+	 * True esetén csak 0 vagy +-100 lehet az érték.
 	 */
 	public boolean isFullY() {
 		return DATA.isFullY();
@@ -114,8 +117,8 @@ public class ConnectionBinder extends Binder {
 	/**
 	 * A jármű adatait elküldi a hídnak, ha tudja.
 	 */
-	public void sendHostData() {
-		sendMessage(DATA);
+	public void sendHostData(HostMessageProcess sender) {
+		if (sender != null) sender.sendMessage(DATA);
 	}
 	
 	/**
@@ -261,16 +264,6 @@ public class ConnectionBinder extends Binder {
 				cacheConnecting = null;
 			}
 		}
-	}
-	
-	/**
-	 * Üzenet küldése a hídnak.
-	 * Ha nincs kialakítva üzenetküldésre alkalmas kapcsolat, nem küld üzenetet.
-	 */
-	private static void sendMessage(Serializable msg) {
-		if (msg == null) return; // nincs mit küldeni
-		HostMessageProcess cmp = ClientProcesses.findProcess(ConnectionKeys.KEY_CONN_MESSAGE, HostMessageProcess.class); // üzenetküldő referencia megszerzése
-		if (cmp != null) cmp.sendMessage(msg); // ha van mivel küldeni, küldés
 	}
 
 }

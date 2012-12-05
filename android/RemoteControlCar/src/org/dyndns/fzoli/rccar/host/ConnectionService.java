@@ -159,7 +159,7 @@ public class ConnectionService extends IOIOService {
 	/**
 	 * Összeköttetés az Activity és a Service között, amit a jármű mikrovezérlője is használ.
 	 */
-	private final ConnectionBinder BINDER = new ConnectionBinder(this);
+	private ConnectionBinder binder;
 	
 	/**
 	 * A felhasználó által kiválasztott jármű vezérlője.
@@ -196,7 +196,7 @@ public class ConnectionService extends IOIOService {
 	 * Ha a kapcsolat megszakadt a híddal vagy nem sikerült kapcsolódni rá,
 	 * újra megpróbálja a szolgáltatás a kapcsolódást későbbre időzítve.
 	 */
-	private final Timer CONN_TIMER = new Timer();
+	private static final Timer CONN_TIMER = new Timer();
 	
 	/**
 	 * Az újrakapcsolódáshoz használt ütemezett feladat.
@@ -290,10 +290,18 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	/**
+	 * A járművet vezérlő mikrovezérlő irányító.
+	 * @return null, ha még nem lett példányosítva
+	 */
+	public Vehicle getVehicle() {
+		return vehicle;
+	}
+	
+	/**
 	 * A felületet a szolgáltatással és a mikrovezérlővel összekötő binder objektum.
 	 */
 	public ConnectionBinder getBinder() {
-		return BINDER;
+		return binder;
 	}
 	
 	/**
@@ -302,7 +310,7 @@ public class ConnectionService extends IOIOService {
 	 */
 	@Override
 	public ConnectionBinder onBind(Intent intent) {
-		return BINDER;
+		return binder;
 	}
 	
 	/**
@@ -312,7 +320,7 @@ public class ConnectionService extends IOIOService {
 	 */
 	@Override
 	public Vehicle createIOIOLooper() {
-		return vehicle = Vehicles.createVehicle(BINDER, Integer.parseInt(getSharedPreferences(this).getString("vehicle", "0")));
+		return vehicle = Vehicles.createVehicle(this, Integer.parseInt(getSharedPreferences(this).getString("vehicle", "0")));
 	}
 	
 	/**
@@ -433,6 +441,7 @@ public class ConnectionService extends IOIOService {
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
 		if (startId == 1) {
+			binder = new ConnectionBinder(this); // binder inicializálása
 			setFatal(false); // ha esetleg még nem törlődött volna a fatális hiba státusz, törlés
 			setSuspended(false); // a szolgáltatás aktív (ha esetleg még nem lenne az)
 			initNotification(); // fő értesítés inicializálása

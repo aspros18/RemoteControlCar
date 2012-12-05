@@ -1,11 +1,11 @@
 package org.dyndns.fzoli.rccar.host.vehicle.impl;
 
 import ioio.lib.api.DigitalOutput;
-//import ioio.lib.api.PwmOutput;
 import ioio.lib.api.exception.ConnectionLostException;
 
-import org.dyndns.fzoli.rccar.host.ConnectionBinder;
+import org.dyndns.fzoli.rccar.host.ConnectionService;
 import org.dyndns.fzoli.rccar.host.vehicle.AbstractVehicle;
+//import ioio.lib.api.PwmOutput;
 
 /**
  * A prototípus autó vezérlője.
@@ -27,10 +27,10 @@ public class DefaultVehicle extends AbstractVehicle {
 	
 	/**
 	 * Konstruktor.
-	 * @param binder a vezérlőjelet tartalmazó objektum referenciája
+	 * @param service szolgáltatás a vezérlőjelet tartalmazó objektum referenciájának eléréséhez
 	 */
-	public DefaultVehicle(ConnectionBinder binder) {
-		super(binder);
+	public DefaultVehicle(ConnectionService service) {
+		super(service);
 	}
 
 	/**

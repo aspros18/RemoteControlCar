@@ -236,8 +236,9 @@ public class MainActivity extends SherlockActivity {
 		if (binder.getX() != x || binder.getY() != y) { // ha az előző érték egyike eltér
 			binder.setX(x, false); // vezérlőjel frissítése
 			binder.setY(y, false);
-			setXYText(x, y); // felületen megjelenő szöveg cseréje
 		}
+		
+		setXYText(x, y); // felületen megjelenő szöveg cseréje
 		
 		return true; // sikeres beállítás
 	}
@@ -448,9 +449,9 @@ public class MainActivity extends SherlockActivity {
 		if (conn != null) { // ha van miről lekapcsolódni
 			if (binder != null) { // ha regisztrálva van az eseménykezelő
 				binder.setListener(null); // annak eltávolítása
+				repaintArrow(0, 0, true, true); // alapállapotba helyezi a felületet
 				binder = null; // jelzés a GC-nek és a programnak, hogy már nincs eseménykezelő
 			}
-			repaintArrow(0, 0, true, true); // alapállapotba helyezi a felületet
 			ServiceConnection tmp = conn; // a kapcsolat ideignlenes referenciája
 			conn = null; // az osztályváltozó nullázása, hogy újra ne fusson le a metódus és jelzés a GC-nek
 			unbindService(tmp); // kapcsolat megszakítása a szolgáltatással

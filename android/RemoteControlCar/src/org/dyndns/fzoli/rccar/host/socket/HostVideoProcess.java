@@ -23,6 +23,7 @@ import android.util.Log;
 
 /**
  * A kamerakép streamelése a hídnak MJPEG folyamként.
+ * TODO: előfordul ritkán olyan eset, amikor az IP Webcam futását nem észleli a kód. talán jobb lenne úgy megírni, hogy csak egyszer hívja az activityt.
  * @author zoli
  */
 public class HostVideoProcess extends AbstractSecureProcess {

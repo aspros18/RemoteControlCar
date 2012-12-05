@@ -30,7 +30,8 @@ import android.util.Log;
  * Az alkalmazás háttérben futó szolgáltatása.
  * A hídhoz való hálózati kapcsolódást és a jármű mikrovezérlőjéhez való kapcsolódás a fő feladatköre.
  * A felhasználót értesíti minden fontos eseményről (warning, error). Arról is, hogy a szolgáltatás fut.
- * TODO: kb. 1 óra állandó futás után megszakad a kapcsolat a híddal, de a HostDisconnectProcess.onDisconnect metódus nem fut le.
+ * TODO:	a) kb. 1 óra állandó futás után megszakad a kapcsolat a híddal, de a HostDisconnectProcess.onDisconnect metódus nem fut le.
+ *			b) a szolgáltatás leállásakor az IOIOLooper néha nem hal el és a következó induláskor nem keletkezik új looper, ami miatt a jármű nem irányítható míg az USB kábelt nem húzzák ki majd dugják be
  * @author zoli
  */
 public class ConnectionService extends IOIOService {

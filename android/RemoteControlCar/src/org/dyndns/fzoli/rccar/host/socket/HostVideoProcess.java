@@ -2,7 +2,6 @@ package org.dyndns.fzoli.rccar.host.socket;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.SocketException;
 import java.net.URL;
@@ -113,35 +112,20 @@ public class HostVideoProcess extends AbstractSecureProcess {
 		String httpUrl = "http://127.0.0.1:" + port + "/videofeed"; // a szerver pontos címe
 		String authProp = "Basic " + Base64.encodeBase64String(new String(user + ':' + password).getBytes()); // a HTTP felhasználóazonosítás Base64 alapú
 		
-//		int err = -1; // kezdetben nincs kivétel
 		boolean stopped = false; // kezdetben még nem lett leállítva az IP Webcam
 		for (int i = 1; i <= 10; i++) { // 10 próbálkozás a kapcsolat létrehozására
 			try {
-//				try {
-					conn = (HttpURLConnection) new URL(httpUrl).openConnection(); //kapcsolat objektum létrehozása
-					conn.setRequestMethod("GET"); // GET metódus beállítása
-					if (user != null && !user.equals("")) conn.setRequestProperty("Authorization", authProp); // ha van azonosítás, adat beállítása
-					conn.connect(); // kapcsolódás
-					if (i != 0) { // ellenőrzés csak akkor, ha a ciklusváltozó értéke nem 0
-						conn.getInputStream().read(new byte[5120]); // olvashatóság tesztelése
-						closeIPWebcamConnection(false); // kapcsolat lezárása, de program futva hagyása
-						i = -1; // az olvasás teszt sikeres volt, a következő ciklus futáskor a változó értéke 0 lesz, hogy ne legyen újra olvasás
-						continue; // következő ciklusra lépés
-					}
-					return true;
-//				}
-//				catch (ConnectException ex) {
-//					if (err == 1) { // ha SocketException volt előbb és most ConnectException van, biztosan újraindult a szerver (talán felhasználó által)
-//						Log.i(ConnectionService.LOG_TAG, "ip webcam closed");
-//						i = 0; // ezért újra 10 próbálkozás a kapcsolatra
-//					}
-//					err = 0; // ConnectException
-//					throw ex;
-//				}
-//				catch (SocketException ex) {
-//					err = 1; // SocketException
-//					throw ex;
-//				}
+				conn = (HttpURLConnection) new URL(httpUrl).openConnection(); //kapcsolat objektum létrehozása
+				conn.setRequestMethod("GET"); // GET metódus beállítása
+				if (user != null && !user.equals("")) conn.setRequestProperty("Authorization", authProp); // ha van azonosítás, adat beállítása
+				conn.connect(); // kapcsolódás
+				if (i != 0) { // ellenőrzés csak akkor, ha a ciklusváltozó értéke nem 0
+					conn.getInputStream().read(new byte[5120]); // olvashatóság tesztelése
+					closeIPWebcamConnection(false); // kapcsolat lezárása, de program futva hagyása
+					i = -1; // az olvasás teszt sikeres volt, a következő ciklus futáskor a változó értéke 0 lesz, hogy ne legyen újra olvasás
+					continue; // következő ciklusra lépés
+				}
+				return true;
 			}
 			catch (Exception ex) { // ha a kapcsolódás (ConnectException) vagy az olvasás (SocketException) nem sikerült
 				Log.i(ConnectionService.LOG_TAG, "ip webcam open error", ex);

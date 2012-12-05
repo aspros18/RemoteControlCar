@@ -2,6 +2,7 @@ package org.dyndns.fzoli.rccar.host.socket;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.SocketException;
 import java.net.URL;
@@ -127,15 +128,28 @@ public class HostVideoProcess extends AbstractSecureProcess {
 				}
 				return true;
 			}
-			catch (Exception ex) { // ha a kapcsolódás (ConnectException) vagy az olvasás (SocketException) nem sikerült
+			catch (ConnectException ex) { // ha a kapcsolódás nem sikerült
+				Log.i(ConnectionService.LOG_TAG, "ip webcam open error", ex);
+				if (i == 5 && !stopped) { // az 5. próbálkozásra leállítás, ha még nem volt
+					i = 0; // újra 10 próbálkozás
+					stopped = true; // több leállítás nem kell
+					stopIPWebcamActivity(); // ha a harmadik kapcsolódás sem sikerült, alkalmazás leállítása
+				}
+				startIPWebcamActivity(port, user, password); // IP Webcam program indítása, hátha még nem fut
+				sleep(2000); // 2 másodperc várakozás a program töltésére
+			}
+			catch (SocketException ex) { // valószínűleg eltérő konfigurációval fut az IP Webcam vagy éppen újraindul
 				Log.i(ConnectionService.LOG_TAG, "ip webcam open error", ex);
 				if (!stopped) { // leállítás, ha még nem volt
 					i = 0; // újra 10 próbálkozás
 					stopped = true; // több leállítás nem kell
-					stopIPWebcamActivity(); // alkalmazás leállítása
-					sleep(500); // kis várakozás az alkalmazás indítása előtt
+					stopIPWebcamActivity(); // az alkalmazás leállítása
 				}
-				startIPWebcamActivity(port, user, password); // IP Webcam program indítása
+				startIPWebcamActivity(port, user, password); // majd újra elindítása
+				sleep(2000); // 2 másodperc várakozás a program töltésére
+			}
+			catch (Exception ex) { // egyéb ismeretlen hiba
+				Log.i(ConnectionService.LOG_TAG, "ip webcam open error", ex);
 				sleep(2000); // 2 másodperc várakozás a program töltésére
 			}
 		}

@@ -299,32 +299,42 @@ public class MainActivity extends SherlockActivity {
 		if (running) { // ha futást kértek
 			if (config.isCorrect()) { // és jó a konfig
 				refreshStartStop(running, save); // felület és változók frissítése
+				disableButton(btStop, 1000); // a leállítás 1 másodpercre inaktív
 				bindService(); // akkor kapcsolódás a szolgáltatáshoz és elindítása
 			}
 			else if (!ConnectionService.isStarted(this)) { // ha rossz a konfig és nem fut a szolgáltatás
 				Toast.makeText(this, R.string.set_config, Toast.LENGTH_SHORT).show(); // figyelmeztetés megjelenítése
-				btStart.setEnabled(false); // start gomb disabled, amíg a figyelmeztetés látható
-				TIMER_TOAST.schedule(new TimerTask() {
-					
-					@Override
-					public void run() {
-						runOnUiThread(new Runnable() {
-							
-							@Override
-							public void run() {
-								btStart.setEnabled(true); // letelt az idő, a start gomb újra fogad eseményt
-							}
-							
-						});
-					}
-					
-				}, 2000); // 2 másodperc az Android API-ban definiált rövid üzenet ideje
+				disableButton(btStart, 2000); // 2 másodperc az Android API-ban definiált rövid üzenet ideje, ennyi időre inaktív a start gomb
 			}
 		}
 		else { // ha leállítást kértek
 			refreshStartStop(running, save); // felület és változók frissítése
 			unbindService(); // kapcsolat megszakítása és szolgáltatás leállítása
 		}
+	}
+	
+	/**
+	 * A megadott gomb inaktiválása a megadott időre.
+	 * @param bt a gomb
+	 * @param time a megadott idő ezredmásodpercben
+	 */
+	private void disableButton(final Button bt, int time) {
+		bt.setEnabled(false); // gomb disabled, amíg az idő le nem tellik
+		TIMER_TOAST.schedule(new TimerTask() {
+			
+			@Override
+			public void run() {
+				runOnUiThread(new Runnable() {
+					
+					@Override
+					public void run() {
+						bt.setEnabled(true); // letelt az idő, a gomb újra fogad eseményt
+					}
+					
+				});
+			}
+			
+		}, time);
 	}
 	
 	/**

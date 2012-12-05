@@ -425,7 +425,7 @@ public class ConnectionService extends IOIOService {
 			conn.disconnect();
 			conn = null;
 		}
-		getBinder().fireConnectionStateChange(false); // jelzés az felületnek
+		if (getBinder() != null) getBinder().fireConnectionStateChange(false); // jelzés az felületnek
 	}
 	
 	/**
@@ -628,7 +628,7 @@ public class ConnectionService extends IOIOService {
 	 */
 	private void setConnectionError(ConnectionError error, boolean removeAll) {
 		updateNotificationText();
-		getBinder().fireConnectionStateChange(false);
+		if (getBinder() != null) getBinder().fireConnectionStateChange(false);
 		ConnectionError[] errors = ConnectionError.values();
 		if (removeAll) {
 			Log.i(LOG_TAG, "connection msg remove");

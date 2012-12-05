@@ -15,6 +15,9 @@ public class HostMessageProcess extends MessageProcess {
 
 	// TODO: akkuszint változás észlelés és küldés a hídnak [SERVICE.getVehicle().setCallback(...);]
 	// hasonlóképpen a szenzorok eseményeinek küldésével
+	// a host data küldése előtt a szenzorok adatainak kiolvasása, hogy egyből friss adatokat kapjon a híd
+	// a szenzorok figyelése csak kiépített kapcsolatok esetén szükséges továbbá
+	// ha a szenzor eseményfigyelője meghívódik, a helyi adat frissítésével egy időben üzenés a hídnak is a beállított időköznek megfelelően
 	
 	/**
 	 * A szolgáltatás referenciája, hogy lehessen a változásról értesíteni.

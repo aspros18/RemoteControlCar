@@ -74,12 +74,7 @@ public abstract class MessageProcess extends AbstractSecureProcess {
         public void run() {
             while (running) {
                 if (queue.size() == 0) {
-                    try {
-                        Thread.sleep(20);
-                    }
-                    catch (InterruptedException ex) {
-                        // empty
-                    }
+                    sleep(20);
                     continue;
                 }
                 Token aToken = queue.remove(0);

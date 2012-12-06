@@ -52,4 +52,18 @@ public abstract class AbstractProcess implements Process {
         return getHandler().getDeviceId();
     }
     
+    /**
+     * Szünetet tart a szál.
+     * Az utód osztályok használhatják kivételkezelés nélküli kódrövidítéshez.
+     * @param delay ezredmásodpercben megadott idő
+     */
+    protected static void sleep(long delay) {
+        try {
+            Thread.sleep(delay);
+        }
+        catch (Exception ex) {
+            ;
+        }
+    }
+    
 }

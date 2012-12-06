@@ -143,7 +143,7 @@ abstract class DisconnectProcess extends AbstractSecureProcess {
                     setTimeoutActive(true, ex); // 2. időtúllépés aktiválása, ha kell
                     callOnTimeout(ex); // időtúllépés eseménykezelő hívása
                 }
-                Thread.sleep(getWaiting()); // várakozik egy kicsit, hogy a sávszélességet ne terhelje, és hogy szinkronban legyen a másik oldallal
+                sleep(getWaiting()); // várakozik egy kicsit, hogy a sávszélességet ne terhelje, és hogy szinkronban legyen a másik oldallal
             }
         }
         catch (Exception ex) { // ha bármilyen hiba történt

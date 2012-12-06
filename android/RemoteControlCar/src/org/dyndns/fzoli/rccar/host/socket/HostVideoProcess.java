@@ -159,19 +159,6 @@ public class HostVideoProcess extends AbstractSecureProcess {
 	}
 	
 	/**
-	 * Szünetet tart a szál.
-	 * @param delay ezredmásodpercben megadott idő
-	 */
-	private void sleep(long delay) {
-		try {
-			Thread.sleep(delay);
-		}
-		catch (Exception e) {
-			;
-		}
-	}
-	
-	/**
 	 * Lezárja a kapcsolatot az IP Webcam alkalmazás szerverével és leállítja az IP Webcam programot.
 	 * @param stop true esetén az IP Webcam program leáll, egyébként csak a kapcsolat zárul le
 	 */

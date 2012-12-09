@@ -74,7 +74,7 @@
 <circle x="83.82" y="97.79" radius="1.27" width="0.4064" layer="16"/>
 <circle x="109.22" y="34.29" radius="1.27" width="0.4064" layer="16"/>
 <circle x="83.82" y="34.29" radius="1.27" width="0.4064" layer="16"/>
-<text x="74.93" y="35.56" size="1.778" layer="16" rot="MR0">Made in Hungary by Zoltán Farkas</text>
+<text x="69.85" y="35.56" size="1.778" layer="16" rot="MR0">Made in Hungary by Zoltán Farkas</text>
 </plain>
 <libraries>
 <library name="transistor">

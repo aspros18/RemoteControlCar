@@ -1,5 +1,7 @@
 package org.dyndns.fzoli.rccar.model.host;
 
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Date;
 import org.dyndns.fzoli.rccar.model.BaseData;
@@ -149,12 +151,18 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
 
         /**
          * Részadat inicializálása és beállítása.
+         * Ezzel a verzióval 847 bájt egy objektum mérete szerializálva.
+         * Ha csak egy 3D pont lenne tárolva, 611 bájt helyigénye lenne,
+         * de két pont esetén már 1222 bájt helyre lenne szükség, ellenben
+         * az aktuális megoldással csak 888 bájtot igényel két koordináta.
+         * Mivel nagyon ritka az az eset, hogy csak egy szenzoradat módosul,
+         * ezért ez a megoldás kevesebb adatforgalmat generál, mint az előző.
          * @param data a 3D pontadatok
          */
         public PointPartialHostData(PointData... data) {
             super(data);
         }
-
+        
         /**
          * Alkalmazza a 3D pontot/pontokat a paraméterben megadott adaton.
          * @param d a teljes adat, amin a módosítást alkalmazni kell

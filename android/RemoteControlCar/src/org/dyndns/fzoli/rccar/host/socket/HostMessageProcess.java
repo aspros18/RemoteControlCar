@@ -30,11 +30,30 @@ public class HostMessageProcess extends MessageProcess {
 	}
 	
 	/**
-	 * Amint kapcsolódott a hídhoz az alkalmazás, elküldi a kiválasztott jármű adatait.
+	 * Amint kapcsolódott a hídhoz az alkalmazás, a szenzorok figyelése megkezdődik.
+	 * Amint az akkumulátor-szint, GPS helyzet, mágneses-térerősség és nehézségi gyorsulás
+	 * első adatai megérkeztek és beállítódtak a jármű modelében, a feldolgozó elküldi a jármű adatait.
+	 * Ekkor a híd az online járművek listájába beteszi a jármű modelt a kezdőadatokkal.
+	 * Ettől kezdve már csak a részadatok küldése szükséges külön-külön a megadott időközönként.
+	 * A regisztrált szenzorok eseményfigyelői továbbá is frissítik a helyi model adatait és amikor ideje küldeni,
+	 * a szenzorok adatai el lesznek küldve, ha valamelyikük megváltozott.
+	 * A telefon három szenzorának változásai függenek a frissítési időköztől és részmodelben küldődnek el.
+	 * Az akkumulátor-szint változása viszont nem függ a frissítési időköztől, hanem amint 1 tizedet csökken
+	 * az akkumulátor feszültsége, azonnal külön részmodelben jut el az adat a hídhoz.
+	 * TODO: Az akkumulátor százalékos értékének kiszámítása a minimum és maximum feszültségszinttel történik a HÍD oldalán.
 	 */
 	@Override
 	protected void onStart() {
-		SERVICE.getBinder().sendHostData(this);
+		SERVICE.getBinder().sendHostData(this); // teszt
+	}
+	
+	/**
+	 * TODO: Ha a kapcsolat bezárul a híddal, akkor nem kell tovább figyelni a szenzoradatok változását,
+	 * ezért az eseménykezelők leregisztrálódnak.
+	 */
+	@Override
+	protected void onStop() {
+		;
 	}
 	
 	/**

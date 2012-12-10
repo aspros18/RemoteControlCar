@@ -109,9 +109,9 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     }
     
     /**
-     * A HostData részadata, ami egy pont változását tartalmazza.
+     * A HostData részadata, ami egy vagy több pont változását tartalmazza.
      */
-    public static class PointPartialHostData extends PartialHostData<Point3D> {
+    public static class PointPartialHostData extends PartialHostData<PointPartialHostData.PointData[]> {
         
         /**
          * A HostData Point3D változóinak megfeleltetett felsorolás.
@@ -123,36 +123,56 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
         }
         
         /**
-         * Megmondja, melyik adatról van szó.
+         * Egy 3D pont három koordinátáját és típusát tartalmazó bab.
          */
-        public final PointType type;
+        public static class PointData implements Serializable {
+            
+            /**
+             * A 3D pont.
+             */
+            private final Point3D point;
+            
+            /**
+             * A 3D pont típusa.
+             */
+            private final PointType type;
+
+            /**
+             * Konstruktor.
+             */
+            public PointData(Point3D point, PointType type) {
+                this.point = point;
+                this.type = type;
+            }
+            
+        }
 
         /**
          * Részadat inicializálása és beállítása.
          * @param data a 3D pontadatok
-         * @param type melyik 3D pont
          */
-        public PointPartialHostData(Point3D data, PointType type) {
+        public PointPartialHostData(PointData... data) {
             super(data);
-            this.type = type;
         }
 
         /**
-         * Alkalmazza a 3D pontot a paraméterben megadott adaton.
+         * Alkalmazza a 3D pontot/pontokat a paraméterben megadott adaton.
          * @param d a teljes adat, amin a módosítást alkalmazni kell
          */
         @Override
         public void apply(HostData d) {
-            if (d != null && type != null) {
-                switch (type) {
-                    case GPS_POSITION:
-                        d.setGpsPosition(data);
-                        break;
-                    case GRAVITATIONAL_FIELD:
-                        d.setGravitationalField(data);
-                        break;
-                    case MAGNETIC_FIELD:
-                        d.setMagneticField(data);
+            if (d != null && data != null) {
+                for (PointData pd : data) {
+                    if (pd.type != null) switch (pd.type) {
+                        case GPS_POSITION:
+                            d.setGpsPosition(pd.point);
+                            break;
+                        case GRAVITATIONAL_FIELD:
+                            d.setGravitationalField(pd.point);
+                            break;
+                        case MAGNETIC_FIELD:
+                            d.setMagneticField(pd.point);
+                    }
                 }
             }
         }

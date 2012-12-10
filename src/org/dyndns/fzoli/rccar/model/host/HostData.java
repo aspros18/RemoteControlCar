@@ -1,7 +1,5 @@
 package org.dyndns.fzoli.rccar.model.host;
 
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Date;
 import org.dyndns.fzoli.rccar.model.BaseData;
@@ -159,7 +157,7 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
          * ezért ez a megoldás kevesebb adatforgalmat generál, mint az előző.
          * @param data a 3D pontadatok
          */
-        public PointPartialHostData(PointData... data) {
+        public PointPartialHostData(PointData ... data) {
             super(data);
         }
         

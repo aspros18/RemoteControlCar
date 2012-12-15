@@ -220,14 +220,14 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     private Point3D magneticField;
     
     /**
-     * Az utolsó módosulás előtti GPS pozíció.
+     * Az utolsó módosulás előtti szenzor-adat.
      */
-    private Point3D lastGpsPosition;
+    private Point3D previousGpsPosition, previousMagneticField, previousGravitationalField;
     
     /**
      * Az utolsó előtti GPS pozíció módosulásának dátuma.
      */
-    private Date lastGpsChangeDate;
+    private Date previousGpsChangeDate;
     
     /**
      * Az utolsó GPS pozíció módosulásának dátuma.
@@ -342,10 +342,24 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     /**
      * Megadja az utolsó módosítás előtti GPS pozíciót.
      */
-    public Point3D getLastGpsPosition() {
-        return lastGpsPosition;
+    public Point3D getPreviousGpsPosition() {
+        return previousGpsPosition;
     }
 
+    /**
+     * Megadja az utolsó módosítás előtti gravitációs mező erősségét.
+     */
+    public Point3D getPreviousGravitationalField() {
+        return previousGravitationalField;
+    }
+    
+    /**
+     * Megadja az utolsó módosítás előtti mágneses mező erősségét.
+     */
+    public Point3D getPreviousMagneticField() {
+        return previousMagneticField;
+    }
+    
     /**
      * Megadja az utolsó GPS pozíció módosulásának dátumát.
      */
@@ -356,8 +370,8 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     /**
      * Megadja az utolsó előtti GPS pozíció módosulásának dátumát.
      */
-    public Date getLastGpsChangeDate() {
-        return lastGpsChangeDate;
+    public Date getPreviousGpsChangeDate() {
+        return previousGpsChangeDate;
     }
 
     /**
@@ -411,9 +425,9 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
      * Még mielőtt megváltozna az adat, az előző adat eltárolódik.
      */
     public void setGpsPosition(Point3D gpsPosition) {
-        lastGpsChangeDate = gpsChangeDate;
+        previousGpsChangeDate = gpsChangeDate;
         gpsChangeDate = new Date();
-        this.lastGpsPosition = getGpsPosition();
+        this.previousGpsPosition = getGpsPosition();
         this.gpsPosition = gpsPosition;
     }
 
@@ -421,6 +435,7 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
      * Beállítja a gravitációs mező erősségét.
      */
     public void setGravitationalField(Point3D gravitationalField) {
+        this.previousGravitationalField = getGravitationalField();
         this.gravitationalField = gravitationalField;
     }
 
@@ -428,6 +443,7 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
      * Beállítja a mágneses mező erősségét.
      */
     public void setMagneticField(Point3D magneticField) {
+        this.previousMagneticField = getMagneticField();
         this.magneticField = magneticField;
     }
     

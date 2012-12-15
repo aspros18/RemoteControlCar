@@ -57,6 +57,7 @@ public class HostMessageProcess extends MessageProcess {
 			else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
 				getHostData().setMagneticField(p);
 			}
+			fireSensorChanged();
 		}
 		
 	};
@@ -71,16 +72,19 @@ public class HostMessageProcess extends MessageProcess {
 		@Override
 		public void onProviderDisabled(String provider) {
 			getHostData().setUp2Date(false);
+			fireSensorChanged();
 		}
 		
 		@Override
 		public void onStatusChanged(String provider, int status, Bundle extras) {
 			getHostData().setUp2Date(status == LocationProvider.AVAILABLE);
+			fireSensorChanged();
 		}
 		
 		@Override
 		public void onLocationChanged(Location location) {
 			getHostData().setGpsPosition(new Point3D(location.getLongitude(), location.getLatitude(), location.getAltitude()));
+			fireSensorChanged();
 		}
 		
 	};
@@ -108,6 +112,8 @@ public class HostMessageProcess extends MessageProcess {
 		
 	};
 	
+	private boolean loaded;
+	
 	public HostMessageProcess(ConnectionService service, SecureHandler handler) {
 		super(handler);
 		SERVICE = service;
@@ -133,8 +139,13 @@ public class HostMessageProcess extends MessageProcess {
 	 */
 	@Override
 	protected void onStart() {
+		loaded = false;
 		sensorThread.start();
-		SERVICE.getBinder().sendHostData(this); // TODO: teszt
+		while (availableDirection && (getHostData().getGravitationalField() == null || getHostData().getMagneticField() == null)) {
+			sleep(100);
+		}
+		SERVICE.getBinder().sendHostData(this);
+		loaded = true;
 	}
 	
 	/**
@@ -148,6 +159,8 @@ public class HostMessageProcess extends MessageProcess {
 		if (availableDirection) sensorManager.unregisterListener(sensorEventListener);
 		getHostData().setUp2Date(false);
 		getHostData().setMagneticField(null);
+		getHostData().setMagneticField(null);
+		getHostData().setGravitationalField(null);
 		getHostData().setGravitationalField(null);
 	}
 	
@@ -191,6 +204,18 @@ public class HostMessageProcess extends MessageProcess {
 
 	private HostData getHostData() {
 		return SERVICE.getBinder().getHostData();
+	}
+	
+	private void fireSensorChanged() { //TODO
+		if (loaded) {
+			if (getHostData().getMagneticField() != null && !getHostData().getMagneticField().equals(getHostData().getPreviousMagneticField())) {
+				sendMessage(new HostData.PointPartialHostData(
+					new HostData.PointPartialHostData.PointData(getHostData().getMagneticField(), HostData.PointPartialHostData.PointType.MAGNETIC_FIELD),
+					new HostData.PointPartialHostData.PointData(getHostData().getGravitationalField(), HostData.PointPartialHostData.PointType.GRAVITATIONAL_FIELD),
+					new HostData.PointPartialHostData.PointData(getHostData().getGpsPosition(), HostData.PointPartialHostData.PointType.GPS_POSITION)
+				));
+			}
+		}
 	}
 	
 }

@@ -72,7 +72,8 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
          */
         public static enum BooleanType {
             STREAMING,
-            VEHICLE_CONNECTED
+            VEHICLE_CONNECTED,
+            UP_2_DATE
         }
         
         /**
@@ -102,6 +103,9 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
                         break;
                     case VEHICLE_CONNECTED:
                         d.setVehicleConnected(data);
+                        break;
+                    case UP_2_DATE:
+                        d.setUp2Date(data);
                 }
             }
         }
@@ -231,6 +235,11 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     private Date gpsChangeDate;
     
     /**
+     * Megadja, hogy a szenzoradatok naprakészek-e.
+     */
+    private Boolean up2date = false;
+    
+    /**
      * Folyamatban van-e az MJPEG streamelés.
      * Kezdetben nincs streamelés.
      */
@@ -256,7 +265,15 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
      * Megadja, hogy pontosan szabályozható-e a a sebesség.
      */
     private boolean fullY = false;
-
+    
+    public HostData() {
+        super();
+    }
+    
+    public HostData(HostData data) {
+        super(data);
+    }
+    
     /**
      * Megadja, hogy pontosan szabályozható-e a az irány.
      * True esetén csak 0 vagy 100 lehet az érték.
@@ -287,6 +304,13 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
         return vehicleConnected;
     }
 
+    /**
+     * Megadja, hogy a szenzoradatok naprakészek-e.
+     */
+    public Boolean isUp2Date() {
+        return up2date;
+    }
+    
     /**
      * Az autó vezérlőjelét adja vissza.
      */
@@ -367,6 +391,13 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     }
     
     /**
+     * Beállítja, hogy a szenzoradatok naprakészek-e.
+     */
+    public void setUp2Date(Boolean up2date) {
+        this.up2date = up2date;
+    }
+    
+    /**
      * Beállítja az autó vezérlőjelét.
      * @param controll ha null, (az alapértelmezett) 0;0 állítódik be
      */
@@ -409,6 +440,7 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
         if (d != null) {
             setFullX(d.isFullX());
             setFullY(d.isFullY());
+            setUp2Date(d.isUp2Date());
             setControl(d.getControl());
             setStreaming(d.isStreaming());
             setVehicleConnected(d.isVehicleConnected());

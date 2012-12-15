@@ -224,11 +224,11 @@ public class MainActivity extends SherlockActivity {
 		int x = arrow.getPercentX();
 		int y = arrow.getPercentY();
 		
-		if (binder.isFullX()) { // ha az X tengely csak a végleteket engedi
+		if (binder.getHostData().isFullX()) { // ha az X tengely csak a végleteket engedi
 			arrow.setPercentX(x > 0 ? 100 : x == 0 ? 0 : -100); // véglet beállítása
 			x = arrow.getPercentX(); // százalékos érték frissítése
 		}
-		if (binder.isFullY()) { // ugyan ez Y tengelyre...
+		if (binder.getHostData().isFullY()) { // ugyan ez Y tengelyre...
 			arrow.setPercentY(y > 0 ? 100 : y == 0 ? 0 : -100);
 			y = arrow.getPercentY();
 		}

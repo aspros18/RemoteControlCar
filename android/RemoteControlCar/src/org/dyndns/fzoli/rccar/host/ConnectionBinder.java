@@ -38,7 +38,10 @@ public class ConnectionBinder extends Binder {
 	/**
 	 * A jármű adatai.
 	 */
-	private final HostData DATA = new HostData();
+	@SuppressWarnings("serial")
+	private final HostData DATA = new HostData() {
+		
+	};
 	
 	/**
 	 * Az objektumot létrehozó Service referenciája.
@@ -74,62 +77,15 @@ public class ConnectionBinder extends Binder {
 		return SERVICE;
 	}
 	
+	public HostData getHostData() {
+		return DATA;
+	}
+	
 	/**
 	 * Az autó vezérlőjelét adja vissza.
 	 */
 	private Control getControl() {
 		return DATA.getControl();
-	}
-	
-	/**
-	 * Megadja, hogy pontosan szabályozható-e a az irány.
-	 * True esetén csak 0 vagy +-100 lehet az érték.
-	 */
-	public boolean isFullX() {
-		return DATA.isFullX();
-	}
-	
-	/**
-	 * Megadja, hogy pontosan szabályozható-e a a sebesség.
-	 * True esetén csak 0 vagy +-100 lehet az érték.
-	 */
-	public boolean isFullY() {
-		return DATA.isFullY();
-	}
-	
-	/**
-	 * Megadja, hogy az MJPEG streamelés folyamatban van-e.
-	 * Ha nincs folyamatban, egyik {@code HostVideoProcess} objektum sem streamel.
-	 * Amint igazra vált az érték, az összes objektum elkezdi a streamelést, ha több van.
-	 * Kezdetben nincs streamelés.
-	 */
-	public boolean isStreaming() {
-		return DATA.isStreaming();
-	}
-	
-	/**
-	 * Beállítja, hogy az MJPEG streamelés folyamatban legyen-e.
-	 */
-	public void setStreaming(boolean streaming) {
-		DATA.setStreaming(streaming);
-	}
-	
-	/**
-	 * A jármű adatait elküldi a hídnak, ha tudja.
-	 */
-	public void sendHostData(HostMessageProcess sender) {
-		if (sender != null) sender.sendMessage(DATA);
-	}
-	
-	/**
-	 * Frissíti a HostData beállításait annak egyik részadata alapján.
-	 * Ha a részadat vezérlőjel, akkor jelzi az eseményt a felületnek.
-	 */
-	public void updateHostData(HostData.PartialHostData<?> partialData) {
-		DATA.update(partialData);
-		if (partialData instanceof HostData.ControlPartialHostData) {
-			fireArrowChange(true);
-		}
 	}
 	
 	/**
@@ -218,6 +174,24 @@ public class ConnectionBinder extends Binder {
 	public void setY(int y, boolean remote) {
 		getControl().setY(y);
 		fireArrowChange(remote);
+	}
+	
+	/**
+	 * A jármű adatait elküldi a hídnak, ha tudja.
+	 */
+	public void sendHostData(HostMessageProcess sender) {
+		if (sender != null) sender.sendMessage(new HostData(DATA));
+	}
+	
+	/**
+	 * Frissíti a HostData beállításait annak egyik részadata alapján.
+	 * Ha a részadat vezérlőjel, akkor jelzi az eseményt a felületnek.
+	 */
+	public void updateHostData(HostData.PartialHostData<?> partialData) {
+		DATA.update(partialData);
+		if (partialData instanceof HostData.ControlPartialHostData) {
+			fireArrowChange(true);
+		}
 	}
 	
 	/**

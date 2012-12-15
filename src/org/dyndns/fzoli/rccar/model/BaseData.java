@@ -10,6 +10,14 @@ public class BaseData<D extends BaseData, PD extends PartialBaseData> extends Da
      * Akkumulátor szint százalékban.
      */
     private Integer batteryLevel;
+
+    protected BaseData() {
+        super();
+    }
+
+    protected BaseData(D data) {
+        super(data);
+    }
     
     /**
      * Megadja a host akkumulátorszintjét százalékban.

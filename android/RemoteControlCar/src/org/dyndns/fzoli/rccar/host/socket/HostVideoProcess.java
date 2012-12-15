@@ -185,7 +185,7 @@ public class HostVideoProcess extends AbstractSecureProcess {
 					InputStream in = conn.getInputStream();
 					OutputStream out = getSocket().getOutputStream();
 					while (!getSocket().isClosed()) { // amíg van kapcsolat, MJPEG stream olvasása és feltöltése a hídnak
-						if (!SERVICE.getBinder().isStreaming()) { // ha nem kell streamelni
+						if (!SERVICE.getBinder().getHostData().isStreaming()) { // ha nem kell streamelni
 							sleep(200); // kis várakozás
 							continue; // ciklus újrakezdése
 						}

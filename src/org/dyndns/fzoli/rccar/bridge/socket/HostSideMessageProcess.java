@@ -26,7 +26,13 @@ public class HostSideMessageProcess extends BridgeMessageProcess {
 
     @Override
     protected void onMessage(Object o) {
-        System.out.println(o);
+        if (o instanceof HostData.PointPartialHostData) {
+            HostData.PointPartialHostData pd = (HostData.PointPartialHostData) o;
+            System.out.println("point data length: " + pd.data.length + "\n\n\n");
+        }
+        else {
+            System.out.println(o);
+        }
     }
     
 }

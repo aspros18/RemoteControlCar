@@ -1,12 +1,15 @@
 package org.dyndns.fzoli.rccar.host.socket;
 
 import java.io.InvalidClassException;
+import java.util.Date;
 
 import org.dyndns.fzoli.rccar.host.ConnectionService;
 import org.dyndns.fzoli.rccar.host.ConnectionService.ConnectionError;
 import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.host.HostData;
 import org.dyndns.fzoli.rccar.model.host.HostData.PartialHostData;
+import org.dyndns.fzoli.rccar.model.host.HostData.PointPartialHostData.PointData;
+import org.dyndns.fzoli.rccar.model.host.HostData.PointPartialHostData.PointType;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.impl.MessageProcess;
 
@@ -206,14 +209,65 @@ public class HostMessageProcess extends MessageProcess {
 		return SERVICE.getBinder().getHostData();
 	}
 	
-	private void fireSensorChanged() { //TODO
-		if (loaded) {
+	private long fireTime;
+	
+	private void fireSensorChanged() {
+		final long time = new Date().getTime();
+		if (loaded &&  time - fireTime > 1000) { //TODO: 1000 kicserélése a beállításokban megadottra
+			fireTime = time;
+			int change = 0;
+			if (getHostData().getGravitationalField() != null && !getHostData().getGravitationalField().equals(getHostData().getPreviousGravitationalField())) {
+				change += 1;
+				getHostData().setGravitationalField(getHostData().getGravitationalField());
+			}
 			if (getHostData().getMagneticField() != null && !getHostData().getMagneticField().equals(getHostData().getPreviousMagneticField())) {
-				sendMessage(new HostData.PointPartialHostData(
-					new HostData.PointPartialHostData.PointData(getHostData().getMagneticField(), HostData.PointPartialHostData.PointType.MAGNETIC_FIELD),
-					new HostData.PointPartialHostData.PointData(getHostData().getGravitationalField(), HostData.PointPartialHostData.PointType.GRAVITATIONAL_FIELD),
-					new HostData.PointPartialHostData.PointData(getHostData().getGpsPosition(), HostData.PointPartialHostData.PointType.GPS_POSITION)
-				));
+				change += 2;
+				getHostData().setMagneticField(getHostData().getMagneticField());
+			}
+			if (getHostData().getGpsPosition() != null && !getHostData().getGpsPosition().equals(getHostData().getPreviousGpsPosition())) {
+				change += 4;
+				getHostData().setGpsPosition(getHostData().getGpsPosition());
+			}
+			switch (change) {
+				case 1:
+					sendMessage(new HostData.PointPartialHostData(
+						new PointData(getHostData().getGravitationalField(), PointType.GRAVITATIONAL_FIELD)
+					));
+					break;
+				case 2:
+					sendMessage(new HostData.PointPartialHostData(
+						new PointData(getHostData().getMagneticField(), PointType.MAGNETIC_FIELD)
+					));
+					break;
+				case 3:
+					sendMessage(new HostData.PointPartialHostData(
+						new PointData(getHostData().getGravitationalField(), PointType.GRAVITATIONAL_FIELD),
+						new PointData(getHostData().getMagneticField(), PointType.MAGNETIC_FIELD)
+					));
+					break;
+				case 4:
+					sendMessage(new HostData.PointPartialHostData(
+						new PointData(getHostData().getGpsPosition(), PointType.GPS_POSITION)
+					));
+					break;
+				case 5:
+					sendMessage(new HostData.PointPartialHostData(
+						new PointData(getHostData().getGravitationalField(), PointType.GRAVITATIONAL_FIELD),
+						new PointData(getHostData().getGpsPosition(), PointType.GPS_POSITION)
+					));
+					break;
+				case 6:
+					sendMessage(new HostData.PointPartialHostData(
+						new PointData(getHostData().getMagneticField(), PointType.MAGNETIC_FIELD),
+						new PointData(getHostData().getGpsPosition(), PointType.GPS_POSITION)
+					));
+					break;
+				case 7:
+					sendMessage(new HostData.PointPartialHostData(
+						new PointData(getHostData().getGravitationalField(), PointType.GRAVITATIONAL_FIELD),
+						new PointData(getHostData().getMagneticField(), PointType.MAGNETIC_FIELD),
+						new PointData(getHostData().getGpsPosition(), PointType.GPS_POSITION)
+					));
 			}
 		}
 	}

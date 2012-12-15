@@ -137,4 +137,11 @@ public class Config implements org.dyndns.fzoli.rccar.clients.ClientConfig {
 		return PREFERENCES.getString("cam_password", "");
 	}
 	
+	/**
+	 * A megváltozott szenzoradatok küldésének időköze.
+	 */
+	public int getRefreshInterval() {
+		return Integer.parseInt(PREFERENCES.getString("refresh_interval", "1000"));
+	}
+	
 }

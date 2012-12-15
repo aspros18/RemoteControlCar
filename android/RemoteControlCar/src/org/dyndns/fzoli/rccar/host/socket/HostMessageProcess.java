@@ -5,6 +5,7 @@ import java.util.Date;
 
 import org.dyndns.fzoli.rccar.host.ConnectionService;
 import org.dyndns.fzoli.rccar.host.ConnectionService.ConnectionError;
+import org.dyndns.fzoli.rccar.host.vehicle.Vehicle;
 import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.host.HostData;
 import org.dyndns.fzoli.rccar.model.host.HostData.PartialHostData;
@@ -74,20 +75,27 @@ public class HostMessageProcess extends MessageProcess {
 		
 		@Override
 		public void onProviderDisabled(String provider) {
-			getHostData().setUp2Date(false);
-			fireSensorChanged();
+			sendUp2Date(false);
 		}
 		
 		@Override
 		public void onStatusChanged(String provider, int status, Bundle extras) {
-			getHostData().setUp2Date(status == LocationProvider.AVAILABLE);
-			fireSensorChanged();
+			sendUp2Date(status == LocationProvider.AVAILABLE);
 		}
 		
 		@Override
 		public void onLocationChanged(Location location) {
 			getHostData().setGpsPosition(new Point3D(location.getLongitude(), location.getLatitude(), location.getAltitude()));
 			fireSensorChanged();
+		}
+		
+	};
+	
+	private final Vehicle.Callback vehicleCallback = new Vehicle.Callback() {
+		
+		@Override
+		public void onBatteryLevelChanged(int level) {
+			sendMessage(new HostData.BatteryPartialHostData(level));
 		}
 		
 	};
@@ -102,6 +110,7 @@ public class HostMessageProcess extends MessageProcess {
 	private final HandlerThread sensorThread = new HandlerThread("sensor thread", android.os.Process.THREAD_PRIORITY_BACKGROUND) {
 		
 		protected void onLooperPrepared() {
+			SERVICE.getVehicle().setCallback(vehicleCallback);
 			if (availableLocation) {
 				locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10f, locationListener);
 			}
@@ -116,6 +125,8 @@ public class HostMessageProcess extends MessageProcess {
 	};
 	
 	private boolean loaded;
+	
+	private long fireTime;
 	
 	public HostMessageProcess(ConnectionService service, SecureHandler handler) {
 		super(handler);
@@ -158,6 +169,7 @@ public class HostMessageProcess extends MessageProcess {
 	@Override
 	protected void onStop() {
 		sensorThread.getLooper().quit();
+		SERVICE.getVehicle().setCallback(null);
 		if (availableLocation) locationManager.removeUpdates(locationListener);
 		if (availableDirection) sensorManager.unregisterListener(sensorEventListener);
 		getHostData().setUp2Date(false);
@@ -209,11 +221,14 @@ public class HostMessageProcess extends MessageProcess {
 		return SERVICE.getBinder().getHostData();
 	}
 	
-	private long fireTime;
+	private void sendUp2Date(boolean up2date) {
+		getHostData().setUp2Date(up2date);
+		sendMessage(new HostData.BooleanPartialHostData(up2date, HostData.BooleanPartialHostData.BooleanType.UP_2_DATE));
+	}
 	
 	private void fireSensorChanged() {
 		final long time = new Date().getTime();
-		if (loaded &&  time - fireTime > 1000) { //TODO: 1000 kicserélése a beállításokban megadottra
+		if (loaded &&  time - fireTime >= SERVICE.getConfig().getRefreshInterval()) {
 			fireTime = time;
 			int change = 0;
 			if (getHostData().getGravitationalField() != null && !getHostData().getGravitationalField().equals(getHostData().getPreviousGravitationalField())) {

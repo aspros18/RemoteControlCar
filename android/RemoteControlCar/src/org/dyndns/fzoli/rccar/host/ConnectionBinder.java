@@ -38,10 +38,7 @@ public class ConnectionBinder extends Binder {
 	/**
 	 * A jármű adatai.
 	 */
-	@SuppressWarnings("serial")
-	private final HostData DATA = new HostData() {
-		
-	};
+	private final HostData DATA = new HostData();
 	
 	/**
 	 * Az objektumot létrehozó Service referenciája.
@@ -180,7 +177,7 @@ public class ConnectionBinder extends Binder {
 	 * A jármű adatait elküldi a hídnak, ha tudja.
 	 */
 	public void sendHostData(HostMessageProcess sender) {
-		if (sender != null) sender.sendMessage(new HostData(DATA));
+		if (sender != null) sender.sendMessage(DATA);
 	}
 	
 	/**

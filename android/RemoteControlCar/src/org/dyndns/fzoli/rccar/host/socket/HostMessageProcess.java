@@ -4,6 +4,7 @@ import java.io.InvalidClassException;
 
 import org.dyndns.fzoli.rccar.host.ConnectionService;
 import org.dyndns.fzoli.rccar.host.ConnectionService.ConnectionError;
+import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.host.HostData;
 import org.dyndns.fzoli.rccar.model.host.HostData.PartialHostData;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
@@ -17,6 +18,7 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Bundle;
 import android.os.HandlerThread;
 import android.util.Log;
@@ -48,11 +50,12 @@ public class HostMessageProcess extends MessageProcess {
 
 		@Override
 		public void onSensorChanged(SensorEvent event) {
+			Point3D p = new Point3D(event.values[0], event.values[1], event.values[2]);
 			if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-				
+				getHostData().setGravitationalField(p);
 			}
 			else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-				
+				getHostData().setMagneticField(p);
 			}
 		}
 		
@@ -61,23 +64,23 @@ public class HostMessageProcess extends MessageProcess {
 	private final LocationListener locationListener = new LocationListener() {
 		
 		@Override
-		public void onStatusChanged(String provider, int status, Bundle extras) {
-			Log.i("test", "status changed");
-		}
-		
-		@Override
 		public void onProviderEnabled(String provider) {
-			Log.i("test", "provider enabled");
+			;
 		}
 		
 		@Override
 		public void onProviderDisabled(String provider) {
-			Log.i("test", "provider disabled");
+			getHostData().setUp2Date(false);
+		}
+		
+		@Override
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+			getHostData().setUp2Date(status == LocationProvider.AVAILABLE);
 		}
 		
 		@Override
 		public void onLocationChanged(Location location) {
-			Log.i("test", "longitude: "+location.getLongitude());
+			getHostData().setGpsPosition(new Point3D(location.getLongitude(), location.getLatitude(), location.getAltitude()));
 		}
 		
 	};
@@ -137,13 +140,15 @@ public class HostMessageProcess extends MessageProcess {
 	/**
 	 * Ha a kapcsolat bezárul a híddal, akkor nem kell tovább figyelni a szenzoradatok változását,
 	 * ezért az eseménykezelők leregisztrálódnak, a szenzoradatok nullázódnak és a Looper Thread kilép.
-	 * TODO: szenzoradatok nullázása
 	 */
 	@Override
 	protected void onStop() {
 		sensorThread.getLooper().quit();
 		if (availableLocation) locationManager.removeUpdates(locationListener);
 		if (availableDirection) sensorManager.unregisterListener(sensorEventListener);
+		getHostData().setUp2Date(false);
+		getHostData().setMagneticField(null);
+		getHostData().setGravitationalField(null);
 	}
 	
 	/**
@@ -184,4 +189,8 @@ public class HostMessageProcess extends MessageProcess {
 		SERVICE.onConnectionError(err);
 	}
 
+	private HostData getHostData() {
+		return SERVICE.getBinder().getHostData();
+	}
+	
 }

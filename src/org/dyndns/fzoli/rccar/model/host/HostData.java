@@ -235,7 +235,7 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     private Date gpsChangeDate;
     
     /**
-     * Megadja, hogy a szenzoradatok naprakészek-e.
+     * Megadja, hogy a GPS adat naprakész-e.
      */
     private Boolean up2date = false;
     
@@ -305,7 +305,7 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     }
 
     /**
-     * Megadja, hogy a szenzoradatok naprakészek-e.
+     * Megadja, hogy a GPS adat naprakész-e.
      */
     public Boolean isUp2Date() {
         return up2date;
@@ -391,7 +391,7 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     }
     
     /**
-     * Beállítja, hogy a szenzoradatok naprakészek-e.
+     * Beállítja, hogy a GPS adat naprakész-e.
      */
     public void setUp2Date(Boolean up2date) {
         this.up2date = up2date;

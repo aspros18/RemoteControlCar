@@ -9,6 +9,16 @@ import org.dyndns.fzoli.rccar.model.host.HostData.PartialHostData;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.impl.MessageProcess;
 
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.os.HandlerThread;
 import android.util.Log;
 
 public class HostMessageProcess extends MessageProcess {
@@ -24,9 +34,85 @@ public class HostMessageProcess extends MessageProcess {
 	 */
 	private final ConnectionService SERVICE;
 	
+	private final SensorManager sensorManager;
+	private final LocationManager locationManager;
+	
+	private final boolean availableDirection, availableLocation;
+	
+	private final SensorEventListener sensorEventListener = new SensorEventListener() {
+
+		@Override
+		public void onAccuracyChanged(Sensor sensor, int accuracy) {
+			;
+		}
+
+		@Override
+		public void onSensorChanged(SensorEvent event) {
+			if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+				
+			}
+			else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+				
+			}
+		}
+		
+	};
+
+	private final LocationListener locationListener = new LocationListener() {
+		
+		@Override
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+			Log.i("test", "status changed");
+		}
+		
+		@Override
+		public void onProviderEnabled(String provider) {
+			Log.i("test", "provider enabled");
+		}
+		
+		@Override
+		public void onProviderDisabled(String provider) {
+			Log.i("test", "provider disabled");
+		}
+		
+		@Override
+		public void onLocationChanged(Location location) {
+			Log.i("test", "longitude: "+location.getLongitude());
+		}
+		
+	};
+	
+	/**
+	 * A szenzorok eseménykezelőit regisztráló szál.
+	 * Azért, hogy a LocationListener regisztrálható legyen, olyan szálban kell a metódust futtatni, mely Looper thread.
+	 * A HandlerThread egy egyszerű Looper Thread implementáció az Android API-ban.
+	 * Amikor a szál megkezdi futását, létrejön a szálhoz a Looper és lefut az onLooperPrepared metódus, melyben a szenzorok
+	 * eseménykezelői regisztrálódnak és ez után a Looper megkezdi futását, ami eredménye, hogy az események célba jutnak.
+	 */
+	private final HandlerThread sensorThread = new HandlerThread("sensor thread", android.os.Process.THREAD_PRIORITY_BACKGROUND) {
+		
+		protected void onLooperPrepared() {
+			if (availableLocation) {
+				locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10f, locationListener);
+			}
+			if (availableDirection) {
+				Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		     	Sensor magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+		     	sensorManager.registerListener(sensorEventListener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+		     	sensorManager.registerListener(sensorEventListener, magnetometer, SensorManager.SENSOR_DELAY_NORMAL);
+			}
+		};
+		
+	};
+	
 	public HostMessageProcess(ConnectionService service, SecureHandler handler) {
 		super(handler);
 		SERVICE = service;
+		locationManager = (LocationManager) service.getSystemService(Context.LOCATION_SERVICE);
+		sensorManager = (SensorManager)service.getSystemService(Context.SENSOR_SERVICE);
+		availableLocation = locationManager.getAllProviders().contains(LocationManager.GPS_PROVIDER);
+		availableDirection = !sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER).isEmpty() && !sensorManager.getSensorList(Sensor.TYPE_GRAVITY).isEmpty();
+		Log.i(ConnectionService.LOG_TAG, "location: " + availableLocation + "; direction: " + availableDirection);
 	}
 	
 	/**
@@ -44,16 +130,20 @@ public class HostMessageProcess extends MessageProcess {
 	 */
 	@Override
 	protected void onStart() {
-		SERVICE.getBinder().sendHostData(this); // teszt
+		sensorThread.start();
+		SERVICE.getBinder().sendHostData(this); // TODO: teszt
 	}
 	
 	/**
-	 * TODO: Ha a kapcsolat bezárul a híddal, akkor nem kell tovább figyelni a szenzoradatok változását,
-	 * ezért az eseménykezelők leregisztrálódnak.
+	 * Ha a kapcsolat bezárul a híddal, akkor nem kell tovább figyelni a szenzoradatok változását,
+	 * ezért az eseménykezelők leregisztrálódnak, a szenzoradatok nullázódnak és a Looper Thread kilép.
+	 * TODO: szenzoradatok nullázása
 	 */
 	@Override
 	protected void onStop() {
-		;
+		sensorThread.getLooper().quit();
+		if (availableLocation) locationManager.removeUpdates(locationListener);
+		if (availableDirection) sensorManager.unregisterListener(sensorEventListener);
 	}
 	
 	/**

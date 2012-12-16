@@ -349,7 +349,7 @@ public class MapDialog extends AbstractDialog {
                                 radar.setFade(angle % 3 == 0);
                             }
                             
-                        }, 5000, 1000); // ... 5 másodperccel később másodpercenként változik az irány
+                        }, 5000, 1000); // ... 5 másodperccel később másodpercenként változik az irány és az átfedés ki/be kapcsol
                         radar.setPosition(47.35021, 19.10236); // a hely Dunaharaszti egyik utcája
                         radar.setVisible(true); // az ablak megjelenítése
                     }

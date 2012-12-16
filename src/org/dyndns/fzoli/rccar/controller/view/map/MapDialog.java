@@ -115,7 +115,8 @@ public class MapDialog extends AbstractDialog {
         mapPane.setPreferredSize(new Dimension(RADAR_SIZE, RADAR_SIZE)); // a méret megadása
         
         // kezdetben úgy tesz, mint ha nem lenne böngésző támogatás
-        final JLabel lbErr = new JLabel("<html><p style=\"text-align:center; color:red\">A térkép nem jeleníthető meg.</p></html>", SwingConstants.CENTER);
+        final JLabel lbErr = new JLabel("<html><p style=\"text-align:center\">Töltés...<br><br><br>Ha a térkép nem jelenik meg rövidesen, telepítsen Mozilla Firefox böngészőt.</p></html>", SwingConstants.CENTER);
+        lbErr.setPreferredSize(mapPane.getPreferredSize()); // a hibaüzenet mérete megegyezik a térképével
         getContentPane().add(lbErr, BorderLayout.NORTH); // a hibaüzenet az ablak felső részére kerül
         
         getContentPane().add(mapPane, BorderLayout.CENTER); // a térkép középre igazítva jelenik meg

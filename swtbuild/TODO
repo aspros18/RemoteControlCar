@@ -1,0 +1,2 @@
+- Az elkészült jar fájlból hiányoznak a képfájlok.
+- A Splash Screen nem állítódik be a manifest fájlba.

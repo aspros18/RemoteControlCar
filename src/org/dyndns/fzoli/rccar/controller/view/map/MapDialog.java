@@ -79,7 +79,7 @@ public class MapDialog extends AbstractDialog {
             "      div#border { z-index: 1000003; top: 0px; left: 0px }" + LS +
             "      div#arrow { z-index: 1000002; top: " + ((MAP_HEIGHT / 2) - (ARROW_SIZE / 2)) + "px; left: " + ((MAP_WIDTH / 2) - (ARROW_SIZE / 2)) + "px; width: " + ARROW_SIZE + "px; height: " + ARROW_SIZE + "px }" + LS +
             "      div.fade { opacity: 1; transition: opacity .25s ease-in-out; -moz-transition: opacity .25s ease-in-out; -webkit-transition: opacity .25s ease-in-out; }" + LS +
-            "      div.fade[align=\"justify\"] { opacity: 0.5; }" + LS +
+            "      div.fade[align=\"justify\"] { opacity: 0.5; }" + LS + // TODO: IE alatt ez se működik. Miért is működne?! Az lenne a csoda ...
             "    </style>" + LS +
             "    <script type=\"text/javascript\" src=\"http://maps.googleapis.com/maps/api/js?&sensor=false\"></script>" + LS +
             "  </head>" + LS +

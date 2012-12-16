@@ -20,7 +20,6 @@ import java.util.TimerTask;
 import javax.imageio.ImageIO;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_MAP;

@@ -125,6 +125,12 @@ public class MapDialog extends AbstractDialog {
         mapPane.add(webComponent, JLayeredPane.DEFAULT_LAYER); // a böngésző a méretezett pane-re kerül
         webComponent.setBounds((-1 * (MAP_WIDTH / 2)) + (RADAR_SIZE / 2), (-1 * (MAP_HEIGHT / 2)) + (RADAR_SIZE / 2), MAP_WIDTH, MAP_HEIGHT); // és a pozíciója úgy van beállítva, hogy a Google reklám ne látszódjon
         
+        setResizable(false); // ablak átméretezésének tiltása
+        lbErr.setVisible(false); // hibaüzenet elrejtése a pack hívása előtt, hogy ne vegye számításba
+        pack(); // ablakméret minimalizálása
+        lbErr.setVisible(true); // hibaüzenet megjelenítése
+        mapPane.setVisible(false); // térkép láthatatlanná tétele, míg nem tölt be
+        
         // a natív böngésző lecsupaszítása
         webBrowser.setBarsVisible(false);
         webBrowser.setButtonBarVisible(false);
@@ -198,9 +204,6 @@ public class MapDialog extends AbstractDialog {
             
         }));
         
-        setResizable(false); // ablak átméretezésének tiltása
-        pack(); // minimum méret beállítása
-        mapPane.setVisible(false); // térkép láthatatlanná tétele, míg nem tölt be
     }
     
     /**

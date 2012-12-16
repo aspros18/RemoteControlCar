@@ -27,14 +27,20 @@ import android.os.Bundle;
 import android.os.HandlerThread;
 import android.util.Log;
 
+/**
+ * Üzenet küldő és fogadó.
+ * A telefon GPS pozícióját, gyorsulását és a mágneses térerősségét figyeli és ha változás áll fenn,
+ * üzenetet küld a hídnak a változásokról vagy változásról (attól függően, hogy egy vagy több adat változott).
+ * A telefonon futó program nem foglalkozik azzal, miért van ezekre az adatokra szükség, mert a híd dolga az
+ * adatok feldolgozása és a kinyert információ közlése az összes vezérlő kliensnek.
+ * Az osztály az IOIO által vezérelt áramkör feszültség változását is figyeli és az akkumulátor százalékos
+ * töltöttségét elküldi a hídnak. Ez azonban már feldolgozott adat, a híd egyszerűen továbbítja a vezérlő programoknak.
+ * A program beállítások menüjében beállítható a frissítési időköz adatforgalom takarékosság céljából.
+ * A frissítési időköz a telefon szenzoraira vonatkozik, az akkumulátor-szint változást nem érinti,
+ * mivel annak változása nagyon lassú folyamat (legalább 1 perc), de a szenzoradatok másodpercenként többször változhatnak.
+ */
 public class HostMessageProcess extends MessageProcess {
 
-	// TODO: akkuszint változás észlelés és küldés a hídnak [SERVICE.getVehicle().setCallback(...);]
-	// hasonlóképpen a szenzorok eseményeinek küldésével
-	// a host data küldése előtt a szenzorok adatainak kiolvasása, hogy egyből friss adatokat kapjon a híd
-	// a szenzorok figyelése csak kiépített kapcsolatok esetén szükséges továbbá
-	// ha a szenzor eseményfigyelője meghívódik, a helyi adat frissítésével egy időben üzenés a hídnak is a beállított időköznek megfelelően
-	
 	/**
 	 * A szolgáltatás referenciája, hogy lehessen a változásról értesíteni.
 	 */
@@ -140,22 +146,21 @@ public class HostMessageProcess extends MessageProcess {
 	
 	/**
 	 * Amint kapcsolódott a hídhoz az alkalmazás, a szenzorok figyelése megkezdődik.
-	 * Amint az akkumulátor-szint, GPS helyzet, mágneses-térerősség és nehézségi gyorsulás
+	 * Amint az akkumulátor-szint, mágneses-térerősség és nehézségi gyorsulás
 	 * első adatai megérkeztek és beállítódtak a jármű modelében, a feldolgozó elküldi a jármű adatait.
 	 * Ekkor a híd az online járművek listájába beteszi a jármű modelt a kezdőadatokkal.
-	 * Ettől kezdve már csak a részadatok küldése szükséges külön-külön a megadott időközönként.
+	 * Ettől kezdve már csak a részadatok küldése szükséges a megadott időközönként.
 	 * A regisztrált szenzorok eseményfigyelői továbbá is frissítik a helyi model adatait és amikor ideje küldeni,
 	 * a szenzorok adatai el lesznek küldve, ha valamelyikük megváltozott.
 	 * A telefon három szenzorának változásai függenek a frissítési időköztől és részmodelben küldődnek el.
-	 * Az akkumulátor-szint változása viszont nem függ a frissítési időköztől, hanem amint 1 tizedet csökken
-	 * az akkumulátor feszültsége, azonnal külön részmodelben jut el az adat a hídhoz.
-	 * TODO: Az akkumulátor százalékos értékének kiszámítása a minimum és maximum feszültségszinttel történik a HÍD oldalán.
+	 * Az akkumulátor-szint változása viszont nem függ a frissítési időköztől, hanem amint a százalékos érték megváltozik,
+	 * azonnal külön részmodelben jut el az információ a hídhoz.
 	 */
 	@Override
 	protected void onStart() {
 		loaded = false;
 		sensorThread.start();
-		while (availableDirection && (getHostData().getGravitationalField() == null || getHostData().getMagneticField() == null)) {
+		while ((availableDirection && (getHostData().getGravitationalField() == null || getHostData().getMagneticField() == null)) || (getHostData().isVehicleConnected() && getHostData().getBatteryLevel() == null)) {
 			sleep(100);
 		}
 		SERVICE.getBinder().sendHostData(this);
@@ -177,6 +182,7 @@ public class HostMessageProcess extends MessageProcess {
 		getHostData().setMagneticField(null);
 		getHostData().setGravitationalField(null);
 		getHostData().setGravitationalField(null);
+		getHostData().setBatteryLevel(null);
 	}
 	
 	/**
@@ -226,6 +232,11 @@ public class HostMessageProcess extends MessageProcess {
 		sendMessage(new HostData.BooleanPartialHostData(up2date, HostData.BooleanPartialHostData.BooleanType.UP_2_DATE));
 	}
 	
+	/**
+	 * A megváltozott szenzoradatokat egyetlen üzenetbe tömörítve elküldi.
+	 * A nem változott adatokra nem hoz létre egyetlen objektumot sem fölöslegesen, hanem megvizsgálja, mi változott / mi nem
+	 * és az alapján létrehozza az üzenetet, amit el is küld a hídnak.
+	 */
 	private void fireSensorChanged() {
 		final long time = new Date().getTime();
 		if (loaded &&  time - fireTime >= SERVICE.getConfig().getRefreshInterval()) {

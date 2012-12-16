@@ -84,11 +84,12 @@ public abstract class AbstractVehicle extends BaseIOIOLooper implements Vehicle 
 	/**
 	 * Ha az akkumulátor-szint változott, meghívja az eseménykezelőt, végül vár 20 ezredmásodpercet.
 	 */
-	protected void refresh() throws InterruptedException {
+	protected void refresh() throws ConnectionLostException, InterruptedException {
 		if (callback != null) { // ha van eseménykezelő
 			int level = getBatteryLevel();
 			if (level != oldBatteryLevel) { // ha változott az akkuszint
 				oldBatteryLevel = level; // akkuszint frissítése
+				SERVICE.getBinder().getHostData().setBatteryLevel(level); // host data frissítése
 				callback.onBatteryLevelChanged(level); // callback hívása
 			}
 		}

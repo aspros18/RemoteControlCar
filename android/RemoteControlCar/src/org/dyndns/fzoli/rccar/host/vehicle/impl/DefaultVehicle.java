@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.host.vehicle.impl;
 
+import ioio.lib.api.AnalogInput;
 import ioio.lib.api.DigitalOutput;
 import ioio.lib.api.exception.ConnectionLostException;
 
@@ -14,7 +15,12 @@ import org.dyndns.fzoli.rccar.host.vehicle.AbstractVehicle;
  * @author zoli
  */
 public class DefaultVehicle extends AbstractVehicle {
-
+	
+	/**
+	 * Feszültséghatár akkumulátor-szint becsélésre.
+	 */
+	private static final float MAX_VOLTAGE = 5.0f, MIN_VOLTAGE = 2.5f;
+	
 //	/**
 //	 * Teszt precíz vezérlésre.
 //	 */
@@ -24,6 +30,8 @@ public class DefaultVehicle extends AbstractVehicle {
 	 * Digitális kimenet a vezérléshez.
 	 */
 	private DigitalOutput outLeft, outRight, outFront, outBack;
+	
+	private AnalogInput inBattery;
 	
 	/**
 	 * Konstruktor.
@@ -53,10 +61,13 @@ public class DefaultVehicle extends AbstractVehicle {
 	
 	/**
 	 * Az akkumulátor töltöttségét adja vissza százalékban.
-	 * TODO: egyelőre teszt
 	 */
-	public int getBatteryLevel() {
-		return 0;
+	@Override
+	public int getBatteryLevel() throws ConnectionLostException, InterruptedException {
+		int percent = (int)((inBattery.getVoltage() - MIN_VOLTAGE) * 100 / (MAX_VOLTAGE - MIN_VOLTAGE));
+		if (percent >= 100) return 100;
+		if (percent <= 0) return 0;
+		return percent;
 	}
 	
 	/**
@@ -67,10 +78,12 @@ public class DefaultVehicle extends AbstractVehicle {
 	 * - 12-es, balra kanyarodás
 	 * - 13-mas jobbra kanyarodás
 	 * A 10 és 11 valamint 12 és 13 soha nem lehet aktív egyszerre.
+	 * Az akkumulátor-szint mérése a 45-ös lábon történik.
 	 */
 	@Override
 	protected void setup() throws ConnectionLostException, InterruptedException {
 		super.setup();
+		inBattery = ioio_.openAnalogInput(45);
 		outFront = ioio_.openDigitalOutput(10, false);
 		outBack = ioio_.openDigitalOutput(11, false);
 		outLeft = ioio_.openDigitalOutput(12, false);

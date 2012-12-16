@@ -9,6 +9,8 @@ import chrriis.dj.nativeswing.swtimpl.components.WebBrowserEvent;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -16,7 +18,9 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.imageio.ImageIO;
+import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_MAP;
@@ -129,6 +133,8 @@ public class MapDialog extends AbstractDialog {
         // várakozás a térkép api betöltésére
         webBrowser.addWebBrowserListener(new WebBrowserAdapter() {
             
+            private int retry = 0;
+            
             @Override
             public void loadingProgressChanged(WebBrowserEvent e) {
                 if (e.getWebBrowser().getLoadingProgress() == 100) { // ha betöltődött az oldal
@@ -138,15 +144,33 @@ public class MapDialog extends AbstractDialog {
                     while ((test = e.getWebBrowser().executeJavascriptWithResult("return document.getElementById('map_canvas').innerHTML;")) == null || test.equals("")) {
                         e.getWebBrowser().executeJavascript(createInitScript()); // térkép inicializálás
                         try {
-                            if (new Date().getTime() - startDate.getTime() > 10000) break; // ha 10 mp alatt nem sikerült inicializálni, feladja
+                            if (new Date().getTime() - startDate.getTime() > 10000) {
+                                mapPane.setVisible(false);
+                                final JLabel lb = new JLabel("<html><span style=\"text-align:center\"><p style=\"text-align:center; color:red\">A térkép betöltése nem sikerült.</p><br><p style=\"text-align:center\">Kattintson ide az újratöltéshez.</p></span></html>");
+                                add(lb);
+                                lb.addMouseListener(new MouseAdapter() {
+
+                                    @Override
+                                    public void mouseClicked(MouseEvent ev) {
+                                        retry++;
+                                        remove(lb);
+                                        mapPane.setVisible(true);
+                                        webBrowser.setHTMLContent(HTML_SOURCE);
+                                    }
+                                    
+                                });
+                                break; // ha 10 mp alatt nem sikerült inicializálni, feladja és kilép a ciklusból
+                            }
                             Thread.sleep(100); // később újra próbálkozás
                         }
                         catch (Exception ex) {
                             ;
                         }
                     }
-                    if (callback == null) setVisible(true); // ablak megjelenítése, ha nincs eseményfigyelő
-                    else callback.loadFinished(MapDialog.this); // egyébként eseményfigyelő futtatása
+                    if (retry == 0) { // csak az első betöltéskor van eseménykezelés
+                        if (callback == null) setVisible(true); // ablak megjelenítése, ha nincs eseményfigyelő
+                        else callback.loadFinished(MapDialog.this); // egyébként eseményfigyelő futtatása
+                    }
                 }
             }
             

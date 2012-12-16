@@ -248,7 +248,7 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     /**
      * Megmondja, hogy a telefonhoz csatlakoztatva van-e a jármű.
      */
-    private Boolean vehicleConnected;
+    private Boolean vehicleConnected = false;
     
     /**
      * Vezérlőjel.

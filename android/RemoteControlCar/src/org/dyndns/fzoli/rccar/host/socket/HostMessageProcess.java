@@ -160,7 +160,7 @@ public class HostMessageProcess extends MessageProcess {
 	protected void onStart() {
 		loaded = false;
 		sensorThread.start();
-		while ((availableDirection && (getHostData().getGravitationalField() == null || getHostData().getMagneticField() == null)) || (getHostData().isVehicleConnected() && getHostData().getBatteryLevel() == null)) {
+		while ((availableDirection && (getHostData().getGravitationalField() == null || getHostData().getMagneticField() == null)) || (getHostData().isVehicleConnected() != null && getHostData().isVehicleConnected() && getHostData().getBatteryLevel() == null)) {
 			sleep(100);
 		}
 		SERVICE.getBinder().sendHostData(this);

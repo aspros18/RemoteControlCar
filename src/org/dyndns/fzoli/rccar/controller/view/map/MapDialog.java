@@ -12,6 +12,7 @@ import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.imageio.ImageIO;
@@ -128,15 +129,20 @@ public class MapDialog extends AbstractDialog {
             
             @Override
             public void loadingProgressChanged(WebBrowserEvent e) {
-                if (e.getWebBrowser().getLoadingProgress() == 100) { // ha letöltődött a script
-                    try {
-                        // Google API betöltési ideje max. 1,5 másodperc
-                        Thread.sleep(1500);
+                if (e.getWebBrowser().getLoadingProgress() == 100) { // ha betöltődött az oldal
+                    Object test; // teszt annak kiderítésére, hogy betöltődött-e a Google Map
+                    Date startDate = new Date(); // inicializálás kezdetének ideje
+                    // ciklus amíg nincs a térkép betöltve:
+                    while ((test = e.getWebBrowser().executeJavascriptWithResult("return document.getElementById('map_canvas').innerHTML;")) == null || test.equals("")) {
+                        e.getWebBrowser().executeJavascript(createInitScript()); // térkép inicializálás
+                        try {
+                            if (new Date().getTime() - startDate.getTime() > 10000) break; // ha 10 mp alatt nem sikerült inicializálni, feladja
+                            Thread.sleep(100); // később újra próbálkozás
+                        }
+                        catch (Exception ex) {
+                            ;
+                        }
                     }
-                    catch(Exception ex) {
-                        ;
-                    }
-                    e.getWebBrowser().executeJavascript(createInitScript()); // térkép inicializálás
                     if (callback == null) setVisible(true); // ablak megjelenítése, ha nincs eseményfigyelő
                     else callback.loadFinished(MapDialog.this); // egyébként eseményfigyelő futtatása
                 }

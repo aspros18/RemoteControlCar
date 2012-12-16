@@ -78,11 +78,13 @@ public class MapDialog extends AbstractDialog {
             "      div#border, div#arrow { position: fixed }" + LS +
             "      div#border { z-index: 1000003; top: 0px; left: 0px }" + LS +
             "      div#arrow { z-index: 1000002; top: " + ((MAP_HEIGHT / 2) - (ARROW_SIZE / 2)) + "px; left: " + ((MAP_WIDTH / 2) - (ARROW_SIZE / 2)) + "px; width: " + ARROW_SIZE + "px; height: " + ARROW_SIZE + "px }" + LS +
+            "      div.fade { opacity: 1; transition: opacity .25s ease-in-out; -moz-transition: opacity .25s ease-in-out; -webkit-transition: opacity .25s ease-in-out; }" + LS +
+            "      div.fade[align=\"justify\"] { opacity: 0.5; }" + LS +
             "    </style>" + LS +
             "    <script type=\"text/javascript\" src=\"http://maps.googleapis.com/maps/api/js?&sensor=false\"></script>" + LS +
             "  </head>" + LS +
             "  <body>" + LS +
-            "    <div id=\"map_canvas\"></div>" + LS +
+            "    <div id=\"map_canvas\" class=\"fade\"></div>" + LS +
             "    <div id=\"border\"></div>" + LS +
             "    <div id=\"arrow\"></div>" + LS +
             "  </body>" + LS +
@@ -231,6 +233,21 @@ public class MapDialog extends AbstractDialog {
     }
     
     /**
+     * Szürke átfedés engedélyezése illetve tiltása a térképen.
+     * JavaScript és CSS 3 alapú metódus.
+     */
+    public void setFade(final boolean enabled) {
+        SwingUtilities.invokeLater(new Runnable() {
+            
+            @Override
+            public void run() {
+                webBrowser.executeJavascript("document.getElementById('map_canvas').align = '" + (enabled ? "justify" : "") + "';");
+            }
+            
+        });
+    }
+    
+    /**
      * Az irányjelző nyíl eltüntetése.
      * JavaScript alapú metódus.
      */
@@ -305,11 +322,12 @@ public class MapDialog extends AbstractDialog {
                             public void run() {
                                 angle += 10;
                                 radar.setArrow(angle);
+                                radar.setFade(angle % 3 == 0);
                             }
                             
                         }, 5000, 1000); // ... 5 másodperccel később másodpercenként változik az irány
                         radar.setPosition(47.35021, 19.10236); // a hely Dunaharaszti egyik utcája
-                        radar.setVisible(true); // az ablak megjelenítése 
+                        radar.setVisible(true); // az ablak megjelenítése
                     }
                     
                 }, null);

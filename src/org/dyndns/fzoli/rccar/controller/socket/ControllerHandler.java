@@ -48,7 +48,6 @@ public class ControllerHandler extends AbstractSecureClientHandler implements Co
     
     /**
      * A kapcsolatazonosító alapján eldől, melyik feldolgozót kell indítani.
-     * Egyelőre csak teszt.
      */
     @Override
     protected SecureProcess selectProcess() {
@@ -57,6 +56,8 @@ public class ControllerHandler extends AbstractSecureClientHandler implements Co
                 return new ControllerDisconnectProcess(this);
             case KEY_CONN_MESSAGE:
                 return new ControllerMessageProcess(this);
+            case KEY_CONN_VIDEO_STREAM:
+                return new ControllerVideoProcess(this);
         }
         return null;
     }

@@ -9,7 +9,7 @@ import org.dyndns.fzoli.socket.process.impl.MessageProcess;
  * A híd oldalán mindegyik üzenetfeldolgozó alapja.
  * @author zoli
  */
-public abstract class BridgeMessageProcess extends MessageProcess {
+abstract class BridgeMessageProcess extends MessageProcess {
 
     /**
      * Biztonságos üzenetváltásra képes adatfeldolgozó inicializálása.

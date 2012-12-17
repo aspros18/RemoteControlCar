@@ -10,7 +10,7 @@ import org.dyndns.fzoli.socket.process.impl.ServerDisconnectProcess;
  * A híd oldalán vizsgálja, hogy él-e még a kapcsolat a klienssel.
  * @author zoli
  */
-public class BridgeDisconnectProcess extends ServerDisconnectProcess implements ConnectionKeys {
+abstract class BridgeDisconnectProcess extends ServerDisconnectProcess implements ConnectionKeys {
     
     private final DisconnectProcessTester TESTER = new DisconnectProcessTester();
     

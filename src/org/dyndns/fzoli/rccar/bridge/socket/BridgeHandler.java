@@ -101,18 +101,20 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
     
     /**
      * Kiválasztja a biztonságos kapcsolatfeldolgozó objektumot az adatok alapján és elindítja.
-     * TODO: Egyelőre teszt
      */
     @Override
     protected AbstractSecureProcess selectProcess() {
+        final boolean controller = getDeviceId().equals(KEY_DEV_CONTROLLER);
         switch (getConnectionId()) {
             case KEY_CONN_DISCONNECT:
-                return new BridgeDisconnectProcess(this);
+                if (controller) return new ControllerSideDisconnectProcess(this);
+                else return new HostSideDisconnectProcess(this);
             case KEY_CONN_MESSAGE:
-                if (getDeviceId().equals(KEY_DEV_CONTROLLER)) return new ControllerSideMessageProcess(this);
+                if (controller) return new ControllerSideMessageProcess(this);
                 else return new HostSideMessageProcess(this);
             case KEY_CONN_VIDEO_STREAM:
-                return new HostSideVideoProcess(this);
+                if (controller) return new ControllerSideVideoProcess(this);
+                else return new HostSideVideoProcess(this);
         }
         return null;
     }

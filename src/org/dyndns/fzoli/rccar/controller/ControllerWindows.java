@@ -126,8 +126,8 @@ public class ControllerWindows {
         // chatablak láthatóságának beállítása: akkor látható, ha kifér a főablakkal együtt
         FRAME_MAIN.setWindowVisibility(ControllerWindows.WindowType.CHAT, isEmptyHeight);
         
-        // chatablak pozíciójának beállítása: ha kifér a főablakkal együtt, akkor a főablak alá, egyébként a főablak aljára
-        DIALOG_CHAT.setLocation(FRAME_MAIN.getX(), FRAME_MAIN.getY() + FRAME_MAIN.getHeight() - (isEmptyHeight ? -1 * GAP / 2 : DIALOG_CHAT.getHeight()));
+        // chatablak pozíciójának beállítása: ha kifér a főablakkal együtt, akkor a főablak alá, egyébként a főablak gombsora fölé
+        DIALOG_CHAT.setLocation(FRAME_MAIN.getX(), FRAME_MAIN.getY() + FRAME_MAIN.getHeight() - (isEmptyHeight ? -1 * GAP / 2 : DIALOG_CHAT.getHeight() + FRAME_MAIN.getToolBarHeight() + (GAP / 2)));
     }
     
     /**

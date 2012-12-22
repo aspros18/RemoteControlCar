@@ -324,4 +324,12 @@ public class ControllerFrame extends JFrame {
         return btIncrease;
     }
     
+    /**
+     * A főablak gombsorának a magasságát adja meg,
+     * hogy a cset dialógusablak pozícióját be lehessen állítani a gombsor fölé.
+     */
+    public int getToolBarHeight() {
+        return tb.getPreferredSize().height;
+    }
+    
 }

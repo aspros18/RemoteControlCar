@@ -74,19 +74,20 @@ public class ChatDialog extends AbstractDialog {
     private final JPanel PANEL_CONTROLLERS = new JPanel() {
         {
             setLayout(new GridLayout());
-            LIST_CONTROLLERS.setBackground(Color.WHITE);
+            setBackground(Color.WHITE);
+            LIST_CONTROLLERS.setBackground(getBackground());
             setBorder(null);
             
             JPanel panel = new JPanel(new BorderLayout());
+            panel.setBackground(getBackground());
             JScrollPane pane = new JScrollPane(panel);
             pane.setBorder(null);
-            pane.setViewportBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createLineBorder(LIST_CONTROLLERS.getBackground(), 4)));
+            pane.setOpaque(false);
+            pane.setViewportBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createLineBorder(getBackground(), 4)));
             pane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
             add(pane);
             
             JLabel lb = new JLabel("Jelenlévők");
-            lb.setOpaque(true);
-            lb.setBackground(LIST_CONTROLLERS.getBackground());
             lb.setFont(new Font(lb.getFont().getFontName(), Font.BOLD, lb.getFont().getSize()));
             
             panel.add(lb, BorderLayout.NORTH);

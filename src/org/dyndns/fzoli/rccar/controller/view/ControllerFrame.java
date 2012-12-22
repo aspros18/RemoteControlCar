@@ -129,7 +129,15 @@ public class ControllerFrame extends JFrame {
         setTitle("Mobile-RC");
         
         lbImage = new JLabel(IC_BLACK_BG); // amíg nincs MJPEG stream, fekete
-        add(lbImage, BorderLayout.CENTER);
+        
+        // TODO: a mozgóképet és a figyelmeztető panelt tartalmazó panel
+        JPanel pCenter = new JPanel(new GridBagLayout()) {
+            {
+                add(lbImage);
+            }
+        };
+        
+        add(pCenter);
 
         tb = new JToolBar();
         tb.setLayout(new GridBagLayout());

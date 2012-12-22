@@ -49,10 +49,17 @@ public class ChatDialog extends AbstractDialog {
     private static final int DIVIDER_SIZE = 5, MARGIN = 2;
     
     /**
+     * A szövegeket megjelenítő panelek háttérszíne.
+     */
+    private static final Color COLOR_BG = Color.WHITE;
+    
+    /**
      * A vezérlők listája.
      */
     private final JList<String> LIST_CONTROLLERS = new JList<String>(new DefaultListModel<String>()) {
         {
+            setBackground(COLOR_BG);
+            setDragEnabled(true);
             setCellRenderer(new DefaultListCellRenderer() {
 
                 /**
@@ -70,17 +77,25 @@ public class ChatDialog extends AbstractDialog {
     
     /**
      * Az üzenetkijelző és üzenetküldő panel.
+     * Az összes szöveget megjelenítő panel háttérszíne azonos.
+     * Ehhez egy kis trükkre volt szükség, hogy minden oprendszeren működjön.
+     * Windows LAF esetén valamiért a JLabel felett ott maradt egy csík, és a panel
+     * háttérszín beállítása se oldotta meg a gondot, ezért a ScrollPane-nek állítottam
+     * be a hátteret, de a ScrollBarra is hatott, ezért annak megadtam a ScrollPane hátterét.
+     * Így sikeresen eltünt a zavaró csík.
      */
     private final JPanel PANEL_CONTROLLERS = new JPanel() {
         {
+            setBackground(COLOR_BG);
             setLayout(new GridLayout());
-            setBackground(Color.WHITE);
-            LIST_CONTROLLERS.setBackground(getBackground());
             setBorder(null);
             
             JPanel panel = new JPanel(new BorderLayout());
             panel.setBackground(getBackground());
             JScrollPane pane = new JScrollPane(panel);
+            pane.getVerticalScrollBar().setOpaque(true);
+            Color spbg = (Color) UIManager.getDefaults().get("ScrollPane.background");
+            if (spbg != null) pane.getVerticalScrollBar().setBackground(new Color(spbg.getRGB()));
             pane.setBorder(null);
             pane.setOpaque(false);
             pane.setViewportBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createLineBorder(getBackground(), 4)));
@@ -125,7 +140,7 @@ public class ChatDialog extends AbstractDialog {
      */
     private final JPanel PANEL_MESSAGES = new JPanel() {
         {
-            setBackground(Color.WHITE);
+            setBackground(COLOR_BG);
             setLayout(new BorderLayout());
             
             tpMessages = new JTextPane();
@@ -145,6 +160,7 @@ public class ChatDialog extends AbstractDialog {
             StyleConstants.setForeground(name, new Color(0, 128, 255));
             
             final JTextArea tpSender = new JTextArea();
+            tpSender.setBackground(getBackground());
             tpSender.setLineWrap(true);
             tpSender.setFont(UIManager.getDefaults().getFont("Label.font"));
             tpSender.setBorder(BorderFactory.createLineBorder(getBackground(), 5));

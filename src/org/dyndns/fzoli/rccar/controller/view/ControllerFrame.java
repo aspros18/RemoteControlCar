@@ -2,11 +2,13 @@ package org.dyndns.fzoli.rccar.controller.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -15,6 +17,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JSeparator;
@@ -30,6 +33,7 @@ import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_CHAT;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_MAP;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
 import org.dyndns.fzoli.rccar.controller.resource.R;
+import org.dyndns.fzoli.ui.RoundedPanel;
 
 /**
  * A jármű főablaka.
@@ -105,6 +109,43 @@ public class ControllerFrame extends JFrame {
     });
     
     /**
+     * Az üzenetet megjelenítő komponens.
+     */
+    private final JLabel LB_MSG = new JLabel("Várakozás a járműre...");
+    
+    /**
+     * Az üzenetet megjelenítő komponens panelje.
+     * Az üzenet az indikátor alá kerül és a panelnek kerekített sarkai vannak.
+     * A panel kezdetben nem látható.
+     */
+    private final RoundedPanel PANEL_MSG = new RoundedPanel() {
+        
+        {
+            GridBagConstraints c = new GridBagConstraints();
+            setLayout(new GridBagLayout());
+            
+            c.gridy = 0;
+            c.insets = new Insets(10, 15, 10, 15);
+            add(new JLabel(R.getIndicatorIcon()), c);
+            
+            c.gridy = 1;
+            c.insets = new Insets(0, 15, 10, 15);
+            add(LB_MSG, c);
+            
+            setVisible(false);
+        }
+
+        @Override
+        public Dimension getPreferredSize() {
+            Dimension d = super.getPreferredSize();
+            d.width = Math.max(160, d.width);
+            d.height = Math.max(120, d.height);
+            return d;
+        }
+        
+    };
+    
+    /**
      * A járműhöz tartozó ablakok konténere.
      */
     public final ControllerWindows WINDOWS;
@@ -130,14 +171,25 @@ public class ControllerFrame extends JFrame {
         
         lbImage = new JLabel(IC_BLACK_BG); // amíg nincs MJPEG stream, fekete
         
-        // TODO: a mozgóképet és a figyelmeztető panelt tartalmazó panel
-        JPanel pCenter = new JPanel(new GridBagLayout()) {
+        // a mozgóképet és a figyelmeztető panelt tartalmazó panel
+        JLayeredPane pCenter = new JLayeredPane() {
             {
-                add(lbImage);
+                Dimension size = lbImage.getPreferredSize(); // képméret
+                Dimension size2 = PANEL_MSG.getPreferredSize(); // üzenetméret
+                
+                // a panel mérete a kép komponensével egyezik meg
+                setPreferredSize(size);
+                
+                // a kép az alap rétegre, az üzenet a kép fölé kerül
+                add(lbImage, JLayeredPane.DEFAULT_LAYER);
+                add(PANEL_MSG, JLayeredPane.DRAG_LAYER);
+                
+                lbImage.setBounds(new Rectangle(0, 0, size.width, size.height)); // a kép teljes helykitöltéssel
+                PANEL_MSG.setBounds(size.width / 2 - size2.width / 2, size.height / 2 - size2.height / 2, size2.width, size2.height); // az üzenet panel középen
             }
         };
         
-        add(pCenter);
+        add(pCenter); // a mozgókép és üzenet panel hozzáadása az ablakhoz
 
         tb = new JToolBar();
         tb.setLayout(new GridBagLayout());
@@ -277,6 +329,20 @@ public class ControllerFrame extends JFrame {
         btControll.setIcon(getData().isControlling() ? IC_CONTROLLER1 : IC_CONTROLLER2);
         btControll.setToolTipText(getData().isControlling() ? "Vezérlés átadása" : "Vezérlés kérése");
         btControll.setEnabled(!(getData().isControlling() ^ getData().isWantControl()));
+    }
+    
+    /**
+     * Beállítja az üzenetet és megjeleníti azt.
+     * @param msg az üzenet. Ha null, akkor az üzenet panel eltűnik.
+     */
+    public void setMessage(String msg) {
+        if (msg != null) {
+            LB_MSG.setText(msg);
+            PANEL_MSG.setVisible(true);
+        }
+        else {
+            PANEL_MSG.setVisible(false);
+        }
     }
     
     /**

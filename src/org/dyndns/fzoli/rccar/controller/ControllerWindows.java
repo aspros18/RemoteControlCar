@@ -5,6 +5,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.Window;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.controller.view.ArrowDialog;
@@ -196,7 +197,9 @@ public class ControllerWindows {
             @Override
             public void run() {
                 UIUtil.setSystemLookAndFeel();
-                new ControllerWindows().setVisible(true);
+                ControllerWindows win = new ControllerWindows();
+                win.FRAME_MAIN.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                win.setVisible(true);
             }
             
         });

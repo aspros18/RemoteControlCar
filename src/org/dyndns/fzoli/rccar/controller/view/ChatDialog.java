@@ -72,7 +72,6 @@ public class ChatDialog extends AbstractDialog {
                 
             });
         }
-        
     };
     
     /**
@@ -91,6 +90,7 @@ public class ChatDialog extends AbstractDialog {
             setBorder(null);
             
             JPanel panel = new JPanel(new BorderLayout());
+            panel.setPreferredSize(new Dimension(0, 0));
             panel.setBackground(getBackground());
             JScrollPane pane = new JScrollPane(panel);
             pane.getVerticalScrollBar().setOpaque(true);
@@ -98,6 +98,7 @@ public class ChatDialog extends AbstractDialog {
             if (spbg != null) pane.getVerticalScrollBar().setBackground(new Color(spbg.getRGB()));
             pane.setBorder(null);
             pane.setOpaque(false);
+            pane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
             pane.setViewportBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createLineBorder(getBackground(), 4)));
             add(pane);
             
@@ -226,6 +227,7 @@ public class ChatDialog extends AbstractDialog {
         for (int i = 2; i <= 7; i++) {
             setControllerVisible("controller" + i, true);
         }
+        setControllerVisible("egy sokkal hosszabb tesztnév, mint az előzőek", true);
     }
     
     /**

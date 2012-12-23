@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.host.vehicle;
 
+import ioio.lib.api.AnalogInput;
 import ioio.lib.api.IOIO;
 import ioio.lib.api.exception.ConnectionLostException;
 import ioio.lib.util.BaseIOIOLooper;
@@ -26,7 +27,12 @@ public abstract class AbstractVehicle extends BaseIOIOLooper implements Vehicle 
 	/**
 	 * Az eseménykezelőnek utóljára jelzett akkumulátor-szint.
 	 */
-	private int oldBatteryLevel = 0;
+	private Integer oldBatteryLevel;
+	
+	/**
+	 * Feszültségméréshez használt analóg bemenet.
+	 */
+	private AnalogInput inBattery;
 	
 	/**
 	 * Konstruktor.
@@ -79,21 +85,41 @@ public abstract class AbstractVehicle extends BaseIOIOLooper implements Vehicle 
 	protected void setup() throws ConnectionLostException, InterruptedException {
 		updateState(true); // állapotváltozás jelzése a szolgáltatásnak
 		ioio_.openDigitalOutput(IOIO.LED_PIN, !true); // a LED bekapcsolása
+		inBattery = ioio_.openAnalogInput(getBatteryPin()); // feszültségméréshez használt analóg bemenet létrehozása
 	}
 	
 	/**
 	 * Ha az akkumulátor-szint változott, meghívja az eseménykezelőt, végül vár 20 ezredmásodpercet.
 	 */
-	protected void refresh() throws ConnectionLostException, InterruptedException {
+	@Override
+	public void loop() throws ConnectionLostException, InterruptedException {
+		refreshBattery(getBatteryLevel()); // akku-szint frissítése, ha kell
+		Thread.sleep(20); // 20 ms szünet
+	}
+	
+	/**
+	 * Frissíti az akkumulátor-szintet, ha az megváltozott.
+	 * @param level az akku-szint százalékban, vagy null, ha nincs akku.
+	 */
+	private void refreshBattery(Integer level) {
 		if (callback != null) { // ha van eseménykezelő
-			int level = getBatteryLevel();
-			if (level != oldBatteryLevel) { // ha változott az akkuszint
+			if (oldBatteryLevel == null || !oldBatteryLevel.equals(level)) { // ha változott az akkuszint
 				oldBatteryLevel = level; // akkuszint frissítése
 				SERVICE.getBinder().getHostData().setBatteryLevel(level); // host data frissítése
 				callback.onBatteryLevelChanged(level); // callback hívása
 			}
 		}
-		Thread.sleep(20); // 20 ms szünet
+	}
+	
+	/**
+	 * Az akkumulátor töltöttségét adja vissza százalékban.
+	 */
+	@Override
+	public int getBatteryLevel() throws ConnectionLostException, InterruptedException {
+		int percent = (int)((inBattery.getVoltage() - getMinVoltage()) * 100 / (getMaxVoltage() - getMinVoltage()));
+		if (percent >= 100) return 100;
+		if (percent <= 0) return 0;
+		return percent;
 	}
 	
 	/**
@@ -102,6 +128,7 @@ public abstract class AbstractVehicle extends BaseIOIOLooper implements Vehicle 
 	 */
 	@Override
 	public void disconnected() {
+//		refreshBattery(null); // nincs rá szükség, mert egyértelmű, hogy elévült adat, ha connected = false
 		updateState(false);
 	}
 	

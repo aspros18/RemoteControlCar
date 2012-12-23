@@ -1,6 +1,5 @@
 package org.dyndns.fzoli.rccar.host.vehicle.impl;
 
-import ioio.lib.api.AnalogInput;
 import ioio.lib.api.DigitalOutput;
 import ioio.lib.api.exception.ConnectionLostException;
 
@@ -16,11 +15,6 @@ import org.dyndns.fzoli.rccar.host.vehicle.AbstractVehicle;
  */
 public class DefaultVehicle extends AbstractVehicle {
 	
-	/**
-	 * Feszültséghatár akkumulátor-szint becsélésre.
-	 */
-	private static final float MAX_VOLTAGE = 5.0f, MIN_VOLTAGE = 2.5f;
-	
 //	/**
 //	 * Teszt precíz vezérlésre.
 //	 */
@@ -31,7 +25,10 @@ public class DefaultVehicle extends AbstractVehicle {
 	 */
 	private DigitalOutput outLeft, outRight, outFront, outBack;
 	
-	private AnalogInput inBattery;
+	/**
+	 * A jármű vezérléséhez használt láb száma.
+	 */
+	protected int PIN_FRONT = 10, PIN_BACK = 11, PIN_LEFT = 12, PIN_RIGHT = 13;
 	
 	/**
 	 * Konstruktor.
@@ -39,6 +36,31 @@ public class DefaultVehicle extends AbstractVehicle {
 	 */
 	public DefaultVehicle(ConnectionService service) {
 		super(service);
+	}
+	
+	/**
+	 * Megadja, melyik lábat kell használni a feszültségméréshez.
+	 * Az akkumulátor-szint mérése a 45-ös lábon történik.
+	 */
+	@Override
+	public int getBatteryPin() {
+		return 45;
+	}
+	
+	/**
+	 * Maximum feszültséghatár akkumulátor-szint becsélésre.
+	 */
+	@Override
+	public float getMaxVoltage() {
+		return 5.0f;
+	}
+	
+	/**
+	 * Minimum feszültséghatár akkumulátor-szint becsélésre.
+	 */
+	@Override
+	public float getMinVoltage() {
+		return 1.2f;
 	}
 
 	/**
@@ -60,17 +82,6 @@ public class DefaultVehicle extends AbstractVehicle {
 	}
 	
 	/**
-	 * Az akkumulátor töltöttségét adja vissza százalékban.
-	 */
-	@Override
-	public int getBatteryLevel() throws ConnectionLostException, InterruptedException {
-		int percent = (int)((inBattery.getVoltage() - MIN_VOLTAGE) * 100 / (MAX_VOLTAGE - MIN_VOLTAGE));
-		if (percent >= 100) return 100;
-		if (percent <= 0) return 0;
-		return percent;
-	}
-	
-	/**
 	 * A kapcsolat létrejötte után a digitális kimenetek megszerzése.
 	 * A lábak használata:
 	 * - 10-es, előremenet
@@ -78,16 +89,14 @@ public class DefaultVehicle extends AbstractVehicle {
 	 * - 12-es, balra kanyarodás
 	 * - 13-mas jobbra kanyarodás
 	 * A 10 és 11 valamint 12 és 13 soha nem lehet aktív egyszerre.
-	 * Az akkumulátor-szint mérése a 45-ös lábon történik.
 	 */
 	@Override
 	protected void setup() throws ConnectionLostException, InterruptedException {
 		super.setup();
-		inBattery = ioio_.openAnalogInput(45);
-		outFront = ioio_.openDigitalOutput(10, false);
-		outBack = ioio_.openDigitalOutput(11, false);
-		outLeft = ioio_.openDigitalOutput(12, false);
-		outRight = ioio_.openDigitalOutput(13, false);
+		outFront = ioio_.openDigitalOutput(PIN_FRONT, false);
+		outBack = ioio_.openDigitalOutput(PIN_BACK, false);
+		outLeft = ioio_.openDigitalOutput(PIN_LEFT, false);
+		outRight = ioio_.openDigitalOutput(PIN_RIGHT, false);
 //		pwm = ioio_.openPwmOutput(14, 1000);
 	}
 	
@@ -100,7 +109,7 @@ public class DefaultVehicle extends AbstractVehicle {
 		handle(getX(), outLeft, outRight);
 		handle(getY(), outBack, outFront);
 //		pwm.setDutyCycle((float)(getY() / 100.0));
-		refresh();
+		super.loop();
 	}
 	
 	/**

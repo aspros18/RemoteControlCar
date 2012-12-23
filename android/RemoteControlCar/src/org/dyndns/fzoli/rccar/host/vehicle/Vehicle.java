@@ -11,7 +11,7 @@ public interface Vehicle extends IOIOLooper {
 	
 	public interface Callback {
 		
-		public void onBatteryLevelChanged(int level);
+		public void onBatteryLevelChanged(Integer level);
 		
 	}
 	
@@ -49,5 +49,20 @@ public interface Vehicle extends IOIOLooper {
 	 * Az akkumulátor töltöttségét adja vissza százalékban.
 	 */
 	public int getBatteryLevel() throws ConnectionLostException, InterruptedException;
+	
+	/**
+	 * Megadja, melyik lábat kell használni a feszültségméréshez.
+	 */
+	public int getBatteryPin();
+	
+	/**
+	 * Maximum feszültséghatár akkumulátor-szint becsélésre.
+	 */
+	public float getMaxVoltage();
+	
+	/**
+	 * Minimum feszültséghatár akkumulátor-szint becsélésre.
+	 */
+	public float getMinVoltage();
 	
 }

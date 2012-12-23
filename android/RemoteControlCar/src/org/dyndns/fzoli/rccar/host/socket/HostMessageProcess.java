@@ -100,7 +100,7 @@ public class HostMessageProcess extends MessageProcess {
 	private final Vehicle.Callback vehicleCallback = new Vehicle.Callback() {
 		
 		@Override
-		public void onBatteryLevelChanged(int level) {
+		public void onBatteryLevelChanged(Integer level) {
 			sendMessage(new HostData.BatteryPartialHostData(level));
 		}
 		

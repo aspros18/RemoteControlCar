@@ -99,7 +99,6 @@ public class ChatDialog extends AbstractDialog {
             pane.setBorder(null);
             pane.setOpaque(false);
             pane.setViewportBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createLineBorder(getBackground(), 4)));
-            pane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
             add(pane);
             
             JLabel lb = new JLabel("Jelenlévők");
@@ -108,7 +107,7 @@ public class ChatDialog extends AbstractDialog {
             panel.add(lb, BorderLayout.NORTH);
             panel.add(LIST_CONTROLLERS, BorderLayout.CENTER);
             
-            setMinimumSize(new Dimension(100, 1));
+            setMinimumSize(new Dimension(lb.getPreferredSize().width + 14 +pane.getVerticalScrollBar().getPreferredSize().width, 1));
             setPreferredSize(new Dimension(150 - DIVIDER_SIZE - 2 * MARGIN, 200 - 2 * MARGIN));
         }
     };

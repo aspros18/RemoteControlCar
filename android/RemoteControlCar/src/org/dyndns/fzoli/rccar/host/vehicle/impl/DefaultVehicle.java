@@ -40,11 +40,11 @@ public class DefaultVehicle extends AbstractVehicle {
 	
 	/**
 	 * Megadja, melyik lábat kell használni a feszültségméréshez.
-	 * Az akkumulátor-szint mérése a 45-ös lábon történik.
+	 * Az akkumulátor-szint mérése a 33-as lábon történik.
 	 */
 	@Override
 	public int getBatteryPin() {
-		return 45;
+		return 33;
 	}
 	
 	/**

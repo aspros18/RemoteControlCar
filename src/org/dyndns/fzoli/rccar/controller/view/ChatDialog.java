@@ -89,9 +89,17 @@ public class ChatDialog extends AbstractDialog {
             setLayout(new GridLayout());
             setBorder(null);
             
-            JPanel panel = new JPanel(new BorderLayout());
-            panel.setPreferredSize(new Dimension(0, 0));
+            JPanel panel = new JPanel(new BorderLayout()) {
+
+                @Override
+                public Dimension getPreferredSize() {
+                    // a kívánt szélesség 0, hogy a scroll pane teljesen összehúzza, ha azt kérik
+                    return new Dimension(0, super.getPreferredSize().height);
+                }
+                
+            };
             panel.setBackground(getBackground());
+            
             JScrollPane pane = new JScrollPane(panel);
             pane.getVerticalScrollBar().setOpaque(true);
             Color spbg = (Color) UIManager.getDefaults().get("ScrollPane.background");

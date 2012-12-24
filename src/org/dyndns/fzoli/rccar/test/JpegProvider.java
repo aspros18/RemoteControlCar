@@ -26,14 +26,14 @@ public abstract class JpegProvider {
      * A JPEG képkocka adatát adja vissza bájt tömbben.
      * Az utód osztály eldöntheti, hogy honnan szerzi meg ezt az adatot.
      */
-    protected abstract byte[] getJpeg();
+    protected abstract byte[] getData();
     
     /**
      * A JPEG képkocka adatát állítja be.
      * @param data a képkocka adata bájt tömbben
      * Az utód osztály eldöntheti, hogy hol tárolja ezt az adatot.
      */
-    protected abstract byte[] setJpeg(byte[] data);
+    protected abstract byte[] setData(byte[] data);
     
     /**
      * Egy képkockát ad vissza.
@@ -42,10 +42,10 @@ public abstract class JpegProvider {
      * @param wait várja-e meg a következő képkockát létező adat esetén
      */
     private byte[] getFrame(boolean wait) throws InterruptedException {
-        if (wait || getJpeg() == null) synchronized (this) {
+        if (wait || getData() == null) synchronized (this) {
             wait();
         }
-        return getJpeg();
+        return getData();
     }
 
     /**
@@ -55,7 +55,7 @@ public abstract class JpegProvider {
      */
     public void setFrame(byte[] frame) {
         if (frame == null) return;
-        setJpeg(frame);
+        setData(frame);
         synchronized (this) {
             notifyAll();
         }

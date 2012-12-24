@@ -1,5 +1,7 @@
 package org.dyndns.fzoli.socket.impl;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import org.dyndns.fzoli.socket.JpegProvider;
 
@@ -8,7 +10,7 @@ import org.dyndns.fzoli.socket.JpegProvider;
  * Mindegyik objektum ugyan azt a képkocka objektumot használja.
  * @author zoli
  */
-public class SharedJpegProvider extends JpegProvider{
+public class SharedJpegProvider extends JpegProvider {
 
     /**
      * Megosztott képkocka.
@@ -48,6 +50,52 @@ public class SharedJpegProvider extends JpegProvider{
      */
     public static void setSharedFrame(byte[] frame) {
         SharedJpegProvider.frame = frame;
+    }
+    
+    /**
+     * Teszt szál készítése.
+     */
+    private static void createTest() {
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    new SharedJpegProvider(new ByteArrayOutputStream() {
+
+                        @Override
+                        public void write(byte[] b) throws IOException {
+                            System.out.print(new String(b));
+                            super.write(b);
+                        }
+                        
+                    }).handleConnection();
+                }
+                catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            
+        }).start();
+    }
+    
+    /**
+     * Teszt.
+     */
+    public static void main(String[] args) throws Exception {
+        createTest();
+        Thread.sleep(3000);
+        SharedJpegProvider.setSharedFrame("a".getBytes());
+        createTest();
+        Thread.sleep(1000);
+        SharedJpegProvider.setSharedFrame("a".getBytes());
+        Thread.sleep(2000);
+        SharedJpegProvider.setSharedFrame("b".getBytes());
+        Thread.sleep(1000);
+        SharedJpegProvider.setSharedFrame(null);
+        Thread.sleep(2000);
+        SharedJpegProvider.setSharedFrame("b".getBytes());
+        System.exit(0);
     }
     
 }

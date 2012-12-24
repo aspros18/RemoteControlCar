@@ -60,7 +60,7 @@ public abstract class JpegProvider {
         byte[] tmp = frame = getFrame(key);
         if (wait || tmp == null) {
             while ((frame = getFrame(key)) == null || (tmp != null && Arrays.equals(tmp, frame))) {
-                Thread.sleep(30);
+                Thread.sleep(20);
             }
         }
         return frame;

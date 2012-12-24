@@ -40,9 +40,12 @@ public abstract class JpegProvider {
      * Egy képkockát ad vissza.
      * Ha még nincs egy képkocka se beállítva, mindenképpen megvárja.
      * Ha már van képkocka beállítva, paramétertől függ, hogy vár-e a következőre.
+     * Ezzel a megoldással az esetleg lassú kapcsolattal rendelkező kliensek nem húzzák
+     * vissza a gyorsabb kapcsolattal rendelkezőket.
+     * Ennek ára az, hogy van egy FPS limit a {@code Thread.sleep(int)} metódus miatt.
      * @param wait várja-e meg a következő képkockát létező adat esetén
      */
-    private byte[] getFrame(boolean wait) throws InterruptedException {
+    private byte[] nextFrame(boolean wait) throws InterruptedException {
         byte[] frame;
         byte[] tmp = frame = getFrame();
         if (wait || tmp == null) {
@@ -70,7 +73,7 @@ public abstract class JpegProvider {
             "Pragma: no-cache\r\n" + 
             "Content-Type: multipart/x-mixed-replace; " +
             "boundary=--BoundaryString\r\n\r\n").getBytes());
-        byte[] frame = getFrame(false);
+        byte[] frame = nextFrame(false);
         while (true) {
             out.write((
                 "--BoundaryString\r\n" +
@@ -81,7 +84,7 @@ public abstract class JpegProvider {
             out.write(frame);
             out.write("\r\n\r\n".getBytes());
             out.flush();
-            frame = getFrame(true);
+            frame = nextFrame(true);
         }
     }
 

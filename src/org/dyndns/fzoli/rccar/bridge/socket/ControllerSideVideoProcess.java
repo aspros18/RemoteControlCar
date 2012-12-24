@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.bridge.socket;
 
 import org.dyndns.fzoli.socket.handler.SecureHandler;
+import org.dyndns.fzoli.socket.impl.SharedJpegProvider;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
 
 /**
@@ -16,9 +17,10 @@ public class ControllerSideVideoProcess extends AbstractSecureProcess {
     @Override
     public void run() {
         try {
-            getSocket().getInputStream().read();
+            SharedJpegProvider.handleConnection(getSocket().getOutputStream());
         }
         catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
     

@@ -8,6 +8,7 @@ import org.dyndns.fzoli.socket.JpegProvider;
 /**
  * Megosztott MJPEG streamelő.
  * Mindegyik objektum ugyan azt a képkocka objektumot használja.
+ * TODO: Map alapú frame változó, hogy több képkocka közül lehessen választani
  * @author zoli
  */
 public class SharedJpegProvider extends JpegProvider {
@@ -50,6 +51,14 @@ public class SharedJpegProvider extends JpegProvider {
      */
     public static void setSharedFrame(byte[] frame) {
         SharedJpegProvider.frame = frame;
+    }
+    
+    /**
+     * MJPEG folyamot küld a kimenetre.
+     * @param out a kimenet
+     */
+    public static void handleConnection(OutputStream out) throws Exception {
+        new SharedJpegProvider(out).handleConnection();
     }
     
     /**

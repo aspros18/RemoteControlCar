@@ -58,8 +58,6 @@ public abstract class JpegProvider {
     
     /**
      * MJPEG folyamot küld a kimenetre.
-     * @param in JPEG képkockákat adagoló objektum
-     * @param out a kimenet
      * Forrás: http://www.damonkohler.com/2010/10/mjpeg-streaming-protocol.html
      */
     public void handleConnection() throws Exception {

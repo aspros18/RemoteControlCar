@@ -1,10 +1,10 @@
 package org.dyndns.fzoli.rccar.test;
 
 import java.io.OutputStream;
+import java.util.Arrays;
 
 /**
  * MJPEG streamelő.
- * TODO: a két synchronized blokk miatt holtpont alakul ki. Más módszer kell a várakoztatásra.
  * @author zoli
  */
 public abstract class JpegProvider {
@@ -42,10 +42,14 @@ public abstract class JpegProvider {
      * @param wait várja-e meg a következő képkockát létező adat esetén
      */
     private byte[] getFrame(boolean wait) throws InterruptedException {
-        if (wait || getData() == null) synchronized (this) {
-            wait();
+        byte[] data;
+        byte[] tmp = data = getData();
+        if (wait || tmp == null) {
+            while ((data = getData()) == null || (tmp != null && Arrays.equals(tmp, data))) {
+                Thread.sleep(30);
+            }
         }
-        return getData();
+        return data;
     }
 
     /**
@@ -56,9 +60,6 @@ public abstract class JpegProvider {
     public void setFrame(byte[] frame) {
         if (frame == null) return;
         setData(frame);
-        synchronized (this) {
-            notifyAll();
-        }
     }
     
     /**

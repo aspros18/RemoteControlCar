@@ -65,7 +65,7 @@ public abstract class JpegProvider {
     public void handleConnection() throws Exception {
         out.write((
             "HTTP/1.0 200 OK\r\n" +
-            "Server: ServerName\r\n" +
+            "Server: " + System.getProperty("os.name") + "-" + System.getProperty("os.version") + "\r\n" +
             "Connection: close\r\n" +
             "Max-Age: 0\r\n" +
             "Expires: 0\r\n" +

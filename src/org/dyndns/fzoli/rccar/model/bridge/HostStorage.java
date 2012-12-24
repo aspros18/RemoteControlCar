@@ -27,7 +27,7 @@ import org.dyndns.fzoli.rccar.model.host.HostData;
  * folyamatosan tályékoztatva van a vezérlő.
  * @author zoli
  */
-public class HostStorage {
+public class HostStorage implements Storage {
     
     /**
      * A jármű neve.
@@ -63,7 +63,8 @@ public class HostStorage {
         HOST_NAME = hostName;
     }
 
-    public String getHostName() {
+    @Override
+    public String getName() {
         return HOST_NAME;
     }
 

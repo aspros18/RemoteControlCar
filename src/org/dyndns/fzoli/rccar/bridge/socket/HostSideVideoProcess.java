@@ -30,7 +30,7 @@ public class HostSideVideoProcess extends AbstractSecureProcess {
             MjpegFrame fr;
             while((fr = mjpegin.readMjpegFrame()) != null) {
                 System.out.println("frame " + new Date());
-                SharedJpegProvider.setSharedFrame(fr.getJpegBytes());
+                SharedJpegProvider.setSharedFrame("test", fr.getJpegBytes());
             }
         }
         catch (Exception ex) {

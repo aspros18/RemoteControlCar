@@ -3,62 +3,69 @@ package org.dyndns.fzoli.socket.impl;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import org.dyndns.fzoli.socket.JpegProvider;
 
 /**
  * Megosztott MJPEG streamelő.
  * Mindegyik objektum ugyan azt a képkocka objektumot használja.
- * TODO: Map alapú frame változó, hogy több képkocka közül lehessen választani
  * @author zoli
  */
 public class SharedJpegProvider extends JpegProvider {
 
     /**
-     * Megosztott képkocka.
+     * A megosztott képkockákat tároló map.
      */
-    private static byte[] frame;
+    private static final Map<String, byte[]> FRAMES = Collections.synchronizedMap(new HashMap<String, byte[]>());
     
     /**
      * Konstruktor.
+     * @param key a folyam azonosító
      * @param out az MJPEG kimenő folyam
      */
-    public SharedJpegProvider(OutputStream out) {
-        super(out);
+    public SharedJpegProvider(String key, OutputStream out) {
+        super(key, out);
     }
 
     /**
      * A JPEG képkocka adatát adja vissza bájt tömbben.
      * Mindegyik objektumhoz ugyan az a képkocka referencia tartozik.
+     * @param key a folyam azonosító
      */
     @Override
-    protected byte[] getFrame() {
-        return frame;
+    protected byte[] getFrame(String key) {
+        return FRAMES.get(key);
     }
 
     /**
      * A JPEG képkocka adatát állítja be.
      * Mindegyik objektumhoz ugyan az a képkocka referencia tartozik.
+     * @param key a folyam azonosító
      * @param frame a képkocka adata bájt tömbben
      */
     @Override
-    protected void setFrame(byte[] frame) {
-        setSharedFrame(frame);
+    protected void setFrame(String key, byte[] frame) {
+        setSharedFrame(key, frame);
     }
     
     /**
      * A JPEG képkocka adatát állítja be.
+     * @param key a folyam azonosító
      * @param frame a képkocka adata bájt tömbben
      */
-    public static void setSharedFrame(byte[] frame) {
-        SharedJpegProvider.frame = frame;
+    public static void setSharedFrame(String key, byte[] frame) {
+        FRAMES.put(key, frame);
     }
     
     /**
      * MJPEG folyamot küld a kimenetre.
+     * @param key a folyam azonosító
      * @param out a kimenet
      */
-    public static void handleConnection(OutputStream out) throws Exception {
-        new SharedJpegProvider(out).handleConnection();
+    public static void handleConnection(String key, OutputStream out) throws Exception {
+        new SharedJpegProvider(key, out).handleConnection();
     }
     
     /**
@@ -70,7 +77,7 @@ public class SharedJpegProvider extends JpegProvider {
             @Override
             public void run() {
                 try {
-                    new SharedJpegProvider(new ByteArrayOutputStream() {
+                    new SharedJpegProvider("", new ByteArrayOutputStream() {
 
                         @Override
                         public void write(byte[] b) throws IOException {
@@ -94,16 +101,16 @@ public class SharedJpegProvider extends JpegProvider {
     public static void main(String[] args) throws Exception {
         createTest();
         Thread.sleep(3000);
-        SharedJpegProvider.setSharedFrame("a".getBytes());
+        SharedJpegProvider.setSharedFrame("", "a".getBytes());
         createTest();
         Thread.sleep(1000);
-        SharedJpegProvider.setSharedFrame("a".getBytes());
+        SharedJpegProvider.setSharedFrame("", "a".getBytes());
         Thread.sleep(2000);
-        SharedJpegProvider.setSharedFrame("b".getBytes());
+        SharedJpegProvider.setSharedFrame("", "b".getBytes());
         Thread.sleep(1000);
-        SharedJpegProvider.setSharedFrame(null);
+        SharedJpegProvider.setSharedFrame("", null);
         Thread.sleep(2000);
-        SharedJpegProvider.setSharedFrame("b".getBytes());
+        SharedJpegProvider.setSharedFrame("", "b".getBytes());
         System.exit(0);
     }
     

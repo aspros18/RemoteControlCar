@@ -17,7 +17,7 @@ public class ControllerSideVideoProcess extends AbstractSecureProcess {
     @Override
     public void run() {
         try {
-            SharedJpegProvider.handleConnection(getSocket().getOutputStream());
+            SharedJpegProvider.handleConnection("test", getSocket().getOutputStream());
         }
         catch (Exception ex) {
             ex.printStackTrace();

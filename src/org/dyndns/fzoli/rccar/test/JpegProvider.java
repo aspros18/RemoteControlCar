@@ -42,13 +42,10 @@ public abstract class JpegProvider {
      * @param wait várja-e meg a következő képkockát létező adat esetén
      */
     private byte[] getFrame(boolean wait) throws InterruptedException {
-        if (!wait && getJpeg() != null) {
-            return getJpeg();
-        }
-        else synchronized (this) {
+        if (wait || getJpeg() == null) synchronized (this) {
             wait();
-            return getJpeg();
         }
+        return getJpeg();
     }
 
     /**

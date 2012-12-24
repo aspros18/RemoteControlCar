@@ -116,7 +116,7 @@ public class ChatDialog extends AbstractDialog {
             panel.add(lb, BorderLayout.NORTH);
             panel.add(LIST_CONTROLLERS, BorderLayout.CENTER);
             
-            setMinimumSize(new Dimension(lb.getPreferredSize().width + 14 +pane.getVerticalScrollBar().getPreferredSize().width, 1));
+            setMinimumSize(new Dimension(lb.getPreferredSize().width + 14 +pane.getVerticalScrollBar().getPreferredSize().width, 0));
             setPreferredSize(new Dimension(150 - DIVIDER_SIZE - 2 * MARGIN, 200 - 2 * MARGIN));
         }
     };

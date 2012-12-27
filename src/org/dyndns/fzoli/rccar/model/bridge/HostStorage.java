@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
-import org.dyndns.fzoli.rccar.model.controller.ControllerData;
-import org.dyndns.fzoli.rccar.model.controller.HostState;
 import org.dyndns.fzoli.rccar.model.host.HostData;
 
 /**
@@ -40,11 +38,6 @@ public class HostStorage implements Storage {
     private final HostData HOST_DATA = new HostData();
     
     /**
-     * Vezérlők, melyek ezt a járművet választották ki.
-     */
-    private final List<String> CONTROLLERS = Collections.synchronizedList(new ArrayList<String>());
-    
-    /**
      * A járműhöz tartozó chatüzenetek.
      */
     private final List<ChatMessage> CHAT_MESSAGES = Collections.synchronizedList(new ArrayList<ChatMessage>());
@@ -75,10 +68,6 @@ public class HostStorage implements Storage {
     public List<String> getOwners() {
         return OWNERS;
     }
-    
-    public List<String> getControllers() {
-        return CONTROLLERS;
-    }
 
     public void setOwner(String owner) {
         this.owner = owner;
@@ -87,18 +76,9 @@ public class HostStorage implements Storage {
     public List<ChatMessage> getChatMessages() {
         return CHAT_MESSAGES;
     }
-    
-    public ControllerData createControllerData() {
-        ControllerData d = new ControllerData(getChatMessages());
-        d.setHostState(createHostState());
-        d.setHostName(HOST_NAME);
-        d.setBatteryLevel(HOST_DATA.getBatteryLevel());
-        //TODO: a többi setter befejezése
-        return d;
-    }
-    
-    private HostState createHostState() {
-        return null; //TODO
+
+    public HostData getHostData() {
+        return HOST_DATA;
     }
     
 }

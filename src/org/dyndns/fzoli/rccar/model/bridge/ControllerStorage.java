@@ -15,8 +15,14 @@ public class ControllerStorage extends Storage {
      */
     private HostStorage hostStorage;
 
-    public ControllerStorage(MessageProcess messageProcess) {
+    /**
+     * Konstruktor.
+     * @param messageProcess az üzenetküldő, a létrehozó
+     * @param hostStorage a kiválasztott jármű
+     */
+    public ControllerStorage(MessageProcess messageProcess, HostStorage hostStorage) {
         super(messageProcess);
+        setHostStorage(hostStorage);
     }
 
     /**

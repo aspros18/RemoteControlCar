@@ -37,17 +37,12 @@ public class HostStorage extends Storage {
      * A járműhöz tartozó chatüzenetek.
      */
     private final List<ChatMessage> CHAT_MESSAGES = Collections.synchronizedList(new ArrayList<ChatMessage>());
-
-    /**
-     * A jelenlegi jármű irányító.
-     */
-    private ControllerStorage owner;
     
     /**
      * A járművet irányítani akarók.
      */
     private final List<ControllerStorage> OWNERS = Collections.synchronizedList(new ArrayList<ControllerStorage>());
-
+    
     /**
      * Azok a vezérlők, melyek a járművet kiválasztották.
      */
@@ -58,7 +53,7 @@ public class HostStorage extends Storage {
     }
 
     public ControllerStorage getOwner() {
-        return owner;
+        return OWNERS.get(0);
     }
 
     public List<ControllerStorage> getOwners() {
@@ -72,7 +67,7 @@ public class HostStorage extends Storage {
     public List<? extends ControllerStorage> getControllers() {
         return CONTROLLERS;
     }
-    
+
     /**
      * Vezérlő hozzáadása.
      * A {@code ControllerStorage.setHostStorage} metódus használja.
@@ -80,11 +75,11 @@ public class HostStorage extends Storage {
     void addController(ControllerStorage controller) {
         CONTROLLERS.add(controller);
     }
-    
+
     public void setOwner(ControllerStorage owner) {
-        this.owner = owner;
+        OWNERS.add(0, owner);
     }
-    
+
     public List<ChatMessage> getChatMessages() {
         return CHAT_MESSAGES;
     }
@@ -92,5 +87,5 @@ public class HostStorage extends Storage {
     public HostData getHostData() {
         return HOST_DATA;
     }
-    
+
 }

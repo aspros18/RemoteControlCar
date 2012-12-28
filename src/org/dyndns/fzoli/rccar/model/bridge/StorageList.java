@@ -34,18 +34,26 @@ public class StorageList {
     
     public static ControllerStorage createControllerStorage(MessageProcess messageProcess, HostStorage hostStorage) {
         ControllerStorage s = findControllerStorageByName(messageProcess.getLocalCommonName());
-        if (s == null) s = new ControllerStorage(messageProcess);
-        else s.setMessageProcess(messageProcess);
+        if (s == null) {
+            s = new ControllerStorage(messageProcess);
+            getControllerList().add(s);
+        }
+        else {
+            s.setMessageProcess(messageProcess);
+        }
         s.setHostStorage(hostStorage);
-        StorageList.getControllerList().add(s);
         return s;
     }
     
     public static HostStorage createHostStorage(MessageProcess messageProcess) {
         HostStorage s = findHostStorageByName(messageProcess.getLocalCommonName());
-        if (s == null) s = new HostStorage(messageProcess);
-        else s.setMessageProcess(messageProcess);
-        StorageList.getHostList().add(s);
+        if (s == null) {
+            s = new HostStorage(messageProcess);
+            getHostList().add(s);
+        }
+        else {
+            s.setMessageProcess(messageProcess);
+        }
         return s;
     }
     

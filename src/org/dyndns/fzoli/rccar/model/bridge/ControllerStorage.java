@@ -2,30 +2,21 @@ package org.dyndns.fzoli.rccar.model.bridge;
 
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
 import org.dyndns.fzoli.rccar.model.controller.HostState;
+import org.dyndns.fzoli.socket.process.impl.MessageProcess;
 
 /**
  * Egy konkrét vezerlő kliens adatait tartalmazó tároló.
  * @author zoli
  */
-public class ControllerStorage implements Storage {
-    
-    /**
-     * A vezérlő neve.
-     */
-    private final String CONTROLLER_NAME;
+public class ControllerStorage extends Storage {
 
     /**
      * A kiválasztott jármű tárolója.
      */
     private HostStorage hostStorage;
-    
-    public ControllerStorage(String controllerName) {
-        CONTROLLER_NAME = controllerName;
-    }
 
-    @Override
-    public String getName() {
-        return CONTROLLER_NAME;
+    public ControllerStorage(MessageProcess messageProcess) {
+        super(messageProcess);
     }
 
     /**

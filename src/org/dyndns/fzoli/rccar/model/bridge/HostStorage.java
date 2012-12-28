@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
 import org.dyndns.fzoli.rccar.model.host.HostData;
+import org.dyndns.fzoli.socket.process.impl.MessageProcess;
 
 /**
  * Egy konkrét jármű összes adatát tartalmazó osztály.
@@ -25,12 +26,7 @@ import org.dyndns.fzoli.rccar.model.host.HostData;
  * folyamatosan tályékoztatva van a vezérlő.
  * @author zoli
  */
-public class HostStorage implements Storage {
-    
-    /**
-     * A jármű neve.
-     */
-    private final String HOST_NAME;
+public class HostStorage extends Storage {
     
     /**
      * A jármű adatai.
@@ -51,14 +47,9 @@ public class HostStorage implements Storage {
      * A járművet irányítani akarók.
      */
     private final List<String> OWNERS = Collections.synchronizedList(new ArrayList<String>());
-    
-    public HostStorage(String hostName) {
-        HOST_NAME = hostName;
-    }
 
-    @Override
-    public String getName() {
-        return HOST_NAME;
+    public HostStorage(MessageProcess messageProcess) {
+        super(messageProcess);
     }
 
     public String getOwner() {

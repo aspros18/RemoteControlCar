@@ -48,6 +48,11 @@ public class HostStorage extends Storage {
      */
     private final List<ControllerStorage> OWNERS = Collections.synchronizedList(new ArrayList<ControllerStorage>());
 
+    /**
+     * Azok a vezérlők, melyek a járművet kiválasztották.
+     */
+    private final List<ControllerStorage> CONTROLLERS = Collections.synchronizedList(new ArrayList<ControllerStorage>());
+    
     public HostStorage(MessageProcess messageProcess) {
         super(messageProcess);
     }
@@ -60,6 +65,22 @@ public class HostStorage extends Storage {
         return OWNERS;
     }
 
+    /**
+     * A vezérlők listája, melyek a járművet kiválasztották.
+     * A listához nem adható hozzá vezérlő, mert azt a {@link ControllerStorage} végzi el.
+     */
+    public List<? extends ControllerStorage> getControllers() {
+        return CONTROLLERS;
+    }
+    
+    /**
+     * Vezérlő hozzáadása.
+     * A {@code ControllerStorage.setHostStorage} metódus használja.
+     */
+    void addController(ControllerStorage controller) {
+        CONTROLLERS.add(controller);
+    }
+    
     public void setOwner(ControllerStorage owner) {
         this.owner = owner;
     }

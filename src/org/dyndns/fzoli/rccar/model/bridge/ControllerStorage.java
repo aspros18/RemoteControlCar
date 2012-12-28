@@ -1,7 +1,10 @@
 package org.dyndns.fzoli.rccar.model.bridge;
 
+import java.util.Date;
+import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
 import org.dyndns.fzoli.rccar.model.controller.HostState;
+import org.dyndns.fzoli.rccar.model.host.HostData;
 import org.dyndns.fzoli.socket.process.impl.MessageProcess;
 
 /**
@@ -58,7 +61,33 @@ public class ControllerStorage extends Storage {
     }
     
     private HostState createHostState() {
-        return null; //TODO
+        try {
+            HostData d = getHostStorage().getHostData();
+            //TODO: irány kalkulálása
+            return new HostState(d.getGpsPosition(), getDistance(d), null);
+        }
+        catch (NullPointerException ex) {
+            return null;
+        }
+    }
+    
+    private Integer getDistance(HostData d) {
+        Double v = null;
+        if (d != null) {
+            Point3D loc = d.getGpsPosition();
+            Point3D loc2 = d.getPreviousGpsPosition();
+            Date dat = d.getGpsChangeDate();
+            Date dat2 = d.getPreviousGpsChangeDate();
+            if (loc != null && loc2 != null && dat != null && dat2 != null) {
+                float[] distance = new float[1];
+                Location.distanceBetween(loc.X, loc.Y, loc2.X, loc2.Y, distance);
+                float s = distance[0]; // [m]
+                double t = dat.getTime() - dat2.getTime() / 1000; // [s]
+                v = s / t; // [m/s]
+                v *= 3.6; // [km/h]
+            }
+        }
+        return v == null ? null : v.intValue();
     }
     
 }

@@ -302,9 +302,14 @@ public class MainActivity extends SherlockActivity {
 				disableButton(btStop, 1000); // a leállítás 1 másodpercre inaktív
 				bindService(); // akkor kapcsolódás a szolgáltatáshoz és elindítása
 			}
-			else if (!ConnectionService.isStarted(this)) { // ha rossz a konfig és nem fut a szolgáltatás
-				Toast.makeText(this, R.string.set_config, Toast.LENGTH_SHORT).show(); // figyelmeztetés megjelenítése
-				disableButton(btStart, 2000); // 2 másodperc az Android API-ban definiált rövid üzenet ideje, ennyi időre inaktív a start gomb
+			else {
+				if (!ConnectionService.isStarted(this)) { // ha rossz a konfig és nem fut a szolgáltatás
+					Toast.makeText(this, R.string.set_config, Toast.LENGTH_SHORT).show(); // figyelmeztetés megjelenítése
+					disableButton(btStart, 2000); // 2 másodperc az Android API-ban definiált rövid üzenet ideje, ennyi időre inaktív a start gomb
+				}
+				else { // ha rossz a konfig és fut a szolgáltatás (pl. valójában jók a beállítások, el is indult a service sikeresen, de aztán az USB háttértárat aktiválták és a telefon nem tudja olvasni az SD-kártyát)
+					refreshStartStop(true, false); // felület és változók frissítése
+				}
 			}
 		}
 		else { // ha leállítást kértek

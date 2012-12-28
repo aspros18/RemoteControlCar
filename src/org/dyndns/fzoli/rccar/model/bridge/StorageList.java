@@ -3,6 +3,7 @@ package org.dyndns.fzoli.rccar.model.bridge;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.dyndns.fzoli.socket.process.impl.MessageProcess;
 
 /**
  *
@@ -29,6 +30,23 @@ public class StorageList {
     
     public static ControllerStorage findControllerStorageByName(String name) {
         return findStorageByName(name, CONTROLLERS);
+    }
+    
+    public static ControllerStorage createControllerStorage(MessageProcess messageProcess, HostStorage hostStorage) {
+        ControllerStorage s = findControllerStorageByName(messageProcess.getLocalCommonName());
+        if (s == null) s = new ControllerStorage(messageProcess);
+        else s.setMessageProcess(messageProcess);
+        s.setHostStorage(hostStorage);
+        StorageList.getControllerList().add(s);
+        return s;
+    }
+    
+    public static HostStorage createHostStorage(MessageProcess messageProcess) {
+        HostStorage s = findHostStorageByName(messageProcess.getLocalCommonName());
+        if (s == null) s = new HostStorage(messageProcess);
+        else s.setMessageProcess(messageProcess);
+        StorageList.getHostList().add(s);
+        return s;
     }
     
     /**

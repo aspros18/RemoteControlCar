@@ -36,7 +36,18 @@ public class HostStorage extends Storage {
     /**
      * A járműhöz tartozó chatüzenetek.
      */
-    private final List<ChatMessage> CHAT_MESSAGES = Collections.synchronizedList(new ArrayList<ChatMessage>());
+    private final List<ChatMessage> CHAT_MESSAGES = Collections.synchronizedList(new ArrayList<ChatMessage>() {
+
+        private static final int MAX_SIZE = 50;
+        
+        @Override
+        public boolean add(ChatMessage e) {
+            boolean result = super.add(e);
+            if (size() > MAX_SIZE) removeRange(0, size() - (MAX_SIZE + 1));
+            return result;
+        }
+        
+    });
     
     /**
      * A járművet irányítani akarók.

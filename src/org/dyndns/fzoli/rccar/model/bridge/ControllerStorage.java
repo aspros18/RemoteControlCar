@@ -35,7 +35,7 @@ public class ControllerStorage extends Storage {
 
     /**
      * A kiválasztott jármű tárolóját állítja be.
-     * A {@link HostStorage} is frissítésre kerül.
+     * A {@link HostStorage#addController(ControllerStorage)} is frissítésre kerül.
      * @param hostStorage a tároló vagy null, ha nincs jármű kiválasztva
      */
     public void setHostStorage(HostStorage hostStorage) {

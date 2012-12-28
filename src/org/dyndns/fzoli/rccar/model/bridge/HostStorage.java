@@ -41,26 +41,26 @@ public class HostStorage extends Storage {
     /**
      * A jelenlegi jármű irányító.
      */
-    private String owner;
+    private ControllerStorage owner;
     
     /**
      * A járművet irányítani akarók.
      */
-    private final List<String> OWNERS = Collections.synchronizedList(new ArrayList<String>());
+    private final List<ControllerStorage> OWNERS = Collections.synchronizedList(new ArrayList<ControllerStorage>());
 
     public HostStorage(MessageProcess messageProcess) {
         super(messageProcess);
     }
 
-    public String getOwner() {
+    public ControllerStorage getOwner() {
         return owner;
     }
 
-    public List<String> getOwners() {
+    public List<ControllerStorage> getOwners() {
         return OWNERS;
     }
 
-    public void setOwner(String owner) {
+    public void setOwner(ControllerStorage owner) {
         this.owner = owner;
     }
     

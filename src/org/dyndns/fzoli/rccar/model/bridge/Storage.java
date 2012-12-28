@@ -11,30 +11,46 @@ import org.dyndns.fzoli.socket.process.impl.MessageProcess;
 class Storage {
 
     /**
-     * A tároló üzenetküldője.
+     * A kliens üzenetküldője.
      */
-    private final MessageProcess MESSAGE_PROCESS;
+    private MessageProcess messageProcess;
+    
+    /**
+     * A kliens azonosítója.
+     */
+    private final String NAME;
     
     /**
      * Konstruktor.
      * @param a tároló üzenetküldője, a létrehozó
      */
     public Storage(MessageProcess messageProcess) {
-        MESSAGE_PROCESS = messageProcess;
+        this.messageProcess = messageProcess;
+        this.NAME = messageProcess.getLocalCommonName();
     }
     
     /**
      * A tároló üzenetküldőjét adja meg.
      */
     public MessageProcess getMessageProcess() {
-        return MESSAGE_PROCESS;
+        return messageProcess;
+    }
+
+    /**
+     * Beállítja az új üzenetküldőt.
+     * Abban az esetben, ha új üzenetküldő jön létre, le kell váltani a régit.
+     * Ez akkor történik meg, ha megszakad a kapcsolat és újra létrejön vagy
+     * már tartozik egy tároló a klienshez.
+     */
+    public void setMessageProcess(MessageProcess messageProcess) {
+        this.messageProcess = messageProcess;
     }
     
     /**
      * Megadja a kliens nevét.
      */
     public String getName() {
-        return getMessageProcess().getLocalCommonName();
+        return NAME;
     }
     
 }

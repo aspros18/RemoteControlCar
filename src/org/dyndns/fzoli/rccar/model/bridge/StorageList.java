@@ -64,9 +64,10 @@ public class StorageList {
     
     public static HostList createHostList() {
         HostList l = new HostList();
+        List<String> ls = l.getHosts();
         for (HostStorage s : getHostStorageList()) {
             if (ControllerStorage.isHostConnected(s)) {
-                l.getHosts().add(s.getName());
+                ls.add(s.getName());
             }
         }
         return l;

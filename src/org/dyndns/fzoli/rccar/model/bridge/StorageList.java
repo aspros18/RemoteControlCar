@@ -32,6 +32,10 @@ public class StorageList {
         return findStorageByName(name, CONTROLLERS);
     }
     
+    public static ControllerStorage createControllerStorage(MessageProcess messageProcess, String hostName) {
+        return createControllerStorage(messageProcess, findHostStorageByName(hostName));
+    }
+    
     public static ControllerStorage createControllerStorage(MessageProcess messageProcess, HostStorage hostStorage) {
         ControllerStorage s = findControllerStorageByName(messageProcess.getLocalCommonName());
         if (s == null) {

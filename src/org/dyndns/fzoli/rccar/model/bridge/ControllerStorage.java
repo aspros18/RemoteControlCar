@@ -40,12 +40,16 @@ public class ControllerStorage extends Storage {
     }
     
     public ControllerData createControllerData() {
-        if (hostStorage == null) return null;
-        ControllerData d = new ControllerData(hostStorage.getChatMessages());
+        HostStorage s = getHostStorage();
+        if (s == null) return null;
+        ControllerData d = new ControllerData(s.getChatMessages());
         d.setHostState(createHostState());
-        d.setHostName(hostStorage.getName());
-        d.setBatteryLevel(hostStorage.getHostData().getBatteryLevel());
-        //TODO: a többi setter befejezése
+        d.setHostName(s.getName());
+        d.setControlling(s.getOwner() == this);
+        d.setWantControl(s.getOwners().contains(this));
+        d.setBatteryLevel(s.getHostData().getBatteryLevel());
+        d.setVehicleConnected(s.getHostData().isVehicleConnected());
+        d.setHostConnected(s.getMessageProcess() != null && !s.getMessageProcess().getSocket().isClosed());
         return d;
     }
     

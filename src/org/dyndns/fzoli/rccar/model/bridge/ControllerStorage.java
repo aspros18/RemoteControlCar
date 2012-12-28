@@ -49,8 +49,12 @@ public class ControllerStorage extends Storage {
         d.setWantControl(s.getOwners().contains(this));
         d.setBatteryLevel(s.getHostData().getBatteryLevel());
         d.setVehicleConnected(s.getHostData().isVehicleConnected());
-        d.setHostConnected(s.getMessageProcess() != null && !s.getMessageProcess().getSocket().isClosed());
+        d.setHostConnected(isHostConnected(s));
         return d;
+    }
+    
+    public static boolean isHostConnected(HostStorage s) {
+        return s != null && s.getMessageProcess() != null && !s.getMessageProcess().getSocket().isClosed();
     }
     
     private HostState createHostState() {

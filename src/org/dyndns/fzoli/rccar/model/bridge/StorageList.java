@@ -3,6 +3,7 @@ package org.dyndns.fzoli.rccar.model.bridge;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.dyndns.fzoli.rccar.model.controller.HostList;
 import org.dyndns.fzoli.socket.process.impl.MessageProcess;
 
 /**
@@ -16,11 +17,11 @@ public class StorageList {
     
     private static final List<ControllerStorage> CONTROLLERS = Collections.synchronizedList(new ArrayList<ControllerStorage>());
 
-    public static List<ControllerStorage> getControllerList() {
+    public static List<ControllerStorage> getControllerStorageList() {
         return CONTROLLERS;
     }
     
-    public static List<HostStorage> getHostList() {
+    public static List<HostStorage> getHostStorageList() {
         return HOSTS;
     }
     
@@ -40,7 +41,7 @@ public class StorageList {
         ControllerStorage s = findControllerStorageByName(messageProcess.getLocalCommonName());
         if (s == null) {
             s = new ControllerStorage(messageProcess);
-            getControllerList().add(s);
+            getControllerStorageList().add(s);
         }
         else {
             s.setMessageProcess(messageProcess);
@@ -53,12 +54,22 @@ public class StorageList {
         HostStorage s = findHostStorageByName(messageProcess.getLocalCommonName());
         if (s == null) {
             s = new HostStorage(messageProcess);
-            getHostList().add(s);
+            getHostStorageList().add(s);
         }
         else {
             s.setMessageProcess(messageProcess);
         }
         return s;
+    }
+    
+    public static HostList createHostList() {
+        HostList l = new HostList();
+        for (HostStorage s : getHostStorageList()) {
+            if (ControllerStorage.isHostConnected(s)) {
+                l.getHosts().add(s.getName());
+            }
+        }
+        return l;
     }
     
     /**

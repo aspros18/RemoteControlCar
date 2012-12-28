@@ -486,6 +486,9 @@ public class ConnectionService extends IOIOService {
 				shutdown = true; // jelzés, hogy a rendszer leállítás alatt van
 				stopSelf(); // leállás, mely az onDestroy metódust is meghívja
 			}
+			else if (event.equals(Intent.ACTION_MEDIA_SHARED) || event.equals(Intent.ACTION_MEDIA_BAD_REMOVAL) || event.equals(Intent.ACTION_MEDIA_EJECT) || event.equals(Intent.ACTION_MEDIA_REMOVED) || event.equals(Intent.ACTION_MEDIA_UNMOUNTED)) { // ha a háttértár nem érhető el
+				if (startId != 1) setConfigNotificationVisible(true); // jelzés, hogy szükség van a háttértárra
+			}
 		}
 		return START_STICKY; // ha a szolgáltatást bezárják (pl. kevés RAM), a rendszer újraindítja, ha tudja
 	}

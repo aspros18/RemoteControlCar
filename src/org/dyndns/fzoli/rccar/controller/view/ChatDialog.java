@@ -15,25 +15,20 @@ import javax.swing.*;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Element;
 import javax.swing.text.PlainDocument;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
-import javax.swing.text.View;
-import javax.swing.text.ViewFactory;
-import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.text.html.InlineView;
-import javax.swing.text.html.ParagraphView;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_CHAT;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
+import org.dyndns.fzoli.ui.FixedStyledEditorKit;
 import org.dyndns.fzoli.ui.UIUtil;
 
 /**
  * Chatablak.
- * TODO: szóköz alapú sortörés implementálása az üzeneteket megjelenítő panelhez (karakter alapú helyett) úgy, ahogyan JRE 6 alatt volt
+ * TODO: az üzenetek panel sortörösének módosítása úgy, hogy a túl hosszú szavakat törje a "sor végén"
  * @author zoli
  */
 public class ChatDialog extends AbstractDialog {
@@ -150,63 +145,7 @@ public class ChatDialog extends AbstractDialog {
             tpMessages.setBackground(getBackground());
             tpMessages.setFocusable(false);
             tpMessages.setEditable(false);
-            tpMessages.setContentType("text/html");
-            tpMessages.setEditorKit(new HTMLEditorKit() { // Forrás: http://java-sl.com/tip_html_letter_wrap.html
-                
-                @Override 
-                public ViewFactory getViewFactory() {
-                    return new HTMLFactory() {
-                        
-                        @Override
-                        public View create(Element e) {
-                            View v = super.create(e); 
-                            if (v instanceof InlineView) {
-                                return new InlineView(e) {
-                                    
-                                    @Override
-                                    public int getBreakWeight(int axis, float pos, float len) {
-                                        return GoodBreakWeight;
-                                    }
-                                    
-                                    @Override
-                                    public View breakView(int axis, int p0, float pos, float len) {
-                                        if (axis == View.X_AXIS) {
-                                            checkPainter();
-                                            int p1 = getGlyphPainter().getBoundedPosition(this, p0, pos, len);
-                                            if (p0 == getStartOffset() && p1 == getEndOffset()) {
-                                                return this;
-                                            }
-                                            return createFragment(p0, p1);
-                                        }
-                                        return this;
-                                    }
-                                    
-                                };
-                            }
-                            else if (v instanceof ParagraphView) {
-                                return new ParagraphView(e) {
-                                    
-                                    @Override
-                                    protected SizeRequirements calculateMinorAxisRequirements(int axis, SizeRequirements r) {
-                                        if (r == null) {
-                                            r = new SizeRequirements();
-                                        }
-                                        float pref = layoutPool.getPreferredSpan(axis);
-                                        float min = layoutPool.getMinimumSpan(axis);
-                                        r.minimum = (int)min;
-                                        r.preferred = Math.max(r.minimum, (int)pref);
-                                        r.maximum = Integer.MAX_VALUE;
-                                        r.alignment = 0.5f;
-                                        return r;
-                                    }
-                                    
-                                };
-                            }
-                            return v;
-                        }
-                    };
-                }
-            });
+            tpMessages.setEditorKit(new FixedStyledEditorKit());
             
             doc = tpMessages.getStyledDocument();
             Style def = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);

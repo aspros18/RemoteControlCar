@@ -6,12 +6,17 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -52,18 +57,62 @@ public class ChatDialog extends AbstractDialog {
             setCellRenderer(new DefaultListCellRenderer() {
 
                 /**
-                 * A lista elemei látszólag nem választhatóak ki és nem soha nincs rajtuk fókusz, és
-                 * ha az egeret az egyik elemen tartja a felhasználó, a teljes név megjelenik.
+                 * A lista elemei látszólag nem választhatóak ki és nem soha nincs rajtuk fókusz.
                  */
                 @Override
                 public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                    JLabel lb = (JLabel) super.getListCellRendererComponent(list, value, index, false, false);
-                    lb.setToolTipText(value.toString());
-                    return lb;
+                    return super.getListCellRendererComponent(list, value, index, false, false);
                 }
                 
             });
         }
+        
+        /**
+         * Legyárt egy komponenst, ami a megadott sorban lévő komponenssel egyezik méretileg.
+         * @param row a sorindex
+         */
+        private Component createComponent(int row) {
+            return getCellRenderer().getListCellRendererComponent(this, getModel().getElementAt(row).toString(), row, false, false);
+        }
+        
+        /**
+         * Megadja, hogy az adott sorban lévő elemnek szüksége van-e ToolTip szövegre.
+         * @param row a sorindex
+         * @return true ha nem fér ki és három pontra végződik, egyébként false
+         */
+        private boolean needToolTip(int row) {
+            Component c = createComponent(row);
+            return c.getPreferredSize().width > getSize().width;
+        }
+        
+        /**
+         * Azok a nevek, melyek nem férnek ki, három pontra végződnek és az egeret rajtuk tartva a teljes szövegük jelenik meg előttük ToolTip-ben.
+         * Ez a metódus adja meg a ToolTip szövegét.
+         * @see #getToolTipLocation(java.awt.event.MouseEvent)
+         */
+        @Override
+        public String getToolTipText(MouseEvent e) {
+            int row = locationToIndex(e.getPoint());
+            if (!needToolTip(row)) return null;
+            Object o = getModel().getElementAt(row);
+            return o.toString();
+        }
+        
+        /**
+         * Azok a nevek, melyek nem férnek ki, három pontra végződnek és az egeret rajtuk tartva a teljes szövegük jelenik meg előttük ToolTip-ben.
+         * Ez a metódus adja meg a ToolTip helyét.
+         * @see #getToolTipText(java.awt.event.MouseEvent)
+         */
+        @Override
+        public Point getToolTipLocation(MouseEvent e) {
+            int row = locationToIndex(e.getPoint());
+            if (!needToolTip(row)) return null;
+            Rectangle r = getCellBounds(row, row);
+            Border border = (Border) UIManager.get("ToolTip.border");
+            Insets ins = border.getBorderInsets(createComponent(row));
+            return new Point(0 - ins.left, r.y - ins.top);
+        }
+        
     };
     
     /**

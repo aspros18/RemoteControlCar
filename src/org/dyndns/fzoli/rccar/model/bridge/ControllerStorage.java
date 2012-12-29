@@ -63,19 +63,19 @@ public class ControllerStorage extends Storage {
     private HostState createHostState() {
         try {
             HostData d = getHostStorage().getHostData();
-            return new HostState(d.getGpsPosition(), getDistance(d), getWay(d));
+            return new HostState(d.getGpsPosition(), getSpeed(d), getBearing(d));
         }
         catch (NullPointerException ex) {
             return null;
         }
     }
     
-    private static Integer getWay(HostData d) {
+    private static Integer getBearing(HostData d) {
         // TODO
         return null;
     }
     
-    private static Integer getDistance(HostData d) {
+    private static Integer getSpeed(HostData d) {
         Double v = null;
         if (d != null) {
             Point3D loc = d.getGpsPosition();

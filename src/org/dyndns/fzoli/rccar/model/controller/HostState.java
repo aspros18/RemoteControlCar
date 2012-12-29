@@ -22,18 +22,18 @@ public class HostState implements Serializable {
     /**
      * Északtól való eltérés fokban megadva.
      */
-    public final Integer WAY;
+    public final Integer BEARING;
     
     /**
      * Konstruktor.
      * @param location GPS koordináta
      * @param speed pillanatnyi sebesség
-     * @param way északtól való eltérés fokban megadva
+     * @param bearing északtól való eltérés fokban megadva
      */
-    public HostState(Point3D location, Integer speed, Integer way) {
+    public HostState(Point3D location, Integer speed, Integer bearing) {
         LOCATION = location;
         SPEED = speed;
-        WAY = way;
+        BEARING = bearing;
     }
     
 }

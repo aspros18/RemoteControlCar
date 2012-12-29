@@ -28,7 +28,6 @@ import org.dyndns.fzoli.ui.UIUtil;
 
 /**
  * Chatablak.
- * TODO: az üzenetek panel sortörösének módosítása úgy, hogy a túl hosszú szavakat törje a "sor végén"
  * @author zoli
  */
 public class ChatDialog extends AbstractDialog {

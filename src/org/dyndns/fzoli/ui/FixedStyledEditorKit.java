@@ -18,17 +18,31 @@ import javax.swing.text.ViewFactory;
  * @author zoli
  */
 public class FixedStyledEditorKit extends StyledEditorKit {
-
+    
     private static final ViewFactory defaultFactory = new StyledViewFactory();
 
-    static class StyledViewFactory implements ViewFactory {
+    protected static class WrapLabelView extends LabelView {
+
+        public WrapLabelView(Element elem) {
+            super(elem);
+        }
+
+        @Override
+        public float getMinimumSpan(int axis) {
+            if (axis == View.X_AXIS) return 0;
+            return super.getMinimumSpan(axis);
+        }
+        
+    }
+    
+    protected static class StyledViewFactory implements ViewFactory {
 
         @Override
         public View create(Element elem) {
             String kind = elem.getName();
             if (kind != null) {
                 if (kind.equals(AbstractDocument.ContentElementName)) {
-                    return new LabelView(elem);
+                    return new WrapLabelView(elem);
                 } else if (kind.equals(AbstractDocument.ParagraphElementName)) {
                     return new javax.swing.text.ParagraphView(elem);
                 } else if (kind.equals(AbstractDocument.SectionElementName)) {
@@ -41,15 +55,7 @@ public class FixedStyledEditorKit extends StyledEditorKit {
             }
 
             // default to text display
-            return new LabelView(elem) {
-
-                @Override
-                public float getMinimumSpan(int axis) {
-                    if (axis == View.X_AXIS) return 0;
-                    return super.getMinimumSpan(axis);
-                }
-
-            };
+            return new WrapLabelView(elem);
         }
 
     };

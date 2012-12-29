@@ -63,14 +63,14 @@ public class ControllerStorage extends Storage {
     private HostState createHostState() {
         try {
             HostData d = getHostStorage().getHostData();
-            return new HostState(d.getGpsPosition(), getSpeed(d), getBearing(d));
+            return new HostState(d.getGpsPosition(), getSpeed(d), getAzimuth(d));
         }
         catch (NullPointerException ex) {
             return null;
         }
     }
     
-    private static Integer getBearing(HostData d) {
+    private static Integer getAzimuth(HostData d) {
         if (d != null) {
             Point3D acc = d.getGravitationalField();
             Point3D mag = d.getMagneticField();

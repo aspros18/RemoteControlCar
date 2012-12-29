@@ -33,7 +33,7 @@ import org.dyndns.fzoli.ui.UIUtil;
 
 /**
  * Chatablak.
- * TODO: szóköz alapú sortörés implementálása az üzeneteket megjelenítő panelhez (karakter alapú helyett)
+ * TODO: szóköz alapú sortörés implementálása az üzeneteket megjelenítő panelhez (karakter alapú helyett) úgy, ahogyan JRE 6 alatt volt
  * @author zoli
  */
 public class ChatDialog extends AbstractDialog {

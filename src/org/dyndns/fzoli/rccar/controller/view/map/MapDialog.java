@@ -14,6 +14,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -48,6 +49,11 @@ public class MapDialog extends AbstractDialog {
     private static final String LS = System.getProperty("line.separator");
     
     /**
+     * Koordináta formázó az információs panelhez.
+     */
+    private static final DecimalFormat DF = new DecimalFormat("#.##");
+    
+    /**
      * A térképhez tartozó méretek.
      */
     private final int MAP_WIDTH = 400, MAP_HEIGHT = 300, RADAR_SIZE = 200, ARROW_SIZE = 30;
@@ -79,8 +85,9 @@ public class MapDialog extends AbstractDialog {
             "      html, body { height: 100% }" + LS +
             "      body { margin: 0; padding: 0; }" + LS +
             "      div#map_canvas, #border { width: " + MAP_WIDTH + "px; height: " + MAP_HEIGHT + "px }" + LS +
-            "      div#border, div#arrow { position: fixed }" + LS +
+            "      div#border, div#arrow, div#info { position: fixed }" + LS +
             "      div#border { z-index: 1000003; top: 0px; left: 0px }" + LS +
+            "      div#info { z-index: 1000002; font-size: 12px; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; color: white; visibility: hidden; left: " + (((MAP_WIDTH / 2)) - (RADAR_SIZE / 2) + 2) + "px; top: " + (((MAP_HEIGHT / 2)) - (RADAR_SIZE / 2) + 2) + "px }" + LS +
             "      div#arrow { z-index: 1000002; top: " + ((MAP_HEIGHT / 2) - (ARROW_SIZE / 2)) + "px; left: " + ((MAP_WIDTH / 2) - (ARROW_SIZE / 2)) + "px; width: " + ARROW_SIZE + "px; height: " + ARROW_SIZE + "px }" + LS +
             "      div.fadeprep { opacity: 1; transition: opacity .25s ease-in-out; -moz-transition: opacity .25s ease-in-out; -webkit-transition: opacity .25s ease-in-out; }" + LS +
             "      div.fadeon { -ms-filter:\"progid:DXImageTransform.Microsoft.Alpha(Opacity=50)\"; filter: alpha(opacity=50); -moz-opacity:0.5; -khtml-opacity: 0.5; opacity: 0.5; }" + LS +
@@ -91,6 +98,7 @@ public class MapDialog extends AbstractDialog {
             "    <div id=\"map_canvas\" class=\"fadeprep\"></div>" + LS +
             "    <div id=\"border\"></div>" + LS +
             "    <div id=\"arrow\"></div>" + LS +
+            "    <div id=\"info\"></div>" + LS +
             "  </body>" + LS +
             "</html>";
     
@@ -223,11 +231,12 @@ public class MapDialog extends AbstractDialog {
     
     /**
      * A térkép pozíciójának beállítása.
-     * @param latitude szélesség
-     * @param longitude hosszúság
+     * @param latitude szélességi fok
+     * @param longitude hosszúsági fok
+     * @param altitude magasság méterben
      */
-    public void setPosition(double latitude, double longitude) {
-        setPosition(new Point3D(latitude, longitude, 0));
+    public void setPosition(double latitude, double longitude, double altitude) {
+        setPosition(new Point3D(latitude, longitude, altitude));
     }
     
     /**
@@ -241,7 +250,7 @@ public class MapDialog extends AbstractDialog {
             @Override
             public void run() {
                 position = pos;
-                webBrowser.executeJavascript("map.setCenter(new google.maps.LatLng(" + position.X + ", " + position.Y + "));");
+                webBrowser.executeJavascript("map.setCenter(new google.maps.LatLng(" + position.X + ", " + position.Y + ")); var tag = document.getElementById('info'); tag.style.visibility = '" + (pos == null ? "hidden" : "visible") + "'; tag.innerHTML = '" + (pos == null ? "" : "W " + DF.format(pos.X) + "° H " + DF.format(pos.Y) + "° " + DF.format(pos.Z) + " m") + "';");
             }
             
         });
@@ -366,7 +375,7 @@ public class MapDialog extends AbstractDialog {
                             }
                             
                         }, 5000, 1000); // ... 5 másodperccel később másodpercenként változik az irány és az átfedés ki/be kapcsol
-                        radar.setPosition(47.35021, 19.10236); // a hely Dunaharaszti egyik utcája
+                        radar.setPosition(47.35021, 19.10236, -100); // a hely Dunaharaszti egyik utcája
                     }
                     
                 }, null);

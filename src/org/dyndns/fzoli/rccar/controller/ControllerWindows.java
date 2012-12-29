@@ -70,7 +70,7 @@ public class ControllerWindows {
         public void loadFinished(MapDialog radar) {
             //TESZT:
             radar.setArrow(null);
-            radar.setPosition(47.35021, 19.10236);
+            radar.setPosition(47.35021, 19.10236, 200.53);
         }
         
     });

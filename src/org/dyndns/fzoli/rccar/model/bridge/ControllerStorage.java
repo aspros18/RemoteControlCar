@@ -63,15 +63,19 @@ public class ControllerStorage extends Storage {
     private HostState createHostState() {
         try {
             HostData d = getHostStorage().getHostData();
-            //TODO: irány kalkulálása
-            return new HostState(d.getGpsPosition(), getDistance(d), null);
+            return new HostState(d.getGpsPosition(), getDistance(d), getWay(d));
         }
         catch (NullPointerException ex) {
             return null;
         }
     }
     
-    private Integer getDistance(HostData d) {
+    private static Integer getWay(HostData d) {
+        // TODO
+        return null;
+    }
+    
+    private static Integer getDistance(HostData d) {
         Double v = null;
         if (d != null) {
             Point3D loc = d.getGpsPosition();

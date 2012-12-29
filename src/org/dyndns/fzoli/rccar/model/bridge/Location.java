@@ -9,6 +9,13 @@ import java.util.StringTokenizer;
  */
 public class Location {
     
+    /** see {@link #remapCoordinateSystem} */
+    public static final int AXIS_X = 1;
+    /** see {@link #remapCoordinateSystem} */
+    public static final int AXIS_Y = 2;
+    /** see {@link #remapCoordinateSystem} */
+    public static final int AXIS_Z = 3;
+    
     /**
      * Constant used to specify formatting of a latitude or longitude
      * in the form "[+-]DDD.DDDDD where D indicates degrees.

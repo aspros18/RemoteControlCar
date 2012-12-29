@@ -71,7 +71,19 @@ public class ControllerStorage extends Storage {
     }
     
     private static Integer getBearing(HostData d) {
-        // TODO
+        if (d != null) {
+            Point3D acc = d.getGravitationalField();
+            Point3D mag = d.getMagneticField();
+            if (acc != null && mag != null) {
+                float[] values = new float[3];
+                float[] R = new float[9];
+                float[] outR = new float[9];
+                Location.getRotationMatrix(R, null, acc.toArray(), mag.toArray());
+                Location.remapCoordinateSystem(R, Location.AXIS_X, Location.AXIS_Z, outR);
+                Location.getOrientation(outR, values);
+                return Double.valueOf(Math.toDegrees(values[0])).intValue();
+            }
+        }
         return null;
     }
     

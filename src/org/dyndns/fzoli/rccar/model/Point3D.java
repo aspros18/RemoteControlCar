@@ -25,4 +25,11 @@ public class Point3D implements Serializable {
         Z = z;
     }
 
+    /**
+     * A három érték tömbben.
+     */
+    public float[] toArray() {
+        return new float[] { (float) X, (float) Y, (float) Z };
+    }
+    
 }

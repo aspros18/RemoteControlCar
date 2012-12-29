@@ -7,6 +7,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.*;
@@ -363,6 +365,14 @@ public class ChatDialog extends AbstractDialog {
             public void run() {
                 UIUtil.setSystemLookAndFeel();
                 JDialog d = new ChatDialog(null, null);
+                d.addWindowListener(new WindowAdapter() {
+
+                    @Override
+                    public void windowClosing(WindowEvent e) {
+                        System.exit(0);
+                    }
+                    
+                });
                 d.setLocationRelativeTo(d);
                 d.setVisible(true);
                 System.out.println(d.getContentPane().getSize());

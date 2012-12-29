@@ -52,11 +52,14 @@ public class ChatDialog extends AbstractDialog {
             setCellRenderer(new DefaultListCellRenderer() {
 
                 /**
-                 * A lista elemei látszólag nem választhatóak ki és nem soha nincs rajtuk fókusz.
+                 * A lista elemei látszólag nem választhatóak ki és nem soha nincs rajtuk fókusz, és
+                 * ha az egeret az egyik elemen tartja a felhasználó, a teljes név megjelenik.
                  */
                 @Override
                 public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                    return super.getListCellRendererComponent(list, value, index, false, false);
+                    JLabel lb = (JLabel) super.getListCellRendererComponent(list, value, index, false, false);
+                    lb.setToolTipText(value.toString());
+                    return lb;
                 }
                 
             });

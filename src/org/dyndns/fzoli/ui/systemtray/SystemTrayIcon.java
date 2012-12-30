@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.ui.systemtray;
 
+import java.io.File;
 import java.io.InputStream;
 import org.dyndns.fzoli.ui.UIUtil;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
@@ -31,10 +32,12 @@ public class SystemTrayIcon {
     /**
      * Osztály inicializálása.
      * Furán hangzik, de ilyen is létezik. :-)
+     * Ha az SWT elérhető és a ".noswt" nevű fájl nem létezik, SWT alapú,
+     * egyébként meg AWT alapú rendszerikon jön létre.
      */
     static {
         try {
-            tray = SystemTrayProvider.getSystemTray();
+            tray = SystemTrayProvider.getSystemTray(new File(".noswt").isFile());
             if (tray.isSupported()) {
                 icon = tray.addTrayIcon();
                 menu = icon.createPopupMenu();

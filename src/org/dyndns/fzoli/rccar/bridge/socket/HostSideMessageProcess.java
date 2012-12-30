@@ -1,7 +1,7 @@
 package org.dyndns.fzoli.rccar.bridge.socket;
 
-import java.util.Date;
 import org.dyndns.fzoli.rccar.model.Control;
+import org.dyndns.fzoli.rccar.model.bridge.StorageList;
 import org.dyndns.fzoli.rccar.model.host.HostData;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 
@@ -17,7 +17,6 @@ public class HostSideMessageProcess extends BridgeMessageProcess {
 
     @Override
     protected void onStart() {
-        System.out.println(new Date() + " host connected");
         // MJPEG streamelés aktiválása teszt céljából:
         sendMessage(new HostData.BooleanPartialHostData(Boolean.TRUE, HostData.BooleanPartialHostData.BooleanType.STREAMING));
         // jármű vezérlőjel küldése teszt céljából:
@@ -26,7 +25,10 @@ public class HostSideMessageProcess extends BridgeMessageProcess {
 
     @Override
     protected void onMessage(Object o) {
-        if (o instanceof HostData.PointPartialHostData) {
+        if (o instanceof HostData) {
+            StorageList.createHostStorage(this, (HostData) o);
+        }
+        else if (o instanceof HostData.PointPartialHostData) {
             HostData.PointPartialHostData pd = (HostData.PointPartialHostData) o;
             System.out.println("point data length: " + pd.data.length + "\n\n\n");
         }

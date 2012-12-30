@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
+import org.dyndns.fzoli.rccar.model.host.HostData;
 import org.dyndns.fzoli.socket.process.impl.MessageProcess;
 
 /**
@@ -50,7 +51,7 @@ public class StorageList {
         return s;
     }
     
-    public static HostStorage createHostStorage(MessageProcess messageProcess) {
+    public static HostStorage createHostStorage(MessageProcess messageProcess, HostData data) {
         HostStorage s = findHostStorageByName(messageProcess.getLocalCommonName());
         if (s == null) {
             s = new HostStorage(messageProcess);
@@ -59,6 +60,7 @@ public class StorageList {
         else {
             s.setMessageProcess(messageProcess);
         }
+        s.getHostData().update(data);
         return s;
     }
     

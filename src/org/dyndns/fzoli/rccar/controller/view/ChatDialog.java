@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Point;
@@ -16,8 +18,8 @@ import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
+import javax.swing.plaf.metal.MetalToolTipUI;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
@@ -30,6 +32,7 @@ import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_CHAT;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
 import org.dyndns.fzoli.ui.FixedStyledEditorKit;
 import org.dyndns.fzoli.ui.UIUtil;
+import sun.swing.SwingUtilities2;
 
 /**
  * Chatablak.
@@ -108,9 +111,56 @@ public class ChatDialog extends AbstractDialog {
             int row = locationToIndex(e.getPoint());
             if (!needToolTip(row)) return null;
             Rectangle r = getCellBounds(row, row);
-            Border border = (Border) UIManager.get("ToolTip.border");
-            Insets ins = border.getBorderInsets(createComponent(row));
-            return new Point(0 - ins.left, r.y - ins.top);
+            return new Point(r.x - 1, r.y - 1);
+        }
+        
+        /**
+         * Azok a nevek, melyek nem férnek ki, három pontra végződnek és az egeret rajtuk tartva a teljes szövegük jelenik meg előttük ToolTip-ben.
+         * Ahhoz, hogy úgy tűnjön, mint ha a felirat kiérne a panelből, ugyan olyan betűtípussal, háttérszínnel és betűszínnel kell kirajzolódnia
+         * a ToolTip-nek, mint a JLabel-nek. Ez a metódus létrehoz egy olyan ToolTip objektumot, ami pontosan így néz ki.
+         * A ToolTip szegélye 1 pixel széles, ezért a pozíció kiszámításakor mindkét koordinátából le kell vonni 1-et:
+         * @see #getToolTipLocation(java.awt.event.MouseEvent)
+         */
+        @Override
+        public JToolTip createToolTip() {
+            return new JToolTip() {
+                {
+                    setComponent(LIST_CONTROLLERS);
+                    setUI(new MetalToolTipUI() {
+                        
+                        {
+                            setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+                            setBackground(COLOR_BG);
+                        }
+
+                        @Override
+                        public void paint(Graphics g, JComponent c) {
+                            Insets insets = getInsets();
+                            Font font = getFont();
+                            g.setFont(font);
+                            g.setColor(getForeground());
+                            SwingUtilities2.drawString(getComponent(), g, ((JToolTip) c).getTipText(), insets.left, insets.top + SwingUtilities2.getFontMetrics(c, g, font).getAscent());
+                        }
+                        
+                    });
+                }
+
+                @Override
+                public Color getForeground() {
+                    return UIManager.getDefaults().getColor("Label.foreground");
+                }
+
+                @Override
+                public Font getFont() {
+                    return UIManager.getDefaults().getFont("Label.font");
+                }
+
+                @Override
+                public Insets getInsets() {
+                    return new Insets(2, 2, 2, 2);
+                }
+                
+            };
         }
         
     };

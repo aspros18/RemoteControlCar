@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Insets;
@@ -43,7 +42,7 @@ public class ChatDialog extends AbstractDialog {
     /**
      * Az elválasztóvonalak szélessége.
      */
-    private static final int DIVIDER_SIZE = 5, MARGIN = 2;
+    private static final int DIVIDER_SIZE = 5, MARGIN = 2, TTM = 2;
     
     /**
      * A szövegeket megjelenítő panelek háttérszíne.
@@ -111,14 +110,14 @@ public class ChatDialog extends AbstractDialog {
             int row = locationToIndex(e.getPoint());
             if (!needToolTip(row)) return null;
             Rectangle r = getCellBounds(row, row);
-            return new Point(r.x - 1, r.y - 1);
+            return new Point(r.x - TTM, r.y - TTM);
         }
         
         /**
          * Azok a nevek, melyek nem férnek ki, három pontra végződnek és az egeret rajtuk tartva a teljes szövegük jelenik meg előttük ToolTip-ben.
          * Ahhoz, hogy úgy tűnjön, mint ha a felirat kiérne a panelből, ugyan olyan betűtípussal, háttérszínnel és betűszínnel kell kirajzolódnia
          * a ToolTip-nek, mint a JLabel-nek. Ez a metódus létrehoz egy olyan ToolTip objektumot, ami pontosan így néz ki.
-         * A ToolTip szegélye 1 pixel széles, ezért a pozíció kiszámításakor mindkét koordinátából le kell vonni 1-et:
+         * A ToolTip szövegének margója a {@link #TTM} alapján állítódik be, amit a pozíció generálásakor is figyelembe kell venni:
          * @see #getToolTipLocation(java.awt.event.MouseEvent)
          */
         @Override
@@ -157,7 +156,8 @@ public class ChatDialog extends AbstractDialog {
 
                 @Override
                 public Insets getInsets() {
-                    return new Insets(2, 2, 2, 2);
+                    Insets ins = ((JLabel)createComponent(0)).getInsets();
+                    return new Insets(ins.top + TTM, ins.left + TTM, ins.bottom + TTM, ins.right + TTM);
                 }
                 
             };

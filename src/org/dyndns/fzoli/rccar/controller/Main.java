@@ -4,6 +4,7 @@ import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.SwingUtilities;
@@ -314,6 +315,11 @@ public class Main {
         if (GraphicsEnvironment.isHeadless()) { // ha a grafikus felület nem érhető el
             System.err.println("A program futtatásához grafikus környezetre van szükség." + LS + "A program kilép.");
             System.exit(1); // hibakóddal lép ki
+        }
+        final File dir = new File("./");
+        if (!dir.canWrite() || !dir.canRead()) {
+            showSettingError("A program futtatásához olvasási és írási jogra van szükség." + LS + "A program kilép.");
+            System.exit(1);
         }
         NativeInterface.open(); // a natív böngésző támogatás igényli
         SwingUtilities.invokeLater(new Runnable() {

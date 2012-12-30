@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.bridge;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.security.KeyStoreException;
@@ -226,6 +227,11 @@ public class Main {
      * Ezek után a híd program elkezdi futását.
      */
     public static void main(String[] args) {
+        final File dir = new File("./");
+        if (!dir.canRead()) {
+            alert(VAL_ERROR, "A program futtatásához olvasási jogra van szükség." + LS + "A program kilép.", System.err);
+            System.exit(1); // hibakóddal lép ki
+        }
         if (CONFIG.isCorrect()) {
             if (AdminDAO.isNew()) {
                 if (AdminDAO.exists()) {

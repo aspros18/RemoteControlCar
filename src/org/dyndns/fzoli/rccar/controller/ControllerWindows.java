@@ -118,7 +118,7 @@ public class ControllerWindows {
         boolean isEmptyHeight = emptyHeight >= 0; // ... és magasságában
         
         // főablak pozíciójának beállítása: ha a maradék szélesség negatív, szélességileg a képernyő közepére egyedül, egyébként a másik ablakkal. magasságilag ugyan ez a logika, csak a csetablakkal és a hézag nélkül, hogy csak a fele térköz legyen
-        FRAME_MAIN.setLocation((SCREEN_SIZE.width / 2) - ((FRAME_MAIN.getWidth() + (!isEmptyWidth ? 0 : BIGGER_WINDOW.getWidth() + GAP)) / 2), (SCREEN_SIZE.height / 2) - ((FRAME_MAIN.getHeight() + (!isEmptyHeight ? 0 : DIALOG_CHAT.getHeight())) / 2));
+        FRAME_MAIN.setLocation((SCREEN_SIZE.width / 2) - ((FRAME_MAIN.getWidth() + (!isEmptyWidth ? 0 : BIGGER_WINDOW.getWidth() + GAP)) / 2) + SCREEN_SIZE.x, (SCREEN_SIZE.height / 2) - ((FRAME_MAIN.getHeight() + (!isEmptyHeight ? 0 : DIALOG_CHAT.getHeight())) / 2) + SCREEN_SIZE.y);
         
         // térkép- és vezérlőablak láthatóságának beállítása: ha elférnek a főablak mellett, akkor kezdetben láthatóak, egyébként meg nem
         FRAME_MAIN.setWindowVisibility(ControllerWindows.WindowType.MAP, isEmptyWidth);

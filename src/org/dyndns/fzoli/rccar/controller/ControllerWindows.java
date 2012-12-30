@@ -85,16 +85,15 @@ public class ControllerWindows {
      *   ezzel levágva a két felső ablak címsorából egy kevesett. A csetablak mérete és a hézag felével csökkentett, így alatta is van egy kis hézag.
      * - Linux alatt GNOME felület esetén szintén másképpen működik az ablakok pozícionálása és ezért sem lehet egyértelműen egymás mellé
      *   tenni az ablakokat. Arról nem is beszélve, hogy XFCE alatt alapban van egy kis hézag az ablakokra hagyva.
+     * - Ha az ablakok kezdetben láthatóak lennének, akkor pontos ablakméretet lehetne elkérni, de én még a megjelenés előtt beállítom a pozíciót.
+     *   Ha az ablak nem látható, nem helyezhető tálcára, így még ezt a trükköt sem alkalmazhatom, valamint negatív koordinátát sem fogad el
+     *   minden grafikus felület, tehát nem lehet megoldani, hogy az ablak kirajzolódjon, de ne legyen látható.
      * A konstans értéke: 10 pixel (optimális érték, nem ajánlatos elállítani)
      */
     private final static int GAP = 10;
     
     /**
      * Az ablakok pozícionálása, szükség esetén átméretezése.
-     * TODO: talán megoldás lehet az ablakok megfelelő elhelyezésére minden OS-en, ha az ablakok getInset() metódusát figyelembe veszem úgy,
-     * hogy az ablakok méreteiből kivonom a megfelelő oldalakat.
-     * UPDATE: az új teszt alapján nincs szükség az Inset-re és működnie kellene minden OS-en ugyan úgy a beállításoknak, ha a setVisible(true)
-     * előbb hívódik meg, mint az első getSize() hívás, de ez nem járható út jelen esetben.
      */
     public ControllerWindows() {
         final Rectangle SCREEN_SIZE = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
@@ -117,7 +116,8 @@ public class ControllerWindows {
         boolean isEmptyWidth = emptyWidth >= 0; // van-e szabad hely a képernyőn szélességében ...
         boolean isEmptyHeight = emptyHeight >= 0; // ... és magasságában
         
-        // főablak pozíciójának beállítása: ha a maradék szélesség negatív, szélességileg a képernyő közepére egyedül, egyébként a másik ablakkal. magasságilag ugyan ez a logika, csak a csetablakkal és a hézag nélkül, hogy csak a fele térköz legyen
+        // Főablak pozíciójának beállítása: ha a maradék szélesség negatív, szélességileg egyedül kerül a képernyő közepére, egyébként a másik ablakkal együtt kerül középre. Magasságilag ugyan ez a logika, csak a csetablakkal és hézag nélkül, hogy csak a fele térköz legyen meg
+        // A kezdeti pozícióhoz hozzáadódik az ablakterület kezdetének koordinátája is, így pl. ha Windows rendszeren a start menü felül van, a főablak teteje nem fog belelógni
         FRAME_MAIN.setLocation((SCREEN_SIZE.width / 2) - ((FRAME_MAIN.getWidth() + (!isEmptyWidth ? 0 : BIGGER_WINDOW.getWidth() + GAP)) / 2) + SCREEN_SIZE.x, (SCREEN_SIZE.height / 2) - ((FRAME_MAIN.getHeight() + (!isEmptyHeight ? 0 : DIALOG_CHAT.getHeight())) / 2) + SCREEN_SIZE.y);
         
         // térkép- és vezérlőablak láthatóságának beállítása: ha elférnek a főablak mellett, akkor kezdetben láthatóak, egyébként meg nem

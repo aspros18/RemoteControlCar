@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.bridge.socket;
 
 import org.dyndns.fzoli.rccar.model.Control;
+import org.dyndns.fzoli.rccar.model.bridge.HostStorage;
 import org.dyndns.fzoli.rccar.model.bridge.StorageList;
 import org.dyndns.fzoli.rccar.model.host.HostData;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
@@ -11,6 +12,8 @@ import org.dyndns.fzoli.socket.handler.SecureHandler;
  */
 public class HostSideMessageProcess extends BridgeMessageProcess {
 
+    private HostStorage storage;
+    
     public HostSideMessageProcess(SecureHandler handler) {
         super(handler);
     }
@@ -26,7 +29,7 @@ public class HostSideMessageProcess extends BridgeMessageProcess {
     @Override
     protected void onMessage(Object o) {
         if (o instanceof HostData) {
-            StorageList.createHostStorage(this, (HostData) o);
+            storage = StorageList.createHostStorage(this, (HostData) o);
         }
         else if (o instanceof HostData.PointPartialHostData) {
             HostData.PointPartialHostData pd = (HostData.PointPartialHostData) o;

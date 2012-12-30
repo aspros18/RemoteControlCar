@@ -91,6 +91,8 @@ public class ControllerWindows {
     
     /**
      * Az ablakok pozícionálása, szükség esetén átméretezése.
+     * TODO: talán megoldás lehet az ablakok megfelelő elhelyezésére minden OS-en, ha az ablakok getInset() metódusát figyelembe veszem úgy,
+     * hogy az ablakok méreteiből kivonom a megfelelő oldalakat.
      */
     public ControllerWindows() {
         final Rectangle SCREEN_SIZE = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();

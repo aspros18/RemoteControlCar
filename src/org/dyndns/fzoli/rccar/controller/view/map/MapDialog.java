@@ -158,7 +158,7 @@ public class MapDialog extends AbstractDialog {
             
             private boolean errRemoved = false, fired = false;
             
-            private Object test; // teszt annak kiderítésére, hogy betöltődött-e a Google Map
+            private boolean test = false; // teszt annak kiderítésére, hogy betöltődött-e a Google Map
             
             @Override
             public void loadingProgressChanged(final WebBrowserEvent e) {
@@ -171,6 +171,14 @@ public class MapDialog extends AbstractDialog {
                     // ciklus amíg nincs a térkép betöltve:
                     new Thread(new Runnable() {
 
+                        private boolean isIdAvailable(String id) {
+                            String val = "document.getElementById('" + id + "').innerHTML";
+                            val = "return " + val + " != null && " + val + " != '';";
+                            Object ret = e.getWebBrowser().executeJavascriptWithResult(val);
+                            if (ret == null) return false;
+                            return Boolean.valueOf(ret.toString());
+                        }
+                        
                         @Override
                         public void run() {
                             Date startDate = new Date(); // inicializálás kezdetének ideje
@@ -181,12 +189,12 @@ public class MapDialog extends AbstractDialog {
                                         @Override
                                         public void run() {
                                             e.getWebBrowser().executeJavascript(createInitScript()); // térkép inicializálás
-                                            test = e.getWebBrowser().executeJavascriptWithResult("return document.getElementById('map_canvas').innerHTML;");
+                                            test = isIdAvailable("map_canvas");
                                         }
                                         
                                     });
                                     if (new Date().getTime() - startDate.getTime() > 10000) {
-                                        test = null;
+                                        test = false;
                                         mapPane.setVisible(false); // térkép elrejtése és figyelmeztető üzenet megjelenítése, mert nem tudott betölteni
                                         final JLabel lbWarn = new JLabel("<html><p style=\"text-align:center; color:red\">A térkép betöltése nem sikerült.</p><br><p style=\"text-align:center\">Kattintson ide az újratöltéshez.</p></html>", SwingConstants.CENTER);
                                         add(lbWarn);
@@ -206,16 +214,16 @@ public class MapDialog extends AbstractDialog {
                                 catch (Exception ex) {
                                     ;
                                 }
-                            } while (test == null || test.equals(""));
+                            } while (!test);
                             setArrow(ARROW.getRotation());
+                            if (!fired) { // csak az első betöltéskor van eseménykezelés
+                                fired = true;
+                                if (callback == null) setVisible(true); // ablak megjelenítése, ha nincs eseményfigyelő
+                                else callback.loadFinished(MapDialog.this); // egyébként eseményfigyelő futtatása
+                            }
                         }
                         
                     }).start();
-                    if (!fired) { // csak az első betöltéskor van eseménykezelés
-                        fired = true;
-                        if (callback == null) setVisible(true); // ablak megjelenítése, ha nincs eseményfigyelő
-                        else callback.loadFinished(MapDialog.this); // egyébként eseményfigyelő futtatása
-                    }
                 }
             }
             
@@ -378,6 +386,7 @@ public class MapDialog extends AbstractDialog {
                             
                         }, 5000, 1000); // ... 5 másodperccel később másodpercenként változik az irány és az átfedés ki/be kapcsol
                         radar.setPosition(47.35021, 19.10236, -100); // a hely Dunaharaszti egyik utcája
+                        radar.setFade(true);
                     }
                     
                 }, null);

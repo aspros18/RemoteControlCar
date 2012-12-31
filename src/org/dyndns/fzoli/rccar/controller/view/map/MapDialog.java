@@ -215,7 +215,7 @@ public class MapDialog extends AbstractDialog {
                                     ;
                                 }
                             } while (!test);
-                            setArrow(ARROW.getRotation());
+//                            setArrow(ARROW.getRotation());
                             if (!fired) { // csak az első betöltéskor van eseménykezelés
                                 fired = true;
                                 if (callback == null) setVisible(true); // ablak megjelenítése, ha nincs eseményfigyelő

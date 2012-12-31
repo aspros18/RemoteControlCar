@@ -69,7 +69,7 @@ public class ControllerWindows {
         @Override
         public void loadFinished(MapDialog radar) {
             //TESZT:
-            radar.setArrow(null);
+            radar.setArrow(21.5);
             radar.setPosition(47.35021, 19.10236, 200.53);
         }
         

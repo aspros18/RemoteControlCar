@@ -1,12 +1,12 @@
 package org.dyndns.fzoli.rccar.controller.view.map;
 
-import chrriis.common.UIUtils;
 import chrriis.dj.nativeswing.NativeComponentWrapper;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserAdapter;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserEvent;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
@@ -106,7 +106,7 @@ public class MapDialog extends AbstractDialog {
      * A natív böngésző.
      */
     private final JWebBrowser webBrowser;
-
+    
     public MapDialog(ControllerFrame owner, ControllerWindows windows) {
         this(owner, windows, null);
     }
@@ -118,6 +118,7 @@ public class MapDialog extends AbstractDialog {
     public MapDialog(final ControllerFrame owner, ControllerWindows windows, final MapLoadListener callback) {
         super(owner, "Térkép", windows);
         setIconImage(IC_MAP.getImage());
+        getContentPane().setBackground(Color.WHITE);
         
         final JLayeredPane mapPane = new JLayeredPane(); // a komponens pontos pozíciójának beállítására használom
         mapPane.setPreferredSize(new Dimension(RADAR_SIZE, RADAR_SIZE)); // a méret megadása
@@ -157,42 +158,59 @@ public class MapDialog extends AbstractDialog {
             
             private boolean errRemoved = false, fired = false;
             
+            private Object test; // teszt annak kiderítésére, hogy betöltődött-e a Google Map
+            
             @Override
-            public void loadingProgressChanged(WebBrowserEvent e) {
+            public void loadingProgressChanged(final WebBrowserEvent e) {
                 if (!errRemoved) { // hibaüzenet eltávolítása, mivel van böngésző támogatás
                     errRemoved = true;
                     remove(lbErr);
                     mapPane.setVisible(true); // térkép láthatóvá tétele remélve, hogy be is tud töltődni
                 }
                 if (e.getWebBrowser().getLoadingProgress() == 100) { // ha betöltődött az oldal
-                    Object test; // teszt annak kiderítésére, hogy betöltődött-e a Google Map
-                    Date startDate = new Date(); // inicializálás kezdetének ideje
                     // ciklus amíg nincs a térkép betöltve:
-                    while ((test = e.getWebBrowser().executeJavascriptWithResult("return document.getElementById('map_canvas').innerHTML;")) == null || test.equals("")) {
-                        e.getWebBrowser().executeJavascript(createInitScript()); // térkép inicializálás
-                        try {
-                            if (new Date().getTime() - startDate.getTime() > 10000) {
-                                mapPane.setVisible(false); // térkép elrejtése és figyelmeztető üzenet megjelenítése, mert nem tudott betölteni
-                                final JLabel lbWarn = new JLabel("<html><p style=\"text-align:center; color:red\">A térkép betöltése nem sikerült.</p><br><p style=\"text-align:center\">Kattintson ide az újratöltéshez.</p></html>", SwingConstants.CENTER);
-                                add(lbWarn);
-                                lbWarn.addMouseListener(new MouseAdapter() {
+                    new Thread(new Runnable() {
 
-                                    @Override
-                                    public void mouseClicked(MouseEvent ev) {
-                                        remove(lbWarn); // kattintásra hibaüzenet eltávolítás, térkép megjelenítése és újratöltése
-                                        mapPane.setVisible(true);
-                                        webBrowser.setHTMLContent(HTML_SOURCE);
+                        @Override
+                        public void run() {
+                            Date startDate = new Date(); // inicializálás kezdetének ideje
+                            do {
+                                try {
+                                    SwingUtilities.invokeAndWait(new Runnable() {
+                                        
+                                        @Override
+                                        public void run() {
+                                            e.getWebBrowser().executeJavascript(createInitScript()); // térkép inicializálás
+                                            test = e.getWebBrowser().executeJavascriptWithResult("return document.getElementById('map_canvas').innerHTML;");
+                                        }
+                                        
+                                    });
+                                    if (new Date().getTime() - startDate.getTime() > 10000) {
+                                        test = null;
+                                        mapPane.setVisible(false); // térkép elrejtése és figyelmeztető üzenet megjelenítése, mert nem tudott betölteni
+                                        final JLabel lbWarn = new JLabel("<html><p style=\"text-align:center; color:red\">A térkép betöltése nem sikerült.</p><br><p style=\"text-align:center\">Kattintson ide az újratöltéshez.</p></html>", SwingConstants.CENTER);
+                                        add(lbWarn);
+                                        lbWarn.addMouseListener(new MouseAdapter() {
+
+                                            @Override
+                                            public void mouseClicked(MouseEvent ev) {
+                                                remove(lbWarn); // kattintásra hibaüzenet eltávolítás, térkép megjelenítése és újratöltése
+                                                mapPane.setVisible(true);
+                                                webBrowser.setHTMLContent(HTML_SOURCE);
+                                            }
+
+                                        });
+                                        break; // ha 10 mp alatt nem sikerült inicializálni, feladja és kilép a ciklusból
                                     }
-                                    
-                                });
-                                break; // ha 10 mp alatt nem sikerült inicializálni, feladja és kilép a ciklusból
-                            }
-                            Thread.sleep(100); // később újra próbálkozás
+                                }
+                                catch (Exception ex) {
+                                    ;
+                                }
+                            } while (test == null || test.equals(""));
+                            setArrow(ARROW.getRotation());
                         }
-                        catch (Exception ex) {
-                            ;
-                        }
-                    }
+                        
+                    }).start();
                     if (!fired) { // csak az első betöltéskor van eseménykezelés
                         fired = true;
                         if (callback == null) setVisible(true); // ablak megjelenítése, ha nincs eseményfigyelő
@@ -297,21 +315,6 @@ public class MapDialog extends AbstractDialog {
     }
     
     /**
-     * Az irányjelző nyíl eltüntetése.
-     * JavaScript alapú metódus.
-     */
-    public void removeArrow() {
-        SwingUtilities.invokeLater(new Runnable() {
-            
-            @Override
-            public void run() {
-                webBrowser.executeJavascript("document.getElementById('arrow').innerHTML = '';");
-            }
-            
-        });
-    }
-    
-    /**
      * A Google Map inicializáló JavaScript kódja.
      */
     private String createInitScript() {
@@ -350,7 +353,6 @@ public class MapDialog extends AbstractDialog {
      * Teszt.
      */
     public static void main(String[] args) {
-        UIUtils.setPreferredLookAndFeel();
         NativeInterface.open();
         SwingUtilities.invokeLater(new Runnable() {
             

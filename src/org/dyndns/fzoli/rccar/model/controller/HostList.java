@@ -10,7 +10,7 @@ import org.dyndns.fzoli.rccar.model.PartialData;
  * A vezérlőnek küldendő lista.
  * Amikor egy vezérlő kapcsolódik a hídhoz és több autó érhető el,
  * a vezérlőnek ki kell választania, melyik autót szeretné irányítani.
- * Ehhez kapja ezt a listát, ami tartalmazza z elérhető autókat.
+ * Ehhez kapja ezt a listát, ami tartalmazza az elérhető autókat.
  * @author zoli
  */
 public class HostList extends Data<HostList, HostList.PartialHostList> {

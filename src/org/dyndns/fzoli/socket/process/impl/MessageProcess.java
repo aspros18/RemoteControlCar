@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Vector;
 import org.dyndns.fzoli.socket.compress.CompressedBlockInputStream;
 import org.dyndns.fzoli.socket.compress.CompressedBlockOutputStream;
@@ -164,6 +165,19 @@ public abstract class MessageProcess extends AbstractSecureProcess {
                     ;
                 }
             }
+        }
+    }
+    
+    /**
+     * Üzenet küldése a másik oldalnak több címzettnek.
+     * Az üzenetek kiküldése aszinkron, tehát egyszerre több címzettnek küldi az üzenetet egy időben.
+     * @param addresses az üzenetküldők listája
+     * @param o az üzenet, szerializálható objektum
+     */
+    public static void send(List<MessageProcess> addresses, Serializable o) {
+        if (addresses == null || o == null) return;
+        for (MessageProcess p : addresses) {
+            p.sendMessage(o, false);
         }
     }
     

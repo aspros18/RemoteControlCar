@@ -118,6 +118,12 @@ public class MapDialog extends AbstractDialog {
     private final JWebBrowser webBrowser;
     
     /**
+     * Figyelmeztető üzenet a sikertelen betöltéshez.
+     * Kattintásra megpróbálja újratölteni a térképet.
+     */
+    private final JLabel lbWarn;
+    
+    /**
      * Megadja, hogy a fade effekt engedélyezve van-e.
      */
     private boolean fadeEnabled = false;
@@ -154,9 +160,16 @@ public class MapDialog extends AbstractDialog {
         };
         
         // figyelmeztető üzenet jelenik meg, ha a térkép betöltése nem sikerült
-        final JLabel lbWarn = new JLabel("<html><p style=\"text-align:center; color:red\">A térkép betöltése nem sikerült!</p><br><p style=\"text-align:center\">Kattintson ide az újratöltéshez.</p></html>", SwingConstants.CENTER);
+        lbWarn = new JLabel("<html><p style=\"text-align:center; color:red\">A térkép betöltése nem sikerült!</p><br><p style=\"text-align:center\">Kattintson ide az újratöltéshez.</p></html>", SwingConstants.CENTER);
         lbWarn.setPreferredSize(mapPane.getPreferredSize());
-        
+        lbWarn.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent ev) {
+                reload();
+            }
+
+        });
         // kezdetben úgy tesz, mint ha nem lenne böngésző támogatás
         final JLabel lbErr = new JLabel("<html><p style=\"text-align:center\">Ha a térkép nem jelenik meg rövidesen, telepítsen Mozilla Firefox böngészőt.</p></html>", SwingConstants.CENTER);
         lbErr.setPreferredSize(mapPane.getPreferredSize()); // a hibaüzenet mérete megegyezik a térképével
@@ -239,15 +252,6 @@ public class MapDialog extends AbstractDialog {
                                         pInd.setVisible(false); // indikátor elrejtése ...
                                         mapPane.setVisible(false); // ... térkép elrejtése és figyelmeztető üzenet megjelenítése, mert nem tudott betölteni
                                         add(lbWarn, BorderLayout.SOUTH); // a figyelmeztetés és az indikátor az ablak alján helyezkednek el
-                                        lbWarn.addMouseListener(new MouseAdapter() {
-
-                                            @Override
-                                            public void mouseClicked(MouseEvent ev) {
-                                                remove(lbWarn); // kattintásra hibaüzenet eltávolítása és térkép újratöltése
-                                                webBrowser.setHTMLContent(HTML_SOURCE);
-                                            }
-
-                                        });
                                         break; // ha 10 mp alatt nem sikerült inicializálni, feladja és kilép a ciklusból
                                     }
                                     Thread.sleep(10); // újratesztelés kicsit később
@@ -287,6 +291,21 @@ public class MapDialog extends AbstractDialog {
             
         }));
         
+    }
+    
+    /**
+     * Hibaüzenet eltávolítása és térkép újratöltése.
+     */
+    public void reload() {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                remove(lbWarn);
+                webBrowser.setHTMLContent(HTML_SOURCE);
+            }
+            
+        });
     }
     
     /**

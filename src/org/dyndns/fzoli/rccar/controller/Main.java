@@ -267,7 +267,7 @@ public class Main {
     public static void reconnect() {
         if (CONN.isConnected()) {
             CONN.disconnect();
-            runClient(true);
+            runClient(true, false);
         }
     }
     
@@ -275,9 +275,10 @@ public class Main {
      * A program értelme.
      * Kijelzi, hogy elkezdődött a kapcsolódás és kapcsolódik a szerverhez (ha még nem történt meg).
      * Innentől kezdve már a kommunikációtól függ, hogyan folytatódik a program futása.
+     * @param reloadMap legyen-e újratöltve a térkép dialóus
      */
-    public static void runClient() {
-        runClient(false);
+    public static void runClient(boolean reloadMap) {
+        runClient(false, reloadMap);
     }
     
     /**
@@ -286,8 +287,9 @@ public class Main {
      * Fél másodperc késleltetés van beállítva, hogy legyen ideje a felhasználónak észlelni a folyamatot.
      * Innentől kezdve már a kommunikációtól függ, hogyan folytatódik a program futása.
      * @param delay legyen-e késleltetés
+     * @param reloadMap legyen-e újratöltve a térkép dialóus
      */
-    public static void runClient(boolean delay) {
+    public static void runClient(boolean delay, final boolean reloadMap) {
         if (CONN.isConnected()) return;
         connecting = true;
         showConnecting();
@@ -297,6 +299,7 @@ public class Main {
             public void run() {
                 connecting = false;
                 CONN.connect();
+                if (reloadMap) CONTROLLER_WINDOWS.reloadMap();
             }
             
         }, delay ? 500 : 0);
@@ -342,7 +345,7 @@ public class Main {
                 if (CONFIG.isDefault()) { // figyelmeztetés
                     showSettingWarning("A konfiguráció beállítása a menüből érhető el. Most ide kattintva is megteheti.");
                 }
-                runClient(); // és végül a lényeg
+                runClient(false); // és végül a lényeg
             }
 
         });

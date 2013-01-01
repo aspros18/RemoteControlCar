@@ -429,7 +429,7 @@ public class ConfigEditorFrame extends ModalFrame {
     @Override
     public void dispose() {
         super.dispose();
-        runClient();
+        runClient(true);
     }
     
     /**

@@ -194,6 +194,13 @@ public class ControllerWindows {
         FRAME_MAIN.refresh();
     }
     
+    /**
+     * Térkép újratöltése.
+     */
+    public void reloadMap() {
+        DIALOG_MAP.reload();
+    }
+    
     public static void main(String[] args) {
         NativeInterface.open();
         SwingUtilities.invokeLater(new Runnable() {

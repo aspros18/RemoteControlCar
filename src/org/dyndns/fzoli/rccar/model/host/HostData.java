@@ -466,5 +466,17 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
             super.update(d);
         }
     }
+
+    /**
+     * Kinullázza azokat a szenzoradatokat, melyek azonnal megtudhatóak, tehát nem igényelnek online kapcsolatot (minden, ami nem GPS).
+     * A többi adatot metartja, hátha elvész a kapcsolat és csak az utolsó adat érhető el.
+     */
+    @Override
+    public void clear() {
+        super.clear();
+        up2date = false;
+        previousMagneticField = magneticField = null;
+        previousGravitationalField = gravitationalField = null;
+    }
     
 }

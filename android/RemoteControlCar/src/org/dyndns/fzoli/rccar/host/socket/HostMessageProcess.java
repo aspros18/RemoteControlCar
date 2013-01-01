@@ -177,12 +177,7 @@ public class HostMessageProcess extends MessageProcess {
 		SERVICE.getVehicle().setCallback(null);
 		if (availableLocation) locationManager.removeUpdates(locationListener);
 		if (availableDirection) sensorManager.unregisterListener(sensorEventListener);
-		getHostData().setUp2Date(false);
-		getHostData().setMagneticField(null);
-		getHostData().setMagneticField(null);
-		getHostData().setGravitationalField(null);
-		getHostData().setGravitationalField(null);
-		getHostData().setBatteryLevel(null);
+		getHostData().clear();
 	}
 	
 	/**

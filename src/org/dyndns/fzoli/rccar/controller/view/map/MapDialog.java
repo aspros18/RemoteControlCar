@@ -190,6 +190,7 @@ public class MapDialog extends AbstractDialog {
                     add(lbInd, BorderLayout.SOUTH); // az indikátor és a figyelmeztetés az ablak alján helyezkednek el
                     lbInd.setVisible(true);
                 }
+                repaint(); // egyes rendszereken (Windows) a remove(lbErr) utasítás ellenére sem tűnik el a komponens, amit egy repaint megold
                 if (e.getWebBrowser().getLoadingProgress() == 100) { // ha betöltődött az oldal
                     // ciklus amíg nincs a térkép betöltve:
                     new Thread(new Runnable() {

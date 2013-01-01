@@ -50,9 +50,14 @@ public class MapDialog extends AbstractDialog {
     private static final String LS = System.getProperty("line.separator");
     
     /**
-     * Koordináta formázó az információs panelhez.
+     * Fok-koordináta formázó az információs panelhez.
      */
-    private static final DecimalFormat DF = new DecimalFormat("#.##");
+    private static final DecimalFormat DF = new DecimalFormat("#.00");
+    
+    /**
+     * Magasság-koordináta formázó az információs panelhez.
+     */
+    private static final DecimalFormat DF2 = new DecimalFormat("#.##");
     
     /**
      * A térképhez tartozó méretek.
@@ -301,7 +306,7 @@ public class MapDialog extends AbstractDialog {
             @Override
             public void run() {
                 position = pos;
-                webBrowser.executeJavascript("map.setCenter(new google.maps.LatLng(" + position.X + ", " + position.Y + ")); var tag = document.getElementById('info'); tag.style.visibility = '" + (pos == null ? "hidden" : "visible") + "'; tag.innerHTML = '" + (pos == null ? "" : "W " + DF.format(pos.X) + "° H " + DF.format(pos.Y) + "° " + DF.format(pos.Z) + " m") + "';");
+                webBrowser.executeJavascript("map.setCenter(new google.maps.LatLng(" + position.X + ", " + position.Y + ")); var tag = document.getElementById('info'); tag.style.visibility = '" + (pos == null ? "hidden" : "visible") + "'; tag.innerHTML = '" + (pos == null ? "" : "W " + DF.format(pos.X) + "° H " + DF.format(pos.Y) + "° " + DF2.format(pos.Z) + " m") + "';");
             }
             
         });

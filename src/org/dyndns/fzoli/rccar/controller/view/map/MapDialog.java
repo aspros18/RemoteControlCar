@@ -209,17 +209,19 @@ public class MapDialog extends AbstractDialog {
             
             @Override
             public void loadingProgressChanged(final WebBrowserEvent e) {
+                // az indikátor és a figyelmeztetés az ablak alján helyezkednek el
+                // egyes rendszereken nem minden esetben frissül le a panelcsere, ezért van duplázva a remove és add metódus
                 if (!errRemoved) { // hibaüzenet eltávolítása és indikátor megjelenítése, mivel van böngésző támogatás
                     errRemoved = true;
+                    remove(lbErr);
                     remove(lbErr);
                 }
                 if (indApp) { // indikátor megjelenítése, ha még nem látszik
                     indApp = false;
-                    add(pInd, BorderLayout.SOUTH); // az indikátor és a figyelmeztetés az ablak alján helyezkednek el
+                    add(pInd, BorderLayout.SOUTH);
+                    add(pInd, BorderLayout.SOUTH);
                     pInd.setVisible(true);
-                    pInd.repaint();
                 }
-                repaint(); // egyes rendszereken (Windows) a remove(lbErr) utasítás ellenére sem tűnik el a komponens, amit egy repaint megold
                 if (e.getWebBrowser().getLoadingProgress() == 100) { // ha betöltődött az oldal
                     // ciklus amíg nincs a térkép betöltve:
                     new Thread(new Runnable() {

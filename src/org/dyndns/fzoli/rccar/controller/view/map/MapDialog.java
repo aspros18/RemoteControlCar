@@ -9,6 +9,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -21,6 +24,7 @@ import java.util.TimerTask;
 import javax.imageio.ImageIO;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows;
@@ -135,11 +139,22 @@ public class MapDialog extends AbstractDialog {
         mapPane.setPreferredSize(new Dimension(RADAR_SIZE, RADAR_SIZE)); // a méret megadása
         
         // indikátor jelenik meg, míg a térkép töltődik
-        final JLabel lbInd = new JLabel(R.getIndicatorIcon());
-        lbInd.setPreferredSize(mapPane.getPreferredSize());
+        final JPanel pInd = new JPanel() {
+            {
+                final JLabel lbInd = new JLabel(R.getIndicatorIcon());
+                GridBagConstraints c = new GridBagConstraints();
+                setLayout(new GridBagLayout());
+                setPreferredSize(mapPane.getPreferredSize());
+                setOpaque(false);
+                add(lbInd, c);
+                c.gridy = 1;
+                c.insets = new Insets(5, 5, 5, 5);
+                add(new JLabel("Töltés"), c);
+            }
+        };
         
         // figyelmeztető üzenet jelenik meg, ha a térkép betöltése nem sikerült
-        final JLabel lbWarn = new JLabel("<html><p style=\"text-align:center; color:red\">A térkép betöltése nem sikerült.</p><br><p style=\"text-align:center\">Kattintson ide az újratöltéshez.</p></html>", SwingConstants.CENTER);
+        final JLabel lbWarn = new JLabel("<html><p style=\"text-align:center; color:red\">A térkép betöltése nem sikerült!</p><br><p style=\"text-align:center\">Kattintson ide az újratöltéshez.</p></html>", SwingConstants.CENTER);
         lbWarn.setPreferredSize(mapPane.getPreferredSize());
         
         // kezdetben úgy tesz, mint ha nem lenne böngésző támogatás
@@ -187,8 +202,9 @@ public class MapDialog extends AbstractDialog {
                 }
                 if (indApp) { // indikátor megjelenítése, ha még nem látszik
                     indApp = false;
-                    add(lbInd, BorderLayout.SOUTH); // az indikátor és a figyelmeztetés az ablak alján helyezkednek el
-                    lbInd.setVisible(true);
+                    add(pInd, BorderLayout.SOUTH); // az indikátor és a figyelmeztetés az ablak alján helyezkednek el
+                    pInd.setVisible(true);
+                    pInd.repaint();
                 }
                 repaint(); // egyes rendszereken (Windows) a remove(lbErr) utasítás ellenére sem tűnik el a komponens, amit egy repaint megold
                 if (e.getWebBrowser().getLoadingProgress() == 100) { // ha betöltődött az oldal
@@ -220,7 +236,7 @@ public class MapDialog extends AbstractDialog {
                                     if (new Date().getTime() - startDate.getTime() > 10000) {
                                         test = false; // újratesztelés a legközelebbi betöltéskor
                                         indApp = true; // indikátor megjelenítése a legközelebbi betöltéskor
-                                        lbInd.setVisible(false); // indikátor elrejtése ...
+                                        pInd.setVisible(false); // indikátor elrejtése ...
                                         mapPane.setVisible(false); // ... térkép elrejtése és figyelmeztető üzenet megjelenítése, mert nem tudott betölteni
                                         add(lbWarn, BorderLayout.SOUTH); // a figyelmeztetés és az indikátor az ablak alján helyezkednek el
                                         lbWarn.addMouseListener(new MouseAdapter() {
@@ -241,7 +257,7 @@ public class MapDialog extends AbstractDialog {
                                 }
                             } while (!test);
                             if (test) { // ha sikerült a térkép betöltése
-                                lbInd.setVisible(false); // indikátor eltüntetése
+                                pInd.setVisible(false); // indikátor eltüntetése
                                 mapPane.setVisible(true); // térkép megjelenítése
                                 // és adatok frissítése, hátha változtak idő közben:
                                 setArrow(ARROW.getRotation());

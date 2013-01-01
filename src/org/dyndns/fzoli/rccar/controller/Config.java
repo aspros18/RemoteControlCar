@@ -41,7 +41,7 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
     /**
      * Az a fájl, amelybe a szerializálás történik.
      */
-    private static final File STORE = new File(System.getProperty("user.home"), "mobile-rc.ser");
+    private static final File STORE = new File("controller.ser");
     
     /**
      * Az alapértelmezett konfiguráció.

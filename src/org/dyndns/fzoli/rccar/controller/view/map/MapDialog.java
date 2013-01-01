@@ -234,6 +234,7 @@ public class MapDialog extends AbstractDialog {
                                         });
                                         break; // ha 10 mp alatt nem sikerült inicializálni, feladja és kilép a ciklusból
                                     }
+                                    Thread.sleep(10); // újratesztelés kicsit később
                                 }
                                 catch (Exception ex) {
                                     ;

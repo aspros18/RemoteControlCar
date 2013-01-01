@@ -23,6 +23,7 @@ public class ControllerSideMessageProcess extends BridgeMessageProcess {
         selected = null;
         HostList l = new HostList();
         for (int i = 1; i <= 8; i++) {
+            if (i == 5) continue;
             l.getHosts().add("teszt" + i);
         }
         sendMessage(l);
@@ -33,7 +34,7 @@ public class ControllerSideMessageProcess extends BridgeMessageProcess {
                 int counter = 0;
                 while (selected == null && !getSocket().isClosed()) {
                     counter++;
-                    sendMessage(new HostList.PartialHostList("teszt9", counter % 2 == 0 ? HostList.PartialHostList.ChangeType.REMOVE : HostList.PartialHostList.ChangeType.ADD));
+                    sendMessage(new HostList.PartialHostList("teszt5", counter % 2 == 0 ? HostList.PartialHostList.ChangeType.REMOVE : HostList.PartialHostList.ChangeType.ADD));
                     try {
                         Thread.sleep(5000);
                     }

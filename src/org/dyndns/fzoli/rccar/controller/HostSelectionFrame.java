@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Collections;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -133,6 +134,7 @@ public class HostSelectionFrame extends JFrame {
      * Eltávolítja az adatokat, majd újra feltölti a friss adatokat és ha volt, beállítja az előtte kiválasztott elemet és a scrollt.
      */
     public void refresh(List<String> list) {
+        Collections.sort(list);
         DefaultListModel<String> model = (DefaultListModel<String>) LIST.getModel();
         Point scroll = PANE.getViewport().getViewPosition();
         String selected = LIST.getSelectedValue();

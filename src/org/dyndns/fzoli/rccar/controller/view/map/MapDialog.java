@@ -26,6 +26,7 @@ import javax.swing.SwingUtilities;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_MAP;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
+import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.controller.view.AbstractDialog;
 import org.dyndns.fzoli.rccar.controller.view.ControllerFrame;
 import org.dyndns.fzoli.rccar.model.Point3D;
@@ -123,8 +124,16 @@ public class MapDialog extends AbstractDialog {
         final JLayeredPane mapPane = new JLayeredPane(); // a komponens pontos pozíciójának beállítására használom
         mapPane.setPreferredSize(new Dimension(RADAR_SIZE, RADAR_SIZE)); // a méret megadása
         
+        // indikátor jelenik meg, míg a térkép töltődik
+        final JLabel lbInd = new JLabel(R.getIndicatorIcon());
+        lbInd.setPreferredSize(mapPane.getPreferredSize());
+        
+        // figyelmeztető üzenet jelenik meg, ha a térkép betöltése nem sikerült
+        final JLabel lbWarn = new JLabel("<html><p style=\"text-align:center; color:red\">A térkép betöltése nem sikerült.</p><br><p style=\"text-align:center\">Kattintson ide az újratöltéshez.</p></html>", SwingConstants.CENTER);
+        lbWarn.setPreferredSize(mapPane.getPreferredSize());
+        
         // kezdetben úgy tesz, mint ha nem lenne böngésző támogatás
-        final JLabel lbErr = new JLabel("<html><p style=\"text-align:center\">Töltés...<br><br><br>Ha a térkép nem jelenik meg rövidesen, telepítsen Mozilla Firefox böngészőt.</p></html>", SwingConstants.CENTER);
+        final JLabel lbErr = new JLabel("<html><p style=\"text-align:center\">Ha a térkép nem jelenik meg rövidesen, telepítsen Mozilla Firefox böngészőt.</p></html>", SwingConstants.CENTER);
         lbErr.setPreferredSize(mapPane.getPreferredSize()); // a hibaüzenet mérete megegyezik a térképével
         getContentPane().add(lbErr, BorderLayout.NORTH); // a hibaüzenet az ablak felső részére kerül
         
@@ -156,16 +165,20 @@ public class MapDialog extends AbstractDialog {
         // várakozás a térkép api betöltésére
         webBrowser.addWebBrowserListener(new WebBrowserAdapter() {
             
-            private boolean errRemoved = false, fired = false;
+            private boolean indApp = true, errRemoved = false, fired = false;
             
             private boolean test = false; // teszt annak kiderítésére, hogy betöltődött-e a Google Map
             
             @Override
             public void loadingProgressChanged(final WebBrowserEvent e) {
-                if (!errRemoved) { // hibaüzenet eltávolítása, mivel van böngésző támogatás
+                if (!errRemoved) { // hibaüzenet eltávolítása és indikátor megjelenítése, mivel van böngésző támogatás
                     errRemoved = true;
                     remove(lbErr);
-                    mapPane.setVisible(true); // térkép láthatóvá tétele remélve, hogy be is tud töltődni
+                }
+                if (indApp) { // indikátor megjelenítése, ha még nem látszik
+                    indApp = false;
+                    add(lbInd, BorderLayout.SOUTH); // az indikátor és a figyelmeztetés az ablak alján helyezkednek el
+                    lbInd.setVisible(true);
                 }
                 if (e.getWebBrowser().getLoadingProgress() == 100) { // ha betöltődött az oldal
                     // ciklus amíg nincs a térkép betöltve:
@@ -194,16 +207,16 @@ public class MapDialog extends AbstractDialog {
                                         
                                     });
                                     if (new Date().getTime() - startDate.getTime() > 10000) {
-                                        test = false;
-                                        mapPane.setVisible(false); // térkép elrejtése és figyelmeztető üzenet megjelenítése, mert nem tudott betölteni
-                                        final JLabel lbWarn = new JLabel("<html><p style=\"text-align:center; color:red\">A térkép betöltése nem sikerült.</p><br><p style=\"text-align:center\">Kattintson ide az újratöltéshez.</p></html>", SwingConstants.CENTER);
-                                        add(lbWarn);
+                                        test = false; // újratesztelés a legközelebbi betöltéskor
+                                        indApp = true; // indikátor megjelenítése a legközelebbi betöltéskor
+                                        lbInd.setVisible(false); // indikátor elrejtése ...
+                                        mapPane.setVisible(false); // ... térkép elrejtése és figyelmeztető üzenet megjelenítése, mert nem tudott betölteni
+                                        add(lbWarn, BorderLayout.SOUTH); // a figyelmeztetés és az indikátor az ablak alján helyezkednek el
                                         lbWarn.addMouseListener(new MouseAdapter() {
 
                                             @Override
                                             public void mouseClicked(MouseEvent ev) {
-                                                remove(lbWarn); // kattintásra hibaüzenet eltávolítás, térkép megjelenítése és újratöltése
-                                                mapPane.setVisible(true);
+                                                remove(lbWarn); // kattintásra hibaüzenet eltávolítása és térkép újratöltése
                                                 webBrowser.setHTMLContent(HTML_SOURCE);
                                             }
 
@@ -215,7 +228,11 @@ public class MapDialog extends AbstractDialog {
                                     ;
                                 }
                             } while (!test);
-//                            setArrow(ARROW.getRotation());
+                            if (test) { // ha sikerült a térkép betöltése
+                                lbInd.setVisible(false); // indikátor eltüntetése
+                                mapPane.setVisible(true); // térkép megjelenítése
+//                                setArrow(ARROW.getRotation());
+                            }
                             if (!fired) { // csak az első betöltéskor van eseménykezelés
                                 fired = true;
                                 if (callback == null) setVisible(true); // ablak megjelenítése, ha nincs eseményfigyelő
@@ -386,7 +403,6 @@ public class MapDialog extends AbstractDialog {
                             
                         }, 5000, 1000); // ... 5 másodperccel később másodpercenként változik az irány és az átfedés ki/be kapcsol
                         radar.setPosition(47.35021, 19.10236, -100); // a hely Dunaharaszti egyik utcája
-                        radar.setFade(true);
                     }
                     
                 }, null);

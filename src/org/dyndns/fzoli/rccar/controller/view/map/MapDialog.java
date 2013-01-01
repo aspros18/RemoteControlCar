@@ -108,6 +108,11 @@ public class MapDialog extends AbstractDialog {
      */
     private final JWebBrowser webBrowser;
     
+    /**
+     * Megadja, hogy a fade effekt engedélyezve van-e.
+     */
+    private boolean fadeEnabled = false;
+    
     public MapDialog(ControllerFrame owner, ControllerWindows windows) {
         this(owner, windows, null);
     }
@@ -231,7 +236,10 @@ public class MapDialog extends AbstractDialog {
                             if (test) { // ha sikerült a térkép betöltése
                                 lbInd.setVisible(false); // indikátor eltüntetése
                                 mapPane.setVisible(true); // térkép megjelenítése
-//                                setArrow(ARROW.getRotation());
+                                // és adatok frissítése, hátha változtak idő közben:
+                                setArrow(ARROW.getRotation());
+                                setPosition(position);
+                                setFade(fadeEnabled);
                             }
                             if (!fired) { // csak az első betöltéskor van eseménykezelés
                                 fired = true;
@@ -329,6 +337,7 @@ public class MapDialog extends AbstractDialog {
      * JavaScript és CSS 3 alapú metódus.
      */
     public void setFade(final boolean enabled) {
+        fadeEnabled = enabled;
         SwingUtilities.invokeLater(new Runnable() {
             
             @Override
@@ -403,6 +412,7 @@ public class MapDialog extends AbstractDialog {
                             
                         }, 5000, 1000); // ... 5 másodperccel később másodpercenként változik az irány és az átfedés ki/be kapcsol
                         radar.setPosition(47.35021, 19.10236, -100); // a hely Dunaharaszti egyik utcája
+                        radar.setFade(true);
                     }
                     
                 }, null);

@@ -56,6 +56,9 @@ public class ControllerStorage extends Storage {
         return d;
     }
     
+//    TODO: szerver oldalon a vezérlő adat módosulását kezelő üzenetküldő és adatmódosító megírása, feltéve ha a HostStorage-ben lévő DataSender nem kezeli le
+//    public ControllerData createControllerDataSender();
+    
     public static boolean isHostConnected(HostStorage s) {
         return s != null && s.getMessageProcess() != null && !s.getMessageProcess().getSocket().isClosed();
     }

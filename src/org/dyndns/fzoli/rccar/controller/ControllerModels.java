@@ -24,6 +24,7 @@ public class ControllerModels {
     
     /**
      * A kiválasztott jármű adatai.
+     * TODO: DataSender implementálása, ezzel a mostani setHostName felüldefiniálás fölöslegessé válik
      */
     private static final ControllerData DATA = new ControllerData() {
 

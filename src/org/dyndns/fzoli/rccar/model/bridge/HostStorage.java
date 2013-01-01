@@ -30,6 +30,7 @@ public class HostStorage extends Storage {
     
     /**
      * A jármű adatai.
+     * TODO: DataSender implementálása
      */
     private final HostData HOST_DATA = new HostData();
     

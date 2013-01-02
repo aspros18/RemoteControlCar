@@ -151,6 +151,7 @@ public class HostSelectionFrame extends JFrame {
             LIST.setSelectedValue(selected, false);
             PANE.getViewport().setViewPosition(scroll);
         }
+        LIST.invalidate(); // frissítés kezdeményezése
     }
     
     /**

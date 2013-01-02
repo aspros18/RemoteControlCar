@@ -162,7 +162,7 @@ public class MapDialog extends AbstractDialog {
         pInd.setVisible(false);
         
         // figyelmeztető üzenet jelenik meg, ha a térkép betöltése nem sikerült
-        lbWarn = new JLabel("<html><p style=\"text-align:center; color:red\">A térkép betöltése nem sikerült!</p><br><p style=\"text-align:center\">Kattintson ide az újratöltéshez.</p></html>", SwingConstants.CENTER);
+        lbWarn = new JLabel("<html><p style=\"text-align:center; color:red; font-weight: 900\">A térkép betöltése nem sikerült!</p><br><p style=\"text-align:center\">Kattintson ide az újratöltéshez.</p></html>", SwingConstants.CENTER);
         lbWarn.setPreferredSize(mapPane.getPreferredSize());
         lbWarn.addMouseListener(new MouseAdapter() {
 

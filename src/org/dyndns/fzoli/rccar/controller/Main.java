@@ -103,7 +103,7 @@ public class Main {
 
         @Override
         public void windowClosed(WindowEvent e) {
-            configAlert();
+            configAlert(false);
         }
 
     };
@@ -328,16 +328,19 @@ public class Main {
     }
     
     /**
-     * Figyelmeztetést jelenít meg a konfigurációval kapcsolatban, ha:
-     * - az alapértelmezett tanúsítvány van használatban
-     * - az eredeti beállítások vannak használva.
+     * Figyelmeztetést jelenít meg a konfigurációval kapcsolatban, ha az alapértelmezett tanúsítvány van használatban.
+     * @param help true esetén megjelenik, hogy hol érhetőek el a beállítások, ha alapértelmezett a konfig; false esetén meg figyelmeztetés
      */
-    private static void configAlert() {
-        if (CONFIG.isCertDefault()) {
-            showSettingWarning("Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!");
+    private static void configAlert(boolean help) {
+        if (help) {
+            if (CONFIG.isDefault()) {
+                showSettingWarning("A konfiguráció beállítása a menüből érhető el. Most ide kattintva is megteheti.");
+            }
         }
-        if (CONFIG.isDefault()) {
-            showSettingWarning("A konfiguráció beállítása a menüből érhető el. Most ide kattintva is megteheti.");
+        else {
+            if (CONFIG.isCertDefault()) {
+                showSettingWarning("Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!");
+            }
         }
     }
     
@@ -376,7 +379,7 @@ public class Main {
                     showSettingDialog(true, 1); // kényszerített beállítás és tanúsítvány lapfül előtérbe hozása
                 }
                 else {
-                    configAlert(); // figyelmeztetés, ha kell
+                    configAlert(true); // súgó figyelmeztetés, ha kell
                     runClient(false); // és végül a lényeg
                 }
             }

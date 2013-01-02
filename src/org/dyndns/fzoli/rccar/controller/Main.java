@@ -363,8 +363,7 @@ public class Main {
                 // előinicializálom az ablakokat, míg a nyitóképernyő fent van,
                 // hogy később ne menjen el ezzel a hasznos idő
                 PROGRESS_FRAME = new ConnectionProgressFrame();
-                CONFIG_EDITOR = new ConfigEditorFrame(CONFIG);
-                CONFIG_EDITOR.addWindowListener(WL_CFG);
+                CONFIG_EDITOR = new ConfigEditorFrame(CONFIG, WL_CFG);
                 SELECTION_FRAME = new HostSelectionFrame(AL_EXIT);
                 CONTROLLER_WINDOWS = new ControllerWindows();
                 if (!CONFIG.isCorrect()) { // ha a tanúsítvány fájlok egyike nem létezik

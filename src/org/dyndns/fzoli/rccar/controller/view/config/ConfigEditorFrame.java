@@ -11,6 +11,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
 import java.text.ParseException;
 import java.util.regex.Pattern;
@@ -252,9 +253,11 @@ public class ConfigEditorFrame extends FrontFrame {
     /**
      * Konstruktor.
      * @param config konfiguráció, amit használ az ablak.
+     * @param wl eseménykezelő, ami előhívja a figyelmeztetéseket az ablak bezárásakor
      */
-    public ConfigEditorFrame(Config config) {
+    public ConfigEditorFrame(Config config, WindowListener wl) {
         CONFIG = config;
+        addWindowListener(wl);
         initComponents();
         initFrame();
     }

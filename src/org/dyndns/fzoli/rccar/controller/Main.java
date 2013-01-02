@@ -336,6 +336,7 @@ public class Main {
     private static void configAlert() {
         if (CONFIG.isCertDefault()) {
             showSettingWarning("Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!");
+            if (CONFIG.isDefault()) try { Thread.sleep(2000); } catch (Exception ex) {;}
         }
         if (CONFIG.isDefault()) {
             showSettingWarning("A konfiguráció beállítása a menüből érhető el. Most ide kattintva is megteheti.");

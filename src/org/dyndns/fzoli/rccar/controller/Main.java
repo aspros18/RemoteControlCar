@@ -322,7 +322,6 @@ public class Main {
             public void run() {
                 connecting = false;
                 CONN.connect();
-                if (reloadMap) CONTROLLER_WINDOWS.reloadMap();
             }
             
         }, delay ? 500 : 0);

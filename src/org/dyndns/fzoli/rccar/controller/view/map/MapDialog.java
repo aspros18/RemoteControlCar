@@ -297,9 +297,10 @@ public class MapDialog extends AbstractDialog {
     }
     
     /**
-     * Hibaüzenet eltüntetése és térkép újratöltése.
+     * Hibaüzenet eltüntetése és térkép újratöltése, ha legutóbb nem sikerült betölteni.
      */
-    public void reload() {
+    private void reload() {
+        if (!lbWarn.isVisible()) return;
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
@@ -309,6 +310,16 @@ public class MapDialog extends AbstractDialog {
             }
             
         });
+    }
+
+    /**
+     * Megjeleníti vagy elrejti az ablakot.
+     * Ha megjelenítést kértek, és nem sikerült leutóbb betölteni a térképet, újratöltés.
+     */
+    @Override
+    public void setVisible(boolean b) {
+        super.setVisible(b);
+        if (b) reload();
     }
     
     /**

@@ -157,6 +157,7 @@ public class ControllerFrame extends JFrame {
         WINDOWS = windows;
         initFrame();
         setComponents();
+        pack();
     }
 
     /**
@@ -219,8 +220,6 @@ public class ControllerFrame extends JFrame {
         pbAccu.setStringPainted(true); // a beállított szöveg jelenjen meg
         pbAccu.setValue(100); // TODO: tesztsor törlése
         pStat.add(pbAccu); // hozzáadás az ablakhoz
-        
-        pack(); // ablak méretének optimalizálása
         
         addWindowListener(new WindowAdapter() {
 

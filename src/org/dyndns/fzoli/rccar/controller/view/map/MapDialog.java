@@ -155,9 +155,11 @@ public class MapDialog extends AbstractDialog {
                 add(lbInd, c);
                 c.gridy = 1;
                 c.insets = new Insets(5, 5, 5, 5);
-                add(new JLabel("Töltés"), c);
+                add(new JLabel("Betöltés"), c);
             }
         };
+        getContentPane().add(pInd, BorderLayout.SOUTH);
+        pInd.setVisible(false);
         
         // figyelmeztető üzenet jelenik meg, ha a térkép betöltése nem sikerült
         lbWarn = new JLabel("<html><p style=\"text-align:center; color:red\">A térkép betöltése nem sikerült!</p><br><p style=\"text-align:center\">Kattintson ide az újratöltéshez.</p></html>", SwingConstants.CENTER);
@@ -170,8 +172,11 @@ public class MapDialog extends AbstractDialog {
             }
 
         });
+        getContentPane().add(lbWarn, BorderLayout.WEST);
+        lbWarn.setVisible(false);
+        
         // kezdetben úgy tesz, mint ha nem lenne böngésző támogatás
-        final JLabel lbErr = new JLabel("<html><p style=\"text-align:center\">Ha a térkép nem jelenik meg rövidesen, telepítsen Mozilla Firefox böngészőt.</p></html>", SwingConstants.CENTER);
+        final JLabel lbErr = new JLabel("<html><p style=\"text-align:center\">Ha a térkép hamarosan nem tölt be, telepítsen Mozilla Firefox böngészőt.</p></html>", SwingConstants.CENTER);
         lbErr.setPreferredSize(mapPane.getPreferredSize()); // a hibaüzenet mérete megegyezik a térképével
         getContentPane().add(lbErr, BorderLayout.NORTH); // a hibaüzenet az ablak felső részére kerül
         
@@ -209,20 +214,15 @@ public class MapDialog extends AbstractDialog {
             
             @Override
             public void loadingProgressChanged(final WebBrowserEvent e) {
-                // az indikátor és a figyelmeztetés az ablak alján helyezkednek el
-                // egyes rendszereken nem minden esetben frissül le a panelcsere, ezért van duplázva a remove és add metódus, valamint a repaint
                 if (!errRemoved) { // hibaüzenet eltávolítása és indikátor megjelenítése, mivel van böngésző támogatás
                     errRemoved = true;
-                    remove(lbErr);
                     remove(lbErr);
                 }
                 if (indApp) { // indikátor megjelenítése, ha még nem látszik
                     indApp = false;
-                    add(pInd, BorderLayout.SOUTH);
-                    add(pInd, BorderLayout.SOUTH);
                     pInd.setVisible(true);
                 }
-                repaint();
+                repaint(); // egyes rendszereken (Windows) nem minden esetben frissül le a panelcsere
                 if (e.getWebBrowser().getLoadingProgress() == 100) { // ha betöltődött az oldal
                     // ciklus amíg nincs a térkép betöltve:
                     new Thread(new Runnable() {
@@ -253,11 +253,11 @@ public class MapDialog extends AbstractDialog {
                                         test = false; // újratesztelés a legközelebbi betöltéskor
                                         indApp = true; // indikátor megjelenítése a legközelebbi betöltéskor
                                         pInd.setVisible(false); // indikátor elrejtése ...
-                                        mapPane.setVisible(false); // ... térkép elrejtése és figyelmeztető üzenet megjelenítése, mert nem tudott betölteni
-                                        add(lbWarn, BorderLayout.SOUTH); // a figyelmeztetés és az indikátor az ablak alján helyezkednek el
+                                        mapPane.setVisible(false); // ... térkép elrejtése ...
+                                        lbWarn.setVisible(true); // ... és figyelmeztető üzenet megjelenítése, mert nem tudott betöltődni a térkép
                                         break; // ha 10 mp alatt nem sikerült inicializálni, feladja és kilép a ciklusból
                                     }
-                                    Thread.sleep(10); // újratesztelés kicsit később
+                                    Thread.sleep(100); // újratesztelés kicsit később
                                 }
                                 catch (Exception ex) {
                                     ;
@@ -297,14 +297,14 @@ public class MapDialog extends AbstractDialog {
     }
     
     /**
-     * Hibaüzenet eltávolítása és térkép újratöltése.
+     * Hibaüzenet eltüntetése és térkép újratöltése.
      */
     public void reload() {
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
-                remove(lbWarn);
+                lbWarn.setVisible(false);
                 webBrowser.setHTMLContent(HTML_SOURCE);
             }
             

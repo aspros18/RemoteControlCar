@@ -205,14 +205,6 @@ public class Main {
      */
     public static void showSettingDialog(boolean force, Integer tabIndex) {
         if (!CONN.isConnected()) CONN.disconnect();
-        if (!CONFIG_EDITOR.isVisible()) {
-            if (force) {
-                CONFIG_EDITOR.addWindowListener(WL_CFG);
-            }
-            else {
-                CONFIG_EDITOR.removeWindowListener(WL_CFG);
-            }
-        }
         PROGRESS_FRAME.setVisible(false);
         CONFIG_EDITOR.setTabIndex(tabIndex);
         CONFIG_EDITOR.setForce(force);
@@ -372,6 +364,7 @@ public class Main {
                 // hogy később ne menjen el ezzel a hasznos idő
                 PROGRESS_FRAME = new ConnectionProgressFrame();
                 CONFIG_EDITOR = new ConfigEditorFrame(CONFIG);
+                CONFIG_EDITOR.addWindowListener(WL_CFG);
                 SELECTION_FRAME = new HostSelectionFrame(AL_EXIT);
                 CONTROLLER_WINDOWS = new ControllerWindows();
                 if (!CONFIG.isCorrect()) { // ha a tanúsítvány fájlok egyike nem létezik

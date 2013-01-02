@@ -29,7 +29,7 @@ import org.dyndns.fzoli.rccar.controller.Config;
 import static org.dyndns.fzoli.rccar.controller.Main.runClient;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.ui.FilePanel;
-import org.dyndns.fzoli.ui.ModalFrame;
+import org.dyndns.fzoli.ui.FrontFrame;
 import org.dyndns.fzoli.ui.OkCancelPanel;
 import org.dyndns.fzoli.ui.OptionPane;
 import org.dyndns.fzoli.ui.RegexPatternFormatter;
@@ -38,7 +38,7 @@ import org.dyndns.fzoli.ui.RegexPatternFormatter;
  * A vezérlő konfigurációját beállító dialógusablak.
  * @author zoli
  */
-public class ConfigEditorFrame extends ModalFrame {
+public class ConfigEditorFrame extends FrontFrame {
     
     /**
      * A dialógusablak lapfüleinek tartalma ebbe a panelbe kerül bele.
@@ -244,6 +244,12 @@ public class ConfigEditorFrame extends ModalFrame {
     };
     
     /**
+     * Helyes konfiguráció beállítás kényszerítése.
+     * Kezdetben inaktív.
+     */
+    private boolean force = false;
+    
+    /**
      * Konstruktor.
      * @param config konfiguráció, amit használ az ablak.
      */
@@ -304,6 +310,21 @@ public class ConfigEditorFrame extends ModalFrame {
         tfAddress.addKeyListener(klEnter);
         tfPort.addKeyListener(klEnter);
     }
+
+    /**
+     * Megadja, hogy a helyes konfiguráció beállítása kényszerítve van-e.
+     */
+    public boolean isForce() {
+        return force;
+    }
+
+    /**
+     * Beállítja, hogy a helyes konfiguráció beállítása kényszerítve legyen-e.
+     * @param force true esetén kényszerített
+     */
+    public void setForce(boolean force) {
+        this.force = force;
+    }
     
     /**
      * Betölti a konfigurációt a felület elemeibe.
@@ -332,10 +353,10 @@ public class ConfigEditorFrame extends ModalFrame {
     
     /**
      * Bezárja az ablakot a konfiguráció mentése nélkül.
-     * Ha nem megfelelő az érvényben lévő konfiguráció és modális az ablak, a program leáll.
+     * Ha nem megfelelő az érvényben lévő konfiguráció, de meg van követelve a helyes konfiguráció, a program leáll.
      */
     private void unsaveConfig() {
-        if (isModal() && !CONFIG.isFileExists()) System.exit(0);
+        if (isForce() && !CONFIG.isFileExists()) System.exit(0);
         dispose();
     }
     

@@ -4,6 +4,8 @@ import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -90,6 +92,18 @@ public class Main {
         @Override
         public void actionPerformed(ActionEvent e) {
             CALLBACK_EXIT.run();
+        }
+
+    };
+    
+    /**
+     * A konfiguráció beállító ablak bezárásakor figyelmeztetést jelentít meg, ha kell.
+     */
+    private static final WindowAdapter WL_CFG = new WindowAdapter() {
+
+        @Override
+        public void windowClosed(WindowEvent e) {
+            configAlert();
         }
 
     };
@@ -185,14 +199,23 @@ public class Main {
     
     /**
      * A beállításkezelő ablakot jeleníti meg.
+     * Ha a helyes konfiguráció kényszerített, az ablak bezárása után figyelmeztetés jelenhet meg a beállításokkal kapcsolatban.
      * @param force kényszerítve legyen-e a felhasználó helyes konfiguráció megadására
      * @param tabIndex a megjelenő lapfül
      */
     public static void showSettingDialog(boolean force, Integer tabIndex) {
         if (!CONN.isConnected()) CONN.disconnect();
+        if (!CONFIG_EDITOR.isVisible()) {
+            if (force) {
+                CONFIG_EDITOR.addWindowListener(WL_CFG);
+            }
+            else {
+                CONFIG_EDITOR.removeWindowListener(WL_CFG);
+            }
+        }
         PROGRESS_FRAME.setVisible(false);
         CONFIG_EDITOR.setTabIndex(tabIndex);
-        CONFIG_EDITOR.setModal(force);
+        CONFIG_EDITOR.setForce(force);
         CONFIG_EDITOR.setVisible(true);
     }
     
@@ -306,6 +329,20 @@ public class Main {
     }
     
     /**
+     * Figyelmeztetést jelenít meg a konfigurációval kapcsolatban, ha:
+     * - az alapértelmezett tanúsítvány van használatban
+     * - az eredeti beállítások vannak használva.
+     */
+    private static void configAlert() {
+        if (CONFIG.isCertDefault()) {
+            showSettingWarning("Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!");
+        }
+        if (CONFIG.isDefault()) {
+            showSettingWarning("A konfiguráció beállítása a menüből érhető el. Most ide kattintva is megteheti.");
+        }
+    }
+    
+    /**
      * A vezérlő main metódusa.
      * Ha a grafikus felület nem érhető el, konzolra írja a szomorú tényt és a program végetér.
      * Ha a konfigurációban megadott tanúsítványfájlok nem léteznek, közli a hibát és kényszeríti a kijavítását úgy,
@@ -339,13 +376,10 @@ public class Main {
                     showSettingError((CONFIG.isDefault() ? "Az alapértelmezett konfiguráció nem használható, mert" : "A konfiguráció") + " nem létező fájlra hivatkozik." + LS + "A folytatás előtt a hibát helyre kell hozni.");
                     showSettingDialog(true, 1); // kényszerített beállítás és tanúsítvány lapfül előtérbe hozása
                 }
-                if (CONFIG.isCertDefault()) { // figyelmeztetés
-                    showSettingWarning("Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!");
+                else {
+                    configAlert(); // figyelmeztetés, ha kell
+                    runClient(false); // és végül a lényeg
                 }
-                if (CONFIG.isDefault()) { // figyelmeztetés
-                    showSettingWarning("A konfiguráció beállítása a menüből érhető el. Most ide kattintva is megteheti.");
-                }
-                runClient(false); // és végül a lényeg
             }
 
         });

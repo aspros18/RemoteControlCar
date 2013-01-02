@@ -134,6 +134,7 @@ public class HostSelectionFrame extends JFrame {
      * Eltávolítja az adatokat, majd újra feltölti a friss adatokat és ha volt, beállítja az előtte kiválasztott elemet és a scrollt.
      */
     public void refresh(List<String> list) {
+        if (list == null) return;
         Collections.sort(list);
         DefaultListModel<String> model = (DefaultListModel<String>) LIST.getModel();
         Point scroll = PANE.getViewport().getViewPosition();
@@ -142,12 +143,14 @@ public class HostSelectionFrame extends JFrame {
         for (String host: list) {
             model.addElement(host);
         }
-        if (model.indexOf(selected) == -1 && model.getSize() != 0) {
-            selected = model.getElementAt(0);
-            scroll = new Point(0, 0);
+        if (model.getSize() != 0) {
+            if (model.indexOf(selected) == -1) {
+                selected = model.getElementAt(0);
+                scroll = new Point(0, 0);
+            }
+            LIST.setSelectedValue(selected, false);
+            PANE.getViewport().setViewPosition(scroll);
         }
-        LIST.setSelectedValue(selected, false);
-        PANE.getViewport().setViewPosition(scroll);
     }
     
     /**

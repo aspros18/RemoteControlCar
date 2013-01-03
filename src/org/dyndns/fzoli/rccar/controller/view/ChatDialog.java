@@ -128,7 +128,7 @@ public class ChatDialog extends AbstractDialog {
                     setUI(new MetalToolTipUI() {
                         
                         {
-                            setBorder(BorderFactory.createLineBorder(UIManager.getColor("Panel.background").darker(), 1));
+                            setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
                             setBackground(COLOR_BG);
                         }
 

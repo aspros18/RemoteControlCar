@@ -439,7 +439,6 @@ public class ConfigEditorFrame extends FrontFrame {
         if (b && !isVisible()) loadConfig();
         if (b) toFront();
         super.setVisible(b);
-        if (b && !isForce()) btCancel.requestFocus();
     }
     
     /**

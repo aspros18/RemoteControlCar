@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -274,6 +275,14 @@ public class Main {
         CONTROLLER_WINDOWS.refresh();
         CONTROLLER_WINDOWS.setVisible(true);
         SELECTION_FRAME.setVisible(false);
+    }
+    
+    /**
+     * Frissíti az MJPEG képkockát a felületen.
+     * @param frame a képkocka, ami ha null, fekete kitöltésű kép jelenik meg
+     */
+    public static void setMjpegFrame(BufferedImage frame) {
+        CONTROLLER_WINDOWS.setMjpegFrame(frame);
     }
     
     /**

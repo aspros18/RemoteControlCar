@@ -20,7 +20,7 @@ public class ControllerSideVideoProcess extends AbstractSecureProcess {
             SharedJpegProvider.handleConnection("test", getSocket().getOutputStream());
         }
         catch (Exception ex) {
-            ex.printStackTrace();
+            getHandler().closeProcesses();
         }
     }
     

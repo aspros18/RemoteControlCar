@@ -4,6 +4,7 @@ import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.Window;
+import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -192,6 +193,14 @@ public class ControllerWindows {
      */
     public void refresh() {
         FRAME_MAIN.refresh();
+    }
+    
+    /**
+     * Beállítja az aktuális MJPEG képkockát a vezérlő ablakban.
+     * @param frame a képkocka, ami ha null, fekete kitötésű kép jelenik meg
+     */
+    public void setMjpegFrame(BufferedImage frame) {
+        FRAME_MAIN.setFrameImage(frame);
     }
     
     /**

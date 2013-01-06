@@ -34,6 +34,7 @@ import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_MAP;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.ui.RoundedPanel;
+import org.imgscalr.Scalr;
 
 /**
  * A jármű főablaka.
@@ -171,6 +172,8 @@ public class ControllerFrame extends JFrame {
         setTitle("Mobile-RC");
         
         lbImage = new JLabel(IC_BLACK_BG); // amíg nincs MJPEG stream, fekete
+        lbImage.setBackground(Color.BLACK);
+        lbImage.setOpaque(false); // ha a kép méret kisebb lenne, mint a várt, fekete kitöltés
         
         // a mozgóképet és a figyelmeztető panelt tartalmazó panel
         JLayeredPane pCenter = new JLayeredPane() {
@@ -328,6 +331,15 @@ public class ControllerFrame extends JFrame {
         btControll.setIcon(getData().isControlling() ? IC_CONTROLLER1 : IC_CONTROLLER2);
         btControll.setToolTipText(getData().isControlling() ? "Vezérlés átadása" : "Vezérlés kérése");
         btControll.setEnabled(!(getData().isControlling() ^ getData().isWantControl()));
+    }
+    
+    /**
+     * Beállítja az aktuális MJPEG képkockát.
+     * @param frame a képkocka, ami ha null, fekete kitöltésű kép jelenik meg
+     */
+    public void setFrameImage(BufferedImage frame) {
+        if (frame == null) lbImage.setIcon(IC_BLACK_BG);
+        else lbImage.setIcon(new ImageIcon(Scalr.resize(frame, Scalr.Method.SPEED, Scalr.Mode.FIT_TO_WIDTH, 640, Scalr.OP_ANTIALIAS)));
     }
     
     /**

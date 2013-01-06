@@ -97,11 +97,18 @@ public abstract class JpegProvider {
         byte[] frame;
         byte[] tmp = frame = getFrame(key);
         if ((wait && !resend) || tmp == null) {
-            while (!isInterrupted() && (key = getKey()) != null && ((frame = getFrame(key)) == null || (tmp != null && (!resend && Arrays.equals(tmp, frame))))) {
+//            EQU RES OUT
+//            1   1   0
+//            1   0   1
+//            0   1   0
+//            0   0   0
+//            A képlet: !((EQU && RES) || !EQU)
+            boolean equ;
+            while (!isInterrupted() && (key = getKey()) != null && ((frame = getFrame(key)) == null || (tmp != null && !(((equ = Arrays.equals(tmp, frame)) && resend) || !equ)))) {
                 Thread.sleep(20);
             }
         }
-        resend = false;
+        resend = false; 
         return frame;
     }
     

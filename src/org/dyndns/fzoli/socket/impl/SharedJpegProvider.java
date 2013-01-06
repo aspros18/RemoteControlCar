@@ -60,15 +60,6 @@ public class SharedJpegProvider extends JpegProvider {
     }
     
     /**
-     * MJPEG folyamot küld a kimenetre.
-     * @param key a folyam azonosító
-     * @param out a kimenet
-     */
-    public static void handleConnection(String key, OutputStream out) throws Exception {
-        new SharedJpegProvider(key, out).handleConnection();
-    }
-    
-    /**
      * Teszt szál készítése.
      */
     private static void createTest() {

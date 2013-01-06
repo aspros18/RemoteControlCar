@@ -17,7 +17,7 @@ public abstract class JpegProvider {
     /**
      * Folyam azonosító.
      */
-    private final String key;
+    private String key;
     
     /**
      * Konstruktor.
@@ -25,9 +25,23 @@ public abstract class JpegProvider {
      * @param out az MJPEG kimenő folyam
      */
     public JpegProvider(String key, OutputStream out) {
-        if (key == null || out == null) throw new NullPointerException("Parameters of JpegProvider can not be null");
+        if (out == null) throw new NullPointerException("Out parameter of JpegProvider can not be null");
         this.key = key;
         this.out = out;
+    }
+
+    /**
+     * Folyam azonosító.
+     */
+    public String getKey() {
+        return key;
+    }
+
+    /**
+     * Folyam azonosító beállítása.
+     */
+    public void setKey(String key) {
+        this.key = key;
     }
 
     /**
@@ -56,10 +70,12 @@ public abstract class JpegProvider {
      * @param wait várja-e meg a következő képkockát létező adat esetén
      */
     private byte[] nextFrame(boolean wait) throws InterruptedException {
+        String key = getKey();
+        if (key == null) return null;
         byte[] frame;
         byte[] tmp = frame = getFrame(key);
         if (wait || tmp == null) {
-            while ((frame = getFrame(key)) == null || (tmp != null && Arrays.equals(tmp, frame))) {
+            while ((key = getKey()) != null && ((frame = getFrame(key)) == null || (tmp != null && Arrays.equals(tmp, frame)))) {
                 Thread.sleep(20);
             }
         }
@@ -83,15 +99,20 @@ public abstract class JpegProvider {
             "boundary=--BoundaryString\r\n\r\n").getBytes());
         byte[] frame = nextFrame(false);
         while (true) {
-            out.write((
-                "--BoundaryString\r\n" +
-                "Content-type: image/jpg\r\n" +
-                "Content-Length: " +
-                frame.length +
-                "\r\n\r\n").getBytes());
-            out.write(frame);
-            out.write("\r\n\r\n".getBytes());
-            out.flush();
+            if (frame != null) {
+                out.write((
+                    "--BoundaryString\r\n" +
+                    "Content-type: image/jpg\r\n" +
+                    "Content-Length: " +
+                    frame.length +
+                    "\r\n\r\n").getBytes());
+                out.write(frame);
+                out.write("\r\n\r\n".getBytes());
+                out.flush();
+            }
+            else {
+                Thread.sleep(20);
+            }
             frame = nextFrame(true);
         }
     }

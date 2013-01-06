@@ -63,14 +63,19 @@ public class ControllerSideVideoProcess extends AbstractSecureProcess {
             return "teszt1"; //return s.getName();
         }
 
+        /**
+         * A streamelést akkor van befejezve illetve megszakítva, ha a socket lezárult.
+         */
         @Override
         protected boolean isInterrupted() {
             return socket.isClosed();
         }
 
+        /**
+         * Ha kivétel keletkezett, a stream olvasó ciklus folytatódhat, de csak akkor, ha nincs lezárva a socket.
+         */
         @Override
         protected boolean onException(Exception ex) {
-            ex.printStackTrace();
             return !socket.isClosed();
         }
         
@@ -95,7 +100,6 @@ public class ControllerSideVideoProcess extends AbstractSecureProcess {
             new VehicleJpegProvider(getRemoteCommonName(), getSocket()).handleConnection();
         }
         catch (Exception ex) {
-            ex.printStackTrace();
             getHandler().closeProcesses();
         }
     }

@@ -39,7 +39,6 @@ public abstract class AbstractVideoProcess extends AbstractSecureProcess {
                     fr = mjpegin.readMjpegFrame(); // ... addig olvas ...
                 }
                 catch (Exception ex) {
-                    ex.printStackTrace();
                     sleep(5);
                     fr = null; // ... és hiba esetén nincs képkocka
                 }
@@ -47,7 +46,7 @@ public abstract class AbstractVideoProcess extends AbstractSecureProcess {
             }
         }
         catch (Exception ex) {
-            ex.printStackTrace();
+            ;
         }
     }
     

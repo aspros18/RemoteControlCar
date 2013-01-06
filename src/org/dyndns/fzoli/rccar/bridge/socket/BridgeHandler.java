@@ -3,6 +3,7 @@ package org.dyndns.fzoli.rccar.bridge.socket;
 import java.io.EOFException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
@@ -80,6 +81,9 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
         }
         catch (SSLHandshakeException e) {
             showWarning("Nem megbízható kapcsolódás");
+        }
+        catch (SSLException e) {
+            showWarning("SSL hiba", e.getMessage());
         }
         catch (RemoteHandlerException e) {
             showWarning("Távoli hiba", e.getMessage());

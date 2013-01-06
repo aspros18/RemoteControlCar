@@ -83,6 +83,15 @@ public abstract class JpegProvider {
     }
     
     /**
+     * Kivétel keletkezett a ciklusban a kimenetre írás közben.
+     * A metódus eredetileg false értékkel tér vissza, ezzel a ciklus végetér.
+     * @return true esetén folytatódik a ciklus, egyébként kilép a ciklusból
+     */
+    protected boolean onException(Exception ex) {
+        return false;
+    }
+    
+    /**
      * MJPEG folyamot küld a kimenetre.
      * Forrás: http://www.damonkohler.com/2010/10/mjpeg-streaming-protocol.html
      */
@@ -100,15 +109,20 @@ public abstract class JpegProvider {
         byte[] frame = nextFrame(false);
         while (true) {
             if (frame != null) {
-                out.write((
-                    "--BoundaryString\r\n" +
-                    "Content-type: image/jpg\r\n" +
-                    "Content-Length: " +
-                    frame.length +
-                    "\r\n\r\n").getBytes());
-                out.write(frame);
-                out.write("\r\n\r\n".getBytes());
-                out.flush();
+                try {
+                    out.write((
+                        "--BoundaryString\r\n" +
+                        "Content-type: image/jpg\r\n" +
+                        "Content-Length: " +
+                        frame.length +
+                        "\r\n\r\n").getBytes());
+                    out.write(frame);
+                    out.write("\r\n\r\n".getBytes());
+                    out.flush();
+                }
+                catch (Exception ex) {
+                    if (!onException(ex)) break;
+                }
             }
             else {
                 Thread.sleep(20);

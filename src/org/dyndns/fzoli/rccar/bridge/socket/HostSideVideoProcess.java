@@ -1,10 +1,9 @@
 package org.dyndns.fzoli.rccar.bridge.socket;
 
 import net.sf.jipcam.axis.MjpegFrame;
-import net.sf.jipcam.axis.MjpegInputStream;
+import org.dyndns.fzoli.rccar.socket.AbstractVideoProcess;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.impl.SharedJpegProvider;
-import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
 
 /**
  * A hoszt által streamelt MJPEG folyam fogadása
@@ -12,7 +11,7 @@ import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
  * a vezérlő programoknak való MJPEG streameléshez használ a szerver.
  * @author zoli
  */
-public class HostSideVideoProcess extends AbstractSecureProcess {
+public class HostSideVideoProcess extends AbstractVideoProcess {
 
     /**
      * Biztonságos MJPEG stream fogadó inicializálása.
@@ -24,21 +23,13 @@ public class HostSideVideoProcess extends AbstractSecureProcess {
     }
 
     /**
-     * Folyamatosan olvassa a bejövő folyamot és dekódolja az MJPEG képkockákat, és a legutolsó képkockát tárolja.
+     * A legutolsó MJPEG képkockát tárolja.
      */
     @Override
-    public void run() {
-        try {
-            MjpegFrame fr;
-            MjpegInputStream mjpegin = new MjpegInputStream(getSocket().getInputStream()); // MJPEG-folyam dekódoló inicializálása
-            while((fr = mjpegin.readMjpegFrame()) != null) { // amíg van adat, addig olvas
-                //TODO: teszt1 helyére a remote name
-                SharedJpegProvider.setSharedFrame("teszt1", fr.getJpegBytes()); // aktuális JPEG képkocka tárolása
-            }
-        }
-        catch (Exception ex) {
-            ;
-        }
+    protected void processFrame(MjpegFrame fr) {
+        if (fr == null) return; // ha nincs képkocka, kilépés
+        // TODO: teszt1 helyére a remote name
+        SharedJpegProvider.setSharedFrame("teszt1", fr.getJpegBytes()); // aktuális JPEG képkocka tárolása
     }
     
 }

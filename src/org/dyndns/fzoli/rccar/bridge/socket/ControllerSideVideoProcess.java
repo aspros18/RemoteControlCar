@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.bridge.socket;
 
-import java.io.OutputStream;
+import java.io.IOException;
+import java.net.Socket;
 import org.dyndns.fzoli.rccar.model.bridge.ControllerStorage;
 import org.dyndns.fzoli.rccar.model.bridge.HostStorage;
 import org.dyndns.fzoli.rccar.model.bridge.StorageList;
@@ -26,6 +27,11 @@ public class ControllerSideVideoProcess extends AbstractSecureProcess {
         private final String name;
         
         /**
+         * A Process-socket referenciája.
+         */
+        private final Socket socket;
+        
+        /**
          * A kliensprogramhoz tartozó tároló referenciája.
          * Kezdetben nincs megadva, de a {@link #getKey()} metódus beállítja, ha tudja.
          */
@@ -36,8 +42,9 @@ public class ControllerSideVideoProcess extends AbstractSecureProcess {
          * @param name a kliens tanúsítványneve
          * @param out a stream, melyre megy az MJPEG folyam
          */
-        public VehicleJpegProvider(String name, OutputStream out) {
-            super(null, out);
+        public VehicleJpegProvider(String name, Socket socket) throws IOException {
+            super(null, socket.getOutputStream());
+            this.socket = socket;
             this.name = name;
         }
 
@@ -54,6 +61,12 @@ public class ControllerSideVideoProcess extends AbstractSecureProcess {
             if (s == null) return "teszt1"; //return null;
             System.out.println("controller side video key: " + s.getName());
             return "teszt1"; //return s.getName();
+        }
+
+        @Override
+        protected boolean onException(Exception ex) {
+            ex.printStackTrace();
+            return !socket.isClosed();
         }
         
     }
@@ -74,9 +87,10 @@ public class ControllerSideVideoProcess extends AbstractSecureProcess {
     @Override
     public void run() {
         try {
-            new VehicleJpegProvider(getRemoteCommonName(), getSocket().getOutputStream()).handleConnection();
+            new VehicleJpegProvider(getRemoteCommonName(), getSocket()).handleConnection();
         }
         catch (Exception ex) {
+            ex.printStackTrace();
             getHandler().closeProcesses();
         }
     }

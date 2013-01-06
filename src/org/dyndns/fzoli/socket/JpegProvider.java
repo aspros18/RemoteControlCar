@@ -31,6 +31,14 @@ public abstract class JpegProvider {
     }
 
     /**
+     * Megadja, hogy meg kell-e szakítani a streamelést.
+     * @return true esetén megszakad a streamelés, egyébként folytatódik tovább
+     */
+    protected boolean isInterrupted() {
+        return false;
+    }
+    
+    /**
      * Folyam azonosító.
      */
     public String getKey() {
@@ -71,11 +79,11 @@ public abstract class JpegProvider {
      */
     private byte[] nextFrame(boolean wait) throws InterruptedException {
         String key = getKey();
-        if (key == null) return null;
+        if (key == null || isInterrupted()) return null;
         byte[] frame;
         byte[] tmp = frame = getFrame(key);
         if (wait || tmp == null) {
-            while ((key = getKey()) != null && ((frame = getFrame(key)) == null || (tmp != null && Arrays.equals(tmp, frame)))) {
+            while (!isInterrupted() && (key = getKey()) != null && ((frame = getFrame(key)) == null || (tmp != null && Arrays.equals(tmp, frame)))) {
                 Thread.sleep(20);
             }
         }
@@ -107,7 +115,7 @@ public abstract class JpegProvider {
             "Content-Type: multipart/x-mixed-replace; " +
             "boundary=--BoundaryString\r\n\r\n").getBytes());
         byte[] frame = nextFrame(false);
-        while (true) {
+        while (!isInterrupted()) {
             if (frame != null) {
                 try {
                     out.write((

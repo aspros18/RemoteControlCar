@@ -64,6 +64,11 @@ public class ControllerSideVideoProcess extends AbstractSecureProcess {
         }
 
         @Override
+        protected boolean isInterrupted() {
+            return socket.isClosed();
+        }
+
+        @Override
         protected boolean onException(Exception ex) {
             ex.printStackTrace();
             return !socket.isClosed();

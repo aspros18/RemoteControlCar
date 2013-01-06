@@ -32,7 +32,22 @@ public class HostSelectionFrame extends JFrame {
     /**
      * A felületen megjelenő lista.
      */
-    private final JList<String> LIST = new JList<String>(new DefaultListModel<String>());
+    private final JList<String> LIST = new JList<String>(new DefaultListModel<String>() {
+
+        /**
+         * Ugyan az, mint az eredeti metódus, csak nem dob kivételt, ha hibás az index.
+         */
+        @Override
+        public String getElementAt(int index) {
+            try {
+                return super.getElementAt(index);
+            }
+            catch (ArrayIndexOutOfBoundsException ex) {
+                return null;
+            }
+        }
+        
+    });
     
     /**
      * Scroll.

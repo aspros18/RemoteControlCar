@@ -36,6 +36,7 @@ public class HostSelectionFrame extends JFrame {
 
         /**
          * Ugyan az, mint az eredeti metódus, csak nem dob kivételt, ha hibás az index.
+         * Azért van szükség a felüldefiniálásra, mert Linuxon a lista paint metódusa ritkán, de túlindexel valamiért.
          */
         @Override
         public String getElementAt(int index) {

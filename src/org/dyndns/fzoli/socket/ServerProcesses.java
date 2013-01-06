@@ -53,7 +53,7 @@ public class ServerProcesses extends Processes {
         List<Process> procs = getProcesses();
         for (Process proc : procs) {
             try {
-                if (((SecureProcess) proc).getHandler().isCertEqual(remoteName, deviceId, connectionId)) return (T) proc;
+                if (proc.getClass() == clazz && ((SecureProcess) proc).getHandler().isCertEqual(remoteName, deviceId, connectionId)) return (T) proc;
             }
             catch (ClassCastException ex) {
                 ;

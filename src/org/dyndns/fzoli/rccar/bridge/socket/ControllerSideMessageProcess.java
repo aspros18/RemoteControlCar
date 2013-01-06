@@ -1,9 +1,11 @@
 package org.dyndns.fzoli.rccar.bridge.socket;
 
 import java.util.ArrayList;
+import org.dyndns.fzoli.rccar.ConnectionKeys;
 import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
+import org.dyndns.fzoli.socket.ServerProcesses;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 
 /**
@@ -53,6 +55,12 @@ public class ControllerSideMessageProcess extends BridgeMessageProcess {
             ControllerData.HostNamePartialControllerData msg = (ControllerData.HostNamePartialControllerData) o;
             selected = msg.data;
             if (selected != null) {
+                
+                if (selected.equals("teszt1")) {
+                    ControllerSideVideoProcess mjpeg = ServerProcesses.findProcess(getRemoteCommonName(), getDeviceId(), ConnectionKeys.KEY_CONN_VIDEO_STREAM, ControllerSideVideoProcess.class);
+                    if (mjpeg != null) mjpeg.resendFrame();
+                }
+                
                 ControllerData data = new ControllerData(new ArrayList<ChatMessage>());
                 data.setHostName(selected);
                 data.setHostConnected(true);

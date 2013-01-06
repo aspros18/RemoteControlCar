@@ -49,7 +49,7 @@ public class ClientProcesses extends Processes {
         for (Process p : ls) {
             if (p.getConnectionId().equals(connectionId)) {
                 try {
-                    return (T) p;
+                    if (p.getClass() == clazz) return (T) p;
                 }
                 catch (ClassCastException ex) {
                     return null;

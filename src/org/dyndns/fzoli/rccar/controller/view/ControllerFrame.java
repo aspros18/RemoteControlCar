@@ -272,6 +272,17 @@ public class ControllerFrame extends JFrame {
         btMap.addChangeListener(clDialogs);
         
     }
+
+    /**
+     * Az ablak elrejtésekor az MJPEG képkocka törlődik, hogy biztosan csak aktuális képkocka jelenjen meg.
+     * A jármű kiválasztásakor a szerver újraküldi az utolsó képkockát, hogy az ablak megjelenésével egy időben
+     * megjelenjen a kép is, de ezt azért is, mert nem feltétlen streamel a jármű eközben és akkor fekete maradna a kép.
+     */
+    @Override
+    public void setVisible(boolean b) {
+        super.setVisible(b);
+        if (!b) setFrameImage(null);
+    }
     
     /**
      * A toolbar elrendezés-menedzserének a megszorítása.

@@ -20,6 +20,11 @@ public abstract class JpegProvider {
     private String key;
     
     /**
+     * Segédváltozó az aktuális képkocka újraküldéséhez.
+     */
+    private boolean resend = false;
+    
+    /**
      * Konstruktor.
      * @param key a folyam azonosító
      * @param out az MJPEG kimenő folyam
@@ -53,6 +58,13 @@ public abstract class JpegProvider {
     }
 
     /**
+     * Újraküldi az aktuális képkockát, ha van képkocka és fut a kapcsolatkezelés.
+     */
+    public void resend() {
+        resend = true;
+    }
+    
+    /**
      * A JPEG képkocka adatát adja vissza bájt tömbben.
      * Az utód osztály eldöntheti, hogy honnan szerzi meg ezt az adatot.
      * @param key a folyam azonosító
@@ -75,6 +87,8 @@ public abstract class JpegProvider {
      * Ezzel a megoldással az esetleg lassú kapcsolattal rendelkező kliensek nem húzzák
      * vissza a gyorsabb kapcsolattal rendelkezőket.
      * Ennek ára az, hogy van egy FPS limit a {@code Thread.sleep(int)} metódus miatt.
+     * Ha az újraküldés aktiválva van és van képkocka,
+     * akkor azonnal visszatér az aktuális képkockával és kikapcsolja az újraküldést.
      * @param wait várja-e meg a következő képkockát létező adat esetén
      */
     private byte[] nextFrame(boolean wait) throws InterruptedException {
@@ -82,11 +96,12 @@ public abstract class JpegProvider {
         if (key == null || isInterrupted()) return null;
         byte[] frame;
         byte[] tmp = frame = getFrame(key);
-        if (wait || tmp == null) {
-            while (!isInterrupted() && (key = getKey()) != null && ((frame = getFrame(key)) == null || (tmp != null && Arrays.equals(tmp, frame)))) {
+        if ((wait && !resend) || tmp == null) {
+            while (!isInterrupted() && (key = getKey()) != null && ((frame = getFrame(key)) == null || (tmp != null && (!resend && Arrays.equals(tmp, frame))))) {
                 Thread.sleep(20);
             }
         }
+        resend = false;
         return frame;
     }
     

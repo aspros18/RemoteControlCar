@@ -82,6 +82,11 @@ public class ControllerSideVideoProcess extends AbstractSecureProcess {
     }
     
     /**
+     * Az MJPEG-képkockákat szolgáltató objektum.
+     */
+    private VehicleJpegProvider sender;
+    
+    /**
      * Biztonságos MJPEG stream küldő inicializálása.
      * @param handler Biztonságos kapcsolatfeldolgozó, ami létrehozza ezt az adatfeldolgozót.
      * @throws NullPointerException ha handler null
@@ -91,13 +96,21 @@ public class ControllerSideVideoProcess extends AbstractSecureProcess {
     }
 
     /**
+     * Újraküldi az aktuális képkockát, ha lehetséges.
+     */
+    public void resendFrame() {
+        if (sender != null) sender.resend();
+    }
+    
+    /**
      * Mindig az aktuális jármű képkockájáit streameli a vezérlő program felé.
      * Ha valami hiba történik közben, az összes kapcsolatot megszakítja a vezérlő programmal.
      */
     @Override
     public void run() {
         try {
-            new VehicleJpegProvider(getRemoteCommonName(), getSocket()).handleConnection();
+            sender = new VehicleJpegProvider(getRemoteCommonName(), getSocket());
+            sender.handleConnection();
         }
         catch (Exception ex) {
             getHandler().closeProcesses();

@@ -148,6 +148,7 @@ public class FilePanel extends JPanel {
         c.gridx = 1;
         add(btSearch, c);
         tfFile.setEditable(false);
+        tfFile.setFocusable(false);
         btSearch.addActionListener(alSearch);
     }
 

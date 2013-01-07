@@ -42,7 +42,12 @@ public abstract class AbstractVideoProcess extends AbstractSecureProcess {
                     sleep(5);
                     fr = null; // ... és hiba esetén nincs képkocka
                 }
-                processFrame(fr);
+                try {
+                    processFrame(fr); // keletkezhet kivétel a feldolgozás alatt is, aminek nincs jelentősége
+                }
+                catch (Exception ex) {
+                    ;
+                }
             }
         }
         catch (Exception ex) {

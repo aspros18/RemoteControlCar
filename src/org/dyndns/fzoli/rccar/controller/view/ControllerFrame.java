@@ -208,10 +208,10 @@ public class ControllerFrame extends JFrame {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 // egyéni szegély rajzolása vonalakkal:
-                g.setColor(getBackground().darker());
-                g.drawLine(0, 0, getWidth(), 0); // felső külső (sötét)
                 g.setColor(getBackground().brighter());
-                g.drawLine(0, 1, getWidth(), 1); // felső belső (világos)
+                g.drawLine(0, 0, getWidth(), 0); // felső külső (világos)
+                g.setColor(getBackground().darker());
+                g.drawLine(0, 1, getWidth(), 1); // felső belső (sötét)
                 g.setColor(getBackground());
                 g.drawLine(0, 2, 0, getHeight()); // bal szél külső
                 g.drawLine(1, 2, 1, getHeight()); // bal szél belső
@@ -308,6 +308,7 @@ public class ControllerFrame extends JFrame {
     public void setVisible(boolean b) {
         super.setVisible(b);
         if (!b) setFrameImage(null);
+        pack(); // Windows rendszeren néha nem jó a kezdőméret, ideignlenes megoldásnak jó, de erőforrás pazarló
     }
     
     /**

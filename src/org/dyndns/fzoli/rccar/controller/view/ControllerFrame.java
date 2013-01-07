@@ -13,6 +13,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -195,8 +196,33 @@ public class ControllerFrame extends JFrame {
         
         add(pCenter); // a mozgókép és üzenet panel hozzáadása az ablakhoz
 
-        tb = new JToolBar();
-        tb.setLayout(new GridBagLayout());
+        tb = new JToolBar() {
+            
+            {
+                setLayout(new GridBagLayout());
+                setBorder(BorderFactory.createEmptyBorder(2, 2, 0, 2)); // a paintComponentben húzott vonalak helyét lefoglalja
+                setBorderPainted(false); // de nem rajzol oda semmit
+            }
+            
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                // egyéni szegély rajzolása vonalakkal:
+                g.setColor(getBackground().darker());
+                g.drawLine(0, 0, getWidth(), 0); // felső külső (sötét)
+                g.setColor(getBackground().brighter());
+                g.drawLine(0, 1, getWidth(), 1); // felső belső (világos)
+                g.setColor(getBackground());
+                g.drawLine(0, 2, 0, getHeight()); // bal szél külső
+                g.drawLine(1, 2, 1, getHeight()); // bal szél belső
+                g.drawLine(getWidth() - 1, 2, getWidth() - 1, getHeight()); // jobb szél külső
+                g.drawLine(getWidth() - 2, 2, getWidth() - 2, getHeight()); // jobb szél belső
+                g.drawLine(0, getHeight() - 1, getWidth(), getHeight() - 1); // alsó külső
+                g.drawLine(0, getHeight() - 2, getWidth(), getHeight() - 2); // alsó belső
+            }
+            
+        };
+        
         add(tb, BorderLayout.SOUTH); // az ablak aljára kerül a toolbar
 
         btControll = createButton(null, IC_CONTROLLER1, JButton.class); // vezérlés kérő gomb

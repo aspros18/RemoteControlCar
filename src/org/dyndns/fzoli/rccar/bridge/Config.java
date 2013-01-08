@@ -18,6 +18,7 @@ import java.util.Map;
  * Ha a konfig fájl nem létezik, létrehozza az alapértelmezett konfiggal.
  * A konfig fájlban # karakterrel lehet kommentezni a sorokban.
  * A fölösleges szóközöket az objektumot létrehozó metódus levágja.
+ * TODO: nincs szükség rendszergazda bevezetésére, mivel a fehérlista pótólja azt.
  * @author zoli
  */
 public class Config implements org.dyndns.fzoli.rccar.Config {

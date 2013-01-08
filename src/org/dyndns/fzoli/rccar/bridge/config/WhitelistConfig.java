@@ -18,10 +18,8 @@ package org.dyndns.fzoli.rccar.bridge.config;
  * aktív vezérlést ad, ha jogosult rá.
  * Ha a jármű nincs vezérlés alatt, bárki kérhet vezérlést, aki jogosult rá, de természetesen a magasabb rangú felhasználó
  * bármikor elveheti tőle a vezérlést.
- * Létezhet EGY felhasználó, aki a rangsor felett áll (opcionálisan megadható a szerver konfigurációjában): ő a root.
  * A konfigurációban megadható az is, hogy a kliens ne vezérelhesse a járműve(ke)t, de ahhoz
  * megmarad a joga, hogy figyelhesse és chateljen a jármű csatornáján. (Ez a spectator mode.)
- * A root felhasználótól semmi jogot nem lehet elvenni. Ebből következik, hogy rá nem alkalmazható a spectator mode.
  * A fehérlista önmagában nem ad elegendő információt arról, hogy valójában kiknek van jogosultsága
  * egy jármű használatához, mert feketelista is létezik, mely elveheti a beállított jogosultságot.
  * További információ a feketelistáról: {@link BlacklistConfig}

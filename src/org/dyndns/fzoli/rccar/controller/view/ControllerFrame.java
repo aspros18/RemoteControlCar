@@ -200,7 +200,7 @@ public class ControllerFrame extends JFrame {
             
             {
                 setLayout(new GridBagLayout());
-                setBorder(BorderFactory.createEmptyBorder(2, 2, 1, 2)); // a paintComponentben húzott vonalak helyét lefoglalja
+                setBorder(BorderFactory.createEmptyBorder(3, 2, 2, 2)); // a paintComponentben húzott vonalak helyét lefoglalja
                 setBorderPainted(false); // de nem rajzol oda semmit
             }
             

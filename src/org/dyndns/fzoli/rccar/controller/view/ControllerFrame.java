@@ -200,7 +200,7 @@ public class ControllerFrame extends JFrame {
             
             {
                 setLayout(new GridBagLayout());
-                setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3)); // a paintComponentben húzott vonalak helyét lefoglalja
+                setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2)); // a paintComponentben húzott vonalak helyét lefoglalja
                 setBorderPainted(false); // de nem rajzol oda semmit
             }
             
@@ -210,7 +210,6 @@ public class ControllerFrame extends JFrame {
                 // egyéni szegély rajzolása:
                 g.setColor(getBackground().brighter()); // világos színnel
                 g.drawRect(0, 0, getWidth() - 1 , getHeight() - 1); // külső
-                g.drawRect(2, 2, getWidth() - 5 , getHeight() - 5); // belső
                 g.setColor(getBackground().darker()); // sötét színnel
                 g.drawRect(1, 1, getWidth() - 3 , getHeight() - 3); // középső
             }

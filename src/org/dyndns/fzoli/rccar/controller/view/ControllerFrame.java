@@ -172,9 +172,31 @@ public class ControllerFrame extends JFrame {
         setLayout(new BorderLayout());
         setTitle("Mobile-RC");
         
-        lbImage = new JLabel(IC_BLACK_BG); // amíg nincs MJPEG stream, fekete
-        lbImage.setBackground(Color.BLACK);
-        lbImage.setOpaque(false); // ha a kép méret kisebb lenne, mint a várt, fekete kitöltés
+        lbImage = new JLabel(IC_BLACK_BG) { // amíg nincs MJPEG stream, fekete
+            
+            /**
+             * Átlátszó, fekete keretszín az MJPEG képkockáknak.
+             */
+            private Color frc = new Color(0, 0, 0, 0.4f);
+            
+            {
+                setBackground(Color.BLACK);
+                setOpaque(false); // ha a kép méret kisebb lenne, mint a várt, fekete kitöltés
+            }
+            
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                // fehér keret rajzolása bal és jobb oldalra, valamint felülre,
+                // hogy a toolbar szegélye ne nézzen ki furán
+                g.setColor(ControllerFrame.this.getBackground().brighter());
+                g.drawRect(0, 0, getWidth() - 1, getHeight());
+                // keret rajzolása az MJPEG képkockának
+                g.setColor(frc);
+                g.drawRect(1, 1, getWidth() - 3, getHeight() - 2);
+            }
+            
+        };
         
         // a mozgóképet és a figyelmeztető panelt tartalmazó panel
         JLayeredPane pCenter = new JLayeredPane() {
@@ -208,9 +230,9 @@ public class ControllerFrame extends JFrame {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 // egyéni szegély rajzolása:
-                g.setColor(getBackground().brighter()); // világos színnel
+                g.setColor(ControllerFrame.this.getBackground().brighter()); // világosabb színnel
                 g.drawRect(0, 0, getWidth() - 1 , getHeight() - 1); // külső
-                g.setColor(getBackground().darker()); // sötét színnel
+                g.setColor(ControllerFrame.this.getBackground().darker()); // sötétebb színnel
                 g.drawRect(1, 1, getWidth() - 3 , getHeight() - 3); // középső
             }
             

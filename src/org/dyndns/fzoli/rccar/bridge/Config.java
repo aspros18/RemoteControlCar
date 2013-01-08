@@ -18,7 +18,6 @@ import java.util.Map;
  * Ha a konfig fájl nem létezik, létrehozza az alapértelmezett konfiggal.
  * A konfig fájlban # karakterrel lehet kommentezni a sorokban.
  * A fölösleges szóközöket az objektumot létrehozó metódus levágja.
- * TODO: nincs szükség rendszergazda bevezetésére, mivel a fehérlista pótólja azt.
  * @author zoli
  */
 public class Config implements org.dyndns.fzoli.rccar.Config {
@@ -33,7 +32,6 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
                                KEY_CERT = "cert",
                                KEY_KEY = "key",
                                KEY_PASSWORD = "password",
-                               KEY_ROOT = "root",
                                KEY_HIDDEN = "hidden";
     
     /**
@@ -62,7 +60,6 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
             KEY_CERT + ' ' + new File("test-certs", "bridge.crt") + ' ' + CC + " a szerver tanúsítvány-fájl" + LS +
             KEY_KEY + ' ' + new File("test-certs", "bridge.key") + ' ' + CC + " a szerver titkos kulcsa" + LS +
             CC + ' ' + KEY_PASSWORD + " optional_cert_password " + CC + " a szerver tanúsítványának jelszava, ha van" + LS +
-            CC + ' ' + KEY_ROOT + " optional_admin_cert_common_name " + CC + " kitüntetett tanúsítvány, amivel rendszergazdaként használható a program" + LS +
             CC + ' ' + KEY_HIDDEN + " true " + CC + " ha true, a rendszerikon nem jelenik meg annak ellenére sem, hogy van grafikus felület";
     
     /**
@@ -159,18 +156,6 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
     }
     
     /**
-     * Az opcionális rendszergazda tanúsítványában szereplő CN mező értékét adja vissza.
-     * Ez a felhasználó a szerver rendszergazdáját jelöli és minden műveletre fel van hatalmazva.
-     * Ha nincs megadva, üres szöveggel tér vissza és nem lesz a szervernek rendszergazdája.
-     */
-    public String getRootName() {
-        if (getValues() == null) return null;
-        String name = getValues().get(KEY_ROOT);
-        if (name == null) return "";
-        return name;
-    }
-    
-    /**
      * A konfigurációs fájl paraméterei és azok értékei.
      * @return A paramétereket tartalmazó felsorolás vagy NULL, ha a konfig fájl nem létezik.
      */
@@ -206,7 +191,6 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
                "Cert file: " + getCertFile() + LS +
                "Key file:" + getKeyFile() + LS +
                "Password length: " + (getPassword() == null ? -1 : getPassword().length) + LS +
-               "Root name: " + getRootName() + LS +
                "Hidden: " + isHidden() + LS +
                "Correct? " + isCorrect();
     }
@@ -240,8 +224,8 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
      * @return Sorokat tartalmazó lista vagy NULL, ha a fájl nem létezik.
      * @throws RuntimeException ha bármi hiba történik. Pl. nincs olvasási/írási jog
      */
-    private static List<String> read(File f, String def) {
-        try {
+    public static List<String> read(File f, String def) {
+        if (f != null) try {
             int ind;
             String ln;
             List<String> ls = new ArrayList<String>();
@@ -257,7 +241,7 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
             return ls;
         }
         catch (FileNotFoundException ex) {
-            try {
+            if (def != null) try {
                 BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f)));
                 out.write(def, 0, def.length());
                 out.flush();

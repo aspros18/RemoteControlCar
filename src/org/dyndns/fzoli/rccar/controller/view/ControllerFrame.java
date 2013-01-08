@@ -200,7 +200,7 @@ public class ControllerFrame extends JFrame {
             
             {
                 setLayout(new GridBagLayout());
-                setBorder(BorderFactory.createEmptyBorder(2, 2, 0, 2)); // a paintComponentben húzott vonalak helyét lefoglalja
+                setBorder(BorderFactory.createEmptyBorder(2, 2, 1, 2)); // a paintComponentben húzott vonalak helyét lefoglalja
                 setBorderPainted(false); // de nem rajzol oda semmit
             }
             
@@ -208,17 +208,18 @@ public class ControllerFrame extends JFrame {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 // egyéni szegély rajzolása vonalakkal:
-                g.setColor(getBackground().brighter());
-                g.drawLine(0, 0, getWidth(), 0); // felső külső (világos)
-                g.setColor(getBackground().darker());
-                g.drawLine(0, 1, getWidth(), 1); // felső belső (sötét)
-                g.setColor(getBackground());
-                g.drawLine(0, 2, 0, getHeight()); // bal szél külső
+                g.setColor(getBackground().brighter()); // világos vonalak
+                g.drawLine(0, 0, getWidth(), 0); // felső külső
+                g.drawLine(2, 2, getWidth() - 3, 2); // felső rövid belső
                 g.drawLine(1, 2, 1, getHeight()); // bal szél belső
-                g.drawLine(getWidth() - 1, 2, getWidth() - 1, getHeight()); // jobb szél külső
                 g.drawLine(getWidth() - 2, 2, getWidth() - 2, getHeight()); // jobb szél belső
-                g.drawLine(0, getHeight() - 1, getWidth(), getHeight() - 1); // alsó külső
                 g.drawLine(0, getHeight() - 2, getWidth(), getHeight() - 2); // alsó belső
+                
+                g.setColor(getBackground().darker()); // sötét vonalak
+                g.drawLine(0, 1, getWidth(), 1); // felső belső
+                g.drawLine(0, 2, 0, getHeight()); // bal szél külső
+                g.drawLine(getWidth() - 1, 2, getWidth() - 1, getHeight()); // jobb szél külső
+                g.drawLine(0, getHeight() - 1, getWidth(), getHeight() - 1); // alsó külső
             }
             
         };

@@ -18,6 +18,7 @@ import java.util.Map;
  * illetve az utolsó csoport a fájl végéig.
  * Ebből következik, hogy ha az első érvényes sor csoportnyító, akkor
  * az alapértelmezett felsorolás üres lesz.
+ * @see ListConfig
  * @author zoli
  */
 class GroupListConfig extends ListConfig {

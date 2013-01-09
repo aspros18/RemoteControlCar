@@ -13,6 +13,7 @@ package org.dyndns.fzoli.rccar.bridge.config;
  *   Két bejegyzés akkor egyenrangú, ha mindkettő ugyan abba a csoportba tartozik.
  *   Ebből következik, hogy az alapértlemezett felsorolásba tartozó bejegyzések egyenrangúak.
  * További információ a fehérlistáról: {@link WhitelistConfig}
+ * @see GroupListConfig
  * @author zoli
  */
 class BlacklistConfig extends GroupListConfig {

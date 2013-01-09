@@ -29,6 +29,7 @@ import java.util.Map.Entry;
  * A fehérlista önmagában nem ad elegendő információt arról, hogy valójában kiknek van jogosultsága
  * egy jármű használatához, mert feketelista is létezik, mely elveheti a beállított jogosultságot.
  * További információ a feketelistáról: {@link BlacklistConfig}
+ * @see GroupListConfig
  * @author zoli
  */
 class WhitelistConfig extends GroupListConfig {

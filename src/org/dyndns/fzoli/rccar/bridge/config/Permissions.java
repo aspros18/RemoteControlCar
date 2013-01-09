@@ -1,7 +1,11 @@
 package org.dyndns.fzoli.rccar.bridge.config;
 
+import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
+import org.dyndns.fzoli.rccar.ConnectionKeys;
+import org.dyndns.fzoli.socket.ServerProcesses;
+import org.dyndns.fzoli.socket.process.SecureProcess;
 
 /**
 * A híd jogosultságok adatbázisa.
@@ -17,7 +21,7 @@ import java.util.TimerTask;
 * Ha a tiltólistára kerül fel egy online kliens, akkor a szerver természetesen bontja vele a kapcsolatot és legközelebbi kapcsolódáskor már nem fogja beenedni.
 * @author zoli
 */
-public class Permissions {
+public final class Permissions {
     
     private static final PermissionConfig config = new PermissionConfig();
 
@@ -37,7 +41,15 @@ public class Permissions {
     }
 
     private static void onRefresh(PermissionConfig previous) {
-        System.out.println("refresh!");
+        Iterator<SecureProcess> it = ServerProcesses.getProcesses(SecureProcess.class).iterator();
+        while (it.hasNext()) {
+            SecureProcess proc = it.next();
+            if (proc.getDeviceId() != ConnectionKeys.KEY_DEV_CONTROLLER && proc.getConnectionId() != ConnectionKeys.KEY_CONN_DISCONNECT) continue;
+            String controllerName = proc.getRemoteCommonName();
+            if (!previous.isBlocked(controllerName) && getConfig().isBlocked(controllerName)) {
+                proc.getHandler().closeProcesses();
+            }
+        }
     }
     
     public static PermissionConfig getConfig() {

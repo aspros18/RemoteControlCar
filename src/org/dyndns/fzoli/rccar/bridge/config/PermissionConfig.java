@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.bridge.config;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,9 +31,12 @@ public class PermissionConfig {
     /**
      * Elkészíti a rangsor listát a fehérlista alapján odafigyelve arra, hogy a feketelista elveheti a jogosultságot.
      * A rangsor listában csakis olyan nevek szerepelnek, melyek nincsenek tiltva a feketelista által vagy a fehérlista felüldefiniálja a tiltást.
+     * A metódus soha nem tér vissza null referenciával, legrosszabb esetben is üres lista az eredmény.
      */
     public List<String> getOrderList(String vehicleName) {
-        return null; //TODO
+        List<String> l = new ArrayList<String>();
+        // TODO
+        return l;
     }
     
     /**
@@ -40,7 +44,10 @@ public class PermissionConfig {
      * ha a feketelistában szerepel és ennek ellenére a rangsor listában benne van.
      */
     public boolean isEnabled(String vehicleName, String controllerName) {
-        return true; //TODO
+        if (!blacklist.mergeGroup(vehicleName).contains(controllerName)) return true;
+        return getOrderList(vehicleName).contains(controllerName);
     }
+    
+    
     
 }

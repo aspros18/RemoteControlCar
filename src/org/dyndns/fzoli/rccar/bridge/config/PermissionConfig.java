@@ -34,8 +34,22 @@ public class PermissionConfig {
      * A metódus soha nem tér vissza null referenciával, legrosszabb esetben is üres lista az eredmény.
      */
     public List<String> getOrderList(String vehicleName) {
-        List<String> l = new ArrayList<String>();
-        // TODO
+        final List<String> l = new ArrayList<String>();
+        final List<String> whitevals = whitelist.getGroups().get(vehicleName);
+        if (whitevals != null) {
+            final List<String> blackvals = blacklist.getGroups().get(vehicleName);
+            if (blackvals == null || blackvals.isEmpty()) l.addAll(whitevals);
+            else for (String value : whitevals) {
+                if (!blackvals.contains(value)) l.add(value);
+            }
+        }
+        final List<String> defs = new ArrayList<String>();
+        for (String value : whitelist.getValues()) {
+            if (!blacklist.getValues().contains(value)) defs.add(value);
+        }
+        for (String value : defs) {
+            if (!l.contains(value)) l.add(value);
+        }
         return l;
     }
     

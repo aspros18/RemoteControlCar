@@ -34,47 +34,73 @@ import java.util.Map.Entry;
  */
 class WhitelistConfig extends GroupListConfig {
 
-    private final Map<String, Boolean> DEF_LIMITS;
-    private final Map<String, Map<String, Boolean>> GRP_LIMITS;
+    /**
+     * Az alapértelmezett felsorolás view only adatai.
+     */
+    private final Map<String, Boolean> DEF_VOL;
     
+    /**
+     * A csoportok és azok felsorolásainak view only adatai.
+     */
+    private final Map<String, Map<String, Boolean>> GRP_VOL;
+    
+    /**
+     * Konstruktor.
+     * Miután az ősben betöltődött a konfiuráció és létrejöttek a csoportok,
+     * létrehozza az eredeti felsoroláshoz valamint a csoportokhoz tartozó felsorolásokhoz a view only adatokat.
+     * Miután elmentődtek a memóriába a view only adatok, az eredeti felsorolásokból kitörlődnek a view only jelzések: [V]
+     * Tehát a konstruktor lefutása után minden felsorolás tiszta tanúsítványneveket fog tartalmazni és a {@link #isViewOnly(String, String)}
+     * metódus segítségével lehet megtudni, hogy egy adott értékhez tartozott-e view only jelzés.
+     * A csoportok értékei és az eredeti felsorolás értékei ugyan úgy használhatóak, mint pl. a feketelista esetén.
+     */
     public WhitelistConfig() {
         super("whitelist.conf");
-        GRP_LIMITS = new HashMap<String, Map<String, Boolean>>();
-        DEF_LIMITS = createViewOnlyList(getValues());
-        Map<String, Boolean> tmpViews;
-        Entry<String, List<String>> e;
+        GRP_VOL = new HashMap<String, Map<String, Boolean>>();
+        DEF_VOL = createViewOnlyList(getValues()); // az alapértelmezett felsorolás view only értékei
         Iterator<Entry<String, List<String>>> it = getGroups().entrySet().iterator();
-        while (it.hasNext()) {
-            e = it.next();
-            tmpViews = createViewOnlyList(e.getValue());
-            for (String value : getValues()) {
-                if (!tmpViews.containsKey(value)) tmpViews.put(value, DEF_LIMITS.get(value));
+        while (it.hasNext()) { // végigmegy a csoportokon
+            Entry<String, List<String>> e = it.next(); // az aktuális csoport ...
+            Map<String, Boolean> vol = createViewOnlyList(e.getValue()); // ... és annak view only értékei
+            for (String value : getValues()) { // az alapértelmezett felsorolás értékein megy végig
+                // ha a csoport view only értékeiben még nincs definiálva az alapértelmezett felsorolás aktuális értéke,
+                if (!vol.containsKey(value)) vol.put(value, DEF_VOL.get(value)); // akkor hozzáadja a hozzá tartozó értéket
             }
-            GRP_LIMITS.put(e.getKey(), tmpViews);
+            GRP_VOL.put(e.getKey(), vol); // végül az aktuális csoporthoz tárolja a view only értékeket és jöhet a következő csoport
         }
     }
     
+    /**
+     * Létrehozza a view only adatokat és kiveszi a sorokból a jelöléseket, hogy csak a tanúsítvány neve maradjon benne.
+     */
     private static Map<String, Boolean> createViewOnlyList(List<String> values) {
         String value;
         Map<String, Boolean> map = new HashMap<String, Boolean>();
-        for (int i = 0; i < values.size(); i++) {
-            value = values.get(i);
-            if (value.endsWith("[V]") || value.endsWith("[v]")) {
-                value = value.substring(0, value.length() - 3).trim();
-                values.set(i, value);
-                map.put(value, true);
+        for (int i = 0; i < values.size(); i++) { // számláló ciklussal megy végig a listán, hogy szerkeszthető maradjon
+            value = values.get(i); // az aktuális sor
+            if (value.endsWith("[V]") || value.endsWith("[v]")) { // ha a jelölés szerepel a sor végén
+                value = value.substring(0, value.length() - 3).trim(); // a jelölés nélküli név
+                values.set(i, value); // sor cseréje a jelölés nélküli névre, hogy csak a név maradjon
+                map.put(value, true); // a jelölés szerepelt a sorban
             }
             else {
-                map.put(value, false);
+                map.put(value, false); // a jelölés nem szerepelt a sorban
             }
         }
         return map;
     }
     
+    /**
+     * Megadja, hogy egy adott csoporthoz a felsorolás egyik értéke tartalmazott-e view only jelzést.
+     * Ha az érték nem tartozik a csoporthoz, akkor az alapértelmezett felsorolás dönti el.
+     * Ha az alapértelmezett felsorolásban se szerepel az érték, akkor nincs view only jel.
+     * @param group az adott csoport
+     * @param value a felsorolás egyik értéke
+     * @return true, ha a felsorolás értéke tartalmaz view only jelzést [V]
+     */
     public boolean isViewOnly(String group, String value) {
         Boolean result;
-        Map<String, Boolean> lm = GRP_LIMITS.get(group);
-        if (lm == null) return (result = DEF_LIMITS.get(value)) == null ? false : result;
+        Map<String, Boolean> lm = GRP_VOL.get(group);
+        if (lm == null) return (result = DEF_VOL.get(value)) == null ? false : result;
         else return (result = lm.get(value)) == null ? false : result;
     }
     

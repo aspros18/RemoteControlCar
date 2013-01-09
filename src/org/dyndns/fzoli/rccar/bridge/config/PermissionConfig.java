@@ -43,12 +43,8 @@ public class PermissionConfig {
                 if (!blackvals.contains(value)) l.add(value);
             }
         }
-        final List<String> defs = new ArrayList<String>();
         for (String value : whitelist.getValues()) {
-            if (!blacklist.getValues().contains(value)) defs.add(value);
-        }
-        for (String value : defs) {
-            if (!l.contains(value)) l.add(value);
+            if (!blacklist.getValues().contains(value) && !l.contains(value)) l.add(value);
         }
         return l;
     }

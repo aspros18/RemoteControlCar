@@ -15,7 +15,7 @@ package org.dyndns.fzoli.rccar.bridge.config;
  * További információ a fehérlistáról: {@link WhitelistConfig}
  * @author zoli
  */
-public class BlacklistConfig extends GroupListConfig {
+class BlacklistConfig extends GroupListConfig {
 
     public BlacklistConfig() {
         super("blacklist.conf");

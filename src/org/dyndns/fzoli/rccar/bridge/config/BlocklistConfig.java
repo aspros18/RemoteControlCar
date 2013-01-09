@@ -6,7 +6,7 @@ package org.dyndns.fzoli.rccar.bridge.config;
  * Amint kapcsolódnak a szerverhez, a szerver elutasítja a kapcsolatot.
  * @author zoli
  */
-public class BlocklistConfig extends ListConfig {
+class BlocklistConfig extends ListConfig {
 
     public BlocklistConfig() {
         super("blocklist.conf");

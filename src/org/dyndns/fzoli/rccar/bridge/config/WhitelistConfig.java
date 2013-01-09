@@ -31,7 +31,7 @@ import java.util.Map.Entry;
  * További információ a feketelistáról: {@link BlacklistConfig}
  * @author zoli
  */
-public class WhitelistConfig extends GroupListConfig {
+class WhitelistConfig extends GroupListConfig {
 
     private final Map<String, Boolean> DEF_LIMITS;
     private final Map<String, Map<String, Boolean>> GRP_LIMITS;

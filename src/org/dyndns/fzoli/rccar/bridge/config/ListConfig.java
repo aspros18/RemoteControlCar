@@ -41,8 +41,9 @@ class ListConfig {
         return VALUES;
     }
 
-    public Long getLastModified() {
-        return LAST_MODIFIED;
+    public boolean isOutdated() {
+        if (LAST_MODIFIED == null) return true;
+        return LAST_MODIFIED != FILE_CONFIG.lastModified();
     }
     
 }

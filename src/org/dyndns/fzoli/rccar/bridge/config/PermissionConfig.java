@@ -36,15 +36,15 @@ public class PermissionConfig {
     public List<String> getOrderList(String vehicleName) {
         final List<String> l = new ArrayList<String>();
         final List<String> whitevals = whitelist.getGroups().get(vehicleName);
+        final List<String> blackvals = blacklist.getGroups().get(vehicleName);
         if (whitevals != null) {
-            final List<String> blackvals = blacklist.getGroups().get(vehicleName);
             if (blackvals == null || blackvals.isEmpty()) l.addAll(whitevals);
             else for (String value : whitevals) {
                 if (!blackvals.contains(value)) l.add(value);
             }
         }
         for (String value : whitelist.getValues()) {
-            if (!blacklist.getValues().contains(value) && !l.contains(value)) l.add(value);
+            if (!blacklist.getValues().contains(value) && (blackvals == null || !blackvals.contains(value)) && !l.contains(value)) l.add(value);
         }
         return l;
     }
@@ -57,7 +57,5 @@ public class PermissionConfig {
         if (!blacklist.mergeGroup(vehicleName).contains(controllerName)) return true;
         return getOrderList(vehicleName).contains(controllerName);
     }
-    
-    
     
 }

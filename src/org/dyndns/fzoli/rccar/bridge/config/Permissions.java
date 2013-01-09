@@ -26,8 +26,8 @@ public class Permissions {
 
             @Override
             public void run() {
-                PermissionConfig prev;
-                if ((prev = config.refresh()) != null) onRefresh(prev);
+                PermissionConfig prev = config.refresh();
+                if (prev != null) onRefresh(prev);
             }
             
         }, 0, 5000);

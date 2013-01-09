@@ -1,5 +1,11 @@
 package org.dyndns.fzoli.rccar.bridge.config;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Fehérlista és feketelista közös metódusai.
  * Ezzel a listával lehetőség van csoportosításra is,
@@ -16,8 +22,30 @@ package org.dyndns.fzoli.rccar.bridge.config;
  */
 class GroupListConfig extends ListConfig {
 
+    private final Map<String, List<String>> GROUPS;
+    
     public GroupListConfig(String fileName) {
         super(fileName);
+        GROUPS = new HashMap<String, List<String>>();
+        List<String> values = null;
+        Iterator<String> it = getValues().iterator();
+        while (it.hasNext()) {
+            String l = it.next();
+            if (l.startsWith("[") && l.endsWith("]")) {
+                values = new ArrayList<String>();
+                GROUPS.put(l.substring(1, l.length() - 1).trim(), values);
+                it.remove();
+                continue;
+            }
+            if (values != null) {
+                values.add(l);
+                it.remove();
+            }
+        }
+    }
+
+    public Map<String, List<String>> getGroups() {
+        return GROUPS;
     }
     
 }

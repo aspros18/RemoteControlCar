@@ -23,7 +23,7 @@ class ListConfig {
     private final File FILE_CONFIG;
     private final Long LAST_MODIFIED;
     
-    protected final List<String> VALUES;
+    private final List<String> VALUES;
     
     public ListConfig(String fileName) {
         FILE_CONFIG = new File(Config.UD, fileName);

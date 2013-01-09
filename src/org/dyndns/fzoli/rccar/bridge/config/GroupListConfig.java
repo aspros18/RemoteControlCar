@@ -49,14 +49,4 @@ class GroupListConfig extends ListConfig {
         return GROUPS;
     }
     
-    public List<String> createGroup(String groupName) {
-        final List<String> l = new ArrayList<String>();
-        final List<String> values = getGroups().get(groupName);
-        if (values != null) l.addAll(values);
-        for (String value : getValues()) {
-            if (!l.contains(value)) l.add(value);
-        }
-        return l;
-    }
-    
 }

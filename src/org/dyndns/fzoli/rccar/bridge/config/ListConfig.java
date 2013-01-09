@@ -20,11 +20,28 @@ import org.dyndns.fzoli.rccar.bridge.Config;
  */
 class ListConfig {
 
+    /**
+     * Konfigurációs fájl.
+     * Ez alapján töltődik fel a konfiguráció.
+     */
     private final File FILE_CONFIG;
+    
+    /**
+     * A beolvasáskor a konfigurációs fájl módosításának a dátuma.
+     * Arra kell, hogy detektálni lehessen, ha módosították a fájlt.
+     */
     private final Long LAST_MODIFIED;
     
+    /**
+     * A konfigurációs fájl sorai, amik egy-egy tanúsítványnevet hordoznak.
+     */
     private final List<String> VALUES;
     
+    /**
+     * Konstruktor.
+     * Beolvassa a fájlt és elmenti az utolsó módosítás dátumát.
+     * @param fileName a konfig fájl neve, ami abban a könyvtárban szerepel, ahonnan indították a programot
+     */
     public ListConfig(String fileName) {
         FILE_CONFIG = new File(Config.UD, fileName);
         if (FILE_CONFIG.isFile() && FILE_CONFIG.canRead()) {
@@ -37,10 +54,17 @@ class ListConfig {
         }
     }
 
+    /**
+     * A konfigurációs fájl tanúsítványneveit adja vissza.
+     */
     public List<String> getValues() {
         return VALUES;
     }
 
+    /**
+     * Megadja, hogy elavult-e az objektum.
+     * @return true ha a fájl nem lett beolvasva vagy ha már módosult a beolvasás óta
+     */
     public boolean isOutdated() {
         if (LAST_MODIFIED == null) return true;
         return LAST_MODIFIED != FILE_CONFIG.lastModified();

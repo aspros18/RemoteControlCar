@@ -223,8 +223,7 @@ public class Main {
      * A híd main metódusa.
      * Ha a konfiguráció még nem létezik, lérehozza és figyelmezteti a felhasználót, hogy állítsa be és kilép.
      * Ha a konfiguráció létezik, de rosszul paraméterezett, figyelmezteti a felhasználót és kilép.
-     * A program futása előtt ha nem létezik az admin adatbázis, létrehozza és figyelmezteti a felhasználót.
-     * Ezek után a híd program elkezdi futását.
+     * Ha a program nem lépett ki, a híd szerver elkezdi futását.
      */
     public static void main(String[] args) {
         final File dir = new File("./");

@@ -1,5 +1,7 @@
 package org.dyndns.fzoli.rccar.bridge.config;
 
+import java.util.Map;
+
 /**
  * Fehérlista járműhasználathoz.
  * Azok a vezérlő kliens-tanúsítványok melyek a listában szerepelnek,
@@ -27,8 +29,11 @@ package org.dyndns.fzoli.rccar.bridge.config;
  */
 public class WhitelistConfig extends GroupListConfig {
 
+    private final Map<String, Boolean> VALUE_LIMITS;
+    
     public WhitelistConfig() {
         super("whitelist.conf");
+        VALUE_LIMITS = null;
     }
     
 }

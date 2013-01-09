@@ -26,5 +26,9 @@ package org.dyndns.fzoli.rccar.bridge.config;
  * @author zoli
  */
 public class WhitelistConfig extends GroupListConfig {
+
+    public WhitelistConfig() {
+        super("whitelist.conf");
+    }
     
 }

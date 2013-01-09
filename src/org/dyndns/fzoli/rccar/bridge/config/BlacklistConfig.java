@@ -16,5 +16,9 @@ package org.dyndns.fzoli.rccar.bridge.config;
  * @author zoli
  */
 public class BlacklistConfig extends GroupListConfig {
+
+    public BlacklistConfig() {
+        super("blacklist.conf");
+    }
     
 }

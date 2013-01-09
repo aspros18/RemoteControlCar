@@ -37,8 +37,8 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
     /**
      * Általános rendszerváltozók.
      */
-    private static final String LS = System.getProperty("line.separator"),
-                                UD = System.getProperty("user.dir");
+    public static final String LS = System.getProperty("line.separator"),
+                               UD = System.getProperty("user.dir");
     
     /**
      * A soronként érvényes megjegyzés karakter.

@@ -7,5 +7,9 @@ package org.dyndns.fzoli.rccar.bridge.config;
  * @author zoli
  */
 public class BlocklistConfig extends ListConfig {
+
+    public BlocklistConfig() {
+        super("blocklist.conf");
+    }
     
 }

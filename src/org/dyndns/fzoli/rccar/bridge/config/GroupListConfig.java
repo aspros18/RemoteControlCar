@@ -14,6 +14,10 @@ package org.dyndns.fzoli.rccar.bridge.config;
  * az alapértelmezett felsorolás üres lesz.
  * @author zoli
  */
-public class GroupListConfig extends ListConfig {
+class GroupListConfig extends ListConfig {
+
+    public GroupListConfig(String fileName) {
+        super(fileName);
+    }
     
 }

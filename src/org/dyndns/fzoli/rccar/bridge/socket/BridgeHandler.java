@@ -8,6 +8,7 @@ import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import static org.dyndns.fzoli.rccar.bridge.Main.VAL_WARNING;
+import org.dyndns.fzoli.rccar.bridge.config.PermissionConfig;
 import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
 import org.dyndns.fzoli.socket.handler.exception.MultipleCertificateException;
 import org.dyndns.fzoli.socket.handler.exception.RemoteHandlerException;
@@ -32,6 +33,13 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
      */
     public BridgeHandler(SSLSocket socket) {
         super(socket);
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        // TODO: ha lesz DAO hozzá, nem kell majd példányosítani itt
+        if (new PermissionConfig().isBlocked(getRemoteCommonName())) throw new BlockedCommonNameException();
     }
 
     public static boolean isWarnEnabled() {
@@ -75,6 +83,9 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
     protected void onException(Exception ex) {
         try {
             throw ex;
+        }
+        catch (BlockedCommonNameException e) {
+            showWarning("Tiltólistás kapcsolódás");
         }
         catch (MultipleCertificateException e) {
             showWarning("Duplázott tanúsítvány");

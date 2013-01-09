@@ -20,6 +20,7 @@ import org.h2.tools.SimpleResultSet;
  * mint ha a jármű kliens programja kilépett volna a szerverről (és a listájából kikerül a megvont jármű).
  * Ha egy felhasználó jogot kapott egy jármű figyeléséhez, esetleg a vezérléséhez is és még nem választott járművet (tehát kap jelzést a lista módosulásáról),
  * a listája frissítésre kerül, mint ha a jármű most csatlakozott volna a szerverhez.
+ * Ha a tiltólistára kerül fel egy online kliens, akkor a szerver természetesen bontja vele a kapcsolatot és legközelebbi kapcsolódáskor már nem fogja beenedni.
  * @author zoli
  */
 public class AdminDAO {

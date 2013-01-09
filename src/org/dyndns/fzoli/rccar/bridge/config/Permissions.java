@@ -23,8 +23,16 @@ import org.dyndns.fzoli.socket.process.SecureProcess;
 */
 public final class Permissions {
     
+    /**
+     * Az aktuális konfiguráció.
+     */
     private static final PermissionConfig config = new PermissionConfig();
 
+    /**
+     * Konstruktor.
+     * Elindít egy időzítőt, ami 5 másodpercenként megnézi, módosult-e a konfiguráció és ha igen,
+     * meghívja a frissítő metódust a régi konfigurációt átadva neki, hogy össze lehseen hasonlítani az eltéréseket.
+     */
     static {
         new Timer().schedule(new TimerTask() {
 
@@ -37,23 +45,35 @@ public final class Permissions {
         }, 0, 5000);
     }
     
+    /**
+     * Az osztályt nem kell példányosítani.
+     */
     private Permissions() {
     }
 
+    /**
+     * Az aktuális konfigurációt adja vissza.
+     */
+    public static PermissionConfig getConfig() {
+        return config;
+    }
+    
+    /**
+     * Ha a konfiguráció módosul, ez a metódus fut le.
+     * @param previous az előző konfiguráció
+     */
     private static void onRefresh(PermissionConfig previous) {
+        // végigmegy a kapcsolatokon és bezárja a kapcsolatokat azokkal a vezérlőkkel, akik ki lettek tiltva a hídról:
         Iterator<SecureProcess> it = ServerProcesses.getProcesses(SecureProcess.class).iterator();
         while (it.hasNext()) {
             SecureProcess proc = it.next();
+            // ha nem vezérlő a kapcsolat, vagy már figyelembe lett véve a vezérlő, tovább urik a következő kapcsolatra
             if (proc.getDeviceId() != ConnectionKeys.KEY_DEV_CONTROLLER && proc.getConnectionId() != ConnectionKeys.KEY_CONN_DISCONNECT) continue;
-            String controllerName = proc.getRemoteCommonName();
+            String controllerName = proc.getRemoteCommonName(); // a vezérlő neve
             if (!previous.isBlocked(controllerName) && getConfig().isBlocked(controllerName)) {
-                proc.getHandler().closeProcesses();
+                proc.getHandler().closeProcesses(); // ha nem volt tiltva eddig, de most már tiltva van, akkor kapcsolatok bezárása a vezérlővel
             }
         }
-    }
-    
-    public static PermissionConfig getConfig() {
-        return config;
     }
     
 }

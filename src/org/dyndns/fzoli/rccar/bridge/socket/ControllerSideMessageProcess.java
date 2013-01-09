@@ -67,6 +67,7 @@ public class ControllerSideMessageProcess extends BridgeMessageProcess {
                 data.setVehicleConnected(true);
                 data.setControlling(true);
                 data.setWantControl(false);
+                data.setViewOnly(false);
                 sendMessage(data);
             }
             else {

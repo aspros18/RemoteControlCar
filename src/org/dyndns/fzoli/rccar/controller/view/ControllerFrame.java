@@ -379,11 +379,12 @@ public class ControllerFrame extends JFrame {
      *    h        i        kérés inaktív
      *    i        h        lemondás inaktív
      *    h        h        kérés aktív
+     * Ha a jármű csak figyelhető, akkor a gomb biztosan inaktív.
      */
     public void refresh() {
         btControll.setIcon(getData().isControlling() ? IC_CONTROLLER1 : IC_CONTROLLER2);
         btControll.setToolTipText(getData().isControlling() ? "Vezérlés átadása" : "Vezérlés kérése");
-        btControll.setEnabled(!(getData().isControlling() ^ getData().isWantControl()));
+        btControll.setEnabled(!getData().isViewOnly() && !(getData().isControlling() ^ getData().isWantControl()));
     }
     
     /**

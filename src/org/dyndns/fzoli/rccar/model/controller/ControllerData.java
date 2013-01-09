@@ -100,7 +100,8 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
             VEHICLE_CONNECTED,
             HOST_CONNECTED,
             CONTROLLING,
-            WANT_CONTROLL
+            WANT_CONTROLL,
+            VIEW_ONLY
         }
         
         /**
@@ -137,6 +138,9 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
                         break;
                     case WANT_CONTROLL:
                         d.setWantControl(data);
+                        break;
+                    case VIEW_ONLY:
+                        d.setViewOnly(data);
                 }
             }
         }
@@ -187,6 +191,12 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
      * Van-e igény a jármű vezérlésére.
      */
     private Boolean wantControl;
+    
+    /**
+     * Megadja azt, hogy a jármű irányítását lehet-e kérni.
+     * True esetén nem kérhető a jármű vezérlése soha, tehát csak figyelhető a jármű.
+     */
+    private Boolean viewOnly;
     
     /**
      * A kiválasztott hoszthoz tartozó chatüzenetek tárolója.
@@ -262,6 +272,14 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     }
 
     /**
+     * Megadja azt, hogy a jármű irányítását lehet-e kérni.
+     * @return true esetén nem kérhető az irányítás soha
+     */
+    public Boolean isViewOnly() {
+        return viewOnly;
+    }
+
+    /**
      * Beállítja az aktuális jármű nevét.
      */
     public void setHostName(String hostName) {
@@ -303,6 +321,14 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     public void setWantControl(Boolean wantControl) {
         this.wantControl = wantControl;
     }
+
+    /**
+     * Beállítja azt, hogy a jármű irányítását lehet-e kérni.
+     * @param viewOnly true esetén nem kérhető az irányítás soha
+     */
+    public void setViewOnly(Boolean viewOnly) {
+        this.viewOnly = viewOnly;
+    }
     
     /**
      * Frissíti az adatokat a megadott adatokra.
@@ -318,6 +344,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
             setVehicleConnected(d.isVehicleConnected());
             setControlling(d.isControlling());
             setWantControl(d.isWantControl());
+            setViewOnly(d.isViewOnly());
             super.update(d);
         }
     }
@@ -333,6 +360,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
         hostConnected = null;
         controlling = null;
         wantControl = null;
+        viewOnly = null;
         super.clear();
     }
     

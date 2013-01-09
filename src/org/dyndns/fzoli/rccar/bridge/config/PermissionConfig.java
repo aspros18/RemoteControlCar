@@ -5,6 +5,8 @@ import java.util.List;
 
 /**
  * A tiltólista, a fehérlista és a feketelista alapján működő jogosultság-konfiguráció.
+ * A három lista összesítése, ami konfig frissítéshez, rangsor létrehozáshoz
+ * és jogosultság olvasáshoz használható fel.
  * @see BlocklistConfig
  * @see BlacklistConfig
  * @see WhitelistConfig
@@ -12,21 +14,47 @@ import java.util.List;
  */
 public class PermissionConfig {
     
+    /**
+     * Tiltólista.
+     */
     private BlocklistConfig blocklist;
+    
+    /**
+     * Feketelista.
+     */
     private BlacklistConfig blacklist;
+    
+    /**
+     * Fehérlista.
+     */
     private WhitelistConfig whitelist;
 
-    PermissionConfig() {
+    /**
+     * Konstruktor, amit a {@link Permissions} osztály is használ.
+     * Friss konfiguráció létrehozására használható fel.
+     */
+    protected PermissionConfig() {
         this(new BlocklistConfig(), new BlacklistConfig(), new WhitelistConfig());
     }
     
+    /**
+     * Konstruktor, amit csak ez az osztály használ.
+     * Paraméterben megadható, milyen konfigurációkat használjon, így új és régi konfig is megadható.
+     * @param blocklist a tiltólista
+     * @param blacklist a feketelista
+     * @param whitelist a fehérlista
+     */
     private PermissionConfig(BlocklistConfig blocklist, BlacklistConfig blacklist, WhitelistConfig whitelist) {
         this.blocklist = blocklist;
         this.blacklist = blacklist;
         this.whitelist = whitelist;
     }
     
-    PermissionConfig refresh() {
+    /**
+     * Frissíti a konfigurációt, ha módosult és a régi konfigurációval tér vissza.
+     * @return null, ha a konfiguráció nem módosult, egyébként a frissítés előtti konfiguráció
+     */
+    protected PermissionConfig refresh() {
         PermissionConfig old = null;
         if (blocklist.isOutdated() || blacklist.isOutdated() || whitelist.isOutdated()) {
             old = new PermissionConfig(blocklist, blacklist, whitelist);
@@ -37,10 +65,20 @@ public class PermissionConfig {
         return old;
     }
     
+    /**
+     * Megadja, hogy a tanúsítvány-név szerepel-e a tiltólistán.
+     * @param name a tanúsítványnév
+     */
     public boolean isBlocked(String name) {
         return blocklist.getValues().contains(name);
     }
     
+    /**
+     * Megadja, hogy az adott járművet az adott vezérlő tudja-e vezérelni, vagy csak figyelni képes.
+     * @param vehicleName a jármű tanúsítványneve
+     * @param controllerName a vezérlő tanúsítványneve
+     * @return true ha csak figyelni képes, egyébként false
+     */
     public boolean isViewOnly(String vehicleName, String controllerName) {
         return whitelist.isViewOnly(vehicleName, controllerName);
     }

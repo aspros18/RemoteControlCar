@@ -1,7 +1,7 @@
 package org.dyndns.fzoli.rccar.model.bridge;
 
 import java.util.Date;
-import org.dyndns.fzoli.rccar.bridge.Permissions;
+import org.dyndns.fzoli.rccar.bridge.config.Permissions;
 import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
 import org.dyndns.fzoli.rccar.model.controller.HostState;

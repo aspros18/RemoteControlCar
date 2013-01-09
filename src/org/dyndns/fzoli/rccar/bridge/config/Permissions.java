@@ -1,8 +1,7 @@
-package org.dyndns.fzoli.rccar.bridge;
+package org.dyndns.fzoli.rccar.bridge.config;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import org.dyndns.fzoli.rccar.bridge.config.PermissionConfig;
 
 /**
 * A híd jogosultságok adatbázisa.
@@ -27,7 +26,8 @@ public class Permissions {
 
             @Override
             public void run() {
-                if (config.refresh()) onRefresh();
+                PermissionConfig prev;
+                if ((prev = config.refresh()) != null) onRefresh(prev);
             }
             
         }, 0, 5000);
@@ -36,7 +36,7 @@ public class Permissions {
     private Permissions() {
     }
 
-    private static void onRefresh() {
+    private static void onRefresh(PermissionConfig previous) {
         System.out.println("refresh!");
     }
     

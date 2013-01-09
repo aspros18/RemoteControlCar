@@ -12,16 +12,29 @@ import java.util.List;
  */
 public class PermissionConfig {
     
-    private BlocklistConfig blocklist = new BlocklistConfig();
-    private BlacklistConfig blacklist = new BlacklistConfig();
-    private WhitelistConfig whitelist = new WhitelistConfig();
+    private BlocklistConfig blocklist;
+    private BlacklistConfig blacklist;
+    private WhitelistConfig whitelist;
+
+    PermissionConfig() {
+        this(new BlocklistConfig(), new BlacklistConfig(), new WhitelistConfig());
+    }
     
-    public boolean refresh() {
-        boolean result = blocklist.isOutdated() || blacklist.isOutdated() || whitelist.isOutdated();
-        if (blocklist.isOutdated()) blocklist = new BlocklistConfig();
-        if (blacklist.isOutdated()) blacklist = new BlacklistConfig();
-        if (whitelist.isOutdated()) whitelist = new WhitelistConfig();
-        return result;
+    private PermissionConfig(BlocklistConfig blocklist, BlacklistConfig blacklist, WhitelistConfig whitelist) {
+        this.blocklist = blocklist;
+        this.blacklist = blacklist;
+        this.whitelist = whitelist;
+    }
+    
+    PermissionConfig refresh() {
+        PermissionConfig old = null;
+        if (blocklist.isOutdated() || blacklist.isOutdated() || whitelist.isOutdated()) {
+            old = new PermissionConfig(blocklist, blacklist, whitelist);
+            if (blocklist.isOutdated()) blocklist = new BlocklistConfig();
+            if (blacklist.isOutdated()) blacklist = new BlacklistConfig();
+            if (whitelist.isOutdated()) whitelist = new WhitelistConfig();
+        }
+        return old;
     }
     
     public boolean isBlocked(String name) {

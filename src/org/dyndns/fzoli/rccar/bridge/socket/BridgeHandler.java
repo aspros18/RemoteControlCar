@@ -8,7 +8,7 @@ import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import static org.dyndns.fzoli.rccar.bridge.Main.VAL_WARNING;
-import org.dyndns.fzoli.rccar.bridge.Permissions;
+import org.dyndns.fzoli.rccar.bridge.config.Permissions;
 import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
 import org.dyndns.fzoli.socket.handler.exception.MultipleCertificateException;
 import org.dyndns.fzoli.socket.handler.exception.RemoteHandlerException;

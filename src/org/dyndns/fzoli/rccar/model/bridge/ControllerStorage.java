@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.model.bridge;
 
 import java.util.Date;
+import org.dyndns.fzoli.rccar.bridge.Permissions;
 import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
 import org.dyndns.fzoli.rccar.model.controller.HostState;
@@ -48,6 +49,7 @@ public class ControllerStorage extends Storage {
         ControllerData d = new ControllerData(s.getChatMessages());
         d.setHostState(createHostState());
         d.setHostName(s.getName());
+        d.setViewOnly(isViewOnly());
         d.setControlling(s.getOwner() == this);
         d.setWantControl(s.getOwners().contains(this));
         d.setBatteryLevel(s.getHostData().getBatteryLevel());
@@ -61,6 +63,11 @@ public class ControllerStorage extends Storage {
     
     public static boolean isHostConnected(HostStorage s) {
         return s != null && s.getMessageProcess() != null && !s.getMessageProcess().getSocket().isClosed();
+    }
+    
+    public boolean isViewOnly() {
+        if (getHostStorage() == null) return false;
+        return Permissions.getConfig().isViewOnly(getHostStorage().getName(), getName());
     }
     
     private HostState createHostState() {

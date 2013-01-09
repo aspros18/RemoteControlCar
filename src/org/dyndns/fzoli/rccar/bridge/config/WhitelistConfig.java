@@ -1,6 +1,10 @@
 package org.dyndns.fzoli.rccar.bridge.config;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Fehérlista járműhasználathoz.
@@ -29,11 +33,48 @@ import java.util.Map;
  */
 public class WhitelistConfig extends GroupListConfig {
 
-    private final Map<String, Boolean> VALUE_LIMITS;
+    private final Map<String, Boolean> DEF_LIMITS;
+    private final Map<String, Map<String, Boolean>> GRP_LIMITS;
     
     public WhitelistConfig() {
         super("whitelist.conf");
-        VALUE_LIMITS = null;
+        GRP_LIMITS = new HashMap<String, Map<String, Boolean>>();
+        DEF_LIMITS = createViewOnlyList(getValues());
+        Map<String, Boolean> tmpViews;
+        Entry<String, List<String>> e;
+        Iterator<Entry<String, List<String>>> it = getGroups().entrySet().iterator();
+        while (it.hasNext()) {
+            e = it.next();
+            tmpViews = createViewOnlyList(e.getValue());
+            for (String value : getValues()) {
+                if (!tmpViews.containsKey(value)) tmpViews.put(value, DEF_LIMITS.get(value));
+            }
+            GRP_LIMITS.put(e.getKey(), tmpViews);
+        }
+    }
+    
+    private static Map<String, Boolean> createViewOnlyList(List<String> values) {
+        String value;
+        Map<String, Boolean> map = new HashMap<String, Boolean>();
+        for (int i = 0; i < values.size(); i++) {
+            value = values.get(i);
+            if (value.endsWith("[V]") || value.endsWith("[v]")) {
+                value = value.substring(0, value.length() - 3).trim();
+                values.set(i, value);
+                map.put(value, true);
+            }
+            else {
+                map.put(value, false);
+            }
+        }
+        return map;
+    }
+    
+    public boolean isViewOnly(String group, String value) {
+        Boolean result;
+        Map<String, Boolean> lm = GRP_LIMITS.get(group);
+        if (lm == null) return (result = DEF_LIMITS.get(value)) == null ? false : result;
+        else return (result = lm.get(value)) == null ? false : result;
     }
     
 }

@@ -27,10 +27,11 @@ class GroupListConfig extends ListConfig {
     public GroupListConfig(String fileName) {
         super(fileName);
         GROUPS = new HashMap<String, List<String>>();
+        String l;
         List<String> values = null;
-        Iterator<String> it = getValues().iterator();
+        final Iterator<String> it = getValues().iterator();
         while (it.hasNext()) {
-            String l = it.next();
+            l = it.next();
             if (l.startsWith("[") && l.endsWith("]")) {
                 values = new ArrayList<String>();
                 GROUPS.put(l.substring(1, l.length() - 1).trim(), values);
@@ -49,8 +50,8 @@ class GroupListConfig extends ListConfig {
     }
     
     public List<String> createGroup(String groupName) {
-        List<String> l = new ArrayList<String>();
-        List<String> values = getGroups().get(groupName);
+        final List<String> l = new ArrayList<String>();
+        final List<String> values = getGroups().get(groupName);
         if (values != null) l.addAll(values);
         for (String value : getValues()) {
             if (!l.contains(value)) l.add(value);

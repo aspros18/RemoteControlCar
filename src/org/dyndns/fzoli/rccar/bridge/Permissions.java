@@ -1,13 +1,15 @@
 package org.dyndns.fzoli.rccar.bridge;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import org.dyndns.fzoli.rccar.bridge.config.PermissionConfig;
 
 /**
 * A híd jogosultságok adatbázisa.
 * A jogosultság konfiguráció naprakészen tartása a feladata.
 * Az osztály betöltésekor inicializálódik a konfiguráció.
-* Ez után elindul egy időzítő, ami 10 másodpercenként megnézi, hogy módosult-e a konfiuráció és ha módosult, újrainicializálja azt.
-* Miután az új objektum életbe lépett, a már online vezérlőkön végigmegy és ha változott egy felhasználó jogosultsága, akkor elküldi az új
+* Ez után elindul egy időzítő, ami 5 másodpercenként megnézi, hogy módosult-e a konfiuráció és ha módosult, frissíti azt.
+* Miután az új konfig életbe lépett, a már online vezérlőkön végigmegy és ha változott egy felhasználó jogosultsága, akkor elküldi az új
 * jogosultságot a programnak, hogy frissítse azt a felületen. Ha egy felhasználótól megvonták a vezérlés jogát azon az autón, amit vezérel, a szerver azonnal elveszi tőle
 * az autó vezérlését, mint ha lemondott volna róla a felhasználó, és ha a teljes jogot mevonják tőle, akkor visszakerül a járműválasztó menübe,
 * mint ha a jármű kliens programja kilépett volna a szerverről (és a listájából kikerül a megvont jármű).
@@ -18,11 +20,26 @@ import org.dyndns.fzoli.rccar.bridge.config.PermissionConfig;
 */
 public class Permissions {
     
-    private static PermissionConfig config = new PermissionConfig();
+    private static final PermissionConfig config = new PermissionConfig();
 
+    static {
+        new Timer().schedule(new TimerTask() {
+
+            @Override
+            public void run() {
+                if (config.refresh()) onRefresh();
+            }
+            
+        }, 0, 5000);
+    }
+    
     private Permissions() {
     }
 
+    private static void onRefresh() {
+        System.out.println("refresh!");
+    }
+    
     public static PermissionConfig getConfig() {
         return config;
     }

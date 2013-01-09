@@ -8,7 +8,7 @@ import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import static org.dyndns.fzoli.rccar.bridge.Main.VAL_WARNING;
-import org.dyndns.fzoli.rccar.bridge.config.PermissionConfig;
+import org.dyndns.fzoli.rccar.bridge.Permissions;
 import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
 import org.dyndns.fzoli.socket.handler.exception.MultipleCertificateException;
 import org.dyndns.fzoli.socket.handler.exception.RemoteHandlerException;
@@ -35,13 +35,19 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
         super(socket);
     }
 
+    /**
+     * Miután inicializálódtak az adatok, a híd szerver megnézi, hogy a kapcsolódott kliens tanúsítványneve blokkolva van-e,
+     * és ha blokkolva van, kivételt dob, tehát a kapcsolatot elutasítja.
+     */
     @Override
     protected void init() {
         super.init();
-        // TODO: ha lesz DAO hozzá, nem kell majd példányosítani itt
-        if (new PermissionConfig().isBlocked(getRemoteCommonName())) throw new BlockedCommonNameException();
+        if (Permissions.getConfig().isBlocked(getRemoteCommonName())) throw new BlockedCommonNameException();
     }
 
+    /**
+     * Megadja, hogy a figyelmeztetések megjelenhetnek-e.
+     */
     public static boolean isWarnEnabled() {
         return show;
     }

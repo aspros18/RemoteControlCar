@@ -29,7 +29,7 @@ Hogy biztosan tiszta lappal induljunk a generálás előtt: ./clean-all
 
 Elsőként kell egy kiállító (CA), ami a tanúsítványokat generálni fogja: ./build-ca
 A vars fájlban üresen hagytam a CN mezőt, hogy generálódjon az érték, így végig entert nyomkodtam, mert minden adat stimmelt.
-Challenge password mezőt is ügyesen hagytam, ahogyan az opcionális cégnevet is. (nincs szükség CSR-re, mert nem megyek hivatalos CA-hoz)
+Challenge password mezőt is üresen hagytam, ahogyan az opcionális cégnevet is. (nincs szükség CSR-re, mert nem megyek hivatalos CA-hoz)
 Ez után mindkét eldöntendő kérdésre Y volt a válasz és el is készült a 10 évig érvényes CA.
 
 Minden kulcs a keys könyvtárba generálódik, így abban található meg ezek után a ca.crt (nyilvános kulcs) és a ca.key (titkos kulcs) fájl is.

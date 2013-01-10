@@ -34,14 +34,18 @@ Ez után mindkét eldöntendő kérdésre Y volt a válasz és el is készült a
 
 Minden kulcs a keys könyvtárba generálódik, így abban található meg ezek után a ca.crt (nyilvános kulcs) és a ca.key (titkos kulcs) fájl is.
 
-Most jöhet a szerver tanúsítvány generálása a hídhoz (az én programomnak nem kötelező szerver típusú tanúsítványt generálni): ./build-key-server bridge
+Most jöhet a szerver tanúsítvány generálása a hídhoz: ./build-key-server bridge
 Megint végig enter, majd két igen. Ez esetben bridge.crt és bridge.key a két fájl neve és a CN mezőbe is a bridge az alapértelmezés.
 
 Már csak a kliens tanúsítványok maradtak: ./build-key controller
 Az eljárás ugyan az, mint a build-key-server esetén.
 
-Ha jelszóval védett tanúsítványt kell generálni: ./build-key-pass
+Ha jelszóval védett tanúsítványt kell generálni a kliensekhez: ./build-key-pass
 Ez esetben a tanúsítvány csak az itt bekért jelszó megadása után használható.
+
+Ha a szervernek egy klienshez kiállított tanúsítványt állít be a felhasználó, a szerver hiba nélkül elindul, de egy kliens se fog tudni kapcsolódni
+a szerverhez. Javaban a következő kivétel keletkezik az SSL kézfogás közben: Extended key usage does not permit use for TLS server authentication.
+Ekkor már szerver oldalon is kivétel keletkezik, de ott egyszerűen annyit mond a kivétel, hogy ismeretlen tanúsítvány.
 
 Megjegyzés:
 Bármikor generálható még több tanúsítvány, de szükség van hozzá a ca.crt és ca.key fájlra is, ezért jól el kell tenni védett helyre, különben az összes

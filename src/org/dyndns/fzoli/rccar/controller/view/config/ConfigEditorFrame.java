@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.controller.view.config;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -52,6 +53,44 @@ public class ConfigEditorFrame extends FrontFrame {
             setOpaque(false);
         }
         
+    }
+    
+    private static class ConfigFilePanel extends FilePanel {
+
+        /**
+         * Az a könyvtár, ahonnan a programot indították.
+         */
+        private final String currentDir = new File(System.getProperty("user.dir")).getAbsolutePath();
+        
+        /**
+         * Konstruktor.
+         * Megjeleníti a fejlécet, a fájlútvonal-mutatót és a tallózó gombot.
+         * @param text a fájlválasztó fejléce
+         */
+        public ConfigFilePanel(Component parent, String text) {
+            super(parent, text);
+        }
+
+        /**
+         * A megjelenített/beállított fájlt adja vissza.
+         * Ha a fájlra lehet relatív útvonallal is hivatkozni, akkor a relatív útvonallal tér vissza.
+         */
+        @Override
+        public File getFile() {
+            File file = super.getFile(); // az eredeti fájl
+            try {
+                final String absFileName = file.getAbsolutePath(); // az eredeti fájl teljes útvonala
+                if (absFileName.startsWith(currentDir)) { // ha a fájl a "cd" könyvtáron belül van
+                    final int rootLength = currentDir.length(); // a "cd" könyvtár hossza
+                    final String relFileName = absFileName.substring(rootLength + 1); // a relatív útvonal
+                    file = new File(relFileName); // relatív útvonallal gyártott fájl
+                }
+            }
+            catch (Exception ex) { // ha a fájl null vagy fájlrendszer hiba
+                ;
+            }
+            return file;
+        }
     }
     
     /**
@@ -119,7 +158,7 @@ public class ConfigEditorFrame extends FrontFrame {
     /**
      * A kiállító fájl tallózó panele.
      */
-    private final FilePanel fpCa = new FilePanel(this, "Kiállító") {
+    private final FilePanel fpCa = new ConfigFilePanel(this, "Kiállító") {
         {
             setFileFilter(fnefCrt);
         }
@@ -128,7 +167,7 @@ public class ConfigEditorFrame extends FrontFrame {
     /**
      * A tanúsítvány fájl tallózó panele.
      */
-    private final FilePanel fpCert = new FilePanel(this, "Tanúsítvány") {
+    private final FilePanel fpCert = new ConfigFilePanel(this, "Tanúsítvány") {
         {
             setFileFilter(fnefCrt);
         }
@@ -137,7 +176,7 @@ public class ConfigEditorFrame extends FrontFrame {
     /**
      * A tanúsítvány kulcs-fájl tallózó panele.
      */
-    private final FilePanel fpKey = new FilePanel(this, "Kulcs") {
+    private final FilePanel fpKey = new ConfigFilePanel(this, "Kulcs") {
         {
             setFileFilter(fnefKey);
         }

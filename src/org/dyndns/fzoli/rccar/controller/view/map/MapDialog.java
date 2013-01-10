@@ -129,14 +129,14 @@ public class MapDialog extends AbstractDialog {
     private boolean fadeEnabled = false;
     
     public MapDialog(ControllerFrame owner, ControllerWindows windows) {
-        this(owner, windows, null);
+        this(owner, windows, null, true);
     }
     
     public MapDialog(MapLoadListener callback, ControllerWindows windows) {
-        this(null, windows, callback);
+        this(null, windows, callback, true);
     }
     
-    public MapDialog(final ControllerFrame owner, ControllerWindows windows, final MapLoadListener callback) {
+    public MapDialog(final ControllerFrame owner, ControllerWindows windows, final MapLoadListener callback, final boolean enabled) {
         super(owner, "Térkép", windows);
         setIconImage(IC_MAP.getImage());
         getContentPane().setBackground(Color.WHITE);
@@ -176,16 +176,22 @@ public class MapDialog extends AbstractDialog {
         lbWarn.setVisible(false);
         
         // kezdetben úgy tesz, mint ha nem lenne böngésző támogatás
-        final JLabel lbErr = new JLabel("<html><p style=\"text-align:center\">Ha a térkép hamarosan nem tölt be, telepítsen Mozilla Firefox böngészőt.</p></html>", SwingConstants.CENTER);
+        final JLabel lbErr = new JLabel("<html><p style=\"text-align:center\">" + (enabled ? "Ha a térkép hamarosan nem tölt be, telepítsen Mozilla Firefox böngészőt." : "A térkép nincs támogatva.") + "</p></html>", SwingConstants.CENTER);
         lbErr.setPreferredSize(mapPane.getPreferredSize()); // a hibaüzenet mérete megegyezik a térképével
         getContentPane().add(lbErr, BorderLayout.NORTH); // a hibaüzenet az ablak felső részére kerül
         
         getContentPane().add(mapPane, BorderLayout.CENTER); // a térkép középre igazítva jelenik meg
         
-        webBrowser = new JWebBrowser();
-        Component webComponent = new NativeComponentWrapper(webBrowser).createEmbeddableComponent();
-        mapPane.add(webComponent, JLayeredPane.DEFAULT_LAYER); // a böngésző a méretezett pane-re kerül
-        webComponent.setBounds((-1 * (MAP_WIDTH / 2)) + (RADAR_SIZE / 2), (-1 * (MAP_HEIGHT / 2)) + (RADAR_SIZE / 2), MAP_WIDTH, MAP_HEIGHT); // és a pozíciója úgy van beállítva, hogy a Google reklám ne látszódjon
+        if (enabled) {
+            webBrowser = new JWebBrowser();
+            Component webComponent = new NativeComponentWrapper(webBrowser).createEmbeddableComponent();
+
+            mapPane.add(webComponent, JLayeredPane.DEFAULT_LAYER); // a böngésző a méretezett pane-re kerül
+            webComponent.setBounds((-1 * (MAP_WIDTH / 2)) + (RADAR_SIZE / 2), (-1 * (MAP_HEIGHT / 2)) + (RADAR_SIZE / 2), MAP_WIDTH, MAP_HEIGHT); // és a pozíciója úgy van beállítva, hogy a Google reklám ne látszódjon
+        }
+        else {
+            webBrowser = null;
+        }
         
         setResizable(false); // ablak átméretezésének tiltása
         lbErr.setVisible(false); // hibaüzenet elrejtése a pack hívása előtt, hogy ne vegye számításba
@@ -193,97 +199,98 @@ public class MapDialog extends AbstractDialog {
         lbErr.setVisible(true); // hibaüzenet megjelenítése
         mapPane.setVisible(false); // térkép láthatatlanná tétele, míg nem tölt be
         
-        // a natív böngésző lecsupaszítása
-        webBrowser.setBarsVisible(false);
-        webBrowser.setButtonBarVisible(false);
-        webBrowser.setLocationBarVisible(false);
-        webBrowser.setMenuBarVisible(false);
-        webBrowser.setStatusBarVisible(false);
-        webBrowser.setJavascriptEnabled(true);
-        webBrowser.setDefaultPopupMenuRegistered(false);
-        
-        // HTML forráskód betöltése
-        webBrowser.setHTMLContent(HTML_SOURCE);
-        
-        // várakozás a térkép api betöltésére
-        webBrowser.addWebBrowserListener(new WebBrowserAdapter() {
-            
-            private boolean indApp = true, errRemoved = false, fired = false;
-            
-            private boolean test = false; // teszt annak kiderítésére, hogy betöltődött-e a Google Map
-            
-            @Override
-            public void loadingProgressChanged(final WebBrowserEvent e) {
-                if (!errRemoved) { // hibaüzenet eltávolítása és indikátor megjelenítése, mivel van böngésző támogatás
-                    errRemoved = true;
-                    remove(lbErr);
-                }
-                if (indApp) { // indikátor megjelenítése, ha még nem látszik
-                    indApp = false;
-                    pInd.setVisible(true);
-                }
-                repaint(); // egyes rendszereken (Windows) nem minden esetben frissül le a panelcsere
-                if (e.getWebBrowser().getLoadingProgress() == 100) { // ha betöltődött az oldal
-                    // ciklus amíg nincs a térkép betöltve:
-                    new Thread(new Runnable() {
+        if (webBrowser != null) {
+            // a natív böngésző lecsupaszítása
+            webBrowser.setBarsVisible(false);
+            webBrowser.setButtonBarVisible(false);
+            webBrowser.setLocationBarVisible(false);
+            webBrowser.setMenuBarVisible(false);
+            webBrowser.setStatusBarVisible(false);
+            webBrowser.setJavascriptEnabled(true);
+            webBrowser.setDefaultPopupMenuRegistered(false);
 
-                        private boolean isIdAvailable(String id) {
-                            String val = "document.getElementById('" + id + "').innerHTML";
-                            val = "return " + val + " != null && " + val + " != '';";
-                            Object ret = e.getWebBrowser().executeJavascriptWithResult(val);
-                            if (ret == null) return false;
-                            return Boolean.valueOf(ret.toString());
-                        }
-                        
-                        @Override
-                        public void run() {
-                            Date startDate = new Date(); // inicializálás kezdetének ideje
-                            do {
-                                try {
-                                    SwingUtilities.invokeAndWait(new Runnable() {
-                                        
-                                        @Override
-                                        public void run() {
-                                            e.getWebBrowser().executeJavascript(createInitScript()); // térkép inicializálás
-                                            test = isIdAvailable("map_canvas");
+            // HTML forráskód betöltése
+            webBrowser.setHTMLContent(HTML_SOURCE);
+
+            // várakozás a térkép api betöltésére
+            webBrowser.addWebBrowserListener(new WebBrowserAdapter() {
+
+                private boolean indApp = true, errRemoved = false, fired = false;
+
+                private boolean test = false; // teszt annak kiderítésére, hogy betöltődött-e a Google Map
+
+                @Override
+                public void loadingProgressChanged(final WebBrowserEvent e) {
+                    if (!errRemoved) { // hibaüzenet eltávolítása és indikátor megjelenítése, mivel van böngésző támogatás
+                        errRemoved = true;
+                        remove(lbErr);
+                    }
+                    if (indApp) { // indikátor megjelenítése, ha még nem látszik
+                        indApp = false;
+                        pInd.setVisible(true);
+                    }
+                    repaint(); // egyes rendszereken (Windows) nem minden esetben frissül le a panelcsere
+                    if (e.getWebBrowser().getLoadingProgress() == 100) { // ha betöltődött az oldal
+                        // ciklus amíg nincs a térkép betöltve:
+                        new Thread(new Runnable() {
+
+                            private boolean isIdAvailable(String id) {
+                                String val = "document.getElementById('" + id + "').innerHTML";
+                                val = "return " + val + " != null && " + val + " != '';";
+                                Object ret = e.getWebBrowser().executeJavascriptWithResult(val);
+                                if (ret == null) return false;
+                                return Boolean.valueOf(ret.toString());
+                            }
+
+                            @Override
+                            public void run() {
+                                Date startDate = new Date(); // inicializálás kezdetének ideje
+                                do {
+                                    try {
+                                        SwingUtilities.invokeAndWait(new Runnable() {
+
+                                            @Override
+                                            public void run() {
+                                                e.getWebBrowser().executeJavascript(createInitScript()); // térkép inicializálás
+                                                test = isIdAvailable("map_canvas");
+                                            }
+
+                                        });
+                                        if (new Date().getTime() - startDate.getTime() > 10000) {
+                                            test = false; // újratesztelés a legközelebbi betöltéskor
+                                            indApp = true; // indikátor megjelenítése a legközelebbi betöltéskor
+                                            pInd.setVisible(false); // indikátor elrejtése ...
+                                            mapPane.setVisible(false); // ... térkép elrejtése ...
+                                            lbWarn.setVisible(true); // ... és figyelmeztető üzenet megjelenítése, mert nem tudott betöltődni a térkép
+                                            break; // ha 10 mp alatt nem sikerült inicializálni, feladja és kilép a ciklusból
                                         }
-                                        
-                                    });
-                                    if (new Date().getTime() - startDate.getTime() > 10000) {
-                                        test = false; // újratesztelés a legközelebbi betöltéskor
-                                        indApp = true; // indikátor megjelenítése a legközelebbi betöltéskor
-                                        pInd.setVisible(false); // indikátor elrejtése ...
-                                        mapPane.setVisible(false); // ... térkép elrejtése ...
-                                        lbWarn.setVisible(true); // ... és figyelmeztető üzenet megjelenítése, mert nem tudott betöltődni a térkép
-                                        break; // ha 10 mp alatt nem sikerült inicializálni, feladja és kilép a ciklusból
+                                        Thread.sleep(100); // újratesztelés kicsit később
                                     }
-                                    Thread.sleep(100); // újratesztelés kicsit később
+                                    catch (Exception ex) {
+                                        ;
+                                    }
+                                } while (!test);
+                                if (test) { // ha sikerült a térkép betöltése
+                                    pInd.setVisible(false); // indikátor eltüntetése
+                                    mapPane.setVisible(true); // térkép megjelenítése
+                                    // és adatok frissítése, hátha változtak idő közben:
+                                    setArrow(ARROW.getRotation());
+                                    setPosition(position);
+                                    setFade(fadeEnabled);
                                 }
-                                catch (Exception ex) {
-                                    ;
+                                if (!fired) { // csak az első betöltéskor van eseménykezelés
+                                    fired = true;
+                                    if (callback == null) setVisible(true); // ablak megjelenítése, ha nincs eseményfigyelő
+                                    else callback.loadFinished(MapDialog.this); // egyébként eseményfigyelő futtatása
                                 }
-                            } while (!test);
-                            if (test) { // ha sikerült a térkép betöltése
-                                pInd.setVisible(false); // indikátor eltüntetése
-                                mapPane.setVisible(true); // térkép megjelenítése
-                                // és adatok frissítése, hátha változtak idő közben:
-                                setArrow(ARROW.getRotation());
-                                setPosition(position);
-                                setFade(fadeEnabled);
                             }
-                            if (!fired) { // csak az első betöltéskor van eseménykezelés
-                                fired = true;
-                                if (callback == null) setVisible(true); // ablak megjelenítése, ha nincs eseményfigyelő
-                                else callback.loadFinished(MapDialog.this); // egyébként eseményfigyelő futtatása
-                            }
-                        }
-                        
-                    }).start();
+
+                        }).start();
+                    }
                 }
-            }
-            
-        });
-        
+
+            });
+        }
         // a program leállása előtt az ideignlenes könyvtár rekurzív törlése
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             
@@ -293,7 +300,6 @@ public class MapDialog extends AbstractDialog {
             }
             
         }));
-        
     }
     
     /**
@@ -352,6 +358,7 @@ public class MapDialog extends AbstractDialog {
      * @param pos GPS koordináta
      */
     public void setPosition(final Point3D pos) {
+        if (webBrowser == null) return;
         SwingUtilities.invokeLater(new Runnable() {
             
             @Override
@@ -370,6 +377,7 @@ public class MapDialog extends AbstractDialog {
      * @param rotation északtól való eltérés, vagy null, ha nincs irány megadva
      */
     public void setArrow(final Double rotation) {
+        if (webBrowser == null) return;
         SwingUtilities.invokeLater(new Runnable() {
             
             @Override
@@ -393,6 +401,7 @@ public class MapDialog extends AbstractDialog {
      * JavaScript és CSS 3 alapú metódus.
      */
     public void setFade(final boolean enabled) {
+        if (webBrowser == null) return;
         fadeEnabled = enabled;
         SwingUtilities.invokeLater(new Runnable() {
             

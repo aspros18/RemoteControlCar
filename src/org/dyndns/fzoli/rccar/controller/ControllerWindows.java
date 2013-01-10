@@ -74,7 +74,7 @@ public class ControllerWindows {
             radar.setPosition(47.35021, 19.10236, 200.53);
         }
         
-    });
+    }, Main.isNativeSwingAvailable());
     
     /**
      * Hézag az ablakok között.

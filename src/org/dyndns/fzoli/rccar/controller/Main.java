@@ -127,6 +127,11 @@ public class Main {
     private static boolean exiting = false;
     
     /**
+     * Megadja, hogy van-e natív támogatás a böngészőhöz.
+     */
+    private static boolean nativeSwingAvailable = true;
+    
+    /**
      * Konfiguráció-szerkesztő ablak.
      */
     private static ConfigEditorFrame CONFIG_EDITOR;
@@ -160,7 +165,20 @@ public class Main {
         setDefaultSplashMessage();
         setSystemLookAndFeel();
         setExceptionHandler();
+        initNativeInterface();
         setSystemTrayIcon();
+    }
+    
+    /**
+     * A natív böngészőhöz használt interfész inicializálása.
+     */
+    private static void initNativeInterface() {
+        try {
+            NativeInterface.open(); // a natív böngésző támogatás igényli
+        }
+        catch (Exception ex) {
+            nativeSwingAvailable = false; // a natív támogatás nem érhető el
+        }
     }
     
     /**
@@ -176,6 +194,7 @@ public class Main {
      * Beállítja a rendszerikont.
      */
     private static void setSystemTrayIcon() {
+        SystemTrayIcon.init(!isNativeSwingAvailable());
         // az ikon beállítása
         SystemTrayIcon.setIcon("Mobile-RC", R.getIconImageStream());
         
@@ -366,6 +385,13 @@ public class Main {
     }
     
     /**
+     * Megadja, hogy van-e natív támogatás a böngészőhöz.
+     */
+    public static boolean isNativeSwingAvailable() {
+        return nativeSwingAvailable;
+    }
+    
+    /**
      * A vezérlő main metódusa.
      * Ha a grafikus felület nem érhető el, konzolra írja a szomorú tényt és a program végetér.
      * Ha a konfigurációban megadott tanúsítványfájlok nem léteznek, közli a hibát és kényszeríti a kijavítását úgy,
@@ -384,7 +410,6 @@ public class Main {
             showSettingError("A program futtatásához olvasási és írási jogra van szükség." + LS + "A program kilép.");
             System.exit(1);
         }
-        NativeInterface.open(); // a natív böngésző támogatás igényli
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
@@ -406,7 +431,9 @@ public class Main {
             }
 
         });
-        NativeInterface.runEventPump(); // a natív böngésző támogatás igényli
+        if (isNativeSwingAvailable()) { // ha van natív támogatás
+            NativeInterface.runEventPump(); // a natív böngésző támogatás igényli
+        }
     }
     
 }

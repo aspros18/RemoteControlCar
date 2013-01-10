@@ -30,14 +30,23 @@ public class SystemTrayIcon {
     }
     
     /**
-     * Osztály inicializálása.
-     * Furán hangzik, de ilyen is létezik. :-)
+     * Inicializálás.
      * Ha az SWT elérhető és a ".noswt" nevű fájl nem létezik, SWT alapú,
      * egyébként meg AWT alapú rendszerikon jön létre.
      */
-    static {
+    public static void init() {
+        init(false);
+    }
+    
+    /**
+     * Inicializálás.
+     * Ha az SWT elérhető és a ".noswt" nevű fájl nem létezik, SWT alapú,
+     * egyébként meg AWT alapú rendszerikon jön létre.
+     * @param noswt ha true, akkor AWT alapú rendszerikon jön létre
+     */
+    public static void init(boolean noswt) {
         try {
-            tray = SystemTrayProvider.getSystemTray(new File(".noswt").isFile());
+            tray = SystemTrayProvider.getSystemTray(noswt || new File(".noswt").isFile());
             if (tray.isSupported()) {
                 icon = tray.addTrayIcon();
                 menu = icon.createPopupMenu();
@@ -50,6 +59,7 @@ public class SystemTrayIcon {
     
     /**
      * Értéke megadja, hogy támogatott-e a rendszerikon az adott rendszeren.
+     * Ha az {@link #init(boolean)} metódus még nem lett meghívva, addig hamissal tér vissza.
      * @return true, ha támogatott a rendszerikon
      */
     public static boolean isSupported() {

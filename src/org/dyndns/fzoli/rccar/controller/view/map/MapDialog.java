@@ -176,21 +176,33 @@ public class MapDialog extends AbstractDialog {
         lbWarn.setVisible(false);
         
         // kezdetben úgy tesz, mint ha nem lenne böngésző támogatás
-        final JLabel lbErr = new JLabel("<html><p style=\"text-align:center\">" + (enabled ? "Ha a térkép hamarosan nem tölt be, telepítsen Mozilla Firefox böngészőt." : "A térkép nincs támogatva.") + "</p></html>", SwingConstants.CENTER);
+        final JLabel lbErr = new JLabel("<html><p style=\"text-align:center\">Ha a térkép hamarosan nem tölt be, telepítsen Mozilla Firefox böngészőt.</p></html>", SwingConstants.CENTER);
         lbErr.setPreferredSize(mapPane.getPreferredSize()); // a hibaüzenet mérete megegyezik a térképével
         getContentPane().add(lbErr, BorderLayout.NORTH); // a hibaüzenet az ablak felső részére kerül
         
         getContentPane().add(mapPane, BorderLayout.CENTER); // a térkép középre igazítva jelenik meg
         
         if (enabled) {
-            webBrowser = new JWebBrowser();
-            Component webComponent = new NativeComponentWrapper(webBrowser).createEmbeddableComponent();
-
-            mapPane.add(webComponent, JLayeredPane.DEFAULT_LAYER); // a böngésző a méretezett pane-re kerül
-            webComponent.setBounds((-1 * (MAP_WIDTH / 2)) + (RADAR_SIZE / 2), (-1 * (MAP_HEIGHT / 2)) + (RADAR_SIZE / 2), MAP_WIDTH, MAP_HEIGHT); // és a pozíciója úgy van beállítva, hogy a Google reklám ne látszódjon
+            JWebBrowser webBrowser;
+            try {
+                webBrowser = new JWebBrowser();
+            }
+            catch (Exception ex) {
+                webBrowser = null;
+            }
+            this.webBrowser = webBrowser;
+            if (webBrowser != null) {
+                Component webComponent = new NativeComponentWrapper(webBrowser).createEmbeddableComponent();
+                mapPane.add(webComponent, JLayeredPane.DEFAULT_LAYER); // a böngésző a méretezett pane-re kerül
+                webComponent.setBounds((-1 * (MAP_WIDTH / 2)) + (RADAR_SIZE / 2), (-1 * (MAP_HEIGHT / 2)) + (RADAR_SIZE / 2), MAP_WIDTH, MAP_HEIGHT); // és a pozíciója úgy van beállítva, hogy a Google reklám ne látszódjon
+            }
         }
         else {
             webBrowser = null;
+        }
+        
+        if (webBrowser == null) {
+            lbErr.setText("<html><p style=\"text-align:center\">A térkép nincs támogatva.</p></html>");
         }
         
         setResizable(false); // ablak átméretezésének tiltása

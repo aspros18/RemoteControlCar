@@ -97,7 +97,7 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
             showWarning("Duplázott tanúsítvány");
         }
         catch (SSLHandshakeException e) {
-            showWarning("Nem megbízható kapcsolódás");
+            showWarning(e.getMessage().contains("Extended key usage") ? "Szerverhez való tanúsítvány használat" : "Nem megbízható kapcsolódás");
         }
         catch (SSLException e) {
             showWarning("SSL hiba", e.getMessage());

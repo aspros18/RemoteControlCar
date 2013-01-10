@@ -16,9 +16,10 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
      * Ha nincs se konzol, se grafikus felület, a program kilép.
      * Ha a dialógus ablakon nem az OK-ra kattintottak, a program kilép.
      * @param icon a címsorban megjelenő ikon
+     * @param saveEnabled true esetén engedélyezve van a jelszó mentése
      */
-    public static OptionPane.PasswordData showPasswordInput(Image icon) {
-        return showPasswordInput(icon, null, null);
+    public static OptionPane.PasswordData showPasswordInput(Image icon, boolean saveEnabled) {
+        return showPasswordInput(icon, saveEnabled, null, null);
     }
     
     /**
@@ -28,11 +29,12 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
      * Ha nincs se konzol, se grafikus felület, a program kilép.
      * Ha a dialógus ablakon nem az OK-ra kattintottak, a program kilép.
      * @param icon a címsorban megjelenő ikon
+     * @param saveEnabled true esetén engedélyezve van a jelszó mentése
      * @param extraText a középső gomb felirata
      * @param extraCallback a középső gomb kattintására lefutó eseménykezelő
      */
-    public static OptionPane.PasswordData showPasswordInput(Image icon, String extraText, Runnable extraCallback) {
-        return OptionPane.showPasswordInput("A tanúsítvány beolvasása sikertelen volt.", "Adja meg a tanúsítvány jelszavát, ha van: ", icon, false, extraText, extraCallback);
+    public static OptionPane.PasswordData showPasswordInput(Image icon, boolean saveEnabled, String extraText, Runnable extraCallback) {
+        return OptionPane.showPasswordInput("A tanúsítvány beolvasása sikertelen volt.", "Adja meg a tanúsítvány jelszavát, ha van: ", icon, saveEnabled, extraText, extraCallback);
     }
     
 }

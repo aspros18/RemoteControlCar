@@ -189,7 +189,7 @@ public class Main {
         }
         catch (KeyStoreException ex) {
             if (ex.getMessage().startsWith("failed to extract")) {
-                CONFIG.setPassword(showPasswordInput(R.getBridgeImage()).getPassword());
+                CONFIG.setPassword(showPasswordInput(R.getBridgeImage(), false).getPassword());
                 return createServerSocket();
             }
             alert(VAL_ERROR, "Nem sikerült a szerver elindítása, mert a tanúsítvány hibás vagy nincs jól beállítva", System.err);

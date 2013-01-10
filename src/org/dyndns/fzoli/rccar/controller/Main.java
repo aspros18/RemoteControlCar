@@ -279,11 +279,11 @@ public class Main {
     }
     
     /**
-     * Megjeleníti a jelszóbekérő dialógust és ha megadták, elmenti a jelszót a memóriába.
+     * Megjeleníti a jelszóbekérő dialógust és ha megadták, elmenti a jelszót a memóriába vagy a konfig fájlba.
      * @return a megadott jelszó adat, ami akkor null, ha a Beállítások gombra kattintottak
      */
     public static PasswordData showPasswordDialog() {
-        PasswordData data = UIUtil.showPasswordInput(R.getIconImage(), "Beállítások", new Runnable() {
+        PasswordData data = UIUtil.showPasswordInput(R.getIconImage(), true, "Beállítások", new Runnable() {
 
             @Override
             public void run() {
@@ -291,7 +291,10 @@ public class Main {
             }
 
         });
-        if (data != null) CONFIG.setPassword(data.getPassword());
+        if (data != null) {
+            CONFIG.setPassword(data.getPassword(), data.isSave());
+            if (data.isSave()) Config.save(CONFIG);
+        }
         return data;
     }
     

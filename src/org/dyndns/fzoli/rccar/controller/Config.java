@@ -9,6 +9,35 @@ import java.io.Serializable;
 import org.dyndns.fzoli.resource.MD5Checksum;
 
 /**
+ * Ideiglenes konfiguráció a memóriában.
+ */
+class MemConfig {
+    
+    /**
+     * Tanúsítvány jelszó.
+     */
+    private static char[] password;
+
+    /**
+     * Megadja a tanúsítvány jelszavát.
+     * Ha az érték nincs megadva, akkor a paraméterben átadott értékkel tér vissza.
+     */
+    protected static char[] getPassword(char[] def) {
+        if (password == null) return def;
+        return password;
+    }
+
+    /**
+     * Beállítja a tanúsítvány jelszavát.
+     * Ha null érték adódik át, a tároló úgy veszi, nincs megadva a jelszó.
+     */
+    protected static void setPassword(char[] password) {
+        MemConfig.password = password;
+    }
+    
+}
+
+/**
  * A vezérlő konfigurációját tölti be és menti el a felhasználó könyvtárába egy fájlba.
  * Ha a fájl nem létezik, létrehozza az alapértelmezett adatokkal.
  * @author zoli
@@ -108,7 +137,7 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
      */
     @Override
     public char[] getPassword() {
-        return password;
+        return MemConfig.getPassword(password);
     }
 
     /**
@@ -237,9 +266,17 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
 
     /**
      * Beállítja a használandó tanúsítvány jelszavát.
+     * @param password a jelszó
+     * @param save true esetén az objektum változójában tárolódik az érték, egyébként az ideiglenes konfigurációban
      */
-    public void setPassword(char[] password) {
-        this.password = password;
+    public void setPassword(char[] password, boolean save) {
+        if (save) {
+            this.password = password;
+            MemConfig.setPassword(null);
+        }
+        else {
+            MemConfig.setPassword(password);
+        }
     }
     
     /**
@@ -298,20 +335,16 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
     /**
      * A konfigurációt tartalmazó objektumot fájlba szerializálja.
      * Ha a fájl nem létezik, szerializálás előtt létrehozza.
-     * A jelszó nem kerül mentésre.
      * @return true, ha sikerült a szerializálás, egyébként false
      */
     public static boolean save(Config config) {
         try {
-            char[] tmp = config.getPassword();
-            config.setPassword(new char[] {});
             FileOutputStream fos = new FileOutputStream(STORE, false);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(config);
             oos.flush();
             oos.close();
             fos.close();
-            config.setPassword(tmp);
             return true;
         }
         catch (Exception ex) {

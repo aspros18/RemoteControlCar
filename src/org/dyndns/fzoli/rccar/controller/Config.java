@@ -35,7 +35,12 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
         "256799a47b53bbbdb3f47e13296e8982",
         "80ef24662cef2cda28776bbbe846d611",
         "5b3e0eba53a6911ac66b372e75028b9f",
-        "213ecbe458669ef1d421c042fae71c3d"
+        "213ecbe458669ef1d421c042fae71c3d",
+        "ea122f0df9f0a7ea228464e3806e472c",
+        "e49658f52980092bb5a78ba978b27a9c",
+        "17a673395afab9ee50573e3f3be9fdeb",
+        "c911aad008cd50994256b46806947d64",
+        "3e73992bb74083036459c08ff2cb7212"
     };
     
     /**

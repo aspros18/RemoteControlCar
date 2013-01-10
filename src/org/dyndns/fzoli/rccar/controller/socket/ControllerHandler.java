@@ -36,7 +36,7 @@ public class ControllerHandler extends AbstractSecureClientHandler implements Co
             showConnectionStatus(Status.CONNECTION_TIMEOUT);
         }
         catch (SSLHandshakeException e) {
-            showConnectionStatus(Status.HANDSHAKE_ERROR);
+            showConnectionStatus(e.getMessage().contains("Extended key usage") ? Status.SERVER_IS_NOT_CLIENT : Status.HANDSHAKE_ERROR);
         }
         catch (SocketException e) {
             showConnectionStatus(Status.CONNECTION_ERROR);

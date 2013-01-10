@@ -53,6 +53,7 @@ public class SSLSocketUtil {
         server.setCheckHostname(false); // a hostname kivételével minden más ellenőrzése, amikor a kliens kapcsolódik
         server.setCheckExpiry(true); // lejárat ellenőrzés
         server.setCheckCRL(true); // visszavonás ellenőrzés
+        server.setNeedClientAuth(true); // a kliens is ellenőrizendő
         return (SSLServerSocket) server.createServerSocket(port); // server socket létrehozása
     }
     

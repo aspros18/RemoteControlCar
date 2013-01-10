@@ -48,7 +48,7 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
      * Változók deklarálása és az alapértelmezések beállítása.
      */
     private int port = 8443;
-    private char[] password = {};
+    private char[] password = null;
     private String address = "localhost";
     private File ca = new File("test-certs", "ca.crt");
     private File cert = new File("test-certs", "controller.crt");
@@ -134,12 +134,22 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
 
     /**
      * A tanúsítvány jelszava.
+     * Ha a jelszó nincs megadva, üres jelszóval tér vissza.
      */
     @Override
     public char[] getPassword() {
-        return MemConfig.getPassword(password);
+        char[] pass = MemConfig.getPassword(password);
+        if (pass == null) return new char[] {};
+        return pass;
     }
 
+    /**
+     * Megmondja, hogy a konfigurációban a jelszó be van-e állítva.
+     */
+    public boolean isPasswordStored() {
+        return password != null;
+    }
+    
     /**
      * Ha mindkét objektum null, true;
      * Ha csak az egyik objektum null, false;

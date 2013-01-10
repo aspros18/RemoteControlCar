@@ -86,6 +86,27 @@ public class ConfigEditorFrame extends FrontFrame {
     private final Config CONFIG;
     
     /**
+     * Jelszótörlő gomb.
+     */
+    private final JButton btPasswordReset = new JButton("Törlés") {
+        {
+            // a szükséges helynél 30 pixellel szélesebb méret beállítása
+            setPreferredSize(new Dimension(getPreferredSize().width + 30, getPreferredSize().height));
+            // kattintáskor a jelszó törlése a konfigurációból és a gomb letiltása
+            addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    setEnabled(false);
+                    CONFIG.setPassword(null, true);
+                    Config.save(CONFIG);
+                }
+                
+            });
+        }
+    };
+    
+    /**
      * A szerver címe írható át benne.
      */
     private final JTextField tfAddress = new JFormattedTextField(createAddressFormatter());
@@ -234,6 +255,24 @@ public class ConfigEditorFrame extends FrontFrame {
         }
     };
     
+    private final JPanel passwordResetPanel = new ConfigPanel() {
+        {
+            setLayout(new GridBagLayout());
+            GridBagConstraints c = new GridBagConstraints();
+            c.weightx = 1; // teljes helyfoglalás szélességében
+            c.weighty = 1; // teljes helylefoglalás hosszúságban
+            c.insets = new Insets(5, 5, 5, 5); // 5 pixeles margó
+            c.fill = GridBagConstraints.HORIZONTAL; // teljes helykitöltés horizontálisan (sorkitöltés)
+            JLabel lbMsg = new JLabel("<html>Ezen a lapfülen törölheti a tanúsítvány jelszavát, ha azt régebben megadta.</html>");
+            lbMsg.setPreferredSize(new Dimension(240, 60)); // két sorba kerül az üzenet, mivel nem fér el egy sorban ezen a méreten
+            add(lbMsg, c);
+            c.gridy = 1; // a szöveg alá kerül a törlés gomb
+            c.insets = new Insets(0, 5, 5, 5); // 5 pixeles margó mindenhol, kivéve felül
+            c.fill = GridBagConstraints.NONE; // csak akkora helyet foglal, amennyire szüksége van
+            add(btPasswordReset, c);
+        }
+    };
+    
     /**
      * Az ablakot teljes egészében kitöltő lapfüles panel.
      */
@@ -241,6 +280,7 @@ public class ConfigEditorFrame extends FrontFrame {
         {
             addTab("Útvonal", addressPanel);
             addTab("Biztonság", certificatePanel);
+            addTab("Jelszó", passwordResetPanel);
         }
     };
     
@@ -338,6 +378,7 @@ public class ConfigEditorFrame extends FrontFrame {
         fpCa.setFile(CONFIG.getCAFile());
         fpCert.setFile(CONFIG.getCertFile());
         fpKey.setFile(CONFIG.getKeyFile());
+        btPasswordReset.setEnabled(CONFIG.isPasswordStored());
     }
     
     /**

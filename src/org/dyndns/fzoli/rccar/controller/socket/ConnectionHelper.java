@@ -1,14 +1,17 @@
 package org.dyndns.fzoli.rccar.controller.socket;
 
+import java.io.IOException;
 import java.net.ConnectException;
 import java.net.NoRouteToHostException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.security.GeneralSecurityException;
 import java.security.KeyStoreException;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import org.dyndns.fzoli.rccar.clients.AbstractConnectionHelper;
 import org.dyndns.fzoli.rccar.clients.ClientConfig;
+import org.dyndns.fzoli.rccar.controller.Main;
 import static org.dyndns.fzoli.rccar.controller.Main.showConnectionStatus;
 import org.dyndns.fzoli.rccar.controller.view.ConnectionProgressFrame.Status;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
@@ -43,6 +46,24 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
     @Override
     protected void onConnected() {
         showConnectionStatus(null);
+    }
+
+    /**
+     * Megpróbálja létrehozni a kapcsolatot.
+     * Ha a tanúsítvány beolvasása nem sikerült, valószínűleg jelszóvédett a fájl, ezért bekéri a jelszót és újra próbálkozik.
+     */
+    @Override
+    protected SSLSocket createConnection() throws GeneralSecurityException, IOException {
+        try {
+            return super.createConnection();
+        }
+        catch (KeyStoreException ex) {
+            if (ex.getMessage().startsWith("failed to extract")) {
+                Main.showPasswordDialog();
+                return createConnection();
+            }
+            throw ex;
+        }
     }
 
     /**

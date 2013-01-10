@@ -294,16 +294,20 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
     /**
      * A konfigurációt tartalmazó objektumot fájlba szerializálja.
      * Ha a fájl nem létezik, szerializálás előtt létrehozza.
+     * A jelszó nem kerül mentésre.
      * @return true, ha sikerült a szerializálás, egyébként false
      */
     public static boolean save(Config config) {
         try {
+            char[] tmp = config.getPassword();
+            config.setPassword(null);
             FileOutputStream fos = new FileOutputStream(STORE, false);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(config);
             oos.flush();
             oos.close();
             fos.close();
+            config.setPassword(tmp);
             return true;
         }
         catch (Exception ex) {

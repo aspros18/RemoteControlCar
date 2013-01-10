@@ -188,8 +188,13 @@ public class Main {
             return SSLSocketUtil.createServerSocket(CONFIG.getPort(), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile(), CONFIG.getPassword());
         }
         catch (KeyStoreException ex) {
-            CONFIG.setPassword(showPasswordInput(R.getBridgeImage(), false).getPassword());
-            return createServerSocket();
+            if (ex.getMessage().startsWith("failed to extract")) {
+                CONFIG.setPassword(showPasswordInput(R.getBridgeImage(), false).getPassword());
+                return createServerSocket();
+            }
+            alert(VAL_ERROR, "Nem sikerült a szerver elindítása, mert a tanúsítvány hibás vagy nincs jól beállítva", System.err);
+            System.exit(1);
+            return null;
         }
         catch(Exception ex) {
             alert(VAL_ERROR, "Nem sikerült a szerver elindítása a megadott porton: " + CONFIG.getPort() + LS + "Az operációsrendszer üzenete: " + ex.getMessage(), System.err);

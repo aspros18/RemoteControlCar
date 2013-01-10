@@ -43,6 +43,10 @@ Az eljárás ugyan az, mint a build-key-server esetén.
 Ha jelszóval védett tanúsítványt kell generálni a kliensekhez: ./build-key-pass
 Ez esetben a tanúsítvány csak az itt bekért jelszó megadása után használható.
 
+Ha a szerverhez kell a jelszóvédett tanúsítvány, akkor létre kell hozni a script fájlt hozzá.
+A legegyszerűbb, ha a build-key-pass fájlról készítünk egy másolatot (mondjuk build-key-pass-server néven) és a parancshoz hozzáadjuk a --server paramétert így:
+"$EASY_RSA/pkitool" --interact --server --pass $*
+
 Ha a szervernek egy klienshez kiállított tanúsítványt állít be a felhasználó, a szerver hiba nélkül elindul, de egy kliens se fog tudni kapcsolódni
 a szerverhez. Javaban a következő kivétel keletkezik az SSL kézfogás közben: Extended key usage does not permit use for TLS server authentication.
 Ekkor már szerver oldalon is kivétel keletkezik, de ott egyszerűen annyit mond a kivétel, hogy ismeretlen tanúsítvány.

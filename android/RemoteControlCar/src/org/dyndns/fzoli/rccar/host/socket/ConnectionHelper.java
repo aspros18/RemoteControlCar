@@ -111,7 +111,7 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
 			err = ConnectionError.WRONG_CERTIFICATE_SETTINGS;
 		}
 		catch (KeyStoreException e) {
-			err = ConnectionError.WRONG_CERTIFICATE_SETTINGS;
+			err = ex.getMessage().startsWith("failed to extract") ? ConnectionError.WRONG_CERTIFICATE_PASSWORD : ConnectionError.WRONG_CERTIFICATE_SETTINGS;
 		}
 		catch (Exception e) {
 			err = ConnectionError.OTHER;

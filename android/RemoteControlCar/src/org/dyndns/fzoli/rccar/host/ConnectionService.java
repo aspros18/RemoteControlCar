@@ -50,7 +50,8 @@ public class ConnectionService extends IOIOService {
 		INVALID_CERTIFICATE,
 		WEB_IPCAM_UNREACHABLE(true),
 		WRONG_CLIENT_VERSION(true),
-		WRONG_CERTIFICATE_SETTINGS(true);
+		WRONG_CERTIFICATE_SETTINGS(true),
+		WRONG_CERTIFICATE_PASSWORD(true);
 		
 		/**
 		 * Megadja, hogy fatális hibáról van-e szó.

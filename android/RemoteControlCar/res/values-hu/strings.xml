@@ -35,6 +35,7 @@
     <string name="err_5">Az IP Webcam szerver nem érhető el.</string>
     <string name="err_6">A kliens verziója nem megfelelő.</string>
     <string name="err_7">Helytelen tanúsítvány beállítás.</string>
+    <string name="err_8">Helytelen tanúsítvány jelszó.</string>
     <string name="set_config">Kérem, állítsa be jól a konfigurációt.</string>
     <string name="set_network">Kérem, válasszon ki egy hálózatot.</string>
     <string name="set_gps">Kérem, engedélyezze a GPS szenzort.</string>

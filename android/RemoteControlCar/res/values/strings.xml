@@ -41,6 +41,7 @@
     <string name="err_5">IP Webcam server unreachable.</string>
     <string name="err_6">Wrong client version.</string>
     <string name="err_7">Wrong certificate settings.</string>
+    <string name="err_8">Wrong certificate password.</string>
     <string name="set_config">Please, set a correct configuration.</string>
     <string name="set_network">Please, select a wireless network.</string>
     <string name="set_gps">Please, enable the GPS sensor.</string>

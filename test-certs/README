@@ -47,6 +47,9 @@ Ha a szervernek egy klienshez kiállított tanúsítványt állít be a felhaszn
 a szerverhez. Javaban a következő kivétel keletkezik az SSL kézfogás közben: Extended key usage does not permit use for TLS server authentication.
 Ekkor már szerver oldalon is kivétel keletkezik, de ott egyszerűen annyit mond a kivétel, hogy ismeretlen tanúsítvány.
 
+Hasonló dolog történik akkor is, ha a kliensnek állítanak be szerverhez kiállított tanúsítványt.
+A kapcsolat létrehozásakor a szerver oldalon keletkező kivétel: Extended key usage does not permit use for TLS client authentication.
+
 Megjegyzés:
 Bármikor generálható még több tanúsítvány, de szükség van hozzá a ca.crt és ca.key fájlra is, ezért jól el kell tenni védett helyre, különben az összes
 kiállított tanúsítványt le kell cserélni, mivel a kiállító megváltozik és a program csak egy kiállítóban bízik meg.

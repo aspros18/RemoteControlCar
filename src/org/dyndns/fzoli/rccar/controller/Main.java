@@ -194,27 +194,28 @@ public class Main {
      * Beállítja a rendszerikont.
      */
     private static void setSystemTrayIcon() {
-        SystemTrayIcon.init(!isNativeSwingAvailable());
-        // az ikon beállítása
-        SystemTrayIcon.setIcon("Mobile-RC", R.getIconImageStream());
-        
-        // kapcsolatbeállítás opció hozzáadása
-        SystemTrayIcon.addMenuItem("Kapcsolatbeállítás", CALLBACK_SETTING);
-        
-        SystemTrayIcon.addMenuItem("Újrakapcsolódás", new Runnable() {
+        if (SystemTrayIcon.init(!isNativeSwingAvailable()) && SystemTrayIcon.isSupported()) {
+            // az ikon beállítása
+            SystemTrayIcon.setIcon("Mobile-RC", R.getIconImageStream());
 
-            @Override
-            public void run() {
-                reconnect();
-            }
-            
-        });
-        
-        //szeparátor hozzáadása
-        SystemTrayIcon.addMenuSeparator();
-        
-        // kilépés opció hozzáadása
-        SystemTrayIcon.addMenuItem("Kilépés", CALLBACK_EXIT);
+            // kapcsolatbeállítás opció hozzáadása
+            SystemTrayIcon.addMenuItem("Kapcsolatbeállítás", CALLBACK_SETTING);
+
+            SystemTrayIcon.addMenuItem("Újrakapcsolódás", new Runnable() {
+
+                @Override
+                public void run() {
+                    reconnect();
+                }
+
+            });
+
+            //szeparátor hozzáadása
+            SystemTrayIcon.addMenuSeparator();
+
+            // kilépés opció hozzáadása
+            SystemTrayIcon.addMenuItem("Kilépés", CALLBACK_EXIT);
+        }
     }
     
     /**

@@ -33,27 +33,32 @@ public class SystemTrayIcon {
      * Inicializálás.
      * Ha az SWT elérhető és a ".noswt" nevű fájl nem létezik, SWT alapú,
      * egyébként meg AWT alapú rendszerikon jön létre.
+     * @return true, ha sikerült az inicializálás, egyébként false
      */
-    public static void init() {
-        init(false);
+    public static boolean init() {
+        return init(false);
     }
     
     /**
      * Inicializálás.
      * Ha az SWT elérhető és a ".noswt" nevű fájl nem létezik, SWT alapú,
      * egyébként meg AWT alapú rendszerikon jön létre.
+     * Ha már egyszer hiba nélkül lefutott az inicializálás, az újbóli hívásnak nincs hatása.
      * @param noswt ha true, akkor AWT alapú rendszerikon jön létre
+     * @return true, ha sikerült az inicializálás, egyébként false
      */
-    public static void init(boolean noswt) {
+    public static boolean init(boolean noswt) {
         try {
+            if (tray != null) return true;
             tray = SystemTrayProvider.getSystemTray(noswt || new File(".noswt").isFile());
             if (tray.isSupported()) {
                 icon = tray.addTrayIcon();
                 menu = icon.createPopupMenu();
             }
+            return true;
         }
         catch (Exception ex) {
-            ;
+            return false;
         }
     }
     

@@ -75,8 +75,9 @@ public class Main {
      * Hozzáadja a kapcsolatjelzés és kilépés menüopciót beállítja az ikont és megjeleníti azt.
      */
     private static void setSystemTrayIcon() {
-        SystemTrayIcon.init();
-        if (SystemTrayIcon.isSupported() && !CONFIG.isHidden()) {
+        if (CONFIG.isHidden()) return;
+        if (!SystemTrayIcon.init()) SystemTrayIcon.init(true);
+        if (SystemTrayIcon.isSupported()) {
             // az ikon beállítása
             SystemTrayIcon.setIcon("Mobile-RC híd", R.getBridgeImageStream());
             

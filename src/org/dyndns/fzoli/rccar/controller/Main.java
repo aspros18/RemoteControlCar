@@ -121,11 +121,10 @@ public class Main {
     private static final ConnectionHelper CONN = new ConnectionHelper(CONFIG);
     
     /**
-     * Ha az értéke true, akkor a program leállítás alatt van, vagy még nem indult el.
+     * Ha az értéke true, akkor a program leállítás alatt van.
      * Ez esetben a kapcsolódáskezelő ablak nem jelenik meg, amikor megszakad a híddal a kapcsolat.
-     * Ha a program elindul, értéke hamisra állítódik egészen a kilépésig.
      */
-    private static boolean exiting = true;
+    private static boolean exiting = false;
     
     /**
      * Konfiguráció-szerkesztő ablak.
@@ -385,23 +384,11 @@ public class Main {
             showSettingError("A program futtatásához olvasási és írási jogra van szükség." + LS + "A program kilép.");
             System.exit(1);
         }
-        new Timer().schedule(new TimerTask() {
-
-            @Override
-            public void run() {
-                if (exiting) { // ha a programnak nem sikerült elindulni fél percen belül
-                    showSettingError("A program betöltése nem sikerült!"); // figyelmeztetés
-                    System.exit(1); // kilépés hibakóddal
-                }
-            }
-            
-        }, 30000);
         NativeInterface.open(); // a natív böngésző támogatás igényli
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
-                exiting = false; // a programnak sikerült elindulni, kezdetben nincs kilépés
                 // előinicializálom az ablakokat, míg a nyitóképernyő fent van,
                 // hogy később ne menjen el ezzel a hasznos idő
                 PROGRESS_FRAME = new ConnectionProgressFrame();

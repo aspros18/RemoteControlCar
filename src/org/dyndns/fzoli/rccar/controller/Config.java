@@ -305,7 +305,7 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
     public static boolean save(Config config) {
         try {
             char[] tmp = config.getPassword();
-            config.setPassword(null);
+            config.setPassword(new char[] {});
             FileOutputStream fos = new FileOutputStream(STORE, false);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(config);

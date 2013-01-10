@@ -51,6 +51,8 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
     /**
      * Megpróbálja létrehozni a kapcsolatot.
      * Ha a tanúsítvány beolvasása nem sikerült, valószínűleg jelszóvédett a fájl, ezért bekéri a jelszót és újra próbálkozik.
+     * Ha jelszómegadás helyett a beállításokhoz ugrott a felhasználó, null értékkel tér vissza és ezáltal a kapcsolódás megszakad,
+     * ami akkor fog újraindulni, ha a felhasználó bezárta a beállításokat.
      */
     @Override
     protected SSLSocket createConnection() throws GeneralSecurityException, IOException {
@@ -59,8 +61,8 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
         }
         catch (KeyStoreException ex) {
             if (ex.getMessage().startsWith("failed to extract")) {
-                Main.showPasswordDialog();
-                return createConnection();
+                if (Main.showPasswordDialog() != null) return createConnection();
+                else return null;
             }
             throw ex;
         }

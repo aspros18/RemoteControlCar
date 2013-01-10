@@ -21,6 +21,7 @@ import org.dyndns.fzoli.rccar.model.controller.HostList;
 import org.dyndns.fzoli.rccar.ui.UIUtil;
 import org.dyndns.fzoli.rccar.ui.UncaughtExceptionHandler;
 import org.dyndns.fzoli.ui.OptionPane;
+import org.dyndns.fzoli.ui.OptionPane.PasswordData;
 import static org.dyndns.fzoli.ui.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.ui.systemtray.SystemTrayIcon;
 import static org.dyndns.fzoli.ui.systemtray.SystemTrayIcon.showMessage;
@@ -278,10 +279,20 @@ public class Main {
     }
     
     /**
-     * Megjeleníti a jelszóbekérő dialógust és elmenti a jelszót a memóriába.
+     * Megjeleníti a jelszóbekérő dialógust és ha megadták, elmenti a jelszót a memóriába.
+     * @return a megadott jelszó adat, ami akkor null, ha a Beállítások gombra kattintottak
      */
-    public static void showPasswordDialog() {
-        CONFIG.setPassword(UIUtil.showPasswordInput(R.getIconImage(), false).getPassword());
+    public static PasswordData showPasswordDialog() {
+        PasswordData data = UIUtil.showPasswordInput(R.getIconImage(), "Beállítások", new Runnable() {
+
+            @Override
+            public void run() {
+                showSettingDialog(false, 1);
+            }
+
+        });
+        if (data != null) CONFIG.setPassword(data.getPassword());
+        return data;
     }
     
     /**

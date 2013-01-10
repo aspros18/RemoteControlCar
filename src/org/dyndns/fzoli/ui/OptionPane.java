@@ -64,8 +64,27 @@ public class OptionPane extends JOptionPane {
      * @param request a második szöveg, ami kéri a jelszót, hogy írják be
      * @param icon a címsorban megjelenő ikon
      * @param saveEnabled engedélyezve legyen-e a jelszó mentése checkbox
+     * @return a beírt jelszó
      */
     public static PasswordData showPasswordInput(String message, String request, Image icon, boolean saveEnabled) {
+        return showPasswordInput(message, request, icon, saveEnabled, null, null);
+    }
+    
+    /**
+     * Jelszóbekérő dialógust jelenít meg.
+     * Ha a grafikus felület elérhető, dialógus ablakban kéri be a jelszót,
+     * egyébként megpróbálja konzolról bekérni a jelszót.
+     * Ha nincs se konzol, se grafikus felület, a program kilép.
+     * Ha a dialógus ablakon a Kilépésre kattintottak, a program kilép.
+     * @param message az első szöveg, ami információközlő
+     * @param request a második szöveg, ami kéri a jelszót, hogy írják be
+     * @param icon a címsorban megjelenő ikon
+     * @param saveEnabled engedélyezve legyen-e a jelszó mentése checkbox
+     * @param extraText a középső gomb szövege
+     * @param extraCallback a középső gombra kattintás eseménykezelője
+     * @return a beírt jelszó, vagy null, ha a középső gombra kattintottak
+     */
+    public static PasswordData showPasswordInput(String message, String request, Image icon, boolean saveEnabled, String extraText, Runnable extraCallback) {
         if (GraphicsEnvironment.isHeadless()) {
             Console console = System.console();
             if (console == null) {
@@ -87,14 +106,22 @@ public class OptionPane extends JOptionPane {
             panel.add(lbRequest);
             panel.add(pass);
             panel.add(save);
-            int option = showOptionDialog(createDummyFrame(icon), panel, "Jelszó",
+            final boolean hasExtra = extraText != null && extraCallback != null;
+            final String[] opts = hasExtra ? new String[] {OPTS_OK_EXIT[0], extraText, OPTS_OK_EXIT[1]} : OPTS_OK_EXIT;
+            final int option = showOptionDialog(createDummyFrame(icon), panel, "Jelszó",
                 NO_OPTION, QUESTION_MESSAGE,
-                null, OPTS_OK_EXIT, OPTS_OK_EXIT[1]);
+                null, opts, opts[0]);
             if (option == 0) {
                 return new PasswordData(pass.getPassword(), save.isSelected());
             }
             else {
-                System.exit(0);
+                if (hasExtra) {
+                    if (option == 1) extraCallback.run();
+                    else System.exit(0);
+                }
+                else {
+                    System.exit(0);
+                }
             }
         }
         return null;

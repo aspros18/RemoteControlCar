@@ -76,8 +76,7 @@ public class Main {
      */
     private static void setSystemTrayIcon() {
         if (CONFIG.isHidden()) return;
-        if (!SystemTrayIcon.init()) SystemTrayIcon.init(true);
-        if (SystemTrayIcon.isSupported()) {
+        if (SystemTrayIcon.init() && SystemTrayIcon.isSupported()) {
             // az ikon beállítása
             SystemTrayIcon.setIcon("Mobile-RC híd", R.getBridgeImageStream());
             

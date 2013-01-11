@@ -57,7 +57,8 @@ public class SystemTrayIcon {
             }
             return true;
         }
-        catch (Exception ex) {
+        catch (Throwable t) {
+            if (!noswt) return init(true);
             return false;
         }
     }

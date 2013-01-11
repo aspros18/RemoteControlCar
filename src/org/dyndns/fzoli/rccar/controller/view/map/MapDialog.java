@@ -202,7 +202,7 @@ public class MapDialog extends AbstractDialog {
         }
         
         if (webBrowser == null) {
-            lbErr.setText("<html><p style=\"text-align:center\">A térkép nincs támogatva.</p></html>");
+            lbErr.setText("<html><p style=\"text-align:center\">A térkép nincs támogatva.<br>A JRE frissítése segíthet.</p></html>");
         }
         
         setResizable(false); // ablak átméretezésének tiltása

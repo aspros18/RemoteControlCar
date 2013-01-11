@@ -268,10 +268,13 @@ public class Main {
      * Beállítja a kapcsolatjelző ablakon a látható ikont és szöveget, majd elrejti a többi ablakot.
      * Ha nincs megadva státusz, akkor az ablak eltűnik, egyébként a megadott státusz jelenik meg.
      * Ha éppen kapcsolódás van, csak a kapcsolódás státusz állítható be.
+     * Ha a kapcsolatbeállító ablak látható vagy a program leállítás alatt van,
+     * nem jelenik meg a kapcsolatjelző ablak.
      * @param status a kapcsolat státusza
      */
     public static void showConnectionStatus(Status status) {
-        if (!exiting && connecting && status != Status.CONNECTING) return;
+        if (exiting || CONFIG_EDITOR.isVisible()) return;
+        if (connecting && status != Status.CONNECTING) return;
         PROGRESS_FRAME.setStatus(status);
         SELECTION_FRAME.setVisible(false);
         CONTROLLER_WINDOWS.setVisible(false);

@@ -49,7 +49,7 @@ public class SystemTrayIcon {
      */
     public static boolean init(boolean noswt) {
         try {
-            if (tray != null) return true;
+            if (tray != null && tray.isSupported()) return true;
             tray = SystemTrayProvider.getSystemTray(noswt || new File(".noswt").isFile());
             if (tray.isSupported()) {
                 icon = tray.addTrayIcon();

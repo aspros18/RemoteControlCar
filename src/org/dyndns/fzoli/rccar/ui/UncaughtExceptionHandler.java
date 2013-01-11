@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.ui;
 
 import java.awt.Dialog;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import org.dyndns.fzoli.ui.exceptiondialog.UncaughtExceptionDialog;
 import org.dyndns.fzoli.ui.exceptiondialog.UncaughtExceptionParameters;
@@ -108,8 +109,8 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
      */
     public static void showException(final Thread t, final Throwable ex) {
         final boolean error = ex instanceof Error;
-        if (SystemTrayIcon.isVisible()) {
-            if (error) {
+        if (!GraphicsEnvironment.isHeadless()) {
+            if (error || !SystemTrayIcon.isVisible()) {
                 showExceptionDialog(t, ex);
             }
             else {

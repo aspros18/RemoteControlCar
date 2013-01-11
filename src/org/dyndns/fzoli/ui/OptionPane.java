@@ -64,10 +64,11 @@ public class OptionPane extends JOptionPane {
      * @param request a második szöveg, ami kéri a jelszót, hogy írják be
      * @param icon a címsorban megjelenő ikon
      * @param saveEnabled engedélyezve legyen-e a jelszó mentése checkbox
+     * @param showOnTaskbar true esetén megjelenik a tálcán
      * @return a beírt jelszó
      */
-    public static PasswordData showPasswordInput(String message, String request, Image icon, boolean saveEnabled) {
-        return showPasswordInput(message, request, icon, saveEnabled, null, null);
+    public static PasswordData showPasswordInput(String message, String request, Image icon, boolean saveEnabled, boolean showOnTaskbar) {
+        return showPasswordInput(message, request, icon, saveEnabled, showOnTaskbar, null, null);
     }
     
     /**
@@ -80,11 +81,12 @@ public class OptionPane extends JOptionPane {
      * @param request a második szöveg, ami kéri a jelszót, hogy írják be
      * @param icon a címsorban megjelenő ikon
      * @param saveEnabled engedélyezve legyen-e a jelszó mentése checkbox
+     * @param showOnTaskbar true esetén megjelenik a tálcán
      * @param extraText a középső gomb szövege
      * @param extraCallback a középső gombra kattintás eseménykezelője
      * @return a beírt jelszó, vagy null, ha a középső gombra kattintottak
      */
-    public static PasswordData showPasswordInput(String message, String request, Image icon, boolean saveEnabled, String extraText, Runnable extraCallback) {
+    public static PasswordData showPasswordInput(String message, String request, Image icon, boolean saveEnabled, boolean showOnTaskbar, String extraText, Runnable extraCallback) {
         if (GraphicsEnvironment.isHeadless()) {
             Console console = System.console();
             if (console == null) {
@@ -108,9 +110,11 @@ public class OptionPane extends JOptionPane {
             panel.add(save);
             final boolean hasExtra = extraText != null && extraCallback != null;
             final String[] opts = hasExtra ? new String[] {OPTS_OK_EXIT[0], extraText, OPTS_OK_EXIT[1]} : OPTS_OK_EXIT;
-            final int option = showOptionDialog(createDummyFrame(icon), panel, "Jelszó",
+            JFrame dummy = createDummyFrame(icon, showOnTaskbar ? "Jelszó" : null);
+            final int option = showOptionDialog(dummy, panel, "Jelszó",
                 NO_OPTION, QUESTION_MESSAGE,
                 null, opts, opts[0]);
+            dummy.dispose();
             if (option == 0) {
                 return new PasswordData(pass.getPassword(), save.isSelected());
             }
@@ -165,10 +169,28 @@ public class OptionPane extends JOptionPane {
      * @param icon a címsorba kerülő ikon képe
      */
     private static JFrame createDummyFrame(Image icon) {
+        return createDummyFrame(icon, null);
+    }
+    
+    /**
+     * Egy kis csel arra, hogy a címsorban a kért ikon jelenhessen meg.
+     * Készít egy ablakot, ami soha nem fog megjelenni, de a dialógus örökli a címsorban lévő ikonját.
+     * Teljesen fölösleges lenne, ha lehetne címsor ikont megadni a {@code JOptionPane} metódusainak.
+     * @param icon a címsorba kerülő ikon képe
+     * @param title az ablak címsora, amit ha megadnak, akkor a tálcán láthatóvá válik
+     */
+    private static JFrame createDummyFrame(Image icon, String title) {
         JFrame dummy = null;
         if (icon != null) {
             dummy = new JFrame();
             dummy.setIconImage(icon);
+        }
+        if (title != null) {
+            dummy.setSize(0, 0);
+            dummy.setUndecorated(true);
+            dummy.setLocationRelativeTo(null);
+            dummy.setTitle(title);
+            dummy.setVisible(true);
         }
         return dummy;
     }

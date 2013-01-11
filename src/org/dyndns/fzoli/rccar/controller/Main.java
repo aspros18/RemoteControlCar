@@ -299,10 +299,11 @@ public class Main {
     
     /**
      * Megjeleníti a jelszóbekérő dialógust és ha megadták, elmenti a jelszót a memóriába vagy a konfig fájlba.
+     * Ha a kapcsolódásjelző ablak nem látható, akkor a jelszókérő dialógus megjelenik a tálcán.
      * @return a megadott jelszó adat, ami akkor null, ha a Beállítások gombra kattintottak
      */
     public static PasswordData showPasswordDialog() {
-        PasswordData data = UIUtil.showPasswordInput(R.getIconImage(), true, "Beállítások", new Runnable() {
+        PasswordData data = UIUtil.showPasswordInput(R.getIconImage(), true, !PROGRESS_FRAME.isVisible(), "Beállítások", new Runnable() {
 
             @Override
             public void run() {

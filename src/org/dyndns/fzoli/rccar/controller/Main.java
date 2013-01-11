@@ -379,7 +379,7 @@ public class Main {
                 showSettingWarning("A konfiguráció beállítása a menüből érhető el. Most ide kattintva is megteheti.");
             }
         }
-        else {
+        if (!help || !CONFIG.isDefault()) {
             if (CONFIG.isCertDefault()) {
                 showSettingWarning("Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!");
             }

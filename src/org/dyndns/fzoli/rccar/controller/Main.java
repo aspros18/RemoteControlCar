@@ -382,7 +382,7 @@ public class Main {
         }
         if (!help || !CONFIG.isDefault()) {
             if (CONFIG.isCertDefault()) {
-                showSettingWarning("Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!", help);
+                showSettingWarning("Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!", false);
             }
         }
     }

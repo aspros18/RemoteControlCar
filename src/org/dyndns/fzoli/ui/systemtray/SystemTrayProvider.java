@@ -29,7 +29,18 @@ public final class SystemTrayProvider {
      * @param awt ha true, akkor AWT rendszerikon lesz használva, egyébként ha elérhető, SWT
      */
     public static SystemTray getSystemTray(boolean awt) {
-        if (st == null) {
+        return getSystemTray(false, awt);
+    }
+    
+    /**
+     * A rendszerikon referenciáját adja vissza.
+     * Ha még nincs létrehozva, létrejön a rendszerikon.
+     * @param recreate true esetén újrainicializálás, az előző rendszerikonok megsemmisítése
+     * @param awt ha true, akkor AWT rendszerikon lesz használva, egyébként ha elérhető, SWT
+     */
+    public static SystemTray getSystemTray(boolean recreate, boolean awt) {
+        if (st == null || recreate) {
+            if (recreate && st != null) st.dispose();
             if (!awt && isSwtTrayAvailable()) st = new SwtSystemTray();
             else st = new AwtSystemTray();
         }

@@ -50,11 +50,11 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
     
     /**
      * Alkalmazza a program kivételkezelő metódusát.
-     * Ha a rendszerikonok támogatva vannak, dialógusablak jeleníti meg a nem kezelt kivételeket,
+     * Ha a GUI támogatva van, dialógusablak jeleníti meg a nem kezelt kivételeket,
      * egyébként nem változik az eredeti kivételkezelés.
      */
     public static void apply() {
-        if (SystemTrayIcon.isSupported()) {
+        if (!GraphicsEnvironment.isHeadless()) {
             Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler());
         }
     }

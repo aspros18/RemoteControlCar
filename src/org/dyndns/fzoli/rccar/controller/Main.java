@@ -244,9 +244,10 @@ public class Main {
      * Figyelmeztetést küld a felhasználónak a buborékablakra.
      * Az üzenetre kattintva a kapcsolatbeállító ablak jelenik meg.
      * @param text a megjelenő szöveg
+     * @param showSettings jelenjen-e meg a beállítások ablak kattintás esetén
      */
-    private static void showSettingWarning(String text) {
-        showMessage(VAL_WARNING, text, IconType.WARNING, CALLBACK_SETTING);
+    private static void showSettingWarning(String text, boolean showSettings) {
+        showMessage(VAL_WARNING, text, IconType.WARNING, showSettings ? CALLBACK_SETTING : null);
     }
     
     /**
@@ -376,12 +377,12 @@ public class Main {
     private static void configAlert(boolean help) {
         if (help) {
             if (CONFIG.isDefault()) {
-                showSettingWarning("A konfiguráció beállítása a menüből érhető el. Most ide kattintva is megteheti.");
+                showSettingWarning("A konfiguráció beállítása a menüből érhető el. Most ide kattintva is megteheti.", true);
             }
         }
         if (!help || !CONFIG.isDefault()) {
             if (CONFIG.isCertDefault()) {
-                showSettingWarning("Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!");
+                showSettingWarning("Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!", help);
             }
         }
     }

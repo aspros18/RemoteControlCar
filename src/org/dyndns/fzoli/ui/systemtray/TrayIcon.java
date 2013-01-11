@@ -46,7 +46,7 @@ public interface TrayIcon extends Visibility {
      * @param title rövid üzenet
      * @param msg hosszú üzenet
      * @param icon a buborékablak ikonjának típusa
-     * @param onClick callback, ami akkor hívódik meg, ha a buborékablakra kattintanak
+     * @param onClick callback, ami akkor hívódik meg, ha a buborékablakra kattintanak és ha nem null
      */
     public void displayMessage(String title, String msg, IconType icon, final Runnable onClick);
     

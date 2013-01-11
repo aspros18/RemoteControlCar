@@ -187,7 +187,7 @@ public class MapDialog extends AbstractDialog {
             try {
                 webBrowser = new JWebBrowser();
             }
-            catch (Exception ex) {
+            catch (Throwable t) {
                 webBrowser = null;
             }
             this.webBrowser = webBrowser;

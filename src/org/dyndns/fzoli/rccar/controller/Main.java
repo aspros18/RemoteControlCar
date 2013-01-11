@@ -176,7 +176,7 @@ public class Main {
         try {
             NativeInterface.open(); // a natív böngésző támogatás igényli
         }
-        catch (Exception ex) {
+        catch (Throwable t) {
             nativeSwingAvailable = false; // a natív támogatás nem érhető el
         }
     }

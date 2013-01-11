@@ -7,6 +7,7 @@ import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
+import org.dyndns.fzoli.rccar.bridge.Main;
 import static org.dyndns.fzoli.rccar.bridge.Main.VAL_WARNING;
 import org.dyndns.fzoli.rccar.bridge.config.Permissions;
 import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
@@ -38,11 +39,14 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
     /**
      * Miután inicializálódtak az adatok, a híd szerver megnézi, hogy a kapcsolódott kliens tanúsítványneve blokkolva van-e,
      * és ha blokkolva van, kivételt dob, tehát a kapcsolatot elutasítja.
+     * Ha egy vezérlő kapcsolódott a hídhoz és szigorú (strict) módban fut a program, a kapcsolat akkor is elutasításra kerül,
+     * ha nem szerepel a fehérlistában a vezérlő tanúsítványának neve.
      */
     @Override
     protected void init() {
         super.init();
         if (Permissions.getConfig().isBlocked(getRemoteCommonName())) throw new BlockedCommonNameException();
+        if (Main.CONFIG.isStrict() && getDeviceId().equals(ConnectionKeys.KEY_DEV_CONTROLLER) && !Permissions.getConfig().isControllerWhite(getRemoteCommonName())) throw new BlockedCommonNameException();
     }
 
     /**
@@ -91,7 +95,7 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
             throw ex;
         }
         catch (BlockedCommonNameException e) {
-            showWarning("Tiltólistás kapcsolódás");
+            showWarning("Tiltott kapcsolódás");
         }
         catch (MultipleCertificateException e) {
             showWarning("Duplázott tanúsítvány");

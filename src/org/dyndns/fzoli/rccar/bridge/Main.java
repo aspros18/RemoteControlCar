@@ -27,7 +27,7 @@ public class Main {
     /**
      * A híd konfigurációja.
      */
-    private static final Config CONFIG = Config.getInstance();
+    public static final Config CONFIG = Config.getInstance();
     
     /**
      * Általános rendszerváltozók.

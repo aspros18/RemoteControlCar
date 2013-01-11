@@ -70,4 +70,13 @@ class ListConfig {
         return LAST_MODIFIED != FILE_CONFIG.lastModified();
     }
     
+    /**
+     * Megadja, hogy a fájlban szerepel-e a felsorolásban az átadott érték.
+     * @param value az átadott érték
+     * @return true, ha szerepel a felsorolásban az érték, egyébként false
+     */
+    protected boolean contains(String value) {
+        return getValues().contains(value);
+    }
+    
 }

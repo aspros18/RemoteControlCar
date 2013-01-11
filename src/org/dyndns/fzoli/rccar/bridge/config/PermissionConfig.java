@@ -113,4 +113,11 @@ public class PermissionConfig {
         return getOrderList(vehicleName).contains(controllerName);
     }
     
+    /**
+     * Megadja, hogy a vezérlő neve szerepel-e a fehérlistában.
+     */
+    public boolean isControllerWhite(String controllerName) {
+        return whitelist.contains(controllerName);
+    }
+    
 }

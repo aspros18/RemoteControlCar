@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
+import org.dyndns.fzoli.rccar.bridge.Main;
 import org.dyndns.fzoli.socket.ServerProcesses;
 import org.dyndns.fzoli.socket.process.SecureProcess;
 
@@ -63,16 +64,16 @@ public final class Permissions {
      * @param previous az előző konfiguráció
      */
     private static void onRefresh(PermissionConfig previous) {
-        // végigmegy a kapcsolatokon és bezárja a kapcsolatokat azokkal a vezérlőkkel, akik ki lettek tiltva a hídról:
+        // végigmegy a kapcsolatokon és bezárja a kapcsolatokat azokkal a kliensekkel, akik ki lettek tiltva a hídról:
         Iterator<SecureProcess> it = ServerProcesses.getProcesses(SecureProcess.class).iterator();
         while (it.hasNext()) {
             SecureProcess proc = it.next();
-            // ha nem vezérlő a kapcsolat, vagy már figyelembe lett véve a vezérlő, tovább urik a következő kapcsolatra
-            if (proc.getDeviceId() != ConnectionKeys.KEY_DEV_CONTROLLER && proc.getConnectionId() != ConnectionKeys.KEY_CONN_DISCONNECT) continue;
-            String controllerName = proc.getRemoteCommonName(); // a vezérlő neve
-            if (!previous.isBlocked(controllerName) && getConfig().isBlocked(controllerName)) {
-                proc.getHandler().closeProcesses(); // ha nem volt tiltva eddig, de most már tiltva van, akkor kapcsolatok bezárása a vezérlővel
-            }
+            // ha már figyelembe lett véve a kliens, tovább urik a következő kapcsolatra
+            if (proc.getConnectionId() != ConnectionKeys.KEY_CONN_DISCONNECT) continue;
+            String name = proc.getRemoteCommonName(); // a kliens neve
+            if (!previous.isBlocked(name) && getConfig().isBlocked(name)) proc.getHandler().closeProcesses(); // ha nem volt tiltva eddig, de most már tiltva van, akkor kapcsolatok bezárása a klienssel
+            if (!Main.CONFIG.isStrict() || !proc.getDeviceId().equals(ConnectionKeys.KEY_DEV_CONTROLLER)) continue; // ha nem vezérlőé a kapcsolat vagy nem aktív a szigorú mód, tovább a következő kapcsolatra
+            if (!Permissions.getConfig().isControllerWhite(name)) proc.getHandler().closeProcesses(); // ha már nem szerepel a fehér listában a vezérlő neve, akkor kapcsolatok bezárása a klienssel
         }
     }
     

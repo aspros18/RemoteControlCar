@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Fehérlista és feketelista közös metódusai.
@@ -62,6 +63,22 @@ class GroupListConfig extends ListConfig {
      */
     public Map<String, List<String>> getGroups() {
         return GROUPS;
+    }
+    
+    /**
+     * Megadja, hogy a fájlban szerepel-e valamelyik felsorolásban az átadott érték.
+     * @param value az átadott érték
+     * @return true, ha szerepel a felsorolások egyikében az érték, egyébként false
+     */
+    @Override
+    protected boolean contains(String value) {
+        if (super.contains(value)) return true;
+        Iterator<Entry<String, List<String>>> it = getGroups().entrySet().iterator();
+        while (it.hasNext()) {
+            List<String> l = it.next().getValue();
+            if (l.contains(value)) return true;
+        }
+        return false;
     }
     
     /**

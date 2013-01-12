@@ -102,7 +102,7 @@ public abstract class JpegProvider {
 //            1   0   1
 //            0   1   0
 //            0   0   0
-//            A képlet: !((EQU && RES) || !EQU)
+//            A képlet: !((EQU && RES) || !EQU) illetve (!EQU || !RES) && EQU
             boolean equ;
             while (!isInterrupted() && (key = getKey()) != null && ((frame = getFrame(key)) == null || (tmp != null && !(((equ = Arrays.equals(tmp, frame)) && resend) || !equ)))) {
                 Thread.sleep(20);

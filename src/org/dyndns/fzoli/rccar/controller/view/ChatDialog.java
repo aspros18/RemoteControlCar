@@ -138,6 +138,7 @@ public class ChatDialog extends AbstractDialog {
                             Font font = getFont();
                             g.setFont(font);
                             g.setColor(getForeground());
+                            // TODO: kicserélni megbízható osztályra
                             SwingUtilities2.drawString(getComponent(), g, ((JToolTip) c).getTipText(), insets.left, insets.top + SwingUtilities2.getFontMetrics(c, g, font).getAscent());
                         }
                         

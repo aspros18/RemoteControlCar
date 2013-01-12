@@ -3,7 +3,7 @@ package org.dyndns.fzoli.rccar.bridge.socket;
 import net.sf.jipcam.axis.MjpegFrame;
 import org.dyndns.fzoli.rccar.socket.AbstractVideoProcess;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
-import org.dyndns.fzoli.socket.impl.SharedJpegProvider;
+import org.dyndns.fzoli.socket.mjpeg.impl.SharedJpegProvider;
 
 /**
  * A hoszt által streamelt MJPEG folyam fogadása

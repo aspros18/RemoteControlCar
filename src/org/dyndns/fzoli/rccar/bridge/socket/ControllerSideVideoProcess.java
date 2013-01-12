@@ -6,7 +6,7 @@ import org.dyndns.fzoli.rccar.model.bridge.ControllerStorage;
 import org.dyndns.fzoli.rccar.model.bridge.HostStorage;
 import org.dyndns.fzoli.rccar.model.bridge.StorageList;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
-import org.dyndns.fzoli.socket.impl.SharedJpegProvider;
+import org.dyndns.fzoli.socket.mjpeg.impl.SharedJpegProvider;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
 
 /**

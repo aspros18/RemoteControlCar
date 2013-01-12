@@ -1,10 +1,10 @@
-package org.dyndns.fzoli.socket.impl;
+package org.dyndns.fzoli.socket.mjpeg.impl;
 
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.dyndns.fzoli.socket.JpegProvider;
+import org.dyndns.fzoli.socket.mjpeg.JpegProvider;
 
 /**
  * Megosztott MJPEG streamelő.

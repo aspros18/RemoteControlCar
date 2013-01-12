@@ -1,4 +1,4 @@
-package org.dyndns.fzoli.socket;
+package org.dyndns.fzoli.socket.mjpeg;
 
 import java.io.OutputStream;
 import java.util.Arrays;

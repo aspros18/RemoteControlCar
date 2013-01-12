@@ -50,12 +50,17 @@ public class SystemTrayIcon {
     public static boolean init(boolean noswt) {
         try {
             if (tray != null && tray.isSupported()) return true;
-            tray = SystemTrayProvider.getSystemTray(true, noswt || new File(".noswt").isFile());
+            noswt = noswt || new File(".noswt").isFile();
+            tray = SystemTrayProvider.getSystemTray(true, noswt);
             if (tray.isSupported()) {
                 icon = tray.addTrayIcon();
                 menu = icon.createPopupMenu();
+                return true;
             }
-            return true;
+            else if (!noswt) {
+                return init(true);
+            }
+            return false;
         }
         catch (Throwable t) {
             if (!noswt) return init(true);

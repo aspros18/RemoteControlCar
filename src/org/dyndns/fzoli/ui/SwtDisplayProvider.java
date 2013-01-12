@@ -100,7 +100,14 @@ public final class SwtDisplayProvider {
                 @Override
                 public void run() {
                     synchronized(this) { // runnable lefoglalása
-                        if (!GraphicsEnvironment.isHeadless()) display = new Display(); // display inicializálás, ha van GUI
+                        if (!GraphicsEnvironment.isHeadless()) {
+                            try {
+                                display = new Display(); // display inicializálás, ha van GUI
+                            }
+                            catch (Throwable t) { // az SWT nem tölthető be
+                                ;
+                            }
+                        }
                         notifyAll(); // jelzés, hogy kész az inicializálás
                     }
                     // GUI frissítés elindítása:

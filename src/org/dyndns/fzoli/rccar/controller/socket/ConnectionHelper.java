@@ -70,11 +70,12 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
 
     /**
      * Kivételek kezelése.
-     * Kapcsolódás hiba esetén hiba jelenik meg.
+     * Kapcsolódás hiba esetén hiba jelenik meg és az eddig kialakított kapcsolatok is bezárulnak.
      * Nem várt hiba esetén kivétel dobódik, amit egy dialógus ablak jelenít meg.
      */
     @Override
     protected void onException(Exception ex, int connectionId) {
+        disconnect();
         try {
             throw ex;
         }

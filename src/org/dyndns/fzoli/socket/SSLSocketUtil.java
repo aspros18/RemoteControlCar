@@ -11,6 +11,7 @@ import org.apache.commons.ssl.KeyMaterial;
 import org.apache.commons.ssl.SSLClient;
 import org.apache.commons.ssl.SSLServer;
 import org.apache.commons.ssl.TrustMaterial;
+import static org.dyndns.fzoli.resource.MD5Checksum.getMD5Checksum;
 
 /**
  * Segédosztály az SSL Socketek létrehozásához.
@@ -133,7 +134,12 @@ public class SSLSocketUtil {
      * Cache ID generátor.
      */
     private static String getCacheId(File ca, File crt, File key) {
-        return ca.getAbsolutePath() + crt.getAbsolutePath() + key.getAbsolutePath();
+        try {
+            return getMD5Checksum(ca) + getMD5Checksum(crt) + getMD5Checksum(key);
+        }
+        catch (Exception ex) {
+            return ca.getAbsolutePath() + crt.getAbsolutePath() + key.getAbsolutePath();
+        }
     }
     
 }

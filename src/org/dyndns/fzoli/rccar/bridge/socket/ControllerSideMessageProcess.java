@@ -12,7 +12,7 @@ import org.dyndns.fzoli.socket.handler.SecureHandler;
  *
  * @author zoli
  */
-public class ControllerSideMessageProcess extends BridgeMessageProcess {
+public class ControllerSideMessageProcess extends BridgeMessageProcess implements ConnectionKeys {
     
     private String selected;
     
@@ -57,7 +57,7 @@ public class ControllerSideMessageProcess extends BridgeMessageProcess {
             if (selected != null) {
                 
                 if (selected.equals("teszt1")) {
-                    ControllerSideVideoProcess mjpeg = ServerProcesses.findProcess(getRemoteCommonName(), getDeviceId(), ConnectionKeys.KEY_CONN_VIDEO_STREAM, ControllerSideVideoProcess.class);
+                    ControllerSideVideoProcess mjpeg = ServerProcesses.findProcess(getRemoteCommonName(), getDeviceId(), KEY_CONN_VIDEO_STREAM, ControllerSideVideoProcess.class);
                     if (mjpeg != null) mjpeg.resendFrame();
                 }
                 

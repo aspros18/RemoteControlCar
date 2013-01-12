@@ -46,7 +46,7 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
     protected void init() {
         super.init();
         if (Permissions.getConfig().isBlocked(getRemoteCommonName())) throw new BlockedCommonNameException();
-        if (Main.CONFIG.isStrict() && getDeviceId().equals(ConnectionKeys.KEY_DEV_CONTROLLER) && !Permissions.getConfig().isControllerWhite(getRemoteCommonName())) throw new BlockedCommonNameException();
+        if (Main.CONFIG.isStrict() && getDeviceId().equals(KEY_DEV_CONTROLLER) && !Permissions.getConfig().isControllerWhite(getRemoteCommonName())) throw new BlockedCommonNameException();
     }
 
     /**

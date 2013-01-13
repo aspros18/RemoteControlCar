@@ -1,2 +1,2 @@
 @echo off
-java -jar ui.jar
+start "Controller client" /B "javaw" -jar ui.jar

@@ -52,7 +52,7 @@ public class DefaultVehicle extends AbstractVehicle {
 	 */
 	@Override
 	public float getMaxVoltage() {
-		return 5.0f;
+		return 3.0f;
 	}
 	
 	/**

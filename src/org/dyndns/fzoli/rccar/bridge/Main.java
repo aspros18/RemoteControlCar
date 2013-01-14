@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.bridge;
 
+import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -17,6 +18,7 @@ import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.ui.UIUtil;
 import static org.dyndns.fzoli.ui.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.ui.systemtray.SystemTrayIcon;
+import org.dyndns.fzoli.ui.systemtray.TrayIcon;
 
 /**
  * A híd indító osztálya.
@@ -186,7 +188,9 @@ public class Main {
      */
     private static SSLServerSocket createServerSocket() {
         try {
-            return SSLSocketUtil.createServerSocket(CONFIG.getPort(), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile(), CONFIG.getPassword());
+            SSLServerSocket socket = SSLSocketUtil.createServerSocket(CONFIG.getPort(), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile(), CONFIG.getPassword());
+            ConnectionAlert.logMessage(VAL_MESSAGE, "A szerver elindult.", TrayIcon.IconType.INFO, true);
+            return socket;
         }
         catch (KeyStoreException ex) {
             if (ex.getMessage().startsWith("failed to extract")) {

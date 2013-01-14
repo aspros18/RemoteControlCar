@@ -44,7 +44,11 @@ public class ConnectionAlert {
     }
     
     /**
-     * Üzenet naplózása és ha kérik, üzenet megjelenítése.
+     * Naplózza az átadott üzenetet és ha kérik, meg is jeleníti azt a felhasználónak.
+     * @param title az üzenet címsora
+     * @param text a naplózandó üzenet
+     * @param type az üzenet típusa
+     * @param show true esetén az üzenet megjelenik a naplózás után
      * @see SystemTrayIcon#showMessage(java.lang.String, java.lang.String, org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType) 
      */
     public static void logMessage(String title, String text, IconType type, boolean show) {

@@ -1,6 +1,5 @@
 package org.dyndns.fzoli.rccar.bridge;
 
-import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -18,7 +17,7 @@ import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.ui.UIUtil;
 import static org.dyndns.fzoli.ui.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.ui.systemtray.SystemTrayIcon;
-import org.dyndns.fzoli.ui.systemtray.TrayIcon;
+import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 
 /**
  * A híd indító osztálya.
@@ -125,7 +124,8 @@ public class Main {
     
     /**
      * A program leállítása előtt nem árt az erőforrásokat felszabadítani.
-     * Leállításkor ha sikerült a szerver socket létrehozása, bezárja azt.
+     * Leállításkor ha sikerült a szerver socket létrehozása, bezárja azt,
+     * végül naplózza a leállást.
      */
     private static void addShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
@@ -138,6 +138,7 @@ public class Main {
                 catch (IOException ex) {
                     ;
                 }
+                logInfo(VAL_MESSAGE, "A szerver leállt.", false);
             }
             
         }));
@@ -155,6 +156,16 @@ public class Main {
      */
     private static void alert(String title, String text, PrintStream out) {
         UIUtil.alert(title, text, out, R.getBridgeImage());
+    }
+    
+    /**
+     * Naplózza az átadott üzenetet és ha kell, meg is jeleníti azt a felhasználónak.
+     * @param title az üzenet címsora
+     * @param text a naplózandó üzenet
+     * @param show true esetén az üzenet megjelenik a naplózás után
+     */
+    private static void logInfo(String title, String text, boolean show) {
+        ConnectionAlert.logMessage(title, text, IconType.INFO, show);
     }
     
     /**
@@ -184,12 +195,13 @@ public class Main {
     /**
      * SSL Server socket létrehozása a konfig fájl alapján.
      * Ha valamiért nem sikerül a tanúsítvány használata, jelszó bevitel jelenik meg.
+     * A szerver socket sikeres létrehozása után naplózza és közli a felhasználóval, hogy fut a szerver.
      * @throws Error ha nem sikerül a szerver socket létrehozása
      */
     private static SSLServerSocket createServerSocket() {
         try {
             SSLServerSocket socket = SSLSocketUtil.createServerSocket(CONFIG.getPort(), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile(), CONFIG.getPassword());
-            ConnectionAlert.logMessage(VAL_MESSAGE, "A szerver elindult.", TrayIcon.IconType.INFO, true);
+            logInfo(VAL_MESSAGE, "A szerver elindult.", true);
             return socket;
         }
         catch (KeyStoreException ex) {

@@ -68,8 +68,7 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
      * @param message a kijelzendő üzenet
      */
     private void showWarning(String message) {
-        if (getConnectionId() == null || getConnectionId().equals(0))
-            if (getSocket() != null) logMessage(VAL_WARNING, message + " a " + getSocket().getInetAddress().getHostName() + " címről.", IconType.WARNING, isWarnEnabled());
+        if ((getConnectionId() == null || getConnectionId().equals(0)) && getSocket() != null) logMessage(VAL_WARNING, message + " a " + getSocket().getInetAddress().getHostName() + " [" + getSocket().getInetAddress().getHostAddress() + "] címről.", IconType.WARNING, isWarnEnabled());
     }
     
     /**

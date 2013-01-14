@@ -7,6 +7,7 @@ import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
+import static org.dyndns.fzoli.rccar.bridge.ConnectionAlert.logMessage;
 import org.dyndns.fzoli.rccar.bridge.Main;
 import static org.dyndns.fzoli.rccar.bridge.Main.VAL_WARNING;
 import org.dyndns.fzoli.rccar.bridge.config.Permissions;
@@ -14,7 +15,6 @@ import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
 import org.dyndns.fzoli.socket.handler.exception.MultipleCertificateException;
 import org.dyndns.fzoli.socket.handler.exception.RemoteHandlerException;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
-import static org.dyndns.fzoli.ui.systemtray.SystemTrayIcon.showMessage;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 
 /**
@@ -64,12 +64,12 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
     }
     
     /**
-     * Ha adott klienstől az első kapcsolatfelvétel közben hiba keletkezik, jelzi a felhasználónak.
+     * Ha adott klienstől az első kapcsolatfelvétel közben hiba keletkezik, jelzi a felhasználónak és naplózza a hibát.
      * @param message a kijelzendő üzenet
      */
     private void showWarning(String message) {
         if (getConnectionId() == null || getConnectionId().equals(0))
-            if (getSocket() != null && isWarnEnabled()) showMessage(VAL_WARNING, message + " a " + getSocket().getInetAddress().getHostName() + " címről.", IconType.WARNING);
+            if (getSocket() != null) logMessage(VAL_WARNING, message + " a " + getSocket().getInetAddress().getHostName() + " címről.", IconType.WARNING, isWarnEnabled());
     }
     
     /**

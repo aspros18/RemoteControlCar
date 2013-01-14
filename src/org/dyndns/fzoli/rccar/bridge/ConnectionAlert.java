@@ -2,7 +2,8 @@ package org.dyndns.fzoli.rccar.bridge;
 
 import org.apache.log4j.Logger;
 import static org.dyndns.fzoli.rccar.bridge.Main.VAL_CONN_LOG;
-import static org.dyndns.fzoli.ui.systemtray.SystemTrayIcon.showMessage;
+import org.dyndns.fzoli.ui.systemtray.SystemTrayIcon;
+import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 
 /**
  * Sockettel kapcsolatos figyelmeztetésjelző osztály.
@@ -39,8 +40,27 @@ public class ConnectionAlert {
      * valamint elvégzi a naplózást is.
      */
     public static void log(String text) {
-        logger.info(text);
-        if (show) showMessage(VAL_CONN_LOG, text);
+        logMessage(VAL_CONN_LOG, text, IconType.INFO, show);
+    }
+    
+    /**
+     * Üzenet naplózása és ha kérik, üzenet megjelenítése.
+     * @see SystemTrayIcon#showMessage(java.lang.String, java.lang.String, org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType) 
+     */
+    public static void logMessage(String title, String text, IconType type, boolean show) {
+        switch (type) {
+            case INFO:
+                logger.info(text);
+                break;
+            case WARNING:
+                logger.warn(text);
+                break;
+            case ERROR:
+                logger.error(text);
+        }
+        if (show) {
+            SystemTrayIcon.showMessage(title, text, type);
+        }
     }
     
 }

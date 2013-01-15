@@ -64,10 +64,19 @@ public class ChatDialog extends AbstractDialog {
 
                 /**
                  * A lista elemei látszólag nem választhatóak ki és nem soha nincs rajtuk fókusz.
+                 * A saját név dőlt betűvel jelenik meg, ha JLabel alapú a lista felsorolása.
                  */
                 @Override
                 public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                    return super.getListCellRendererComponent(list, value, index, false, false);
+                    Component c = super.getListCellRendererComponent(list, value, index, false, false);
+                    try {
+                        JLabel lb = (JLabel) c;
+                        if (isSenderName(value.toString())) lb.setFont(new Font(lb.getFont().getName(), Font.ITALIC, lb.getFont().getSize()));
+                        return lb;
+                    }
+                    catch (Exception ex) {
+                        return c;
+                    }
                 }
                 
             });

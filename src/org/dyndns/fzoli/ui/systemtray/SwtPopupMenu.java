@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.ui.systemtray;
 
+import javax.swing.SwingUtilities;
 import org.dyndns.fzoli.ui.SwtDisplayProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
@@ -99,7 +100,7 @@ class SwtPopupMenu implements PopupMenu {
 
                         @Override
                         public void handleEvent(Event event) {
-                            r.run();
+                            SwingUtilities.invokeLater(r);
                         }
 
                     });

@@ -3,7 +3,6 @@ package org.dyndns.fzoli.rccar.ui;
 import java.awt.Dialog;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
-import javax.swing.SwingUtilities;
 import org.dyndns.fzoli.ui.exceptiondialog.UncaughtExceptionDialog;
 import org.dyndns.fzoli.ui.exceptiondialog.UncaughtExceptionParameters;
 import org.dyndns.fzoli.ui.exceptiondialog.event.UncaughtExceptionAdapter;
@@ -78,19 +77,12 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
      * @param ex a nem várt hiba
      */
     public static void showExceptionDialog(final Thread t, final Throwable ex) {
-        SwingUtilities.invokeLater(new Runnable() {
+        final boolean error = ex instanceof Error;
+        UncaughtExceptionDialog.showException(t, ex, error ? Dialog.ModalityType.APPLICATION_MODAL : Dialog.ModalityType.MODELESS, createParameters(), new UncaughtExceptionAdapter() {
 
             @Override
-            public void run() {
-                final boolean error = ex instanceof Error;
-                UncaughtExceptionDialog.showException(t, ex, error ? Dialog.ModalityType.APPLICATION_MODAL : Dialog.ModalityType.MODELESS, createParameters(), new UncaughtExceptionAdapter() {
-
-                    @Override
-                    public void exceptionDialogClosed() {
-                        if (error) System.exit(1);
-                    }
-
-                });
+            public void exceptionDialogClosed() {
+                if (error) System.exit(1);
             }
 
         });

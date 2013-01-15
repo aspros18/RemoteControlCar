@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.ui.systemtray;
 
 import java.io.InputStream;
+import javax.swing.SwingUtilities;
 import org.dyndns.fzoli.ui.SwtDisplayProvider;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 import org.eclipse.swt.SWT;
@@ -72,7 +73,7 @@ class SwtTrayIcon implements TrayIcon {
 
                         @Override
                         public void handleEvent(Event event) {
-                            r.run();
+                            SwingUtilities.invokeLater(r);
                         }
 
                     };
@@ -111,7 +112,7 @@ class SwtTrayIcon implements TrayIcon {
 
                         @Override
                         public void widgetSelected(SelectionEvent se) {
-                            onClick.run();
+                            SwingUtilities.invokeLater(onClick);
                         }
 
                     });

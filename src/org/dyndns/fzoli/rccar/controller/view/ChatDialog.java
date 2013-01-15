@@ -228,6 +228,7 @@ public class ChatDialog extends AbstractDialog {
      */
     private static final String KEY_DATE = "date",
                                 KEY_NAME = "name",
+                                KEY_MYNAME = "myname",
                                 KEY_SYSNAME = "sysname",
                                 KEY_REGULAR = "regualar";
     
@@ -261,8 +262,10 @@ public class ChatDialog extends AbstractDialog {
             StyleConstants.setBold(name, true);
             StyleConstants.setForeground(name, new Color(0, 128, 255));
             
-            Style sysname = doc.addStyle(KEY_SYSNAME, regular);
-            StyleConstants.setBold(sysname, true);
+            Style myname = doc.addStyle(KEY_MYNAME, name);
+            StyleConstants.setForeground(myname, new Color(0, 100, 205));
+            
+            Style sysname = doc.addStyle(KEY_SYSNAME, name);
             StyleConstants.setForeground(sysname, Color.BLACK);
             
             final JTextArea tpSender = new JTextArea();
@@ -325,6 +328,11 @@ public class ChatDialog extends AbstractDialog {
      */
     private String lastSender;
     
+    /**
+     * A saját felhasználónév.
+     */
+    private static String senderName;
+    
     public ChatDialog(ControllerFrame owner, final ControllerWindows windows) {
         super(owner, "Chat", windows);
         setIconImage(IC_CHAT.getImage());
@@ -357,6 +365,21 @@ public class ChatDialog extends AbstractDialog {
         if (!visible && model.contains(name)) model.removeElement(name);
         if (notify) addMessage(new Date(), name, (visible ? "kapcsolódott a járműhöz" : "lekapcsolódott a járműről") + '.', true);
     }
+
+    /**
+     * Megadja, hogy a megadott felhasználónév megegyezik-e a saját felhasználónévvel.
+     */
+    private static boolean isSenderName(String senderName) {
+        if (senderName == null || ChatDialog.senderName == null) return false;
+        return ChatDialog.senderName.equals(senderName);
+    }
+    
+    /**
+     * Saját felhasználónév beállítása.
+     */
+    public static void setSenderName(String senderName) {
+        ChatDialog.senderName = senderName;
+    }
     
     /**
      * Chatüzenetet jelenít meg és a scrollt beállítja.
@@ -382,7 +405,7 @@ public class ChatDialog extends AbstractDialog {
             me |= sysmsg;
             boolean startNewline = message.indexOf("\n") == 0; // ha új sorral kezdődik az üzenet, egy újsor jel bent marad
             doc.insertString(doc.getLength(), (lastSender != null ? "\n" : "") + '[' + DATE_FORMAT.format(date) + "] ", doc.getStyle(KEY_DATE));
-            doc.insertString(doc.getLength(), (me ? ("* " + name) : (name.equals(lastSender) ? "..." : (name + ':'))) + ' ', doc.getStyle(sysmsg ? KEY_SYSNAME : KEY_NAME));
+            doc.insertString(doc.getLength(), (me ? ("* " + name) : (name.equals(lastSender) ? "..." : (name + ':'))) + ' ', doc.getStyle(sysmsg ? KEY_SYSNAME : isSenderName(name) ? KEY_MYNAME : KEY_NAME));
             doc.insertString(doc.getLength(), (!me && startNewline ? "\n" : "") + message.trim(), doc.getStyle(KEY_REGULAR));
             lastSender = me ? "" : name;
             tpMessages.select(doc.getLength(), doc.getLength());
@@ -418,6 +441,7 @@ public class ChatDialog extends AbstractDialog {
      * Teszt.
      */
     public static void main(String[] args) {
+        ChatDialog.setSenderName("controller");
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override

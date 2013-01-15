@@ -3,6 +3,7 @@ package org.dyndns.fzoli.rccar.controller.socket;
 import java.io.InvalidClassException;
 import org.dyndns.fzoli.rccar.controller.ControllerModels;
 import org.dyndns.fzoli.rccar.controller.resource.R;
+import org.dyndns.fzoli.rccar.controller.view.ChatDialog;
 import org.dyndns.fzoli.rccar.model.Data;
 import org.dyndns.fzoli.rccar.model.PartialData;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
@@ -17,6 +18,14 @@ public class ControllerMessageProcess extends MessageProcess {
 
     public ControllerMessageProcess(SecureHandler handler) {
         super(handler);
+    }
+
+    /**
+     * Ha a kapcsolat létrejött, a chatablakban a saját felhasználónév beállítása.
+     */
+    @Override
+    protected void onStart() {
+        ChatDialog.setSenderName(getLocalCommonName());
     }
 
     /**

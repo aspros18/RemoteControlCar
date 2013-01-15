@@ -38,7 +38,7 @@ import sun.swing.SwingUtilities2;
  * @author zoli
  */
 public class ChatDialog extends AbstractDialog {
-
+    
     /**
      * Az elválasztóvonalak szélessége.
      */
@@ -228,6 +228,7 @@ public class ChatDialog extends AbstractDialog {
      */
     private static final String KEY_DATE = "date",
                                 KEY_NAME = "name",
+                                KEY_SYSNAME = "sysname",
                                 KEY_REGULAR = "regualar";
     
     /**
@@ -259,6 +260,10 @@ public class ChatDialog extends AbstractDialog {
             Style name = doc.addStyle(KEY_NAME, regular);
             StyleConstants.setBold(name, true);
             StyleConstants.setForeground(name, new Color(0, 128, 255));
+            
+            Style sysname = doc.addStyle(KEY_SYSNAME, regular);
+            StyleConstants.setBold(sysname, true);
+            StyleConstants.setForeground(sysname, Color.BLACK);
             
             final JTextArea tpSender = new JTextArea();
             tpSender.setBackground(getBackground());
@@ -332,12 +337,12 @@ public class ChatDialog extends AbstractDialog {
         pack();
         
         //TESZT:
-        addMessage(new Date(), "controller", "üzenet");
-        setControllerVisible("controller", true);
+        setControllerVisible("controller", true, true);
         for (int i = 2; i <= 7; i++) {
-            setControllerVisible("controller" + i, true);
+            setControllerVisible("controller" + i, true, false);
         }
-        setControllerVisible("egy sokkal hosszabb tesztnév, mint az előzőek", true);
+        setControllerVisible("egy sokkal hosszabb tesztnév, mint az előzőek", true, false);
+        addMessage(new Date(), "controller", "üzenet");
     }
     
     /**
@@ -346,10 +351,11 @@ public class ChatDialog extends AbstractDialog {
      * @param name a beállítandó név
      * @param visible true esetén hozzáadás, egyébként elvevés
      */
-    public void setControllerVisible(String name, boolean visible) {
+    public void setControllerVisible(String name, boolean visible, boolean notify) {
         DefaultListModel model = (DefaultListModel) LIST_CONTROLLERS.getModel();
         if (visible && !model.contains(name)) model.addElement(name);
         if (!visible && model.contains(name)) model.removeElement(name);
+        if (notify) addMessage(new Date(), name, (visible ? "kapcsolódott a járműhöz" : "lekapcsolódott a járműről") + '.', true);
     }
     
     /**
@@ -357,16 +363,28 @@ public class ChatDialog extends AbstractDialog {
      * @param date az üzenet elküldésének ideje
      * @param name az üzenet feladója
      * @param message az üzenet tartalma
-     * @param newline új sor jellel kezdődjön-e a kód
-     * @param dot legyen-e név helyett három pont
      */
     public void addMessage(Date date, String name, String message) {
+        addMessage(date, name, message, false);
+    }
+    
+    /**
+     * Chatüzenetet illetve rendszerüzenetet jelenít meg és a scrollt beállítja.
+     * @param date az üzenet elküldésének ideje
+     * @param name az üzenet feladója
+     * @param message az üzenet tartalma
+     * @param sysmsg rendszerüzenet-e az üzenet
+     */
+    private void addMessage(Date date, String name, String message, boolean sysmsg) {
         try {
+            boolean me = message.indexOf("/me ") == 0;
+            if (me) message = message.substring(4);
+            me |= sysmsg;
             boolean startNewline = message.indexOf("\n") == 0; // ha új sorral kezdődik az üzenet, egy újsor jel bent marad
-            doc.insertString(doc.getLength(), (lastSender != null ? "\n" : "") + '[' + DATE_FORMAT.format(date) + "] ", doc.getStyle("date"));
-            doc.insertString(doc.getLength(), (name.equals(lastSender) ? "..." : (name + ':')) + ' ', doc.getStyle("name"));
-            doc.insertString(doc.getLength(), (startNewline ? "\n" : "") + message.trim(), doc.getStyle("regular"));
-            lastSender = name;
+            doc.insertString(doc.getLength(), (lastSender != null ? "\n" : "") + '[' + DATE_FORMAT.format(date) + "] ", doc.getStyle(KEY_DATE));
+            doc.insertString(doc.getLength(), (me ? ("* " + name) : (name.equals(lastSender) ? "..." : (name + ':'))) + ' ', doc.getStyle(sysmsg ? KEY_SYSNAME : KEY_NAME));
+            doc.insertString(doc.getLength(), (!me && startNewline ? "\n" : "") + message.trim(), doc.getStyle(KEY_REGULAR));
+            lastSender = me ? "" : name;
             tpMessages.select(doc.getLength(), doc.getLength());
         }
         catch (Exception ex) {

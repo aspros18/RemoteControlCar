@@ -45,7 +45,7 @@ public class ConnectionService extends IOIOService {
 	public static enum ConnectionError {
 		OTHER,
 		CONNECTION_ERROR,
-		CONNECTION_LOST, 
+		CONNECTION_LOST,
 		CONNECTION_REFUSED,
 		INVALID_CERTIFICATE,
 		WEB_IPCAM_UNREACHABLE(true),

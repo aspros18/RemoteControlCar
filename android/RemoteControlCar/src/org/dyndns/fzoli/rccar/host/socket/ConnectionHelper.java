@@ -3,6 +3,7 @@ package org.dyndns.fzoli.rccar.host.socket;
 import java.net.ConnectException;
 import java.net.NoRouteToHostException;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.security.KeyStoreException;
 
@@ -104,8 +105,11 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
 		catch (UnknownHostException e) {
 			err = ConnectionError.CONNECTION_ERROR;
 		}
+		catch (SocketTimeoutException e) {
+			err = ConnectionError.CONNECTION_ERROR;
+		}
 		catch (SocketException e) {
-			err = ConnectionError.CONNECTION_LOST;
+			err = ConnectionError.CONNECTION_ERROR;
 		}
 		catch (NullPointerException e) {
 			err = ConnectionError.WRONG_CERTIFICATE_SETTINGS;

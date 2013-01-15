@@ -417,10 +417,7 @@ public class MainActivity extends SherlockActivity {
 							
 							@Override
 							public void run() {
-								if (dialogConn != null) { // ha van már látható dialógus
-									dialogConn.dismiss(); // annak megszüntetése
-								}
-								if (connecting) { // ha kapcsolódás van
+								if (connecting && dialogConn == null) { // ha kapcsolódás van
 									// dialógus létrehozása és megjelenítése
 									dialogConn = ProgressDialog.show(MainActivity.this, getString(R.string.title_connecting), getString(R.string.message_connecting), true, true, new DialogInterface.OnCancelListener() {
 										
@@ -434,8 +431,9 @@ public class MainActivity extends SherlockActivity {
 											
 									});
 								}
-								else { // ha eltüntetést kértek
-									dialogConn = null; // már nem kell eltüntetni, mert minden kérés előtt eltüntetés van, csak ki kell nullázni
+								if (!connecting && dialogConn != null) { // ha eltüntetést kértek
+									dialogConn.dismiss(); // dialógus megszüntetése ...
+									dialogConn = null; // ... és referencia megszüntetése
 								}
 							}
 						});

@@ -49,13 +49,13 @@ public class HostHandler extends AbstractSecureClientHandler implements Connecti
 			err = ConnectionError.CONNECTION_REFUSED;
 		}
 		catch (SocketTimeoutException e) {
-			err = ConnectionError.CONNECTION_LOST;
+			err = ConnectionError.CONNECTION_ERROR;
 		}
 		catch (SSLHandshakeException e) {
 			err = ConnectionError.INVALID_CERTIFICATE;
 		}
 		catch (SSLException e) {
-			err = ConnectionError.CONNECTION_LOST;
+			err = ConnectionError.CONNECTION_ERROR;
 		}
 		catch (SocketException e) {
 			err = ConnectionError.CONNECTION_ERROR;

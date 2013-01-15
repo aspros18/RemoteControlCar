@@ -36,7 +36,7 @@ public abstract class PartialData<D extends Data, T extends Serializable> implem
      * @param senderName az üzenetküldő tanúsítványának CN neve
      * @param senderDevice az üzenetküldő eszközazonosítója
      */
-    public void apply(D d, String senderName, Integer senderDevice) {
+    public final void apply(D d, String senderName, Integer senderDevice) {
         d = Data.createUpdater(d, senderName, senderDevice);
         if (d == null) return;
         apply(d);

@@ -61,13 +61,13 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     /**
      * A ControllerData részadata, ami egy vezérlő állapotváltozását tartalmazza (kapcsolódott, lekapcsolódott).
      */
-    public static class ControllerChangeControllerData extends PartialControllerData<ControllerData.ControllerChange> {
+    public static class ControllerChangePartialControllerData extends PartialControllerData<ControllerData.ControllerChange> {
 
         /**
          * Részadat inicializálása és beállítása.
          * @param data az állapotváltozást leíró objektum
          */
-        public ControllerChangeControllerData(ControllerChange data) {
+        public ControllerChangePartialControllerData(ControllerChange data) {
             super(data);
         }
 
@@ -81,6 +81,32 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
                 List<String> l = d.getControllers();
                 if (data.connected && !l.contains(data.name)) l.add(data.name);
                 if (!data.connected && l.contains(data.name)) l.remove(data.name);
+            }
+        }
+        
+    }
+    
+    /**
+     * A ControllerData részadata, ami egy új chatüzenetet tartalmaz.
+     */
+    public static class ChatMessagePartialControllerData extends PartialControllerData<ChatMessage> {
+
+        /**
+         * Részadat inicializálása és beállítása.
+         * @param data az új chatüzenet
+         */
+        public ChatMessagePartialControllerData(ChatMessage data) {
+            super(data);
+        }
+
+        /**
+         * Az új chatüzenetet hozzáadja a paraméterben megadott adatnak az üzenetlistájához.
+         * @param d a teljes adat, amin a módosítást alkalmazni kell
+         */
+        @Override
+        public void apply(ControllerData d) {
+            if (d != null && data != null) {
+                d.getChatMessages().add(data);
             }
         }
         
@@ -263,7 +289,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
      * Vezérlő oldalnak.
      */
     public ControllerData() {
-        CHAT_MESSAGES = Collections.synchronizedList(new ArrayList<ChatMessage>()); //TODO: a lista módosulása esetén lehessen majd üzenetet küldetni; megírni a részadat osztályt hozzá
+        CHAT_MESSAGES = Collections.synchronizedList(new ArrayList<ChatMessage>()); //TODO: a lista módosulása esetén lehessen majd üzenetet küldetni
         CONTROLLERS = Collections.synchronizedList(new ArrayList<String>());
     }
 

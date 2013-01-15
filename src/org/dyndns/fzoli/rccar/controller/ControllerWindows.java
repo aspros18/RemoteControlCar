@@ -193,6 +193,7 @@ public class ControllerWindows {
      */
     public void refresh() {
         FRAME_MAIN.refresh();
+        DIALOG_CHAT.refresh();
     }
     
     /**

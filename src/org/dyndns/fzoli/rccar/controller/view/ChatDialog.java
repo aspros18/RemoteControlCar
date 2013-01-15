@@ -30,9 +30,11 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
+import static org.dyndns.fzoli.rccar.controller.ControllerModels.getData;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_CHAT;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
+import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
 import org.dyndns.fzoli.ui.FixedStyledEditorKit;
 import org.dyndns.fzoli.ui.UIUtil;
 import sun.swing.SwingUtilities2;
@@ -364,6 +366,27 @@ public class ChatDialog extends AbstractDialog {
         }
         setControllerVisible("egy sokkal hosszabb tesztnév, mint az előzőek", true, false);
         addMessage(new Date(), "controller", "üzenet");
+    }
+    
+    /**
+     * Az adatmodel alapján frissíti a felületet.
+     * Törli az üzeneteket és a vezérlőlistát és a model alapján újra feltölti azt.
+     */
+    public void refresh() {
+        try {
+            DefaultListModel<String> model = (DefaultListModel) LIST_CONTROLLERS.getModel();
+            model.clear();
+            for (String c : getData().getControllers()) {
+                setControllerVisible(c, true, false);
+            }
+            lastSender = null;
+            doc.remove(0, doc.getLength());
+            for (ChatMessage msg : getData().getChatMessages()) {
+                addMessage(msg.getDate(), msg.getSender(), msg.data);
+            }
+        } catch (BadLocationException ex) {
+            ;
+        }
     }
     
     /**

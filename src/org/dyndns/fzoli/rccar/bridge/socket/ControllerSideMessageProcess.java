@@ -60,8 +60,11 @@ public class ControllerSideMessageProcess extends BridgeMessageProcess implement
                     ControllerSideVideoProcess mjpeg = ServerProcesses.findProcess(getRemoteCommonName(), getDeviceId(), KEY_CONN_VIDEO_STREAM, ControllerSideVideoProcess.class);
                     if (mjpeg != null) mjpeg.resendFrame();
                 }
-                
-                ControllerData data = new ControllerData(new ArrayList<ChatMessage>());
+                ArrayList<String> nams = new ArrayList<String>();
+                nams.add("controller");
+                ArrayList<ChatMessage> msgs = new ArrayList<ChatMessage>();
+                msgs.add(new ChatMessage("controller", "tesztüzenet"));
+                ControllerData data = new ControllerData(nams, msgs);
                 data.setHostName(selected);
                 data.setHostConnected(true);
                 data.setVehicleConnected(true);

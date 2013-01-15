@@ -204,22 +204,30 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     private final List<ChatMessage> CHAT_MESSAGES;
 
     /**
+     * A kiválasztott járműhöz kapcsolódott vezérlők listája.
+     */
+    private final List<String> CONTROLLERS;
+    
+    /**
      * A vezérlő adatainak inicializálása.
      * Vezérlő oldalnak.
      */
     public ControllerData() {
         CHAT_MESSAGES = Collections.synchronizedList(new ArrayList<ChatMessage>()); //TODO: a lista módosulása esetén lehessen majd üzenetet küldetni
+        CONTROLLERS = Collections.synchronizedList(new ArrayList<String>()); //TODO: mindkét listának megírni a részadatát!
     }
 
     /**
      * A vezérlő adatainak inicializálása.
      * Híd oldalnak.
+     * @param controllers a járműhöz kapcsolódottak listája
      * @param chatMessages az üzeneteket tartalmazó lista
      * @throws NullPointerException ha az üzeneteket tartalmazó lista null
      */
-    public ControllerData(List<ChatMessage> chatMessages) {
-        if (chatMessages == null) throw new NullPointerException();
+    public ControllerData(List<String> controllers, List<ChatMessage> chatMessages) {
+        if (chatMessages == null || controllers == null) throw new NullPointerException();
         CHAT_MESSAGES = Collections.synchronizedList(chatMessages);
+        CONTROLLERS = Collections.synchronizedList(controllers);
     }
 
     /**
@@ -243,6 +251,13 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
         return CHAT_MESSAGES;
     }
 
+    /**
+     * A kiválasztott hoszthoz tartozó vezérlők listáját adja vissza.
+     */
+    public List<String> getControllers() {
+        return CONTROLLERS;
+    }
+    
     /**
      * Megadja azt, hogy a jármű kapcsolódva van-e.
      */
@@ -337,6 +352,9 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     @Override
     public void update(ControllerData d) {
         if (d != null) {
+            getControllers().clear();
+            getChatMessages().clear();
+            getControllers().addAll(d.getControllers());
             getChatMessages().addAll(d.getChatMessages());
             setHostName(d.getHostName());
             setHostState(d.getHostState());
@@ -354,6 +372,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
      */
     @Override
     public void clear() {
+        getControllers().clear();
         getChatMessages().clear();
         hostName = null;
         hostState = null;

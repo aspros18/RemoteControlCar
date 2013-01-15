@@ -1,6 +1,8 @@
 package org.dyndns.fzoli.rccar.model.bridge;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import org.dyndns.fzoli.rccar.bridge.config.Permissions;
 import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
@@ -46,7 +48,7 @@ public class ControllerStorage extends Storage {
     public ControllerData createControllerData() {
         HostStorage s = getHostStorage();
         if (s == null) return null;
-        ControllerData d = new ControllerData(s.getChatMessages());
+        ControllerData d = new ControllerData(createControllers(s), s.getChatMessages());
         d.setHostState(createHostState());
         d.setHostName(s.getName());
         d.setViewOnly(isViewOnly());
@@ -60,6 +62,15 @@ public class ControllerStorage extends Storage {
     
 //    TODO: szerver oldalon a vezérlő adat módosulását kezelő üzenetküldő és adatmódosító megírása, feltéve ha a HostStorage-ben lévő DataSender nem kezeli le
 //    public ControllerData createControllerDataSender();
+    
+    private static List<String> createControllers(HostStorage s) {
+        List<String> l = new ArrayList<String>();
+        if (s == null) return l;
+        for (ControllerStorage cs : s.getControllers()) {
+            l.add(cs.getName());
+        }
+        return l;
+    }
     
     public static boolean isHostConnected(HostStorage s) {
         return s != null && s.getMessageProcess() != null && !s.getMessageProcess().getSocket().isClosed();

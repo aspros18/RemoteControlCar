@@ -21,6 +21,28 @@ import org.dyndns.fzoli.rccar.model.PartialBaseData;
 public class ControllerData extends BaseData<ControllerData, PartialBaseData<ControllerData, ?>> {
     
     /**
+     * Egy vezérlő változását (kapcsolódás, lekapcsolódás) írja le.
+     */
+    public static class ControllerChange implements Serializable {
+        
+        /**
+         * Igaz, ha kapcsolódás történt, egyébként hamis.
+         */
+        public final boolean connected;
+        
+        /**
+         * A kapcsolódó/lekapcsolódó vezérlő neve.
+         */
+        public final String name;
+
+        public ControllerChange(String name, boolean connected) {
+            this.connected = connected;
+            this.name = name;
+        }
+        
+    }
+    
+    /**
      * A ControllerData részadata.
      * Egy ControllerPartialData objektumot átadva a ControllerData objektumnak, egyszerű frissítést lehet végrehajtani.
      */
@@ -32,6 +54,34 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
          */
         protected PartialControllerData(T data) {
             super(data);
+        }
+        
+    }
+    
+    /**
+     * A ControllerData részadata, ami egy vezérlő állapotváltozását tartalmazza (kapcsolódott, lekapcsolódott).
+     */
+    public static class ControllerChangeControllerData extends PartialControllerData<ControllerData.ControllerChange> {
+
+        /**
+         * Részadat inicializálása és beállítása.
+         * @param data az állapotváltozást leíró objektum
+         */
+        public ControllerChangeControllerData(ControllerChange data) {
+            super(data);
+        }
+
+        /**
+         * Alkalmazza az állapotváltozást a paraméterben megadott adaton.
+         * @param d a teljes adat, amin a módosítást alkalmazni kell
+         */
+        @Override
+        public void apply(ControllerData d) {
+            if (d != null && data != null) {
+                List<String> l = d.getControllers();
+                if (data.connected && !l.contains(data.name)) l.add(data.name);
+                if (!data.connected && l.contains(data.name)) l.remove(data.name);
+            }
         }
         
     }
@@ -213,8 +263,8 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
      * Vezérlő oldalnak.
      */
     public ControllerData() {
-        CHAT_MESSAGES = Collections.synchronizedList(new ArrayList<ChatMessage>()); //TODO: a lista módosulása esetén lehessen majd üzenetet küldetni
-        CONTROLLERS = Collections.synchronizedList(new ArrayList<String>()); //TODO: mindkét listának megírni a részadatát!
+        CHAT_MESSAGES = Collections.synchronizedList(new ArrayList<ChatMessage>()); //TODO: a lista módosulása esetén lehessen majd üzenetet küldetni; megírni a részadat osztályt hozzá
+        CONTROLLERS = Collections.synchronizedList(new ArrayList<String>());
     }
 
     /**

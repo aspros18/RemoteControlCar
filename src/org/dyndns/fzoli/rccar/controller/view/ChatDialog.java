@@ -15,7 +15,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import javax.swing.plaf.metal.MetalToolTipUI;
@@ -356,14 +360,31 @@ public class ChatDialog extends AbstractDialog {
     /**
      * A jelenlévők listájához ad hozzá vagy abból vesz el.
      * Ugyan azt a nevet csak egyszer adja hozzá a listához.
+     * A hozzáadáskor ABC sorrendbe rendeződik a lista.
      * @param name a beállítandó név
      * @param visible true esetén hozzáadás, egyébként elvevés
      */
     public void setControllerVisible(String name, boolean visible, boolean notify) {
-        DefaultListModel model = (DefaultListModel) LIST_CONTROLLERS.getModel();
-        if (visible && !model.contains(name)) model.addElement(name);
-        if (!visible && model.contains(name)) model.removeElement(name);
-        if (notify) addMessage(new Date(), name, (visible ? "kapcsolódott a járműhöz" : "lekapcsolódott a járműről") + '.', true);
+        DefaultListModel<String> model = (DefaultListModel) LIST_CONTROLLERS.getModel();
+        if (visible && !model.contains(name)) {
+            List<String> l = new ArrayList<String>();
+            Enumeration<String> e = model.elements();
+            while (e.hasMoreElements()) {
+               l.add(e.nextElement());
+            }
+            l.add(name);
+            Collections.sort(l);
+            model.clear();
+            for (String s : l) {
+                model.addElement(s);
+            }
+        }
+        if (!visible && model.contains(name)) {
+            model.removeElement(name);
+        }
+        if (notify) {
+            addMessage(new Date(), name, (visible ? "kapcsolódott a járműhöz" : "lekapcsolódott a járműről") + '.', true);
+        }
     }
 
     /**

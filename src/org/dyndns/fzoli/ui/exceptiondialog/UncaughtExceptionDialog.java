@@ -238,29 +238,34 @@ public final class UncaughtExceptionDialog extends JDialog { //TODO: ha túl hos
      * @param uel eseménykezelő, ami akkor hívódik meg, ha nem kezelt kivétel keletkezik
      */
     public static void showException(Thread t, Throwable e, Dialog.ModalityType modalityType, UncaughtExceptionParameters params, UncaughtExceptionListener uel) {
-        if (GraphicsEnvironment.isHeadless()) {
-            e.printStackTrace(System.err);
+        try {
+            if (GraphicsEnvironment.isHeadless()) {
+                e.printStackTrace(System.err);
+            }
+            else {
+                String s = createDetails(e);
+                params = params == null ? new UncaughtExceptionParameters() : params;
+                modalityType = modalityType == null ? Dialog.ModalityType.APPLICATION_MODAL : modalityType;
+                final UncaughtExceptionDialog d = new UncaughtExceptionDialog(modalityType, s, params, uel);
+                UncaughtExceptionSource src = new UncaughtExceptionSource() {
+
+                    @Override
+                    public void setComponent(Component c) {
+                        d.setComponent(c);
+                    }
+
+                    @Override
+                    public void addWindowListener(WindowListener listener) {
+                        d.addWindowListener(listener);
+                    }
+
+                };
+                if (uel != null) uel.exceptionDialogAppears(new UncaughtExceptionEvent(src, s, t, e));
+                d.setVisible(true);
+            }
         }
-        else {
-            String s = createDetails(e);
-            params = params == null ? new UncaughtExceptionParameters() : params;
-            modalityType = modalityType == null ? Dialog.ModalityType.APPLICATION_MODAL : modalityType;
-            final UncaughtExceptionDialog d = new UncaughtExceptionDialog(modalityType, s, params, uel);
-            UncaughtExceptionSource src = new UncaughtExceptionSource() {
-
-                @Override
-                public void setComponent(Component c) {
-                    d.setComponent(c);
-                }
-
-                @Override
-                public void addWindowListener(WindowListener listener) {
-                    d.addWindowListener(listener);
-                }
-
-            };
-            if (uel != null) uel.exceptionDialogAppears(new UncaughtExceptionEvent(src, s, t, e));
-            d.setVisible(true);
+        catch (Throwable ex) {
+            ex.printStackTrace();
         }
     }
     

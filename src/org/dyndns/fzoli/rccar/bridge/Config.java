@@ -33,6 +33,7 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
                                KEY_KEY = "key",
                                KEY_PASSWORD = "password",
                                KEY_STRICT = "strict",
+                               KEY_QUIET = "quiet",
                                KEY_HIDDEN = "hidden";
     
     /**
@@ -62,6 +63,7 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
             KEY_KEY + ' ' + new File("test-certs", "bridge.key") + ' ' + CC + " a szerver titkos kulcsa" + LS +
             CC + ' ' + KEY_PASSWORD + " optional_cert_password " + CC + " a szerver tanúsítványának jelszava, ha van" + LS +
             CC + ' ' + KEY_STRICT + " true " + CC + " ha true, azok a vezérlők, melyek nem szerepelnek a fehérlistában, nem csatlakozhatnak a hídhoz" + LS +
+            CC + ' ' + KEY_QUIET + " true " + CC + " ha true, a program indulásakor az összes figyelmeztetés inaktív" + LS +
             CC + ' ' + KEY_HIDDEN + " true " + CC + " ha true, a rendszerikon nem jelenik meg annak ellenére sem, hogy van grafikus felület";
     
     /**
@@ -78,16 +80,25 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
     /**
      * A konfigurációs fájl strict paramétere.
      * Ha true, akkor nem csatlakozhatnak a hídhoz azok a vezérlők, melyek nem szerepelnek a fehérlistában.
-     * @return false, ha nincs megadva vagy ha a megadott érték "true", akkor true
+     * @return false, ha nincs megadva, és ha a megadott érték "true", akkor true
      */
     public boolean isStrict() {
         return isTrue(KEY_STRICT);
     }
     
     /**
+     * A konfigurációs fájl quiet paramétere.
+     * Ha true, akkor a program indulásakor ía figyelmeztetések inaktívak.
+     * @return false, ha nincs megadva, és ha a megadott érték "true", akkor true
+     */
+    public boolean isQuiet() {
+        return isTrue(KEY_QUIET);
+    }
+    
+    /**
      * A konfigurációs fájl hidden paramétere.
      * Ha true, akkor nem jelenik meg a rendszerikon.
-     * @return false, ha nincs megadva vagy ha a megadott érték "true", akkor true
+     * @return false, ha nincs megadva, és ha a megadott érték "true", akkor true
      */
     public boolean isHidden() {
         return isTrue(KEY_HIDDEN);
@@ -95,7 +106,7 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
     
     /**
      * A konfigurációs fájl egyik paraméteréről mondja meg, hogy true-e az értéke.
-     * @return false, ha nincs megadva vagy ha a megadott érték "true", akkor true
+     * @return false, ha nincs megadva, és ha a megadott érték "true", akkor true
      */
     private boolean isTrue(String key) {
         try {

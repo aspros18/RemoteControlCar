@@ -57,6 +57,7 @@ public class Main {
         setDefaultSplashMessage(); //TODO: erre nem lesz szükség
         setSystemLookAndFeel();
         setExceptionHandler();
+        applyConfig();
         setSystemTrayIcon();
         addShutdownHook();
         closeSplashScreen(); //TODO: erre nem lesz szükség
@@ -69,6 +70,18 @@ public class Main {
      */
     private static void setExceptionHandler() {
         UncaughtExceptionHandler.apply(R.getBridgeImage());
+    }
+    
+    /**
+     * A konfiguráció alkalmazása.
+     * Megnézi, hogy a csendes indulás be van-e állítva a konfig fájlban és ha igen,
+     * a figyelmeztetéseket kikapcsolja, majd értelmezi a paramétereket, amik ezt felüldefiniálhatják.
+     */
+    private static void applyConfig() {
+        if (CONFIG.isQuiet()) {
+            BridgeHandler.setWarnEnabled(false);
+            ConnectionAlert.setLogEnabled(false);
+        }
     }
     
     /**
@@ -201,7 +214,7 @@ public class Main {
     private static SSLServerSocket createServerSocket() {
         try {
             SSLServerSocket socket = SSLSocketUtil.createServerSocket(CONFIG.getPort(), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile(), CONFIG.getPassword());
-            logInfo(VAL_MESSAGE, "A szerver elindult.", true);
+            logInfo(VAL_MESSAGE, "A szerver elindult.", !CONFIG.isQuiet());
             return socket;
         }
         catch (KeyStoreException ex) {

@@ -46,7 +46,7 @@ public abstract class Data<D extends Data, PD extends PartialData> implements Se
     /**
      * Egy adat frissítése részhalmaz segítségével és üzenetküldés, ha támogatott.
      */
-    public void update(PD pd, String senderName, Integer senderDevice) {
+    public final void update(PD pd, String senderName, Integer senderDevice) {
         if (pd != null) pd.apply(this, senderName, senderDevice);
     }
     
@@ -58,7 +58,7 @@ public abstract class Data<D extends Data, PD extends PartialData> implements Se
     /**
      * Az összes adat frissítése adatmodell segítségével és üzenetküldés, ha támogatott.
      */
-    public void update(D d, String senderName, Integer senderDevice) {
+    public final void update(D d, String senderName, Integer senderDevice) {
         d = createUpdater(d, senderName, senderDevice);
         if (d == null) return;
         update(d);

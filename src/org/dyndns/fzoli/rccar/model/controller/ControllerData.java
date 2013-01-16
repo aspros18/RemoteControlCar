@@ -15,6 +15,7 @@ import org.dyndns.fzoli.rccar.model.PartialBaseData;
  * hogy a járművel van-e kiépített kapcsolat,
  * hogy a vezérlő vezérli-e az autót,
  * hogy a vezérlő szeretné-e vezérelni az autót,
+ * az autóhoz tartozó vezérlő klienseket egy listában,
  * az autóhoz tartozó chatüzeneteket egy listában,
  * az autó gps helyzetét, pillanatnyi sebességét, északtól való eltérését és az akkuszintjét.
  * @author zoli

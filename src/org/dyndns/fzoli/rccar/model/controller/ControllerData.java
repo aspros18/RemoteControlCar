@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import org.dyndns.fzoli.rccar.model.BaseData;
 import org.dyndns.fzoli.rccar.model.BatteryPartialBaseData;
+import org.dyndns.fzoli.rccar.model.DataSender;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
 
 /**
@@ -18,7 +19,7 @@ import org.dyndns.fzoli.rccar.model.PartialBaseData;
  * az autó gps helyzetét, pillanatnyi sebességét, északtól való eltérését és az akkuszintjét.
  * @author zoli
  */
-public class ControllerData extends BaseData<ControllerData, PartialBaseData<ControllerData, ?>> {
+public class ControllerData extends BaseData<ControllerData, PartialBaseData<ControllerData, ?>> implements DataSender<ControllerData> {
     
     /**
      * Egy vezérlő változását (kapcsolódás, lekapcsolódás) írja le.
@@ -239,6 +240,105 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     }
 
     /**
+     * Részadatküldő implementáció.
+     * Arra lett kitalálva, hogy a különböző adatmódosulásokra más-más
+     * adatküldési eljárást lehessen alkalmazni.
+     * Nem minden esetben kell üzenetet küldeni, sőtt van olyan adatmódosulás,
+     * ami esetén egyáltalán nem kell üzenni a híd szervernek.
+     */
+    private static class ControllerDataSender extends ControllerData {
+
+        /**
+         * A helyi adatmodel.
+         */
+        private final ControllerData data;
+        
+        /**
+         * Az adatmódosulást okozó üzenet küldőjének a neve.
+         */
+        private final String senderName;
+        
+        /**
+         * Konstruktor.
+         * Az eszközazonosítóra nincs szükség, mert az adatmódosulást vagy a
+         * vezérlő program okozza helyben (a felhasználó kérésére) vagy
+         * a híd okozza azt (a szerver oldalán módosult az adat).
+         * Mindkét esetben elég a név ahhoz, hogy tudni lehessen, ki a küldő:
+         * A szervernek egyedi azonosítója van, senki nem bírtokolhatja azt.
+         * Ha a küldő a szerver, akkor biztos, hogy nem kell üzenetet küldeni.
+         * @param data a helyi adatmodel, amin a setter metódusok alkalmazódnak
+         * @param senderName az üzenetküldő neve
+         */
+        public ControllerDataSender(ControllerData data, String senderName) {
+            this.data = data;
+            this.senderName = senderName;
+        }
+
+        /**
+         * A {@link ControllerData#update(ControllerData)} metódus használja.
+         */
+        @Override
+        public List<String> getControllers() {
+            return data.getControllers();
+        }
+
+        /**
+         * A {@link ControllerData#update(ControllerData)} metódus használja.
+         */
+        @Override
+        public List<ChatMessage> getChatMessages() {
+            return data.getChatMessages();
+        }
+
+        /**
+         * Az akkumulátor-szint változását nem kell elküldeni a szervernek soha,
+         * mivel a jármű küldi azt a hídnak és a híd informálja a vezérlőket.
+         * A vezérlő oldalán ez az adat soha nem módosul, csak ha a híd módosítja.
+         * Tehát a metódus nem küld üzenetet, csak beállítja a helyi adatmodelen azt.
+         */
+        @Override
+        public void setBatteryLevel(Integer batteryLevel) {
+            data.setBatteryLevel(batteryLevel);
+        }
+
+        @Override
+        public void setControlling(Boolean controlling) {
+            data.setControlling(controlling); // TODO
+        }
+
+        @Override
+        public void setHostConnected(Boolean hostConnected) {
+            data.setHostConnected(hostConnected); // TODO
+        }
+
+        @Override
+        public void setHostName(String hostName) {
+            data.setHostName(hostName); // TODO
+        }
+
+        @Override
+        public void setHostState(HostState hostState) {
+            data.setHostState(hostState); // TODO
+        }
+
+        @Override
+        public void setVehicleConnected(Boolean vehicleConnected) {
+            data.setVehicleConnected(vehicleConnected); // TODO
+        }
+
+        @Override
+        public void setViewOnly(Boolean viewOnly) {
+            data.setViewOnly(viewOnly); // TODO
+        }
+
+        @Override
+        public void setWantControl(Boolean wantControl) {
+            data.setWantControl(wantControl); // TODO
+        }
+        
+    }
+    
+    /**
      * Az aktuális jármű neve.
      */
     private String hostName;
@@ -419,6 +519,16 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
      */
     public void setViewOnly(Boolean viewOnly) {
         this.viewOnly = viewOnly;
+    }
+    
+    /**
+     * Létrehoz egy részadatküldő objektumot,
+     * ami segítségével a háttérben történik meg a hídnak való üzenetküldés,
+     * miközben a helyi adatmodellben is beállítódik az új érték.
+     */
+    @Override
+    public ControllerData createSender(String senderName, Integer senderDevice) {
+        return new ControllerDataSender(this, senderName);
     }
     
     /**

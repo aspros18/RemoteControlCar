@@ -209,9 +209,10 @@ public class Main {
      * SSL Server socket létrehozása a konfig fájl alapján.
      * Ha valamiért nem sikerül a tanúsítvány használata, jelszó bevitel jelenik meg.
      * A szerver socket sikeres létrehozása után naplózza és közli a felhasználóval, hogy fut a szerver.
+     * @param count ha jelszóvédett a tanúsítvány, a hibás próbálkozások számát jelzi (rekurzívan) a naplózáshoz
      * @throws Error ha nem sikerül a szerver socket létrehozása
      */
-    private static SSLServerSocket createServerSocket() {
+    private static SSLServerSocket createServerSocket(int count) {
         try {
             SSLServerSocket socket = SSLSocketUtil.createServerSocket(CONFIG.getPort(), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile(), CONFIG.getPassword());
             logInfo(VAL_MESSAGE, "A szerver elindult.", !CONFIG.isQuiet());
@@ -219,8 +220,9 @@ public class Main {
         }
         catch (KeyStoreException ex) {
             if (ex.getMessage().startsWith("failed to extract")) {
+                if (count > 0) ConnectionAlert.logMessage(VAL_WARNING, "Hibás tanúsítvány-jelszó lett megadva " + count + " alkalommal.", IconType.WARNING, false);
                 CONFIG.setPassword(showPasswordInput(R.getBridgeImage(), false, true).getPassword());
-                return createServerSocket();
+                return createServerSocket(++count);
             }
             alert(VAL_ERROR, "Nem sikerült a szerver elindítása, mert a tanúsítvány hibás vagy nincs jól beállítva", System.err);
             System.exit(1);
@@ -240,7 +242,7 @@ public class Main {
      * @throws RuntimeException ha nem várt kivétel képződik
      */
     private static void runServer() {
-        final SSLServerSocket ss = createServerSocket();
+        final SSLServerSocket ss = createServerSocket(0); // socket szerver létrehozása kezdetben nincs 1 hibás próbálkozás sem a jelszóbevitelnél
         while (!ss.isClosed()) { // ameddig nincs lezárva a socket szerver
             SSLSocket s = null;
             try {

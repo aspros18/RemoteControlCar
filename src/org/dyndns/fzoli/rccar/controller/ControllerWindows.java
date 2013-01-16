@@ -190,6 +190,14 @@ public class ControllerWindows {
     
     /**
      * Frissíti az ablakok tartalmát a modelük alapján.
+     * 
+     * TODO:
+     * refresh metódus helyett clear metódus lesz használva, ami kipucolja az ablakokat;
+     * a clear metódust az adatmodel update metódusa hívja majd meg még a setterek hívása előtt;
+     * az adatmodel setter metódusai egyenként beállítják majd a felületen, amit kell
+     * 
+     * UPDATE:
+     * a nagyon általános dolgokra talán maradhat a refresh, hogy ne kelljen sok settert írni a felületekhez
      */
     public void refresh() {
         FRAME_MAIN.refresh();

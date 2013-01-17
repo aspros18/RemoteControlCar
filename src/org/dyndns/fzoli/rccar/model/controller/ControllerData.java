@@ -4,12 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.dyndns.fzoli.rccar.ConnectionKeys;
-import org.dyndns.fzoli.rccar.controller.socket.ControllerMessageProcess;
 import org.dyndns.fzoli.rccar.model.BaseData;
 import org.dyndns.fzoli.rccar.model.BatteryPartialBaseData;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
-import org.dyndns.fzoli.socket.ClientProcesses;
 
 /**
  * A híd a vezérlőnek ezen osztály objektumait küldi, amikor adatot közöl.
@@ -20,8 +17,6 @@ import org.dyndns.fzoli.socket.ClientProcesses;
  * az autóhoz tartozó vezérlő klienseket egy listában,
  * az autóhoz tartozó chatüzeneteket egy listában,
  * az autó gps helyzetét, pillanatnyi sebességét, északtól való eltérését és az akkuszintjét.
- * Az osztály rendelkezik részadatküldő képességgel, de szándékosan nem implementálja
- * az adatküldő interfészt, mivel nincs szükség válaszüzenetek küldésére.
  * @author zoli
  */
 public class ControllerData extends BaseData<ControllerData, PartialBaseData<ControllerData, ?>> {
@@ -248,12 +243,9 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
      * Részadatküldő implementáció.
      * Arra lett kitalálva, hogy a különböző adatmódosulásokra más-más
      * adatküldési eljárást lehessen alkalmazni.
-     * Van olyan adatmódosulás, ami esetén egyáltalán nem kell üzenni a híd szervernek.
-     * Azon setter metódusok esetén, melyek helyben soha nem változnak, csak a szerver
-     * állíthatja azokat, nem kerülnek implementálásra ebben az osztályban (pl. akkumulátor-szint),
-     * mivel soha nem is lesz igény arra, hogy ezen keresztül legyen beállítva az érték.
+     * Az osztály kliens és szerver oldalon is használva van.
      */
-    private static class ControllerDataSender extends ControllerData {
+    public static abstract class ControllerDataSender extends ControllerData {
 
         /**
          * A helyi adatmodel.
@@ -262,18 +254,15 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
         
         /**
          * Konstruktor.
-         * Az eszközazonosítóra nincs szükség, mert az adatmódosulást vagy a
-         * vezérlő program okozza helyben (a felhasználó kérésére) vagy
-         * a híd okozza azt (a szerver oldalán módosult az adat).
-         * Mivel a kliens oldalán nincs olyan, hogy a szerver üzenetére válaszüzenet
-         * kerül küldésre, ezért a küldő nevére sincs szükség, mivel csak akkor kerül
-         * felhasználásra ez az osztály, ha tényleg üzenetet kell küldeni a szervernek,
-         * egyébként egyszerűen az eredeti adatmodel setter metódusa kerül felhasználásra,
-         * ami nem küld üzenetet a szervernek soha, csak helyben módosítja az adatokat.
          * @param data a helyi adatmodel, amin a setter metódusok alkalmazódnak
          */
         public ControllerDataSender(ControllerData data) {
             this.data = data;
+        }
+
+        @Override
+        public void setBatteryLevel(Integer batteryLevel) {
+            super.setBatteryLevel(batteryLevel); // TODO
         }
 
         @Override
@@ -313,14 +302,10 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
         }
         
         /**
-         * Üzenet küldése a hídnak.
-         * Ha nincs kialakítva üzenetküldésre alkalmas kapcsolat, nem küld üzenetet.
+         * Üzenet küldése a másik oldalnak.
+         * Szerver és kliens oldalon eltérő implementáció.
          */
-        private static void sendMessage(Serializable msg) {
-            if (msg == null) return; // nincs mit küldeni
-            ControllerMessageProcess cmp = ClientProcesses.findProcess(ConnectionKeys.KEY_CONN_MESSAGE, ControllerMessageProcess.class); // üzenetküldő referencia megszerzése
-            if (cmp != null) cmp.sendMessage(msg); // ha van mivel küldeni, küldés
-        }
+        protected abstract void sendMessage(Serializable msg);
         
     }
     
@@ -369,11 +354,6 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
      * A kiválasztott járműhöz kapcsolódott vezérlők listája.
      */
     private final List<String> CONTROLLERS;
-    
-    /**
-     * A ControllerData objektum üzenetküldője.
-     */
-    private final ControllerData SENDER = new ControllerDataSender(this);
     
     /**
      * A vezérlő adatainak inicializálása.
@@ -510,15 +490,6 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
      */
     public void setViewOnly(Boolean viewOnly) {
         this.viewOnly = viewOnly;
-    }
-    
-    /**
-     * A részadatküldő objektum referenciáját adja vissza,
-     * ami segítségével a háttérben történik meg a hídnak való üzenetküldés,
-     * miközben a helyi adatmodellben is beállítódik az új érték.
-     */
-    public ControllerData getSender() {
-        return SENDER;
     }
     
     /**

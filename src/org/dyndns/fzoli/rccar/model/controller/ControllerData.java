@@ -270,17 +270,20 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
 
         @Override
         public void setBatteryLevel(Integer batteryLevel) {
-            super.setBatteryLevel(batteryLevel); // TODO
+            sendMessage(new ControllerData.BatteryPartialControllerData(batteryLevel));
+            super.setBatteryLevel(batteryLevel);
         }
 
         @Override
         public void setControlling(Boolean controlling) {
-            if (data != null) data.setControlling(controlling); // TODO
+            sendMessage(new ControllerData.BoolenPartialControllerData(controlling, BoolenPartialControllerData.BooleanType.CONTROLLING));
+            if (data != null) data.setControlling(controlling);
         }
 
         @Override
         public void setHostConnected(Boolean hostConnected) {
-            if (data != null) data.setHostConnected(hostConnected); // TODO
+            sendMessage(new ControllerData.BoolenPartialControllerData(hostConnected, BoolenPartialControllerData.BooleanType.HOST_CONNECTED));
+            if (data != null) data.setHostConnected(hostConnected);
         }
 
         @Override
@@ -291,30 +294,34 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
 
         @Override
         public void setHostState(HostState hostState) {
-            if (data != null) data.setHostState(hostState); // TODO
+            sendMessage(new ControllerData.HostStatePartialControllerData(hostState));
+            if (data != null) data.setHostState(hostState);
         }
 
         @Override
         public void setVehicleConnected(Boolean vehicleConnected) {
-            if (data != null) data.setVehicleConnected(vehicleConnected); // TODO
+            sendMessage(new ControllerData.BoolenPartialControllerData(vehicleConnected, BoolenPartialControllerData.BooleanType.VEHICLE_CONNECTED));
+            if (data != null) data.setVehicleConnected(vehicleConnected);
         }
 
         @Override
         public void setViewOnly(Boolean viewOnly) {
-            if (data != null) data.setViewOnly(viewOnly); // TODO
+            sendMessage(new ControllerData.BoolenPartialControllerData(viewOnly, BoolenPartialControllerData.BooleanType.VIEW_ONLY));
+            if (data != null) data.setViewOnly(viewOnly);
         }
 
         @Override
         public void setWantControl(Boolean wantControl) {
-            if (data != null) data.setWantControl(wantControl); // TODO
+            sendMessage(new ControllerData.BoolenPartialControllerData(wantControl, BoolenPartialControllerData.BooleanType.WANT_CONTROLL));
+            if (data != null) data.setWantControl(wantControl);
         }
-        
+
         /**
          * Üzenet küldése a másik oldalnak.
          * Szerver és kliens oldalon eltérő implementáció.
          */
         protected abstract void sendMessage(Serializable msg);
-        
+
     }
     
     /**

@@ -251,6 +251,14 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
          * A helyi adatmodel.
          */
         private final ControllerData data;
+
+        /**
+         * Konstruktor.
+         * A setter metódusok csak üzenetküldést végeznek, mivel nincs megadva adatmodel.
+         */
+        public ControllerDataSender() {
+            this(null);
+        }
         
         /**
          * Konstruktor.

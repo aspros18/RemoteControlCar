@@ -127,7 +127,7 @@ public class HostSelectionFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 selected = true;
                 BT_SELECT.setEnabled(false);
-                ControllerModels.getData().setHostName(LIST.getSelectedValue());
+                ControllerModels.getData().getSender().setHostName(LIST.getSelectedValue());
             }
             
         });

@@ -275,7 +275,7 @@ public class ControllerFrame extends JFrame {
              */
             @Override
             public void windowClosing(WindowEvent e) {
-                getData().setHostName(null);
+                getData().getSender().setHostName(null);
             }
 
         });

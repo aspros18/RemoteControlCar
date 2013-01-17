@@ -267,38 +267,38 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
 
         @Override
         public void setControlling(Boolean controlling) {
-            data.setControlling(controlling); // TODO
+            if (data != null) data.setControlling(controlling); // TODO
         }
 
         @Override
         public void setHostConnected(Boolean hostConnected) {
-            data.setHostConnected(hostConnected); // TODO
+            if (data != null) data.setHostConnected(hostConnected); // TODO
         }
 
         @Override
         public void setHostName(String hostName) {
             sendMessage(new ControllerData.HostNamePartialControllerData(hostName));
-            data.setHostName(hostName); // TODO
+            if (data != null) data.setHostName(hostName);
         }
 
         @Override
         public void setHostState(HostState hostState) {
-            data.setHostState(hostState); // TODO
+            if (data != null) data.setHostState(hostState); // TODO
         }
 
         @Override
         public void setVehicleConnected(Boolean vehicleConnected) {
-            data.setVehicleConnected(vehicleConnected); // TODO
+            if (data != null) data.setVehicleConnected(vehicleConnected); // TODO
         }
 
         @Override
         public void setViewOnly(Boolean viewOnly) {
-            data.setViewOnly(viewOnly); // TODO
+            if (data != null) data.setViewOnly(viewOnly); // TODO
         }
 
         @Override
         public void setWantControl(Boolean wantControl) {
-            data.setWantControl(wantControl); // TODO
+            if (data != null) data.setWantControl(wantControl); // TODO
         }
         
         /**

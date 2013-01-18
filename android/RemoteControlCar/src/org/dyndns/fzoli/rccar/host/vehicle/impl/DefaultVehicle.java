@@ -15,20 +15,15 @@ import org.dyndns.fzoli.rccar.host.vehicle.AbstractVehicle;
  */
 public class DefaultVehicle extends AbstractVehicle {
 	
-//	/**
-//	 * Teszt precíz vezérlésre.
-//	 */
-//	private PwmOutput pwm;
-	
 	/**
 	 * Digitális kimenet a vezérléshez.
 	 */
 	private DigitalOutput outLeft, outRight, outFront, outBack;
 	
 	/**
-	 * A jármű vezérléséhez használt láb száma.
+	 * A jármű vezérléséhez használt láb azonosítója.
 	 */
-	protected int PIN_FRONT = 10, PIN_BACK = 11, PIN_LEFT = 12, PIN_RIGHT = 13;
+	protected int PIN_FRONT = 11, PIN_BACK = 10, PIN_LEFT = 13, PIN_RIGHT = 12;
 	
 	/**
 	 * Konstruktor.
@@ -84,10 +79,10 @@ public class DefaultVehicle extends AbstractVehicle {
 	/**
 	 * A kapcsolat létrejötte után a digitális kimenetek megszerzése.
 	 * A lábak használata:
-	 * - 10-es, előremenet
-	 * - 11-es, hátramenet
-	 * - 12-es, balra kanyarodás
-	 * - 13-mas jobbra kanyarodás
+	 * - 11-es, előremenet
+	 * - 10-es, hátramenet
+	 * - 13-es, balra kanyarodás
+	 * - 12-mas jobbra kanyarodás
 	 * A 10 és 11 valamint 12 és 13 soha nem lehet aktív egyszerre.
 	 */
 	@Override
@@ -97,7 +92,6 @@ public class DefaultVehicle extends AbstractVehicle {
 		outBack = ioio_.openDigitalOutput(PIN_BACK, false);
 		outLeft = ioio_.openDigitalOutput(PIN_LEFT, false);
 		outRight = ioio_.openDigitalOutput(PIN_RIGHT, false);
-//		pwm = ioio_.openPwmOutput(14, 1000);
 	}
 	
 	/**
@@ -108,7 +102,6 @@ public class DefaultVehicle extends AbstractVehicle {
 	public void loop() throws ConnectionLostException, InterruptedException {
 		handle(getX(), outLeft, outRight);
 		handle(getY(), outBack, outFront);
-//		pwm.setDutyCycle((float)(getY() / 100.0));
 		super.loop();
 	}
 	

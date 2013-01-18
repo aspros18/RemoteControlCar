@@ -2,6 +2,7 @@ package org.dyndns.fzoli.rccar.host.vehicle;
 
 import org.dyndns.fzoli.rccar.host.ConnectionService;
 import org.dyndns.fzoli.rccar.host.vehicle.impl.DefaultVehicle;
+import org.dyndns.fzoli.rccar.host.vehicle.impl.PWMVehicle;
 
 /**
  * Járműgyártó osztály.
@@ -19,7 +20,9 @@ public class Vehicles {
 	 */
 	public static Vehicle createVehicle(ConnectionService service, int index) {
 		switch (index) {
-			default: // még nem tudok mással szolgálni
+			case 1: // PWM-teszt
+				return new PWMVehicle(service);
+			default: // alapértelmezett jármű: Prototípus
 				return new DefaultVehicle(service);
 		}
 	}

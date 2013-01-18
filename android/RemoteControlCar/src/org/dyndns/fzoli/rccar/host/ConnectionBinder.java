@@ -33,6 +33,11 @@ public class ConnectionBinder extends Binder {
 		 */
 		public void onConnectionStateChange(boolean connecting);
 		
+		/**
+		 * A feszültség-szint változását jelzi.
+		 * Null esetén nincs adat.
+		 */
+		public void onVoltageChanged(Float voltage);
 	}
 	
 	/**
@@ -189,6 +194,13 @@ public class ConnectionBinder extends Binder {
 		if (partialData instanceof HostData.ControlPartialHostData) {
 			fireArrowChange(true);
 		}
+	}
+	
+	/**
+	 * Jelzi a felület eseménykezelőjének, hogy változott a feszültség.
+	 */
+	public void fireVoltageChanged(Float voltage) {
+		if (mListener != null) mListener.onVoltageChanged(voltage);
 	}
 	
 	/**

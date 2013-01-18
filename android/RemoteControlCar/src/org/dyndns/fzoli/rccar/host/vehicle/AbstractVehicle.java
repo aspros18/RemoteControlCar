@@ -93,7 +93,9 @@ public abstract class AbstractVehicle extends BaseIOIOLooper implements Vehicle 
 	 */
 	@Override
 	public void loop() throws ConnectionLostException, InterruptedException {
-		refreshBattery(getBatteryLevel()); // akku-szint frissítése, ha kell
+		float voltage = inBattery.getVoltage();
+		SERVICE.getBinder().fireVoltageChanged(voltage); // feszültség küldése a felületnek
+		refreshBattery(getBatteryLevel(voltage)); // akku-szint frissítése, ha kell
 		Thread.sleep(20); // 20 ms szünet
 	}
 	
@@ -115,8 +117,8 @@ public abstract class AbstractVehicle extends BaseIOIOLooper implements Vehicle 
 	 * Az akkumulátor töltöttségét adja vissza százalékban.
 	 */
 	@Override
-	public int getBatteryLevel() throws ConnectionLostException, InterruptedException {
-		int percent = (int)((inBattery.getVoltage() - getMinVoltage()) * 100 / (getMaxVoltage() - getMinVoltage()));
+	public int getBatteryLevel(float voltage) {
+		int percent = (int)((voltage - getMinVoltage()) * 100 / (getMaxVoltage() - getMinVoltage()));
 		if (percent >= 100) return 100;
 		if (percent <= 0) return 0;
 		return percent;
@@ -128,7 +130,6 @@ public abstract class AbstractVehicle extends BaseIOIOLooper implements Vehicle 
 	 */
 	@Override
 	public void disconnected() {
-//		refreshBattery(null); // nincs rá szükség, mert egyértelmű, hogy elévült adat, ha connected = false
 		updateState(false);
 	}
 	

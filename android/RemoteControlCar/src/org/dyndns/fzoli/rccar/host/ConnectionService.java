@@ -516,9 +516,11 @@ public class ConnectionService extends IOIOService {
 	/**
 	 * Ha a jármű mikrovezérlőjét csatlakoztatták vagy eltávolították.
 	 * - A figyelmeztető üzenet frissítése.
+	 * - Ha a jármű le lett választva, a felületen a feszültség-szint elrejtése.
 	 */
 	public void onVehicleConnectionStateChanged() {
 		updateNotificationText();
+		if (!isVehicleConnected()) getBinder().fireVoltageChanged(null);
 	}
 	
 	/**

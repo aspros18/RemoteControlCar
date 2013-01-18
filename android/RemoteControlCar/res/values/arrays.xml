@@ -2,9 +2,11 @@
 <resources>
     <string-array name="vehicleNames">
         <item name="prototype">Prototype</item>
+        <item name="pwm">PWM test</item>
     </string-array>
     <string-array name="vehicleIndexes">
         <item name="prototype">0</item>
+        <item name="pwm">1</item>
     </string-array>
     <string-array name="reconnectDelayNames">
         <item name="10">10 seconds</item>

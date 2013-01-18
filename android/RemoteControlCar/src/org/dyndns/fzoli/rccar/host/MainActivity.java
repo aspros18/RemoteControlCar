@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.host;
 
+import java.text.DecimalFormat;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -55,6 +56,11 @@ public class MainActivity extends SherlockActivity {
 	private TextView tvX, tvY;
 	
 	/**
+	 * Feszültség-szint megjelenítéséhez debuggolás céljára.
+	 */
+	private TextView tvVoltage;
+	
+	/**
 	 * A százalékban megadott vezérlőjel grafikus komponense.
 	 * Segítségével offline módban a jármű közvetlenül vezérelhető.
 	 */
@@ -87,6 +93,11 @@ public class MainActivity extends SherlockActivity {
 	private Config config;
 	
 	/**
+	 * A feszültség értéket két tizedes pontosságúra formázza.
+	 */
+	private static final DecimalFormat DF_VOLTAGE = new DecimalFormat("#.00");
+	
+	/**
 	 * Amikor a felület létrejön, beállítódik a nézet,
 	 * a nézet komponenseinek referenciái ismertté válnak,
 	 * az alapbeállítás megtörténik és az eseménykezelők regisztrálódnak.
@@ -101,6 +112,7 @@ public class MainActivity extends SherlockActivity {
 		arrow = (ArrowView) findViewById(R.id.arrow);
 		tvX = (TextView) findViewById(R.id.tv_x);
 		tvY = (TextView) findViewById(R.id.tv_y);
+		tvVoltage = (TextView) findViewById(R.id.tv_voltage);
 		config = ConnectionService.createConfig(this); // konfiguráció betöltése
 		
 		setXYText(0, 0); // kezdetben a jármű nem mozog és egyenesben áll a kormánya
@@ -411,6 +423,21 @@ public class MainActivity extends SherlockActivity {
 						});
 					}
 					
+					/**
+					 * Frissíti a feszültség-szintet a felületen.
+					 */
+					@Override
+					public void onVoltageChanged(final Float voltage) {
+						runOnUiThread(new Runnable() {
+							
+							@Override
+							public void run() {
+								setVoltageText(voltage);
+							}
+							
+						});
+					}
+					
 					@Override
 					public void onConnectionStateChange(final boolean connecting) {
 						runOnUiThread(new Runnable() { // itt nem lenne kötelező a felület szálát használni, de akkor aszinkron lenne és beragadhatna a dialógus
@@ -455,6 +482,14 @@ public class MainActivity extends SherlockActivity {
 	}
 	
 	/**
+	 * A feszültség-szint megjelenítése a felületen.
+	 * Null paraméter esetén vagy leállított szolgáltatás esetén nem jelenik meg szöveg.
+	 */
+	private void setVoltageText(Float voltage) {
+		tvVoltage.setText(binder == null || voltage == null ? "" : (DF_VOLTAGE.format(voltage) + " V"));
+	}
+	
+	/**
 	 * Eseménykezelő levétele, kapcsolat megszakítása a szolgáltatással és annak leállítása, ha kérik.
 	 * @param stop true esetén leáll a service, egyébként fut tovább, csak a kapcsolat szűnik meg
 	 */
@@ -464,6 +499,7 @@ public class MainActivity extends SherlockActivity {
 				binder.setListener(null); // annak eltávolítása
 				repaintArrow(0, 0, true, true); // alapállapotba helyezi a felületet
 				binder = null; // jelzés a GC-nek és a programnak, hogy már nincs eseménykezelő
+				setVoltageText(null); // feszültség-szint elrejtése
 			}
 			ServiceConnection tmp = conn; // a kapcsolat ideignlenes referenciája
 			conn = null; // az osztályváltozó nullázása, hogy újra ne fusson le a metódus és jelzés a GC-nek

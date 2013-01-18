@@ -1,6 +1,5 @@
 package org.dyndns.fzoli.rccar.host.vehicle;
 
-import ioio.lib.api.exception.ConnectionLostException;
 import ioio.lib.util.IOIOLooper;
 
 /**
@@ -48,7 +47,7 @@ public interface Vehicle extends IOIOLooper {
 	/**
 	 * Az akkumulátor töltöttségét adja vissza százalékban.
 	 */
-	public int getBatteryLevel() throws ConnectionLostException, InterruptedException;
+	public int getBatteryLevel(float voltage);
 	
 	/**
 	 * Megadja, melyik lábat kell használni a feszültségméréshez.

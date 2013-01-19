@@ -372,6 +372,15 @@ public class ControllerFrame extends JFrame {
     
     /**
      * Frissíti az ablak tartalmát a model alapján.
+     */
+    public void refresh() {
+        refreshControllButton();
+        refreshSpeed();
+        refreshBattery();
+    }
+    
+    /**
+     * A vezérlés átadása/kérése gombot frissíti az adatmodel alapján.
      * Az alábbi táblázat alapján XNOR művelet dönti el, hogy aktív-e a gomb
      * és az első opció dönti el az ikon típusát:
      *    vezérli? akarja?  esemény
@@ -381,10 +390,24 @@ public class ControllerFrame extends JFrame {
      *    h        h        kérés aktív
      * Ha a jármű csak figyelhető, akkor a gomb biztosan inaktív.
      */
-    public void refresh() {
+    public void refreshControllButton() {
         btControll.setIcon(getData().isControlling() ? IC_CONTROLLER1 : IC_CONTROLLER2);
         btControll.setToolTipText(getData().isControlling() ? "Vezérlés átadása" : "Vezérlés kérése");
         btControll.setEnabled(!getData().isViewOnly() && !(getData().isControlling() ^ getData().isWantControl()));
+    }
+    
+    /**
+     * A sebesség feliratot frissíti az adatmodel alapján.
+     */
+    public void refreshSpeed() {
+        // TODO
+    }
+    
+    /**
+     * Az akkumulátor-töltöttség jelzőt frissíti az adatmodel alapján.
+     */
+    public void refreshBattery() {
+        // TODO
     }
     
     /**

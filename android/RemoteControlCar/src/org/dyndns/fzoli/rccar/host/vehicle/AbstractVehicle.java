@@ -93,7 +93,7 @@ public abstract class AbstractVehicle extends BaseIOIOLooper implements Vehicle 
 	 */
 	@Override
 	public void loop() throws ConnectionLostException, InterruptedException {
-		float voltage = inBattery.getVoltage();
+		float voltage = inBattery.getVoltage(); // feszültség-szint olvasása
 		SERVICE.getBinder().fireVoltageChanged(voltage); // feszültség küldése a felületnek
 		refreshBattery(getBatteryLevel(voltage)); // akku-szint frissítése, ha kell
 		Thread.sleep(20); // 20 ms szünet

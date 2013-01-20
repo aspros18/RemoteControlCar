@@ -174,6 +174,7 @@ public class HostMessageProcess extends MessageProcess {
 	@Override
 	protected void onStop() {
 		sensorThread.getLooper().quit();
+		SERVICE.getBinder().removeSender(this);
 		SERVICE.getVehicle().setCallback(null);
 		if (availableLocation) locationManager.removeUpdates(locationListener);
 		if (availableDirection) sensorManager.unregisterListener(sensorEventListener);

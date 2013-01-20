@@ -18,7 +18,7 @@ public class HostDisconnectProcess extends ClientDisconnectProcess implements Co
 	/**
 	 * Az utolsó időtúllépéskori vezérlőjel.
 	 */
-	private int lastX, lastY;
+	private int lastX, lastY, xyCounter;
 	
 	/**
 	 * Hoszt oldali időtúllépés detektáló.
@@ -46,16 +46,18 @@ public class HostDisconnectProcess extends ClientDisconnectProcess implements Co
 		Log.i(ConnectionService.LOG_TAG, "on timeout");
 		lastX = SERVICE.getBinder().resetX();
 		lastY = SERVICE.getBinder().resetY();
+		xyCounter = SERVICE.getBinder().getXYCounter();
 	}
 	
 	/**
 	 * Ha az időtúllépés után is él a kapcsolat.
-	 * A vezérlőjel visszaállítása, mint ha semmi sem történt volna.
+	 * Ha a vezérlőjelet az időtúllépés alatt nem módosította senki,
+	 * visszaállítja a vezérlőjelet az időtúllépés előtti állapotra, mint ha semmi sem történt volna.
 	 */
 	@Override
 	protected void afterTimeout() throws Exception {
 		Log.i(ConnectionService.LOG_TAG, "after timeout");
-		SERVICE.getBinder().setXY(lastX, lastY);
+		if (xyCounter == SERVICE.getBinder().getXYCounter()) SERVICE.getBinder().setXY(lastX, lastY);
 	}
 	
 	/**

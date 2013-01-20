@@ -3,7 +3,6 @@ package org.dyndns.fzoli.rccar.host;
 import org.dyndns.fzoli.rccar.host.socket.HostMessageProcess;
 import org.dyndns.fzoli.rccar.model.Control;
 import org.dyndns.fzoli.rccar.model.host.HostData;
-
 import android.os.Binder;
 import android.util.Log;
 
@@ -50,10 +49,17 @@ public class ConnectionBinder extends Binder {
 	 */
 	private final ConnectionService SERVICE;
 	
+	private int mXYcounter = 0;
+	
 	/**
 	 * Az activity eseményfigyelője.
 	 */
 	private Listener mListener;
+	
+	/**
+	 * Az aktív üzenetküldő.
+	 */
+	private HostMessageProcess mSender;
 	
 	/**
 	 * Az utolsó állapotjelzés.
@@ -105,6 +111,15 @@ public class ConnectionBinder extends Binder {
 	}
 	
 	/**
+	 * Megadja, hogy hány alkalommal állították át a vezérlőjelet.
+	 * Így lehet a legegyszerűbben megtudni, hogy egy szálban az utolsó vezérlőjel
+	 * átállítása óta más szál módosította-e már a vezérlőjelet.
+	 */
+	public int getXYCounter() {
+		return mXYcounter;
+	}
+	
+	/**
 	 * Irány nullázása.
 	 * Jelzi az Activitynek a módosulást.
 	 * @return a nullázás előtti érték
@@ -137,11 +152,21 @@ public class ConnectionBinder extends Binder {
 	
 	/**
 	 * Irány és sebesség megadása százalékban.
+	 * @param remote true esetén jelzi az Activitynek a módosulást, egyébként a hídnak küld üzenetet.
+	 */
+	public void setXY(int x, int y, boolean remote) {
+		getControl().setX(x);
+		getControl().setY(y);
+		fireArrowChange(remote);
+		mXYcounter++;
+	}
+	
+	/**
+	 * Irány és sebesség megadása százalékban.
 	 * Jelzi az Activitynek a módosulást.
 	 */
 	public void setXY(int x, int y) {
-		setX(x);
-		setY(y);
+		setXY(x, y, true);
 	}
 	
 	/**
@@ -162,27 +187,35 @@ public class ConnectionBinder extends Binder {
 	
 	/**
 	 * Irány megadása százalékban.
-	 * @param remote true esetén jelzi az Activitynek a módosulást
+	 * @param remote true esetén jelzi az Activitynek a módosulást, egyébként a hídnak küld üzenetet.
 	 */
 	public void setX(int x, boolean remote) {
-		getControl().setX(x);
-		fireArrowChange(remote);
+		setXY(x, getY(), remote);
 	}
 	
 	/**
 	 * Sebesség megadása százalékban.
-	 * @param remote true esetén jelzi az Activitynek a módosulást
+	 * @param remote true esetén jelzi az Activitynek a módosulást, egyébként a hídnak küld üzenetet.
 	 */
 	public void setY(int y, boolean remote) {
-		getControl().setY(y);
-		fireArrowChange(remote);
+		setXY(getX(), y, remote);
 	}
 	
 	/**
-	 * A jármű adatait elküldi a hídnak, ha tudja.
+	 * A jármű adatait elküldi a hídnak, ha tudja és eltárolja az üzenetküldő referenciáját.
 	 */
 	public void sendHostData(HostMessageProcess sender) {
-		if (sender != null) sender.sendMessage(DATA);
+		if (sender != null) {
+			mSender = sender;
+			sender.sendMessage(DATA);
+		}
+	}
+	
+	/**
+	 * Az üzenetküldő referenciáját kinullázza, ha azt maga az üzenetküldő kéri.
+	 */
+	public void removeSender(HostMessageProcess sender) {
+		if (sender == mSender) mSender = null;
 	}
 	
 	/**
@@ -219,7 +252,7 @@ public class ConnectionBinder extends Binder {
 	}
 	
 	/**
-	 * Vezérlőjel változás jelzése az Activitynek, ha kell.
+	 * Vezérlőjel változás jelzése az Activitynek vagy a Hídnak, ha kell.
 	 * Ha a felületről állították be, nem kell újra jelezni.
 	 * Ha nincs kinek jelezni, a jelzés elmarad.
 	 * @param remote true, ha a híd adja az üzenetet, false ha a felületről érkezik.
@@ -228,9 +261,9 @@ public class ConnectionBinder extends Binder {
 		if (remote) {
 			if (mListener != null) mListener.onArrowChange(getX(), getY());
 		}
-		else {
-			// TODO: küldés szervernek
-			// UPDATE: nem fog kelleni, mert csak local módban állítható a telefonon az érték
+		else if (mSender != null) {
+			// csak a teljesség kedvéért, de egyelőre nincs használva sehol
+			mSender.sendMessage(new HostData.ControlPartialHostData(getControl()));
 		}
 	}
 	

@@ -5,7 +5,6 @@ import ioio.lib.api.exception.ConnectionLostException;
 
 import org.dyndns.fzoli.rccar.host.ConnectionService;
 import org.dyndns.fzoli.rccar.host.vehicle.AbstractVehicle;
-//import ioio.lib.api.PwmOutput;
 
 /**
  * A prototípus autó vezérlője.
@@ -14,17 +13,17 @@ import org.dyndns.fzoli.rccar.host.vehicle.AbstractVehicle;
  * @author zoli
  */
 public class DefaultVehicle extends AbstractVehicle {
-	
+
 	/**
 	 * Digitális kimenet a vezérléshez.
 	 */
 	private DigitalOutput outLeft, outRight, outFront, outBack;
-	
+
 	/**
 	 * A jármű vezérléséhez használt láb azonosítója.
 	 */
 	protected int PIN_FRONT = 11, PIN_BACK = 10, PIN_LEFT = 13, PIN_RIGHT = 12;
-	
+
 	/**
 	 * Konstruktor.
 	 * @param service szolgáltatás a vezérlőjelet tartalmazó objektum referenciájának eléréséhez
@@ -32,7 +31,7 @@ public class DefaultVehicle extends AbstractVehicle {
 	public DefaultVehicle(ConnectionService service) {
 		super(service);
 	}
-	
+
 	/**
 	 * Megadja, melyik lábat kell használni a feszültségméréshez.
 	 * Az akkumulátor-szint mérése a 33-as lábon történik.
@@ -41,21 +40,43 @@ public class DefaultVehicle extends AbstractVehicle {
 	public int getBatteryPin() {
 		return 33;
 	}
-	
+
 	/**
 	 * Maximum feszültséghatár akkumulátor-szint becsélésre.
+	 * @return 2.71 V alapesetben
 	 */
 	@Override
 	public float getMaxVoltage() {
-		return 3.0f;
+		int x = getX(), y = getY();
+		if (x == 0 && y == 0) return 2.71f; // alaphelyzet
+		if (x == 0 && y > 0) return 2.13f; // előre
+		if (x == 0 && y < 0) return 2.12f; // hátra
+		if (x < 0 && y > 0) return 2.16f; // balra és előre
+		if (x > 0 && y > 0) return 2.16f; // jobbra és előre
+		if (x < 0 && y < 0) return 2.15f; // balra és hátra
+		if (x > 0 && y < 0) return 2.15f; // jobbra és hátra
+		if (x < 0 && y == 0) return 2.12f; // bal
+		if (x > 0 && y == 0) return 2.15f; // jobb
+		return 0f; // soha nem történik meg, de kötelező visszatérni valamivel
 	}
-	
+
 	/**
 	 * Minimum feszültséghatár akkumulátor-szint becsélésre.
+	 * @return 2.43 V alapesetben
 	 */
 	@Override
 	public float getMinVoltage() {
-		return 1.2f;
+		int x = getX(), y = getY();
+		if (x == 0 && y == 0) return 2.43f; // alaphelyzet
+		if (x == 0 && y > 0) return 2.29f; // előre
+		if (x == 0 && y < 0) return 2.29f; // hátra
+		if (x < 0 && y > 0) return 2.09f; // balra és előre
+		if (x > 0 && y > 0) return 2.10f; // jobbra és előre
+		if (x < 0 && y < 0) return 2.09f; // balra és hátra
+		if (x > 0 && y < 0) return 2.1f; // jobbra és hátra
+		if (x < 0 && y == 0) return 2.06f; // bal
+		if (x > 0 && y == 0) return 2.08f; // jobb
+		return 0f; // soha nem történik meg, de kötelező visszatérni valamivel
 	}
 
 	/**
@@ -75,7 +96,7 @@ public class DefaultVehicle extends AbstractVehicle {
 	public boolean isFullY() {
 		return true;
 	}
-	
+
 	/**
 	 * A kapcsolat létrejötte után a digitális kimenetek megszerzése.
 	 * A lábak használata:
@@ -93,7 +114,7 @@ public class DefaultVehicle extends AbstractVehicle {
 		outLeft = ioio_.openDigitalOutput(PIN_LEFT, false);
 		outRight = ioio_.openDigitalOutput(PIN_RIGHT, false);
 	}
-	
+
 	/**
 	 * A metódus, mint egy ciklus, állandóan ismétlődik, amíg van kapcsolat az IC-vel.
 	 * Az aktuális vezérlőjel alapján beállítja a digitális kimeneteket és vár 20 ezredmásodpercet.
@@ -104,7 +125,7 @@ public class DefaultVehicle extends AbstractVehicle {
 		handle(getY(), outBack, outFront);
 		super.loop();
 	}
-	
+
 	/**
 	 * A jel alapján átváltja a két kimenetet úgy, hogy egy időben egyszerre a két kimenet soha nem aktív.
 	 * @param sign a vezérlőjel, ami -100 és 100 között értelmezendő. Jelen esetben -100, 0 és 100 lehet.
@@ -125,5 +146,5 @@ public class DefaultVehicle extends AbstractVehicle {
 			outPlus.write(true); // végül a pozitív kimenet logikai igaz
 		}
 	}
-	
+
 }

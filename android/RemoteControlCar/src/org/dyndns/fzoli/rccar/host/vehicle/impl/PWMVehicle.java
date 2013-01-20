@@ -10,6 +10,11 @@ import org.dyndns.fzoli.rccar.host.vehicle.AbstractVehicle;
  * PWM alapú járművezérlő teszt.
  * Használatával nem csak logikai érték alapján vezérelhető a jármű,
  * hanem pontosan megadható a jármű sebessége és iránya.
+ * Az osztály mivel teszt jellegű, nincs konkrét járműre hangolva.
+ * A prototípus autó paramétereire van állítva jelenleg,
+ * mert csak az az egy jármű áll rendlekezésemre.
+ * Amint lesz a tulajdonomban egy komolyabb, gyors RC,
+ * ezen osztály alapján megírom az arra optimalizált jármű osztályt.
  */
 public class PWMVehicle extends AbstractVehicle {
 
@@ -60,18 +65,20 @@ public class PWMVehicle extends AbstractVehicle {
 
 	/**
 	 * Maximum feszültséghatár akkumulátor-szint becsélésre.
+	 * @return 2.7 V
 	 */
 	@Override
 	public float getMaxVoltage() {
-		return 2.6f;
+		return 2.7f;
 	}
-
+	
 	/**
 	 * Minimum feszültséghatár akkumulátor-szint becsélésre.
+	 * @return 2.35 V
 	 */
 	@Override
 	public float getMinVoltage() {
-		return 1.2f;
+		return 2.35f;
 	}
 	
 	/**

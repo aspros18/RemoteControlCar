@@ -47,36 +47,16 @@ public class DefaultVehicle extends AbstractVehicle {
 	 */
 	@Override
 	public float getMaxVoltage() {
-		int x = getX(), y = getY();
-		if (x == 0 && y == 0) return 2.71f; // alaphelyzet
-		if (x == 0 && y > 0) return 2.13f; // előre
-		if (x == 0 && y < 0) return 2.12f; // hátra
-		if (x < 0 && y > 0) return 2.16f; // balra és előre
-		if (x > 0 && y > 0) return 2.16f; // jobbra és előre
-		if (x < 0 && y < 0) return 2.15f; // balra és hátra
-		if (x > 0 && y < 0) return 2.15f; // jobbra és hátra
-		if (x < 0 && y == 0) return 2.12f; // bal
-		if (x > 0 && y == 0) return 2.15f; // jobb
-		return 0f; // soha nem történik meg, de kötelező visszatérni valamivel
+		return 2.71f;
 	}
 
 	/**
 	 * Minimum feszültséghatár akkumulátor-szint becsélésre.
-	 * @return 2.43 V alapesetben
+	 * @return 2.395 V alapesetben
 	 */
 	@Override
 	public float getMinVoltage() {
-		int x = getX(), y = getY();
-		if (x == 0 && y == 0) return 2.43f; // alaphelyzet
-		if (x == 0 && y > 0) return 2.29f; // előre
-		if (x == 0 && y < 0) return 2.29f; // hátra
-		if (x < 0 && y > 0) return 2.09f; // balra és előre
-		if (x > 0 && y > 0) return 2.10f; // jobbra és előre
-		if (x < 0 && y < 0) return 2.09f; // balra és hátra
-		if (x > 0 && y < 0) return 2.1f; // jobbra és hátra
-		if (x < 0 && y == 0) return 2.06f; // bal
-		if (x > 0 && y == 0) return 2.08f; // jobb
-		return 0f; // soha nem történik meg, de kötelező visszatérni valamivel
+		return 2.395f;
 	}
 
 	/**

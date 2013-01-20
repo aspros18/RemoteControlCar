@@ -486,8 +486,7 @@ public class MainActivity extends SherlockActivity {
 	 * Null paraméter esetén vagy leállított szolgáltatás esetén nem jelenik meg szöveg.
 	 */
 	private void setVoltageText(Float voltage) {
-		// ideiglenesen írja a százalékos értéket is, de nem fogja
-		tvVoltage.setText(binder == null || voltage == null ? "" : (DF_VOLTAGE.format(voltage) + " V\n" + binder.getService().getVehicle().getBatteryLevel(voltage) + " %"));
+		tvVoltage.setText(binder == null || voltage == null ? "" : (DF_VOLTAGE.format(voltage) + " V"));
 	}
 	
 	/**

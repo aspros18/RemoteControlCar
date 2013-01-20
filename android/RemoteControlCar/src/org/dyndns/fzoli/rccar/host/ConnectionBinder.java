@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.dyndns.fzoli.rccar.host.socket.HostMessageProcess;
 import org.dyndns.fzoli.rccar.model.Control;
+import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.host.HostData;
 import android.os.Binder;
 import android.util.Log;
@@ -231,7 +232,7 @@ public class ConnectionBinder extends Binder {
 	 * Frissíti a HostData beállításait annak egyik részadata alapján.
 	 * Ha a részadat vezérlőjel, akkor jelzi az eseményt a felületnek.
 	 */
-	public void updateHostData(HostData.PartialHostData<?> partialData) {
+	public void updateHostData(PartialBaseData<HostData, ?> partialData) {
 		DATA.update(partialData);
 		if (partialData instanceof HostData.ControlPartialHostData) {
 			fireArrowChange(true);

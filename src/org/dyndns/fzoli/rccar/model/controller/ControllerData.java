@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import org.dyndns.fzoli.rccar.model.BaseData;
 import org.dyndns.fzoli.rccar.model.BatteryPartialBaseData;
+import org.dyndns.fzoli.rccar.model.Control;
+import org.dyndns.fzoli.rccar.model.ControlPartialBaseData;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
 
 /**
@@ -239,6 +241,21 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
         
     }
 
+    /**
+     * A ControllerData vezérlő részadata, ami az autó irányításában játszik szerepet.
+     */
+    public static class ControlPartialControllerData extends ControlPartialBaseData<ControllerData> {
+
+        /**
+         * Részadat inicializálása és beállítása.
+         * @param data a vezérlőjel
+         */
+        public ControlPartialControllerData(Control data) {
+            super(data);
+        }
+        
+    }
+    
     /**
      * Részadatküldő implementáció.
      * Arra lett kitalálva, hogy a különböző adatmódosulásokra más-más
@@ -569,7 +586,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     }
     
     /**
-     * A jármű pillanatnyi állapotát adja vissz.
+     * A jármű pillanatnyi állapotát adja vissza.
      */
     public HostState getHostState() {
         return hostState;

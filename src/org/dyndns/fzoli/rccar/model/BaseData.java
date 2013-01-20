@@ -11,6 +11,11 @@ public class BaseData<D extends BaseData, PD extends PartialBaseData> extends Da
      */
     private Integer batteryLevel;
 
+    /**
+     * A jármű vezérlőjele.
+     */
+    private Control control;
+    
     protected BaseData() {
         super();
     }
@@ -25,12 +30,26 @@ public class BaseData<D extends BaseData, PD extends PartialBaseData> extends Da
     public Integer getBatteryLevel() {
         return batteryLevel;
     }
+
+    /**
+     * A jármű vezérlőjelét adja vissza.
+     */
+    public Control getControl() {
+        return control;
+    }
     
     /**
      * Beállítja az akkumulátorszintet.
      */
     public void setBatteryLevel(Integer batteryLevel) {
         this.batteryLevel = batteryLevel;
+    }
+
+    /**
+     * A jármű vezérlőjelét állítja be.
+     */
+    public void setControl(Control control) {
+        this.control = control;
     }
 
     /**
@@ -41,6 +60,7 @@ public class BaseData<D extends BaseData, PD extends PartialBaseData> extends Da
     public void update(D d) {
         if (d != null) {
             setBatteryLevel(d.getBatteryLevel());
+            setControl(d.getControl());
         }
     }
 
@@ -50,6 +70,7 @@ public class BaseData<D extends BaseData, PD extends PartialBaseData> extends Da
     @Override
     public void clear() {
         batteryLevel = null;
+        control = null;
     }
     
 }

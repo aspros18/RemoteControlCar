@@ -5,6 +5,7 @@ import java.util.Date;
 import org.dyndns.fzoli.rccar.model.BaseData;
 import org.dyndns.fzoli.rccar.model.BatteryPartialBaseData;
 import org.dyndns.fzoli.rccar.model.Control;
+import org.dyndns.fzoli.rccar.model.ControlPartialBaseData;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.Point3D;
 
@@ -33,31 +34,6 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
          */
         protected PartialHostData(T data) {
             super(data);
-        }
-        
-    }
-    
-    /**
-     * A HostData vezérlő részadata, ami az autó irányításában játszik szerepet.
-     */
-    public static class ControlPartialHostData extends PartialHostData<Control> {
-
-        /**
-         * Részadat inicializálása és beállítása.
-         * @param data a vezérlőjel
-         */
-        public ControlPartialHostData(Control data) {
-            super(data);
-        }
-
-        /**
-         * Alkalmazza az új vezérlőjelet a paraméterben megadott adaton.
-         */
-        @Override
-        public void apply(HostData d) {
-            if (d != null) {
-                d.setControl(data);
-            }
         }
         
     }
@@ -205,6 +181,21 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     }
     
     /**
+     * A HostData vezérlő részadata, ami az autó irányításában játszik szerepet.
+     */
+    public static class ControlPartialHostData extends ControlPartialBaseData<HostData> {
+
+        /**
+         * Részadat inicializálása és beállítása.
+         * @param data a vezérlőjel
+         */
+        public ControlPartialHostData(Control data) {
+            super(data);
+        }
+        
+    }
+    
+    /**
      * GPS koordináta.
      */
     private Point3D gpsPosition;
@@ -251,12 +242,6 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     private Boolean vehicleConnected = false;
     
     /**
-     * Vezérlőjel.
-     * Alapértelmezetten a jármű áll.
-     */
-    private Control control = new Control(0, 0);
-    
-    /**
      * Megadja, hogy pontosan szabályozható-e a az irány.
      */
     private boolean fullX = false;
@@ -268,10 +253,20 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     
     public HostData() {
         super();
+        init();
     }
     
     public HostData(HostData data) {
         super(data);
+        init();
+    }
+    
+    /**
+     * Inicializálja az objektumokat.
+     * A vezérlőjel alapértelmezetten a jármű áll.
+     */
+    private void init() {
+        setControl(new Control(0, 0));
     }
     
     /**
@@ -309,13 +304,6 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
      */
     public Boolean isUp2Date() {
         return up2date;
-    }
-    
-    /**
-     * Az autó vezérlőjelét adja vissza.
-     */
-    public Control getControl() {
-        return control;
     }
 
     /**
@@ -415,9 +403,10 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
      * Beállítja az autó vezérlőjelét.
      * @param controll ha null, (az alapértelmezett) 0;0 állítódik be
      */
+    @Override
     public void setControl(Control controll) {
         if (controll == null) controll = new Control(0, 0);
-        this.control = controll;
+        super.setControl(controll);
     }
     
     /**

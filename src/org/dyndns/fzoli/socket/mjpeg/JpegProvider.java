@@ -103,6 +103,11 @@ public abstract class JpegProvider {
 //            0   1   0
 //            0   0   0
 //            A képlet: !((EQU && RES) || !EQU) illetve (!EQU || !RES) && EQU
+//            Levezetés:
+//            EQU ↛ RES = !(EQU → RES)
+//            EQU → RES = (EQU && RES) || !EQU
+//            A két egyenlet alapján kijön a bal oldali fenti képlet.
+//            A jobb oldali képlet is ugyan azt a kimenetet adja.
             boolean equ;
             while (!isInterrupted() && (key = getKey()) != null && ((frame = getFrame(key)) == null || (tmp != null && !(((equ = Arrays.equals(tmp, frame)) && resend) || !equ)))) {
                 Thread.sleep(20);

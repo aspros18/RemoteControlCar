@@ -259,21 +259,111 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
             private final List<T> ls;
             
             /**
-             * Konstruktor.
-             * @param ls Az eredeti lista, melynek az add és remove metódusa hívódik meg.
+             * Az üzenetküldő.
              */
-            public SenderList(List<T> ls) {
+            private final ControllerDataSender sender;
+            
+            /**
+             * Konstruktor.
+             * @param sender a részadat-küldő objektum, ami elküldi az üzeneteket
+             * @param ls az eredeti lista, melynek az add és remove metódusa hívódik meg
+             */
+            public SenderList(ControllerDataSender sender, List<T> ls) {
                 this.ls = ls;
+                this.sender = sender;
             }
 
+            /**
+             * Objektum hozzáadása a listához.
+             * Az üzenetküldés implementálása az utódban történik meg.
+             */
             @Override
             public boolean add(T e) {
                 return ls.add(e);
             }
 
+            /**
+             * Objektum törlése a listából.
+             * Az üzenetküldés implementálása az utódban történik meg.
+             */
             @Override
             public boolean remove(Object o) {
                 return ls.remove(o);
+            }
+            
+            /**
+             * Üzenet küldése a másik oldalnak.
+             */
+            protected void sendMessage(Serializable msg) {
+                sender.sendMessage(msg);
+            }
+            
+        }
+        
+        /**
+         * Chatüzenet küldő osztály.
+         */
+        private static class ChatMessageSenderList extends SenderList<ChatMessage> {
+
+            /**
+             * Konstruktor.
+             * @param sender a részadat-küldő objektum, ami elküldi az üzeneteket
+             * @param ls az eredeti lista, ami a chatüzeneteket tartalmazza
+             */
+            public ChatMessageSenderList(ControllerDataSender sender, List<ChatMessage> ls) {
+                super(sender, ls);
+            }
+
+            /**
+             * Chatüzenet hozzáadása a listához és üzenetküldés a másik oldalnak.
+             */
+            @Override
+            public boolean add(ChatMessage e) {
+                sendMessage(new ControllerData.ChatMessagePartialControllerData(e));
+                return super.add(e);
+            }
+            
+        }
+        
+        /**
+         * Vezérlőlista-módosulás küldő.
+         */
+        private static class ControllerChangeSenderList extends SenderList<String> {
+
+            /**
+             * Konstruktor.
+             * @param sender a részadat-küldő objektum, ami elküldi az üzeneteket
+             * @param ls az eredeti lista, ami a vezérlők neveit tartalmazza
+             */
+            public ControllerChangeSenderList(ControllerDataSender sender, List<String> ls) {
+                super(sender, ls);
+            }
+
+            /**
+             * Vezérlő hozzáadása a listához és üzenetküldés a másik oldalnak.
+             */
+            @Override
+            public boolean add(String e) {
+                sendControllerMessage(e, true);
+                return super.add(e);
+            }
+
+            /**
+             * Vezérlő eltávolítása a listából és üzenetküldés a másik oldalnak.
+             */
+            @Override
+            public boolean remove(Object o) {
+                sendControllerMessage(o.toString(), false);
+                return super.remove(o);
+            }
+            
+            /**
+             * Üzenetet küld a másik oldalnak.
+             * @param name a vezérlő neve
+             * @param connected true esetén kapcsolódás (hozzáadás), false esetén lekapcsolódás (törlés)
+             */
+            private void sendControllerMessage(String name, boolean connected) {
+                sendMessage(new ControllerData.ControllerChangePartialControllerData(new ControllerChange(name, connected)));
             }
             
         }
@@ -308,34 +398,8 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
         public ControllerDataSender(ControllerData data) {
             this.data = data;
             if (data != null) {
-                SENDER_MSG = Collections.synchronizedList(new SenderList<ChatMessage>(data.CHAT_MESSAGES) {
-
-                    @Override
-                    public boolean add(ChatMessage e) {
-                        sendMessage(new ControllerData.ChatMessagePartialControllerData(e));
-                        return super.add(e);
-                    }
-                    
-                });
-                SENDER_CON = Collections.synchronizedList(new SenderList<String>(data.CONTROLLERS) {
-
-                    @Override
-                    public boolean add(String e) {
-                        sendConMsg(e, true);
-                        return super.add(e);
-                    }
-
-                    @Override
-                    public boolean remove(Object o) {
-                        sendConMsg(o.toString(), false);
-                        return super.remove(o);
-                    }
-                    
-                    private void sendConMsg(String name, boolean connected) {
-                        sendMessage(new ControllerData.ControllerChangePartialControllerData(new ControllerChange(name, connected)));
-                    }
-                    
-                });
+                SENDER_MSG = new ChatMessageSenderList(this, data.CHAT_MESSAGES);
+                SENDER_CON = new ControllerChangeSenderList(this, data.CONTROLLERS);
             }
             else {
                 SENDER_MSG = null;
@@ -345,14 +409,14 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
 
         @Override
         public List<ChatMessage> getChatMessages() {
-            return SENDER_MSG == null ? super.getChatMessages() : SENDER_MSG;
+            return getList(SENDER_MSG, super.getChatMessages());
         }
 
         @Override
         public List<String> getControllers() {
-            return SENDER_CON == null ? super.getControllers() : SENDER_CON;
+            return getList(SENDER_CON, super.getControllers());
         }
-
+        
         @Override
         public void setBatteryLevel(Integer batteryLevel) {
             sendMessage(new ControllerData.BatteryPartialControllerData(batteryLevel));
@@ -400,7 +464,17 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
             sendMessage(new ControllerData.BoolenPartialControllerData(wantControl, BoolenPartialControllerData.BooleanType.WANT_CONTROLL));
             if (data != null) data.setWantControl(wantControl);
         }
-
+        
+        /**
+         * A megfelelő listát adja vissza.
+         * Ha a várt lista null, akkor az alapértelmezett listával tér vissza.
+         * @param ls a várt lista, ami lehet, hogy null
+         * @param def az alapértelmezett lista, ami soha nem null
+         */
+        private static <T> List<T> getList(List<T> ls, List<T> def) {
+            return ls == null ? def : ls;
+        }
+        
         /**
          * Üzenet küldése a másik oldalnak.
          * Szerver és kliens oldalon eltérő implementáció.

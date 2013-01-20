@@ -1,5 +1,7 @@
 package org.dyndns.fzoli.rccar.host;
 
+import java.io.Serializable;
+
 import org.dyndns.fzoli.rccar.host.socket.HostMessageProcess;
 import org.dyndns.fzoli.rccar.model.Control;
 import org.dyndns.fzoli.rccar.model.host.HostData;
@@ -219,6 +221,13 @@ public class ConnectionBinder extends Binder {
 	}
 	
 	/**
+	 * Üzenetet küld a Hídnak, ha van kiépített kapcsolat.
+	 */
+	private void sendMessage(Serializable s) {
+		if (mSender != null) mSender.sendMessage(s);
+	}
+	
+	/**
 	 * Frissíti a HostData beállításait annak egyik részadata alapján.
 	 * Ha a részadat vezérlőjel, akkor jelzi az eseményt a felületnek.
 	 */
@@ -261,9 +270,9 @@ public class ConnectionBinder extends Binder {
 		if (remote) {
 			if (mListener != null) mListener.onArrowChange(getX(), getY());
 		}
-		else if (mSender != null) {
+		else {
 			// csak a teljesség kedvéért, de egyelőre nincs használva sehol
-			mSender.sendMessage(new HostData.ControlPartialHostData(getControl()));
+			sendMessage(new HostData.ControlPartialHostData(getControl()));
 		}
 	}
 	

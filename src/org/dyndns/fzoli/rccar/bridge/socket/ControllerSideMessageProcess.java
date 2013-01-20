@@ -75,6 +75,7 @@ public class ControllerSideMessageProcess extends BridgeMessageProcess implement
                 data.setViewOnly(false);
                 data.setBatteryLevel(30);
                 data.setHostState(new HostState(new Point3D(0, 0, 0), 5, 0));
+                data.setVehicleConnected(selected.equals("teszt1"));
                 sendMessage(data);
             }
             else {

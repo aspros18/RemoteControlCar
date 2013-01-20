@@ -6,9 +6,9 @@ import java.util.Date;
 import org.dyndns.fzoli.rccar.host.ConnectionService;
 import org.dyndns.fzoli.rccar.host.ConnectionService.ConnectionError;
 import org.dyndns.fzoli.rccar.host.vehicle.Vehicle;
+import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.host.HostData;
-import org.dyndns.fzoli.rccar.model.host.HostData.PartialHostData;
 import org.dyndns.fzoli.rccar.model.host.HostData.PointPartialHostData.PointData;
 import org.dyndns.fzoli.rccar.model.host.HostData.PointPartialHostData.PointType;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
@@ -187,9 +187,10 @@ public class HostMessageProcess extends MessageProcess {
 	 * @param msg az üzenet
 	 */
 	@Override
+	@SuppressWarnings("unchecked")
 	protected void onMessage(Object msg) {
-		if (msg instanceof HostData.PartialHostData) {
-			SERVICE.getBinder().updateHostData((PartialHostData<?>) msg);
+		if (msg instanceof PartialBaseData) {
+			SERVICE.getBinder().updateHostData((PartialBaseData<HostData, ?>) msg);
 		}
 	}
 

@@ -446,7 +446,6 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
             setFullX(d.isFullX());
             setFullY(d.isFullY());
             setUp2Date(d.isUp2Date());
-            setControl(d.getControl());
             setStreaming(d.isStreaming());
             setVehicleConnected(d.isVehicleConnected());
             setGpsPosition(d.getGpsPosition());

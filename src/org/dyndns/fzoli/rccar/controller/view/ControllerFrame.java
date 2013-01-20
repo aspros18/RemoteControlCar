@@ -426,7 +426,8 @@ public class ControllerFrame extends JFrame {
      * Az akkumulátor-töltöttség jelzőt frissíti az adatmodel alapján.
      */
     public void refreshBattery() {
-        boolean show = getData().isHostConnected() != null && getData().isVehicleConnected() != null && getData().getBatteryLevel() != null && getData().isHostConnected() && getData().isVehicleConnected();
+        boolean zero = getData().getControl() == null || getData().getControl().getX() == 0 && getData().getControl().getY() == 0;
+        boolean show = getData().isHostConnected() != null && getData().isVehicleConnected() != null && getData().getBatteryLevel() != null && getData().isHostConnected() && getData().isVehicleConnected() && zero;
         pbAccu.setString(show ? ("Akku: " + getData().getBatteryLevel() + " %") : "");
         if (show) pbAccu.setValue(getData().getBatteryLevel());
         pbAccu.setIndeterminate(!show);

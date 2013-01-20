@@ -9,6 +9,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -280,6 +282,22 @@ public class ControllerFrame extends JFrame {
             }
 
         });
+        
+        btControll.addActionListener(new ActionListener() {
+
+            /**
+             * A vezérlés kérés/átadás gombra kattintva a gomb inaktiválódik és
+             * a kliens üzen a Hídnak, hogy kéri/átadja a vezérlést.
+             * A Híd erre választ fog adni, és a gomb beállítódik válasz alapján.
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (getData().isControlling() == null) return;
+                btControll.setEnabled(false);
+                getData().getSender().setWantControl(!getData().isControlling());
+            }
+            
+        });
     }
     
     /**
@@ -414,6 +432,7 @@ public class ControllerFrame extends JFrame {
     public void refreshBattery() {
         boolean show = getData().isHostConnected() != null && getData().isVehicleConnected() != null && getData().getBatteryLevel() != null && getData().isHostConnected() && getData().isVehicleConnected();
         pbAccu.setString(show ? ("Akku: " + getData().getBatteryLevel() + " %") : "");
+        if (show) pbAccu.setValue(getData().getBatteryLevel());
         pbAccu.setIndeterminate(!show);
     }
     

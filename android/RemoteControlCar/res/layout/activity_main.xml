@@ -10,7 +10,7 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_margin="5dp" />
-    
+
     <TextView
         android:id="@+id/tv_x"
         android:text="X"
@@ -22,7 +22,7 @@
         android:layout_alignRight="@+id/tv_comma"
         android:layout_margin="6dp"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-    
+
     <TextView
         android:id="@+id/tv_comma"
         android:text=";"
@@ -32,7 +32,7 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="6dp"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-    
+
     <TextView
         android:id="@+id/tv_y"
         android:text="Y"
@@ -44,7 +44,16 @@
         android:layout_alignLeft="@+id/tv_comma"
         android:layout_margin="6dp"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-    
+
+    <TextView
+        android:id="@+id/tv_voltage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/arrow"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="6dp"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
     <Button
         android:id="@+id/bt_start"
         android:layout_width="wrap_content"
@@ -62,14 +71,5 @@
         android:layout_alignParentRight="true"
         android:minWidth="120dp"
         android:text="@string/text_stop" />
-
-    <TextView
-        android:id="@+id/tv_voltage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/bt_start"
-        android:layout_alignBottom="@+id/bt_start"
-        android:layout_centerHorizontal="true"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>

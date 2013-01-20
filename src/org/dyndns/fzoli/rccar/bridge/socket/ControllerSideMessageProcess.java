@@ -2,9 +2,11 @@ package org.dyndns.fzoli.rccar.bridge.socket;
 
 import java.util.ArrayList;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
+import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
+import org.dyndns.fzoli.rccar.model.controller.HostState;
 import org.dyndns.fzoli.socket.ServerProcesses;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 
@@ -71,6 +73,8 @@ public class ControllerSideMessageProcess extends BridgeMessageProcess implement
                 data.setControlling(true);
                 data.setWantControl(false);
                 data.setViewOnly(false);
+                data.setBatteryLevel(30);
+                data.setHostState(new HostState(new Point3D(0, 0, 0), 5, 0));
                 sendMessage(data);
             }
             else {

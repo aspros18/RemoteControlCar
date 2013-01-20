@@ -199,9 +199,9 @@ public class ControllerWindows {
      * UPDATE:
      * a nagyon általános dolgokra talán maradhat a refresh, hogy ne kelljen sok settert írni a felületekhez
      */
-    public void refresh() {
+    public void reload() {
         FRAME_MAIN.refresh();
-        DIALOG_CHAT.refresh();
+        DIALOG_CHAT.reload();
     }
     
     /**

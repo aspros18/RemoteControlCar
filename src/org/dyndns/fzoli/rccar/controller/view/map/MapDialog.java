@@ -336,8 +336,9 @@ public class MapDialog extends AbstractDialog {
      */
     @Override
     public void setVisible(boolean b) {
+        boolean v = isVisible();
         super.setVisible(b);
-        if (b) reload();
+        if (b && !v) reload();
     }
     
     /**

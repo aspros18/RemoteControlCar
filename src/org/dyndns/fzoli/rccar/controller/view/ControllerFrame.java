@@ -34,6 +34,7 @@ import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_CHAT;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_MAP;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
 import org.dyndns.fzoli.rccar.controller.resource.R;
+import org.dyndns.fzoli.rccar.model.controller.HostState;
 import org.dyndns.fzoli.ui.RoundedPanel;
 import org.imgscalr.Scalr;
 
@@ -391,6 +392,7 @@ public class ControllerFrame extends JFrame {
      * Ha a jármű csak figyelhető, akkor a gomb biztosan inaktív.
      */
     public void refreshControllButton() {
+        if (getData().isControlling() == null || getData().isViewOnly() == null || getData().isWantControl() == null) return;
         btControll.setIcon(getData().isControlling() ? IC_CONTROLLER1 : IC_CONTROLLER2);
         btControll.setToolTipText(getData().isControlling() ? "Vezérlés átadása" : "Vezérlés kérése");
         btControll.setEnabled(!getData().isViewOnly() && !(getData().isControlling() ^ getData().isWantControl()));
@@ -400,14 +402,19 @@ public class ControllerFrame extends JFrame {
      * A sebesség feliratot frissíti az adatmodel alapján.
      */
     public void refreshSpeed() {
-        // TODO
+        String text = "";
+        HostState hs = getData().getHostState();
+        if (hs != null) text = "Sebesség: " + Integer.toString(hs.SPEED) + " km/h";
+        lbSpeed.setText(text);
     }
     
     /**
      * Az akkumulátor-töltöttség jelzőt frissíti az adatmodel alapján.
      */
     public void refreshBattery() {
-        // TODO
+        boolean show = getData().isHostConnected() != null && getData().isVehicleConnected() != null && getData().getBatteryLevel() != null && getData().isHostConnected() && getData().isVehicleConnected();
+        pbAccu.setString(show ? ("Akku: " + getData().getBatteryLevel() + " %") : "");
+        pbAccu.setIndeterminate(!show);
     }
     
     /**

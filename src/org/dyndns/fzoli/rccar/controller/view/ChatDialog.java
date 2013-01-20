@@ -372,7 +372,7 @@ public class ChatDialog extends AbstractDialog {
      * Az adatmodel alapján frissíti a felületet.
      * Törli az üzeneteket és a vezérlőlistát és a model alapján újra feltölti azt.
      */
-    public void refresh() {
+    public void reload() {
         try {
             DefaultListModel<String> model = (DefaultListModel) LIST_CONTROLLERS.getModel();
             model.clear();

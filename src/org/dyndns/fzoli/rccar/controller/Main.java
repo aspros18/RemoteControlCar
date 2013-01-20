@@ -296,7 +296,7 @@ public class Main {
      * A kiválasztott járműhöz tartozó ablakokat jeleníti meg és elrejti a járműválasztót.
      */
     public static void showControllerWindows() {
-        CONTROLLER_WINDOWS.refresh();
+        CONTROLLER_WINDOWS.reload();
         CONTROLLER_WINDOWS.setVisible(true);
         SELECTION_FRAME.setVisible(false);
     }

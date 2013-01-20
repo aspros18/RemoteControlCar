@@ -322,6 +322,16 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
                 sendMessage(new ControllerData.ChatMessagePartialControllerData(e));
                 return super.add(e);
             }
+
+            /**
+             * Chatüzenet eltávolítása a listából.
+             * Nincs üzenetküldés, mert erre a metódusra soha nem lesz szükség,
+             * mivel az egyszer már elküldött chatüzenet nem törölhető.
+             */
+            @Override
+            public boolean remove(Object o) {
+                return super.remove(o);
+            }
             
         }
         

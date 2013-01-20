@@ -971,8 +971,8 @@ containing a value of this type.
         public static final int abs__titleDivider=0x7f05001c;
         public static final int abs__up=0x7f05000b;
         public static final int arrow=0x7f050033;
-        public static final int bt_start=0x7f050037;
-        public static final int bt_stop=0x7f050038;
+        public static final int bt_start=0x7f050038;
+        public static final int bt_stop=0x7f050039;
         public static final int disableHome=0x7f050009;
         public static final int edit_query=0x7f050027;
         public static final int file_ca=0x7f05003a;
@@ -987,7 +987,7 @@ containing a value of this type.
         public static final int showTitle=0x7f050007;
         public static final int tabMode=0x7f050003;
         public static final int tv_comma=0x7f050035;
-        public static final int tv_voltage=0x7f050039;
+        public static final int tv_voltage=0x7f050037;
         public static final int tv_x=0x7f050034;
         public static final int tv_y=0x7f050036;
         public static final int useLogo=0x7f050004;

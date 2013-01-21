@@ -57,6 +57,9 @@ public class ControllerStorage extends Storage {
         d.setBatteryLevel(s.getHostData().getBatteryLevel());
         d.setVehicleConnected(s.getHostData().isVehicleConnected());
         d.setHostConnected(isHostConnected(s));
+        d.setControl(s.getHostData().getControl());
+        d.setFullX(s.getHostData().isFullX());
+        d.setFullY(s.getHostData().isFullY());
         return d;
     }
     

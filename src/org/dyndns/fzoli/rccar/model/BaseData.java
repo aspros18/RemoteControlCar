@@ -7,6 +7,18 @@ package org.dyndns.fzoli.rccar.model;
 public class BaseData<D extends BaseData, PD extends PartialBaseData> extends Data<D, PD> {
 
     /**
+     * Megadja, hogy pontosan szabályozható-e az irány.
+     * Állandó adat, nincs részadata.
+     */
+    private Boolean fullX;
+    
+    /**
+     * Megadja, hogy pontosan szabályozható-e a sebesség.
+     * Állandó adat, nincs részadata.
+     */
+    private Boolean fullY;
+    
+    /**
      * Akkumulátor szint százalékban.
      */
     private Integer batteryLevel;
@@ -39,6 +51,22 @@ public class BaseData<D extends BaseData, PD extends PartialBaseData> extends Da
     }
     
     /**
+     * Megadja, hogy pontosan szabályozható-e a az irány.
+     * True esetén csak 0 vagy 100 lehet az érték.
+     */
+    public Boolean isFullX() {
+        return fullX;
+    }
+
+    /**
+     * Megadja, hogy pontosan szabályozható-e a a sebesség.
+     * True esetén csak 0 vagy 100 lehet az érték.
+     */
+    public Boolean isFullY() {
+        return fullY;
+    }
+    
+    /**
      * Beállítja az akkumulátorszintet.
      */
     public void setBatteryLevel(Integer batteryLevel) {
@@ -53,6 +81,20 @@ public class BaseData<D extends BaseData, PD extends PartialBaseData> extends Da
     }
 
     /**
+     * Beállítja, hogy pontosan szabályozható-e a az irány.
+     */
+    public void setFullX(Boolean fullX) {
+        this.fullX = fullX;
+    }
+
+    /**
+     * Beállítja, hogy pontosan szabályozható-e a a sebesség.
+     */
+    public void setFullY(Boolean fullY) {
+        this.fullY = fullY;
+    }
+    
+    /**
      * Frissíti az adatokat a megadott adatokra.
      * @param d az új adatok
      */
@@ -61,6 +103,8 @@ public class BaseData<D extends BaseData, PD extends PartialBaseData> extends Da
         if (d != null) {
             setBatteryLevel(d.getBatteryLevel());
             setControl(d.getControl());
+            setFullX(d.isFullX());
+            setFullY(d.isFullY());
         }
     }
 

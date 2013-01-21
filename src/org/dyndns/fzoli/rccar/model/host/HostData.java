@@ -242,47 +242,32 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     private Boolean vehicleConnected = false;
     
     /**
-     * Megadja, hogy pontosan szabályozható-e a az irány.
+     * Konstruktor Híd oldalra.
+     * Kezdetben nem ismert minden adat,
+     * az adat frissítésére a hoszt kapcsolódásakor kerül sor.
      */
-    private boolean fullX = false;
-    
-    /**
-     * Megadja, hogy pontosan szabályozható-e a a sebesség.
-     */
-    private boolean fullY = false;
-    
     public HostData() {
         super();
         init();
     }
     
-    public HostData(HostData data) {
-        super(data);
+    /**
+     * Konstruktor hoszt oldalra.
+     * Az állandó értékek konstruktorból állítódnak be.
+     */
+    public HostData(boolean fullX, boolean fullY) {
+        super();
+        setFullX(fullX);
+        setFullY(fullY);
         init();
     }
     
     /**
-     * Inicializálja az objektumokat.
-     * A vezérlőjel alapértelmezetten a jármű áll.
+     * Beállítja a kezdeti paramétereket.
+     * Kezdetben a jármű áll.
      */
     private void init() {
         setControl(new Control(0, 0));
-    }
-    
-    /**
-     * Megadja, hogy pontosan szabályozható-e a az irány.
-     * True esetén csak 0 vagy 100 lehet az érték.
-     */
-    public boolean isFullX() {
-        return fullX;
-    }
-
-    /**
-     * Megadja, hogy pontosan szabályozható-e a a sebesség.
-     * True esetén csak 0 vagy 100 lehet az érték.
-     */
-    public boolean isFullY() {
-        return fullY;
     }
     
     /**
@@ -363,20 +348,6 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     }
 
     /**
-     * Beállítja, hogy pontosan szabályozható-e a az irány.
-     */
-    public void setFullX(boolean fullX) {
-        this.fullX = fullX;
-    }
-
-    /**
-     * Beállítja, hogy pontosan szabályozható-e a a sebesség.
-     */
-    public void setFullY(boolean fullY) {
-        this.fullY = fullY;
-    }
-
-    /**
      * Beállítja, van-e streamelés.
      * @param streaming ha null, (az alapértelmezett) false állítódik be
      */
@@ -443,8 +414,6 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     @Override
     public void update(HostData d) {
         if (d != null) {
-            setFullX(d.isFullX());
-            setFullY(d.isFullY());
             setUp2Date(d.isUp2Date());
             setStreaming(d.isStreaming());
             setVehicleConnected(d.isVehicleConnected());

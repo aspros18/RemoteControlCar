@@ -45,7 +45,7 @@ public class ConnectionBinder extends Binder {
 	/**
 	 * A jármű adatai.
 	 */
-	private final HostData DATA = new HostData();
+	private final HostData DATA;
 	
 	/**
 	 * Az objektumot létrehozó Service referenciája.
@@ -77,8 +77,7 @@ public class ConnectionBinder extends Binder {
 	 */
 	public ConnectionBinder(ConnectionService service) {
 		SERVICE = service;
-		DATA.setFullX(SERVICE.getVehicle().isFullX());
-		DATA.setFullY(SERVICE.getVehicle().isFullY());
+		DATA = new HostData(SERVICE.getVehicle().isFullX(), SERVICE.getVehicle().isFullY());
 	}
 	
 	/**

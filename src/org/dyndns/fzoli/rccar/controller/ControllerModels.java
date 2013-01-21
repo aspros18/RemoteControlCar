@@ -42,6 +42,7 @@ public class ControllerModels {
              */
             public ClientControllerDataSender(ControllerData data) {
                 super(data);
+                setAddEnabled(false); // az üzenetek küldésekor a helyben tárolt lista módosítatlan marad, elkerülve az üzenet duplázódást a küldő oldalán
             }
 
             /**

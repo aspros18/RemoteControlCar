@@ -325,6 +325,12 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
         private static class ChatMessageSenderList extends SenderList<ChatMessage> {
 
             /**
+             * Megadja, hogy a helyi adatmodelbe bekerüljenek-e az elküldött chatüzenetek.
+             * Alapértelmezésként engedélyezve van.
+             */
+            private boolean addEnabled = true;
+            
+            /**
              * Konstruktor.
              * @param sender a részadat-küldő objektum, ami elküldi az üzeneteket
              * @param ls az eredeti lista, ami a chatüzeneteket tartalmazza
@@ -339,9 +345,9 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
             @Override
             public boolean add(ChatMessage e) {
                 sendMessage(new ControllerData.ChatMessagePartialControllerData(e));
-                return super.add(e);
+                return addEnabled ? super.add(e) : false;
             }
-
+            
             /**
              * Chatüzenet eltávolítása a listából.
              * Nincs üzenetküldés, mert erre a metódusra soha nem lesz szükség,
@@ -405,12 +411,12 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
         /**
          * A chatüzenet-küldő.
          */
-        private final List<ChatMessage> SENDER_MSG;
+        private final ChatMessageSenderList SENDER_MSG;
         
         /**
          * A vezérlő-változás küldő.
          */
-        private final List<String> SENDER_CON;
+        private final ControllerChangeSenderList SENDER_CON;
         
         /**
          * Konstruktor.
@@ -486,6 +492,15 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
         public void setWantControl(Boolean wantControl) {
             sendMessage(new ControllerData.BoolenPartialControllerData(wantControl, BoolenPartialControllerData.BooleanType.WANT_CONTROLL));
             if (data != null) data.setWantControl(wantControl);
+        }
+        
+        /**
+         * Engedélyezi vagy tiltja a helyi adatmodelbe való hozzáadást.
+         * Akkor kerül tiltásra a funkció, ha az elküldött chatüzenet visszaérkezik a másik oldalról.
+         * Ebben az esetben ha engedélyezve lenne a funkció, duplán adódna hozzá a listához az üzenet.
+         */
+        protected void setAddEnabled(boolean addEnabled) {
+            SENDER_MSG.addEnabled = addEnabled;
         }
         
         /**

@@ -283,7 +283,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
             /**
              * Konstruktor.
              * @param sender a részadat-küldő objektum, ami elküldi az üzeneteket
-             * @param ls az eredeti lista, melynek az add és remove metódusa hívódik meg
+             * @param ls az eredeti lista, melynek az add és remove metódusa hívódik meg, ha a paraméter nem null
              */
             public SenderList(ControllerDataSender sender, List<T> ls) {
                 this.ls = ls;
@@ -296,6 +296,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
              */
             @Override
             public boolean add(T e) {
+                if (ls == null) return false;
                 return ls.add(e);
             }
 
@@ -305,6 +306,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
              */
             @Override
             public boolean remove(Object o) {
+                if (ls == null) return false;
                 return ls.remove(o);
             }
             
@@ -424,24 +426,18 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
          */
         public ControllerDataSender(ControllerData data) {
             this.data = data;
-            if (data != null) {
-                SENDER_MSG = new ChatMessageSenderList(this, data.CHAT_MESSAGES);
-                SENDER_CON = new ControllerChangeSenderList(this, data.CONTROLLERS);
-            }
-            else {
-                SENDER_MSG = null;
-                SENDER_CON = null;
-            }
+            SENDER_MSG = new ChatMessageSenderList(this, data == null ? null : data.CHAT_MESSAGES);
+            SENDER_CON = new ControllerChangeSenderList(this, data == null ? null : data.CONTROLLERS);
         }
 
         @Override
         public List<ChatMessage> getChatMessages() {
-            return getList(SENDER_MSG, super.getChatMessages());
+            return SENDER_MSG;
         }
 
         @Override
         public List<String> getControllers() {
-            return getList(SENDER_CON, super.getControllers());
+            return SENDER_CON;
         }
         
         @Override
@@ -490,16 +486,6 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
         public void setWantControl(Boolean wantControl) {
             sendMessage(new ControllerData.BoolenPartialControllerData(wantControl, BoolenPartialControllerData.BooleanType.WANT_CONTROLL));
             if (data != null) data.setWantControl(wantControl);
-        }
-        
-        /**
-         * A megfelelő listát adja vissza.
-         * Ha a várt lista null, akkor az alapértelmezett listával tér vissza.
-         * @param ls a várt lista, ami lehet, hogy null
-         * @param def az alapértelmezett lista, ami soha nem null
-         */
-        private static <T> List<T> getList(List<T> ls, List<T> def) {
-            return ls == null ? def : ls;
         }
         
         /**

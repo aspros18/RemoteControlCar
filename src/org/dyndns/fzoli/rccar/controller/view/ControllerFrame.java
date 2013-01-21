@@ -153,6 +153,7 @@ public class ControllerFrame extends JFrame {
      */
     public ControllerFrame(ControllerWindows windows) {
         WINDOWS = windows;
+        getData().setControllerFrame(this);
         initFrame();
         setComponents();
         pack();
@@ -279,14 +280,11 @@ public class ControllerFrame extends JFrame {
         btControll.addActionListener(new ActionListener() {
 
             /**
-             * A vezérlés kérés/átadás gombra kattintva a gomb inaktiválódik és
-             * a kliens üzen a Hídnak, hogy kéri/átadja a vezérlést.
-             * A Híd erre választ fog adni, és a gomb beállítódik válasz alapján.
+             * A vezérlés kérés/átadás gombra kattintva a kliens üzen a Hídnak, hogy kéri/átadja a vezérlést.
              */
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (getData().isControlling() == null) return;
-                btControll.setEnabled(false);
                 getData().getSender().setWantControl(!getData().isControlling());
             }
             

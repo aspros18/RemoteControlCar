@@ -5,6 +5,7 @@ import org.dyndns.fzoli.rccar.ConnectionKeys;
 import static org.dyndns.fzoli.rccar.controller.Main.showControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.Main.showHostSelectionFrame;
 import org.dyndns.fzoli.rccar.controller.socket.ControllerMessageProcess;
+import org.dyndns.fzoli.rccar.controller.view.ControllerFrame;
 import org.dyndns.fzoli.rccar.model.Data;
 import org.dyndns.fzoli.rccar.model.PartialData;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
@@ -64,6 +65,11 @@ public class ControllerModels {
         private final ControllerData sender = new ClientControllerData.ClientControllerDataSender(this);
         
         /**
+         * A főablak referenciája.
+         */
+        private ControllerFrame frameMain;
+        
+        /**
          * A kliens oldali tároló konstruktora.
          */
         public ClientControllerData() {
@@ -71,11 +77,24 @@ public class ControllerModels {
         }
 
         /**
+         *  A főablak referenciájának átadása, hogy a setterek frissíteni tudják a felületet.
+         */
+        public void setControllerFrame(ControllerFrame frameMain) {
+            if (frameMain != null) this.frameMain = frameMain;
+        }
+        
+        /**
          * A kliens oldal üzenetküldője.
          * A setter metódusai a híd szervernek küldik az üzeneteket.
          */
         public ControllerData getSender() {
             return sender;
+        }
+        
+        @Override
+        public void setWantControl(Boolean wantControl) {
+            super.setWantControl(wantControl);
+            if (frameMain != null) frameMain.refreshControllButton();
         }
         
     }

@@ -19,6 +19,11 @@ public class BaseData<D extends BaseData, PD extends PartialBaseData> extends Da
     private Boolean fullY;
     
     /**
+     * Megadja, hogy a GPS adat naprakész-e.
+     */
+    private Boolean up2date;
+    
+    /**
      * Akkumulátor szint százalékban.
      */
     private Integer batteryLevel;
@@ -67,6 +72,13 @@ public class BaseData<D extends BaseData, PD extends PartialBaseData> extends Da
     }
     
     /**
+     * Megadja, hogy a GPS adat naprakész-e.
+     */
+    public Boolean isUp2Date() {
+        return up2date;
+    }
+    
+    /**
      * Beállítja az akkumulátorszintet.
      */
     public void setBatteryLevel(Integer batteryLevel) {
@@ -95,6 +107,13 @@ public class BaseData<D extends BaseData, PD extends PartialBaseData> extends Da
     }
     
     /**
+     * Beállítja, hogy a GPS adat naprakész-e.
+     */
+    public void setUp2Date(Boolean up2date) {
+        this.up2date = up2date;
+    }
+    
+    /**
      * Frissíti az adatokat a megadott adatokra.
      * @param d az új adatok
      */
@@ -105,6 +124,7 @@ public class BaseData<D extends BaseData, PD extends PartialBaseData> extends Da
             setControl(d.getControl());
             setFullX(d.isFullX());
             setFullY(d.isFullY());
+            setUp2Date(d.isUp2Date());
         }
     }
 
@@ -113,6 +133,7 @@ public class BaseData<D extends BaseData, PD extends PartialBaseData> extends Da
      */
     @Override
     public void clear() {
+        up2date = null;
         batteryLevel = null;
         control = null;
     }

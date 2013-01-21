@@ -116,7 +116,15 @@ public class ControllerFrame extends JFrame {
     /**
      * Az üzenetet megjelenítő komponens.
      */
-    private final JLabel LB_MSG = new JLabel("", SwingConstants.CENTER);
+    private final JLabel LB_MSG = new JLabel("", SwingConstants.CENTER) {
+
+        @Override
+        public Dimension getPreferredSize() {
+            Dimension d = super.getPreferredSize();
+            return new Dimension(d.width + 210, d.height);
+        }
+        
+    };
     
     /**
      * Az üzenetet megjelenítő komponens panelje.
@@ -128,8 +136,6 @@ public class ControllerFrame extends JFrame {
         {
             GridBagConstraints c = new GridBagConstraints();
             setLayout(new GridBagLayout());
-            setPreferredSize(new Dimension(180, 120));
-            
             c.gridy = 0;
             c.insets = new Insets(10, 15, 10, 15);
             add(new JLabel(R.getIndicatorIcon()), c);
@@ -139,6 +145,12 @@ public class ControllerFrame extends JFrame {
             add(LB_MSG, c);
             
             setVisible(false);
+        }
+
+        @Override
+        public Dimension getPreferredSize() {
+            Dimension d = super.getPreferredSize();
+            return new Dimension(d.width, d.height + 20);
         }
         
     };
@@ -415,7 +427,7 @@ public class ControllerFrame extends JFrame {
         String text = " "; // üres szöveg helyett egy szóköz, mert az sem látszik, de az elrendezésmenedzsernek számít, hogy üres-e a szöveg
         if (getData().isHostConnected() != null && getData().isVehicleConnected() != null && getData().isHostConnected() && getData().isVehicleConnected()) {
             HostState hs = getData().getHostState();
-            if (hs != null) text = "Sebesség: " + Integer.toString(hs.SPEED) + " km/h";
+            if (hs != null && hs.SPEED != null && getData().isUp2Date() != null && getData().isUp2Date()) text = "Sebesség: " + Integer.toString(hs.SPEED) + " km/h";
         }
         lbSpeed.setText(text);
     }
@@ -435,9 +447,11 @@ public class ControllerFrame extends JFrame {
      * Az üzenet panel szövegét frissíti az adatmodel alapján.
      */
     public void refreshMessage() {
-        Boolean vehicle = getData().isVehicleConnected();
-        if (vehicle != null && !vehicle) setMessage("Várakozás a járműre...");
-        else setMessage(null);
+        Boolean hconn = getData().isHostConnected();
+        Boolean vconn = getData().isVehicleConnected();
+        if (hconn != null && !hconn) setProgressMessage("Várakozás a kapcsolatfelvételre.");
+        else if (vconn != null && !vconn) setProgressMessage("Várakozás az összeköttetésre.");
+             else setProgressMessage(null);
     }
     
     /**
@@ -453,7 +467,7 @@ public class ControllerFrame extends JFrame {
      * Beállítja az üzenetet és megjeleníti azt.
      * @param msg az üzenet. Ha null, akkor az üzenet panel eltűnik.
      */
-    private void setMessage(String msg) {
+    private void setProgressMessage(String msg) {
         if (msg != null) {
             LB_MSG.setText(msg);
             PANEL_MSG.setVisible(true);
@@ -461,6 +475,7 @@ public class ControllerFrame extends JFrame {
         else {
             PANEL_MSG.setVisible(false);
         }
+        System.out.println(PANEL_MSG.getPreferredSize());
     }
     
     /**

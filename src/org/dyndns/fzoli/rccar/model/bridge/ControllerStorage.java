@@ -60,6 +60,7 @@ public class ControllerStorage extends Storage {
         d.setControl(s.getHostData().getControl());
         d.setFullX(s.getHostData().isFullX());
         d.setFullY(s.getHostData().isFullY());
+        d.setUp2Date(s.getHostData().isUp2Date());
         return d;
     }
     

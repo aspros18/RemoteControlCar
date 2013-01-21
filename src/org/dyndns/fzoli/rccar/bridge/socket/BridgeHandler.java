@@ -14,6 +14,7 @@ import org.dyndns.fzoli.rccar.bridge.config.Permissions;
 import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
 import org.dyndns.fzoli.socket.handler.exception.MultipleCertificateException;
 import org.dyndns.fzoli.socket.handler.exception.RemoteHandlerException;
+import org.dyndns.fzoli.socket.handler.exception.SecureHandlerException;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 
@@ -98,6 +99,9 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
         }
         catch (MultipleCertificateException e) {
             showWarning("Duplázott tanúsítvány");
+        }
+        catch (SecureHandlerException e) {
+            showWarning("Tanúsítvány hiba", e.getMessage());
         }
         catch (SSLHandshakeException e) {
             showWarning(e.getMessage().contains("Extended key usage") ? "Szerverhez való tanúsítvány használat" : "Nem megbízható kapcsolódás");

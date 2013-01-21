@@ -226,11 +226,6 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     private Date gpsChangeDate;
     
     /**
-     * Megadja, hogy a GPS adat naprakész-e.
-     */
-    private Boolean up2date = false;
-    
-    /**
      * Folyamatban van-e az MJPEG streamelés.
      * Kezdetben nincs streamelés.
      */
@@ -286,9 +281,12 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
 
     /**
      * Megadja, hogy a GPS adat naprakész-e.
+     * Ha nincs megadva, akkor hamis értékkel tér vissza.
      */
+    @Override
     public Boolean isUp2Date() {
-        return up2date;
+        Boolean b = super.isUp2Date();
+        return b == null ? false : b;
     }
 
     /**
@@ -364,13 +362,6 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     }
     
     /**
-     * Beállítja, hogy a GPS adat naprakész-e.
-     */
-    public void setUp2Date(Boolean up2date) {
-        this.up2date = up2date;
-    }
-    
-    /**
      * Beállítja az autó vezérlőjelét.
      * @param controll ha null, (az alapértelmezett) 0;0 állítódik be
      */
@@ -414,7 +405,6 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     @Override
     public void update(HostData d) {
         if (d != null) {
-            setUp2Date(d.isUp2Date());
             setStreaming(d.isStreaming());
             setVehicleConnected(d.isVehicleConnected());
             setGpsPosition(d.getGpsPosition());
@@ -426,12 +416,11 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
 
     /**
      * Kinullázza azokat a szenzoradatokat, melyek azonnal megtudhatóak, tehát nem igényelnek online kapcsolatot (minden, ami nem GPS).
-     * A többi adatot metartja, hátha elvész a kapcsolat és csak az utolsó adat érhető el.
+     * A többi adatot megtartja, hátha elvész a kapcsolat és csak az utolsó adat lesz elérhető.
      */
     @Override
     public void clear() {
         super.clear();
-        up2date = false;
         previousMagneticField = magneticField = null;
         previousGravitationalField = gravitationalField = null;
     }

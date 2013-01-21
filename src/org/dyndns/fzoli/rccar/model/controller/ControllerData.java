@@ -180,6 +180,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
             HOST_CONNECTED,
             CONTROLLING,
             WANT_CONTROLL,
+            UP_2_DATE,
             VIEW_ONLY
         }
         
@@ -217,6 +218,9 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
                         break;
                     case WANT_CONTROLL:
                         d.setWantControl(data);
+                        break;
+                    case UP_2_DATE:
+                        d.setUp2Date(data);
                         break;
                     case VIEW_ONLY:
                         d.setViewOnly(data);

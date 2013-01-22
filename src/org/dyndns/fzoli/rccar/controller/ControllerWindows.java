@@ -201,6 +201,7 @@ public class ControllerWindows {
      */
     public void reload() {
         FRAME_MAIN.refresh();
+        DIALOG_MAP.refresh();
         DIALOG_CHAT.reload();
     }
     

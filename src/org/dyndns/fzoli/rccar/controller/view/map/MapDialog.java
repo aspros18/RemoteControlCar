@@ -27,6 +27,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import static org.dyndns.fzoli.rccar.controller.ControllerModels.getData;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_MAP;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
@@ -34,6 +35,7 @@ import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.controller.view.AbstractDialog;
 import org.dyndns.fzoli.rccar.controller.view.ControllerFrame;
 import org.dyndns.fzoli.rccar.model.Point3D;
+import org.dyndns.fzoli.rccar.model.controller.HostState;
 
 /**
  * Térkép ablak.
@@ -44,9 +46,9 @@ import org.dyndns.fzoli.rccar.model.Point3D;
 public class MapDialog extends AbstractDialog {
     
     /**
-     * A térkép kezdőpozíciója (0, 0, 0) valahol az óceánon.
+     * A térkép pozíciója.
      */
-    private Point3D position = new Point3D(0, 0, 0);
+    private Point3D position;
     
     /**
      * Új sor jel az aktuális rendszeren.
@@ -56,12 +58,12 @@ public class MapDialog extends AbstractDialog {
     /**
      * Fok-koordináta formázó az információs panelhez.
      */
-    private static final DecimalFormat DF = new DecimalFormat("#.00");
+    private static final DecimalFormat DF = new DecimalFormat("0.00");
     
     /**
      * Magasság-koordináta formázó az információs panelhez.
      */
-    private static final DecimalFormat DF2 = new DecimalFormat("#.##");
+    private static final DecimalFormat DF2 = new DecimalFormat("0.##");
     
     /**
      * A térképhez tartozó méretek.
@@ -377,7 +379,7 @@ public class MapDialog extends AbstractDialog {
             @Override
             public void run() {
                 position = pos;
-                webBrowser.executeJavascript("map.setCenter(new google.maps.LatLng(" + position.X + ", " + position.Y + ")); var tag = document.getElementById('info'); tag.style.visibility = '" + (pos == null ? "hidden" : "visible") + "'; tag.innerHTML = '" + (pos == null ? "" : "W " + DF.format(pos.X) + "° H " + DF.format(pos.Y) + "° " + DF2.format(pos.Z) + " m") + "';");
+                webBrowser.executeJavascript("map.setCenter(new google.maps.LatLng(" + (position == null ? 1 : position.X) + ", " + (position == null ? 0 : position.Y) + ")); var tag = document.getElementById('info'); tag.style.visibility = '" + (pos == null ? "hidden" : "visible") + "'; tag.innerHTML = '" + (pos == null ? "" : "W " + DF.format(pos.X) + "° H " + DF.format(pos.Y) + "° " + DF2.format(pos.Z) + " m") + "';");
             }
             
         });
@@ -459,6 +461,16 @@ public class MapDialog extends AbstractDialog {
     @Override
     public WindowType getWindowType() {
         return WindowType.MAP;
+    }
+    
+    /**
+     * Frissíti a felületet az adatmodel alapján.
+     */
+    public void refresh() {
+        setFade(getData().isUp2Date() == null || !getData().isUp2Date() || (getData().isHostUnderTimeout() != null && getData().isHostUnderTimeout()) || getData().isUnderTimeout());
+        HostState hs = getData().getHostState();
+        setArrow(hs == null || hs.AZIMUTH == null ? null : hs.AZIMUTH.doubleValue());
+        setPosition(hs == null ? null : hs.LOCATION);
     }
     
     /**

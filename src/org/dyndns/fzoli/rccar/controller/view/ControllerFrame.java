@@ -449,9 +449,9 @@ public class ControllerFrame extends JFrame {
     public void refreshMessage() {
         Boolean htime = getData().isHostUnderTimeout();
         Boolean vconn = getData().isVehicleConnected();
-        if (htime != null && htime) setProgressMessage("Várakozás a jármű kapcsolatára.");
-        else if (vconn != null && !vconn) setProgressMessage("Várakozás az összeköttetésre.");
-             else if (getData().isUnderTimeout()) setProgressMessage("Várakozás a Híd kapcsolatára.");
+        if (getData().isUnderTimeout()) setProgressMessage("Várakozás a Híd kapcsolatára.");
+        else if (htime != null && htime) setProgressMessage("Várakozás a jármű kapcsolatára.");
+             else if (vconn != null && !vconn) setProgressMessage("Várakozás az összeköttetésre."); 
                   else setProgressMessage(null);
     }
     

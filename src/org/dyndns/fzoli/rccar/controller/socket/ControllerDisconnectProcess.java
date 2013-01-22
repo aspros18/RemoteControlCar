@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.controller.socket;
 
 import org.dyndns.fzoli.rccar.ConnectionKeys;
+import org.dyndns.fzoli.rccar.controller.ControllerModels;
 import static org.dyndns.fzoli.rccar.controller.Main.showConnectionStatus;
 import org.dyndns.fzoli.rccar.controller.view.ConnectionProgressFrame.Status;
 import org.dyndns.fzoli.rccar.test.DisconnectProcessTester;
@@ -19,10 +20,27 @@ public class ControllerDisconnectProcess extends ClientDisconnectProcess impleme
         super(handler, DC_TIMEOUT1, DC_TIMEOUT2, DC_DELAY); // 1 és 10 mp időtúllépés, 250 ms sleep
     }
 
+    private void setTimeout(boolean b) {
+        ControllerModels.getData().setUnderTimeout(b);
+    }
+
+    @Override
+    protected void onConnect() {
+        setTimeout(false);
+        super.onConnect();
+    }
+    
     @Override
     protected void onTimeout(Exception ex) throws Exception {
+        setTimeout(true);
         super.onTimeout(ex);
         TESTER.onTimeout();
+    }
+
+    @Override
+    protected void afterTimeout() throws Exception {
+        setTimeout(false);
+        super.afterTimeout();
     }
 
     @Override

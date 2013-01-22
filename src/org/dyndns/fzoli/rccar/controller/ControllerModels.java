@@ -19,7 +19,7 @@ import org.dyndns.fzoli.socket.ClientProcesses;
 public class ControllerModels {
     
     /**
-     * Egy konkrét jármű adatait tartalmazó tároló, valamint üzenetküldő támogatás kliens oldalra.
+     * Egy konkrét jármű adatait tartalmazó tároló, valamint üzenetküldő támogatás kliens oldalra és GUI frissítés.
      */
     public static class ClientControllerData extends ControllerData {
 
@@ -70,6 +70,11 @@ public class ControllerModels {
         private ControllerFrame frameMain;
         
         /**
+         * A Híddal kiépített kapcsolatban időtúllépés van-e.
+         */
+        private boolean underTimeout = false;
+        
+        /**
          * A kliens oldali tároló konstruktora.
          */
         public ClientControllerData() {
@@ -91,10 +96,31 @@ public class ControllerModels {
             return sender;
         }
         
+        /**
+         * Megadja, hogy a Híddal kiépített kapcsolatban időtúllépés van-e.
+         */
+        public boolean isUnderTimeout() {
+            return underTimeout;
+        }
+        
+        /**
+         * Beállítja, hogy a Híddal kiépített kapcsolatban időtúllépés van-e.
+         */
+        public void setUnderTimeout(boolean underTimeout) {
+            this.underTimeout = underTimeout;
+            if (frameMain != null) {
+                frameMain.refreshSpeed();
+                frameMain.refreshBattery();
+                frameMain.refreshMessage();
+            }
+        }
+        
         @Override
         public void setWantControl(Boolean wantControl) {
             super.setWantControl(wantControl);
-            if (frameMain != null) frameMain.refreshControllButton();
+            if (frameMain != null) {
+                frameMain.refreshControllButton();
+            }
         }
         
     }

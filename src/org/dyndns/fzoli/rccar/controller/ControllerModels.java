@@ -65,7 +65,7 @@ public class ControllerModels {
         }
         
         /**
-         * Chat dialógus frissítő.
+         * Chatüzenet frissítő.
          * Mivel nem lehet üzenetet törölni, csak az {@code add} metódus van implementálva.
          */
         private static class ChatRefreshList extends ArrayList<ChatMessage> {
@@ -91,11 +91,57 @@ public class ControllerModels {
             }
 
             /**
-             * A chat üzenet megjelenítése a felületen és a helyi adatmodel frissítése.
+             * A chatüzenet megjelenítése a felületen és a helyi adatmodel frissítése.
              */
             @Override
             public boolean add(ChatMessage e) {
                 if (d.dialogChat != null) d.dialogChat.addMessage(e.getDate(), e.getSender(), e.data);
+                return l.add(e);
+            }
+            
+        }
+        
+        /**
+         * Vezérlőlista frissítő.
+         * Az {@code add} és {@code remove} metódusok implementációja.
+         */
+        private static class ControllerRefreshList extends ArrayList<String> {
+
+            /**
+             * A model, amitől elkérhető a chat dialógus referenciája.
+             */
+            private final ClientControllerData d;
+            
+            /**
+             * Az eredeti lista, ami szintén frissül.
+             */
+            private final List<String> l;
+            
+            /**
+             * Konstruktor.
+             * @param d a model, amitől elkérhető a chat dialógus referenciája
+             * @param l az eredeti lista, ami szintén frissül
+             */
+            public ControllerRefreshList(ClientControllerData d, List<String> l) {
+                this.d = d;
+                this.l = l;
+            }
+
+            /**
+             * Vezérlő-lista frissítése.
+             * @param name a vezérlő neve
+             * @param add hozzáadás vagy eltávolítás
+             */
+            private void setController(String name, boolean add) {
+                if (d.dialogChat != null) d.dialogChat.setControllerVisible(name, add, true);
+            }
+            
+            /**
+             * A kapcsolódott vezérlő megjelenítése a felületen és a helyi adatmodel frissítése.
+             */
+            @Override
+            public boolean add(String e) {
+                setController(e, true);
                 return l.add(e);
             }
             
@@ -110,6 +156,11 @@ public class ControllerModels {
          * Az eredeti chatüzenet-lista GUI frissítéssel kibővítve.
          */
         private final ChatRefreshList refChat;
+        
+        /**
+         * Az eredeti vezérlő-lista GUI frissítéssel kibővítve.
+         */
+        private final ControllerRefreshList refController;
         
         /**
          * A főablak referenciája.
@@ -132,6 +183,7 @@ public class ControllerModels {
         public ClientControllerData() {
             super();
             refChat = new ChatRefreshList(this, super.getChatMessages());
+            refController = new ControllerRefreshList(this, super.getControllers());
             sender = new ClientControllerData.ClientControllerDataSender(this);
         }
 
@@ -179,6 +231,11 @@ public class ControllerModels {
         @Override
         public List<ChatMessage> getChatMessages() {
             return refChat;
+        }
+
+        @Override
+        public List<String> getControllers() {
+            return refController;
         }
         
         @Override

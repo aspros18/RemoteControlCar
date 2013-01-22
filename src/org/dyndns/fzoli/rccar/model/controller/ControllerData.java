@@ -177,7 +177,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
          */
         public static enum BooleanType {
             VEHICLE_CONNECTED,
-            HOST_CONNECTED,
+            HOST_UNDER_TIMEOUT,
             CONTROLLING,
             WANT_CONTROLL,
             UP_2_DATE,
@@ -210,8 +210,8 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
                     case VEHICLE_CONNECTED:
                         d.setVehicleConnected(data);
                         break;
-                    case HOST_CONNECTED:
-                        d.setHostConnected(data);
+                    case HOST_UNDER_TIMEOUT:
+                        d.setHostUnderTimeout(data);
                         break;
                     case CONTROLLING:
                         d.setControlling(data);
@@ -463,9 +463,9 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
         }
 
         @Override
-        public void setHostConnected(Boolean hostConnected) {
-            sendMessage(new ControllerData.BoolenPartialControllerData(hostConnected, BoolenPartialControllerData.BooleanType.HOST_CONNECTED));
-            if (data != null) data.setHostConnected(hostConnected);
+        public void setHostUnderTimeout(Boolean hostConnected) {
+            sendMessage(new ControllerData.BoolenPartialControllerData(hostConnected, BoolenPartialControllerData.BooleanType.HOST_UNDER_TIMEOUT));
+            if (data != null) data.setHostUnderTimeout(hostConnected);
         }
 
         @Override
@@ -526,9 +526,9 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     private HostState hostState;
     
     /**
-     * A jármű kapcsolódva van-e a hídhoz.
+     * A jármű kapcsolata időtúllépés alatt van-e.
      */
-    private Boolean hostConnected;
+    private Boolean hostUnderTimeout;
     
     /**
      * A jármű mikrovezérlője kapcsolódva van-e a telefonhoz.
@@ -612,10 +612,10 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     }
     
     /**
-     * Megadja azt, hogy a jármű kapcsolódva van-e.
+     * Megadja azt, hogy a jármű kapcsolata időtúllépés alatt van-e.
      */
-    public Boolean isHostConnected() {
-        return hostConnected;
+    public Boolean isHostUnderTimeout() {
+        return hostUnderTimeout;
     }
 
     /**
@@ -663,10 +663,10 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     }
 
     /**
-     * Beállítja azt, hogy a jármű kapcsolódva van-e.
+     * Beállítja azt, hogy a jármű kapssolata időtúllépés alatt van-e.
      */
-    public void setHostConnected(Boolean hostConnected) {
-        this.hostConnected = hostConnected;
+    public void setHostUnderTimeout(Boolean hostConnected) {
+        this.hostUnderTimeout = hostConnected;
     }
 
     /**
@@ -711,7 +711,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
             getChatMessages().addAll(d.getChatMessages());
             setHostName(d.getHostName());
             setHostState(d.getHostState());
-            setHostConnected(d.isHostConnected());
+            setHostUnderTimeout(d.isHostUnderTimeout());
             setVehicleConnected(d.isVehicleConnected());
             setControlling(d.isControlling());
             setWantControl(d.isWantControl());
@@ -729,7 +729,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
         getChatMessages().clear();
         hostName = null;
         hostState = null;
-        hostConnected = null;
+        hostUnderTimeout = null;
         controlling = null;
         wantControl = null;
         viewOnly = null;

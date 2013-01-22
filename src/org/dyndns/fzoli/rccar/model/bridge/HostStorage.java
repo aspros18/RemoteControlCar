@@ -60,6 +60,11 @@ public class HostStorage extends Storage {
      */
     private final List<ControllerStorage> CONTROLLERS = Collections.synchronizedList(new ArrayList<ControllerStorage>());
     
+    /**
+     * A jármű kapcsolata időtúllépés alatt van-e.
+     */
+    private boolean underTimeout = false;
+    
     public HostStorage(MessageProcess messageProcess) {
         super(messageProcess);
     }
@@ -98,6 +103,14 @@ public class HostStorage extends Storage {
 
     public HostData getHostData() {
         return HOST_DATA;
+    }
+
+    public boolean isUnderTimeout() {
+        return underTimeout;
+    }
+
+    public void setUnderTimeout(boolean underTimeout) {
+        this.underTimeout = underTimeout; // TODO: a vezérlőknek is kell jelezni
     }
 
 }

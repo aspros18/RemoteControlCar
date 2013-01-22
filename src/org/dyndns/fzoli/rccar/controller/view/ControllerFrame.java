@@ -425,7 +425,7 @@ public class ControllerFrame extends JFrame {
      */
     public void refreshSpeed() {
         String text = " "; // üres szöveg helyett egy szóköz, mert az sem látszik, de az elrendezésmenedzsernek számít, hogy üres-e a szöveg
-        if (getData().isHostConnected() != null && getData().isVehicleConnected() != null && getData().isHostConnected() && getData().isVehicleConnected()) {
+        if (getData().isHostUnderTimeout() != null && getData().isVehicleConnected() != null && !getData().isHostUnderTimeout() && getData().isVehicleConnected()) {
             HostState hs = getData().getHostState();
             if (hs != null && hs.SPEED != null && getData().isUp2Date() != null && getData().isUp2Date()) text = "Sebesség: " + Integer.toString(hs.SPEED) + " km/h";
         }
@@ -437,7 +437,7 @@ public class ControllerFrame extends JFrame {
      */
     public void refreshBattery() {
         boolean zero = getData().getControl() == null || getData().getControl().getX() == 0 && getData().getControl().getY() == 0;
-        boolean show = getData().isHostConnected() != null && getData().isVehicleConnected() != null && getData().getBatteryLevel() != null && getData().isHostConnected() && getData().isVehicleConnected() && zero;
+        boolean show = getData().isHostUnderTimeout() != null && getData().isVehicleConnected() != null && getData().getBatteryLevel() != null && !getData().isHostUnderTimeout() && getData().isVehicleConnected() && zero;
         pbAccu.setString(show ? ("Akku: " + getData().getBatteryLevel() + " %") : "");
         if (show) pbAccu.setValue(getData().getBatteryLevel());
         pbAccu.setIndeterminate(!show);
@@ -447,9 +447,9 @@ public class ControllerFrame extends JFrame {
      * Az üzenet panel szövegét frissíti az adatmodel alapján.
      */
     public void refreshMessage() {
-        Boolean hconn = getData().isHostConnected();
+        Boolean htime = getData().isHostUnderTimeout();
         Boolean vconn = getData().isVehicleConnected();
-        if (hconn != null && !hconn) setProgressMessage("Várakozás a kapcsolatfelvételre.");
+        if (htime != null && htime) setProgressMessage("Várakozás a jármű kapcsolatára.");
         else if (vconn != null && !vconn) setProgressMessage("Várakozás az összeköttetésre.");
              else setProgressMessage(null);
     }

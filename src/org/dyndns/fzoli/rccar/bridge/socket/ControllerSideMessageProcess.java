@@ -69,14 +69,13 @@ public class ControllerSideMessageProcess extends BridgeMessageProcess implement
                 msgs.add(new ChatMessage("controller", "tesztüzenet"));
                 ControllerData data = new ControllerData(nams, msgs);
                 data.setHostName(selected);
-                data.setHostConnected(true);
                 data.setVehicleConnected(true);
                 data.setControlling(true);
                 data.setWantControl(false);
                 data.setViewOnly(false);
                 data.setBatteryLevel(30);
                 data.setHostState(new HostState(new Point3D(0, 0, 0), selected.equals("teszt1") ? 1 : 5, 0));
-                data.setHostConnected(selected.equals("teszt1") || selected.equals("teszt2") || selected.equals("teszt3"));
+                data.setHostUnderTimeout(!(selected.equals("teszt1") || selected.equals("teszt2") || selected.equals("teszt3")));
                 data.setVehicleConnected(selected.equals("teszt1") || selected.equals("teszt2"));
                 data.setControl(selected.equals("teszt1") ? new Control(0, 0) : new Control(100, -100));
                 data.setFullX(selected.equals("teszt1"));

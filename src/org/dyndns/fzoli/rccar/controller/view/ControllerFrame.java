@@ -476,7 +476,6 @@ public class ControllerFrame extends JFrame {
         else {
             PANEL_MSG.setVisible(false);
         }
-        System.out.println(PANEL_MSG.getPreferredSize());
     }
     
     /**

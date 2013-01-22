@@ -1,13 +1,18 @@
 package org.dyndns.fzoli.rccar.controller;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import static org.dyndns.fzoli.rccar.controller.Main.showControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.Main.showHostSelectionFrame;
 import org.dyndns.fzoli.rccar.controller.socket.ControllerMessageProcess;
+import org.dyndns.fzoli.rccar.controller.view.ChatDialog;
 import org.dyndns.fzoli.rccar.controller.view.ControllerFrame;
 import org.dyndns.fzoli.rccar.model.Data;
+import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.PartialData;
+import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
 import org.dyndns.fzoli.socket.ClientProcesses;
@@ -60,14 +65,61 @@ public class ControllerModels {
         }
         
         /**
+         * Chat dialógus frissítő.
+         * Mivel nem lehet üzenetet törölni, csak az {@code add} metódus van implementálva.
+         */
+        private static class ChatRefreshList extends ArrayList<ChatMessage> {
+
+            /**
+             * A model, amitől elkérhető a chat dialógus referenciája.
+             */
+            private final ClientControllerData d;
+            
+            /**
+             * Az eredeti lista, ami szintén frissül.
+             */
+            private final List<ChatMessage> l;
+            
+            /**
+             * Konstruktor.
+             * @param d a model, amitől elkérhető a chat dialógus referenciája
+             * @param l az eredeti lista, ami szintén frissül
+             */
+            public ChatRefreshList(ClientControllerData d, List<ChatMessage> l) {
+                this.d = d;
+                this.l = l;
+            }
+
+            /**
+             * A chat üzenet megjelenítése a felületen és a helyi adatmodel frissítése.
+             */
+            @Override
+            public boolean add(ChatMessage e) {
+                if (d.dialogChat != null) d.dialogChat.addMessage(e.getDate(), e.getSender(), e.data);
+                return l.add(e);
+            }
+            
+        }
+        
+        /**
          * A kliens oldal üzenetküldője.
          */
-        private final ControllerData sender = new ClientControllerData.ClientControllerDataSender(this);
+        private final ControllerData sender;
+        
+        /**
+         * Az eredeti chatüzenet-lista GUI frissítéssel kibővítve.
+         */
+        private final ChatRefreshList refChat;
         
         /**
          * A főablak referenciája.
          */
         private ControllerFrame frameMain;
+        
+        /**
+         * A chat dialógus referenciája.
+         */
+        private ChatDialog dialogChat;
         
         /**
          * A Híddal kiépített kapcsolatban időtúllépés van-e.
@@ -79,8 +131,17 @@ public class ControllerModels {
          */
         public ClientControllerData() {
             super();
+            refChat = new ChatRefreshList(this, super.getChatMessages());
+            sender = new ClientControllerData.ClientControllerDataSender(this);
         }
 
+        /**
+         * A chat dialógus referenciájának átadása, hogy a GUI frissítő chat lista frissíthesse a felületet.
+         */
+        public void setChatDialog(ChatDialog dialogChat) {
+            if (dialogChat != null) this.dialogChat = dialogChat;
+        }
+        
         /**
          *  A főablak referenciájának átadása, hogy a setterek frissíteni tudják a felületet.
          */
@@ -113,6 +174,11 @@ public class ControllerModels {
                 frameMain.refreshBattery();
                 frameMain.refreshMessage();
             }
+        }
+
+        @Override
+        public List<ChatMessage> getChatMessages() {
+            return refChat;
         }
         
         @Override
@@ -166,8 +232,8 @@ public class ControllerModels {
             ((HostList.PartialHostList) data).apply(HOST_LIST); // járműlista frissítése
             showHostSelectionFrame(HOST_LIST); // felület frissítése
         }
-        else if (data instanceof ControllerData.PartialControllerData) { // ha a kiválasztott jármű adata változott meg
-            //TODO
+        else if (data instanceof PartialBaseData) { // ha a kiválasztott jármű adata változott meg
+            ((PartialBaseData<ControllerData, ?>) data).apply(DATA); // adatmodel frissítése, mely setterei frissítik a felületet is
         }
     }
     

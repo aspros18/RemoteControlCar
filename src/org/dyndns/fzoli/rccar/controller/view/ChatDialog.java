@@ -325,7 +325,8 @@ public class ChatDialog extends AbstractDialog {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if (!tpSender.getText().trim().isEmpty()) {
-                        addMessage(new Date(), "controller", tpSender.getText()); //TODO
+                        getData().getSender().getChatMessages().add(new ChatMessage(tpSender.getText()));
+//                        addMessage(new Date(), "controller", tpSender.getText());
                         tpSender.setText("");
                     }
                 }
@@ -350,6 +351,7 @@ public class ChatDialog extends AbstractDialog {
     
     public ChatDialog(ControllerFrame owner, final ControllerWindows windows) {
         super(owner, "Chat", windows);
+        getData().setChatDialog(this);
         setIconImage(IC_CHAT.getImage());
         setMinimumSize(new Dimension(420, 125));
         
@@ -453,6 +455,7 @@ public class ChatDialog extends AbstractDialog {
      */
     private void addMessage(Date date, String name, String message, boolean sysmsg) {
         try {
+            if (date == null || name == null || message == null) return;
             boolean me = message.indexOf("/me ") == 0;
             if (me) message = message.substring(4);
             me |= sysmsg;

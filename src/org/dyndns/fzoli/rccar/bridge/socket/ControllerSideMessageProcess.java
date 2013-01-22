@@ -87,6 +87,10 @@ public class ControllerSideMessageProcess extends BridgeMessageProcess implement
                 onStart();
             }
         }
+        else if (o instanceof ControllerData.ChatMessagePartialControllerData) {
+            ControllerData.ChatMessagePartialControllerData msg = (ControllerData.ChatMessagePartialControllerData) o;
+            sendMessage(new ControllerData.ChatMessagePartialControllerData(new ChatMessage(getRemoteCommonName(), msg.data.data)));
+        }
     }
     
 }

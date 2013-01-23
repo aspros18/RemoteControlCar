@@ -350,9 +350,16 @@ public class ControllerModels {
             super.setHostName(hostName);
         }
 
+        /**
+         * Beállítja a jármű pillanatnyi állapotát.
+         * Az adat módosulása után frissül a főablak egy része és a térkép dialógus.
+         * @param hostState a jármű pillanatnyi állapota
+         */
         @Override
         public void setHostState(HostState hostState) {
             super.setHostState(hostState);
+            if (frameMain != null) frameMain.refreshSpeed();
+            if (dialogMap != null) dialogMap.refresh();
         }
 
         /**

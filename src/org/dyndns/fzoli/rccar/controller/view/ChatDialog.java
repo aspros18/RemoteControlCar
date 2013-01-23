@@ -30,6 +30,7 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
+import org.dyndns.fzoli.rccar.controller.ControllerModels.ClientControllerData;
 import static org.dyndns.fzoli.rccar.controller.ControllerModels.getData;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_CHAT;
@@ -373,6 +374,9 @@ public class ChatDialog extends AbstractDialog {
     /**
      * Az adatmodel alapján frissíti a felületet.
      * Törli az üzeneteket és a vezérlőlistát és a model alapján újra feltölti azt.
+     * Használt getterek:
+     * {@link ClientControllerData#getControllers()}
+     * {@link ClientControllerData#getChatMessages()}
      */
     public void reload() {
         try {

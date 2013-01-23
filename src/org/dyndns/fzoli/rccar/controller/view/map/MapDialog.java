@@ -27,6 +27,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import org.dyndns.fzoli.rccar.controller.ControllerModels.ClientControllerData;
 import static org.dyndns.fzoli.rccar.controller.ControllerModels.getData;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_MAP;
@@ -466,6 +467,10 @@ public class MapDialog extends AbstractDialog {
     
     /**
      * Frissíti a felületet az adatmodel alapján.
+     * Használt getterek:
+     * - {@link ClientControllerData#isUp2Date()}
+     * - {@link ClientControllerData#isHostUnderTimeout()}
+     * - {@link ClientControllerData#getHostState()}
      */
     public void refresh() {
         setFade(getData().isUp2Date() == null || !getData().isUp2Date() || (getData().isHostUnderTimeout() != null && getData().isHostUnderTimeout()) || getData().isUnderTimeout());

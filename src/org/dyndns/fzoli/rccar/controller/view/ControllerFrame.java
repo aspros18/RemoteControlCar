@@ -29,6 +29,7 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.dyndns.fzoli.rccar.controller.ControllerModels.ClientControllerData;
 import static org.dyndns.fzoli.rccar.controller.ControllerModels.getData;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_ARROWS;
@@ -394,6 +395,18 @@ public class ControllerFrame extends JFrame {
     
     /**
      * Frissíti az ablak tartalmát a model alapján.
+     * Használt getterek:
+     * {@link ClientControllerData#isControlling()}
+     * {@link ClientControllerData#isViewOnly()}
+     * {@link ClientControllerData#isWantControl()}
+     * {@link ClientControllerData#isUp2Date()}
+     * {@link ClientControllerData#getHostState()}
+     * {@link ClientControllerData#isVehicleAvailable()}
+     * {@link ClientControllerData#getControl()}
+     * {@link ClientControllerData#getBatteryLevel()}
+     * {@link ClientControllerData#isUnderTimeout()}
+     * {@link ClientControllerData#isHostUnderTimeout()}
+     * {@link ClientControllerData#isVehicleConnected()}
      */
     public void refresh() {
         refreshMessage();
@@ -412,6 +425,10 @@ public class ControllerFrame extends JFrame {
      *    i        h        lemondás inaktív
      *    h        h        kérés aktív
      * Ha a jármű csak figyelhető, akkor a gomb biztosan inaktív.
+     * Használt getterek:
+     * {@link ClientControllerData#isControlling()}
+     * {@link ClientControllerData#isViewOnly()}
+     * {@link ClientControllerData#isWantControl()}
      */
     public void refreshControllButton() {
         if (getData().isControlling() == null || getData().isViewOnly() == null || getData().isWantControl() == null) return;
@@ -422,6 +439,10 @@ public class ControllerFrame extends JFrame {
     
     /**
      * A sebesség feliratot frissíti az adatmodel alapján.
+     * Használt getterek:
+     * {@link ClientControllerData#isUp2Date()}
+     * {@link ClientControllerData#getHostState()}
+     * {@link ClientControllerData#isVehicleAvailable()}
      */
     public void refreshSpeed() {
         String text = " "; // üres szöveg helyett egy szóköz, mert az sem látszik, de az elrendezésmenedzsernek számít, hogy üres-e a szöveg
@@ -434,6 +455,10 @@ public class ControllerFrame extends JFrame {
     
     /**
      * Az akkumulátor-töltöttség jelzőt frissíti az adatmodel alapján.
+     * Használt getterek:
+     * {@link ClientControllerData#getControl()}
+     * {@link ClientControllerData#getBatteryLevel()}
+     * {@link ClientControllerData#isVehicleAvailable()}
      */
     public void refreshBattery() {
         boolean zero = getData().getControl() == null || getData().getControl().getX() == 0 && getData().getControl().getY() == 0;
@@ -445,6 +470,10 @@ public class ControllerFrame extends JFrame {
     
     /**
      * Az üzenet panel szövegét frissíti az adatmodel alapján.
+     * Használt getterek:
+     * {@link ClientControllerData#isUnderTimeout()}
+     * {@link ClientControllerData#isHostUnderTimeout()}
+     * {@link ClientControllerData#isVehicleConnected()}
      */
     public void refreshMessage() {
         Boolean htime = getData().isHostUnderTimeout();

@@ -370,9 +370,15 @@ public class ControllerModels {
             super.setVehicleConnected(vehicleConnected);
         }
 
+        /**
+         * Beállítja azt, hogy a jármű irányítását lehet-e kérni.
+         * Az adat módosulása után frissül a főablak egy része.
+         * @param viewOnly true esetén nem kérhető az irányítás soha
+         */
         @Override
         public void setViewOnly(Boolean viewOnly) {
             super.setViewOnly(viewOnly);
+            if (frameMain != null) frameMain.refreshControllButton();
         }
         
         /**
@@ -382,9 +388,7 @@ public class ControllerModels {
         @Override
         public void setWantControl(Boolean wantControl) {
             super.setWantControl(wantControl);
-            if (frameMain != null) {
-                frameMain.refreshControllButton();
-            }
+            if (frameMain != null) frameMain.refreshControllButton();
         }
         
     }

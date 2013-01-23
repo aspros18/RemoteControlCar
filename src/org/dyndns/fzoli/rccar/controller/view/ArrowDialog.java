@@ -24,6 +24,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.Timer;
+import org.dyndns.fzoli.rccar.controller.ControllerModels.ClientControllerData;
 import static org.dyndns.fzoli.rccar.controller.ControllerModels.getData;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_ARROWS;
@@ -671,6 +672,10 @@ public class ArrowDialog extends AbstractDialog {
     
     /**
      * Frissíti a felületet az adatmodel alapján.
+     * Használt getterek:
+     * - {@link ClientControllerData#isControlling()}
+     * - {@link ClientControllerData#isVehicleAvailable()}
+     * - {@link ClientControllerData#getControl()}
      */
     public void refresh() {
         refreshControlling();
@@ -680,6 +685,9 @@ public class ArrowDialog extends AbstractDialog {
     /**
      * Engedélyezi vagy tiltja a vezérlést az adatmodel alapján.
      * Ha a vezérlés azért szűnik meg, mert a jármű nem érhető el, amint elérhetővé válik, a vezérlőjel visszaáll.
+     * Használt getterek:
+     * - {@link ClientControllerData#isControlling()}
+     * - {@link ClientControllerData#isVehicleAvailable()}
      */
     public void refreshControlling() {
         boolean controlling = getData().isControlling() != null && getData().isControlling();
@@ -688,6 +696,8 @@ public class ArrowDialog extends AbstractDialog {
     
     /**
      * A vezérlőjel alapján frissíti a felületet.
+     * Használt getterek:
+     * - {@link ClientControllerData#getControl()}
      */
     public void refreshControl() {
         ARROW_PANEL.setPercentX(getData().getControl() == null ? 0 : getData().getControl().getX());

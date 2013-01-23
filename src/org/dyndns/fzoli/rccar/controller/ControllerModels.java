@@ -330,9 +330,15 @@ public class ControllerModels {
             super.setControl(control);
         }
 
+        /**
+         * Beállítja azt, hogy a jármű vezérlése elérhető-e.
+         * Az adat módosulása után frissül a főablak és a vezérlő dialógus egy része.
+         */
         @Override
         public void setControlling(Boolean controlling) {
             super.setControlling(controlling);
+            if (frameMain != null) frameMain.refreshControllButton();
+            if (dialogArrow != null) dialogArrow.refreshControlling();
         }
 
         /**

@@ -335,21 +335,6 @@ public class ControllerModels {
             super.setControlling(controlling);
         }
 
-        @Override
-        public void setFullX(Boolean fullX) {
-            super.setFullX(fullX);
-        }
-
-        @Override
-        public void setFullY(Boolean fullY) {
-            super.setFullY(fullY);
-        }
-
-        @Override
-        public void setHostName(String hostName) {
-            super.setHostName(hostName);
-        }
-
         /**
          * Beállítja a jármű pillanatnyi állapotát.
          * Az adat módosulása után frissül a főablak egy része és a térkép dialógus.

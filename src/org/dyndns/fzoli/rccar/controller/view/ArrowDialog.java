@@ -596,6 +596,7 @@ abstract class ArrowPanel extends JPanel {
 
 /**
  * Vezérlő ablak.
+ * Matematikailag kissé elkapkodott - ezért nincs sok megjegyzés a kódban, de teljesen jól működik.
  * @author zoli
  */
 public class ArrowDialog extends AbstractDialog {

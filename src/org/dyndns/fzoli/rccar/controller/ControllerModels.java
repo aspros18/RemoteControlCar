@@ -11,12 +11,14 @@ import org.dyndns.fzoli.rccar.controller.view.ArrowDialog;
 import org.dyndns.fzoli.rccar.controller.view.ChatDialog;
 import org.dyndns.fzoli.rccar.controller.view.ControllerFrame;
 import org.dyndns.fzoli.rccar.controller.view.map.MapDialog;
+import org.dyndns.fzoli.rccar.model.Control;
 import org.dyndns.fzoli.rccar.model.Data;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.PartialData;
 import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
+import org.dyndns.fzoli.rccar.model.controller.HostState;
 import org.dyndns.fzoli.socket.ClientProcesses;
 
 /**
@@ -300,16 +302,83 @@ public class ControllerModels {
             }
         }
 
+        /**
+         * A kiválasztott hoszthoz tartozó chatüzenetek listáját adja meg.
+         * A lista {@code add} metódusa frissíti a felületet.
+         */
         @Override
         public List<ChatMessage> getChatMessages() {
             return refChat;
         }
 
+        /**
+         * A kiválasztott hoszthoz tartozó vezérlők listáját adja vissza.
+         * A lista {@code add} és {@code remove} metódusa frissíti a felületet.
+         */
         @Override
         public List<String> getControllers() {
             return refController;
         }
+
+        @Override
+        public void setBatteryLevel(Integer batteryLevel) {
+            super.setBatteryLevel(batteryLevel);
+        }
+
+        @Override
+        public void setControl(Control control) {
+            super.setControl(control);
+        }
+
+        @Override
+        public void setControlling(Boolean controlling) {
+            super.setControlling(controlling);
+        }
+
+        @Override
+        public void setFullX(Boolean fullX) {
+            super.setFullX(fullX);
+        }
+
+        @Override
+        public void setFullY(Boolean fullY) {
+            super.setFullY(fullY);
+        }
+
+        @Override
+        public void setHostName(String hostName) {
+            super.setHostName(hostName);
+        }
+
+        @Override
+        public void setHostState(HostState hostState) {
+            super.setHostState(hostState);
+        }
+
+        @Override
+        public void setHostUnderTimeout(Boolean hostConnected) {
+            super.setHostUnderTimeout(hostConnected);
+        }
+
+        @Override
+        public void setUp2Date(Boolean up2date) {
+            super.setUp2Date(up2date);
+        }
+
+        @Override
+        public void setVehicleConnected(Boolean vehicleConnected) {
+            super.setVehicleConnected(vehicleConnected);
+        }
+
+        @Override
+        public void setViewOnly(Boolean viewOnly) {
+            super.setViewOnly(viewOnly);
+        }
         
+        /**
+         * Beállítja azt, hogy szeretné-e a felhasználó vezérelni az autót.
+         * Az adat módosulása után frissül a főablak egy része.
+         */
         @Override
         public void setWantControl(Boolean wantControl) {
             super.setWantControl(wantControl);

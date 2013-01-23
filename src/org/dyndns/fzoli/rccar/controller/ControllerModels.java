@@ -7,8 +7,10 @@ import org.dyndns.fzoli.rccar.ConnectionKeys;
 import static org.dyndns.fzoli.rccar.controller.Main.showControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.Main.showHostSelectionFrame;
 import org.dyndns.fzoli.rccar.controller.socket.ControllerMessageProcess;
+import org.dyndns.fzoli.rccar.controller.view.ArrowDialog;
 import org.dyndns.fzoli.rccar.controller.view.ChatDialog;
 import org.dyndns.fzoli.rccar.controller.view.ControllerFrame;
+import org.dyndns.fzoli.rccar.controller.view.map.MapDialog;
 import org.dyndns.fzoli.rccar.model.Data;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.PartialData;
@@ -211,6 +213,16 @@ public class ControllerModels {
         private ChatDialog dialogChat;
         
         /**
+         * A vezérlő dialógus referenciája.
+         */
+        private ArrowDialog dialogArrow;
+        
+        /**
+         * A térkép dialógus referenciája.
+         */
+        private MapDialog dialogMap;
+        
+        /**
          * A Híddal kiépített kapcsolatban időtúllépés van-e.
          */
         private boolean underTimeout = false;
@@ -230,6 +242,20 @@ public class ControllerModels {
          */
         public void setChatDialog(ChatDialog dialogChat) {
             if (dialogChat != null) this.dialogChat = dialogChat;
+        }
+        
+        /**
+         * A vezérlő dialógus referenciájának átadása, hogy a setterek frissíteni tudják a felületet.
+         */
+        public void setArrowDialog(ArrowDialog dialogArrow) {
+            if (dialogArrow != null) this.dialogArrow = dialogArrow;
+        }
+        
+        /**
+         * A térkép dialógus referenciájának átadása, hogy a setterek frissíteni tudják a felületet.
+         */
+        public void setMapDialog(MapDialog dialogMap) {
+            if (dialogMap != null) this.dialogMap = dialogMap;
         }
         
         /**

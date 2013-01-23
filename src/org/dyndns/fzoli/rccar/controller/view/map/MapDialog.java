@@ -140,6 +140,7 @@ public class MapDialog extends AbstractDialog {
     
     public MapDialog(final ControllerFrame owner, ControllerWindows windows, final MapLoadListener callback, final boolean enabled) {
         super(owner, "Térkép", windows);
+        getData().setMapDialog(this);
         setIconImage(IC_MAP.getImage());
         getContentPane().setBackground(Color.WHITE);
         

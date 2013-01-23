@@ -625,6 +625,7 @@ public class ArrowDialog extends AbstractDialog {
     
     public ArrowDialog(ControllerFrame owner, ControllerWindows windows) {
         super(owner, "Vezérlő", windows);
+        getData().setArrowDialog(this);
         
         // ikon beállítása és panel hozzáadása
         setIconImage(IC_ARROWS.getImage());

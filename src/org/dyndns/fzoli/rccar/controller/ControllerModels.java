@@ -255,6 +255,14 @@ public class ControllerModels {
         }
         
         /**
+         * Megmondja, hogy a jármű eérhető-e.
+         * Akkor érhető el a jármű, ha a kapcsolatokban nincs időtúllépés és a telefonhoz hozzá van kötve az IOIO.
+         */
+        public boolean isVehicleAvailable() {
+            return !isUnderTimeout() && isHostUnderTimeout() != null && !isHostUnderTimeout() && isVehicleConnected() != null && isVehicleConnected();
+        }
+        
+        /**
          * Beállítja, hogy a Híddal kiépített kapcsolatban időtúllépés van-e.
          */
         public void setUnderTimeout(boolean underTimeout) {

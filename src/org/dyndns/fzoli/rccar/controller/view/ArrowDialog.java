@@ -24,9 +24,11 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.Timer;
+import static org.dyndns.fzoli.rccar.controller.ControllerModels.getData;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_ARROWS;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
+import org.dyndns.fzoli.rccar.model.Control;
 import org.dyndns.fzoli.ui.RepeatingReleasedEventsFixer;
 
 /**
@@ -295,6 +297,7 @@ abstract class ArrowPanel extends JPanel {
 
         @Override
         public void mouseReleased(MouseEvent e) {
+            removeRestore();
             if (e.getButton() == MouseEvent.BUTTON1) btLeft = false;
             if (e.getButton() == MouseEvent.BUTTON3) btRight = false;
             refresh(null, null);
@@ -386,6 +389,7 @@ abstract class ArrowPanel extends JPanel {
 
         @Override
         public void keyReleased(KeyEvent e) {
+            removeRestore();
             if (!controlling) return;
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_LEFT:
@@ -413,7 +417,7 @@ abstract class ArrowPanel extends JPanel {
                     resetY(e);
             }
         }
-
+        
         private void setX(KeyEvent e, boolean left) {
             codeX = e.getKeyCode();
             aLin.setPercentX(left ? -100 : 100);
@@ -524,15 +528,37 @@ abstract class ArrowPanel extends JPanel {
         }
     }
     
-    public void setControlling(boolean controlling) {
+    private Integer oldX, oldY, oldLimit;
+    
+    public void setControlling(boolean controlling, boolean restoring) {
         this.controlling = controlling;
+        if (controlling && restoring) {
+            if (oldX != null) setPercentX(oldX);
+            if (oldY != null) setPercentY(oldY);
+            if (oldLimit != null) aLim.setMaxY(oldLimit);
+            fireChange();
+            oldX = oldY = oldLimit = null;
+        }
         if (!controlling) {
             stopIncrease();
+            if (restoring) {
+                oldX = getPercentX();
+                oldY = getPercentY();
+                oldLimit = aLim.getMaxY();
+            }
             setPercentX(0);
             setPercentY(0);
         }
     }
 
+    private void removeRestore() {
+        if (oldX != null || oldY != null || oldLimit != null) {
+            setPercentX(0);
+            setPercentY(0);
+            oldX = oldY = oldLimit = null;
+        }
+    }
+    
     public void setIncrease(boolean increase) {
         this.increase = increase;
         stopIncrease();
@@ -578,11 +604,12 @@ public class ArrowDialog extends AbstractDialog {
         RepeatingReleasedEventsFixer.install(); // Linux bill. eseményjelzés javítása
     }
     
-    private final ArrowPanel ARROW_PANEL = new ArrowPanel(200) { //TODO: teszt
+    private final ArrowPanel ARROW_PANEL = new ArrowPanel(200) {
 
         @Override
         protected void onChange(int x, int y) {
-            System.out.println(x + " ; " + y);
+            System.out.println("Control x: " + x + " y: " + y);
+            getData().getSender().setControl(new Control(x, y));
         }
 
     };
@@ -615,9 +642,9 @@ public class ArrowDialog extends AbstractDialog {
         }
     }
     
-    public void setControlling(boolean b) {
+    public void setControlling(boolean b, boolean restoring) {
         ControllerFrame owner = getControllerFrame();
-        ARROW_PANEL.setControlling(b);
+        ARROW_PANEL.setControlling(b, restoring);
         if (b) {
             if (owner != null) {
                 owner.getIncreaseButton().setEnabled(true);
@@ -638,6 +665,31 @@ public class ArrowDialog extends AbstractDialog {
     @Override
     public WindowType getWindowType() {
         return WindowType.CONTROLL;
+    }
+    
+    /**
+     * Frissíti a felületet az adatmodel alapján.
+     */
+    public void refresh() {
+        refreshControlling();
+        refreshControl();
+    }
+    
+    /**
+     * Engedélyezi vagy tiltja a vezérlést az adatmodel alapján.
+     * Ha a vezérlés azért szűnik meg, mert a jármű nem érhető el, amint elérhetővé válik, a vezérlőjel visszaáll.
+     */
+    public void refreshControlling() {
+        boolean controlling = getData().isControlling() != null && getData().isControlling();
+        setControlling(controlling && getData().isVehicleAvailable(), controlling);
+    }
+    
+    /**
+     * A vezérlőjel alapján frissíti a felületet.
+     */
+    public void refreshControl() {
+        ARROW_PANEL.setPercentX(getData().getControl() == null ? 0 : getData().getControl().getX());
+        ARROW_PANEL.setPercentY(getData().getControl() == null ? 0 : getData().getControl().getY());
     }
     
     /**

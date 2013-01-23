@@ -360,9 +360,15 @@ public class ControllerModels {
             super.setHostUnderTimeout(hostConnected);
         }
 
+        /**
+         * Beállítja, hogy a GPS adat naprakész-e.
+         * Az adat módosulása után frissül a főablak egy része és a térkép dialógus.
+         */
         @Override
         public void setUp2Date(Boolean up2date) {
             super.setUp2Date(up2date);
+            if (frameMain != null) frameMain.refreshSpeed();
+            if (dialogMap != null) dialogMap.refresh();
         }
 
         /**

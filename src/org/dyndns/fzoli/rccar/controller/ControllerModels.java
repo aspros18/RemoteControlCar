@@ -365,9 +365,21 @@ public class ControllerModels {
             super.setUp2Date(up2date);
         }
 
+        /**
+         * Beállítja azt, hogy a jármű kapcsolódva van-e a telefonhoz.
+         * Az adat módosulása után frissül a főablak és a vezérlő dialógus egy része.
+         */
         @Override
         public void setVehicleConnected(Boolean vehicleConnected) {
             super.setVehicleConnected(vehicleConnected);
+            if (frameMain != null) {
+                frameMain.refreshBattery();
+                frameMain.refreshMessage();
+                frameMain.refreshSpeed();
+            }
+            if (dialogArrow != null) {
+                dialogArrow.refreshControlling();
+            }
         }
 
         /**

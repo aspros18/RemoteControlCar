@@ -355,9 +355,24 @@ public class ControllerModels {
             super.setHostState(hostState);
         }
 
+        /**
+         * Beállítja azt, hogy a jármű kapssolata időtúllépés alatt van-e.
+         * Az adat módosulása után frissül a főablak és a vezérlő dialógus egy része és a térkép dialógus.
+         */
         @Override
         public void setHostUnderTimeout(Boolean hostConnected) {
             super.setHostUnderTimeout(hostConnected);
+            if (frameMain != null) {
+                frameMain.refreshBattery();
+                frameMain.refreshMessage();
+                frameMain.refreshSpeed();
+            }
+            if (dialogArrow != null) {
+                dialogArrow.refreshControlling();
+            }
+            if (dialogMap != null) {
+                dialogMap.refresh();
+            }
         }
 
         /**

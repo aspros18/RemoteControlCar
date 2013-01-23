@@ -440,58 +440,100 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
             SENDER_CON = new ControllerChangeSenderList(this, data == null ? null : data.CONTROLLERS);
         }
 
+        /**
+         * A kiválasztott hoszthoz tartozó chatüzenetek listáját adja meg, ha van adat.
+         * Az {@code add} metódusa elküldi a chat üzenetet tartalmazó részadatot a másik oldalnak.
+         */
         @Override
         public List<ChatMessage> getChatMessages() {
             return SENDER_MSG;
         }
 
+        /**
+         * A kiválasztott hoszthoz tartozó vezérlők listáját adja vissza, ha van adat.
+         * Az {@code add} és {@code remove} metódusa elküldi a változást tartalmazó részadatot a másik oldalnak.
+         */
         @Override
         public List<String> getControllers() {
             return SENDER_CON;
         }
         
+        /**
+         * Ha tudja, beállítja az akkumulátorszintet.
+         * Az adat változását jelzi a másik oldalnak.
+         */
         @Override
         public void setBatteryLevel(Integer batteryLevel) {
             sendMessage(new ControllerData.BatteryPartialControllerData(batteryLevel));
             super.setBatteryLevel(batteryLevel);
         }
 
+        /**
+         * Ha tudja, beállítja azt, hogy a jármű vezérlése elérhető-e.
+         * Az adat változását jelzi a másik oldalnak.
+         */
         @Override
         public void setControlling(Boolean controlling) {
             sendMessage(new ControllerData.BoolenPartialControllerData(controlling, BoolenPartialControllerData.BooleanType.CONTROLLING));
             if (data != null) data.setControlling(controlling);
         }
 
+        /**
+         * Ha tudja, beállítja azt, hogy a jármű kapssolata időtúllépés alatt van-e.
+         * Az adat változását jelzi a másik oldalnak.
+         */
         @Override
         public void setHostUnderTimeout(Boolean hostConnected) {
             sendMessage(new ControllerData.BoolenPartialControllerData(hostConnected, BoolenPartialControllerData.BooleanType.HOST_UNDER_TIMEOUT));
             if (data != null) data.setHostUnderTimeout(hostConnected);
         }
 
+        /**
+         * Ha tudja, beállítja az aktuális jármű nevét.
+         * Az adat változását jelzi a másik oldalnak.
+         */
         @Override
         public void setHostName(String hostName) {
             sendMessage(new ControllerData.HostNamePartialControllerData(hostName));
             if (data != null) data.setHostName(hostName);
         }
 
+        /**
+         * Ha tudja, beállítja a jármű pillanatnyi állapotát.
+         * Az adat változását jelzi a másik oldalnak.
+         * @param hostState a jármű pillanatnyi állapota
+         */
         @Override
         public void setHostState(HostState hostState) {
             sendMessage(new ControllerData.HostStatePartialControllerData(hostState));
             if (data != null) data.setHostState(hostState);
         }
 
+        /**
+         * Ha tudja, beállítja azt, hogy a jármű kapcsolódva van-e a telefonhoz.
+         * Az adat változását jelzi a másik oldalnak.
+         */
         @Override
         public void setVehicleConnected(Boolean vehicleConnected) {
             sendMessage(new ControllerData.BoolenPartialControllerData(vehicleConnected, BoolenPartialControllerData.BooleanType.VEHICLE_CONNECTED));
             if (data != null) data.setVehicleConnected(vehicleConnected);
         }
 
+        /**
+         * Ha tudja, beállítja azt, hogy a jármű irányítását lehet-e kérni.
+         * Az adat változását jelzi a másik oldalnak.
+         * @param viewOnly true esetén nem kérhető az irányítás soha
+         */
         @Override
         public void setViewOnly(Boolean viewOnly) {
             sendMessage(new ControllerData.BoolenPartialControllerData(viewOnly, BoolenPartialControllerData.BooleanType.VIEW_ONLY));
             if (data != null) data.setViewOnly(viewOnly);
         }
 
+        /**
+         * Ha lehet, beállítja azt, hogy szeretné-e a felhasználó vezérelni az autót.
+         * Az adat változását jelzi a másik oldalnak.
+         */
         @Override
         public void setWantControl(Boolean wantControl) {
             sendMessage(new ControllerData.BoolenPartialControllerData(wantControl, BoolenPartialControllerData.BooleanType.WANT_CONTROLL));

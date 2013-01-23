@@ -320,14 +320,25 @@ public class ControllerModels {
             return refController;
         }
 
+        /**
+         * Beállítja az akkumulátorszintet.
+         * Az adat módosulása után frissül a főablak egy része.
+         */
         @Override
         public void setBatteryLevel(Integer batteryLevel) {
             super.setBatteryLevel(batteryLevel);
+            if (frameMain != null) frameMain.refreshBattery();
         }
 
+        /**
+         * A jármű vezérlőjelét állítja be.
+         * Az adat módosulása után frissül a főablak és a vezérlő dialógus egy része.
+         */
         @Override
         public void setControl(Control control) {
             super.setControl(control);
+            if (frameMain != null) frameMain.refreshBattery();
+            if (dialogArrow != null) dialogArrow.refreshControl();
         }
 
         /**

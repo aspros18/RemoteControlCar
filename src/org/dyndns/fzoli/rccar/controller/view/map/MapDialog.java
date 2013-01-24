@@ -526,7 +526,6 @@ public class MapDialog extends AbstractDialog {
     
     /**
      * Teszt.
-     * TODO: nem minden esetben tölt be a térkép
      */
     public static void main(String[] args) {
         NativeInterface.open();

@@ -364,7 +364,7 @@ public class ChatDialog extends AbstractDialog {
     }
     
     /**
-     * Az adatmodel alapján frissíti a felületet.
+     * Az adatmodel alapján újratölti a felületet.
      * Törli az üzeneteket és a vezérlőlistát és a model alapján újra feltölti azt.
      * Használt getterek:
      * {@link ClientControllerData#getControllers()}

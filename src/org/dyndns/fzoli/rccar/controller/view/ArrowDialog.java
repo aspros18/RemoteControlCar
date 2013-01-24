@@ -710,7 +710,7 @@ public class ArrowDialog extends AbstractDialog {
     }
     
     /**
-     * A vezérlőjel alapján frissíti a felületet.
+     * A vezérlőjel alapján frissíti a nyíl koordinátáit.
      * Használt getterek:
      * - {@link ClientControllerData#getControl()}
      */

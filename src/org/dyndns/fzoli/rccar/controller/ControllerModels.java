@@ -375,19 +375,24 @@ public class ControllerModels {
 
         /**
          * Beállítja a jármű pillanatnyi állapotát.
-         * Az adat módosulása után frissül a főablak egy része és a térkép dialógus.
+         * Az adat módosulása után frissül a főablak és a térkép dialógus egy része.
          * @param hostState a jármű pillanatnyi állapota
          */
         @Override
         public void setHostState(HostState hostState) {
             super.setHostState(hostState);
-            if (frameMain != null) frameMain.refreshSpeed();
-            if (dialogMap != null) dialogMap.refresh();
+            if (frameMain != null) {
+                frameMain.refreshSpeed();
+            }
+            if (dialogMap != null) {
+                dialogMap.refreshArrow();
+                dialogMap.refreshPosition();
+            }
         }
 
         /**
          * Beállítja azt, hogy a jármű kapssolata időtúllépés alatt van-e.
-         * Az adat módosulása után frissül a főablak és a vezérlő dialógus egy része és a térkép dialógus.
+         * Az adat módosulása után frissül a főablak, a vezérlő dialógus és a térkép dialógus egy része.
          */
         @Override
         public void setHostUnderTimeout(Boolean hostConnected) {
@@ -401,19 +406,19 @@ public class ControllerModels {
                 dialogArrow.refreshControlling();
             }
             if (dialogMap != null) {
-                dialogMap.refresh();
+                dialogMap.refreshFade();
             }
         }
 
         /**
          * Beállítja, hogy a GPS adat naprakész-e.
-         * Az adat módosulása után frissül a főablak egy része és a térkép dialógus.
+         * Az adat módosulása után frissül a főablak és a térkép dialógus egy része.
          */
         @Override
         public void setUp2Date(Boolean up2date) {
             super.setUp2Date(up2date);
             if (frameMain != null) frameMain.refreshSpeed();
-            if (dialogMap != null) dialogMap.refresh();
+            if (dialogMap != null) dialogMap.refreshFade();
         }
 
         /**

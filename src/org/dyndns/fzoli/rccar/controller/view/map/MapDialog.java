@@ -468,16 +468,32 @@ public class MapDialog extends AbstractDialog {
     }
     
     /**
-     * Frissíti a felületet az adatmodel alapján.
+     * Beállítja az áttünést az adatmodel alapján.
      * Használt getterek:
      * - {@link ClientControllerData#isUp2Date()}
      * - {@link ClientControllerData#isHostUnderTimeout()}
+     */
+    public void refreshFade() {
+        setFade(getData().isUp2Date() == null || !getData().isUp2Date() || (getData().isHostUnderTimeout() != null && getData().isHostUnderTimeout()) || getData().isUnderTimeout());
+    }
+    
+    /**
+     * Frissíti a nyilat az adatmodel alapján.
+     * Használt getterek:
      * - {@link ClientControllerData#getHostState()}
      */
-    public void refresh() {
-        setFade(getData().isUp2Date() == null || !getData().isUp2Date() || (getData().isHostUnderTimeout() != null && getData().isHostUnderTimeout()) || getData().isUnderTimeout());
+    public void refreshArrow() {
         HostState hs = getData().getHostState();
         setArrow(hs == null || hs.AZIMUTH == null ? null : hs.AZIMUTH.doubleValue());
+    }
+    
+    /**
+     * Frissíti a pozíciót az adatmodel alapján.
+     * Használt getterek:
+     * - {@link ClientControllerData#getHostState()}
+     */
+    public void refreshPosition() {
+        HostState hs = getData().getHostState();
         setPosition(hs == null ? null : hs.LOCATION);
     }
     

@@ -281,8 +281,13 @@ public class MapDialog extends AbstractDialog {
 
                                             @Override
                                             public void run() {
-                                                e.getWebBrowser().executeJavascript(createInitScript()); // térkép inicializálás
-                                                test = isIdAvailable("map_canvas");
+                                                try {
+                                                    e.getWebBrowser().executeJavascript(createInitScript()); // térkép inicializálás
+                                                    test = isIdAvailable("map_canvas");
+                                                }
+                                                catch (Exception ex) {
+                                                    ;
+                                                }
                                             }
 
                                         });

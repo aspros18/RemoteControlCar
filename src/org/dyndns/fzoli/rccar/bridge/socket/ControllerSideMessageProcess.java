@@ -3,6 +3,7 @@ package org.dyndns.fzoli.rccar.bridge.socket;
 import java.util.ArrayList;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import org.dyndns.fzoli.rccar.model.Control;
+import org.dyndns.fzoli.rccar.model.ControlPartialBaseData;
 import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
@@ -97,9 +98,9 @@ public class ControllerSideMessageProcess extends BridgeMessageProcess implement
                 proc.sendMessage(gen);
             }
         }
-        else if (o instanceof ControllerData.ControlPartialControllerData) {
-            ControllerData.ControlPartialControllerData msg = (ControllerData.ControlPartialControllerData) o;
-            ControlPartialHostData gen = new HostData.ControlPartialHostData(msg.data);
+        else if (o instanceof ControlPartialBaseData) {
+            ControlPartialBaseData<?> msg = (ControlPartialBaseData<?>) o;
+            HostData.ControlPartialHostData gen = new ControlPartialHostData(msg.data);
             for (HostSideMessageProcess proc : ServerProcesses.getProcesses(HostSideMessageProcess.class)) {
                 proc.sendMessage(gen);
             }

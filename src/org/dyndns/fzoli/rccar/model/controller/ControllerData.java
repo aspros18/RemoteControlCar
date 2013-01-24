@@ -469,6 +469,26 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
         }
 
         /**
+         * Ha tudja, beállítja a jármű vezérlőjelét.
+         * Az adat változását jelzi a másik oldalnak.
+         */
+        @Override
+        public void setControl(Control control) {
+            sendMessage(new ControllerData.ControlPartialControllerData(control));
+            super.setControl(control);
+        }
+
+        /**
+         * Ha tudja, beállítja, hogy a GPS adat naprakész-e.
+         * Az adat változását jelzi a másik oldalnak.
+         */
+        @Override
+        public void setUp2Date(Boolean up2date) {
+            sendMessage(new ControllerData.BoolenPartialControllerData(up2date, BoolenPartialControllerData.BooleanType.UP_2_DATE));
+            super.setUp2Date(up2date);
+        }
+
+        /**
          * Ha tudja, beállítja azt, hogy a jármű vezérlése elérhető-e.
          * Az adat változását jelzi a másik oldalnak.
          */

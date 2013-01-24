@@ -24,6 +24,10 @@ public class ControllerHandler extends AbstractSecureClientHandler implements Co
         super(socket, deviceId, connectionId);
     }
 
+    /**
+     * A kapcsolatkezelő ablak figyelmezteti a felhasználót, hogy kivétel keletkezett.
+     * A keletkezett kivételnek megfelelően változik a kapcsolatkezelő ablak üzenete.
+     */
     @Override
     protected void onException(Exception ex) {
         try {

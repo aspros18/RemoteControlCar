@@ -24,5 +24,10 @@ public class ControllerVideoProcess extends AbstractVideoProcess {
         if (img == null) return;
         Main.setMjpegFrame((BufferedImage) img);
     }
+
+    @Override
+    protected void onException(Exception ex) {
+        getHandler().closeProcesses();
+    }
     
 }

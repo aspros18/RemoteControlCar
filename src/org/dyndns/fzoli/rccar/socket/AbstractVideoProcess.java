@@ -27,6 +27,13 @@ public abstract class AbstractVideoProcess extends AbstractSecureProcess {
     protected abstract void processFrame(MjpegFrame fr);
     
     /**
+     * Kivétel feldolgozó.
+     */
+    protected void onException(Exception ex) {
+        ;
+    }
+    
+    /**
      * Folyamatosan olvassa a bejövő folyamot és dekódolja az MJPEG képkockákat, amit a {@link #processFrame(MjpegFrame)} metódus dolgoz fel.
      */
     @Override
@@ -51,7 +58,7 @@ public abstract class AbstractVideoProcess extends AbstractSecureProcess {
             }
         }
         catch (Exception ex) {
-            ;
+            onException(ex);
         }
     }
     

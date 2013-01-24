@@ -465,7 +465,7 @@ public class MapDialog extends AbstractDialog {
     private String createInitScript() {
         return "var mapOptions = {" + LS +
                "  zoom: 17," + LS +
-               "  center: new google.maps.LatLng(" + position.X + ", " + position.Y + ")," + LS +
+               "  center: new google.maps.LatLng(" + (position == null ? 1 : position.X) + ", " + (position == null ? 0 : position.Y) + ")," + LS +
                "  disableDefaultUI: true," + LS +
                "  mapTypeId: google.maps.MapTypeId.HYBRID" + LS +
                "}" + LS +

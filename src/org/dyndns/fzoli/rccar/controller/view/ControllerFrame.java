@@ -394,28 +394,6 @@ public class ControllerFrame extends JFrame {
     }
     
     /**
-     * Frissíti az ablak tartalmát a model alapján.
-     * Használt getterek:
-     * {@link ClientControllerData#isControlling()}
-     * {@link ClientControllerData#isViewOnly()}
-     * {@link ClientControllerData#isWantControl()}
-     * {@link ClientControllerData#isUp2Date()}
-     * {@link ClientControllerData#getHostState()}
-     * {@link ClientControllerData#isVehicleAvailable()}
-     * {@link ClientControllerData#getControl()}
-     * {@link ClientControllerData#getBatteryLevel()}
-     * {@link ClientControllerData#isUnderTimeout()}
-     * {@link ClientControllerData#isHostUnderTimeout()}
-     * {@link ClientControllerData#isVehicleConnected()}
-     */
-    public void refresh() {
-        refreshMessage();
-        refreshControllButton();
-        refreshSpeed();
-        refreshBattery();
-    }
-    
-    /**
      * A vezérlés átadása/kérése gombot frissíti az adatmodel alapján.
      * Az alábbi táblázat alapján XNOR művelet dönti el, hogy aktív-e a gomb
      * és az első opció dönti el az ikon típusát:

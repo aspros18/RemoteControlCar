@@ -687,28 +687,12 @@ public class ArrowDialog extends AbstractDialog {
     }
     
     /**
-     * Frissíti a felületet az adatmodel alapján.
-     * Használt getterek:
-     * - {@link ClientControllerData#isControlling()}
-     * - {@link ClientControllerData#isVehicleAvailable()}
-     * - {@link ClientControllerData#getControl()}
-     * - {@link ClientControllerData#isFullX()}
-     * - {@link ClientControllerData#isFullY()}
-     */
-    public void refresh() {
-        refreshControlling();
-        refreshFullXY();
-        refreshControl();
-    }
-    
-    /**
      * Beállítja a maximalizáló korlátozást az adatmodel alapján.
-     * Mivel a metódus fix adattal dolgozik, nincs szükség külső meghívásra.
      * Használt getterek:
      * - {@link ClientControllerData#isFullX()}
      * - {@link ClientControllerData#isFullY()}
      */
-    private void refreshFullXY() {
+    public void refreshFullXY() {
         ARROW_PANEL.setFullX(getData().isFullX() != null && getData().isFullX());
         ARROW_PANEL.setFullY(getData().isFullY() != null && getData().isFullY());
     }

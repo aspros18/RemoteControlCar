@@ -289,18 +289,6 @@ public class ControllerModels {
         public boolean isVehicleAvailable() {
             return !isUnderTimeout() && isHostUnderTimeout() != null && !isHostUnderTimeout() && isVehicleConnected() != null && isVehicleConnected();
         }
-        
-        /**
-         * Beállítja, hogy a Híddal kiépített kapcsolatban időtúllépés van-e.
-         */
-        public void setUnderTimeout(boolean underTimeout) {
-            this.underTimeout = underTimeout;
-            if (frameMain != null) {
-                frameMain.refreshSpeed();
-                frameMain.refreshBattery();
-                frameMain.refreshMessage();
-            }
-        }
 
         /**
          * A kiválasztott hoszthoz tartozó chatüzenetek listáját adja meg.
@@ -320,6 +308,39 @@ public class ControllerModels {
             return refController;
         }
 
+        /**
+         * Beállítja, hogy pontosan szabályozható-e a az irány.
+         * Az adat módosulása után beállítódik a vezérlő dialógus.
+         */
+        @Override
+        public void setFullX(Boolean fullX) {
+            super.setFullX(fullX);
+            if (dialogArrow != null) dialogArrow.refreshFullXY();
+        }
+
+        /**
+         * Beállítja, hogy pontosan szabályozható-e a a sebesség.
+         * Az adat módosulása után beállítódik a vezérlő dialógus.
+         */
+        @Override
+        public void setFullY(Boolean fullY) {
+            super.setFullY(fullY);
+            if (dialogArrow != null) dialogArrow.refreshFullXY();
+        }
+        
+        /**
+         * Beállítja, hogy a Híddal kiépített kapcsolatban időtúllépés van-e.
+         * Az adat módosulása után frissül a főablak egy része.
+         */
+        public void setUnderTimeout(boolean underTimeout) {
+            this.underTimeout = underTimeout;
+            if (frameMain != null) {
+                frameMain.refreshSpeed();
+                frameMain.refreshBattery();
+                frameMain.refreshMessage();
+            }
+        }
+        
         /**
          * Beállítja az akkumulátorszintet.
          * Az adat módosulása után frissül a főablak egy része.

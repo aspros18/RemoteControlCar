@@ -280,6 +280,7 @@ class ArrowLine extends ArrowComponent {
 }
 
 
+
 /**
  * A nyíl rétegeit egyesítő panel.
  */
@@ -580,6 +581,14 @@ abstract class ArrowPanel extends JPanel {
         this.increase = increase;
         stopIncrease();
     }
+
+    public boolean isControlling() {
+        return controlling;
+    }
+    
+    public boolean isFullY() {
+        return aLim.isFullY();
+    }
     
     public int getPercentX() {
         return aLin.getPercentX();
@@ -610,7 +619,6 @@ abstract class ArrowPanel extends JPanel {
     protected abstract void onChange(int x, int y);
     
 }
-
 /**
  * Vezérlő ablak.
  * Matematikailag kissé elkapkodott - ezért nincs sok megjegyzés a kódban, de teljesen jól működik.
@@ -660,20 +668,36 @@ public class ArrowDialog extends AbstractDialog {
         }
     }
     
-    public void setControlling(boolean b, boolean restoring) {
+    private void setControlling(boolean b, boolean restoring) {
+        System.out.println("controlling: " + b);
         ControllerFrame owner = getControllerFrame();
         ARROW_PANEL.setControlling(b, restoring);
         if (b) {
-            if (owner != null) {
+            if (owner != null && !ARROW_PANEL.isFullY()) {
                 owner.getIncreaseButton().setEnabled(true);
             }
         }
         else {
             ARROW_PANEL.setMaxY(0);
             if (owner != null) {
+                ARROW_PANEL.setIncrease(false);
                 owner.getIncreaseButton().setSelected(false);
                 owner.getIncreaseButton().setEnabled(false);
             }
+        }
+    }
+    
+    private void setFullXY(boolean fullX, boolean fullY) {
+        ARROW_PANEL.setFullX(fullX);
+        ARROW_PANEL.setFullY(fullY);
+        ControllerFrame owner = getControllerFrame();
+        if (owner != null && !fullY && ARROW_PANEL.isControlling()) {
+            owner.getIncreaseButton().setEnabled(true);
+        }
+        if (owner != null && fullY) {
+            ARROW_PANEL.setIncrease(false);
+            owner.getIncreaseButton().setSelected(false);
+            owner.getIncreaseButton().setEnabled(false);
         }
     }
     
@@ -692,8 +716,7 @@ public class ArrowDialog extends AbstractDialog {
      * - {@link ClientControllerData#isFullY()}
      */
     public void refreshFullXY() {
-        ARROW_PANEL.setFullX(getData().isFullX() != null && getData().isFullX());
-        ARROW_PANEL.setFullY(getData().isFullY() != null && getData().isFullY());
+        setFullXY(getData().isFullX() != null && getData().isFullX(), getData().isFullY() != null && getData().isFullY());
     }
     
     /**

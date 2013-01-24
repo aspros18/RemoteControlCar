@@ -361,14 +361,6 @@ public class ChatDialog extends AbstractDialog {
         add(pane);
         
         pack();
-        
-        //TESZT:
-        setControllerVisible("controller", true, true);
-        for (int i = 2; i <= 7; i++) {
-            setControllerVisible("controller" + i, true, false);
-        }
-        setControllerVisible("egy sokkal hosszabb tesztnév, mint az előzőek", true, false);
-        addMessage(new Date(), "controller", "üzenet");
     }
     
     /**

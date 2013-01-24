@@ -13,7 +13,6 @@ import org.dyndns.fzoli.rccar.controller.view.ArrowDialog;
 import org.dyndns.fzoli.rccar.controller.view.ChatDialog;
 import org.dyndns.fzoli.rccar.controller.view.ControllerFrame;
 import org.dyndns.fzoli.rccar.controller.view.map.MapDialog;
-import org.dyndns.fzoli.rccar.controller.view.map.MapLoadListener;
 import org.dyndns.fzoli.ui.UIUtil;
 
 /**
@@ -65,16 +64,7 @@ public class ControllerWindows {
     /**
      * Térkép dialógus.
      */
-    private final MapDialog DIALOG_MAP = new MapDialog(FRAME_MAIN, this, new MapLoadListener() {
-
-        @Override
-        public void loadFinished(MapDialog radar) {
-            //TESZT:
-            radar.setArrow(21.5);
-            radar.setPosition(47.35021, 19.10236, 200.53);
-        }
-        
-    }, Main.isNativeSwingAvailable());
+    private final MapDialog DIALOG_MAP = new MapDialog(FRAME_MAIN, this, null, Main.isNativeSwingAvailable());
     
     /**
      * Hézag az ablakok között.

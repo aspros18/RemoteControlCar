@@ -80,7 +80,7 @@ public class ControllerSideMessageProcess extends BridgeMessageProcess implement
                 data.setControl(selected.equals("teszt1") ? new Control(0, 0) : new Control(100, -100));
                 data.setFullX(selected.equals("teszt1"));
                 data.setFullY(selected.equals("teszt1"));
-                data.setUp2Date(selected.equals("teszt1"));
+                data.setUp2Date(selected.equals("teszt1") || selected.equals("teszt2"));
                 sendMessage(data);
             }
             else {

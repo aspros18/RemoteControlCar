@@ -138,6 +138,14 @@ class ArrowLimit extends ArrowComponent {
         return fullY;
     }
     
+    void setFullX(boolean b) {
+        fullX = b;
+    }
+    
+    void setFullY(boolean b) {
+        fullY = b;
+    }
+    
     Integer getRelativeMaxY(boolean up) {
         return getRelativeMaxY(maxY, up);
     }
@@ -515,6 +523,14 @@ abstract class ArrowPanel extends JPanel {
         addKeyListener(LISTENER_KEY);
     }
 
+    public void setFullX(boolean b) {
+        aLim.setFullX(b);
+    }
+    
+    public void setFullY(boolean b) {
+        aLim.setFullY(b);
+    }
+    
     public void setMaxY(int y) {
         int ry = Math.abs(aLin.getRelativeY(y));
         aLim.setMaxY(ry == 0 ? null : ry);
@@ -676,10 +692,25 @@ public class ArrowDialog extends AbstractDialog {
      * - {@link ClientControllerData#isControlling()}
      * - {@link ClientControllerData#isVehicleAvailable()}
      * - {@link ClientControllerData#getControl()}
+     * - {@link ClientControllerData#isFullX()}
+     * - {@link ClientControllerData#isFullY()}
      */
     public void refresh() {
         refreshControlling();
+        refreshFullXY();
         refreshControl();
+    }
+    
+    /**
+     * Beállítja a maximalizáló korlátozást az adatmodel alapján.
+     * Mivel a metódus fix adattal dolgozik, nincs szükség külső meghívásra.
+     * Használt getterek:
+     * - {@link ClientControllerData#isFullX()}
+     * - {@link ClientControllerData#isFullY()}
+     */
+    private void refreshFullXY() {
+        ARROW_PANEL.setFullX(getData().isFullX() != null && getData().isFullX());
+        ARROW_PANEL.setFullY(getData().isFullY() != null && getData().isFullY());
     }
     
     /**

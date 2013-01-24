@@ -107,7 +107,7 @@ public class MapDialog extends AbstractDialog {
             "      div#map_canvas, div#border { width: " + MAP_WIDTH + "px; height: " + MAP_HEIGHT + "px }" + LS +
             "      div#border, div#arrow, div#info, div#compass { position: fixed }" + LS +
             "      div#border { z-index: 1000004; top: 0px; left: 0px }" + LS +
-            "      div#compass { z-index: 1000002; top: " + (MAP_HEIGHT - (1.25 * RADAR_SIZE)) + "px; left: " + (MAP_WIDTH - (1.5 * RADAR_SIZE)) + "px; width: " + RADAR_SIZE + "px; height: " + RADAR_SIZE + "px; background-color: white; background-image: url('" + COMPASS_FILE.getAbsolutePath() + "'); background-size: " + RADAR_SIZE + "px " + RADAR_SIZE + "px; background-repeat: no-repeat }" + LS +
+            "      div#compass { z-index: 1000002; top: " + (MAP_HEIGHT - (1.25 * RADAR_SIZE)) + "px; left: " + (MAP_WIDTH - (1.5 * RADAR_SIZE)) + "px; width: " + RADAR_SIZE + "px; height: " + RADAR_SIZE + "px; background-color: white; background-image: url('" + fileToUrl(COMPASS_FILE) + "'); background-size: " + RADAR_SIZE + "px " + RADAR_SIZE + "px; background-repeat: no-repeat }" + LS +
             "      div#info { z-index: 1000003; cursor: default; font-family: \"Arial\"; font-size: 12px; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; color: white; visibility: hidden; left: " + (((MAP_WIDTH / 2)) - (RADAR_SIZE / 2)) + "px; top: " + (((MAP_HEIGHT / 2)) - (RADAR_SIZE / 2)) + "px; padding: 2px; background-color: rgba(0, 0, 0, 0.3); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#4C000000,endColorstr=#4C000000); -ms-filter: \"progid:DXImageTransform.Microsoft.gradient(startColorstr=#4C000000,endColorstr=#4C000000)\" }" + LS +
             "      div#arrow { z-index: 1000003; top: " + ((MAP_HEIGHT / 2) - (ARROW_SIZE / 2)) + "px; left: " + ((MAP_WIDTH / 2) - (ARROW_SIZE / 2)) + "px; width: " + ARROW_SIZE + "px; height: " + ARROW_SIZE + "px }" + LS +
             "      div.fadeprep { opacity: 1; transition: opacity .25s ease-in-out; -moz-transition: opacity .25s ease-in-out; -webkit-transition: opacity .25s ease-in-out; }" + LS +
@@ -417,14 +417,9 @@ public class MapDialog extends AbstractDialog {
             
             @Override
             public void run() {
-                try {
-                    ARROW.setRotation(rotation); // nyíl frissítése
-                    writeImage(ARROW, ARROW_FILE); // png formátumban a nyíl mentése a tmp könyvtárba
-                    webBrowser.executeJavascript("document.getElementById('arrow').innerHTML = '<img src=\"" + ARROW_FILE.toURI().toURL() + "?nocache=" + Math.random() + "\" />';"); // a kép frissítése a böngészőben
-                }
-                catch(Exception ex) {
-                    throw new RuntimeException(ex);
-                }
+                ARROW.setRotation(rotation); // nyíl frissítése
+                writeImage(ARROW, ARROW_FILE); // png formátumban a nyíl mentése a tmp könyvtárba
+                webBrowser.executeJavascript("document.getElementById('arrow').innerHTML = '<img src=\"" + fileToUrl(ARROW_FILE) + "?nocache=" + Math.random() + "\" />';"); // a kép frissítése a böngészőben
             }
             
         });
@@ -439,6 +434,18 @@ public class MapDialog extends AbstractDialog {
         }
         catch (Exception ex) {
             ;
+        }
+    }
+    
+    /**
+     * HTML kódból elérhető URL-t ad vissza.
+     */
+    private static String fileToUrl(File f) {
+        try {
+            return f.toURI().toURL().toString();
+        }
+        catch (Exception ex) {
+            return "";
         }
     }
     

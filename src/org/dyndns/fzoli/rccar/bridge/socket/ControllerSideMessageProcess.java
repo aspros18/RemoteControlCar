@@ -9,6 +9,8 @@ import org.dyndns.fzoli.rccar.model.controller.ControllerData;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData.ChatMessagePartialControllerData;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
 import org.dyndns.fzoli.rccar.model.controller.HostState;
+import org.dyndns.fzoli.rccar.model.host.HostData;
+import org.dyndns.fzoli.rccar.model.host.HostData.ControlPartialHostData;
 import org.dyndns.fzoli.socket.ServerProcesses;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 
@@ -92,6 +94,13 @@ public class ControllerSideMessageProcess extends BridgeMessageProcess implement
             ControllerData.ChatMessagePartialControllerData msg = (ControllerData.ChatMessagePartialControllerData) o;
             ChatMessagePartialControllerData gen = new ControllerData.ChatMessagePartialControllerData(new ChatMessage(getRemoteCommonName(), msg.data.data));
             for (ControllerSideMessageProcess proc : ServerProcesses.getProcesses(ControllerSideMessageProcess.class)) {
+                proc.sendMessage(gen);
+            }
+        }
+        else if (o instanceof ControllerData.ControlPartialControllerData) {
+            ControllerData.ControlPartialControllerData msg = (ControllerData.ControlPartialControllerData) o;
+            ControlPartialHostData gen = new HostData.ControlPartialHostData(msg.data);
+            for (HostSideMessageProcess proc : ServerProcesses.getProcesses(HostSideMessageProcess.class)) {
                 proc.sendMessage(gen);
             }
         }

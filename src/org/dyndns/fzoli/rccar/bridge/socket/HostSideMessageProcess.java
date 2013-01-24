@@ -1,7 +1,6 @@
 package org.dyndns.fzoli.rccar.bridge.socket;
 
 import java.util.List;
-import org.dyndns.fzoli.rccar.model.Control;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.bridge.ControllerStorage;
 import org.dyndns.fzoli.rccar.model.bridge.HostStorage;
@@ -25,8 +24,6 @@ public class HostSideMessageProcess extends BridgeMessageProcess {
     protected void onStart() {
         // MJPEG streamelés aktiválása teszt céljából:
         sendMessage(new HostData.BooleanPartialHostData(Boolean.TRUE, HostData.BooleanPartialHostData.BooleanType.STREAMING));
-        // jármű vezérlőjel küldése teszt céljából:
-        sendMessage(new HostData.ControlPartialHostData(new Control(50, 50)));
     }
 
     @Override

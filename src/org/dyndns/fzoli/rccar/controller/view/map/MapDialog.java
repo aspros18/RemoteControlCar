@@ -97,11 +97,12 @@ public class MapDialog extends AbstractDialog {
             "    <style type=\"text/css\">" + LS +
             "      html, body { height: 100% }" + LS +
             "      body { margin: 0; padding: 0; }" + LS +
-            "      div#map_canvas, #border { width: " + MAP_WIDTH + "px; height: " + MAP_HEIGHT + "px }" + LS +
-            "      div#border, div#arrow, div#info { position: fixed }" + LS +
-            "      div#border { z-index: 1000003; top: 0px; left: 0px }" + LS +
-            "      div#info { z-index: 1000002; cursor: default; font-family: \"Arial\"; font-size: 12px; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; color: white; visibility: hidden; left: " + (((MAP_WIDTH / 2)) - (RADAR_SIZE / 2)) + "px; top: " + (((MAP_HEIGHT / 2)) - (RADAR_SIZE / 2)) + "px; padding: 2px; background-color: rgba(0, 0, 0, 0.3); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#4C000000,endColorstr=#4C000000); -ms-filter: \"progid:DXImageTransform.Microsoft.gradient(startColorstr=#4C000000,endColorstr=#4C000000)\" }" + LS +
-            "      div#arrow { z-index: 1000002; top: " + ((MAP_HEIGHT / 2) - (ARROW_SIZE / 2)) + "px; left: " + ((MAP_WIDTH / 2) - (ARROW_SIZE / 2)) + "px; width: " + ARROW_SIZE + "px; height: " + ARROW_SIZE + "px }" + LS +
+            "      div#map_canvas, div#border, div#white { width: " + MAP_WIDTH + "px; height: " + MAP_HEIGHT + "px }" + LS +
+            "      div#border, div#arrow, div#info, div#white { position: fixed }" + LS +
+            "      div#white { z-index: 1000002; top: 0px; left: 0px; background-color: white }" + LS +
+            "      div#border { z-index: 1000004; top: 0px; left: 0px }" + LS +
+            "      div#info { z-index: 1000003; cursor: default; font-family: \"Arial\"; font-size: 12px; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; color: white; visibility: hidden; left: " + (((MAP_WIDTH / 2)) - (RADAR_SIZE / 2)) + "px; top: " + (((MAP_HEIGHT / 2)) - (RADAR_SIZE / 2)) + "px; padding: 2px; background-color: rgba(0, 0, 0, 0.3); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#4C000000,endColorstr=#4C000000); -ms-filter: \"progid:DXImageTransform.Microsoft.gradient(startColorstr=#4C000000,endColorstr=#4C000000)\" }" + LS +
+            "      div#arrow { z-index: 1000003; top: " + ((MAP_HEIGHT / 2) - (ARROW_SIZE / 2)) + "px; left: " + ((MAP_WIDTH / 2) - (ARROW_SIZE / 2)) + "px; width: " + ARROW_SIZE + "px; height: " + ARROW_SIZE + "px }" + LS +
             "      div.fadeprep { opacity: 1; transition: opacity .25s ease-in-out; -moz-transition: opacity .25s ease-in-out; -webkit-transition: opacity .25s ease-in-out; }" + LS +
             "      div.fadeon { -ms-filter:\"progid:DXImageTransform.Microsoft.Alpha(Opacity=50)\"; filter: alpha(opacity=50); -moz-opacity:0.5; -khtml-opacity: 0.5; opacity: 0.5; }" + LS +
             "    </style>" + LS +
@@ -112,6 +113,7 @@ public class MapDialog extends AbstractDialog {
             "    <div id=\"border\"></div>" + LS +
             "    <div id=\"arrow\"></div>" + LS +
             "    <div id=\"info\"></div>" + LS +
+            "    <div id=\"white\" style=\"visibility: hidden\"></div>" + LS +
             "  </body>" + LS +
             "</html>";
     
@@ -381,7 +383,7 @@ public class MapDialog extends AbstractDialog {
             @Override
             public void run() {
                 position = pos;
-                webBrowser.executeJavascript("map.setCenter(new google.maps.LatLng(" + (position == null ? 1 : position.X) + ", " + (position == null ? 0 : position.Y) + ")); var tag = document.getElementById('info'); tag.style.visibility = '" + (pos == null ? "hidden" : "visible") + "'; tag.innerHTML = '" + (pos == null ? "" : "W " + DF.format(pos.X) + "° H " + DF.format(pos.Y) + "° " + DF2.format(pos.Z) + " m") + "';");
+                webBrowser.executeJavascript("map.setCenter(new google.maps.LatLng(" + (position == null ? 1 : position.X) + ", " + (position == null ? 0 : position.Y) + ")); var tag = document.getElementById('info'); tag.style.visibility = '" + (pos == null ? "hidden" : "visible") + "'; tag.innerHTML = '" + (pos == null ? "" : "W " + DF.format(pos.X) + "° H " + DF.format(pos.Y) + "° " + DF2.format(pos.Z) + " m") + "'; document.getElementById('white').style.visibility = '" + (pos != null ? "hidden" : "visible") + "';");
             }
             
         });

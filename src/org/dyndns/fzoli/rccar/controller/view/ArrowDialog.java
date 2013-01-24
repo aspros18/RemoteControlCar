@@ -626,7 +626,6 @@ public class ArrowDialog extends AbstractDialog {
 
         @Override
         protected void onChange(int x, int y) {
-            System.out.println("Control x: " + x + " y: " + y);
             getData().getSender().setControl(new Control(x, y));
         }
 

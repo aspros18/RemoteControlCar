@@ -4,7 +4,6 @@ import org.dyndns.fzoli.rccar.ConnectionKeys;
 import org.dyndns.fzoli.rccar.controller.ControllerModels;
 import static org.dyndns.fzoli.rccar.controller.Main.showConnectionStatus;
 import org.dyndns.fzoli.rccar.controller.view.ConnectionProgressFrame.Status;
-import org.dyndns.fzoli.rccar.test.DisconnectProcessTester;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.impl.ClientDisconnectProcess;
 
@@ -13,8 +12,6 @@ import org.dyndns.fzoli.socket.process.impl.ClientDisconnectProcess;
  * @author zoli
  */
 public class ControllerDisconnectProcess extends ClientDisconnectProcess implements ConnectionKeys {
-    
-    private final DisconnectProcessTester TESTER = new DisconnectProcessTester();
     
     public ControllerDisconnectProcess(SecureHandler handler) {
         super(handler, DC_TIMEOUT1, DC_TIMEOUT2, DC_DELAY); // 1 és 10 mp időtúllépés, 250 ms sleep
@@ -34,25 +31,12 @@ public class ControllerDisconnectProcess extends ClientDisconnectProcess impleme
     protected void onTimeout(Exception ex) throws Exception {
         setTimeout(true);
         super.onTimeout(ex);
-        TESTER.onTimeout();
     }
 
     @Override
     protected void afterTimeout() throws Exception {
         setTimeout(false);
         super.afterTimeout();
-    }
-
-    @Override
-    protected void beforeAnswer() throws Exception {
-        super.beforeAnswer();
-        TESTER.beforeAnswer();
-    }
-    
-    @Override
-    protected void afterAnswer() throws Exception {
-        super.afterAnswer();
-        TESTER.afterAnswer();
     }
 
     /**

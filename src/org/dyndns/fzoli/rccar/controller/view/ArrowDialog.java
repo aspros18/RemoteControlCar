@@ -669,7 +669,6 @@ public class ArrowDialog extends AbstractDialog {
     }
     
     private void setControlling(boolean b, boolean restoring) {
-        System.out.println("controlling: " + b);
         ControllerFrame owner = getControllerFrame();
         ARROW_PANEL.setControlling(b, restoring);
         if (b) {

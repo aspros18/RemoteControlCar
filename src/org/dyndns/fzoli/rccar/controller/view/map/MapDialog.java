@@ -16,6 +16,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.Date;
@@ -37,6 +38,7 @@ import org.dyndns.fzoli.rccar.controller.view.AbstractDialog;
 import org.dyndns.fzoli.rccar.controller.view.ControllerFrame;
 import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.controller.HostState;
+import org.imgscalr.Scalr;
 
 /**
  * Térkép ablak.
@@ -69,7 +71,7 @@ public class MapDialog extends AbstractDialog {
     /**
      * A térképhez tartozó méretek.
      */
-    private final int MAP_WIDTH = 400, MAP_HEIGHT = 300, RADAR_SIZE = 200, ARROW_SIZE = 30;
+    private static final int MAP_WIDTH = 400, MAP_HEIGHT = 300, RADAR_SIZE = 200, ARROW_SIZE = 30;
     
     /**
      * A térkép nyila.
@@ -77,14 +79,19 @@ public class MapDialog extends AbstractDialog {
     private final MapArrow ARROW = new MapArrow(ARROW_SIZE);
     
     /**
-     * Ideignlenes könyvtár.
+     * Ideiglenes könyvtár.
      */
-    private final File TMP_DIR = new File(System.getProperty("user.dir"), "tmp");
+    private static final File TMP_DIR = new File(System.getProperty("user.dir"), "tmp");
     
     /**
-     * A nyilat ábrázoló png kép helye az ideignlenes könyvtárban.
+     * A nyilat ábrázoló png kép helye az ideiglenes könyvtárban.
      */
-    private final File ARROW_FILE = new File(TMP_DIR, "arrow.png");
+    private static final File ARROW_FILE = new File(TMP_DIR, "arrow.png");
+    
+    /**
+     * Az iránytűt ábrázoló png kép helye az ideiglenes könyvtárban.
+     */
+    private static final File COMPASS_FILE = new File(TMP_DIR, "compass.png");
     
     /**
      * A térképet megjelenítő HTML kód.
@@ -97,9 +104,9 @@ public class MapDialog extends AbstractDialog {
             "    <style type=\"text/css\">" + LS +
             "      html, body { height: 100% }" + LS +
             "      body { margin: 0; padding: 0; }" + LS +
-            "      div#map_canvas, div#border, div#white { width: " + MAP_WIDTH + "px; height: " + MAP_HEIGHT + "px }" + LS +
+            "      div#map_canvas, div#border { width: " + MAP_WIDTH + "px; height: " + MAP_HEIGHT + "px }" + LS +
             "      div#border, div#arrow, div#info, div#white { position: fixed }" + LS +
-            "      div#white { z-index: 1000002; top: 0px; left: 0px; background-color: white }" + LS +
+            "      div#white { z-index: 1000002; top: " + (MAP_HEIGHT - (1.25 * RADAR_SIZE)) + "px; left: " + (MAP_WIDTH - (1.5 * RADAR_SIZE)) + "px; width: " + RADAR_SIZE + "px; height: " + RADAR_SIZE + "px; background-color: white; background-image: url('" + COMPASS_FILE.getAbsolutePath() + "'); background-size: " + RADAR_SIZE + "px " + RADAR_SIZE + "px; background-repeat: no-repeat }" + LS +
             "      div#border { z-index: 1000004; top: 0px; left: 0px }" + LS +
             "      div#info { z-index: 1000003; cursor: default; font-family: \"Arial\"; font-size: 12px; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; color: white; visibility: hidden; left: " + (((MAP_WIDTH / 2)) - (RADAR_SIZE / 2)) + "px; top: " + (((MAP_HEIGHT / 2)) - (RADAR_SIZE / 2)) + "px; padding: 2px; background-color: rgba(0, 0, 0, 0.3); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#4C000000,endColorstr=#4C000000); -ms-filter: \"progid:DXImageTransform.Microsoft.gradient(startColorstr=#4C000000,endColorstr=#4C000000)\" }" + LS +
             "      div#arrow { z-index: 1000003; top: " + ((MAP_HEIGHT / 2) - (ARROW_SIZE / 2)) + "px; left: " + ((MAP_WIDTH / 2) - (ARROW_SIZE / 2)) + "px; width: " + ARROW_SIZE + "px; height: " + ARROW_SIZE + "px }" + LS +
@@ -132,6 +139,11 @@ public class MapDialog extends AbstractDialog {
      * Megadja, hogy a fade effekt engedélyezve van-e.
      */
     private boolean fadeEnabled = false;
+    
+    static {
+        if (!TMP_DIR.isDirectory()) TMP_DIR.mkdir(); // tmp könyvtár létrehozása, ha nem létezik
+        writeImage(Scalr.resize(R.getImage("compass.png"), Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_TO_WIDTH, RADAR_SIZE, Scalr.OP_ANTIALIAS), COMPASS_FILE); // a tmp könyvtárba menti az iránytű átméretezett képét
+    }
     
     public MapDialog(ControllerFrame owner, ControllerWindows windows) {
         this(owner, windows, null, true);
@@ -403,8 +415,7 @@ public class MapDialog extends AbstractDialog {
             public void run() {
                 try {
                     ARROW.setRotation(rotation); // nyíl frissítése
-                    if (!TMP_DIR.isDirectory()) TMP_DIR.mkdir(); // tmp könyvtár létrehozása, ha nem létezik
-                    ImageIO.write(ARROW, "png", ARROW_FILE); // png formátumban a nyíl mentése a tmp könyvtárba
+                    writeImage(ARROW, ARROW_FILE); // png formátumban a nyíl mentése a tmp könyvtárba
                     webBrowser.executeJavascript("document.getElementById('arrow').innerHTML = '<img src=\"" + ARROW_FILE.toURI().toURL() + "?nocache=" + Math.random() + "\" />';"); // a kép frissítése a böngészőben
                 }
                 catch(Exception ex) {
@@ -413,6 +424,18 @@ public class MapDialog extends AbstractDialog {
             }
             
         });
+    }
+    
+    /**
+     * PNG formátumban menti el a képet a megadott fájlba.
+     */
+    private static void writeImage(BufferedImage img, File f) {
+        try {
+            ImageIO.write(img, "png", f);
+        }
+        catch (Exception ex) {
+            ;
+        }
     }
     
     /**
@@ -499,6 +522,7 @@ public class MapDialog extends AbstractDialog {
     
     /**
      * Teszt.
+     * TODO: nem minden esetben tölt be a térkép
      */
     public static void main(String[] args) {
         NativeInterface.open();

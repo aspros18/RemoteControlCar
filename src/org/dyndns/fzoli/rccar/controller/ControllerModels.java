@@ -2,6 +2,7 @@ package org.dyndns.fzoli.rccar.controller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import static org.dyndns.fzoli.rccar.controller.Main.showControllerWindows;
@@ -116,7 +117,23 @@ public class ControllerModels {
             public boolean remove(Object o) {
                 return l.remove(o);
             }
-            
+
+            /**
+             * Az eredeti lista frissítése.
+             */
+            @Override
+            public boolean addAll(Collection<? extends T> c) {
+                return l.addAll(c);
+            }
+
+            /**
+             * Az eredeti lista frissítése.
+             */
+            @Override
+            public void clear() {
+                l.clear();
+            }
+
         }
         
         /**
@@ -141,6 +158,25 @@ public class ControllerModels {
             public boolean add(ChatMessage e) {
                 if (getChatDialog() != null) getChatDialog().addMessage(e.getDate(), e.getSender(), e.data);
                 return super.add(e);
+            }
+
+            /**
+             * A chatüzenetek hozzáadása a felülethez a kollekcióban szereplő sorrendben és a helyi adatmodel frissítése.
+             */
+            @Override
+            public boolean addAll(Collection<? extends ChatMessage> c) {
+                boolean res = super.addAll(c);
+                if (getChatDialog() != null) getChatDialog().addChatMessages(c);
+                return res;
+            }
+
+            /**
+             * A chatüzenetek törlése a felületről és a helyi adatmodel frissítése.
+             */
+            @Override
+            public void clear() {
+                super.clear();
+                if (getChatDialog() != null) getChatDialog().removeChatMessages();
             }
             
         }
@@ -185,6 +221,25 @@ public class ControllerModels {
             public boolean remove(Object o) {
                 setController(o.toString(), false);
                 return super.remove(o);
+            }
+
+            /**
+             * A vezérlők hozzáadása a felülethez a kollekcióban szereplő sorrendben és a helyi adatmodel frissítése.
+             */
+            @Override
+            public boolean addAll(Collection<? extends String> c) {
+                boolean res = super.addAll(c);
+                if (getChatDialog() != null) getChatDialog().addControllers(c);
+                return res;
+            }
+
+            /**
+             * A vezérlők törlése a felületről és a helyi adatmodel frissítése.
+             */
+            @Override
+            public void clear() {
+                super.clear();
+                if (getChatDialog() != null) getChatDialog().removeControllers();
             }
             
         }

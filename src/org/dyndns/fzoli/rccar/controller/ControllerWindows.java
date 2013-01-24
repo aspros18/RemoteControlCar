@@ -179,15 +179,6 @@ public class ControllerWindows {
     }
     
     /**
-     * Újratölti az ablakok tartalmát a modelük alapján.
-     * Azon adatváltozások, melyek nem az adatmodel hatáskörébe tartoznak, külön frissülnek.
-     * Egyelőre csak a chat dialógusnak kell újratölteni a tartalmát.
-     */
-    public void reload() {
-        DIALOG_CHAT.reload();
-    }
-    
-    /**
      * Beállítja az aktuális MJPEG képkockát a vezérlő ablakban.
      * @param frame a képkocka, ami ha null, fekete kitötésű kép jelenik meg
      */

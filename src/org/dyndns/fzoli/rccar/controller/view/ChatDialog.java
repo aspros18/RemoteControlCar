@@ -16,6 +16,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
@@ -364,27 +365,43 @@ public class ChatDialog extends AbstractDialog {
     }
     
     /**
-     * Az adatmodel alapján újratölti a felületet.
-     * Törli az üzeneteket és a vezérlőlistát és a model alapján újra feltölti azt.
-     * Használt getterek:
-     * {@link ClientControllerData#getControllers()}
-     * {@link ClientControllerData#getChatMessages()}
+     * A kollekcióban lévő chatüzeneteket hozzáadja a felülethez.
+     * @param c a chatüzenetek szépen sorrendben
      */
-    public void reload() {
+    public void addChatMessages(Collection<? extends ChatMessage> c) {
+        for (ChatMessage msg : c) {
+            addMessage(msg.getDate(), msg.getSender(), msg.data);
+        }
+    }
+    
+    /**
+     * Az összes chatüzenetet eltávolítja a felületről.
+     */
+    public void removeChatMessages() {
         try {
-            DefaultListModel<String> model = (DefaultListModel) LIST_CONTROLLERS.getModel();
-            model.clear();
-            for (String c : getData().getControllers()) {
-                setControllerVisible(c, true, false);
-            }
             lastSender = null;
             doc.remove(0, doc.getLength());
-            for (ChatMessage msg : getData().getChatMessages()) {
-                addMessage(msg.getDate(), msg.getSender(), msg.data);
-            }
-        } catch (BadLocationException ex) {
+        }
+        catch (BadLocationException ex) {
             ;
         }
+    }
+    
+    /**
+     * A kollekcióban lévő vezérlő neveket hozzáadja a felülethez.
+     * @param c a vezérlők nevei szépen sorrendben
+     */
+    public void addControllers(Collection<? extends String> c) {
+        for (String s : c) {
+            setControllerVisible(s, true, false);
+        }
+    }
+    
+    /**
+     * Az összes vezérlő nevének eltávolítása a felületről.
+     */
+    public void removeControllers() {
+        ((DefaultListModel) LIST_CONTROLLERS.getModel()).clear();
     }
     
     /**

@@ -27,7 +27,7 @@ public class Processes {
         List<T> ls = Collections.synchronizedList(new ArrayList<T>());
         for (Process proc : processes) {
             try {
-                ls.add((T) proc);
+                ls.add(clazz.cast(proc)); // ezzel a kasztolás módszerrel dobódik csak kivétel
             }
             catch (ClassCastException ex) {
                 ;

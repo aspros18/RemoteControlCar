@@ -6,6 +6,7 @@ import org.dyndns.fzoli.rccar.model.Control;
 import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
+import org.dyndns.fzoli.rccar.model.controller.ControllerData.ChatMessagePartialControllerData;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
 import org.dyndns.fzoli.rccar.model.controller.HostState;
 import org.dyndns.fzoli.socket.ServerProcesses;
@@ -89,7 +90,10 @@ public class ControllerSideMessageProcess extends BridgeMessageProcess implement
         }
         else if (o instanceof ControllerData.ChatMessagePartialControllerData) {
             ControllerData.ChatMessagePartialControllerData msg = (ControllerData.ChatMessagePartialControllerData) o;
-            sendMessage(new ControllerData.ChatMessagePartialControllerData(new ChatMessage(getRemoteCommonName(), msg.data.data)));
+            ChatMessagePartialControllerData gen = new ControllerData.ChatMessagePartialControllerData(new ChatMessage(getRemoteCommonName(), msg.data.data));
+            for (ControllerSideMessageProcess proc : ServerProcesses.getProcesses(ControllerSideMessageProcess.class)) {
+                proc.sendMessage(gen);
+            }
         }
     }
     

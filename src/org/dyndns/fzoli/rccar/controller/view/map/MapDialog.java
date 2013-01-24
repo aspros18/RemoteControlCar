@@ -315,8 +315,7 @@ public class MapDialog extends AbstractDialog {
                                 }
                                 if (!fired) { // csak az első betöltéskor van eseménykezelés
                                     fired = true;
-                                    if (callback == null) setVisible(true); // ablak megjelenítése, ha nincs eseményfigyelő
-                                    else callback.loadFinished(MapDialog.this); // egyébként eseményfigyelő futtatása
+                                    if (callback != null) callback.loadFinished(MapDialog.this); // eseményfigyelő futtatása, ha van
                                 }
                             }
 

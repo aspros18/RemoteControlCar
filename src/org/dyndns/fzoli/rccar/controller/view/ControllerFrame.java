@@ -266,13 +266,13 @@ public class ControllerFrame extends JFrame {
         c.weightx = Integer.MAX_VALUE; // a panel a maradék hely teljes kitöltésével ...
         tb.add(pStat, c); // ... hozzáadódik a toolbarhoz, mint utolsó komponens
         
-        lbSpeed = new JLabel("Sebesség: 20 km/h"); // TODO: tesztszöveg törlése
+        lbSpeed = new JLabel("Sebesség: 0 km/h");
         pStat.add(lbSpeed); // sebesség kijelző inicializálása, hozzáadás az ablakhoz
         
         pbAccu = new JProgressBar(); // akkumulátor-szint kijelző inicializálása
-        pbAccu.setString("Akku: 100%"); // TODO: tesztszöveg törlése
+        pbAccu.setString("Akku: 100%");
+        pbAccu.setValue(100);
         pbAccu.setStringPainted(true); // a beállított szöveg jelenjen meg
-        pbAccu.setValue(100); // TODO: tesztsor törlése
         pStat.add(pbAccu); // hozzáadás az ablakhoz
         
         addWindowListener(new WindowAdapter() {

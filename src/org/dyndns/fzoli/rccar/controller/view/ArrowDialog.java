@@ -532,8 +532,8 @@ abstract class ArrowPanel extends JPanel {
         aLim.setFullY(b);
     }
     
-    public void setMaxY(int y) {
-        int ry = Math.abs(aLin.getRelativeY(y));
+    public void setMaxY(Integer y) {
+        int ry = y == null ? 0 : Math.abs(aLin.getRelativeY(y));
         aLim.setMaxY(ry == 0 ? null : ry);
         repaint();
     }
@@ -677,7 +677,7 @@ public class ArrowDialog extends AbstractDialog {
             }
         }
         else {
-            ARROW_PANEL.setMaxY(0);
+            ARROW_PANEL.setMaxY(null);
             if (owner != null) {
                 ARROW_PANEL.setIncrease(false);
                 owner.getIncreaseButton().setSelected(false);

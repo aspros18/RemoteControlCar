@@ -102,6 +102,7 @@ public class ConnectionBinder extends Binder {
 	 * Irány százalékban.
 	 */
 	public int getX() {
+		if (getControl() == null) return 0;
 		return getControl().getX();
 	}
 	
@@ -109,6 +110,7 @@ public class ConnectionBinder extends Binder {
 	 * Sebesség százalékban.
 	 */
 	public int getY() {
+		if (getControl() == null) return 0;
 		return getControl().getY();
 	}
 	
@@ -157,8 +159,10 @@ public class ConnectionBinder extends Binder {
 	 * @param remote true esetén jelzi az Activitynek a módosulást, egyébként a hídnak küld üzenetet.
 	 */
 	public void setXY(int x, int y, boolean remote) {
-		getControl().setX(x);
-		getControl().setY(y);
+		if (getControl() != null) {
+			getControl().setX(x);
+			getControl().setY(y);
+		}
 		fireArrowChange(remote);
 		mXYcounter++;
 	}

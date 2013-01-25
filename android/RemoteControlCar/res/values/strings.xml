@@ -18,6 +18,7 @@
     <string name="title_refresh_interval">Refresh interval</string>
     <string name="title_reconnect_delay">Reconnect delay</string>
     <string name="title_vehicle">Vehicle</string>
+    <string name="title_force_connect">Forced connection</string>
     <string name="title_offline">Offline</string>
     <string name="summary_address">Edit server address</string>
     <string name="summary_port">Edit server port</string>

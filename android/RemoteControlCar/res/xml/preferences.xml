@@ -95,6 +95,11 @@
             android:defaultValue=""
             android:dependency="offline" />
         <CheckBoxPreference
+            android:key="force_connect"
+            android:title="@string/title_force_connect"
+            android:defaultValue="false"
+            android:dependency="offline" />
+        <CheckBoxPreference
             android:key="offline"
             android:title="@string/title_offline"
             android:summary="@string/summary_offline"

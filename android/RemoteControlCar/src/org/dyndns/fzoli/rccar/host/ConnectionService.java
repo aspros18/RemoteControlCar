@@ -1,9 +1,9 @@
 package org.dyndns.fzoli.rccar.host;
 
+import ioio.lib.util.android.IOIOService;
+
 import java.util.Timer;
 import java.util.TimerTask;
-
-import ioio.lib.util.android.IOIOService;
 
 import org.dyndns.fzoli.rccar.host.socket.ConnectionHelper;
 import org.dyndns.fzoli.rccar.host.vehicle.Vehicle;
@@ -336,7 +336,7 @@ public class ConnectionService extends IOIOService {
 	 */
 	private ConnectionHelper createConnectionHelper() {
 		config = createConfig(this);
-		if (isOfflineMode(this) || !config.isCorrect() || !isNetworkAvailable() || !isAppInstalled(PACKAGE_CAM)) {
+		if (isOfflineMode(this) || !config.isCorrect() || !isNetworkAvailableOrForced() || !isAppInstalled(PACKAGE_CAM)) {
 			return null;
 		}
 		return conn = new ConnectionHelper(this);
@@ -466,8 +466,10 @@ public class ConnectionService extends IOIOService {
 			String event = intent.getStringExtra(KEY_EVENT); // esemény megszerzése
 			if (event.equals(EVT_CONNECTIVITY_CHANGE)) { // ha a hálózati kapcsolat módosult
 				if (startId != 1) setNetworkNotificationVisible(true); // ha nem első indítás, felhasználó figyelmeztetés frissítése
-				if (isNetworkAvailable()) connect(true); // ha van hálózat, újrakapcsolódás azonnal
-				else disconnect(true); // egyébként kapcsolat bontása és időzítés törlése
+				if (!isConnectionForced(this)) { // ha nincs kényszerítve a kapcsolódás ...
+					if (isNetworkAvailable()) connect(true); // és van hálózat, újrakapcsolódás azonnal
+					else disconnect(true); // egyébként kapcsolat bontása és időzítés törlése
+				}
 			}
 			else if (event.equals(EVT_GPS_SENSOR_CHANGE)) { // ha a GPS elérhetősége változott
 				if (startId != 1) setGpsEnableNotificationVisible(true); // figyelmeztetés módosítása, ha nem első indítás
@@ -711,7 +713,7 @@ public class ConnectionService extends IOIOService {
 	 * @param visible true esetén megjeleníti a figyelmeztetést, de csak akkor, ha kell és false esetén eltünteti a figyelmeztetést
 	 */
 	private void setNetworkNotificationVisible(boolean visible) {
-		if (visible && !isNetworkAvailable() && !isNetworkConnecting()) addOnlineNotification(R.string.set_network, new Intent(Settings.ACTION_WIRELESS_SETTINGS), ID_NOTIFY_NETWORK, false);
+		if (visible && !isNetworkAvailableOrForced() && !isNetworkConnecting()) addOnlineNotification(R.string.set_network, new Intent(Settings.ACTION_WIRELESS_SETTINGS), ID_NOTIFY_NETWORK, false);
 		else removeNotification(ID_NOTIFY_NETWORK);
 	}
 	
@@ -775,6 +777,13 @@ public class ConnectionService extends IOIOService {
 	 */
 	private boolean isNetworkAvailable() {
 		return isNetworkState(NetworkInfo.State.CONNECTED);
+	}
+	
+	/**
+	 * Megmondja, hogy van-e elérhető hálózat, vagy kényszerített a kapcsolódás.
+	 */
+	private boolean isNetworkAvailableOrForced() {
+		return isConnectionForced(this) || isNetworkAvailable();
 	}
 	
 	/**
@@ -849,6 +858,15 @@ public class ConnectionService extends IOIOService {
 	private static boolean isSDCardMounted() {
 		String state = Environment.getExternalStorageState();
 	    return Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
+	}
+	
+	/**
+	 * Megadja, hogy kényszerítve van-e a kapcsolódás a Hídhoz.
+	 * Ha igen, akkor nem kell nézni, hogy van-e aktív hálózati kapcsolat, hanem meg kell kísérelni a kapcsolódást.
+	 * @param context a meghívó referenciája Pl. Service, Activity
+	 */
+	public static boolean isConnectionForced(Context context) {
+		return getSharedPreferences(context).getBoolean("force_connect", false);
 	}
 	
 	/**

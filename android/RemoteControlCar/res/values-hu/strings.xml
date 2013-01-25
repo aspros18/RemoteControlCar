@@ -14,6 +14,7 @@
     <string name="title_refresh_interval">Frissítési időköz</string>
     <string name="title_reconnect_delay">Kapcsolódás késleltetés</string>
     <string name="title_vehicle">Jármű</string>
+    <string name="title_force_connect">Kényszerített kapcsolódás</string>
     <string name="title_offline">Offline mód</string>
     <string name="summary_address">Szerver cím megadása</string>
     <string name="summary_port">Szerver port megadása</string>

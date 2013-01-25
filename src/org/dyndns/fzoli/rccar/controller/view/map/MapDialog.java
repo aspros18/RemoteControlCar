@@ -390,7 +390,7 @@ public class MapDialog extends AbstractDialog {
     /**
      * A térkép pozíciójának beállítása.
      * JavaScript alapú metódus.
-     * @param pos GPS koordináta
+     * @param pos GPS koordináta, null referencia esetén térkép helyett iránytű jelenik meg
      */
     public void setPosition(final Point3D pos) {
         if (webBrowser == null) return;

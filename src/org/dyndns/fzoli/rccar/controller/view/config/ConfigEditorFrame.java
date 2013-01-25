@@ -28,6 +28,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.dyndns.fzoli.rccar.controller.Config;
+import org.dyndns.fzoli.rccar.controller.Main;
 import static org.dyndns.fzoli.rccar.controller.Main.runClient;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.ui.FilePanel;
@@ -330,6 +331,12 @@ public class ConfigEditorFrame extends FrontFrame {
     private boolean force = false;
     
     /**
+     * Az ablak megjelenésekor aktuális konfiguráció.
+     * Ahhoz kell, hogy meg lehessen tudni, módosult-e a konfiguráció az ablak megjelenése óta.
+     */
+    private Config previousConfig;
+    
+    /**
      * Konstruktor.
      * @param config konfiguráció, amit használ az ablak.
      * @param wl eseménykezelő, ami előhívja a figyelmeztetéseket az ablak bezárásakor
@@ -412,6 +419,7 @@ public class ConfigEditorFrame extends FrontFrame {
      * Betölti a konfigurációt a felület elemeibe.
      */
     private void loadConfig() {
+        previousConfig = Config.getInstance();
         tfAddress.setText(CONFIG.getAddress());
         tfPort.setText(Integer.toString(CONFIG.getPort()));
         fpCa.setFile(CONFIG.getCAFile());
@@ -423,6 +431,8 @@ public class ConfigEditorFrame extends FrontFrame {
     /**
      * Elmenti a konfigurációt.
      * Ha sikerült a mentés, bezárja az ablakot, egyébként figyelmezteti a felhasználót.
+     * Ha van már kialakított kapcsolat a Híddal és sikerült a mentés,
+     * megkérdi, akar-e a felhasználó újrakapcsolódni a hídhoz az új beállításokkal.
      */
     private void saveConfig() {
         CONFIG.setAddress(tfAddress.getText());
@@ -430,8 +440,16 @@ public class ConfigEditorFrame extends FrontFrame {
         CONFIG.setCertFile(fpCert.getFile());
         CONFIG.setKeyFile(fpKey.getFile());
         CONFIG.setPort(Integer.parseInt(tfPort.getText()));
-        if (Config.save(CONFIG)) dispose();
-        else OptionPane.showWarningDialog(R.getIconImage(), "Nem sikerült lemezre menteni a beállításokat!", "Figyelmeztetés");
+        if (Config.save(CONFIG)) {
+            if (!previousConfig.equals(CONFIG) && Main.isConnected()) {
+                int answer = OptionPane.showYesNoDialog(R.getIconImage(), "Szeretne újrakapcsolódni a szerverhez az új beállításokkal?", "Újrakapcsolódás");
+                if (answer == 0) Main.reconnect();
+            }
+            dispose();
+        }
+        else {
+            OptionPane.showWarningDialog(R.getIconImage(), "Nem sikerült lemezre menteni a beállításokat!", "Figyelmeztetés");
+        }
     }
     
     /**

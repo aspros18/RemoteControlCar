@@ -390,6 +390,13 @@ public class Main {
     }
     
     /**
+     * Megadja, hogy a vezérlő kliens kapcsolódva van-e a Híd szerverhez.
+     */
+    public static boolean isConnected() {
+        return CONN.isConnected();
+    }
+    
+    /**
      * Megadja, hogy van-e natív támogatás a böngészőhöz.
      */
     public static boolean isNativeSwingAvailable() {

@@ -53,7 +53,7 @@ public abstract class AbstractVideoProcess extends AbstractSecureProcess {
                     processFrame(fr); // keletkezhet kivétel a feldolgozás alatt is, aminek nincs jelentősége
                 }
                 catch (Exception ex) {
-                    ;
+                    ; 
                 }
             }
         }

@@ -24,7 +24,7 @@ public abstract class AbstractVideoProcess extends AbstractSecureProcess {
      * A kiolvasott képkocka feldolgozása.
      * @param fr a kiolvasott képkocka, ami null is lehet, ha nem sikerült kiolvasni
      */
-    protected abstract void processFrame(MjpegFrame fr);
+    protected abstract void processFrame(MjpegFrame fr) throws Exception;
     
     /**
      * Kivétel feldolgozó.
@@ -53,7 +53,7 @@ public abstract class AbstractVideoProcess extends AbstractSecureProcess {
                     processFrame(fr); // keletkezhet kivétel a feldolgozás alatt is, aminek nincs jelentősége
                 }
                 catch (Exception ex) {
-                    ; 
+                    ;
                 }
             }
         }

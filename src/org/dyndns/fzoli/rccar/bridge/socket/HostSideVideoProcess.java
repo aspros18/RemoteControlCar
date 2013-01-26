@@ -26,7 +26,7 @@ public class HostSideVideoProcess extends AbstractVideoProcess {
      * A legutolsó MJPEG képkockát tárolja.
      */
     @Override
-    protected void processFrame(MjpegFrame fr) {
+    protected void processFrame(MjpegFrame fr) throws Exception {
         if (fr == null) return; // ha nincs képkocka, kilépés
         // TODO: teszt1 helyére a remote name
         SharedJpegProvider.setSharedFrame("teszt1", fr.getJpegBytes()); // aktuális JPEG képkocka tárolása

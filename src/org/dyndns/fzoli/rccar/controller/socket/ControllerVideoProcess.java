@@ -21,7 +21,7 @@ public class ControllerVideoProcess extends AbstractVideoProcess {
      * A kiolvasott képkockát megjeleníti a főablakon.
      */
     @Override
-    protected void processFrame(MjpegFrame fr) {
+    protected void processFrame(MjpegFrame fr) throws Exception {
         if (fr == null) return;
         Image img = fr.getImage();
         if (img == null) return;

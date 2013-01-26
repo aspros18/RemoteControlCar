@@ -3,9 +3,11 @@ package org.dyndns.fzoli.rccar.host;
 import java.io.Serializable;
 
 import org.dyndns.fzoli.rccar.host.socket.HostMessageProcess;
+import org.dyndns.fzoli.rccar.model.Command;
 import org.dyndns.fzoli.rccar.model.Control;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.host.HostData;
+
 import android.os.Binder;
 import android.util.Log;
 
@@ -229,6 +231,16 @@ public class ConnectionBinder extends Binder {
 	 */
 	private void sendMessage(Serializable s) {
 		if (mSender != null) mSender.sendMessage(s);
+	}
+	
+	/**
+	 * Parancs feldolgozó.
+	 * Továbbfejlesztési lehetőség; még nem csinál semmit.
+	 */
+	public void onCommand(Command cmd) {
+		switch (cmd) {
+			
+		}
 	}
 	
 	/**

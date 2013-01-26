@@ -1,11 +1,13 @@
 package org.dyndns.fzoli.rccar.host.socket;
 
 import java.io.InvalidClassException;
+import java.io.Serializable;
 import java.util.Date;
 
 import org.dyndns.fzoli.rccar.host.ConnectionService;
 import org.dyndns.fzoli.rccar.host.ConnectionService.ConnectionError;
 import org.dyndns.fzoli.rccar.host.vehicle.Vehicle;
+import org.dyndns.fzoli.rccar.model.Command;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.host.HostData;
@@ -184,16 +186,20 @@ public class HostMessageProcess extends MessageProcess {
 	/**
 	 * A híd által küldött üzenetek feldolgozása.
 	 * Ha az üzenet a HostData részadata, akkor frissíti a HostData változóit.
+	 * Ha parancs érkezett, átadja a parancsot a ConnectionBinder objektumnak.
 	 * @param msg az üzenet
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	protected void onMessage(Object msg) {
+	protected void onMessage(Serializable msg) {
 		if (msg instanceof PartialBaseData) {
 			SERVICE.getBinder().updateHostData((PartialBaseData<HostData, ?>) msg);
 		}
+		else if (msg instanceof Command) {
+			SERVICE.getBinder().onCommand((Command) msg);
+		}
 	}
-
+	
 	/**
 	 * Ha üzenetküldés vagy fogadás közben hiba történik, ez a metódus fut le.
 	 * Itt csak egyetlen hiba az említésre méltó:

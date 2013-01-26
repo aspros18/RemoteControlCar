@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.bridge.socket;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import org.dyndns.fzoli.rccar.model.Control;
@@ -57,7 +58,7 @@ public class ControllerSideMessageProcess extends BridgeMessageProcess implement
     }
     
     @Override
-    protected void onMessage(Object o) {
+    protected void onMessage(Serializable o) {
         if (o instanceof ControllerData.HostNamePartialControllerData) {
             ControllerData.HostNamePartialControllerData msg = (ControllerData.HostNamePartialControllerData) o;
             selected = msg.data;

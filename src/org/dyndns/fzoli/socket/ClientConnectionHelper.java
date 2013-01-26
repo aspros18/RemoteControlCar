@@ -224,12 +224,24 @@ public abstract class ClientConnectionHelper {
      * A megadott kapcsolatfeldolgozó újrapéldányosítása.
      * Az átadott feldolgozó kapcsolatát bezárja,
      * új kapcsolatot alakít ki az azonosítójával a szerverrel
-     * és újrapéldányosítja a feldolgozót.
+     * és várakozás nélkül újrapéldányosítja a feldolgozót.
      */
     public void recreateProcess(SecureProcess proc) {
+        recreateProcess(proc, 0);
+    }
+    
+    /**
+     * A megadott kapcsolatfeldolgozó újrapéldányosítása.
+     * Az átadott feldolgozó kapcsolatát bezárja,
+     * új kapcsolatot alakít ki az azonosítójával a szerverrel
+     * és újrapéldányosítja a feldolgozót.
+     * @param sleep a kapcsolat bezárása után ennyi ezredmásodpercet vár az új kapcsolat kialakításáig
+     */
+    public void recreateProcess(SecureProcess proc, long sleep) {
         if (proc != null) {
             try {
                 proc.getSocket().close();
+                Thread.sleep(sleep);
             }
             catch (Exception ex) {
                 ;

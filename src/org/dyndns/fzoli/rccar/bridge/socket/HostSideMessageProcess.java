@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.bridge.socket;
 
+import java.io.Serializable;
 import java.util.List;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.bridge.ControllerStorage;
@@ -27,7 +28,7 @@ public class HostSideMessageProcess extends BridgeMessageProcess {
     }
 
     @Override
-    protected void onMessage(Object o) { // TODO: Data szintre kéne helyezni egy boolean paramétert, ami eldönti, hogy legyen-e üzenetküldés a setter(ek)ben. Az elv, hogy a Data setterei küldenek üzenetet, de ez alól a küldő kivétel. (És van olyan setter, ami küld Host oldalra és Controller oldalra is, de olyan is ami csak az egyik oldalra.)
+    protected void onMessage(Serializable o) { // TODO: Data szintre kéne helyezni egy boolean paramétert, ami eldönti, hogy legyen-e üzenetküldés a setter(ek)ben. Az elv, hogy a Data setterei küldenek üzenetet, de ez alól a küldő kivétel. (És van olyan setter, ami küld Host oldalra és Controller oldalra is, de olyan is ami csak az egyik oldalra.)
         if (o instanceof HostData) {
             storage = StorageList.createHostStorage(this, (HostData) o);
         }

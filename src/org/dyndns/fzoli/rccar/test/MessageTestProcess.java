@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.test;
 
+import java.io.Serializable;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.impl.MessageProcess;
 
@@ -36,7 +37,7 @@ public class MessageTestProcess extends MessageProcess {
     }
 
     @Override
-    protected void onMessage(Object o) {
+    protected void onMessage(Serializable o) {
         // a másik oldal üzenete a konzolra íródik ki (nesze)
         System.out.println(o);
     }

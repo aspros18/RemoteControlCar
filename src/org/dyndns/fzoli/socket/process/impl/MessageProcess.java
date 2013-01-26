@@ -153,7 +153,7 @@ public abstract class MessageProcess extends AbstractSecureProcess {
      * @param wait várja-e meg a metódus a küldés befejezését
      */
     public void sendMessage(Serializable o, boolean wait) {
-        if (worker != null) {
+        if (worker != null && !getSocket().isClosed()) {
             Token t = new Token();
             t.setOutputMsg(o);
             worker.submitToken(t);
@@ -174,7 +174,7 @@ public abstract class MessageProcess extends AbstractSecureProcess {
      * @param addresses az üzenetküldők listája
      * @param o az üzenet, szerializálható objektum
      */
-    public static void send(List<MessageProcess> addresses, Serializable o) {
+    public static void sendMessage(List<MessageProcess> addresses, Serializable o) {
         if (addresses == null || o == null) return;
         for (MessageProcess p : addresses) {
             p.sendMessage(o, false);
@@ -183,9 +183,9 @@ public abstract class MessageProcess extends AbstractSecureProcess {
     
     /**
      * A másik oldal üzenetet küldött.
-     * @param o az üzenet
+     * @param msg az üzenet
      */
-    protected abstract void onMessage(Object o);
+    protected abstract void onMessage(Serializable msg);
     
     /**
      * A feldolgozó mostantól képes üzenetet küldeni.
@@ -243,7 +243,8 @@ public abstract class MessageProcess extends AbstractSecureProcess {
             // ObjectInputStream létrehozása, ...
             final ObjectInputStream in = new ObjectInputStream(new CompressedBlockInputStream(getSocket().getInputStream()));
             while (!getSocket().isClosed()) { // ... és várakozás üzenetre amíg él a kapcsolat
-                onMessage(in.readObject()); // megkapott üzenet feldolgozása
+                Object o = in.readObject();
+                if (o instanceof Serializable) onMessage((Serializable) o); // megkapott üzenet feldolgozása
             }
         }
         catch (Exception ex) {

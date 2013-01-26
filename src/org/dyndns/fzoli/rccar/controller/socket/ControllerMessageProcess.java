@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.controller.socket;
 
 import java.io.InvalidClassException;
+import java.io.Serializable;
 import org.dyndns.fzoli.rccar.controller.ControllerModels;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.controller.view.ChatDialog;
@@ -49,7 +50,7 @@ public class ControllerMessageProcess extends MessageProcess {
      * Az üzenet feldolgozását a ControllerModels végzi.
      */
     @Override
-    protected void onMessage(Object o) {
+    protected void onMessage(Serializable o) {
         if (o instanceof Data) {
             ControllerModels.update((Data) o);
         }

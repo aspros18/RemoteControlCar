@@ -9,6 +9,7 @@ import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData.ChatMessagePartialControllerData;
+import org.dyndns.fzoli.rccar.model.controller.ControllerState;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
 import org.dyndns.fzoli.rccar.model.controller.HostState;
 import org.dyndns.fzoli.rccar.model.host.HostData;
@@ -68,8 +69,8 @@ public class ControllerSideMessageProcess extends BridgeMessageProcess implement
                     ControllerSideVideoProcess mjpeg = ServerProcesses.findProcess(getRemoteCommonName(), getDeviceId(), KEY_CONN_VIDEO_STREAM, ControllerSideVideoProcess.class);
                     if (mjpeg != null) mjpeg.resendFrame();
                 }
-                ArrayList<String> nams = new ArrayList<String>();
-                nams.add("controller");
+                ArrayList<ControllerState> nams = new ArrayList<ControllerState>();
+                nams.add(new ControllerState("controller"));
                 ArrayList<ChatMessage> msgs = new ArrayList<ChatMessage>();
                 msgs.add(new ChatMessage("controller", "tesztüzenet"));
                 ControllerData data = new ControllerData(nams, msgs);

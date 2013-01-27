@@ -24,22 +24,36 @@ import org.dyndns.fzoli.rccar.model.PartialBaseData;
 public class ControllerData extends BaseData<ControllerData, PartialBaseData<ControllerData, ?>> {
     
     /**
-     * Egy vezérlő változását (kapcsolódás, lekapcsolódás) írja le.
+     * Egy vezérlő változását (kapcsolódás, lekapcsolódás, állapotváltozás) írja le.
      */
     public static class ControllerChange implements Serializable {
         
         /**
-         * Igaz, ha kapcsolódás történt, egyébként hamis.
-         */
-        public final boolean connected;
-        
-        /**
-         * A kapcsolódó/lekapcsolódó vezérlő neve.
+         * A lekapcsolódó vezérlő neve.
          */
         public final String name;
 
-        public ControllerChange(String name, boolean connected) {
-            this.connected = connected;
+        /**
+         * A kapcsolódó/megváltozott vezérlő állapota.
+         */
+        public final ControllerState state;
+        
+        /**
+         * Kapcsolódás illetve adatváltozás esete.
+         */
+        public ControllerChange(ControllerState state) {
+            this(null, state);
+        }
+        
+        /**
+         * Lekapcsolódás esete.
+         */
+        public ControllerChange(String name) {
+            this(name, null);
+        }
+        
+        private ControllerChange(String name, ControllerState state) {
+            this.state = state;
             this.name = name;
         }
         
@@ -75,15 +89,33 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
         }
 
         /**
+         * Megkeresi a vezérlő állapot referenciáját.
+         * @return null, ha nincs a listában
+         */
+        private static ControllerState findController(List<ControllerState> l, String name) {
+            for (ControllerState s : l) {
+                if (s.getName().equals(name)) return s;
+            }
+            return null;
+        }
+        
+        /**
          * Alkalmazza az állapotváltozást a paraméterben megadott adaton.
          * @param d a teljes adat, amin a módosítást alkalmazni kell
          */
         @Override
         public void apply(ControllerData d) {
             if (d != null && data != null) {
-                List<String> l = d.getControllers();
-                if (data.connected && !l.contains(data.name)) l.add(data.name);
-                if (!data.connected && l.contains(data.name)) l.remove(data.name);
+                List<ControllerState> l = d.getControllers();
+                if (data.name != null) { // lekapcsolódás
+                    ControllerState s = findController(l, data.name);
+                    if (s != null) l.remove(s);
+                }
+                if (data.state != null) { // kapcsolódás vagy adatváltozás
+                    ControllerState old = findController(l, data.state.getName());
+                    if (old != null) l.remove(old);
+                    l.add(data.state);
+                }
             }
         }
         
@@ -367,23 +399,32 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
         /**
          * Vezérlőlista-módosulás küldő.
          */
-        private static class ControllerChangeSenderList extends SenderList<String> {
+        private static class ControllerChangeSenderList extends SenderList<ControllerState> {
 
             /**
              * Konstruktor.
              * @param sender a részadat-küldő objektum, ami elküldi az üzeneteket
              * @param ls az eredeti lista, ami a vezérlők neveit tartalmazza
              */
-            public ControllerChangeSenderList(ControllerDataSender sender, List<String> ls) {
+            public ControllerChangeSenderList(ControllerDataSender sender, List<ControllerState> ls) {
                 super(sender, ls);
             }
 
             /**
-             * Vezérlő hozzáadása a listához és üzenetküldés a másik oldalnak.
+             * Vezérlő hozzáadása a listához (ha még nincs benne) és üzenetküldés a másik oldalnak.
+             * Ha egy vezérlő állapota megváltozik, akkor is az add metódust kell használni az üzenetküldésre,
+             * miután az objektum tulajdonságai módosultak.
+             * Ebben az esetben nincs szükség a helyi modelben való módosításra, mert az már megtörtént az objektum módosításával;
+             * a másik oldalon lévő model úgy frissül, hogy az előző objektum törlődik belőle és az új adódik hozzá.
              */
             @Override
-            public boolean add(String e) {
-                sendControllerMessage(e, true);
+            public boolean add(ControllerState e) {
+                sendControllerMessage(new ControllerChange(e));
+                for (ControllerState s : this) {
+                    if (s.getName().equals(e.getName())) {
+                        return false;
+                    }
+                }
                 return super.add(e);
             }
 
@@ -392,17 +433,16 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
              */
             @Override
             public boolean remove(Object o) {
-                sendControllerMessage(o.toString(), false);
+                sendControllerMessage(new ControllerChange(o.toString()));
                 return super.remove(o);
             }
             
             /**
              * Üzenetet küld a másik oldalnak.
-             * @param name a vezérlő neve
-             * @param connected true esetén kapcsolódás (hozzáadás), false esetén lekapcsolódás (törlés)
+             * @param change az üzenet tartalma
              */
-            private void sendControllerMessage(String name, boolean connected) {
-                sendMessage(new ControllerData.ControllerChangePartialControllerData(new ControllerChange(name, connected)));
+            private void sendControllerMessage(ControllerChange change) {
+                sendMessage(new ControllerData.ControllerChangePartialControllerData(change));
             }
             
         }
@@ -454,7 +494,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
          * Az {@code add} és {@code remove} metódusa elküldi a változást tartalmazó részadatot a másik oldalnak.
          */
         @Override
-        public List<String> getControllers() {
+        public List<ControllerState> getControllers() {
             return SENDER_CON;
         }
         
@@ -621,7 +661,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     /**
      * A kiválasztott járműhöz kapcsolódott vezérlők listája.
      */
-    private final List<String> CONTROLLERS;
+    private final List<ControllerState> CONTROLLERS;
     
     /**
      * A vezérlő adatainak inicializálása.
@@ -629,7 +669,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
      */
     public ControllerData() {
         CHAT_MESSAGES = Collections.synchronizedList(new ArrayList<ChatMessage>());
-        CONTROLLERS = Collections.synchronizedList(new ArrayList<String>());
+        CONTROLLERS = Collections.synchronizedList(new ArrayList<ControllerState>());
     }
 
     /**
@@ -639,7 +679,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
      * @param chatMessages az üzeneteket tartalmazó lista
      * @throws NullPointerException ha az üzeneteket tartalmazó lista null
      */
-    public ControllerData(List<String> controllers, List<ChatMessage> chatMessages) {
+    public ControllerData(List<ControllerState> controllers, List<ChatMessage> chatMessages) {
         if (chatMessages == null || controllers == null) throw new NullPointerException();
         CHAT_MESSAGES = Collections.synchronizedList(chatMessages);
         CONTROLLERS = Collections.synchronizedList(controllers);
@@ -669,7 +709,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     /**
      * A kiválasztott hoszthoz tartozó vezérlők listáját adja vissza.
      */
-    public List<String> getControllers() {
+    public List<ControllerState> getControllers() {
         return CONTROLLERS;
     }
     

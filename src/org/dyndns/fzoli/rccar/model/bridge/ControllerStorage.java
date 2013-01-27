@@ -6,6 +6,7 @@ import java.util.List;
 import org.dyndns.fzoli.rccar.bridge.config.Permissions;
 import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
+import org.dyndns.fzoli.rccar.model.controller.ControllerState;
 import org.dyndns.fzoli.rccar.model.controller.HostState;
 import org.dyndns.fzoli.rccar.model.host.HostData;
 import org.dyndns.fzoli.socket.process.impl.MessageProcess;
@@ -67,11 +68,11 @@ public class ControllerStorage extends Storage {
 //    TODO: szerver oldalon a vezérlő adat módosulását kezelő üzenetküldő és adatmódosító megírása, feltéve ha a HostStorage-ben lévő DataSender nem kezeli le
 //    public ControllerData createControllerDataSender();
     
-    private static List<String> createControllers(HostStorage s) {
-        List<String> l = new ArrayList<String>();
+    private static List<ControllerState> createControllers(HostStorage s) {
+        List<ControllerState> l = new ArrayList<ControllerState>();
         if (s == null) return l;
         for (ControllerStorage cs : s.getControllers()) {
-            l.add(cs.getName());
+            l.add(new ControllerState(cs.getName()));
         }
         return l;
     }

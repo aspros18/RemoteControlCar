@@ -18,6 +18,7 @@ import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.PartialData;
 import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
+import org.dyndns.fzoli.rccar.model.controller.ControllerState;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
 import org.dyndns.fzoli.rccar.model.controller.HostState;
 import org.dyndns.fzoli.socket.ClientProcesses;
@@ -185,14 +186,14 @@ public class ControllerModels {
          * Vezérlőlista frissítő.
          * Az {@code add} és {@code remove} metódusok implementációja.
          */
-        private static class ControllerRefreshList extends RefreshList<String> {
+        private static class ControllerRefreshList extends RefreshList<ControllerState> {
 
             /**
              * Konstruktor.
              * @param d a model, amitől elkérhető a chat dialógus referenciája
              * @param l az eredeti lista, ami szintén frissül
              */
-            public ControllerRefreshList(ClientControllerData d, List<String> l) {
+            public ControllerRefreshList(ClientControllerData d, List<ControllerState> l) {
                 super(d, l);
             }
 
@@ -209,8 +210,8 @@ public class ControllerModels {
              * A kapcsolódott vezérlő megjelenítése a felületen és a helyi adatmodel frissítése.
              */
             @Override
-            public boolean add(String e) {
-                setController(e, true);
+            public boolean add(ControllerState e) {
+                setController(e.toString(), true);
                 return super.add(e);
             }
 
@@ -227,7 +228,7 @@ public class ControllerModels {
              * A vezérlők hozzáadása a felülethez a kollekcióban szereplő sorrendben és a helyi adatmodel frissítése.
              */
             @Override
-            public boolean addAll(Collection<? extends String> c) {
+            public boolean addAll(Collection<? extends ControllerState> c) {
                 boolean res = super.addAll(c);
                 if (getChatDialog() != null) getChatDialog().addControllers(c);
                 return res;
@@ -359,7 +360,7 @@ public class ControllerModels {
          * A lista {@code add} és {@code remove} metódusa frissíti a felületet.
          */
         @Override
-        public List<String> getControllers() {
+        public List<ControllerState> getControllers() {
             return refController;
         }
 

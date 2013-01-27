@@ -37,6 +37,7 @@ import org.dyndns.fzoli.rccar.controller.ControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_CHAT;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
 import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
+import org.dyndns.fzoli.rccar.model.controller.ControllerState;
 import org.dyndns.fzoli.ui.FixedStyledEditorKit;
 import org.dyndns.fzoli.ui.UIUtil;
 import sun.swing.SwingUtilities2;
@@ -391,9 +392,9 @@ public class ChatDialog extends AbstractDialog {
      * A kollekcióban lévő vezérlő neveket hozzáadja a felülethez.
      * @param c a vezérlők nevei szépen sorrendben
      */
-    public void addControllers(Collection<? extends String> c) {
-        for (String s : c) {
-            setControllerVisible(s, true, false);
+    public void addControllers(Collection<? extends ControllerState> c) {
+        for (ControllerState s : c) {
+            setControllerVisible(s.getName(), true, false);
         }
     }
     

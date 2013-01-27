@@ -20,19 +20,23 @@ public class ControllerState implements Serializable {
     public ControllerState(String name) {
         this.NAME = name;
     }
-
+    
     /**
      * A vezérlő neve.
      */
     public String getName() {
         return NAME;
     }
-
+    
     /**
-     * Frissíti az objektumot egy másik objektum adataira.
+     * Frissíti az objektumot egy másik objektum adataira
+     * és jelzi a változást az adatmodelnek, ha az nem null.
+     * @param cs az újabb adatok
+     * @param d az adatmodel
      */
-    public void apply(ControllerState cs) {
-        ;
+    public void apply(ControllerState cs, ControllerData d) {
+        // Mivel nincsenek változó paraméterek, egyelőre nincs mit módosítani.
+        if (d != null) d.onControllerStateChanged(this);
     }
     
     /**

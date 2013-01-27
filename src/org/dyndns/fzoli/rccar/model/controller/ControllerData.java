@@ -113,7 +113,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
                 }
                 if (data.state != null) { // kapcsolódás vagy adatváltozás
                     ControllerState old = findController(l, data.state.getName());
-                    if (old != null) old.apply(data.state);
+                    if (old != null) old.apply(data.state, d);
                     else l.add(data.state);
                 }
             }
@@ -414,8 +414,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
              * Vezérlő hozzáadása a listához (ha még nincs benne) és üzenetküldés a másik oldalnak.
              * Ha egy vezérlő állapota megváltozik, akkor is az add metódust kell használni az üzenetküldésre,
              * miután az objektum tulajdonságai módosultak.
-             * Ebben az esetben nincs szükség a helyi modelben való módosításra, mert az már megtörtént az objektum módosításával;
-             * a másik oldalon lévő model úgy frissül, hogy az előző objektum törlődik belőle és az új adódik hozzá.
+             * Ebben az esetben nincs szükség a helyi modelben való módosításra, mert az már megtörtént az objektum módosításával.
              */
             @Override
             public boolean add(ControllerState e) {
@@ -798,6 +797,14 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
      */
     public void setViewOnly(Boolean viewOnly) {
         this.viewOnly = viewOnly;
+    }
+    
+    /**
+     * Akkor hívódik meg, ha az egyik vezérlő állapota megváltozott.
+     * Alapértelmezetten nem csinál semmit.
+     */
+    public void onControllerStateChanged(ControllerState cs) {
+        ;
     }
     
     /**

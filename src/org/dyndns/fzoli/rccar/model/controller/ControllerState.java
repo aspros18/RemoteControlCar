@@ -29,6 +29,13 @@ public class ControllerState implements Serializable {
     }
 
     /**
+     * Frissíti az objektumot egy másik objektum adataira.
+     */
+    public void apply(ControllerState cs) {
+        ;
+    }
+    
+    /**
      * A névvel tér vissza.
      * Fontos, hogy a névvel térjen vissza, mert a Lista rendezés ezt a metódust veszi alapul,
      * valamint a Listából való törléskor kasztolás nélkül csak Object típusú referencia érhető el.

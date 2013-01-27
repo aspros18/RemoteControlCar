@@ -113,8 +113,8 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
                 }
                 if (data.state != null) { // kapcsolódás vagy adatváltozás
                     ControllerState old = findController(l, data.state.getName());
-                    if (old != null) l.remove(old);
-                    l.add(data.state);
+                    if (old != null) old.apply(data.state);
+                    else l.add(data.state);
                 }
             }
         }
@@ -325,7 +325,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
                 this.ls = ls;
                 this.sender = sender;
             }
-
+            
             /**
              * Objektum hozzáadása a listához.
              * Az üzenetküldés implementálása az utódban történik meg.
@@ -335,7 +335,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
                 if (ls == null) return false;
                 return ls.add(e);
             }
-
+            
             /**
              * Objektum törlése a listából.
              * Az üzenetküldés implementálása az utódban történik meg.
@@ -374,7 +374,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
             public ChatMessageSenderList(ControllerDataSender sender, List<ChatMessage> ls) {
                 super(sender, ls);
             }
-
+            
             /**
              * Chatüzenet hozzáadása a listához és üzenetküldés a másik oldalnak.
              */

@@ -65,6 +65,21 @@ public class ControllerSideMessageProcess extends BridgeMessageProcess implement
             selected = msg.data;
             if (selected != null) {
                 
+//                new Thread(new Runnable() {
+//
+//                    @Override
+//                    public void run() {
+//                        int counter = 0;
+//                        while (selected != null && !getSocket().isClosed()) {
+//                            if (counter % 2 == 0) sendMessage(new ControllerData.ControllerChangePartialControllerData(new ControllerData.ControllerChange(new ControllerState("teszt"))));
+//                            else sendMessage(new ControllerData.ControllerChangePartialControllerData(new ControllerData.ControllerChange("teszt")));
+//                            counter++;
+//                            try { Thread.sleep(5000); } catch (Exception ex) {}
+//                        }
+//                    }
+//                    
+//                }).start();
+                
                 if (selected.equals("teszt1")) {
                     ControllerSideVideoProcess mjpeg = ServerProcesses.findProcess(getRemoteCommonName(), getDeviceId(), KEY_CONN_VIDEO_STREAM, ControllerSideVideoProcess.class);
                     if (mjpeg != null) mjpeg.resendFrame();

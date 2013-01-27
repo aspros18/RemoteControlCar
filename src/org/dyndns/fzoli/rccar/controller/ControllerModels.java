@@ -3,6 +3,7 @@ package org.dyndns.fzoli.rccar.controller;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import static org.dyndns.fzoli.rccar.controller.Main.showControllerWindows;
@@ -102,7 +103,16 @@ public class ControllerModels {
             protected ChatDialog getChatDialog() {
                 return d.dialogChat;
             }
-            
+
+            /**
+             * Az eredeti listát járja körbe.
+             * Foreach ciklusra is érvényes!
+             */
+            @Override
+            public Iterator<T> iterator() {
+                return l.iterator();
+            }
+
             /**
              * Az eredeti lista frissítése.
              */

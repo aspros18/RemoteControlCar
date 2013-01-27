@@ -1,11 +1,15 @@
 package org.dyndns.fzoli.rccar.model.bridge;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.dyndns.fzoli.rccar.bridge.config.Permissions;
+import org.dyndns.fzoli.rccar.model.Data;
+import org.dyndns.fzoli.rccar.model.DataSender;
 import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
+import org.dyndns.fzoli.rccar.model.controller.ControllerData.ControllerDataSender;
 import org.dyndns.fzoli.rccar.model.controller.ControllerState;
 import org.dyndns.fzoli.rccar.model.controller.HostState;
 import org.dyndns.fzoli.rccar.model.host.HostData;
@@ -17,6 +21,24 @@ import org.dyndns.fzoli.socket.process.impl.MessageProcess;
  */
 public class ControllerStorage extends Storage {
 
+    public class ControllerDataUpdater extends ControllerDataSender implements DataSender {
+
+        public ControllerDataUpdater(String senderName, Integer senderDevice) {
+            super();
+        }
+
+        @Override
+        public Data createSender(String senderName, Integer senderDevice) {
+            return new ControllerDataUpdater(senderName, senderDevice);
+        }
+
+        @Override
+        protected void sendMessage(Serializable msg) {
+            ControllerStorage.this.getMessageProcess().sendMessage(msg);
+        }
+        
+    }
+    
     /**
      * A kiválasztott jármű tárolója.
      */

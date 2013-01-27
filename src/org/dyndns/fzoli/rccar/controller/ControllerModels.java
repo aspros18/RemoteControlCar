@@ -212,8 +212,8 @@ public class ControllerModels {
              * @param name a vezérlő neve
              * @param add hozzáadás vagy eltávolítás
              */
-            private void setController(String name, boolean add) {
-                if (getChatDialog() != null) getChatDialog().setControllerVisible(name, add, true);
+            private void setController(ControllerState s, boolean add) {
+                if (getChatDialog() != null) getChatDialog().setControllerVisible(s, add, true);
             }
             
             /**
@@ -221,7 +221,7 @@ public class ControllerModels {
              */
             @Override
             public boolean add(ControllerState e) {
-                setController(e.toString(), true);
+                setController(e, true);
                 return super.add(e);
             }
 
@@ -230,7 +230,7 @@ public class ControllerModels {
              */
             @Override
             public boolean remove(Object o) {
-                setController(o.toString(), false);
+                if (o instanceof ControllerState) setController((ControllerState) o, false);
                 return super.remove(o);
             }
 

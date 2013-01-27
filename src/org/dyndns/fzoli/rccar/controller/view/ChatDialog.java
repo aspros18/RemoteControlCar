@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
@@ -31,7 +32,6 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
-import org.dyndns.fzoli.rccar.controller.ControllerModels.ClientControllerData;
 import static org.dyndns.fzoli.rccar.controller.ControllerModels.getData;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_CHAT;
@@ -49,6 +49,30 @@ import sun.swing.SwingUtilities2;
 public class ChatDialog extends AbstractDialog {
     
     /**
+     * A vezérlőket megjelenítő listának a modelje.
+     */
+    private static class ControllerStateListModel extends DefaultListModel<ControllerState> {
+
+        /**
+         * Megadja, hogy egy vezérlő benne van-e a listában.
+         * A keresést név alapján teszi meg.
+         */
+        @Override
+        public boolean contains(Object elem) {
+            if (elem instanceof ControllerState) {
+                String name = ((ControllerState) elem).getName();
+                Enumeration<ControllerState> e = elements();
+                while (e.hasMoreElements()) {
+                    if (e.nextElement().getName().equals(name)) return true;
+                }
+                return false;
+            }
+            return super.contains(elem);
+        }
+        
+    }
+    
+    /**
      * Az elválasztóvonalak szélessége.
      */
     private static final int DIVIDER_SIZE = 5, MARGIN = 2, TTM = 2;
@@ -59,9 +83,21 @@ public class ChatDialog extends AbstractDialog {
     private static final Color COLOR_BG = Color.WHITE;
     
     /**
+     * Két vezérlő állapotot hasonlít össze a nevük alapján.
+     */
+    private static final Comparator<ControllerState> CMP_CNTRLS = new Comparator<ControllerState>() {
+
+        @Override
+        public int compare(ControllerState o1, ControllerState o2) {
+            return String.CASE_INSENSITIVE_ORDER.compare(o1.getName(), o2.getName());
+        }
+        
+    };
+    
+    /**
      * A vezérlők listája.
      */
-    private final JList<String> LIST_CONTROLLERS = new JList<String>(new DefaultListModel<String>()) {
+    private final JList<ControllerState> LIST_CONTROLLERS = new JList<ControllerState>(new ControllerStateListModel()) {
         {
             setBackground(COLOR_BG);
             setDragEnabled(true);
@@ -92,7 +128,7 @@ public class ChatDialog extends AbstractDialog {
          * @param row a sorindex
          */
         private Component createComponent(int row) {
-            return getCellRenderer().getListCellRendererComponent(this, getModel().getElementAt(row).toString(), row, false, false);
+            return getCellRenderer().getListCellRendererComponent(this, getModel().getElementAt(row), row, false, false);
         }
         
         /**
@@ -394,7 +430,7 @@ public class ChatDialog extends AbstractDialog {
      */
     public void addControllers(Collection<? extends ControllerState> c) {
         for (ControllerState s : c) {
-            setControllerVisible(s.getName(), true, false);
+            setControllerVisible(s, true, false);
         }
     }
     
@@ -409,29 +445,29 @@ public class ChatDialog extends AbstractDialog {
      * A jelenlévők listájához ad hozzá vagy abból vesz el.
      * Ugyan azt a nevet csak egyszer adja hozzá a listához.
      * A hozzáadáskor ABC sorrendbe rendeződik a lista.
-     * @param name a beállítandó név
+     * @param state a beállítandó név
      * @param visible true esetén hozzáadás, egyébként elvevés
      */
-    public void setControllerVisible(String name, boolean visible, boolean notify) {
-        DefaultListModel<String> model = (DefaultListModel) LIST_CONTROLLERS.getModel();
-        if (visible && !model.contains(name)) {
-            List<String> l = new ArrayList<String>();
-            Enumeration<String> e = model.elements();
+    public void setControllerVisible(ControllerState state, boolean visible, boolean notify) {
+        DefaultListModel<ControllerState> model = (DefaultListModel) LIST_CONTROLLERS.getModel();
+        if (visible && !model.contains(state)) {
+            List<ControllerState> l = new ArrayList<ControllerState>();
+            Enumeration<ControllerState> e = model.elements();
             while (e.hasMoreElements()) {
                l.add(e.nextElement());
             }
-            l.add(name);
-            Collections.sort(l);
+            l.add(state);
+            Collections.sort(l, CMP_CNTRLS);
             model.clear();
-            for (String s : l) {
+            for (ControllerState s : l) {
                 model.addElement(s);
             }
         }
-        if (!visible && model.contains(name)) {
-            model.removeElement(name);
+        if (!visible && model.contains(state)) {
+            model.removeElement(state);
         }
         if (notify) {
-            addMessage(new Date(), name, (visible ? "kapcsolódott a járműhöz" : "lekapcsolódott a járműről") + '.', true);
+            addMessage(new Date(), state.getName(), (visible ? "kapcsolódott a járműhöz" : "lekapcsolódott a járműről") + '.', true);
         }
     }
 

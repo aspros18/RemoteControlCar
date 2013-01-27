@@ -86,6 +86,7 @@ public class ControllerSideMessageProcess extends BridgeMessageProcess implement
                 }
                 ArrayList<ControllerState> nams = new ArrayList<ControllerState>();
                 nams.add(new ControllerState("controller"));
+                nams.add(new ControllerState("egy sokkal hosszabb név, mint az elvárt"));
                 ArrayList<ChatMessage> msgs = new ArrayList<ChatMessage>();
                 msgs.add(new ChatMessage("controller", "tesztüzenet"));
                 ControllerData data = new ControllerData(nams, msgs);

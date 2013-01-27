@@ -524,6 +524,20 @@ public class ControllerModels {
             super.setWantControl(wantControl);
             if (frameMain != null) frameMain.refreshControllButton();
         }
+
+        /**
+         * Ha egy vezérlő állapota megváltozik, a felületet frissíteni kell.
+         * A chat dialógus listájából kikerül a régi és hozzáadódik az új állapot.
+         * Mivel ABC sorrendben frissül a lista, így a pozíciója nem módosul a vezérlőnek a listában.
+         */
+        @Override
+        public void onControllerStateChanged(ControllerState cs) {
+            super.onControllerStateChanged(cs);
+            if (dialogChat != null) {
+                dialogChat.setControllerVisible(cs, false, false);
+                dialogChat.setControllerVisible(cs, true, false);
+            }
+        }
         
     }
     

@@ -3,6 +3,7 @@ package org.dyndns.fzoli.rccar.model.controller;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import org.dyndns.fzoli.rccar.model.BaseData;
 import org.dyndns.fzoli.rccar.model.BatteryPartialBaseData;
@@ -344,6 +345,14 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
             public boolean remove(Object o) {
                 if (ls == null) return false;
                 return ls.remove(o);
+            }
+
+            /**
+             * Az eredeti lista iterátora foreach ciklushoz.
+             */
+            @Override
+            public Iterator<T> iterator() {
+                return ls.iterator();
             }
             
             /**

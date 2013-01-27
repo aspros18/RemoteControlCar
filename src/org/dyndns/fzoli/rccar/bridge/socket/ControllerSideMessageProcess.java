@@ -85,8 +85,8 @@ public class ControllerSideMessageProcess extends BridgeMessageProcess implement
                     if (mjpeg != null) mjpeg.resendFrame();
                 }
                 ArrayList<ControllerState> nams = new ArrayList<ControllerState>();
-                nams.add(new ControllerState("controller"));
-                nams.add(new ControllerState("egy sokkal hosszabb név, mint az elvárt"));
+                nams.add(new ControllerState("controller", true));
+                nams.add(new ControllerState("egy sokkal hosszabb név, mint az elvárt", false));
                 ArrayList<ChatMessage> msgs = new ArrayList<ChatMessage>();
                 msgs.add(new ChatMessage("controller", "tesztüzenet"));
                 ControllerData data = new ControllerData(nams, msgs);

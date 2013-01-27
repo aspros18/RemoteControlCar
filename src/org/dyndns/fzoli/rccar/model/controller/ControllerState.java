@@ -14,11 +14,18 @@ public class ControllerState implements Serializable {
     private final String NAME;
 
     /**
-     * Konstruktor.
-     * Egyelőre a vezérlőnek csak neve van.
+     * Vezérli-e a járművet.
      */
-    public ControllerState(String name) {
+    private boolean controlling;
+    
+    /**
+     * Konstruktor a kezdeti paraméterek megadásával.
+     * @param name a vezérlő neve
+     * @param controlling vezérli-e a járművet
+     */
+    public ControllerState(String name, boolean controlling) {
         this.NAME = name;
+        this.controlling = controlling;
     }
     
     /**
@@ -26,6 +33,20 @@ public class ControllerState implements Serializable {
      */
     public String getName() {
         return NAME;
+    }
+
+    /**
+     * Megadja, vezérli-e a járművet a vezérlő.
+     */
+    public boolean isControlling() {
+        return controlling;
+    }
+
+    /**
+     * Beállítja, vezérli-e a járművet a vezérlő.
+     */
+    public void setControlling(boolean controlling) {
+        this.controlling = controlling;
     }
     
     /**
@@ -35,7 +56,7 @@ public class ControllerState implements Serializable {
      * @param d az adatmodel
      */
     public void apply(ControllerState cs, ControllerData d) {
-        // Mivel nincsenek változó paraméterek, egyelőre nincs mit módosítani.
+        setControlling(cs.isControlling());
         if (d != null) d.onControllerStateChanged(this);
     }
     

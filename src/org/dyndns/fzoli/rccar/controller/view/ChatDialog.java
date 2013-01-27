@@ -109,7 +109,7 @@ public class ChatDialog extends AbstractDialog {
                  */
                 @Override
                 public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                    Component c = super.getListCellRendererComponent(list, value, index, false, false);
+                    Component c = super.getListCellRendererComponent(list, value, index, getModel().getElementAt(index).isControlling(), false);
                     try {
                         JLabel lb = (JLabel) c;
                         if (isSenderName(value.toString())) lb.setFont(new Font(lb.getFont().getName(), Font.ITALIC, lb.getFont().getSize()));
@@ -258,6 +258,7 @@ public class ChatDialog extends AbstractDialog {
             
             JLabel lb = new JLabel("Jelenlévők");
             lb.setFont(new Font(lb.getFont().getFontName(), Font.BOLD, lb.getFont().getSize()));
+            lb.setBorder(BorderFactory.createEmptyBorder(0, 0, 2, 0));
             
             panel.add(lb, BorderLayout.NORTH);
             panel.add(LIST_CONTROLLERS, BorderLayout.CENTER);

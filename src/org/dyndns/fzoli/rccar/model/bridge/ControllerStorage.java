@@ -68,11 +68,11 @@ public class ControllerStorage extends Storage {
 //    TODO: szerver oldalon a vezérlő adat módosulását kezelő üzenetküldő és adatmódosító megírása, feltéve ha a HostStorage-ben lévő DataSender nem kezeli le
 //    public ControllerData createControllerDataSender();
     
-    private static List<ControllerState> createControllers(HostStorage s) {
+    private List<ControllerState> createControllers(HostStorage s) {
         List<ControllerState> l = new ArrayList<ControllerState>();
         if (s == null) return l;
         for (ControllerStorage cs : s.getControllers()) {
-            l.add(new ControllerState(cs.getName()));
+            l.add(new ControllerState(cs.getName(), s.getOwner() == this));
         }
         return l;
     }

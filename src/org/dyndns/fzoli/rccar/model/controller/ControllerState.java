@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Egy vezérlő kliens állapotát adja meg.
  * @author zoli
  */
-public class ControllerState implements Serializable {
+public class ControllerState implements Serializable, Cloneable {
 
     /**
      * A vezérlő neve.
@@ -56,8 +56,24 @@ public class ControllerState implements Serializable {
      * @param d az adatmodel
      */
     public void apply(ControllerState cs, ControllerData d) {
+        ControllerState old;
+        try {
+            old = d == null ? null : cs.clone();
+        }
+        catch (CloneNotSupportedException ex) {
+            return;
+        }
         setControlling(cs.isControlling());
-        if (d != null) d.onControllerStateChanged(this);
+        if (d != null) d.onControllerStateChanged(this, old);
+    }
+
+    /**
+     * Az eredeti paraméterekkel megegyező objektumot hoz létre,
+     * hogy össze lehessen később hasonlítani a régi paramétereket az új paraméterekkel.
+     */
+    @Override
+    protected ControllerState clone() throws CloneNotSupportedException {
+        return new ControllerState(NAME, controlling);
     }
     
     /**

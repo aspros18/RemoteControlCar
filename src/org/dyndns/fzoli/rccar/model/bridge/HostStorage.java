@@ -1,8 +1,10 @@
 package org.dyndns.fzoli.rccar.model.bridge;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.dyndns.fzoli.rccar.model.Control;
 import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
 import org.dyndns.fzoli.rccar.model.host.HostData;
 import org.dyndns.fzoli.socket.process.impl.MessageProcess;
@@ -33,7 +35,44 @@ public class HostStorage extends Storage {
      */
     private final HostData HOST_DATA = new HostData();
     
-    // TODO: DataSender interfészre nem lesz szükség, helyette ide egy univerzális adatmódosulás feldolgozó kell. Ezt használja majd a ControllerDataForwarder és a beérkező üzeneteket is ez dolgozza majd fel (helyi adat frissítése, üzenetküldés a megfelelő klienseknek).
+    /**
+     * Üzenetküldő implementáció, ami a járműnek küld üzenetet.
+     * A helyi adatot nem módosítja, mert nem minden esetben van arra szükség.
+     * Csak azon setter metódusok vannak megírva, melyek üzenetküldésre használatosak.
+     */
+    private class HostDataSender extends HostData {
+
+        /**
+         * Elküldi a paraméterben megadott vezérlőjelet.
+         */
+        @Override
+        public void setControl(Control controll) {
+            sendMessage(new HostData.ControlPartialHostData(controll));
+        }
+
+        /**
+         * Elküldi, hogy a streamelés folyamatban van-e.
+         */
+        @Override
+        public void setStreaming(Boolean streaming) {
+            sendMessage(new HostData.BooleanPartialHostData(streaming, BooleanPartialHostData.BooleanType.STREAMING));
+        }
+        
+        /**
+         * Elküldi az üzenetet a járműnek.
+         */
+        private void sendMessage(Serializable msg) {
+            HostStorage.this.getMessageProcess().sendMessage(msg);
+        }
+        
+    }
+    
+    /**
+     * Olyan üzenetküldő, ami a járműnek küld üzenetet.
+     */
+    private final HostData sender = new HostDataSender();
+    
+    // TODO: DataSender interfészre nem lesz szükség, helyette ide is egy forwarder kell egy univerzális adatmódosulás feldolgozóhoz. Ezt használja majd a ControllerDataForwarder és a beérkező üzeneteket is ez dolgozza majd fel (helyi adat frissítése, üzenetküldés a megfelelő klienseknek).
     
     /**
      * A járműhöz tartozó chatüzenetek.
@@ -77,6 +116,13 @@ public class HostStorage extends Storage {
      */
     public HostStorage(MessageProcess messageProcess) {
         super(messageProcess);
+    }
+
+    /**
+     * A járműnek lehet üzenetet küldeni ezzel az objektummal a setter metódusok használatával.
+     */
+    public HostData getSender() {
+        return sender;
     }
 
     /**

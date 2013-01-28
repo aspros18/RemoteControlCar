@@ -141,8 +141,25 @@ public class MapDialog extends AbstractDialog {
     private boolean fadeEnabled = false;
     
     static {
+        // az ideiglenes könyvtár létrehozása és feltöltése
+        chkTmpFiles();
+        // a program leállása előtt az ideiglenes könyvtár rekurzív törlése
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            
+            @Override
+            public void run() {
+                delete(TMP_DIR);
+            }
+            
+        }));
+    }
+    
+    /**
+     * Ha az ideiglenes könyvtár nem létezik, létrehozza és feltölti.
+     */
+    private static void chkTmpFiles() {
         if (!TMP_DIR.isDirectory()) TMP_DIR.mkdir(); // tmp könyvtár létrehozása, ha nem létezik
-        writeImage(Scalr.resize(R.getImage("compass.png"), Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_TO_WIDTH, RADAR_SIZE, Scalr.OP_ANTIALIAS), COMPASS_FILE); // a tmp könyvtárba menti az iránytű átméretezett képét
+        if (!COMPASS_FILE.isFile()) writeImage(Scalr.resize(R.getImage("compass.png"), Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_TO_WIDTH, RADAR_SIZE, Scalr.OP_ANTIALIAS), COMPASS_FILE); // a tmp könyvtárba menti az iránytű átméretezett képét, ha még nem létezik
     }
     
     public MapDialog(ControllerFrame owner, ControllerWindows windows) {
@@ -325,15 +342,6 @@ public class MapDialog extends AbstractDialog {
 
             });
         }
-        // a program leállása előtt az ideignlenes könyvtár rekurzív törlése
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-            
-            @Override
-            public void run() {
-                delete(TMP_DIR);
-            }
-            
-        }));
     }
     
     /**
@@ -394,6 +402,7 @@ public class MapDialog extends AbstractDialog {
      */
     public void setPosition(final Point3D pos) {
         if (webBrowser == null) return;
+        chkTmpFiles();
         SwingUtilities.invokeLater(new Runnable() {
             
             @Override
@@ -413,6 +422,7 @@ public class MapDialog extends AbstractDialog {
      */
     public void setArrow(final Double rotation) {
         if (webBrowser == null) return;
+        chkTmpFiles();
         SwingUtilities.invokeLater(new Runnable() {
             
             @Override

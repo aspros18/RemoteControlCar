@@ -64,22 +64,6 @@ public class ControllerSideMessageProcess extends BridgeMessageProcess implement
             ControllerData.HostNamePartialControllerData msg = (ControllerData.HostNamePartialControllerData) o;
             selected = msg.data;
             if (selected != null) {
-                
-                new Thread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        int counter = 0;
-                        while (selected != null && !getSocket().isClosed()) {
-                            if (counter % 2 == 0) sendMessage(new ControllerData.ControllerChangePartialControllerData(new ControllerData.ControllerChange(new ControllerState("teszt", false))));
-                            else sendMessage(new ControllerData.ControllerChangePartialControllerData(new ControllerData.ControllerChange("teszt")));
-                            counter++;
-                            try { Thread.sleep(5000); } catch (Exception ex) {}
-                        }
-                    }
-                    
-                }).start();
-                
                 if (selected.equals("teszt1")) {
                     ControllerSideVideoProcess mjpeg = ServerProcesses.findProcess(getRemoteCommonName(), getDeviceId(), KEY_CONN_VIDEO_STREAM, ControllerSideVideoProcess.class);
                     if (mjpeg != null) mjpeg.resendFrame();
@@ -104,6 +88,25 @@ public class ControllerSideMessageProcess extends BridgeMessageProcess implement
                 data.setFullY(selected.equals("teszt1"));
                 data.setUp2Date(selected.equals("teszt1") || selected.equals("teszt2"));
                 sendMessage(data);
+                new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        int counter = 0;
+                        while (selected != null && !getSocket().isClosed()) {
+                            if (counter % 2 == 0) sendMessage(new ControllerData.ControllerChangePartialControllerData(new ControllerData.ControllerChange(new ControllerState("teszt", false))));
+                            else sendMessage(new ControllerData.ControllerChangePartialControllerData(new ControllerData.ControllerChange("teszt")));
+                            counter++;
+                            try {
+                                Thread.sleep(5000);
+                            }
+                            catch (Exception ex) {
+                                ;
+                            }
+                        }
+                    }
+                    
+                }).start();
             }
             else {
                 onStart();

@@ -10,6 +10,16 @@ import java.util.Arrays;
 public abstract class JpegProvider {
 
     /**
+     * Az MJPEG folyamba küldött szerver paraméter.
+     */
+    private static final String STR_SERVER = System.getProperty("os.name") + "-" + System.getProperty("os.version");
+    
+    /**
+     * MIME Boundary: két JPEG képet elválasztó jel.
+     */
+    private static final String STR_BOUNDARY = "--Ba4oTvQMY8ew04N8dcnM";
+    
+    /**
      * MJPEG kimenő folyam.
      */
     private final OutputStream out;
@@ -133,20 +143,20 @@ public abstract class JpegProvider {
     public void handleConnection() throws Exception {
         out.write((
             "HTTP/1.0 200 OK\r\n" +
-            "Server: " + System.getProperty("os.name") + "-" + System.getProperty("os.version") + "\r\n" +
+            "Server: " + STR_SERVER + "\r\n" +
             "Connection: close\r\n" +
             "Max-Age: 0\r\n" +
             "Expires: 0\r\n" +
             "Cache-Control: no-cache, private\r\n" + 
             "Pragma: no-cache\r\n" + 
             "Content-Type: multipart/x-mixed-replace; " +
-            "boundary=--BoundaryString\r\n\r\n").getBytes());
+            "boundary=" + STR_BOUNDARY + "\r\n\r\n").getBytes());
         byte[] frame = nextFrame(false);
         while (!isInterrupted()) {
             if (frame != null) {
                 try {
                     out.write((
-                        "--BoundaryString\r\n" +
+                        STR_BOUNDARY + "\r\n" +
                         "Content-type: image/jpg\r\n" +
                         "Content-Length: " +
                         frame.length +

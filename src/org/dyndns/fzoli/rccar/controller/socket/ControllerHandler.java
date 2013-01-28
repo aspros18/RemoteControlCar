@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.controller.socket;
 
+import java.io.EOFException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import javax.net.ssl.SSLHandshakeException;
@@ -44,6 +45,9 @@ public class ControllerHandler extends AbstractSecureClientHandler implements Co
         }
         catch (SocketException e) {
             showConnectionStatus(Status.CONNECTION_ERROR);
+        }
+        catch (EOFException e) {
+            showConnectionStatus(Status.DISCONNECTED);
         }
         catch (Exception e) {
             super.onException(e);

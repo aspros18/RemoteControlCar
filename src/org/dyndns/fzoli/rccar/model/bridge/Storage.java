@@ -37,8 +37,15 @@ abstract class Storage<T extends BaseData> {
     
     /**
      * Az üzenetküldőt adja vissza.
+     * Feladata, hogy üzenetet küldjön a kliensnek a setter metódusok hívásakor.
      */
     public abstract T getSender();
+    
+    /**
+     * Az üzenetfogadót adja vissza.
+     * Feladata, hogy a fogadott üzenetet dolgozza fel, amikor a setter(ek) meghívódnak.
+     */
+    public abstract T getReceiver();
     
     /**
      * A jogkezelt adatmódosítót adja vissza.

@@ -37,6 +37,10 @@ public class ControllerStorage extends Storage<ControllerData> {
         
     };
     
+    // TODO
+    private final ControllerData RECEIVER = new ControllerData() {
+    };
+    
     // TODO: ControllerDataForwarder: minden vezérlő oldalról jövő setter kérést átirányít a jármű tárolóhoz és ott történik meg a feldolgozás ill. az adatok módosítása és üzenetküldés
     
     /**
@@ -58,6 +62,14 @@ public class ControllerStorage extends Storage<ControllerData> {
     @Override
     public ControllerData getSender() {
         return SENDER;
+    }
+
+    /**
+     * A vezérlő által küldött üzeneteket dolgozza fel úgy, hogy a jogkezelt adatmódosítónak üzen a setter metódusok hívásakor.
+     */
+    @Override
+    public ControllerData getReceiver() {
+        return RECEIVER;
     }
 
     /**

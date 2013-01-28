@@ -28,7 +28,7 @@ import org.dyndns.fzoli.socket.process.impl.MessageProcess;
  * folyamatosan tályékoztatva van a vezérlő.
  * @author zoli
  */
-public class HostStorage extends Storage {
+public class HostStorage extends Storage<HostData> {
     
     /**
      * A jármű adatai.
@@ -65,6 +65,10 @@ public class HostStorage extends Storage {
             HostStorage.this.getMessageProcess().sendMessage(msg);
         }
         
+    };
+    
+    // TODO
+    private final HostData RECEIVER = new HostData() {
     };
     
     // TODO: DataSender interfészre nem lesz szükség, helyette ide is egy forwarder kell egy univerzális adatmódosulás feldolgozóhoz. Ezt használja majd a ControllerDataForwarder és a beérkező üzeneteket is ez dolgozza majd fel (helyi adat frissítése, üzenetküldés a megfelelő klienseknek).
@@ -119,6 +123,14 @@ public class HostStorage extends Storage {
     @Override
     public HostData getSender() {
         return SENDER;
+    }
+
+    /**
+     * A jármű által küldött üzeneteket dolgozza fel úgy, hogy a jogkezelt adatmódosítónak üzen a setter metódusok hívásakor.
+     */
+    @Override
+    public HostData getReceiver() {
+        return RECEIVER;
     }
 
     /**

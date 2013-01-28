@@ -43,7 +43,7 @@ public class ControllerSideVideoProcess extends AbstractSecureProcess {
          * @param out a stream, melyre megy az MJPEG folyam
          */
         public VehicleJpegProvider(String name, Socket socket) throws IOException {
-            super(null, socket.getOutputStream());
+            super(socket.getOutputStream());
             this.socket = socket;
             this.name = name;
         }

@@ -25,23 +25,16 @@ public abstract class JpegProvider {
     private final OutputStream out;
     
     /**
-     * Folyam azonosító.
-     */
-    private String key;
-    
-    /**
      * Segédváltozó az aktuális képkocka újraküldéséhez.
      */
     private boolean resend = false;
     
     /**
      * Konstruktor.
-     * @param key a folyam azonosító
      * @param out az MJPEG kimenő folyam
      */
-    public JpegProvider(String key, OutputStream out) {
+    public JpegProvider(OutputStream out) {
         if (out == null) throw new NullPointerException("Out parameter of JpegProvider can not be null");
-        this.key = key;
         this.out = out;
     }
 
@@ -54,19 +47,15 @@ public abstract class JpegProvider {
     }
     
     /**
-     * Folyam azonosító.
+     * Megadja, hogy a következő képkocka kiolvasható-e.
+     * Ha a metódus igazzal tér vissza, az összes meghívott
+     * {@link #nextFrame(boolean)} metódus null referenciával lép ki.
+     * @return false esetén kiolvasható, egyébként nem
      */
-    public String getKey() {
-        return key;
+    protected boolean isUnreadable() {
+        return false;
     }
-
-    /**
-     * Folyam azonosító beállítása.
-     */
-    public void setKey(String key) {
-        this.key = key;
-    }
-
+    
     /**
      * Újraküldi az aktuális képkockát, ha van képkocka és fut a kapcsolatkezelés.
      */
@@ -77,18 +66,16 @@ public abstract class JpegProvider {
     /**
      * A JPEG képkocka adatát adja vissza bájt tömbben.
      * Az utód osztály eldöntheti, hogy honnan szerzi meg ezt az adatot.
-     * @param key a folyam azonosító
      */
-    protected abstract byte[] getFrame(String key);
+    protected abstract byte[] getFrame();
     
     /**
      * A JPEG képkocka adatát állítja be.
      * Ezzel a {@code getFrame(boolean)} metódus befejezi a várakozást.
      * Az utód osztály eldöntheti, hogy hol tárolja ezt az adatot.
-     * @param key a folyam azonosító
      * @param frame a képkocka adata bájt tömbben
      */
-    protected abstract void setFrame(String key, byte[] frame);
+    protected abstract void setFrame(byte[] frame);
     
     /**
      * Egy képkockát ad vissza.
@@ -102,10 +89,9 @@ public abstract class JpegProvider {
      * @param wait várja-e meg a következő képkockát létező adat esetén
      */
     private byte[] nextFrame(boolean wait) throws InterruptedException {
-        String key = getKey();
-        if (key == null || isInterrupted()) return null;
+        if (isUnreadable() || isInterrupted()) return null;
         byte[] frame;
-        byte[] tmp = frame = getFrame(key);
+        byte[] tmp = frame = getFrame();
         if ((wait && !resend) || tmp == null) {
 //            EQU RES OUT
 //            1   1   0
@@ -119,7 +105,7 @@ public abstract class JpegProvider {
 //            A két egyenlet alapján kijön a bal oldali fenti képlet.
 //            A jobb oldali képlet is ugyan azt a kimenetet adja.
             boolean equ;
-            while (!isInterrupted() && (key = getKey()) != null && ((frame = getFrame(key)) == null || (tmp != null && !(((equ = Arrays.equals(tmp, frame)) && resend) || !equ)))) {
+            while (!isInterrupted() && !isUnreadable() && ((frame = getFrame()) == null || (tmp != null && !(((equ = Arrays.equals(tmp, frame)) && resend) || !equ)))) {
                 Thread.sleep(20);
             }
         }

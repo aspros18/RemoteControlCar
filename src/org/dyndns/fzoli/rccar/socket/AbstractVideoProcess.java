@@ -1,7 +1,7 @@
 package org.dyndns.fzoli.rccar.socket;
 
-import net.sf.jipcam.axis.MjpegFrame;
-import net.sf.jipcam.axis.MjpegInputStream;
+import org.dyndns.fzoli.socket.mjpeg.jipcam.MjpegFrame;
+import org.dyndns.fzoli.socket.mjpeg.jipcam.MjpegInputStream;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
 

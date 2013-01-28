@@ -11,7 +11,7 @@ import org.dyndns.fzoli.socket.mjpeg.JpegProvider;
  * Mindegyik objektum ugyan azt a képkocka objektumot használja.
  * @author zoli
  */
-public class SharedJpegProvider extends JpegProvider {
+public abstract class SharedJpegProvider extends JpegProvider {
 
     /**
      * A megosztott képkockákat tároló map.
@@ -20,21 +20,33 @@ public class SharedJpegProvider extends JpegProvider {
     
     /**
      * Konstruktor.
-     * @param key a folyam azonosító
      * @param out az MJPEG kimenő folyam
      */
-    public SharedJpegProvider(String key, OutputStream out) {
-        super(key, out);
+    public SharedJpegProvider(OutputStream out) {
+        super(out);
     }
 
+    /**
+     * Folyam-azonosító, ami eldönti, hogy melyik képkockát adja vissza a {@link #getFrame()} metódus.
+     */
+    public abstract String getKey();
+    
+    /**
+     * Hogy ha a kulcs null, nincs mit olvasni, tehát nem olvasható ki a következő képkocka.
+     */
+    @Override
+    protected boolean isUnreadable() {
+        return getKey() == null;
+    }
+    
     /**
      * A JPEG képkocka adatát adja vissza bájt tömbben.
      * Mindegyik objektumhoz ugyan az a képkocka referencia tartozik.
      * @param key a folyam azonosító
      */
     @Override
-    protected byte[] getFrame(String key) {
-        return FRAMES.get(key);
+    protected final byte[] getFrame() {
+        return FRAMES.get(getKey());
     }
 
     /**
@@ -44,17 +56,17 @@ public class SharedJpegProvider extends JpegProvider {
      * @param frame a képkocka adata bájt tömbben
      */
     @Override
-    protected void setFrame(String key, byte[] frame) {
-        setSharedFrame(key, frame);
+    protected final void setFrame(byte[] frame) {
+        setSharedFrame(getKey(), frame);
     }
     
     /**
      * A JPEG képkocka adatát állítja be.
-     * @param key a folyam azonosító
+     * @param key a folyam-azonosító
      * @param frame a képkocka adata bájt tömbben
      */
     public static void setSharedFrame(String key, byte[] frame) {
-        FRAMES.put(key, frame);
+        if (key != null) FRAMES.put(key, frame);
     }
     
 }

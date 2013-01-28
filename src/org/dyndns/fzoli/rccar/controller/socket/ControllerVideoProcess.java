@@ -2,7 +2,8 @@ package org.dyndns.fzoli.rccar.controller.socket;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import net.sf.jipcam.axis.MjpegFrame;
+import org.dyndns.fzoli.socket.mjpeg.jipcam.MjpegFrame;
+import org.dyndns.fzoli.socket.mjpeg.jipcam.MjpegFrameReader;
 import org.dyndns.fzoli.rccar.controller.Main;
 import org.dyndns.fzoli.rccar.socket.AbstractVideoProcess;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
@@ -23,7 +24,7 @@ public class ControllerVideoProcess extends AbstractVideoProcess {
     @Override
     protected void processFrame(MjpegFrame fr) throws Exception {
         if (fr == null) return;
-        Image img = fr.getImage();
+        Image img = MjpegFrameReader.getImage(fr);
         if (img == null) return;
         Main.setMjpegFrame((BufferedImage) img);
     }

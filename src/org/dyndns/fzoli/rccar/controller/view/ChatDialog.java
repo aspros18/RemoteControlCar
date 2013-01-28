@@ -366,10 +366,10 @@ public class ChatDialog extends AbstractDialog {
                 
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    ScrollingDocumentListener.scrollToBottom(tpMessages); // scrollozás az üzenetek végére
                     if (!tpSender.getText().trim().isEmpty()) {
                         getData().getSender().getChatMessages().add(new ChatMessage(tpSender.getText())); // üzenet elküldése
                         tpSender.setText(""); // üzenetkülső panel kiürítése
-                        ScrollingDocumentListener.scrollToBottom(tpMessages); // scrollozás az üzenetek végére
                     }
                 }
                 

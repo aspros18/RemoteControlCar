@@ -10,9 +10,7 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -41,6 +39,7 @@ import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
 import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
 import org.dyndns.fzoli.rccar.model.controller.ControllerState;
 import org.dyndns.fzoli.ui.FixedStyledEditorKit;
+import org.dyndns.fzoli.ui.ScrollingDocumentListener;
 import org.dyndns.fzoli.ui.UIUtil;
 import sun.swing.SwingUtilities2;
 
@@ -295,13 +294,6 @@ public class ChatDialog extends AbstractDialog {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss");
     
     /**
-     * Az üzenet panel scrollbar objektumának a modelje.
-     * Ahhoz kell, hogy meg lehessen tudni, hol áll a scroll.
-     * Így tudni lehet, üzenet érkezésekor kell-e a scrollt a lap aljára mozgatni.
-     */
-    private BoundedRangeModel sbmMsgs;
-    
-    /**
      * Az üzenetkijelző és üzenetküldő panel.
      */
     private final JPanel PANEL_MESSAGES = new JPanel() {
@@ -354,7 +346,7 @@ public class ChatDialog extends AbstractDialog {
             paneMessages.setViewportBorder(BorderFactory.createEtchedBorder());
             paneMessages.setMinimumSize(minSize);
             paneMessages.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-            sbmMsgs = paneMessages.getVerticalScrollBar().getModel();
+            ScrollingDocumentListener.apply(tpMessages, paneMessages);
             
             final JScrollPane paneSender = new JScrollPane(tpSender);
             paneSender.setBorder(null);
@@ -377,7 +369,7 @@ public class ChatDialog extends AbstractDialog {
                     if (!tpSender.getText().trim().isEmpty()) {
                         getData().getSender().getChatMessages().add(new ChatMessage(tpSender.getText())); // üzenet elküldése
                         tpSender.setText(""); // üzenetkülső panel kiürítése
-                        scrollDown(); // scrollozás az üzenetek aljára
+                        ScrollingDocumentListener.scrollToBottom(tpMessages); // scrollozás az üzenetek végére
                     }
                 }
                 
@@ -524,7 +516,6 @@ public class ChatDialog extends AbstractDialog {
     private void addMessage(Date date, String name, String message, boolean sysmsg) {
         try {
             if (date == null || name == null || message == null) return;
-            boolean scrolling = needScroll();
             boolean me = message.indexOf("/me ") == 0;
             if (me) message = message.substring(4);
             me |= sysmsg;
@@ -533,25 +524,10 @@ public class ChatDialog extends AbstractDialog {
             doc.insertString(doc.getLength(), (me ? ("* " + name) : (name.equals(lastSender) ? "..." : (name + ':'))) + ' ', doc.getStyle(sysmsg ? KEY_SYSNAME : isSenderName(name) ? KEY_MYNAME : KEY_NAME));
             doc.insertString(doc.getLength(), (!me && startNewline ? "\n" : "") + message.trim(), doc.getStyle(KEY_REGULAR));
             lastSender = me ? "" : name;
-            if (scrolling) scrollDown();
         }
         catch (Exception ex) {
             ;
         }
-    }
-    
-    /**
-     * Megadja, hogy ha új üzenet érkezik, szükséges-e scrollozni az üzenet panel aljára.
-     */
-    private boolean needScroll() {
-        return (!Toolkit.getDefaultToolkit().getLockingKeyState(KeyEvent.VK_SCROLL_LOCK) && sbmMsgs.getExtent() + sbmMsgs.getValue() + 3 + 5 > sbmMsgs.getMaximum());
-    }
-    
-    /**
-     * Az üzeneteket tartalmazó panel aljára viszi a scrollt.
-     */
-    private void scrollDown() {
-        tpMessages.select(doc.getLength(), doc.getLength());
     }
     
     /**

@@ -377,7 +377,7 @@ public class ChatDialog extends AbstractDialog {
                     if (!tpSender.getText().trim().isEmpty()) {
                         getData().getSender().getChatMessages().add(new ChatMessage(tpSender.getText())); // üzenet elküldése
                         tpSender.setText(""); // üzenetkülső panel kiürítése
-                        scrollDown(true); // scrollozás az üzenetek aljára
+                        scrollDown(); // scrollozás az üzenetek aljára
                     }
                 }
                 
@@ -524,6 +524,7 @@ public class ChatDialog extends AbstractDialog {
     private void addMessage(Date date, String name, String message, boolean sysmsg) {
         try {
             if (date == null || name == null || message == null) return;
+            boolean scrolling = needScroll();
             boolean me = message.indexOf("/me ") == 0;
             if (me) message = message.substring(4);
             me |= sysmsg;
@@ -532,7 +533,7 @@ public class ChatDialog extends AbstractDialog {
             doc.insertString(doc.getLength(), (me ? ("* " + name) : (name.equals(lastSender) ? "..." : (name + ':'))) + ' ', doc.getStyle(sysmsg ? KEY_SYSNAME : isSenderName(name) ? KEY_MYNAME : KEY_NAME));
             doc.insertString(doc.getLength(), (!me && startNewline ? "\n" : "") + message.trim(), doc.getStyle(KEY_REGULAR));
             lastSender = me ? "" : name;
-            scrollDown(false);
+            if (scrolling) scrollDown();
         }
         catch (Exception ex) {
             ;
@@ -540,11 +541,17 @@ public class ChatDialog extends AbstractDialog {
     }
     
     /**
-     * Az üzeneteket tartalmazó panel aljára viszi a scrollt.
-     * @param force false esetén csak akkor scrolloz, ha a scroll a panel aljához közel van és nincs a ScrollLock bekapcsolva
+     * Megadja, hogy ha új üzenet érkezik, szükséges-e scrollozni az üzenet panel aljára.
      */
-    private void scrollDown(boolean force) {
-        if (force || (!Toolkit.getDefaultToolkit().getLockingKeyState(KeyEvent.VK_SCROLL_LOCK) && sbmMsgs.getExtent() + sbmMsgs.getValue() + 10 > sbmMsgs.getMaximum())) tpMessages.select(doc.getLength(), doc.getLength());
+    private boolean needScroll() {
+        return (!Toolkit.getDefaultToolkit().getLockingKeyState(KeyEvent.VK_SCROLL_LOCK) && sbmMsgs.getExtent() + sbmMsgs.getValue() + 3 + 5 > sbmMsgs.getMaximum());
+    }
+    
+    /**
+     * Az üzeneteket tartalmazó panel aljára viszi a scrollt.
+     */
+    private void scrollDown() {
+        tpMessages.select(doc.getLength(), doc.getLength());
     }
     
     /**

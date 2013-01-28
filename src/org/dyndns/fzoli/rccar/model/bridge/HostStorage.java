@@ -30,17 +30,24 @@ public class HostStorage extends Storage {
     
     /**
      * A jármű adatai.
-     * TODO: DataSender implementálása
      */
     private final HostData HOST_DATA = new HostData();
+    
+    // TODO: DataSender interfészre nem lesz szükség, helyette ide egy univerzális adatmódosulás feldolgozó kell. Ezt használja majd a ControllerDataForwarder és a beérkező üzeneteket is ez dolgozza majd fel (helyi adat frissítése, üzenetküldés a megfelelő klienseknek).
     
     /**
      * A járműhöz tartozó chatüzenetek.
      */
     private final List<ChatMessage> CHAT_MESSAGES = Collections.synchronizedList(new ArrayList<ChatMessage>() {
 
+        /**
+         * Maximum ennyi üzenetet tárol a szerver.
+         */
         private static final int MAX_SIZE = 50;
         
+        /**
+         * Chatüzenet hozzáadása és a legrégebbi üzenet törlése, ha az üzenetek száma elérte a korlátot.
+         */
         @Override
         public boolean add(ChatMessage e) {
             boolean result = super.add(e);
@@ -65,14 +72,27 @@ public class HostStorage extends Storage {
      */
     private boolean underTimeout = false;
     
+    /**
+     * Konstruktor a kezdeti paraméterek megadásával.
+     */
     public HostStorage(MessageProcess messageProcess) {
         super(messageProcess);
     }
 
+    /**
+     * A jármű jelenlegi irányítója.
+     * (Az irányításra rangsorolt vezérlők közül az első.)
+     */
     public ControllerStorage getOwner() {
         return OWNERS.get(0);
     }
 
+    /**
+     * A jármű vezérlésére jelentkezett kliensek sorba rendezve.
+     * A lista legelején lévő irányíthatja az autót.
+     * Ha lemond a vezérlésről, kikerül a listából,
+     * így az őt követő veszi át az irányítást.
+     */
     public List<ControllerStorage> getOwners() {
         return OWNERS;
     }
@@ -93,24 +113,49 @@ public class HostStorage extends Storage {
         CONTROLLERS.add(controller);
     }
 
+    /**
+     * A jármű vezérlésének átadása a paraméterben megadott kliensnek.
+     * A vezérlő-lista első helyére kerül a megadott kliens.
+     */
     public void setOwner(ControllerStorage owner) {
         OWNERS.add(0, owner);
     }
 
+    /**
+     * A járműhöz tartozó chatüzenetek listája.
+     */
     public List<ChatMessage> getChatMessages() {
         return CHAT_MESSAGES;
     }
 
+    /**
+     * A járműre vonatkozó adatok tárolója.
+     * Kliens és szerver oldalon is létező adatok.
+     */
     public HostData getHostData() {
         return HOST_DATA;
     }
 
+    /**
+     * Megadja, hogy a jármű kapcsolatában van-e időtúllépés.
+     * A vezérlők oldalára generált adatmodel generálásához használt metódus.
+     */
     public boolean isUnderTimeout() {
         return underTimeout;
     }
 
+    /**
+     * Beállítja, hogy a jármű kapcsolatában van-e időtúllépés és jelzi a változást a vezérlő klienseknek.
+     */
     public void setUnderTimeout(boolean underTimeout) {
         this.underTimeout = underTimeout; // TODO: a vezérlőknek is kell jelezni
     }
 
+    /**
+     * Megadja, hogy a jármű kapcsolódva van-e a hídhoz.
+     */
+    public static boolean isHostConnected(HostStorage s) {
+        return s != null && s.getMessageProcess() != null && !s.getMessageProcess().getSocket().isClosed();
+    }
+    
 }

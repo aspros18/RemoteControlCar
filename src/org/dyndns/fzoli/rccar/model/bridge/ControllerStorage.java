@@ -20,15 +20,24 @@ public class ControllerStorage extends Storage {
 
     /**
      * Üzenetküldő a vezérlő oldal irányába.
+     * A {@link HostStorage} adatainak módosulása esetén van rá szükség.
+     * Mivel a szerver oldalon nincs tárolva a {@link ControllerData},
+     * csak részadat küldésre van szükség, helyi adatmentés nincs.
      */
     private final ControllerData sender = new ControllerData.ControllerDataSender() {
 
+        /**
+         * Elküldi az üzenetet a vezérlőnek.
+         * @param msg az üzenet
+         */
         @Override
         protected void sendMessage(Serializable msg) {
             ControllerStorage.this.getMessageProcess().sendMessage(msg);
         }
         
     };
+    
+    // TODO: ControllerDataForwarder: minden vezérlő oldalról jövő setter kérést átirányít a jármű tárolóhoz és ott történik meg a feldolgozás ill. az adatok módosítása és üzenetküldés
     
     /**
      * A kiválasztott jármű tárolója.
@@ -70,6 +79,11 @@ public class ControllerStorage extends Storage {
         this.hostStorage = hostStorage;
     }
     
+    /**
+     * Legenerálja a vezérlő kliens oldalára szánt adatmodelt a szerveren tárolt adatok alapján.
+     * Ez a metódus akkor hívódik meg, amikor a vezérlő kiválaszt egy konkrét járművet.
+     * Ekkor a járműhöz tartozó összes adat (amit ez a metódus gyárt le) átkerül a kliensre.
+     */
     public ControllerData createControllerData() {
         HostStorage s = getHostStorage();
         if (s == null) return null;
@@ -92,6 +106,9 @@ public class ControllerStorage extends Storage {
 //    TODO: szerver oldalon a vezérlő adat módosulását kezelő üzenetküldő és adatmódosító megírása, feltéve ha a HostStorage-ben lévő DataSender nem kezeli le
 //    public ControllerData createControllerDataSender();
     
+    /**
+     * A járműhöz tartozó vezérlők listáját generálja le, ami tartalmazza a vezérlők aktuális paramétereit.
+     */
     private List<ControllerState> createControllers(HostStorage s) {
         List<ControllerState> l = new ArrayList<ControllerState>();
         if (s == null) return l;
@@ -101,15 +118,17 @@ public class ControllerStorage extends Storage {
         return l;
     }
     
-    public static boolean isHostConnected(HostStorage s) {
-        return s != null && s.getMessageProcess() != null && !s.getMessageProcess().getSocket().isClosed();
-    }
-    
+    /**
+     * Megadja, hogy a vezérlő korlátozva van-e a vezérlésben a fehérlista alapján.
+     */
     public boolean isViewOnly() {
         if (getHostStorage() == null) return false;
         return Permissions.getConfig().isViewOnly(getHostStorage().getName(), getName());
     }
     
+    /**
+     * Létrehozza a kiválasztott járműhöz tartozó állapotleíró objektumot.
+     */
     private HostState createHostState() {
         try {
             HostData d = getHostStorage().getHostData();
@@ -120,6 +139,9 @@ public class ControllerStorage extends Storage {
         }
     }
     
+    /**
+     * Fokban kifejezve megadja a jármű északtól való eltérését.
+     */
     private static Integer getAzimuth(HostData d) {
         if (d != null) {
             Point3D acc = d.getGravitationalField();
@@ -137,6 +159,9 @@ public class ControllerStorage extends Storage {
         return null;
     }
     
+    /**
+     * Km/h-ban kifejezve megadja a jármű pillanatnyi sebességét.
+     */
     private static Integer getSpeed(HostData d) {
         Double v = null;
         if (d != null) {

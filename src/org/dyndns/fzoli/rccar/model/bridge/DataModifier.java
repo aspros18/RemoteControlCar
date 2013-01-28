@@ -16,5 +16,11 @@ import org.dyndns.fzoli.rccar.bridge.config.Permissions;
  * @author zoli
  */
 public class DataModifier {
+
+    private final Storage STORAGE;
+    
+    DataModifier(Storage storage) {
+        this.STORAGE = storage;
+    }
     
 }

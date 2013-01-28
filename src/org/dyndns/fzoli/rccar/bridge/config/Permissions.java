@@ -1,10 +1,14 @@
 package org.dyndns.fzoli.rccar.bridge.config;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import org.dyndns.fzoli.rccar.bridge.Main;
+import org.dyndns.fzoli.rccar.model.bridge.ControllerStorage;
+import org.dyndns.fzoli.rccar.model.bridge.DataModifier;
+import org.dyndns.fzoli.rccar.model.bridge.StorageList;
 import org.dyndns.fzoli.socket.ServerProcesses;
 import org.dyndns.fzoli.socket.process.SecureProcess;
 
@@ -27,7 +31,7 @@ public final class Permissions {
     /**
      * Az aktuális konfiguráció.
      */
-    private static final PermissionConfig config = new PermissionConfig();
+    private static final PermissionConfig CONFIG = new PermissionConfig();
 
     /**
      * Konstruktor.
@@ -39,7 +43,7 @@ public final class Permissions {
 
             @Override
             public void run() {
-                PermissionConfig prev = config.refresh();
+                PermissionConfig prev = CONFIG.refresh();
                 if (prev != null) onRefresh(prev);
             }
             
@@ -56,7 +60,7 @@ public final class Permissions {
      * Az aktuális konfigurációt adja vissza.
      */
     public static PermissionConfig getConfig() {
-        return config;
+        return CONFIG;
     }
     
     /**
@@ -74,6 +78,12 @@ public final class Permissions {
             if (!previous.isBlocked(name) && getConfig().isBlocked(name)) proc.getHandler().closeProcesses(); // ha nem volt tiltva eddig, de most már tiltva van, akkor kapcsolatok bezárása a klienssel
             if (!Main.CONFIG.isStrict() || !proc.getDeviceId().equals(ConnectionKeys.KEY_DEV_CONTROLLER)) continue; // ha nem vezérlőé a kapcsolat vagy nem aktív a szigorú mód, tovább a következő kapcsolatra
             if (!Permissions.getConfig().isControllerWhite(name)) proc.getHandler().closeProcesses(); // ha már nem szerepel a fehér listában a vezérlő neve, akkor kapcsolatok bezárása a klienssel
+        }
+        
+        // végigmegy a vezérlőkön és frissíti azokat, melyeket érint a konfiguráció módosulás
+        List<ControllerStorage> ls = StorageList.getControllerStorageList();
+        for (ControllerStorage cs : ls) {
+//            cs.getDataModifier();
         }
     }
     

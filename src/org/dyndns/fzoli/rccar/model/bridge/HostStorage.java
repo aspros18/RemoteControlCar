@@ -40,8 +40,8 @@ public class HostStorage extends Storage {
      * A helyi adatot nem módosítja, mert nem minden esetben van arra szükség.
      * Csak azon setter metódusok vannak megírva, melyek üzenetküldésre használatosak.
      */
-    private class HostDataSender extends HostData {
-
+    private final HostData SENDER = new HostData() {
+        
         /**
          * Elküldi a paraméterben megadott vezérlőjelet.
          */
@@ -55,7 +55,7 @@ public class HostStorage extends Storage {
          */
         @Override
         public void setStreaming(Boolean streaming) {
-            sendMessage(new HostData.BooleanPartialHostData(streaming, BooleanPartialHostData.BooleanType.STREAMING));
+            sendMessage(new HostData.BooleanPartialHostData(streaming, HostData.BooleanPartialHostData.BooleanType.STREAMING));
         }
         
         /**
@@ -65,12 +65,7 @@ public class HostStorage extends Storage {
             HostStorage.this.getMessageProcess().sendMessage(msg);
         }
         
-    }
-    
-    /**
-     * Olyan üzenetküldő, ami a járműnek küld üzenetet.
-     */
-    private final HostData sender = new HostDataSender();
+    };
     
     // TODO: DataSender interfészre nem lesz szükség, helyette ide is egy forwarder kell egy univerzális adatmódosulás feldolgozóhoz. Ezt használja majd a ControllerDataForwarder és a beérkező üzeneteket is ez dolgozza majd fel (helyi adat frissítése, üzenetküldés a megfelelő klienseknek).
     
@@ -121,8 +116,9 @@ public class HostStorage extends Storage {
     /**
      * A járműnek lehet üzenetet küldeni ezzel az objektummal a setter metódusok használatával.
      */
+    @Override
     public HostData getSender() {
-        return sender;
+        return SENDER;
     }
 
     /**

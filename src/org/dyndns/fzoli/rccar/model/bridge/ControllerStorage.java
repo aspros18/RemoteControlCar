@@ -16,7 +16,7 @@ import org.dyndns.fzoli.socket.process.impl.MessageProcess;
  * Egy konkrét vezerlő kliens adatait tartalmazó tároló.
  * @author zoli
  */
-public class ControllerStorage extends Storage {
+public class ControllerStorage extends Storage<ControllerData> {
 
     /**
      * Üzenetküldő a vezérlő oldal irányába.
@@ -24,7 +24,7 @@ public class ControllerStorage extends Storage {
      * Mivel a szerver oldalon nincs tárolva a {@link ControllerData},
      * csak részadat küldésre van szükség, helyi adatmentés nincs.
      */
-    private final ControllerData sender = new ControllerData.ControllerDataSender() {
+    private final ControllerData SENDER = new ControllerData.ControllerDataSender() {
 
         /**
          * Elküldi az üzenetet a vezérlőnek.
@@ -43,7 +43,7 @@ public class ControllerStorage extends Storage {
      * A kiválasztott jármű tárolója.
      */
     private HostStorage hostStorage;
-
+    
     /**
      * Konstruktor a kezdeti paraméterekkel.
      * @param messageProcess a vezérlő kliens üzenetküldésre alkalmas kapcsolatfeldolgozója
@@ -55,8 +55,9 @@ public class ControllerStorage extends Storage {
     /**
      * Olyan üzenetküldő, mely a vezérlő kliensnek küld üzenetet a setter metódusokban.
      */
+    @Override
     public ControllerData getSender() {
-        return sender;
+        return SENDER;
     }
 
     /**

@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.model.bridge;
 
+import org.dyndns.fzoli.rccar.model.BaseData;
 import org.dyndns.fzoli.socket.process.impl.MessageProcess;
 
 /**
@@ -8,12 +9,17 @@ import org.dyndns.fzoli.socket.process.impl.MessageProcess;
  * A név alapján lehet a tároló listában keresni.
  * @author zoli
  */
-class Storage {
+abstract class Storage<T extends BaseData> {
 
     /**
      * A kliens üzenetküldője.
      */
     private MessageProcess messageProcess;
+    
+    /**
+     * A tárolóhoz tartozó jogkezelt adatmódosító.
+     */
+    private final DataModifier DATA_MODIFIER = new DataModifier(this);
     
     /**
      * A kliens azonosítója.
@@ -27,6 +33,18 @@ class Storage {
     public Storage(MessageProcess messageProcess) {
         this.messageProcess = messageProcess;
         this.NAME = messageProcess.getLocalCommonName();
+    }
+    
+    /**
+     * Az üzenetküldőt adja vissza.
+     */
+    public abstract T getSender();
+    
+    /**
+     * A jogkezelt adatmódosítót adja vissza.
+     */
+    public DataModifier getDataModifier() {
+        return DATA_MODIFIER;
     }
     
     /**

@@ -153,7 +153,7 @@ public abstract class MessageProcess extends AbstractSecureProcess {
      * @param wait várja-e meg a metódus a küldés befejezését
      */
     public void sendMessage(Serializable o, boolean wait) {
-        if (worker != null && !getSocket().isClosed()) {
+        if (worker != null && o != null && !getSocket().isClosed()) {
             Token t = new Token();
             t.setOutputMsg(o);
             worker.submitToken(t);

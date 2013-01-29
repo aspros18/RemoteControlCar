@@ -44,19 +44,21 @@ public class HostStorage extends Storage<HostData> {
     private final HostData SENDER = new HostData() {
         
         /**
-         * Elküldi a paraméterben megadott vezérlőjelet.
+         * Beállítja és elküldi a paraméterben megadott vezérlőjelet.
          */
         @Override
         public void setControl(Control controll) {
             sendMessage(new HostData.ControlPartialHostData(controll));
+            getHostData().setControl(controll);
         }
 
         /**
-         * Elküldi, hogy a streamelés folyamatban van-e.
+         * Beállítja és elküldi, hogy a streamelés folyamatban van-e.
          */
         @Override
         public void setStreaming(Boolean streaming) {
             sendMessage(new HostData.BooleanPartialHostData(streaming, HostData.BooleanPartialHostData.BooleanType.STREAMING));
+            getHostData().setStreaming(streaming);
         }
         
         /**
@@ -73,37 +75,37 @@ public class HostStorage extends Storage<HostData> {
 
         @Override
         public void setControl(Control controll) {
-            getDataModifier().setControl(controll);
+            getHostData().setControl(controll);
         }
         
         @Override
         public void setVehicleConnected(Boolean vehicleConnected) {
-            getDataModifier().setVehicleConnected(vehicleConnected);
+            getHostData().setVehicleConnected(vehicleConnected);
         }
 
         @Override
         public void setUp2Date(Boolean up2date) {
-            getDataModifier().setUp2Date(up2date);
+            getHostData().setUp2Date(up2date);
         }
 
         @Override
         public void setGpsPosition(Point3D gpsPosition) {
-            getDataModifier().setGpsPosition(gpsPosition);
+            getHostData().setGpsPosition(gpsPosition);
         }
 
         @Override
         public void setGravitationalField(Point3D gravitationalField) {
-            getDataModifier().setGravitationalField(gravitationalField);
+            getHostData().setGravitationalField(gravitationalField);
         }
 
         @Override
         public void setMagneticField(Point3D magneticField) {
-            getDataModifier().setMagneticField(magneticField);
+            getHostData().setMagneticField(magneticField);
         }
 
         @Override
         public void setBatteryLevel(Integer batteryLevel) {
-            getDataModifier().setBatteryLevel(batteryLevel);
+            getHostData().setBatteryLevel(batteryLevel);
         }
         
     };
@@ -153,24 +155,6 @@ public class HostStorage extends Storage<HostData> {
     }
 
     /**
-     * A jogkezelt adatmódosító példányosítása.
-     * A Storage objektum inicializálásakor hívódik meg egyszer,
-     * további használatára semmi szükség.
-     * @see #getDataModifier()
-     */
-    @Override
-    protected DataModifier createDataModifier() {
-        return new DataModifier(this) {
-
-            @Override
-            protected HostStorage getHostStorage() {
-                return HostStorage.this;
-            }
-            
-        };
-    }
-
-    /**
      * A járműnek lehet üzenetet küldeni ezzel az objektummal a setter metódusok használatával.
      */
     @Override
@@ -191,6 +175,7 @@ public class HostStorage extends Storage<HostData> {
      * (Az irányításra rangsorolt vezérlők közül az első.)
      */
     public ControllerStorage getOwner() {
+        if (OWNERS.isEmpty()) return null;
         return OWNERS.get(0);
     }
 
@@ -225,7 +210,8 @@ public class HostStorage extends Storage<HostData> {
      * A vezérlő-lista első helyére kerül a megadott kliens.
      */
     public void setOwner(ControllerStorage owner) {
-        OWNERS.add(0, owner);
+        if (owner == null) OWNERS.clear();
+        else OWNERS.add(0, owner);
     }
 
     /**

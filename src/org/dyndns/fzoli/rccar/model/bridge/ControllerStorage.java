@@ -7,8 +7,10 @@ import java.util.List;
 import org.dyndns.fzoli.rccar.bridge.config.Permissions;
 import org.dyndns.fzoli.rccar.model.Control;
 import org.dyndns.fzoli.rccar.model.Point3D;
+import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
 import org.dyndns.fzoli.rccar.model.controller.ControllerState;
+import org.dyndns.fzoli.rccar.model.controller.HostList;
 import org.dyndns.fzoli.rccar.model.controller.HostState;
 import org.dyndns.fzoli.rccar.model.host.HostData;
 import org.dyndns.fzoli.socket.process.impl.MessageProcess;
@@ -38,24 +40,41 @@ public class ControllerStorage extends Storage<ControllerData> {
         
     };
     
-    // TODO
     private final ControllerData RECEIVER = new ControllerData() {
 
         @Override
+        public List<ChatMessage> getChatMessages() {
+            return super.getChatMessages(); //TODO
+        }
+
+        @Override
         public void setControl(Control control) {
-            getDataModifier().setControl(control);
+            HostStorage hs = getHostStorage();
+            if (hs != null && control != null && hs.getOwner() == ControllerStorage.this) {
+                hs.getSender().setControl(control);
+            }
         }
 
         @Override
         public void setHostName(String hostName) {
-            getDataModifier().setHostName(hostName);
+            HostList ls = StorageList.createHostList(getName());
+            if (hostName != null && ls.getHosts().contains(hostName)) {
+                HostStorage storage = StorageList.findHostStorageByName(hostName);
+                setHostStorage(storage);
+                getMessageProcess().sendMessage(createControllerData());
+            }
+            if (hostName == null) {
+                setHostStorage(null);
+                getMessageProcess().sendMessage(ls);
+            }
         }
 
         @Override
-        public void setWantControl(Boolean wantControl) {
-            getDataModifier().setWantControl(wantControl);
+        public void setWantControl(Boolean wantControl) { // TODO: egyelőre teszt
+            getHostStorage().setOwner(wantControl ? ControllerStorage.this : null);
+            getSender().setControlling(wantControl);
         }
-        
+
     };
     
     /**
@@ -69,24 +88,6 @@ public class ControllerStorage extends Storage<ControllerData> {
      */
     public ControllerStorage(MessageProcess messageProcess) {
         super(messageProcess);
-    }
-
-    /**
-     * A jogkezelt adatmódosító példányosítása.
-     * A Storage objektum inicializálásakor hívódik meg egyszer,
-     * további használatára semmi szükség.
-     * @see #getDataModifier()
-     */
-    @Override
-    protected DataModifier createDataModifier() {
-        return new DataModifier(this) {
-
-            @Override
-            protected HostStorage getHostStorage() {
-                return ControllerStorage.this.getHostStorage();
-            }
-            
-        };
     }
 
     /**
@@ -133,7 +134,7 @@ public class ControllerStorage extends Storage<ControllerData> {
     public ControllerData createControllerData() {
         HostStorage s = getHostStorage();
         if (s == null) return null;
-        ControllerData d = new ControllerData(createControllers(s), s.getChatMessages());
+        ControllerData d = new ControllerData(createControllers(s), new ArrayList<ChatMessage>(s.getChatMessages()));
         d.setHostState(createHostState());
         d.setHostName(s.getName());
         d.setViewOnly(isViewOnly());

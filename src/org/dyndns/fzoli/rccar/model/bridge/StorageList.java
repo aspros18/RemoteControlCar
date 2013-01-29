@@ -3,6 +3,7 @@ package org.dyndns.fzoli.rccar.model.bridge;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.dyndns.fzoli.rccar.bridge.config.Permissions;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
 import org.dyndns.fzoli.rccar.model.host.HostData;
 import org.dyndns.fzoli.socket.process.impl.MessageProcess;
@@ -59,18 +60,8 @@ public class StorageList {
     /**
      * Létrehoz és tárol egy {@link ControllerStorage} objektumot, vagy beállítja a már létezőt és azzal tér vissza.
      * @param messageProcess a vezérlő jelenlegi üzenetküldője
-     * @param hostStorage a kiválasztott jármű azonosítója
      */
-    public static ControllerStorage createControllerStorage(MessageProcess messageProcess, String hostName) {
-        return createControllerStorage(messageProcess, findHostStorageByName(hostName));
-    }
-    
-    /**
-     * Létrehoz és tárol egy {@link ControllerStorage} objektumot, vagy beállítja a már létezőt és azzal tér vissza.
-     * @param messageProcess a vezérlő jelenlegi üzenetküldője
-     * @param hostStorage a kiválasztott jármű tárolója
-     */
-    public static ControllerStorage createControllerStorage(MessageProcess messageProcess, HostStorage hostStorage) {
+    public static ControllerStorage createControllerStorage(MessageProcess messageProcess) {
         ControllerStorage s = findControllerStorageByName(messageProcess.getLocalCommonName());
         if (s == null) {
             s = new ControllerStorage(messageProcess);
@@ -79,7 +70,6 @@ public class StorageList {
         else {
             s.setMessageProcess(messageProcess);
         }
-        s.setHostStorage(hostStorage);
         return s;
     }
     
@@ -104,11 +94,11 @@ public class StorageList {
     /**
      * Az online járművek listáját generálja le.
      */
-    public static HostList createHostList() {
+    public static HostList createHostList(String controllerName) {
         HostList l = new HostList();
         List<String> ls = l.getHosts();
         for (HostStorage s : getHostStorageList()) {
-            if (HostStorage.isHostConnected(s)) {
+            if (HostStorage.isHostConnected(s) && Permissions.getConfig().isEnabled(s.getName(), controllerName)) {
                 ls.add(s.getName());
             }
         }

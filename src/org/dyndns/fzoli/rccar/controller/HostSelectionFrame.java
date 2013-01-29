@@ -140,7 +140,7 @@ public class HostSelectionFrame extends JFrame {
     public void setVisible(boolean b) {
         if (b) {
             selected = false;
-            BT_SELECT.setEnabled(true);
+            BT_SELECT.setEnabled(LIST.getModel().getSize() != 0);
         }
         super.setVisible(b);
     }
@@ -167,6 +167,7 @@ public class HostSelectionFrame extends JFrame {
             LIST.setSelectedValue(selected, false);
             PANE.getViewport().setViewPosition(scroll);
         }
+        BT_SELECT.setEnabled(model.getSize() != 0);
         LIST.invalidate(); // frissítés kezdeményezése
     }
     

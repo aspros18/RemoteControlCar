@@ -43,17 +43,17 @@ public class ControllerStorage extends Storage<ControllerData> {
 
         @Override
         public void setControl(Control control) {
-            
+            getDataModifier().setControl(control);
         }
 
         @Override
         public void setHostName(String hostName) {
-            
+            getDataModifier().setHostName(hostName);
         }
 
         @Override
         public void setWantControl(Boolean wantControl) {
-            
+            getDataModifier().setWantControl(wantControl);
         }
         
     };
@@ -69,6 +69,24 @@ public class ControllerStorage extends Storage<ControllerData> {
      */
     public ControllerStorage(MessageProcess messageProcess) {
         super(messageProcess);
+    }
+
+    /**
+     * A jogkezelt adatmódosító példányosítása.
+     * A Storage objektum inicializálásakor hívódik meg egyszer,
+     * további használatára semmi szükség.
+     * @see #getDataModifier()
+     */
+    @Override
+    protected DataModifier createDataModifier() {
+        return new DataModifier(this) {
+
+            @Override
+            protected HostStorage getHostStorage() {
+                return ControllerStorage.this.getHostStorage();
+            }
+            
+        };
     }
 
     /**

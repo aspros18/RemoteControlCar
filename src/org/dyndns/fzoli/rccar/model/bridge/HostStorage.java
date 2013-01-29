@@ -73,37 +73,37 @@ public class HostStorage extends Storage<HostData> {
 
         @Override
         public void setControl(Control controll) {
-            
+            getDataModifier().setControl(controll);
         }
         
         @Override
         public void setVehicleConnected(Boolean vehicleConnected) {
-            
+            getDataModifier().setVehicleConnected(vehicleConnected);
         }
 
         @Override
         public void setUp2Date(Boolean up2date) {
-            
+            getDataModifier().setUp2Date(up2date);
         }
 
         @Override
         public void setGpsPosition(Point3D gpsPosition) {
-            
+            getDataModifier().setGpsPosition(gpsPosition);
         }
 
         @Override
         public void setGravitationalField(Point3D gravitationalField) {
-            
+            getDataModifier().setGravitationalField(gravitationalField);
         }
 
         @Override
         public void setMagneticField(Point3D magneticField) {
-            
+            getDataModifier().setMagneticField(magneticField);
         }
 
         @Override
         public void setBatteryLevel(Integer batteryLevel) {
-            
+            getDataModifier().setBatteryLevel(batteryLevel);
         }
         
     };
@@ -150,6 +150,24 @@ public class HostStorage extends Storage<HostData> {
      */
     public HostStorage(MessageProcess messageProcess) {
         super(messageProcess);
+    }
+
+    /**
+     * A jogkezelt adatmódosító példányosítása.
+     * A Storage objektum inicializálásakor hívódik meg egyszer,
+     * további használatára semmi szükség.
+     * @see #getDataModifier()
+     */
+    @Override
+    protected DataModifier createDataModifier() {
+        return new DataModifier(this) {
+
+            @Override
+            protected HostStorage getHostStorage() {
+                return HostStorage.this;
+            }
+            
+        };
     }
 
     /**

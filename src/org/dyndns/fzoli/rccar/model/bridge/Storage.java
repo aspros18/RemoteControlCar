@@ -19,7 +19,7 @@ abstract class Storage<T extends BaseData> {
     /**
      * A tárolóhoz tartozó jogkezelt adatmódosító.
      */
-    private final DataModifier DATA_MODIFIER = new DataModifier(this);
+    private final DataModifier DATA_MODIFIER = createDataModifier();
     
     /**
      * A kliens azonosítója.
@@ -34,6 +34,14 @@ abstract class Storage<T extends BaseData> {
         this.messageProcess = messageProcess;
         this.NAME = messageProcess.getLocalCommonName();
     }
+    
+    /**
+     * A jogkezelt adatmódosító példányosítása.
+     * A Storage objektum inicializálásakor hívódik meg egyszer,
+     * további használatára semmi szükség.
+     * @see #getDataModifier()
+     */
+    protected abstract DataModifier createDataModifier();
     
     /**
      * Az üzenetküldőt adja vissza.

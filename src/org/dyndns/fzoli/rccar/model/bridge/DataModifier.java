@@ -1,6 +1,8 @@
 package org.dyndns.fzoli.rccar.model.bridge;
 
 import org.dyndns.fzoli.rccar.bridge.config.Permissions;
+import org.dyndns.fzoli.rccar.model.Control;
+import org.dyndns.fzoli.rccar.model.Point3D;
 
 /**
  * Jogkezelt adatmódosító.
@@ -15,12 +17,45 @@ import org.dyndns.fzoli.rccar.bridge.config.Permissions;
  * @see Permissions#onRefresh
  * @author zoli
  */
-public class DataModifier {
+public abstract class DataModifier {
 
-    private final Storage STORAGE;
+    /**
+     * A módosítást kérő tároló.
+     */
+    private final Storage MODIFIER;
     
-    DataModifier(Storage storage) {
-        this.STORAGE = storage;
+    /**
+     * Konstruktor.
+     * @param modifier a módosítást kérő tároló
+     */
+    DataModifier(Storage modifier) {
+        MODIFIER = modifier;
     }
+    
+    /**
+     * A jármű tárolóját adja vissza.
+     * Ha a módosítást a jármű kéri, akkor
+     * a módosítást kérő tároló és a jármű tároló egyazon objektumra mutat.
+     * @return null ha nincs a tárolóhoz jármű társítva
+     */
+    protected abstract HostStorage getHostStorage();
+    
+    public void setControl(Control control) {}
+    
+    public void setHostName(String hostName) {}
+    
+    public void setWantControl(Boolean wantControl) {}
+    
+    public void setVehicleConnected(Boolean vehicleConnected) {}
+    
+    public void setUp2Date(Boolean up2date) {}
+    
+    public void setGpsPosition(Point3D gpsPosition) {}
+    
+    public void setGravitationalField(Point3D gravitationalField) {}
+    
+    public void setMagneticField(Point3D magneticField) {}
+    
+    public void setBatteryLevel(Integer batteryLevel) {}
     
 }

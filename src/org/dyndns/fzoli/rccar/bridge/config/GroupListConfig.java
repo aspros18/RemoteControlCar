@@ -19,11 +19,31 @@ import java.util.Map.Entry;
  * illetve az utolsó csoport a fájl végéig.
  * Ebből következik, hogy ha az első érvényes sor csoportnyitó, akkor
  * az alapértelmezett felsorolás üres lesz.
+ * A * karakter mindenre illeszkedik.
  * @see ListConfig
  * @author zoli
  */
 class GroupListConfig extends ListConfig {
 
+    /**
+     * Egy csoport elemeit tartalmazó lista.
+     * A countains metódusa igaz értékkel tér vissza, ha a csoport elemei között szerepel a csillag karakter.
+     */
+    private static class Group extends ArrayList<String> {
+
+        /**
+         * Megmondja, hogy az átadott paraméter szerepel-e a listában.
+         * Ha a csoport elemei között szerepel a csillag karakter, minden paraméterre igazzal tér vissza.
+         * @param o a kérdéses objektum
+         */
+        @Override
+        public boolean contains(Object o) {
+            if (super.contains("*")) return true;
+            return super.contains(o);
+        }
+        
+    }
+    
     /**
      * A csoportok és azoknak a felsorolásai.
      */
@@ -45,7 +65,7 @@ class GroupListConfig extends ListConfig {
         while (it.hasNext()) { // soronként végigmegy
             l = it.next();
             if (l.startsWith("[") && l.endsWith("]")) { // ha a sor csoportnyitó
-                values = new ArrayList<String>(); // csoport létrehozása
+                values = new Group(); // csoport létrehozása
                 GROUPS.put(l.substring(1, l.length() - 1).trim(), values); // csoport tárolása a csoport nevével
                 it.remove(); // az eredeti felsorolásból a csoportnyitó sor törlése
                 continue; // ugrás a következő sorra
@@ -88,7 +108,7 @@ class GroupListConfig extends ListConfig {
      * de csak azok a tagok, melyek nem szerepelnek már a listában.
      */
     protected List<String> mergeGroup(String groupName) {
-        final List<String> l = new ArrayList<String>();
+        final List<String> l = new Group();
         final List<String> values = getGroups().get(groupName);
         if (values != null) l.addAll(values);
         for (String value : getValues()) {

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.dyndns.fzoli.rccar.model.Control;
+import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
 import org.dyndns.fzoli.rccar.model.host.HostData;
 import org.dyndns.fzoli.socket.process.impl.MessageProcess;
@@ -67,11 +68,45 @@ public class HostStorage extends Storage<HostData> {
         
     };
     
-    // TODO
+    // TODO: forwarder az univerzális adatmódosulás feldolgozóhoz. Ezt használja majd a ControllerDataForwarder is, és a beérkező üzeneteket is ez dolgozza majd fel (helyi adat frissítése, üzenetküldés a megfelelő klienseknek).
     private final HostData RECEIVER = new HostData() {
+
+        @Override
+        public void setControl(Control controll) {
+            
+        }
+        
+        @Override
+        public void setVehicleConnected(Boolean vehicleConnected) {
+            
+        }
+
+        @Override
+        public void setUp2Date(Boolean up2date) {
+            
+        }
+
+        @Override
+        public void setGpsPosition(Point3D gpsPosition) {
+            
+        }
+
+        @Override
+        public void setGravitationalField(Point3D gravitationalField) {
+            
+        }
+
+        @Override
+        public void setMagneticField(Point3D magneticField) {
+            
+        }
+
+        @Override
+        public void setBatteryLevel(Integer batteryLevel) {
+            
+        }
+        
     };
-    
-    // TODO: DataSender interfészre nem lesz szükség, helyette ide is egy forwarder kell egy univerzális adatmódosulás feldolgozóhoz. Ezt használja majd a ControllerDataForwarder és a beérkező üzeneteket is ez dolgozza majd fel (helyi adat frissítése, üzenetküldés a megfelelő klienseknek).
     
     /**
      * A járműhöz tartozó chatüzenetek.

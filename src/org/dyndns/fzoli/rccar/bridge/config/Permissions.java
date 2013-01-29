@@ -7,7 +7,6 @@ import java.util.TimerTask;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import org.dyndns.fzoli.rccar.bridge.Main;
 import org.dyndns.fzoli.rccar.model.bridge.ControllerStorage;
-import org.dyndns.fzoli.rccar.model.bridge.DataModifier;
 import org.dyndns.fzoli.rccar.model.bridge.StorageList;
 import org.dyndns.fzoli.socket.ServerProcesses;
 import org.dyndns.fzoli.socket.process.SecureProcess;
@@ -83,7 +82,7 @@ public final class Permissions {
         // végigmegy a vezérlőkön és frissíti azokat, melyeket érint a konfiguráció módosulás
         List<ControllerStorage> ls = StorageList.getControllerStorageList();
         for (ControllerStorage cs : ls) {
-//            cs.getDataModifier();
+            // TODO
         }
     }
     

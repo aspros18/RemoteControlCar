@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.dyndns.fzoli.rccar.bridge.config.Permissions;
+import org.dyndns.fzoli.rccar.model.Control;
 import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
 import org.dyndns.fzoli.rccar.model.controller.ControllerState;
@@ -39,9 +40,23 @@ public class ControllerStorage extends Storage<ControllerData> {
     
     // TODO
     private final ControllerData RECEIVER = new ControllerData() {
+
+        @Override
+        public void setControl(Control control) {
+            
+        }
+
+        @Override
+        public void setHostName(String hostName) {
+            
+        }
+
+        @Override
+        public void setWantControl(Boolean wantControl) {
+            
+        }
+        
     };
-    
-    // TODO: ControllerDataForwarder: minden vezérlő oldalról jövő setter kérést átirányít a jármű tárolóhoz és ott történik meg a feldolgozás ill. az adatok módosítása és üzenetküldés
     
     /**
      * A kiválasztott jármű tárolója.
@@ -115,9 +130,6 @@ public class ControllerStorage extends Storage<ControllerData> {
         d.setUp2Date(s.getHostData().isUp2Date());
         return d;
     }
-    
-//    TODO: szerver oldalon a vezérlő adat módosulását kezelő üzenetküldő és adatmódosító megírása, feltéve ha a HostStorage-ben lévő DataSender nem kezeli le
-//    public ControllerData createControllerDataSender();
     
     /**
      * A járműhöz tartozó vezérlők listáját generálja le, ami tartalmazza a vezérlők aktuális paramétereit.

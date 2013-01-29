@@ -147,8 +147,11 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
          */
         @Override
         public void apply(HostData d) {
-            if (d != null && data != null) {
-                for (PointData pd : data) {
+            if (d != null && data != null && data.length > 0) {
+                d.pointChanging = true;
+                for (int i = 0; i < data.length; i++) {
+                    if (i == data.length - 1) d.pointChanging = false;
+                    PointData pd = data[i];
                     if (pd.type != null) switch (pd.type) {
                         case GPS_POSITION:
                             d.setGpsPosition(pd.point);
@@ -237,6 +240,11 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     private Boolean vehicleConnected = false;
     
     /**
+     * Megmondja, hogy folyamatban van-e a Point3D adatok beállítása.
+     */
+    private boolean pointChanging = false;
+    
+    /**
      * Konstruktor Híd oldalra.
      * Kezdetben nem ismert minden adat,
      * az adat frissítésére a hoszt kapcsolódásakor kerül sor.
@@ -289,6 +297,17 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
         return b == null ? false : b;
     }
 
+    /**
+     * Megmondja, hogy folyamatban van-e a Point3D adatok beállítása.
+     * A szerver oldalán hasznos metódus, mert segítségével elkerülhető
+     * a fölösleges adatfeldolgozás, amikoris több Point3D kerül kiküldésre.
+     * @return true, ha éppen valamelyik Point3D adat állítódik be és miután beállítódott,
+     * még legalább egy Point3D adat beállítás meg fog történni; egyébként false.
+     */
+    protected boolean isPointChanging() {
+        return pointChanging;
+    }
+    
     /**
      * Megadja a GPS koordinátát.
      */

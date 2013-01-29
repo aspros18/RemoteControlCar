@@ -773,7 +773,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     }
 
     /**
-     * Beállítja azt, hogy a jármű kapssolata időtúllépés alatt van-e.
+     * Beállítja azt, hogy a jármű kapcsolata időtúllépés alatt van-e.
      */
     public void setHostUnderTimeout(Boolean hostConnected) {
         this.hostUnderTimeout = hostConnected;

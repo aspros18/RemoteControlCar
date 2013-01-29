@@ -27,7 +27,7 @@ abstract class Storage<T extends BaseData> {
      */
     public Storage(MessageProcess messageProcess) {
         this.messageProcess = messageProcess;
-        this.NAME = messageProcess.getLocalCommonName();
+        this.NAME = messageProcess.getRemoteCommonName();
     }
     
     /**

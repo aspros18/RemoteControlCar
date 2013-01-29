@@ -50,17 +50,15 @@ public class ControllerSideVideoProcess extends AbstractSecureProcess {
 
         /**
          * Megadja a kiválasztott jármű nevét, ami a kulcs.
-         * TODO: Egyelőre teszt módban van
          * @return a kulcs, vagy null, ha nincs jármű kiválasztva
          */
         @Override
         public String getKey() {
             if (cs == null) cs = StorageList.findControllerStorageByName(name);
-            if (cs == null) return "teszt1"; //return null;
+            if (cs == null) return null;
             HostStorage s = cs.getHostStorage();
-            if (s == null) return "teszt1"; //return null;
-            System.out.println("controller side video key: " + s.getName());
-            return "teszt1"; //return s.getName();
+            if (s == null) return null;
+            return s.getName();
         }
 
         /**

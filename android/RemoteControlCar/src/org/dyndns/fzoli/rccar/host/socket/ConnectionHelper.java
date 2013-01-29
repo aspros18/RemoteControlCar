@@ -30,7 +30,6 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
 	
 	/**
 	 * Konstruktor.
-	 * TODO: egyelőre teszt
 	 * @param service a szolgáltatás referenciája
 	 */
 	public ConnectionHelper(ConnectionService service) {

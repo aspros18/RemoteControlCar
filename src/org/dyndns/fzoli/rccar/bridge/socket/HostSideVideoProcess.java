@@ -1,9 +1,9 @@
 package org.dyndns.fzoli.rccar.bridge.socket;
 
-import org.dyndns.fzoli.socket.mjpeg.jipcam.MjpegFrame;
 import org.dyndns.fzoli.rccar.socket.AbstractVideoProcess;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.mjpeg.impl.SharedJpegProvider;
+import org.dyndns.fzoli.socket.mjpeg.jipcam.MjpegFrame;
 
 /**
  * A hoszt által streamelt MJPEG folyam fogadása
@@ -28,8 +28,7 @@ public class HostSideVideoProcess extends AbstractVideoProcess {
     @Override
     protected void processFrame(MjpegFrame fr) throws Exception {
         if (fr == null) return; // ha nincs képkocka, kilépés
-        // TODO: teszt1 helyére a remote name
-        SharedJpegProvider.setSharedFrame("teszt1", fr.getJpegBytes()); // aktuális JPEG képkocka tárolása
+        SharedJpegProvider.setSharedFrame(getRemoteCommonName(), fr.getJpegBytes()); // aktuális JPEG képkocka tárolása
     }
     
 }

@@ -62,7 +62,7 @@ public class StorageList {
      * @param messageProcess a vezérlő jelenlegi üzenetküldője
      */
     public static ControllerStorage createControllerStorage(MessageProcess messageProcess) {
-        ControllerStorage s = findControllerStorageByName(messageProcess.getLocalCommonName());
+        ControllerStorage s = findControllerStorageByName(messageProcess.getRemoteCommonName());
         if (s == null) {
             s = new ControllerStorage(messageProcess);
             getControllerStorageList().add(s);
@@ -79,7 +79,7 @@ public class StorageList {
      * @param data a beállított adatmodel
      */
     public static HostStorage createHostStorage(MessageProcess messageProcess, HostData data) {
-        HostStorage s = findHostStorageByName(messageProcess.getLocalCommonName());
+        HostStorage s = findHostStorageByName(messageProcess.getRemoteCommonName());
         if (s == null) {
             s = new HostStorage(messageProcess);
             getHostStorageList().add(s);

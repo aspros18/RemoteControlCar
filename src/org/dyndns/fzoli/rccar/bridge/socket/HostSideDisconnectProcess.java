@@ -5,7 +5,6 @@ import org.dyndns.fzoli.rccar.model.bridge.ControllerStorage;
 import org.dyndns.fzoli.rccar.model.bridge.HostStorage;
 import org.dyndns.fzoli.rccar.model.bridge.StorageList;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
-import org.dyndns.fzoli.rccar.model.controller.HostList.PartialHostList;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 
 /**
@@ -14,46 +13,56 @@ import org.dyndns.fzoli.socket.handler.SecureHandler;
  */
 public class HostSideDisconnectProcess extends BridgeDisconnectProcess {
     
+    private HostStorage storage;
+    
+    private List<ControllerStorage> controllers = StorageList.getControllerStorageList();
+    
     public HostSideDisconnectProcess(SecureHandler handler) {
         super(handler);
     }
 
+    private HostStorage getHostStorage() {
+        if (storage != null) return storage;
+        return storage = StorageList.findHostStorageByName(getRemoteCommonName());
+    }
+    
     private void sendConnectionMessage(boolean connected) {
-        PartialHostList msg = new HostList.PartialHostList(getRemoteCommonName(), connected ? HostList.PartialHostList.ChangeType.ADD : HostList.PartialHostList.ChangeType.REMOVE);
-        List<ControllerStorage> controllers = StorageList.getControllerStorageList();
+        HostStorage hs = getHostStorage();
+        HostList.PartialHostList msgLs = new HostList.PartialHostList(getRemoteCommonName(), connected ? HostList.PartialHostList.ChangeType.ADD : HostList.PartialHostList.ChangeType.REMOVE);
         for (ControllerStorage cs : controllers) {
-            if (cs.getHostStorage() == null) cs.getMessageProcess().sendMessage(msg);
+            if (cs.getHostStorage() == null || hs.getMessageProcess().getSocket().isClosed()) cs.getMessageProcess().sendMessage(msgLs);
+            if (cs.getHostStorage() == hs) cs.getMessageProcess().sendMessage(connected ? cs.createControllerData() : StorageList.createHostList(cs.getName()));
         }
     }
     
     private void setTimeout(boolean b) {
-        HostStorage st = StorageList.findHostStorageByName(getRemoteCommonName());
-        if (st != null) st.setUnderTimeout(b);
+        HostStorage hs = getHostStorage();
+        if (hs != null) hs.setUnderTimeout(b);
     }
     
     @Override
     protected void onConnect() {
-        sendConnectionMessage(true);
         super.onConnect();
+        sendConnectionMessage(true);
     }
 
     @Override
     protected void onTimeout(Exception ex) throws Exception {
-        setTimeout(true);
         super.onTimeout(ex);
+        setTimeout(true);
     }
 
     @Override
     protected void afterTimeout() throws Exception {
-        setTimeout(false);
         super.afterTimeout();
+        setTimeout(false);
     }
 
     @Override
     protected void onDisconnect(Exception ex) {
+        super.onDisconnect(ex);
         sendConnectionMessage(false);
         setTimeout(false);
-        super.onDisconnect(ex);
     }
     
 }

@@ -124,10 +124,12 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
 	
 	/**
 	 * A kapcsolódás állapotának frissítése a szolgáltatásban.
+	 * Az MJPEG-folyam inaktiválása kapcsolódáskor és lekapcsolódáskor is.
 	 * @param connecting true esetén a kapcsolódás folyamatban van, egyébként meg nincs folyamatban.
 	 */
 	private void updateConnectionState(boolean connecting) {
 		SERVICE.updateNotificationText();
+		SERVICE.getBinder().getHostData().setStreaming(false);
 		SERVICE.getBinder().fireConnectionStateChange(connecting);
 	}
 	

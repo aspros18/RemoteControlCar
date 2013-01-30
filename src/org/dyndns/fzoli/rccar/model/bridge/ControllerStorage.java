@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import org.dyndns.fzoli.rccar.bridge.config.Permissions;
 import org.dyndns.fzoli.rccar.model.Control;
+import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
@@ -51,17 +52,27 @@ public class ControllerStorage extends Storage<ControllerData> {
                     ChatMessage cm = new ChatMessage(getName(), e.data);
                     getHostStorage().getChatMessages().add(cm);
                     ControllerData.ChatMessagePartialControllerData msg = new ControllerData.ChatMessagePartialControllerData(cm);
-                    List<ControllerStorage> l = StorageList.getControllerStorageList();
-                    for (ControllerStorage cs : l) {
-                        if (getHostStorage() == cs.getHostStorage()) {
-                            cs.getMessageProcess().sendMessage(msg);
-                        }
-                    }
+                    broadcastMessage(msg, null, false);
                 }
                 return super.add(e);
             }
             
         };
+        
+        private void broadcastMessage(PartialBaseData<ControllerData, ?> msgc, PartialBaseData<HostData, ?> msgh, boolean skipMe) {
+            if (msgc != null) {
+                List<ControllerStorage> l = StorageList.getControllerStorageList();
+                for (ControllerStorage cs : l) {
+                    if (skipMe && cs == ControllerStorage.this) continue;
+                    if (getHostStorage() == cs.getHostStorage()) {
+                        cs.getMessageProcess().sendMessage(msgc);
+                    }
+                }
+            }
+            if (msgh != null && getHostStorage() != null) {
+                getHostStorage().getMessageProcess().sendMessage(msgh);
+            }
+        }
         
         @Override
         public List<ChatMessage> getChatMessages() {
@@ -72,7 +83,9 @@ public class ControllerStorage extends Storage<ControllerData> {
         public void setControl(Control control) {
             HostStorage hs = getHostStorage();
             if (hs != null && control != null && hs.getOwner() == ControllerStorage.this) {
-                hs.getSender().setControl(control);
+                HostData.ControlPartialHostData msgh = new HostData.ControlPartialHostData(control);
+                ControllerData.ControlPartialControllerData msgc = new ControllerData.ControlPartialControllerData(control);
+                broadcastMessage(msgc, msgh, true);
             }
         }
 

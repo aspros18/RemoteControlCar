@@ -58,22 +58,7 @@ public class ControllerStorage extends Storage<ControllerData> {
             }
             
         };
-        
-        private void broadcastMessage(PartialBaseData<ControllerData, ?> msgc, PartialBaseData<HostData, ?> msgh, boolean skipMe) {
-            if (msgc != null) {
-                List<ControllerStorage> l = StorageList.getControllerStorageList();
-                for (ControllerStorage cs : l) {
-                    if (skipMe && cs == ControllerStorage.this) continue;
-                    if (getHostStorage() == cs.getHostStorage()) {
-                        cs.getMessageProcess().sendMessage(msgc);
-                    }
-                }
-            }
-            if (msgh != null && getHostStorage() != null) {
-                getHostStorage().getMessageProcess().sendMessage(msgh);
-            }
-        }
-        
+
         @Override
         public List<ChatMessage> getChatMessages() {
             return LS_MSG;
@@ -82,7 +67,7 @@ public class ControllerStorage extends Storage<ControllerData> {
         @Override
         public void setControl(Control control) {
             HostStorage hs = getHostStorage();
-            if (hs != null && control != null && hs.getHostData().isVehicleConnected() != null && hs.getHostData().isVehicleConnected() && hs.getOwner() == ControllerStorage.this) {
+            if (hs != null && control != null && hs.getHostData().isVehicleConnected() != null && !ControllerStorage.this.isViewOnly() && hs.getHostData().isVehicleConnected() && hs.getOwner() == ControllerStorage.this) {
                 HostData.ControlPartialHostData msgh = new HostData.ControlPartialHostData(control);
                 ControllerData.ControlPartialControllerData msgc = new ControllerData.ControlPartialControllerData(control);
                 broadcastMessage(msgc, msgh, true);
@@ -107,6 +92,21 @@ public class ControllerStorage extends Storage<ControllerData> {
         public void setWantControl(Boolean wantControl) { // TODO: egyelőre teszt
             getHostStorage().setOwner(wantControl ? ControllerStorage.this : null);
             getSender().setControlling(wantControl);
+        }
+
+        private void broadcastMessage(PartialBaseData<ControllerData, ?> msgc, PartialBaseData<HostData, ?> msgh, boolean skipMe) {
+            if (msgc != null) {
+                List<ControllerStorage> l = StorageList.getControllerStorageList();
+                for (ControllerStorage cs : l) {
+                    if (skipMe && cs == ControllerStorage.this) continue;
+                    if (getHostStorage() == cs.getHostStorage()) {
+                        cs.getMessageProcess().sendMessage(msgc);
+                    }
+                }
+            }
+            if (msgh != null && getHostStorage() != null) {
+                getHostStorage().getMessageProcess().sendMessage(msgh);
+            }
         }
 
     };
@@ -169,7 +169,7 @@ public class ControllerStorage extends Storage<ControllerData> {
         HostStorage s = getHostStorage();
         if (s == null) return null;
         ControllerData d = new ControllerData(createControllers(s), new ArrayList<ChatMessage>(s.getChatMessages()));
-        d.setHostState(createHostState());
+        d.setHostState(createHostState(s));
         d.setHostName(s.getName());
         d.setViewOnly(isViewOnly());
         d.setControlling(s.getOwner() == this);
@@ -199,17 +199,17 @@ public class ControllerStorage extends Storage<ControllerData> {
     /**
      * Megadja, hogy a vezérlő korlátozva van-e a vezérlésben a fehérlista alapján.
      */
-    public boolean isViewOnly() {
+    private boolean isViewOnly() {
         if (getHostStorage() == null) return false;
         return Permissions.getConfig().isViewOnly(getHostStorage().getName(), getName());
     }
     
     /**
-     * Létrehozza a kiválasztott járműhöz tartozó állapotleíró objektumot.
+     * Létrehozza a paraméterben megadott járműhöz tartozó állapotleíró objektumot.
      */
-    private HostState createHostState() {
+    public static HostState createHostState(HostStorage hs) {
         try {
-            HostData d = getHostStorage().getHostData();
+            HostData d = hs.getHostData();
             return new HostState(d.getGpsPosition(), getSpeed(d), getAzimuth(d));
         }
         catch (NullPointerException ex) {

@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.dyndns.fzoli.rccar.model.Control;
+import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
+import org.dyndns.fzoli.rccar.model.controller.ControllerData;
 import org.dyndns.fzoli.rccar.model.host.HostData;
 import org.dyndns.fzoli.socket.process.impl.MessageProcess;
 
@@ -76,38 +78,62 @@ public class HostStorage extends Storage<HostData> {
         @Override
         public void setControl(Control controll) {
             getHostData().setControl(controll);
+            broadcastMessage(new ControllerData.ControlPartialControllerData(controll));
         }
-        
+
         @Override
         public void setVehicleConnected(Boolean vehicleConnected) {
             getHostData().setVehicleConnected(vehicleConnected);
+            broadcastMessage(new ControllerData.BoolenPartialControllerData(vehicleConnected, ControllerData.BoolenPartialControllerData.BooleanType.VEHICLE_CONNECTED));
         }
 
         @Override
         public void setUp2Date(Boolean up2date) {
             getHostData().setUp2Date(up2date);
-        }
-
-        @Override
-        public void setGpsPosition(Point3D gpsPosition) {
-            getHostData().setGpsPosition(gpsPosition);
-        }
-
-        @Override
-        public void setGravitationalField(Point3D gravitationalField) {
-            getHostData().setGravitationalField(gravitationalField);
-        }
-
-        @Override
-        public void setMagneticField(Point3D magneticField) {
-            getHostData().setMagneticField(magneticField);
+            broadcastMessage(new ControllerData.BoolenPartialControllerData(up2date, ControllerData.BoolenPartialControllerData.BooleanType.UP_2_DATE));
         }
 
         @Override
         public void setBatteryLevel(Integer batteryLevel) {
             getHostData().setBatteryLevel(batteryLevel);
+            broadcastMessage(new ControllerData.BatteryPartialControllerData(batteryLevel));
         }
-        
+
+        @Override
+        public void setGpsPosition(Point3D gpsPosition) {
+            getHostData().setGpsPosition(gpsPosition);
+            broadcastHostState();
+        }
+
+        @Override
+        public void setGravitationalField(Point3D gravitationalField) {
+            getHostData().setGravitationalField(gravitationalField);
+            broadcastHostState();
+        }
+
+        @Override
+        public void setMagneticField(Point3D magneticField) {
+            getHostData().setMagneticField(magneticField);
+            broadcastHostState();
+        }
+
+        private void broadcastHostState() {
+            if (!isPointChanging()) {
+                broadcastMessage(new ControllerData.HostStatePartialControllerData(ControllerStorage.createHostState(HostStorage.this)));
+            }
+        }
+
+        private void broadcastMessage(PartialBaseData<ControllerData, ?> msg) {
+            if (msg != null) {
+                List<ControllerStorage> l = StorageList.getControllerStorageList();
+                for (ControllerStorage cs : l) {
+                    if (HostStorage.this == cs.getHostStorage()) {
+                        cs.getMessageProcess().sendMessage(msg);
+                    }
+                }
+            }
+        }
+
     };
     
     /**

@@ -3,7 +3,6 @@ package org.dyndns.fzoli.rccar.model.controller;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import org.dyndns.fzoli.rccar.model.BaseData;
 import org.dyndns.fzoli.rccar.model.BatteryPartialBaseData;
@@ -305,13 +304,8 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
          * Részadatküldő implementáció a listákhoz.
          * Az add és a remove metódus kerül felüldefiniálásra.
          */
-        private static class SenderList<T> extends ArrayList<T> {
+        private static class SenderList<T> extends ForwardedList<T> {
 
-            /**
-             * Az eredeti lista.
-             */
-            private final List<T> ls;
-            
             /**
              * Az üzenetküldő.
              */
@@ -323,36 +317,8 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
              * @param ls az eredeti lista, melynek az add és remove metódusa hívódik meg, ha a paraméter nem null
              */
             public SenderList(ControllerDataSender sender, List<T> ls) {
-                this.ls = ls;
+                super(ls);
                 this.sender = sender;
-            }
-            
-            /**
-             * Objektum hozzáadása a listához.
-             * Az üzenetküldés implementálása az utódban történik meg.
-             */
-            @Override
-            public boolean add(T e) {
-                if (ls == null) return false;
-                return ls.add(e);
-            }
-            
-            /**
-             * Objektum törlése a listából.
-             * Az üzenetküldés implementálása az utódban történik meg.
-             */
-            @Override
-            public boolean remove(Object o) {
-                if (ls == null) return false;
-                return ls.remove(o);
-            }
-
-            /**
-             * Az eredeti lista iterátora foreach ciklushoz.
-             */
-            @Override
-            public Iterator<T> iterator() {
-                return ls.iterator();
             }
             
             /**

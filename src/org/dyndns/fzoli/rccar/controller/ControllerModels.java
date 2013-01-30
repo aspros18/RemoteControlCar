@@ -1,9 +1,7 @@
 package org.dyndns.fzoli.rccar.controller;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import static org.dyndns.fzoli.rccar.controller.Main.showControllerWindows;
@@ -20,6 +18,7 @@ import org.dyndns.fzoli.rccar.model.PartialData;
 import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
 import org.dyndns.fzoli.rccar.model.controller.ControllerState;
+import org.dyndns.fzoli.rccar.model.controller.ForwardedList;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
 import org.dyndns.fzoli.rccar.model.controller.HostState;
 import org.dyndns.fzoli.socket.ClientProcesses;
@@ -73,9 +72,9 @@ public class ControllerModels {
         
         /**
          * GUI frissítő lista.
-         * Az {@code add} és {@code remove} metódusok implementálása az ősben történik meg.
+         * A felületfrissítések implementálása a leszármazott osztályokban történnek meg.
          */
-        private static class RefreshList<T> extends ArrayList<T> {
+        private static class RefreshList<T> extends ForwardedList<T> {
 
             /**
              * A model, amitől elkérhető a chat dialógus referenciája.
@@ -83,18 +82,13 @@ public class ControllerModels {
             private final ClientControllerData d;
             
             /**
-             * Az eredeti lista, ami szintén frissül.
-             */
-            private final List<T> l;
-            
-            /**
              * Konstruktor.
              * @param d a model, amitől elkérhető a chat dialógus referenciája
              * @param l az eredeti lista, ami szintén frissül
              */
             public RefreshList(ClientControllerData d, List<T> l) {
+                super(l);
                 this.d = d;
-                this.l = l;
             }
             
             /**
@@ -104,52 +98,11 @@ public class ControllerModels {
                 return d.dialogChat;
             }
 
-            /**
-             * Az eredeti listát járja körbe.
-             * Foreach ciklusra is érvényes!
-             */
-            @Override
-            public Iterator<T> iterator() {
-                return l.iterator();
-            }
-
-            /**
-             * Az eredeti lista frissítése.
-             */
-            @Override
-            public boolean add(T e) {
-                return l.add(e);
-            }
-
-            /**
-             * Az eredeti lista frissítése.
-             */
-            @Override
-            public boolean remove(Object o) {
-                return l.remove(o);
-            }
-
-            /**
-             * Az eredeti lista frissítése.
-             */
-            @Override
-            public boolean addAll(Collection<? extends T> c) {
-                return l.addAll(c);
-            }
-
-            /**
-             * Az eredeti lista frissítése.
-             */
-            @Override
-            public void clear() {
-                l.clear();
-            }
-
         }
         
         /**
          * Chatüzenet frissítő.
-         * Mivel nem lehet üzenetet törölni, csak az {@code add} metódus van implementálva.
+         * Mivel nem lehet üzenetet törölni, a {@code remove} metódus nincs implementálva.
          */
         private static class ChatRefreshList extends RefreshList<ChatMessage> {
 
@@ -194,7 +147,6 @@ public class ControllerModels {
         
         /**
          * Vezérlőlista frissítő.
-         * Az {@code add} és {@code remove} metódusok implementációja.
          */
         private static class ControllerRefreshList extends RefreshList<ControllerState> {
 

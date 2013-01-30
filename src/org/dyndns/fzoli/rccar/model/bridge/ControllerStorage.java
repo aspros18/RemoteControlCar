@@ -10,6 +10,7 @@ import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
 import org.dyndns.fzoli.rccar.model.controller.ControllerState;
+import org.dyndns.fzoli.rccar.model.controller.ForwardedList;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
 import org.dyndns.fzoli.rccar.model.controller.HostState;
 import org.dyndns.fzoli.rccar.model.host.HostData;
@@ -42,9 +43,27 @@ public class ControllerStorage extends Storage<ControllerData> {
     
     private final ControllerData RECEIVER = new ControllerData() {
 
+        private final List<ChatMessage> LS_MSG = new ForwardedList<ChatMessage>(null) {
+
+            @Override
+            public boolean add(ChatMessage e) {
+                if (!e.data.trim().isEmpty() && getHostStorage() != null) {
+                    ControllerData.ChatMessagePartialControllerData msg = new ControllerData.ChatMessagePartialControllerData(new ChatMessage(getName(), e.data));
+                    List<ControllerStorage> l = StorageList.getControllerStorageList();
+                    for (ControllerStorage cs : l) {
+                        if (getHostStorage() == cs.getHostStorage()) {
+                            cs.getMessageProcess().sendMessage(msg);
+                        }
+                    }
+                }
+                return super.add(e);
+            }
+            
+        };
+        
         @Override
         public List<ChatMessage> getChatMessages() {
-            return super.getChatMessages(); //TODO
+            return LS_MSG;
         }
 
         @Override

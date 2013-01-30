@@ -277,6 +277,16 @@ public class ConnectionBinder extends Binder {
 	}
 	
 	/**
+	 * Frissíti az adatmodelt, az Activity felületét illetve üzen a Híd szervernek.
+	 * Ha a jármű le lett választva, a felületen a feszültség-szint elrejtése.
+	 */
+	public void fireVehicleConnectionStateChanged(boolean connected) {
+		if (!connected) fireVoltageChanged(null);
+		getHostData().setVehicleConnected(connected);
+		sendMessage(new HostData.BooleanPartialHostData(connected, HostData.BooleanPartialHostData.BooleanType.VEHICLE_CONNECTED));
+	}
+	
+	/**
 	 * Vezérlőjel változás jelzése az Activitynek vagy a Hídnak, ha kell.
 	 * Ha a felületről állították be, nem kell újra jelezni.
 	 * Ha nincs kinek jelezni, a jelzés elmarad.

@@ -82,7 +82,7 @@ public class ControllerStorage extends Storage<ControllerData> {
         @Override
         public void setControl(Control control) {
             HostStorage hs = getHostStorage();
-            if (hs != null && control != null && hs.getOwner() == ControllerStorage.this) {
+            if (hs != null && control != null && hs.getHostData().isVehicleConnected() != null && hs.getHostData().isVehicleConnected() && hs.getOwner() == ControllerStorage.this) {
                 HostData.ControlPartialHostData msgh = new HostData.ControlPartialHostData(control);
                 ControllerData.ControlPartialControllerData msgc = new ControllerData.ControlPartialControllerData(control);
                 broadcastMessage(msgc, msgh, true);

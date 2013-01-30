@@ -44,24 +44,48 @@ public class ControllerStorage extends Storage<ControllerData> {
     
     private final ControllerData RECEIVER = new ControllerData() {
 
-        private final List<ChatMessage> LS_MSG = new ForwardedList<ChatMessage>(null) {
+        private final List<ChatMessage> LS_MSG = new ArrayList<ChatMessage>() {
 
             @Override
             public boolean add(ChatMessage e) {
                 if (!e.data.trim().isEmpty() && getHostStorage() != null) {
                     ChatMessage cm = new ChatMessage(getName(), e.data);
                     getHostStorage().getChatMessages().add(cm);
-                    ControllerData.ChatMessagePartialControllerData msg = new ControllerData.ChatMessagePartialControllerData(cm);
-                    broadcastMessage(msg, null, false);
+                    broadcastMessage(new ControllerData.ChatMessagePartialControllerData(cm), null, false);
                 }
-                return super.add(e);
+                return false;
             }
             
         };
 
+        private final List<ControllerState> LS_CNT = new ArrayList<ControllerState>() {
+
+            @Override
+            public boolean add(ControllerState e) {
+                sendControllerChange(new ControllerChange(e));
+                return false;
+            }
+
+            @Override
+            public boolean remove(Object o) {
+                sendControllerChange(new ControllerChange(o.toString()));
+                return false;
+            }
+            
+            private void sendControllerChange(ControllerChange change) {
+                broadcastMessage(new ControllerData.ControllerChangePartialControllerData(change), null, false);
+            }
+            
+        };
+        
         @Override
         public List<ChatMessage> getChatMessages() {
             return LS_MSG;
+        }
+
+        @Override
+        public List<ControllerState> getControllers() {
+            return LS_CNT;
         }
 
         @Override
@@ -95,17 +119,18 @@ public class ControllerStorage extends Storage<ControllerData> {
         }
 
         private void broadcastMessage(PartialBaseData<ControllerData, ?> msgc, PartialBaseData<HostData, ?> msgh, boolean skipMe) {
-            if (msgc != null) {
+            HostStorage hs = getHostStorage();
+            if (msgc != null && hs != null) {
                 List<ControllerStorage> l = StorageList.getControllerStorageList();
                 for (ControllerStorage cs : l) {
                     if (skipMe && cs == ControllerStorage.this) continue;
-                    if (getHostStorage() == cs.getHostStorage()) {
+                    if (hs == cs.getHostStorage()) {
                         cs.getMessageProcess().sendMessage(msgc);
                     }
                 }
             }
-            if (msgh != null && getHostStorage() != null) {
-                getHostStorage().getMessageProcess().sendMessage(msgh);
+            if (msgh != null && hs != null) {
+                hs.getMessageProcess().sendMessage(msgh);
             }
         }
 

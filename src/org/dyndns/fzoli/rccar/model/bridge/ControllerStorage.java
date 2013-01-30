@@ -48,7 +48,9 @@ public class ControllerStorage extends Storage<ControllerData> {
             @Override
             public boolean add(ChatMessage e) {
                 if (!e.data.trim().isEmpty() && getHostStorage() != null) {
-                    ControllerData.ChatMessagePartialControllerData msg = new ControllerData.ChatMessagePartialControllerData(new ChatMessage(getName(), e.data));
+                    ChatMessage cm = new ChatMessage(getName(), e.data);
+                    getHostStorage().getChatMessages().add(cm);
+                    ControllerData.ChatMessagePartialControllerData msg = new ControllerData.ChatMessagePartialControllerData(cm);
                     List<ControllerStorage> l = StorageList.getControllerStorageList();
                     for (ControllerStorage cs : l) {
                         if (getHostStorage() == cs.getHostStorage()) {

@@ -112,7 +112,12 @@ public class ControllerStorage extends Storage<ControllerData> {
         }
 
         @Override
-        public void setWantControl(Boolean wantControl) { // TODO: egyelőre teszt
+        public void setWantControl(Boolean wantControl) { // TODO: egyelőre teszt, bárki kérhet vezérlést és azonnal meg is kapja
+            ControllerStorage oldOwner = getHostStorage().getOwner();
+            if (oldOwner != null) {
+                oldOwner.getSender().setControlling(false);
+                oldOwner.getSender().setWantControl(false);
+            }
             getHostStorage().setOwner(wantControl ? ControllerStorage.this : null);
             getSender().setControlling(wantControl);
         }

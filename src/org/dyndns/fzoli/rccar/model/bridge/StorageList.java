@@ -98,7 +98,7 @@ public class StorageList {
         HostList l = new HostList();
         List<String> ls = l.getHosts();
         for (HostStorage s : getHostStorageList()) {
-            if (HostStorage.isHostConnected(s) && Permissions.getConfig().isEnabled(s.getName(), controllerName)) {
+            if (s.isConnected() && Permissions.getConfig().isEnabled(s.getName(), controllerName)) {
                 ls.add(s.getName());
             }
         }

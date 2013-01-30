@@ -29,6 +29,7 @@ public class HostSideMessageProcess extends BridgeMessageProcess {
     protected void onMessage(Serializable o) {
         if (o instanceof HostData) {
             storage = StorageList.createHostStorage(this, (HostData) o);
+            storage.setConnected(true);
         }
         else if (o instanceof PartialBaseData) {
             PartialBaseData<HostData, ?> pd = (PartialBaseData) o;

@@ -143,6 +143,11 @@ public class HostStorage extends Storage<HostData> {
     private final List<ControllerStorage> CONTROLLERS = Collections.synchronizedList(new ArrayList<ControllerStorage>());
     
     /**
+     * Megadja, hogy a tárolóhoz tartozik-e élő kapcsolat.
+     */
+    private boolean connected = false;
+    
+    /**
      * A jármű kapcsolata időtúllépés alatt van-e.
      */
     private boolean underTimeout = false;
@@ -230,6 +235,20 @@ public class HostStorage extends Storage<HostData> {
     }
 
     /**
+     * Megadja, hogy a tárolóhoz tartozik-e élő kapcsolat.
+     */
+    public boolean isConnected() {
+        return connected;
+    }
+
+    /**
+     * Beállítja, hogy a tárolóhoz tartozik-e élő kapcsolat.
+     */
+    public void setConnected(boolean connected) {
+        this.connected = connected;
+    }
+
+    /**
      * Megadja, hogy a jármű kapcsolatában van-e időtúllépés.
      * A vezérlők oldalára generált adatmodel generálásához használt metódus.
      */
@@ -242,13 +261,6 @@ public class HostStorage extends Storage<HostData> {
      */
     public void setUnderTimeout(boolean underTimeout) {
         this.underTimeout = underTimeout; // TODO: a vezérlőknek is kell jelezni
-    }
-
-    /**
-     * Megadja, hogy a jármű kapcsolódva van-e a hídhoz.
-     */
-    public static boolean isHostConnected(HostStorage s) {
-        return s != null && s.getMessageProcess() != null && !s.getMessageProcess().getSocket().isClosed();
     }
     
 }

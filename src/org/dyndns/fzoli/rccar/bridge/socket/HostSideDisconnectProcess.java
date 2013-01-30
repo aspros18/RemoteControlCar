@@ -28,9 +28,11 @@ public class HostSideDisconnectProcess extends BridgeDisconnectProcess {
     
     private void sendConnectionMessage(boolean connected) {
         HostStorage hs = getHostStorage();
+        if (hs == null) return;
+        hs.setConnected(connected);
         HostList.PartialHostList msgLs = new HostList.PartialHostList(getRemoteCommonName(), connected ? HostList.PartialHostList.ChangeType.ADD : HostList.PartialHostList.ChangeType.REMOVE);
         for (ControllerStorage cs : controllers) {
-            if (cs.getHostStorage() == null || hs.getMessageProcess().getSocket().isClosed()) cs.getMessageProcess().sendMessage(msgLs);
+            if (cs.getHostStorage() == null || !hs.isConnected()) cs.getMessageProcess().sendMessage(msgLs);
             if (cs.getHostStorage() == hs) cs.getMessageProcess().sendMessage(connected ? cs.createControllerData() : StorageList.createHostList(cs.getName()));
         }
     }

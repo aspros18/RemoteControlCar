@@ -245,6 +245,11 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     private boolean pointChanging = false;
     
     /**
+     * Az északtól való eltéréshez hozzáadódó érték.
+     */
+    private Integer additionalDegree;
+    
+    /**
      * Konstruktor Híd oldalra.
      * Kezdetben nem ismert minden adat,
      * az adat frissítésére a hoszt kapcsolódásakor kerül sor.
@@ -258,10 +263,11 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
      * Konstruktor hoszt oldalra.
      * Az állandó értékek konstruktorból állítódnak be.
      */
-    public HostData(boolean fullX, boolean fullY) {
+    public HostData(boolean fullX, boolean fullY, int additionalDegree) {
         super();
         setFullX(fullX);
         setFullY(fullY);
+        setAdditionalDegree(additionalDegree);
         init();
     }
     
@@ -306,6 +312,13 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
      */
     protected boolean isPointChanging() {
         return pointChanging;
+    }
+
+    /**
+     * Megadja az északtól való eltéréshez hozzáadódó értéket.
+     */
+    public Integer getAdditionalDegree() {
+        return additionalDegree;
     }
     
     /**
@@ -389,6 +402,13 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
         if (controll == null) controll = new Control(0, 0);
         super.setControl(controll);
     }
+
+    /**
+     * Beállítja az északtól való eltéréshez hozzáadódó értéket.
+     */
+    public void setAdditionalDegree(Integer additionalDegree) {
+        this.additionalDegree = additionalDegree;
+    }
     
     /**
      * Beállítja a GPS koordinátát.
@@ -429,6 +449,7 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
             setGpsPosition(d.getGpsPosition());
             setGravitationalField(d.getGravitationalField());
             setMagneticField(d.getMagneticField());
+            setAdditionalDegree(d.getAdditionalDegree());
             super.update(d);
         }
     }

@@ -79,7 +79,7 @@ public class ConnectionBinder extends Binder {
 	 */
 	public ConnectionBinder(ConnectionService service) {
 		SERVICE = service;
-		DATA = new HostData(SERVICE.getVehicle().isFullX(), SERVICE.getVehicle().isFullY());
+		DATA = new HostData(SERVICE.getVehicle().isFullX(), SERVICE.getVehicle().isFullY(), SERVICE.getAdditionalDegree());
 	}
 	
 	/**

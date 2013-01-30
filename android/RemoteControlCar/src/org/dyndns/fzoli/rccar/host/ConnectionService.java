@@ -745,6 +745,13 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	/**
+	 * A Híd oldalán a generált északtól való eltéréshez hozzáadódó értéket adja meg.
+	 */
+	public int getAdditionalDegree() {
+		return Integer.parseInt(getSharedPreferences(this).getString("additional_degree", "0"));
+	}
+	
+	/**
 	 * Az újrakapcsolódás késleltetésének értékét adja meg.
 	 */
 	private int getReconnectDelay() {

@@ -11,7 +11,6 @@ import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
 import org.dyndns.fzoli.rccar.model.controller.ControllerState;
-import org.dyndns.fzoli.rccar.model.controller.ForwardedList;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
 import org.dyndns.fzoli.rccar.model.controller.HostState;
 import org.dyndns.fzoli.rccar.model.host.HostData;
@@ -256,7 +255,9 @@ public class ControllerStorage extends Storage<ControllerData> {
                 Location.getRotationMatrix(R, null, acc.toArray(), mag.toArray());
                 Location.remapCoordinateSystem(R, Location.AXIS_X, Location.AXIS_Z, outR);
                 Location.getOrientation(outR, values);
-                return Double.valueOf(Math.toDegrees(values[0])).intValue();
+                int degree = Double.valueOf(Math.toDegrees(values[0])).intValue();
+                if (d.getAdditionalDegree() != null) degree += d.getAdditionalDegree();
+                return degree;
             }
         }
         return null;

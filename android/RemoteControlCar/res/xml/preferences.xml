@@ -71,6 +71,14 @@
             android:defaultValue="0"
             android:entries="@array/vehicleNames"
             android:entryValues="@array/vehicleIndexes" />
+        <ListPreference
+            android:key="additional_degree"
+            android:title="@string/title_additional_degree"
+            android:summary="@string/summary_additional_degree"
+            android:defaultValue="90"
+            android:entries="@array/additionalDegreeNames"
+            android:entryValues="@array/additionalDegreeValues"
+            android:dependency="offline" />
         <EditTextPreference
             android:key="refresh_interval"
             android:title="@string/title_refresh_interval"
@@ -85,7 +93,7 @@
             android:summary="@string/summary_reconnect_delay"
             android:defaultValue="20000"
             android:entries="@array/reconnectDelayNames"
-            android:entryValues="@array/reconnectDelayIndexes"
+            android:entryValues="@array/reconnectDelayValues"
             android:dependency="offline" />
         <EditTextPreference
             android:key="password"

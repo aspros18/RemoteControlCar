@@ -24,16 +24,18 @@ public class Processes {
      * @param clazz a szűrőfeltétel
      */
     public static <T extends Process> List<T> getProcesses(List<Process> processes, Class<T> clazz) {
-        List<T> ls = Collections.synchronizedList(new ArrayList<T>());
-        for (Process proc : processes) {
-            try {
-                ls.add(clazz.cast(proc)); // ezzel a kasztolás módszerrel dobódik csak kivétel
+        synchronized (processes) {
+            List<T> ls = Collections.synchronizedList(new ArrayList<T>());
+            for (Process proc : processes) {
+                try {
+                    ls.add(clazz.cast(proc)); // ezzel a kasztolás módszerrel dobódik csak kivétel
+                }
+                catch (ClassCastException ex) {
+                    ;
+                }
             }
-            catch (ClassCastException ex) {
-                ;
-            }
+            return ls;
         }
-        return ls;
     }
     
 }

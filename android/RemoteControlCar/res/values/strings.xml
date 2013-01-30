@@ -17,6 +17,7 @@
     <string name="title_password">Certificate password</string>
     <string name="title_refresh_interval">Refresh interval</string>
     <string name="title_reconnect_delay">Reconnect delay</string>
+    <string name="title_additional_degree">Additional degree</string>
     <string name="title_vehicle">Vehicle</string>
     <string name="title_force_connect">Forced connection</string>
     <string name="title_offline">Offline</string>
@@ -31,6 +32,7 @@
     <string name="summary_password">Edit optional password</string>
     <string name="summary_refresh_interval">Edit refresh interval</string>
     <string name="summary_reconnect_delay">Edit reconnect delay</string>
+    <string name="summary_additional_degree">Edit additional degree</string>
     <string name="summary_vehicle">Select vehicle</string>
     <string name="summary_offline">Offline mode</string>
     <string name="text_start">Start</string>

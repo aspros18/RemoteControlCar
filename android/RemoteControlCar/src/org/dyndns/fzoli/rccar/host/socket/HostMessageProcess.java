@@ -38,8 +38,7 @@ import android.util.Log;
  * Az osztály az IOIO által vezérelt áramkör feszültség változását is figyeli és az akkumulátor százalékos
  * töltöttségét elküldi a hídnak. Ez azonban már feldolgozott adat, a híd egyszerűen továbbítja a vezérlő programoknak.
  * A program beállítások menüjében beállítható a frissítési időköz adatforgalom takarékosság céljából.
- * A frissítési időköz a telefon szenzoraira vonatkozik, az akkumulátor-szint változást nem érinti,
- * mivel annak változása nagyon lassú folyamat (legalább 1 perc), de a szenzoradatok másodpercenként többször változhatnak.
+ * A frissítési időköz a telefon szenzoraira és az akkumulátor-szint változásra vonatkozik.
  */
 public class HostMessageProcess extends MessageProcess {
 
@@ -48,18 +47,43 @@ public class HostMessageProcess extends MessageProcess {
 	 */
 	private final ConnectionService SERVICE;
 	
+	/**
+	 * Ennyi időközönként küld a kliens adatmódosulásról jelzést.
+	 */
+	private final int REFRESH_INTERVAL;
+	
+	/**
+	 * A mágneses-térerősség és a nehézségi-erő szenzorokhoz lehet vele hozzáférni.
+	 */
 	private final SensorManager sensorManager;
+	
+	/**
+	 * A GPS-pozícióhoz lehet vele hozzáférni.
+	 */
 	private final LocationManager locationManager;
 	
+	/**
+	 * Megadja, hogy a szenzor elérhető-e.
+	 */
 	private final boolean availableDirection, availableLocation;
 	
+	/**
+	 * A mágneses-térerősség és a nehézségi-erő szenzorokhoz tartozó eseményfigyelő.
+	 * Feladata, hogy közölje a szerverrel a naprakész szenzoradatokat.
+	 */
 	private final SensorEventListener sensorEventListener = new SensorEventListener() {
 
+		/**
+		 * A szenzoradatok pontossága nem érdekes.
+		 */
 		@Override
 		public void onAccuracyChanged(Sensor sensor, int accuracy) {
 			;
 		}
 
+		/**
+		 * Ha változott egy szenzoradat, frissíti a modelben azt és elküldi az üzenetet a Hídnak, ha itt az ideje.
+		 */
 		@Override
 		public void onSensorChanged(SensorEvent event) {
 			Point3D p = new Point3D(event.values[0], event.values[1], event.values[2]);
@@ -74,23 +98,39 @@ public class HostMessageProcess extends MessageProcess {
 		
 	};
 
+	/**
+	 * A GPS-hez tartozó eseményfigyelő.
+	 * Feladata, hogy közölje a szerverrel a jármű pozícióját és azt is, hogy naprakész-e a GPS adat.
+	 */
 	private final LocationListener locationListener = new LocationListener() {
 		
+		/**
+		 * A GPS engedélyezése esetén nem kell tenni semmit, mert nem fontos jelzés.
+		 */
 		@Override
 		public void onProviderEnabled(String provider) {
 			;
 		}
 		
+		/**
+		 * A GPS kikapcsolásakor menteni és jelezni kell, hogy a GPS adatok nem naprakészek.
+		 */
 		@Override
 		public void onProviderDisabled(String provider) {
 			sendUp2Date(false);
 		}
 		
+		/**
+		 * Ha a GPS státusza megváltozott, menti és jelzi, hogy a GPS adatok naprakészek-e.
+		 */
 		@Override
 		public void onStatusChanged(String provider, int status, Bundle extras) {
 			sendUp2Date(status == LocationProvider.AVAILABLE);
 		}
 		
+		/**
+		 * Ha a pozíció megváltozott, menti és jelzi azt a szervernek, ha itt az ideje.
+		 */
 		@Override
 		public void onLocationChanged(Location location) {
 			getHostData().setGpsPosition(new Point3D(location.getLatitude(), location.getLongitude(), location.getAltitude()));
@@ -99,11 +139,27 @@ public class HostMessageProcess extends MessageProcess {
 		
 	};
 	
+	/**
+	 * A járműhöz tartozó eseményfigyelő.
+	 * Ha az akkumulátor-szint megváltozik, közli azt a szerverrel, ha itt az ideje.
+	 */
 	private final Vehicle.Callback vehicleCallback = new Vehicle.Callback() {
 		
+		/**
+		 * Az utolsó üzenet elküldési ideje.
+		 */
+		private Date sendDate = null;
+		
+		/**
+		 * Az akkumulátor-szint küldése a szervernek, ha itt az ideje.
+		 */
 		@Override
 		public void onBatteryLevelChanged(Integer level) {
-			sendMessage(new HostData.BatteryPartialHostData(level));
+			Date now = new Date();
+			if (loaded && (sendDate == null || now.getTime() - sendDate.getTime() >= REFRESH_INTERVAL)) {
+				sendDate = now;
+				sendMessage(new HostData.BatteryPartialHostData(level));
+			}
 		}
 		
 	};
@@ -132,13 +188,22 @@ public class HostMessageProcess extends MessageProcess {
 		
 	};
 	
+	/**
+	 * Megadja, hogy a kezdeti szenzoradatok be lettek-e olvasva és el lett-e küldve az adatmodel a szervernek.
+	 * Addig, amíg ez nem történik meg, a szenzoradatok módosulásáról nem küld jelzést a kliens.
+	 */
 	private boolean loaded;
 	
+	/**
+	 * A legutolsó Point3D adatok elküldésének idejét adja meg ezredmásodpercben.
+	 * Mivel már a 0. ezredmásodperc több éve elmúlt, nem okoz gondot a kezdeti 0 érték.
+	 */
 	private long fireTime;
 	
 	public HostMessageProcess(ConnectionService service, SecureHandler handler) {
 		super(handler);
 		SERVICE = service;
+		REFRESH_INTERVAL = SERVICE.getConfig().getRefreshInterval();
 		locationManager = (LocationManager) service.getSystemService(Context.LOCATION_SERVICE);
 		sensorManager = (SensorManager)service.getSystemService(Context.SENSOR_SERVICE);
 		availableLocation = locationManager.getAllProviders().contains(LocationManager.GPS_PROVIDER);
@@ -242,7 +307,7 @@ public class HostMessageProcess extends MessageProcess {
 	 */
 	private void fireSensorChanged() {
 		final long time = new Date().getTime();
-		if (loaded &&  time - fireTime >= SERVICE.getConfig().getRefreshInterval()) {
+		if (loaded &&  time - fireTime >= REFRESH_INTERVAL) {
 			fireTime = time;
 			int change = 0;
 			if (getHostData().getGravitationalField() != null && !getHostData().getGravitationalField().equals(getHostData().getPreviousGravitationalField())) {

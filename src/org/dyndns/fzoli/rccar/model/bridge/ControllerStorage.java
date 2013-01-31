@@ -118,11 +118,17 @@ public class ControllerStorage extends Storage<ControllerData> {
             if (oldOwner != null) {
                 oldOwner.getSender().setControlling(false);
                 oldOwner.getSender().setWantControl(false);
+                broadcastControllerState(new ControllerState(oldOwner.getName(), false));
             }
             getHostStorage().setOwner(wantControl ? ControllerStorage.this : null);
             getSender().setControlling(wantControl);
+            if (wantControl) broadcastControllerState(new ControllerState(getName(), true));
         }
 
+        private void broadcastControllerState(ControllerState s) {
+            broadcastMessage(new ControllerData.ControllerChangePartialControllerData(new ControllerChange(s)), null, false);
+        }
+        
         private void broadcastMessage(PartialBaseData<ControllerData, ?> msgc, PartialBaseData<HostData, ?> msgh, boolean skipMe) {
             HostStorage hs = getHostStorage();
             if (msgc != null && hs != null) {

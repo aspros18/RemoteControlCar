@@ -483,14 +483,17 @@ public class ControllerModels {
          * Mivel ABC sorrendben frissül a lista, így a pozíciója nem módosul a vezérlőnek a listában.
          */
         @Override
-        public void onControllerStateChanged(ControllerState cs, ControllerState oldValues) {
-            super.onControllerStateChanged(cs, oldValues);
+        public void onControllerStateChanged(ControllerState cs) {
+            super.onControllerStateChanged(cs);
             if (dialogChat != null) {
+//                ControllerState old = dialogChat.findController(cs.getName());
                 dialogChat.setControllerVisible(cs, false, false);
                 dialogChat.setControllerVisible(cs, true, false);
-                if (cs.isControlling() != oldValues.isControlling() && cs.isControlling()) {
-                    dialogChat.showNewController(cs.getName());
-                }
+//                if (old != null) {
+//                    if (cs.isControlling() != old.isControlling() && cs.isControlling()) {
+//                        dialogChat.showNewController(cs.getName());
+//                    }
+//                }
             }
         }
         

@@ -444,6 +444,20 @@ public class ChatDialog extends AbstractDialog {
         ((DefaultListModel) LIST_CONTROLLERS.getModel()).clear();
     }
     
+//    /**
+//     * A vezérlők listájában megkeresi az adott vezérlő állapotleíróját.
+//     * Így megvizsgálható a felületen lévő model és az aktuális model közti eltérés.
+//     * @return null, ha a felületen nem található a keresett vezérlő
+//     */
+//    public ControllerState findController(String name) {
+//        Enumeration<ControllerState> e = ((DefaultListModel) LIST_CONTROLLERS.getModel()).elements();
+//        while (e.hasMoreElements()) {
+//            ControllerState s = e.nextElement();
+//            if (s.getName().equals(name)) return s;
+//        }
+//        return null;
+//    }
+    
     /**
      * A jelenlévők listájához ad hozzá vagy abból vesz el.
      * Ugyan azt a nevet csak egyszer adja hozzá a listához.
@@ -489,12 +503,12 @@ public class ChatDialog extends AbstractDialog {
         ChatDialog.senderName = senderName;
     }
     
-    /**
-     * Rendszerüzenetben figyelmezteti a felhasználót, hogy új vezérlő irányítja a járművet.
-     */
-    public void showNewController(String name) {
-        addMessage(new Date(), name, "vezérli mostantól a járművet.", true);
-    }
+//    /**
+//     * Rendszerüzenetben figyelmezteti a felhasználót, hogy új vezérlő irányítja a járművet.
+//     */
+//    public void showNewController(String name) {
+//        addMessage(new Date(), name, "vezérli mostantól a járművet.", true);
+//    }
     
     /**
      * Chatüzenetet jelenít meg és a scrollt beállítja.

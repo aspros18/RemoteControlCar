@@ -90,6 +90,7 @@ public class HostStorage extends Storage<HostData> {
         @Override
         public void setUp2Date(Boolean up2date) {
             getHostData().setUp2Date(up2date);
+//            System.out.println("Vehicle " + getName() + " is" + (up2date ? " " : "n't ") + "up to date.");
             broadcastMessage(new ControllerData.BoolenPartialControllerData(up2date, ControllerData.BoolenPartialControllerData.BooleanType.UP_2_DATE));
         }
 

@@ -21,12 +21,13 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Bundle;
 import android.os.HandlerThread;
+import android.os.SystemClock;
 import android.util.Log;
 
 /**
@@ -99,6 +100,51 @@ public class HostMessageProcess extends MessageProcess {
 	};
 
 	/**
+	 * Az utolsó GPS pozíció.
+	 * API bugfix: Ahhoz kell, hogy megállapítható legyen, van-e még GPS jel.
+	 */
+	private Location mLastLocation;
+	
+	/**
+	 * Az utolsó GPS pozíció beállításának ideje.
+	 * API bugfix: Ahhoz kell, hogy megállapítható legyen, van-e még GPS jel.
+	 */
+	private long mLastLocationMillis;
+	
+	/**
+	 * Az eseményfigyelő segítségével megállapítható, hogy van-e GPS jel.
+	 * Az API erre régebben lehetőséget adott a {@link LocationListener} interfészben,
+	 * de az újabb rendszereken már nem hívódik meg a {@link LocationListener#onStatusChanged(String, int, Bundle)} metódus.
+	 */
+	private final GpsStatus.Listener gpsStatusListener = new GpsStatus.Listener() {
+		
+		/**
+		 * Megadja, hogy van-e GPS jel.
+		 * Kezdetben nincs jel.
+		 */
+		private boolean isGPSFix = false;
+		
+		/**
+		 * Ha a GPS státusza megváltozott, lefut a metódus és eldönti, hogy van-e GPS jel,
+		 * és beállítja, majd elküldi a hídnak az információt.
+		 */
+		@Override
+		public void onGpsStatusChanged(int event) {
+			switch (event) {
+				case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
+					if (mLastLocation != null) isGPSFix = (SystemClock.elapsedRealtime() - mLastLocationMillis) < 3000;
+					sendUp2Date(isGPSFix);
+					break;
+				case GpsStatus.GPS_EVENT_FIRST_FIX:
+					isGPSFix = true;
+					sendUp2Date(true);
+					break;
+			}
+		}
+		
+	};
+	
+	/**
 	 * A GPS-hez tartozó eseményfigyelő.
 	 * Feladata, hogy közölje a szerverrel a jármű pozícióját és azt is, hogy naprakész-e a GPS adat.
 	 */
@@ -109,7 +155,7 @@ public class HostMessageProcess extends MessageProcess {
 		 */
 		@Override
 		public void onProviderEnabled(String provider) {
-			;
+			Log.i(ConnectionService.LOG_TAG, "GPS enabled");
 		}
 		
 		/**
@@ -117,22 +163,34 @@ public class HostMessageProcess extends MessageProcess {
 		 */
 		@Override
 		public void onProviderDisabled(String provider) {
+			Log.i(ConnectionService.LOG_TAG, "GPS disabled");
 			sendUp2Date(false);
 		}
 		
 		/**
-		 * Ha a GPS státusza megváltozott, menti és jelzi, hogy a GPS adatok naprakészek-e.
+		 * Ez a metódus hasznavehetetlen, mert Android 1.6 felett soha nem fut le.
+		 * A metódust a {@link HostMessageProcess#gpsStatusListener} váltja le.
 		 */
 		@Override
 		public void onStatusChanged(String provider, int status, Bundle extras) {
-			sendUp2Date(status == LocationProvider.AVAILABLE);
+			;
 		}
 		
 		/**
 		 * Ha a pozíció megváltozott, menti és jelzi azt a szervernek, ha itt az ideje.
+		 * Mivel nem minden esetben fut le az {@link #onStatusChanged(String, int, Bundle)} metódus,
+		 * ezért itt is üzenhet a kliens a hídnak az adatok naprakészségéről.
 		 */
 		@Override
 		public void onLocationChanged(Location location) {
+			if (location == null) return;
+			
+			// a gpsStatusListener-nek az alábbi változók beállítása
+			mLastLocationMillis = SystemClock.elapsedRealtime();
+			mLastLocation = location;
+			sendUp2Date(true);
+			
+			// pozíció elmentése és üzenet küldése a Hídnak
 			getHostData().setGpsPosition(new Point3D(location.getLatitude(), location.getLongitude(), location.getAltitude()));
 			fireSensorChanged();
 		}
@@ -176,6 +234,7 @@ public class HostMessageProcess extends MessageProcess {
 		protected void onLooperPrepared() {
 			SERVICE.getVehicle().setCallback(vehicleCallback);
 			if (availableLocation) {
+				locationManager.addGpsStatusListener(gpsStatusListener);
 				locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10f, locationListener);
 			}
 			if (availableDirection) {
@@ -243,8 +302,13 @@ public class HostMessageProcess extends MessageProcess {
 		sensorThread.getLooper().quit();
 		SERVICE.getBinder().removeSender(this);
 		SERVICE.getVehicle().setCallback(null);
-		if (availableLocation) locationManager.removeUpdates(locationListener);
-		if (availableDirection) sensorManager.unregisterListener(sensorEventListener);
+		if (availableLocation) {
+			locationManager.removeUpdates(locationListener);
+			locationManager.removeGpsStatusListener(gpsStatusListener);
+		}
+		if (availableDirection) {
+			sensorManager.unregisterListener(sensorEventListener);
+		}
 		getHostData().clear();
 	}
 	
@@ -295,9 +359,14 @@ public class HostMessageProcess extends MessageProcess {
 		return SERVICE.getBinder().getHostData();
 	}
 	
+	/**
+	 * Menti és elküldi az up2date üzenetet a hídnak, ha a megadott érték eltér a jelenlegi értéktől.
+	 */
 	private void sendUp2Date(boolean up2date) {
-		getHostData().setUp2Date(up2date);
-		sendMessage(new HostData.BooleanPartialHostData(up2date, HostData.BooleanPartialHostData.BooleanType.UP_2_DATE));
+		if (getHostData().isUp2Date() != up2date) {
+			getHostData().setUp2Date(up2date);
+			sendMessage(new HostData.BooleanPartialHostData(up2date, HostData.BooleanPartialHostData.BooleanType.UP_2_DATE));
+		}
 	}
 	
 	/**

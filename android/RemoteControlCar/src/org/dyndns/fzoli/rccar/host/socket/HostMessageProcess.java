@@ -93,7 +93,7 @@ public class HostMessageProcess extends MessageProcess {
 		
 		@Override
 		public void onLocationChanged(Location location) {
-			getHostData().setGpsPosition(new Point3D(location.getLongitude(), location.getLatitude(), location.getAltitude()));
+			getHostData().setGpsPosition(new Point3D(location.getLatitude(), location.getLongitude(), location.getAltitude()));
 			fireSensorChanged();
 		}
 		

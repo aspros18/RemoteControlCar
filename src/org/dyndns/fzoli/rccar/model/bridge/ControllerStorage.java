@@ -91,6 +91,7 @@ public class ControllerStorage extends Storage<ControllerData> {
         public void setControl(Control control) {
             HostStorage hs = getHostStorage();
             if (hs != null && control != null && hs.getHostData().isVehicleConnected() != null && !ControllerStorage.this.isViewOnly() && hs.getHostData().isVehicleConnected() && hs.getOwner() == ControllerStorage.this) {
+                hs.getHostData().setControl(control);
                 HostData.ControlPartialHostData msgh = new HostData.ControlPartialHostData(control);
                 ControllerData.ControlPartialControllerData msgc = new ControllerData.ControlPartialControllerData(control);
                 broadcastMessage(msgc, msgh, true);

@@ -600,10 +600,12 @@ abstract class ArrowPanel extends JPanel {
     
     public void setPercentX(int x) {
         aLin.setPercentX(x);
+        repaint();
     }
     
     public void setPercentY(int y) {
         aLin.setPercentY(y);
+        repaint();
     }
     
     private void fireChange() {

@@ -246,8 +246,7 @@ public class MainActivity extends SherlockActivity {
 		}
 		
 		if (binder.getX() != x || binder.getY() != y) { // ha az előző érték egyike eltér
-			binder.setX(x, false); // vezérlőjel frissítése
-			binder.setY(y, false);
+			binder.setXY(x, y, null); // vezérlőjel frissítése, nem küld üzenetet a Hídnak!
 		}
 		
 		setXYText(x, y); // felületen megjelenő szöveg cseréje

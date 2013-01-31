@@ -158,14 +158,14 @@ public class ConnectionBinder extends Binder {
 	
 	/**
 	 * Irány és sebesség megadása százalékban.
-	 * @param remote true esetén jelzi az Activitynek a módosulást, egyébként a hídnak küld üzenetet.
+	 * @param remote true esetén jelzi az Activitynek a módosulást, egyébként a hídnak küld üzenetet; null esetén egyiket se teszi.
 	 */
-	public void setXY(int x, int y, boolean remote) {
+	public void setXY(int x, int y, Boolean remote) {
 		if (getControl() != null) {
 			getControl().setX(x);
 			getControl().setY(y);
 		}
-		fireArrowChange(remote);
+		if (remote != null) fireArrowChange(remote);
 		mXYcounter++;
 	}
 	

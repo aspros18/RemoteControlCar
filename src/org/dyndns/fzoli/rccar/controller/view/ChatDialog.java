@@ -503,12 +503,12 @@ public class ChatDialog extends AbstractDialog {
         ChatDialog.senderName = senderName;
     }
     
-//    /**
-//     * Rendszerüzenetben figyelmezteti a felhasználót, hogy új vezérlő irányítja a járművet.
-//     */
-//    public void showNewController(String name) {
-//        addMessage(new Date(), name, "vezérli mostantól a járművet.", true);
-//    }
+    /**
+     * Rendszerüzenetben figyelmezteti a felhasználót, hogy új vezérlő irányítja a járművet.
+     */
+    public void showNewController(String name) {
+        addMessage(new Date(), name, "vezérli mostantól a járművet.", true);
+    }
     
     /**
      * Chatüzenetet jelenít meg és a scrollt beállítja.

@@ -490,9 +490,9 @@ public class ControllerModels {
                 dialogChat.setControllerVisible(cs, false, false);
                 dialogChat.setControllerVisible(cs, true, false);
 //                if (old != null) {
-//                    if (cs.isControlling() != old.isControlling() && cs.isControlling()) {
-//                        dialogChat.showNewController(cs.getName());
-//                    }
+                    if (cs.isControlling()/* != old.isControlling() && cs.isControlling()*/) {
+                        dialogChat.showNewController(cs.getName());
+                    }
 //                }
             }
         }

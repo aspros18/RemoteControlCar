@@ -9,6 +9,7 @@ import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
+import org.dyndns.fzoli.rccar.model.controller.ControllerState;
 import org.dyndns.fzoli.rccar.model.host.HostData;
 import org.dyndns.fzoli.socket.process.impl.MessageProcess;
 
@@ -124,17 +125,6 @@ public class HostStorage extends Storage<HostData> {
             }
         }
 
-        private void broadcastMessage(PartialBaseData<ControllerData, ?> msg) {
-            if (msg != null) {
-                List<ControllerStorage> l = StorageList.getControllerStorageList();
-                for (ControllerStorage cs : l) {
-                    if (HostStorage.this == cs.getHostStorage()) {
-                        cs.getMessageProcess().sendMessage(msg);
-                    }
-                }
-            }
-        }
-
     };
     
     /**
@@ -235,7 +225,7 @@ public class HostStorage extends Storage<HostData> {
      */
     void addController(ControllerStorage controller) {
         CONTROLLERS.add(controller);
-        // TODO: a vezérlőknek jelezni, hogy új vezérlő kapcsolódott a járműhöz
+        broadcastMessage(new ControllerData.ControllerChangePartialControllerData(new ControllerData.ControllerChange(new ControllerState(controller.getName(), getOwner() == controller))));
     }
 
     /**
@@ -244,7 +234,7 @@ public class HostStorage extends Storage<HostData> {
      */
     void removeController(ControllerStorage controller) {
         CONTROLLERS.remove(controller);
-        // TODO: a vezérlőknek jelezni, hogy a vezérlő lekapcsolódott a járműről
+        broadcastMessage(new ControllerData.ControllerChangePartialControllerData(new ControllerData.ControllerChange(controller.getName())));
     }
     
     /**
@@ -297,7 +287,19 @@ public class HostStorage extends Storage<HostData> {
      * Beállítja, hogy a jármű kapcsolatában van-e időtúllépés és jelzi a változást a vezérlő klienseknek.
      */
     public void setUnderTimeout(boolean underTimeout) {
-        this.underTimeout = underTimeout; // TODO: a vezérlőknek is kell jelezni
+        this.underTimeout = underTimeout;
+        broadcastMessage(new ControllerData.BoolenPartialControllerData(underTimeout, ControllerData.BoolenPartialControllerData.BooleanType.HOST_UNDER_TIMEOUT));
+    }
+    
+    private void broadcastMessage(PartialBaseData<ControllerData, ?> msg) {
+        if (msg != null) {
+            List<ControllerStorage> l = StorageList.getControllerStorageList();
+            for (ControllerStorage cs : l) {
+                if (HostStorage.this == cs.getHostStorage()) {
+                    cs.getMessageProcess().sendMessage(msg);
+                }
+            }
+        }
     }
     
 }

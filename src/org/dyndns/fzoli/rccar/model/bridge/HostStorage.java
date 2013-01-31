@@ -234,8 +234,18 @@ public class HostStorage extends Storage<HostData> {
      */
     void addController(ControllerStorage controller) {
         CONTROLLERS.add(controller);
+        // TODO: a vezérlőknek jelezni, hogy új vezérlő kapcsolódott a járműhöz
     }
 
+    /**
+     * Vezérlő eltávolítása.
+     * A {@code ControllerStorage.setHostStorage} metódus használja.
+     */
+    void removeController(ControllerStorage controller) {
+        CONTROLLERS.remove(controller);
+        // TODO: a vezérlőknek jelezni, hogy a vezérlő lekapcsolódott a járműről
+    }
+    
     /**
      * A jármű vezérlésének átadása a paraméterben megadott kliensnek.
      * A vezérlő-lista első helyére kerül a megadott kliens.

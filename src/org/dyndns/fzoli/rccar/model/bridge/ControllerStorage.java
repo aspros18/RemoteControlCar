@@ -190,8 +190,8 @@ public class ControllerStorage extends Storage<ControllerData> {
      * @param hostStorage a tároló vagy null, ha nincs jármű kiválasztva
      */
     public void setHostStorage(HostStorage hostStorage) {
-        HostStorage old = this.hostStorage;
-        if (old != null) old.getControllers().remove(this);
+        HostStorage oldStorage = this.hostStorage;
+        if (oldStorage != null) oldStorage.removeController(this);
         if (hostStorage != null) hostStorage.addController(this);
         this.hostStorage = hostStorage;
     }

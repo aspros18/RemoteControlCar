@@ -403,15 +403,8 @@ public class MapDialog extends AbstractDialog {
     public void setPosition(final Point3D pos) {
         if (webBrowser == null) return;
         chkTmpFiles();
-        SwingUtilities.invokeLater(new Runnable() {
-            
-            @Override
-            public void run() {
-                position = pos;
-                webBrowser.executeJavascript("map.setCenter(new google.maps.LatLng(" + (position == null ? 1 : position.X) + ", " + (position == null ? 0 : position.Y) + ")); var tag = document.getElementById('info'); tag.style.visibility = '" + (pos == null ? "hidden" : "visible") + "'; tag.innerHTML = '" + (pos == null ? "" : "W " + DF.format(pos.X) + "° H " + DF.format(pos.Y) + "° " + DF2.format(pos.Z) + " m") + "'; document.getElementById('compass').style.visibility = '" + (pos != null ? "hidden" : "visible") + "';");
-            }
-            
-        });
+        position = pos;
+        executeJavascript("map.setCenter(new google.maps.LatLng(" + (position == null ? 1 : position.X) + ", " + (position == null ? 0 : position.Y) + ")); var tag = document.getElementById('info'); tag.style.visibility = '" + (pos == null ? "hidden" : "visible") + "'; tag.innerHTML = '" + (pos == null ? "" : "W " + DF.format(pos.X) + "° H " + DF.format(pos.Y) + "° " + DF2.format(pos.Z) + " m") + "'; document.getElementById('compass').style.visibility = '" + (pos != null ? "hidden" : "visible") + "';");
     }
     
     /**
@@ -423,13 +416,31 @@ public class MapDialog extends AbstractDialog {
     public void setArrow(final Double rotation) {
         if (webBrowser == null) return;
         chkTmpFiles();
+        ARROW.setRotation(rotation); // nyíl frissítése
+        writeImage(ARROW, ARROW_FILE); // png formátumban a nyíl mentése a tmp könyvtárba
+        executeJavascript("document.getElementById('arrow').innerHTML = '<img src=\"" + fileToUrl(ARROW_FILE) + "?nocache=" + Math.random() + "\" />';"); // a kép frissítése a böngészőben
+    }
+    
+    /**
+     * Szürke átfedés engedélyezése illetve tiltása a térképen.
+     * JavaScript és CSS 3 alapú metódus.
+     */
+    public void setFade(final boolean enabled) {
+        if (webBrowser == null) return;
+        fadeEnabled = enabled;
+        executeJavascript("document.getElementById('map_canvas').className = 'fadeprep" + (enabled ? " fadeon" : "") + "';");
+    }
+    
+    /**
+     * JavaScript kódot futtat le.
+     * Nem ellenőrzött metódus, mivel a hívó metódusban van az ellenőrzés.
+     */
+    private void executeJavascript(final String script) {
         SwingUtilities.invokeLater(new Runnable() {
             
             @Override
             public void run() {
-                ARROW.setRotation(rotation); // nyíl frissítése
-                writeImage(ARROW, ARROW_FILE); // png formátumban a nyíl mentése a tmp könyvtárba
-                webBrowser.executeJavascript("document.getElementById('arrow').innerHTML = '<img src=\"" + fileToUrl(ARROW_FILE) + "?nocache=" + Math.random() + "\" />';"); // a kép frissítése a böngészőben
+                webBrowser.executeJavascript(script);
             }
             
         });
@@ -457,23 +468,6 @@ public class MapDialog extends AbstractDialog {
         catch (Exception ex) {
             return "";
         }
-    }
-    
-    /**
-     * Szürke átfedés engedélyezése illetve tiltása a térképen.
-     * JavaScript és CSS 3 alapú metódus.
-     */
-    public void setFade(final boolean enabled) {
-        if (webBrowser == null) return;
-        fadeEnabled = enabled;
-        SwingUtilities.invokeLater(new Runnable() {
-            
-            @Override
-            public void run() {
-                webBrowser.executeJavascript("document.getElementById('map_canvas').className = 'fadeprep" + (enabled ? " fadeon" : "") + "';");
-            }
-            
-        });
     }
     
     /**

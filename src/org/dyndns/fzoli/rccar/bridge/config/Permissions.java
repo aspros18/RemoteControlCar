@@ -82,6 +82,13 @@ public final class Permissions {
         // végigmegy a vezérlőkön és frissíti azokat, melyeket érint a konfiguráció módosulás
         List<ControllerStorage> ls = StorageList.getControllerStorageList();
         for (ControllerStorage cs : ls) {
+            if (cs.getHostStorage() != null) { // ha a vezérlőhöz tartozik jármű
+                boolean viewOnly = getConfig().isViewOnly(cs.getHostStorage().getName(), cs.getName());
+                if (previous.isViewOnly(cs.getHostStorage().getName(), cs.getName()) != viewOnly) { // ha változott a viewOnly paraméter
+                    cs.getSender().setViewOnly(viewOnly); // közli a vezérlővel, hogy nem kérhet-e vezérlést ...
+                    if (viewOnly && cs.getHostStorage().getOwner() == cs) cs.getReceiver().setWantControl(false); // ... és ha nem kérhet, de éppen vezérelte, elveszi tőle a vezérlést
+                }
+            }
             // TODO
         }
     }

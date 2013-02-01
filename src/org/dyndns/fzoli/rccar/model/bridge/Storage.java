@@ -33,12 +33,17 @@ abstract class Storage<T extends BaseData> {
     /**
      * Az üzenetküldőt adja vissza.
      * Feladata, hogy üzenetet küldjön a kliensnek a setter metódusok hívásakor.
+     * Kizárólag a kliens részére való üzenetküldésre és adatbeállításra.
+     * Jogosultságkezeléshez és broadcast üzenet küldéséhez a {@link #getReceiver()}
+     * metódus használható, ami képes a bejövő üzenetek feldolgozására is.
      */
     public abstract T getSender();
     
     /**
      * Az üzenetfogadót adja vissza.
-     * Feladata, hogy a fogadott üzenetet dolgozza fel, amikor a setter(ek) meghívódnak.
+     * Feladata, hogy a fogadott üzenetet jogkezelten dolgozza fel a setter metódusok által és az adatmódosulásról mindenkit értesítsen, akit érint.
+     * Az implementációban a broadcast üzenet küldésre használható lenne a {@link #getSender()} objektum, de erőforrás pazarló lenne minden üzenetküldésre
+     * új üzenet objektumot példányosítani, ezért ajánlott újra implementálni az üzenet létrehozást, majd ciklussal elküldeni azt az egy üzenetet több helyre.
      */
     public abstract T getReceiver();
     

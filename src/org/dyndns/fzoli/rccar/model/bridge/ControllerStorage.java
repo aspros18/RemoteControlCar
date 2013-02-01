@@ -61,19 +61,19 @@ public class ControllerStorage extends Storage<ControllerData> {
 
             @Override
             public boolean add(ControllerState e) {
-                sendControllerChange(new ControllerChange(e));
+//                sendControllerChange(new ControllerChange(e));
                 return false;
             }
 
             @Override
             public boolean remove(Object o) {
-                sendControllerChange(new ControllerChange(o.toString()));
+//                sendControllerChange(new ControllerChange(o.toString()));
                 return false;
             }
             
-            private void sendControllerChange(ControllerChange change) {
-                broadcastMessage(new ControllerData.ControllerChangePartialControllerData(change), null, false);
-            }
+//            private void sendControllerChange(ControllerChange change) {
+//                broadcastMessage(new ControllerData.ControllerChangePartialControllerData(change), null, false);
+//            }
             
         };
         

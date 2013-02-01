@@ -73,7 +73,6 @@ public class HostStorage extends Storage<HostData> {
         
     };
     
-    // TODO: forwarder az univerzális adatmódosulás feldolgozóhoz. Ezt használja majd a ControllerDataForwarder is, és a beérkező üzeneteket is ez dolgozza majd fel (helyi adat frissítése, üzenetküldés a megfelelő klienseknek).
     private final HostData RECEIVER = new HostData() {
 
         @Override
@@ -227,7 +226,7 @@ public class HostStorage extends Storage<HostData> {
         CONTROLLERS.add(controller);
         if (CONTROLLERS.size() == 1) getSender().setStreaming(true); // MJPEG-stream folytatása, mert az első vezérlő kapcsolódott
         // TODO: itt lehetne megvizsgálni, hogy ha ő az első vezérlő a járműnél, kapjon kérés nélkül vezérlést
-        broadcastMessage(new ControllerData.ControllerChangePartialControllerData(new ControllerData.ControllerChange(new ControllerState(controller.getName(), getOwner() == controller))));
+        broadcastControllerChange(new ControllerData.ControllerChange(new ControllerState(controller.getName(), getOwner() == controller)));
     }
 
     /**
@@ -238,7 +237,14 @@ public class HostStorage extends Storage<HostData> {
         OWNERS.remove(controller); // TODO: ez most még oké, de így nem állítódik be új vezérlő és nem is kapnak a kliensek jelzést, ami gond lesz, ha lesz várólista
         CONTROLLERS.remove(controller);
         if (CONTROLLERS.isEmpty()) getSender().setStreaming(false); // MJPEG-stream szüneteltése, mivel nincs senki, aki látná
-        broadcastMessage(new ControllerData.ControllerChangePartialControllerData(new ControllerData.ControllerChange(controller.getName())));
+        broadcastControllerChange(new ControllerData.ControllerChange(controller.getName()));
+    }
+    
+    /**
+     * Elküldi a klienseknek a vezérlő állapotváltozását.
+     */
+    private void broadcastControllerChange(ControllerData.ControllerChange change) {
+        broadcastMessage(new ControllerData.ControllerChangePartialControllerData(change));
     }
     
     /**

@@ -107,26 +107,31 @@ public class ControllerStorage extends Storage<ControllerData> {
                 getMessageProcess().sendMessage(createControllerData());
             }
             if (hostName == null) {
+                if (getHostStorage() != null) setWantControl(false, false);
                 setHostStorage(null);
                 getMessageProcess().sendMessage(ls);
             }
         }
 
         @Override
-        public void setWantControl(Boolean wantControl) { // TODO: egyelőre teszt, bárki kérhet vezérlést és azonnal meg is kapja
+        public void setWantControl(Boolean wantControl) {
+            setWantControl(wantControl, true);
+        }
+
+        private void setWantControl(Boolean wantControl, boolean fire) { // TODO: egyelőre teszt, bárki kérhet vezérlést és azonnal meg is kapja
             ControllerStorage oldOwner = getHostStorage().getOwner();
-            if (oldOwner != null) {
+            if (oldOwner != null && fire) {
                 oldOwner.getSender().setControlling(false);
                 oldOwner.getSender().setWantControl(false);
                 broadcastControllerState(new ControllerState(oldOwner.getName(), false));
             }
             getHostStorage().setOwner(wantControl ? ControllerStorage.this : null);
-            getSender().setControlling(wantControl);
+            if (fire) getSender().setControlling(wantControl);
             if (wantControl) broadcastControllerState(new ControllerState(getName(), true));
             Control c = getHostStorage().getHostData().getControl();
             if (c != null && (c.getX() != 0 || c.getY() != 0)) setControl(new Control(0, 0));
         }
-
+        
         private void broadcastControllerState(ControllerState s) {
             broadcastMessage(new ControllerData.ControllerChangePartialControllerData(new ControllerChange(s)), null, false);
         }

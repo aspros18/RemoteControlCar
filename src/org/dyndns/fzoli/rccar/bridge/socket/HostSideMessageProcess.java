@@ -2,6 +2,7 @@ package org.dyndns.fzoli.rccar.bridge.socket;
 
 import java.io.Serializable;
 import java.util.List;
+import org.dyndns.fzoli.rccar.bridge.config.Permissions;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.bridge.ControllerStorage;
 import org.dyndns.fzoli.rccar.model.bridge.HostStorage;
@@ -41,8 +42,10 @@ public class HostSideMessageProcess extends BridgeMessageProcess {
         storage.setConnected(connected);
         HostList.PartialHostList msgLs = new HostList.PartialHostList(getRemoteCommonName(), connected ? HostList.PartialHostList.ChangeType.ADD : HostList.PartialHostList.ChangeType.REMOVE);
         for (ControllerStorage cs : controllers) {
-            if (cs.getHostStorage() == null || !storage.isConnected()) cs.getMessageProcess().sendMessage(msgLs);
-            if (cs.getHostStorage() == storage) cs.getMessageProcess().sendMessage(connected ? cs.createControllerData() : StorageList.createHostList(cs.getName()));
+            if (Permissions.getConfig().isEnabled(getRemoteCommonName(), cs.getName())) {
+                if ((cs.getHostStorage() == null || !storage.isConnected())) cs.getMessageProcess().sendMessage(msgLs);
+                if (cs.getHostStorage() == storage) cs.getMessageProcess().sendMessage(connected ? cs.createControllerData() : StorageList.createHostList(cs.getName()));
+            }
         }
     }
     

@@ -102,8 +102,8 @@ public final class Permissions {
                 for (HostStorage hs : hosts) { // az összes járművet megvizsgálja
                     if (!hs.isConnected()) continue; // ha offline a jármű, kihagyja
                     boolean enabled = getConfig().isEnabled(hs.getName(), cs.getName());
-                    if (enabled && !previous.isEnabled(hs.getName(), cs.getName())) { // ha korábban tiltva volt, de már engedélyezve van a jármű
-                        cs.getMessageProcess().sendMessage(new HostList.PartialHostList(hs.getName(), HostList.PartialHostList.ChangeType.ADD)); // üzenet küldése a vezérlőnek, hogy elérhető a jármű
+                    if (previous.isEnabled(hs.getName(), cs.getName()) != enabled) { // ha megváltozott a járműhöz való engedély
+                        cs.getMessageProcess().sendMessage(new HostList.PartialHostList(hs.getName(), enabled ? HostList.PartialHostList.ChangeType.ADD : HostList.PartialHostList.ChangeType.REMOVE)); // üzenet küldése a vezérlőnek, hogy a járműlista egyik eleme módosult
                     }
                 }
             }

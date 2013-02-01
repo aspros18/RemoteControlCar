@@ -187,16 +187,34 @@ public class ChatDialog extends AbstractDialog {
                             setBackground(COLOR_BG);
                         }
 
+                        private Font findFontAndBackground(String text) {
+                            int index = 0;
+                            DefaultListModel<ControllerState> model = (DefaultListModel) getModel();
+                            Enumeration<ControllerState> e = model.elements();
+                            while (e.hasMoreElements()) {
+                                ControllerState cs = e.nextElement();
+                                if (cs.getName().equals(text)) {
+                                    Component cmp = createComponent(index);
+                                    if (cmp.isOpaque()) setBackground(cmp.getBackground());
+                                    return cmp.getFont();
+                                }
+                                index++;
+                            }
+                            return null;
+                        }
+
                         @Override
                         public void paint(Graphics g, JComponent c) {
+                            String text = ((JToolTip) c).getTipText();
                             Insets insets = getInsets();
-                            Font font = getFont();
+                            Font font = findFontAndBackground(text);
+                            if (font == null) font = getFont();
                             g.setFont(font);
                             g.setColor(getForeground());
                             // TODO: kicserélni megbízható osztályra
-                            SwingUtilities2.drawString(getComponent(), g, ((JToolTip) c).getTipText(), insets.left, insets.top + SwingUtilities2.getFontMetrics(c, g, font).getAscent());
+                            SwingUtilities2.drawString(getComponent(), g, text, insets.left, insets.top + SwingUtilities2.getFontMetrics(c, g, font).getAscent());
                         }
-                        
+
                     });
                 }
 

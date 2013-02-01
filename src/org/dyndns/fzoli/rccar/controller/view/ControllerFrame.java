@@ -424,7 +424,7 @@ public class ControllerFrame extends JFrame {
      */
     public void refreshSpeed() {
         String text = " "; // üres szöveg helyett egy szóköz, mert az sem látszik, de az elrendezésmenedzsernek számít, hogy üres-e a szöveg
-        if (getData().isVehicleAvailable()) {
+        if (!getData().isUnderTimeout() && getData().isHostUnderTimeout() != null && !getData().isHostUnderTimeout()) {
             HostState hs = getData().getHostState();
             if (hs != null && hs.SPEED != null && getData().isUp2Date() != null && getData().isUp2Date()) text = "Sebesség: " + Integer.toString(hs.SPEED) + " km/h";
         }

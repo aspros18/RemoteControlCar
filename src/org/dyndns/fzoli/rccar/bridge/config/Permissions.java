@@ -7,7 +7,9 @@ import java.util.TimerTask;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import org.dyndns.fzoli.rccar.bridge.Main;
 import org.dyndns.fzoli.rccar.model.bridge.ControllerStorage;
+import org.dyndns.fzoli.rccar.model.bridge.HostStorage;
 import org.dyndns.fzoli.rccar.model.bridge.StorageList;
+import org.dyndns.fzoli.rccar.model.controller.HostList;
 import org.dyndns.fzoli.socket.ServerProcesses;
 import org.dyndns.fzoli.socket.process.SecureProcess;
 
@@ -64,6 +66,7 @@ public final class Permissions {
     
     /**
      * Ha a konfiguráció módosul, ez a metódus fut le.
+     * TODO: ha a fehér listában módosul a sorrend, jelenlegi járművezérlő megtartása, de a többiek sorbarendezése
      * @param previous az előző konfiguráció
      */
     private static void onRefresh(PermissionConfig previous) {
@@ -79,17 +82,31 @@ public final class Permissions {
             if (!Permissions.getConfig().isControllerWhite(name)) proc.getHandler().closeProcesses(); // ha már nem szerepel a fehér listában a vezérlő neve, akkor kapcsolatok bezárása a klienssel
         }
         
-        // végigmegy a vezérlőkön és frissíti azokat, melyeket érint a konfiguráció módosulás
+        // végigmegy a vezérlőkön és frissíti azokat, melyeket érint a konfiguráció módosulás:
         List<ControllerStorage> ls = StorageList.getControllerStorageList();
         for (ControllerStorage cs : ls) {
-            if (cs.getHostStorage() != null) { // ha a vezérlőhöz tartozik jármű
+            if (cs.getMessageProcess().getSocket().isClosed()) continue; // kihagyja azokat, mely vezérlők kapcsolata bontva van
+            if (cs.getHostStorage() != null && cs.getHostStorage().isConnected()) { // ha a vezérlőhöz tartozik jármű és az kapcsolódva van
                 boolean viewOnly = getConfig().isViewOnly(cs.getHostStorage().getName(), cs.getName());
                 if (previous.isViewOnly(cs.getHostStorage().getName(), cs.getName()) != viewOnly) { // ha változott a viewOnly paraméter
                     cs.getSender().setViewOnly(viewOnly); // közli a vezérlővel, hogy nem kérhet-e vezérlést ...
                     if (viewOnly && cs.getHostStorage().getOwner() == cs) cs.getReceiver().setWantControl(false); // ... és ha nem kérhet, de éppen vezérelte, elveszi tőle a vezérlést
                 }
+                boolean enabled = getConfig().isEnabled(cs.getHostStorage().getName(), cs.getName());
+                if (!enabled && previous.isEnabled(cs.getHostStorage().getName(), cs.getName())) {
+                    cs.getReceiver().setHostName(null);
+                }
             }
-            // TODO
+            else { // ha a járműválasztóban van
+                List<HostStorage> hosts = StorageList.getHostStorageList();
+                for (HostStorage hs : hosts) { // az összes járművet megvizsgálja
+                    if (!hs.isConnected()) continue; // ha offline a jármű, kihagyja
+                    boolean enabled = getConfig().isEnabled(hs.getName(), cs.getName());
+                    if (enabled && !previous.isEnabled(hs.getName(), cs.getName())) { // ha korábban tiltva volt, de már engedélyezve van a jármű
+                        cs.getMessageProcess().sendMessage(new HostList.PartialHostList(hs.getName(), HostList.PartialHostList.ChangeType.ADD)); // üzenet küldése a vezérlőnek, hogy elérhető a jármű
+                    }
+                }
+            }
         }
     }
     

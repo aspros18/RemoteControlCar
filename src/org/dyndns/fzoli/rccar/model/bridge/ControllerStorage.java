@@ -123,6 +123,8 @@ public class ControllerStorage extends Storage<ControllerData> {
             getHostStorage().setOwner(wantControl ? ControllerStorage.this : null);
             getSender().setControlling(wantControl);
             if (wantControl) broadcastControllerState(new ControllerState(getName(), true));
+            Control c = getHostStorage().getHostData().getControl();
+            if (c != null && (c.getX() != 0 || c.getY() != 0)) setControl(new Control(0, 0));
         }
 
         private void broadcastControllerState(ControllerState s) {

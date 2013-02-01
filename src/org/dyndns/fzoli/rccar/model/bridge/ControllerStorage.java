@@ -107,7 +107,7 @@ public class ControllerStorage extends Storage<ControllerData> {
                 getMessageProcess().sendMessage(createControllerData());
             }
             if (hostName == null) {
-                if (getHostStorage() != null) setWantControl(false, false);
+                if (getHostStorage() != null && ControllerStorage.this == getHostStorage().getOwner()) setWantControl(false, false);
                 setHostStorage(null);
                 getMessageProcess().sendMessage(ls);
             }
@@ -234,7 +234,7 @@ public class ControllerStorage extends Storage<ControllerData> {
         List<ControllerState> l = new ArrayList<ControllerState>();
         if (s == null) return l;
         for (ControllerStorage cs : s.getControllers()) {
-            l.add(new ControllerState(cs.getName(), s.getOwner() == this));
+            l.add(new ControllerState(cs.getName(), cs == s.getOwner()));
         }
         return l;
     }

@@ -187,7 +187,7 @@ public class ChatDialog extends AbstractDialog {
                             setBackground(COLOR_BG);
                         }
 
-                        private Font findFontAndBackground(String text) {
+                        private Font findFontAndSetColors(String text) {
                             int index = 0;
                             DefaultListModel<ControllerState> model = (DefaultListModel) getModel();
                             Enumeration<ControllerState> e = model.elements();
@@ -196,6 +196,7 @@ public class ChatDialog extends AbstractDialog {
                                 if (cs.getName().equals(text)) {
                                     Component cmp = createComponent(index);
                                     if (cmp.isOpaque()) setBackground(cmp.getBackground());
+                                    setForeground(cmp.getForeground());
                                     return cmp.getFont();
                                 }
                                 index++;
@@ -207,7 +208,7 @@ public class ChatDialog extends AbstractDialog {
                         public void paint(Graphics g, JComponent c) {
                             String text = ((JToolTip) c).getTipText();
                             Insets insets = getInsets();
-                            Font font = findFontAndBackground(text);
+                            Font font = findFontAndSetColors(text);
                             if (font == null) font = getFont();
                             g.setFont(font);
                             g.setColor(getForeground());

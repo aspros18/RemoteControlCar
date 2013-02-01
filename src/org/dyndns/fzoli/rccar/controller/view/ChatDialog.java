@@ -181,7 +181,7 @@ public class ChatDialog extends AbstractDialog {
                 {
                     setComponent(LIST_CONTROLLERS);
                     setUI(new MetalToolTipUI() {
-                        
+
                         {
                             setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
                             setBackground(COLOR_BG);
@@ -196,7 +196,7 @@ public class ChatDialog extends AbstractDialog {
                                 if (cs.getName().equals(text)) {
                                     Component cmp = createComponent(index);
                                     if (cmp.isOpaque()) setBackground(cmp.getBackground());
-                                    setForeground(cmp.getForeground());
+                                    foreground = cmp.getForeground();
                                     return cmp.getFont();
                                 }
                                 index++;
@@ -219,9 +219,11 @@ public class ChatDialog extends AbstractDialog {
                     });
                 }
 
+                private Color foreground;
+
                 @Override
                 public Color getForeground() {
-                    return UIManager.getDefaults().getColor("Label.foreground");
+                    return foreground == null ? UIManager.getDefaults().getColor("Label.foreground") : foreground;
                 }
 
                 @Override

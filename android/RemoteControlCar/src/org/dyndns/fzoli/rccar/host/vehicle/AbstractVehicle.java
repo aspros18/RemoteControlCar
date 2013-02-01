@@ -105,7 +105,7 @@ public abstract class AbstractVehicle extends BaseIOIOLooper implements Vehicle 
 	 */
 	private void refreshBattery(Integer level) {
 		if (callback != null && getX() == 0 && getY() == 0) { // ha van eseménykezelő és megbízható az adat (egyik motor sem jár)
-			if (oldBatteryLevel == null || !oldBatteryLevel.equals(level)) { // ha változott az akkuszint
+			if ((oldBatteryLevel == null || !oldBatteryLevel.equals(level)) && (level == null || level > 0)) { // ha változott az akkuszint és az akkuszint nem nulla
 				oldBatteryLevel = level; // akkuszint frissítése
 				SERVICE.getBinder().getHostData().setBatteryLevel(level); // host data frissítése
 				callback.onBatteryLevelChanged(level); // callback hívása

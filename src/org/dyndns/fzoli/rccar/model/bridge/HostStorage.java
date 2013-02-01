@@ -225,6 +225,7 @@ public class HostStorage extends Storage<HostData> {
      */
     void addController(ControllerStorage controller) {
         CONTROLLERS.add(controller);
+        if (CONTROLLERS.size() == 1) getSender().setStreaming(true); // MJPEG-stream folytatása, mert az első vezérlő kapcsolódott
         // TODO: itt lehetne megvizsgálni, hogy ha ő az első vezérlő a járműnél, kapjon kérés nélkül vezérlést
         broadcastMessage(new ControllerData.ControllerChangePartialControllerData(new ControllerData.ControllerChange(new ControllerState(controller.getName(), getOwner() == controller))));
     }
@@ -236,6 +237,7 @@ public class HostStorage extends Storage<HostData> {
     void removeController(ControllerStorage controller) {
         OWNERS.remove(controller); // TODO: ez most még oké, de így nem állítódik be új vezérlő és nem is kapnak a kliensek jelzést, ami gond lesz, ha lesz várólista
         CONTROLLERS.remove(controller);
+        if (CONTROLLERS.isEmpty()) getSender().setStreaming(false); // MJPEG-stream szüneteltése, mivel nincs senki, aki látná
         broadcastMessage(new ControllerData.ControllerChangePartialControllerData(new ControllerData.ControllerChange(controller.getName())));
     }
     

@@ -26,12 +26,6 @@ public class HostSideMessageProcess extends BridgeMessageProcess {
     }
 
     @Override
-    protected void onStart() {
-        // MJPEG streamelés aktiválása teszt céljából:
-        sendMessage(new HostData.BooleanPartialHostData(Boolean.TRUE, HostData.BooleanPartialHostData.BooleanType.STREAMING));
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
         sendConnectionMessage(false);

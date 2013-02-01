@@ -221,18 +221,20 @@ public class HostStorage extends Storage<HostData> {
 
     /**
      * Vezérlő hozzáadása.
-     * A {@code ControllerStorage.setHostStorage} metódus használja.
+     * Ezt a metódust a {@code ControllerStorage.setHostStorage} metódus hívja meg.
      */
     void addController(ControllerStorage controller) {
         CONTROLLERS.add(controller);
+        // TODO: itt lehetne megvizsgálni, hogy ha ő az első vezérlő a járműnél, kapjon kérés nélkül vezérlést
         broadcastMessage(new ControllerData.ControllerChangePartialControllerData(new ControllerData.ControllerChange(new ControllerState(controller.getName(), getOwner() == controller))));
     }
 
     /**
      * Vezérlő eltávolítása.
-     * A {@code ControllerStorage.setHostStorage} metódus használja.
+     * Ezt a metódust a {@code ControllerStorage.setHostStorage} metódus hívja meg.
      */
     void removeController(ControllerStorage controller) {
+        OWNERS.remove(controller); // TODO: ez most még oké, de így nem állítódik be új vezérlő és nem is kapnak a kliensek jelzést, ami gond lesz, ha lesz várólista
         CONTROLLERS.remove(controller);
         broadcastMessage(new ControllerData.ControllerChangePartialControllerData(new ControllerData.ControllerChange(controller.getName())));
     }

@@ -246,15 +246,6 @@ public class HostStorage extends Storage<HostData> {
     private void broadcastControllerChange(ControllerData.ControllerChange change) {
         broadcastMessage(new ControllerData.ControllerChangePartialControllerData(change));
     }
-    
-    /**
-     * A jármű vezérlésének átadása a paraméterben megadott kliensnek.
-     * A vezérlő-lista első helyére kerül a megadott kliens.
-     */
-    public void setOwner(ControllerStorage owner) {
-        if (owner == null) OWNERS.clear();
-        else OWNERS.add(0, owner);
-    }
 
     /**
      * A járműhöz tartozó chatüzenetek listája.

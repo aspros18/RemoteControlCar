@@ -118,18 +118,86 @@ public class ControllerStorage extends Storage<ControllerData> {
             setWantControl(wantControl, true);
         }
 
-        private void setWantControl(Boolean wantControl, boolean fire) { // TODO: egyelőre teszt, bárki kérhet vezérlést és azonnal meg is kapja
-            ControllerStorage oldOwner = getHostStorage().getOwner();
-            if (oldOwner != null && fire) {
-                oldOwner.getSender().setControlling(false);
-                oldOwner.getSender().setWantControl(false);
-                broadcastControllerState(new ControllerState(oldOwner.getName(), false));
+        private void setWantControl(Boolean wantControl, boolean fire) { // TODO: kibővíteni a controller státuszt, hogy legyen benne a wantControl paraméter is: a chaten így jelezhető lenne, hogy valaki kéri a vezérlést, de nincs joga rá + vezérlés kérés visszavonási lehetőség is jól jönne (ez is jelződne a chaten a wantControl false miatt)
+            if (getHostStorage() == null) return; // ha nincs jármű kiválasztva, nincs min kérni a vezérlést, vagy lemondani a vezérlésről (extra védelem)
+            ControllerStorage oldOwner = getHostStorage().getOwner(); // a jelenlegi irányító, aki le lesz váltva, tehát ő a régi irányító
+            if (wantControl && oldOwner != null && oldOwner == ControllerStorage.this) return; // ha a kérő vezérlést kért, de már vezérli, nincs teendő
+            
+            ControllerStorage newOwner = wantControl ? ControllerStorage.this : null; // a kérő az új irányító, ha az irányítást kérte, egyébként ...
+            if (newOwner == null && getHostStorage().getOwners().size() > 1) { // ... ha van soron következő, akkor ...
+                newOwner = getHostStorage().getOwners().get(1); // ... a soron következő lesz az új irányító
             }
-            getHostStorage().setOwner(wantControl ? ControllerStorage.this : null);
-            if (fire) getSender().setControlling(wantControl);
-            if (wantControl) broadcastControllerState(new ControllerState(getName(), true));
-            Control c = getHostStorage().getHostData().getControl();
-            if (c != null && (c.getX() != 0 || c.getY() != 0)) setControl(new Control(0, 0));
+            
+            if (wantControl && oldOwner != null && newOwner != null) { // ha szükség van jogosultság-ellenőrzésre
+                List<String> orders = Permissions.getConfig().getOrderList(getHostStorage().getName()); // ranglista lekérése a konfigból
+                int oldIndex = -1, newIndex = -1; // kezdetben az új és a régi vezérlő is rangtalan
+                for (int i = 0; i < orders.size(); i++) { // ranglistán végigmenve rangok beállítása
+                    String name = orders.get(i);
+                    if (name.equals(oldOwner.getName())) oldIndex = i; // a régi vezérlő rangja megtalálva
+                    if (name.equals(newOwner.getName())) newIndex = i; // az új vezérlő rangja megtalálva
+                    if (oldIndex != -1 && newIndex != -1) break; // mindkét rang megtalálva, tehát kilépés a ciklusból
+                }
+                if (
+                        (oldIndex == -1 && newIndex == -1) // ha a régi és az új vezérlő is rangtalan (tehát egyenrangúak)
+                        || // VAGY
+                        (oldIndex != -1 && (newIndex == -1 || newIndex > oldIndex)) // ha a régi vezérlő nem rangtalan és az új vezérlő rangtalan vagy kisebb a rangja a réginél (tehát a régi vezérlő magasabb priorítású)
+                   )
+                { // ha nincs a kérőnek jogosultsága irányítást kérni, várólistára kerül és ehhez meg kell keresni a megfelelő pozíciót, hogy ...
+                    List<ControllerStorage> owners = getHostStorage().getOwners(); // ... a lista állandóan rendezetten legyen tartva
+                    int pos; // a kérő listában való helye
+                    if (newIndex == -1) { // ha rangtalan, akkor ...
+                        pos = owners.size(); // ... biztosan a lista végébe kerül, ...
+                    }
+                    else { // ... de ha van rangja, meg kell keresni a megfelelő pozíciót
+                        pos = 0; // kezdetben az első hely van megadva
+                        for (ControllerStorage cs : owners) { // a listában lévőkön végigmegy
+                            int index = -1; // az aktuális vezérlő rangja, kezdetben rangtalan
+                            for (int i = 0; i < orders.size(); i++) {
+                                if (orders.get(i).equals(cs.getName())) {
+                                    index = i; // rang megtalálva
+                                    break;
+                                }
+                            }
+                            if (index == -1) { // ha az aktuális vezérlő rangtalan, ...
+                                break; // ... meg van a megfelelő pozíció, kilépés (jelenleg a kérő a legkisebb ranggal rendelkező (vagy az egyetlen ranggal rendelkező) a listában, de mivel van rangja, így a rangtalanok elé kerül)
+                            }
+                            if (index < newIndex) { // ha az aktuális vezérlő rangja nagyobb, mint az új irányítóé, ...
+                                pos++; // ... akkor még tovább kell menni a lista vége felé ...
+                            }
+                            else { // ... de ha az aktuális vezérlő rangja kisebb, ...
+                                break; // ... meg van a megfelelő pozíció, kilépés (a kérőnél vannak nagyobb rangúak a listában, de kisebb rangúak is)
+                            }
+                        }
+                    }
+                    owners.add(pos, newOwner); // miután meg van a megfelelő pozíció, várólistára kerül a kérő, ...
+                    return; // ... és nem fut tovább a metódus, ezzel a jogtalan vezérlést elkerülve
+                }
+            }
+            
+            Control c = getHostStorage().getHostData().getControl(); // a jármű vezérlőjelének lekérése, és ...
+            if (c != null && (c.getX() != 0 || c.getY() != 0)) setControl(new Control(0, 0)); // ... ha nem alapállapotban áll, alapállapotba helyezés
+            
+            if (oldOwner != null) { // ha van régi irányító:
+                getHostStorage().getOwners().remove(oldOwner); // eltávolítás az irányítók listájából
+            }
+            
+            if (newOwner != null) { // ha van új irányító:
+                getHostStorage().getOwners().remove(newOwner); // ha már szerepel a listában, eltávolítás, hogy aztán ...
+                getHostStorage().getOwners().add(0, newOwner); // ... a lista első helyére kerüljön, ezáltal irányítóvá válva
+            }
+            
+            if (fire) { // ha van értelme üzenetet küldeni a változásról
+                if (oldOwner != null) { // jelzés leadása, hogy a régi irányító már nem irányíthat és mivel lekerült a listáról, ha újra vezérelni akar, kérnie kell
+                    oldOwner.getSender().setControlling(false); // mivel kikerül a vezérlők listájából, false küldése
+                    oldOwner.getSender().setWantControl(false); // hogy újra kérhessen vezérlést, false küldése
+                    broadcastControllerState(new ControllerState(oldOwner.getName(), false)); // jelzés mindenkinek, hogy a régi irányító már nem irányíthat
+                }
+                if (newOwner != null) { // jelzés leadása, hogy ki az új irányító, valamint jelzés az új irányítónak, hogy most ő vezérel
+                    newOwner.getSender().setControlling(true); // true, mivel ő az irányító
+                    newOwner.getSender().setWantControl(true); // true, hogy lemondhasson a vezérlésről
+                    broadcastControllerState(new ControllerState(newOwner.getName(), true)); // jelzés mindenkinek, hogy ki az új vezérlő
+                }
+            }
         }
         
         private void broadcastControllerState(ControllerState s) {

@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.bridge.config;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
@@ -9,6 +10,8 @@ import org.dyndns.fzoli.rccar.bridge.Main;
 import org.dyndns.fzoli.rccar.model.bridge.ControllerStorage;
 import org.dyndns.fzoli.rccar.model.bridge.HostStorage;
 import org.dyndns.fzoli.rccar.model.bridge.StorageList;
+import org.dyndns.fzoli.rccar.model.controller.ControllerData;
+import org.dyndns.fzoli.rccar.model.controller.ControllerState;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
 import org.dyndns.fzoli.socket.ServerProcesses;
 import org.dyndns.fzoli.socket.process.SecureProcess;
@@ -66,7 +69,6 @@ public final class Permissions {
     
     /**
      * Ha a konfiguráció módosul, ez a metódus fut le.
-     * TODO: ha a fehér listában módosul a sorrend, jelenlegi járművezérlő megtartása, de a többiek sorbarendezése
      * @param previous az előző konfiguráció
      */
     private static void onRefresh(PermissionConfig previous) {
@@ -83,8 +85,8 @@ public final class Permissions {
         }
         
         // végigmegy a vezérlőkön és frissíti azokat, melyeket érint a konfiguráció módosulás:
-        List<ControllerStorage> ls = StorageList.getControllerStorageList();
-        for (ControllerStorage cs : ls) {
+        List<ControllerStorage> cls = StorageList.getControllerStorageList();
+        for (ControllerStorage cs : cls) {
             if (cs.getMessageProcess().getSocket().isClosed()) continue; // kihagyja azokat, mely vezérlők kapcsolata bontva van
             if (cs.getHostStorage() != null && cs.getHostStorage().isConnected()) { // ha a vezérlőhöz tartozik jármű és az kapcsolódva van
                 boolean viewOnly = getConfig().isViewOnly(cs.getHostStorage().getName(), cs.getName());
@@ -108,6 +110,81 @@ public final class Permissions {
                 }
             }
         }
+        
+        // ha a fehér listában módosul a sorrend, az irányítók sorbarendezése, és új irányító esetén jelzés a vezérlőknek
+        List<HostStorage> hls = StorageList.getHostStorageList();
+        for (HostStorage hs : hls) {
+            
+            List<ControllerStorage> owners = hs.getOwners();
+            if (owners.isEmpty()) continue;
+            
+            ControllerStorage oldController = hs.getOwner();
+            List<ControllerStorage> newOwners = new ArrayList<ControllerStorage>();
+            for (ControllerStorage cs : owners) {
+                int order = getOrder(hs, cs);
+                if (order == -1) {
+                    newOwners.add(cs);
+                    continue;
+                }
+                int pos = 0;
+                for (ControllerStorage ncs : newOwners) {
+                    int index = getOrder(hs, ncs);
+                    if (index == -1) break;
+                    if (index < order) pos++;
+                    else break;
+                }
+                newOwners.add(pos, cs);
+            }
+            
+            owners.clear();
+            owners.addAll(newOwners);
+            
+            ControllerStorage newController = newOwners.get(0);
+            if (oldController != newController) {
+                
+                owners.remove(oldController);
+                
+                oldController.getSender().setControlling(false);
+                oldController.getSender().setWantControl(false);
+                newController.getSender().setControlling(true);
+                newController.getSender().setWantControl(true);
+                ControllerState stOld = new ControllerState(oldController.getName(), false);
+                ControllerState stNew = new ControllerState(newController.getName(), true);
+                ControllerData.ControllerChangePartialControllerData msgOld = new ControllerData.ControllerChangePartialControllerData(new ControllerData.ControllerChange(stOld));
+                ControllerData.ControllerChangePartialControllerData msgNew = new ControllerData.ControllerChangePartialControllerData(new ControllerData.ControllerChange(stNew));
+                List<? extends ControllerStorage> cses = hs.getControllers();
+                for (ControllerStorage cs : cses) {
+                    cs.getMessageProcess().sendMessage(msgOld);
+                    cs.getMessageProcess().sendMessage(msgNew);
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    public static Integer getOrder(HostStorage hs, ControllerStorage cs) {
+        int[] res = getOrders(hs, cs);
+        if (res == null) return null;
+        return res[0];
+    }
+    
+    public static int[] getOrders(HostStorage hs, ControllerStorage ... cses) {
+        if (hs == null || cses == null) return null;
+        int[] orders = new int[cses.length];
+        List<String> ls = Permissions.getConfig().getOrderList(hs.getName());
+        for (int i = 0; i < cses.length; i++) {
+            int order = -1;
+            for (int j = 0; j < ls.size(); j++) {
+                if (ls.get(j).equals(cses[i].getName())) {
+                    order = j;
+                    break;
+                }
+            }
+            orders[i] = order;
+        }
+        return orders;
     }
     
 }

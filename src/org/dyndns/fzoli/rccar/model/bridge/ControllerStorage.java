@@ -129,14 +129,8 @@ public class ControllerStorage extends Storage<ControllerData> {
             }
             
             if (wantControl && oldOwner != null && newOwner != null) { // ha szükség van jogosultság-ellenőrzésre
-                List<String> orders = Permissions.getConfig().getOrderList(getHostStorage().getName()); // ranglista lekérése a konfigból
-                int oldIndex = -1, newIndex = -1; // kezdetben az új és a régi vezérlő is rangtalan
-                for (int i = 0; i < orders.size(); i++) { // ranglistán végigmenve rangok beállítása
-                    String name = orders.get(i);
-                    if (name.equals(oldOwner.getName())) oldIndex = i; // a régi vezérlő rangja megtalálva
-                    if (name.equals(newOwner.getName())) newIndex = i; // az új vezérlő rangja megtalálva
-                    if (oldIndex != -1 && newIndex != -1) break; // mindkét rang megtalálva, tehát kilépés a ciklusból
-                }
+                int[] indexes = Permissions.getOrders(getHostStorage(), oldOwner, newOwner);
+                int oldIndex = indexes[0], newIndex = indexes[1]; // az új és a régi vezérlő rangja (-1 esetén rangtalan)
                 if (
                         (oldIndex == -1 && newIndex == -1) // ha a régi és az új vezérlő is rangtalan (tehát egyenrangúak)
                         || // VAGY
@@ -151,13 +145,7 @@ public class ControllerStorage extends Storage<ControllerData> {
                     else { // ... de ha van rangja, meg kell keresni a megfelelő pozíciót
                         pos = 0; // kezdetben az első hely van megadva
                         for (ControllerStorage cs : owners) { // a listában lévőkön végigmegy
-                            int index = -1; // az aktuális vezérlő rangja, kezdetben rangtalan
-                            for (int i = 0; i < orders.size(); i++) {
-                                if (orders.get(i).equals(cs.getName())) {
-                                    index = i; // rang megtalálva
-                                    break;
-                                }
-                            }
+                            int index = Permissions.getOrder(getHostStorage(), cs); // az aktuális vezérlő rangja
                             if (index == -1) { // ha az aktuális vezérlő rangtalan, ...
                                 break; // ... meg van a megfelelő pozíció, kilépés (jelenleg a kérő a legkisebb ranggal rendelkező (vagy az egyetlen ranggal rendelkező) a listában, de mivel van rangja, így a rangtalanok elé kerül)
                             }

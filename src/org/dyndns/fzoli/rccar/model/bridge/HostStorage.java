@@ -234,7 +234,8 @@ public class HostStorage extends Storage<HostData> {
      * Ezt a metódust a {@code ControllerStorage.setHostStorage} metódus hívja meg.
      */
     void removeController(ControllerStorage controller) {
-        OWNERS.remove(controller); // TODO: ez most még oké, de így nem állítódik be új vezérlő és nem is kapnak a kliensek jelzést, ami gond lesz, ha lesz várólista
+        if (getOwner() != null && getOwner() == controller) controller.getReceiver().setHostName(null);
+        else OWNERS.remove(controller);
         CONTROLLERS.remove(controller);
         if (CONTROLLERS.isEmpty()) getSender().setStreaming(false); // MJPEG-stream szüneteltése, mivel nincs senki, aki látná
         broadcastControllerChange(new ControllerData.ControllerChange(controller.getName()));

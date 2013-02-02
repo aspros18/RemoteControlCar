@@ -107,7 +107,10 @@ public class ControllerStorage extends Storage<ControllerData> {
                 getMessageProcess().sendMessage(createControllerData());
             }
             if (hostName == null) {
-                if (getHostStorage() != null && ControllerStorage.this == getHostStorage().getOwner()) setWantControl(false, false);
+                if (getHostStorage() != null) {
+                    if (ControllerStorage.this == getHostStorage().getOwner()) setWantControl(false, false);
+                    else getHostStorage().getOwners().remove(ControllerStorage.this);
+                }
                 setHostStorage(null);
                 getMessageProcess().sendMessage(ls);
             }
@@ -174,22 +177,22 @@ public class ControllerStorage extends Storage<ControllerData> {
                 getHostStorage().getOwners().add(0, newOwner); // ... a lista első helyére kerüljön, ezáltal irányítóvá válva
             }
             
-            if (fire) { // ha van értelme üzenetet küldeni a változásról
-                if (oldOwner != null) { // jelzés leadása, hogy a régi irányító már nem irányíthat és mivel lekerült a listáról, ha újra vezérelni akar, kérnie kell
+            if (oldOwner != null) { // jelzés leadása, hogy a régi irányító már nem irányíthat és mivel lekerült a listáról, ha újra vezérelni akar, kérnie kell
+                if (fire) { // ha van értelme üzenetet küldeni a változásról
                     oldOwner.getSender().setControlling(false); // mivel kikerül a vezérlők listájából, false küldése
                     oldOwner.getSender().setWantControl(false); // hogy újra kérhessen vezérlést, false küldése
-                    broadcastControllerState(new ControllerState(oldOwner.getName(), false)); // jelzés mindenkinek, hogy a régi irányító már nem irányíthat
                 }
-                if (newOwner != null) { // jelzés leadása, hogy ki az új irányító, valamint jelzés az új irányítónak, hogy most ő vezérel
-                    newOwner.getSender().setControlling(true); // true, mivel ő az irányító
-                    newOwner.getSender().setWantControl(true); // true, hogy lemondhasson a vezérlésről
-                    broadcastControllerState(new ControllerState(newOwner.getName(), true)); // jelzés mindenkinek, hogy ki az új vezérlő
-                }
+                broadcastControllerState(new ControllerState(oldOwner.getName(), false), !fire); // jelzés mindenkinek, hogy a régi irányító már nem irányíthat
+            }
+            if (newOwner != null) { // jelzés leadása, hogy ki az új irányító, valamint jelzés az új irányítónak, hogy most ő vezérel
+                newOwner.getSender().setControlling(true); // true, mivel ő az irányító
+                newOwner.getSender().setWantControl(true); // true, hogy lemondhasson a vezérlésről
+                broadcastControllerState(new ControllerState(newOwner.getName(), true), !fire); // jelzés mindenkinek, hogy ki az új vezérlő
             }
         }
         
-        private void broadcastControllerState(ControllerState s) {
-            broadcastMessage(new ControllerData.ControllerChangePartialControllerData(new ControllerChange(s)), null, false);
+        private void broadcastControllerState(ControllerState s, boolean skipMe) {
+            broadcastMessage(new ControllerData.ControllerChangePartialControllerData(new ControllerChange(s)), null, skipMe);
         }
         
         private void broadcastMessage(PartialBaseData<ControllerData, ?> msgc, PartialBaseData<HostData, ?> msgh, boolean skipMe) {

@@ -38,6 +38,8 @@ import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_MAP;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.model.controller.HostState;
+import org.dyndns.fzoli.rccar.ui.UIUtil;
+import org.dyndns.fzoli.ui.LookAndFeelIcon;
 import org.dyndns.fzoli.ui.RoundedPanel;
 import org.imgscalr.Scalr;
 
@@ -128,6 +130,16 @@ public class ControllerFrame extends JFrame {
     };
     
     /**
+     * Az indikátort megjelenító címke az üzenetpanelen.
+     */
+    private final JLabel LB_INDICATOR = new JLabel(R.getIndicatorIcon());
+    
+    /**
+     * A figyelmeztető-ikont megjelenító címke az üzenetpanelen.
+     */
+    private final JLabel LB_WARNING = new JLabel(LookAndFeelIcon.createIcon(this, "OptionPane.warningIcon", null));
+    
+    /**
      * Az üzenetet megjelenítő komponens panelje.
      * Az üzenet az indikátor alá kerül és a panelnek kerekített sarkai vannak.
      * A panel kezdetben nem látható.
@@ -139,7 +151,9 @@ public class ControllerFrame extends JFrame {
             setLayout(new GridBagLayout());
             c.gridy = 0;
             c.insets = new Insets(10, 15, 10, 15);
-            add(new JLabel(R.getIndicatorIcon()), c);
+            add(LB_INDICATOR, c);
+            add(LB_WARNING, c);
+            LB_WARNING.setVisible(false);
             
             c.gridy = 1;
             c.insets = new Insets(0, 15, 10, 15);
@@ -458,11 +472,11 @@ public class ControllerFrame extends JFrame {
         Boolean htime = getData().isHostUnderTimeout();
         Boolean vconn = getData().isVehicleConnected();
         Boolean tconn = getData().isConnected();
-        if (getData().isUnderTimeout()) setProgressMessage("Várakozás a Híd kapcsolatára.");
-        else if (tconn != null && !tconn) setProgressMessage("Várakozás a jármű kapcsolatára."); // TODO: csere warning ikonra és más üzenetre
-             else if (htime != null && htime) setProgressMessage("Várakozás a jármű kapcsolatára.");
-                  else if (vconn != null && !vconn) setProgressMessage("Várakozás az összeköttetésre."); 
-                       else setProgressMessage(null);
+        if (getData().isUnderTimeout()) setProgressMessage("Várakozás a Híd kapcsolatára.", true);
+        else if (tconn != null && !tconn) setProgressMessage("A jármű offline!", false);
+             else if (htime != null && htime) setProgressMessage("Várakozás a jármű kapcsolatára.", true);
+                  else if (vconn != null && !vconn) setProgressMessage("Várakozás az összeköttetésre.", true); 
+                       else setProgressMessage(null, true);
     }
     
     /**
@@ -477,8 +491,11 @@ public class ControllerFrame extends JFrame {
     /**
      * Beállítja az üzenetet és megjeleníti azt.
      * @param msg az üzenet. Ha null, akkor az üzenet panel eltűnik.
+     * @param indicator true esetén indikátor, false esetén figyelmeztető ikon jelenik meg
      */
-    private void setProgressMessage(String msg) {
+    private void setProgressMessage(String msg, boolean indicator) {
+        LB_INDICATOR.setVisible(indicator);
+        LB_WARNING.setVisible(!indicator);
         if (msg != null) {
             LB_MSG.setText(msg);
             PANEL_MSG.setVisible(true);

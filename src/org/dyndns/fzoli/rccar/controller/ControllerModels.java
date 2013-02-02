@@ -302,10 +302,11 @@ public class ControllerModels {
         
         /**
          * Megmondja, hogy a jármű eérhető-e.
-         * Akkor érhető el a jármű, ha a kapcsolatokban nincs időtúllépés és a telefonhoz hozzá van kötve az IOIO.
+         * Akkor érhető el a jármű, ha van kapcsolat, a kapcsolatokban nincs időtúllépés és a telefonhoz hozzá van kötve az IOIO.
+         * @param conn ha false, akkor nem vizsgálja az IOIO-val a kapcsolatot
          */
-        public boolean isVehicleAvailable() {
-            return !isUnderTimeout() && isHostUnderTimeout() != null && !isHostUnderTimeout() && isVehicleConnected() != null && isVehicleConnected();
+        public boolean isVehicleAvailable(boolean conn) {
+            return !isUnderTimeout() && isHostUnderTimeout() != null && !isHostUnderTimeout() && (conn ? (isVehicleConnected() != null && isVehicleConnected()) : true) && isConnected() != null && isConnected();
         }
 
         /**
@@ -348,15 +349,11 @@ public class ControllerModels {
         
         /**
          * Beállítja, hogy a Híddal kiépített kapcsolatban időtúllépés van-e.
-         * Az adat módosulása után frissül a főablak egy része.
+         * Az adat módosulása után frissül a főablak, a vezérlő dialógus és a térkép dialógus egy része.
          */
         public void setUnderTimeout(boolean underTimeout) {
             this.underTimeout = underTimeout;
-            if (frameMain != null) {
-                frameMain.refreshSpeed();
-                frameMain.refreshBattery();
-                frameMain.refreshMessage();
-            }
+            refreshConnectionStatus();
         }
         
         /**
@@ -415,17 +412,7 @@ public class ControllerModels {
         @Override
         public void setHostUnderTimeout(Boolean hostConnected) {
             super.setHostUnderTimeout(hostConnected);
-            if (frameMain != null) {
-                frameMain.refreshBattery();
-                frameMain.refreshMessage();
-                frameMain.refreshSpeed();
-            }
-            if (dialogArrow != null) {
-                dialogArrow.refreshControlling();
-            }
-            if (dialogMap != null) {
-                dialogMap.refreshFade();
-            }
+            refreshConnectionStatus();
         }
 
         /**
@@ -440,12 +427,30 @@ public class ControllerModels {
         }
 
         /**
+         * Beállítja azt, hogy a jármű kapcsolódva van-e a Hídhoz.
+         * Az adat módosulása után frissül a főablak, a vezérlő dialógus és a térkép dialógus egy része.
+         */
+        @Override
+        public void setConnected(Boolean connected) {
+            super.setConnected(connected);
+            refreshConnectionStatus();
+        }
+
+        /**
          * Beállítja azt, hogy a jármű kapcsolódva van-e a telefonhoz.
-         * Az adat módosulása után frissül a főablak és a vezérlő dialógus egy része.
+         * Az adat módosulása után frissül a főablak, a vezérlő dialógus és a térkép dialógus egy része.
          */
         @Override
         public void setVehicleConnected(Boolean vehicleConnected) {
             super.setVehicleConnected(vehicleConnected);
+            refreshConnectionStatus();
+        }
+
+        /**
+         * Ha a kapcsolat státusza megváltozik,
+         * frissül a főablak, a vezérlő dialógus és a térkép dialógus egy része.
+         */
+        private void refreshConnectionStatus() {
             if (frameMain != null) {
                 frameMain.refreshBattery();
                 frameMain.refreshMessage();
@@ -454,8 +459,11 @@ public class ControllerModels {
             if (dialogArrow != null) {
                 dialogArrow.refreshControlling();
             }
+            if (dialogMap != null) {
+                dialogMap.refreshFade();
+            }
         }
-
+        
         /**
          * Beállítja azt, hogy a jármű irányítását lehet-e kérni.
          * Az adat módosulása után frissül a főablak egy része.
@@ -486,14 +494,11 @@ public class ControllerModels {
         public void onControllerStateChanged(ControllerState cs) {
             super.onControllerStateChanged(cs);
             if (dialogChat != null) {
-//                ControllerState old = dialogChat.findController(cs.getName());
                 dialogChat.setControllerVisible(cs, false, false);
                 dialogChat.setControllerVisible(cs, true, false);
-//                if (old != null) {
-                    if (cs.isControlling()/* != old.isControlling() && cs.isControlling()*/) {
-                        dialogChat.showNewController(cs.getName());
-                    }
-//                }
+                if (cs.isControlling()) {
+                    dialogChat.showNewController(cs.getName());
+                }
             }
         }
         

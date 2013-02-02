@@ -510,9 +510,11 @@ public class MapDialog extends AbstractDialog {
      * Használt getterek:
      * - {@link ClientControllerData#isUp2Date()}
      * - {@link ClientControllerData#isHostUnderTimeout()}
+     * - {@link ClientControllerData#isVehicleConnected()}
+     * - {@link ClientControllerData#isConnected()}
      */
     public void refreshFade() {
-        setFade(getData().isUp2Date() == null || !getData().isUp2Date() || (getData().isHostUnderTimeout() != null && getData().isHostUnderTimeout()) || getData().isUnderTimeout());
+        setFade(getData().isUp2Date() == null || !getData().isUp2Date() || !getData().isVehicleAvailable(false));
     }
     
     /**

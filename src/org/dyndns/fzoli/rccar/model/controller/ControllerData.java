@@ -208,6 +208,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
          * A ControllerData Boolean változóinak megfeleltetett felsorolás.
          */
         public static enum BooleanType {
+            CONNECTED,
             VEHICLE_CONNECTED,
             HOST_UNDER_TIMEOUT,
             CONTROLLING,
@@ -239,6 +240,9 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
         public void apply(ControllerData d) {
             if (d != null && type != null) {
                 switch (type) {
+                    case CONNECTED:
+                        d.setConnected(data);
+                        break;
                     case VEHICLE_CONNECTED:
                         d.setVehicleConnected(data);
                         break;
@@ -544,6 +548,16 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
         }
 
         /**
+         * Ha tudja, beállítja azt, hogy a jármű kapcsolódva van-e a Hídhoz.
+         * Az adat változását jelzi a másik oldalnak.
+         */
+        @Override
+        public void setConnected(Boolean connected) {
+            sendMessage(new ControllerData.BoolenPartialControllerData(connected, BoolenPartialControllerData.BooleanType.CONNECTED));
+            if (data != null) data.setConnected(connected);
+        }
+
+        /**
          * Ha tudja, beállítja azt, hogy a jármű kapcsolódva van-e a telefonhoz.
          * Az adat változását jelzi a másik oldalnak.
          */
@@ -628,6 +642,11 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     private Boolean viewOnly;
     
     /**
+     * Megadja, hogy a jármű kapcsolódva van-e a Hídhoz.
+     */
+    private Boolean connected;
+    
+    /**
      * A kiválasztott hoszthoz tartozó chatüzenetek tárolója.
      */
     private final List<ChatMessage> CHAT_MESSAGES;
@@ -695,6 +714,13 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     }
 
     /**
+     * Megadja, hogy a jármű kapcsolódva van-e a Hídhoz.
+     */
+    public Boolean isConnected() {
+        return connected;
+    }
+
+    /**
      * Megadja azt, hogy a jármű kapcsolódva van-e a telefonhoz.
      */
     public Boolean isVehicleConnected() {
@@ -743,6 +769,13 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
      */
     public void setHostUnderTimeout(Boolean hostConnected) {
         this.hostUnderTimeout = hostConnected;
+    }
+
+    /**
+     * Beállítja azt, hogy a jármű kapcsolódva van-e a Hídhoz.
+     */
+    public void setConnected(Boolean connected) {
+        this.connected = connected;
     }
 
     /**
@@ -798,6 +831,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
             setHostState(d.getHostState());
             setHostUnderTimeout(d.isHostUnderTimeout());
             setVehicleConnected(d.isVehicleConnected());
+            setConnected(d.isConnected());
             setControlling(d.isControlling());
             setWantControl(d.isWantControl());
             setViewOnly(d.isViewOnly());
@@ -818,6 +852,8 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
         controlling = null;
         wantControl = null;
         viewOnly = null;
+        connected = null;
+        vehicleConnected = null;
         super.clear();
     }
     

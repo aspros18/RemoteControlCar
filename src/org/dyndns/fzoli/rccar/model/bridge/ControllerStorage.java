@@ -274,6 +274,7 @@ public class ControllerStorage extends Storage<ControllerData> {
         d.setHostState(createHostState(s));
         d.setHostName(s.getName());
         d.setViewOnly(isViewOnly());
+        d.setConnected(s.isConnected());
         d.setControlling(s.getOwner() == this);
         d.setWantControl(s.getOwners().contains(this));
         d.setBatteryLevel(s.getHostData().getBatteryLevel());

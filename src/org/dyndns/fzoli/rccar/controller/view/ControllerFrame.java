@@ -440,7 +440,7 @@ public class ControllerFrame extends JFrame {
      */
     public void refreshBattery() {
         boolean zero = getData().getControl() == null || getData().getControl().getX() == 0 && getData().getControl().getY() == 0;
-        boolean show = getData().isVehicleAvailable() && getData().getBatteryLevel() != null && zero;
+        boolean show = getData().isVehicleAvailable(true) && getData().getBatteryLevel() != null && zero;
         pbAccu.setString(show ? ("Akku: " + getData().getBatteryLevel() + " %") : "");
         if (show) pbAccu.setValue(getData().getBatteryLevel());
         pbAccu.setIndeterminate(!show);
@@ -452,14 +452,17 @@ public class ControllerFrame extends JFrame {
      * {@link ClientControllerData#isUnderTimeout()}
      * {@link ClientControllerData#isHostUnderTimeout()}
      * {@link ClientControllerData#isVehicleConnected()}
+     * {@link ClientControllerData#isConnected()}
      */
     public void refreshMessage() {
         Boolean htime = getData().isHostUnderTimeout();
         Boolean vconn = getData().isVehicleConnected();
+        Boolean tconn = getData().isConnected();
         if (getData().isUnderTimeout()) setProgressMessage("Várakozás a Híd kapcsolatára.");
-        else if (htime != null && htime) setProgressMessage("Várakozás a jármű kapcsolatára.");
-             else if (vconn != null && !vconn) setProgressMessage("Várakozás az összeköttetésre."); 
-                  else setProgressMessage(null);
+        else if (tconn != null && !tconn) setProgressMessage("Várakozás a jármű kapcsolatára."); // TODO: csere warning ikonra és más üzenetre
+             else if (htime != null && htime) setProgressMessage("Várakozás a jármű kapcsolatára.");
+                  else if (vconn != null && !vconn) setProgressMessage("Várakozás az összeköttetésre."); 
+                       else setProgressMessage(null);
     }
     
     /**

@@ -729,7 +729,7 @@ public class ArrowDialog extends AbstractDialog {
      */
     public void refreshControlling() {
         boolean controlling = getData().isControlling() != null && getData().isControlling();
-        setControlling(controlling && getData().isVehicleAvailable(), controlling);
+        setControlling(controlling && getData().isVehicleAvailable(true), controlling);
     }
     
     /**

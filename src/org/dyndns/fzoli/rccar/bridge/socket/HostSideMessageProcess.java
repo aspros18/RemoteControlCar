@@ -33,7 +33,7 @@ public class HostSideMessageProcess extends BridgeMessageProcess {
     
     private void sendConnectionMessage(boolean connected) {
         if (storage == null) return;
-        if (connected && !storage.getControllers().isEmpty()) storage.getSender().setStreaming(true); // TODO: ha a jármű lekapcsolódása után mindenki leválasztódik a járműről, akkor erre nincs szükség; még nem így van
+        if (connected) storage.getSender().setStreaming(!storage.getControllers().isEmpty()); // a jármű lekapcsolódása után még maradhatnak bent vezérlők és így újra kapcsolódva, máris streamelni kell; másrészről egy üzenetküldéssel kiderül a kapcsolódáskor, hogy megfelelő-e a kliens verziója
         storage.setConnected(connected);
         HostList.PartialHostList msgLs = new HostList.PartialHostList(getRemoteCommonName(), connected ? HostList.PartialHostList.ChangeType.ADD : HostList.PartialHostList.ChangeType.REMOVE);
         for (ControllerStorage cs : controllers) {

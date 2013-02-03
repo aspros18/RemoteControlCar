@@ -30,6 +30,12 @@ public abstract class JpegProvider {
     private boolean resend = false;
     
     /**
+     * Megadja, hogy szükség van-e a header adatok
+     * elküldésére a streamelés kezdete előtt.
+     */
+    private boolean sendInfoHeader = true;
+    
+    /**
      * Konstruktor.
      * @param out az MJPEG kimenő folyam
      */
@@ -38,6 +44,14 @@ public abstract class JpegProvider {
         this.out = out;
     }
 
+    /**
+     * Beállítja, hogy szükség van-e a header adatok
+     * elküldésére a streamelés kezdete előtt.
+     */
+    protected void setSendInfoHeader(boolean sendInfoHeader) {
+        this.sendInfoHeader = sendInfoHeader;
+    }
+    
     /**
      * Megadja, hogy meg kell-e szakítani a streamelést.
      * @return true esetén megszakad a streamelés, egyébként folytatódik tovább
@@ -127,16 +141,18 @@ public abstract class JpegProvider {
      * Forrás: http://www.damonkohler.com/2010/10/mjpeg-streaming-protocol.html
      */
     public void handleConnection() throws Exception {
-        out.write((
-            "HTTP/1.0 200 OK\r\n" +
-            "Server: " + STR_SERVER + "\r\n" +
-            "Connection: close\r\n" +
-            "Max-Age: 0\r\n" +
-            "Expires: 0\r\n" +
-            "Cache-Control: no-cache, private\r\n" + 
-            "Pragma: no-cache\r\n" + 
-            "Content-Type: multipart/x-mixed-replace; " +
-            "boundary=" + STR_BOUNDARY + "\r\n\r\n").getBytes());
+        if (sendInfoHeader) {
+            out.write((
+                "HTTP/1.0 200 OK\r\n" +
+                "Server: " + STR_SERVER + "\r\n" +
+                "Connection: close\r\n" +
+                "Max-Age: 0\r\n" +
+                "Expires: 0\r\n" +
+                "Cache-Control: no-cache, private\r\n" + 
+                "Pragma: no-cache\r\n" + 
+                "Content-Type: multipart/x-mixed-replace; " +
+                "boundary=" + STR_BOUNDARY + "\r\n\r\n").getBytes());
+        }
         byte[] frame = nextFrame(false);
         while (!isInterrupted()) {
             if (frame != null) {

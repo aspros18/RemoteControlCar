@@ -88,7 +88,7 @@ public final class Permissions {
         List<ControllerStorage> cls = StorageList.getControllerStorageList();
         for (ControllerStorage cs : cls) {
             if (cs.getMessageProcess().getSocket().isClosed()) continue; // kihagyja azokat, mely vezérlők kapcsolata bontva van
-            if (cs.getHostStorage() != null && cs.getHostStorage().isConnected()) { // ha a vezérlőhöz tartozik jármű és az kapcsolódva van
+            if (cs.getHostStorage() != null) { // ha a vezérlőhöz tartozik jármű
                 boolean viewOnly = getConfig().isViewOnly(cs.getHostStorage().getName(), cs.getName());
                 if (previous.isViewOnly(cs.getHostStorage().getName(), cs.getName()) != viewOnly) { // ha változott a viewOnly paraméter
                     cs.getSender().setViewOnly(viewOnly); // közli a vezérlővel, hogy nem kérhet-e vezérlést ...

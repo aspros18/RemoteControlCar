@@ -61,22 +61,16 @@ public class ControllerStorage extends Storage<ControllerData> {
 
             @Override
             public boolean add(ControllerState e) {
-//                sendControllerChange(new ControllerChange(e));
                 return false;
             }
 
             @Override
             public boolean remove(Object o) {
-//                sendControllerChange(new ControllerChange(o.toString()));
                 return false;
             }
-            
-//            private void sendControllerChange(ControllerChange change) {
-//                broadcastMessage(new ControllerData.ControllerChangePartialControllerData(change), null, false);
-//            }
-            
+
         };
-        
+
         @Override
         public List<ChatMessage> getChatMessages() {
             return LS_MSG;
@@ -121,7 +115,7 @@ public class ControllerStorage extends Storage<ControllerData> {
             setWantControl(wantControl, true);
         }
 
-        private void setWantControl(Boolean wantControl, boolean fire) { // TODO: kibővíteni a controller státuszt, hogy legyen benne a wantControl paraméter is: a chaten így jelezhető lenne, hogy valaki kéri a vezérlést, de nincs joga rá, illetve meggondolta magát és nem kéri a vezérlést
+        private void setWantControl(Boolean wantControl, boolean fire) {
             if (getHostStorage() == null) return; // ha nincs jármű kiválasztva, nincs min kérni a vezérlést, vagy lemondani a vezérlésről (extra védelem)
             ControllerStorage oldOwner = getHostStorage().getOwner(); // a jelenlegi irányító, aki le lesz váltva, tehát ő a régi irányító
             if (wantControl && oldOwner != null && oldOwner == ControllerStorage.this) return; // ha a kérő vezérlést kért, de már vezérli, nincs teendő

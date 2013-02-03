@@ -223,8 +223,10 @@ public class HostStorage extends Storage<HostData> {
      */
     void addController(ControllerStorage controller) {
         CONTROLLERS.add(controller);
-        if (CONTROLLERS.size() == 1) getSender().setStreaming(true); // MJPEG-stream folytatása, mert az első vezérlő kapcsolódott
-        // TODO: itt lehetne megvizsgálni, hogy ha ő az első vezérlő a járműnél, kapjon kérés nélkül vezérlést
+        if (CONTROLLERS.size() == 1) { // ha ő az első kapcsolódó a járműhöz
+            getSender().setStreaming(true); // MJPEG-stream folytatása, mert az első vezérlő kapcsolódott
+//            controller.getReceiver().setWantControl(true); // egyből kapna vezérlést is
+        }
         broadcastControllerChange(new ControllerData.ControllerChange(ControllerStorage.createControllerState(this, controller)));
     }
 
@@ -239,7 +241,7 @@ public class HostStorage extends Storage<HostData> {
         if (CONTROLLERS.isEmpty()) getSender().setStreaming(false); // MJPEG-stream szüneteltése, mivel nincs senki, aki látná
         broadcastControllerChange(new ControllerData.ControllerChange(controller.getName()));
     }
-    
+
     /**
      * Elküldi a klienseknek a vezérlő állapotváltozását.
      */
@@ -291,7 +293,7 @@ public class HostStorage extends Storage<HostData> {
         this.underTimeout = underTimeout;
         broadcastMessage(new ControllerData.BoolenPartialControllerData(underTimeout, ControllerData.BoolenPartialControllerData.BooleanType.HOST_UNDER_TIMEOUT));
     }
-    
+
     private void broadcastMessage(PartialBaseData<ControllerData, ?> msg) {
         if (msg != null) {
             List<ControllerStorage> l = StorageList.getControllerStorageList();
@@ -302,5 +304,5 @@ public class HostStorage extends Storage<HostData> {
             }
         }
     }
-    
+
 }

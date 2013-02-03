@@ -75,7 +75,7 @@
             android:key="additional_degree"
             android:title="@string/title_additional_degree"
             android:summary="@string/summary_additional_degree"
-            android:defaultValue="90"
+            android:defaultValue="0"
             android:entries="@array/additionalDegreeNames"
             android:entryValues="@array/additionalDegreeValues"
             android:dependency="offline" />

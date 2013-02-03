@@ -102,6 +102,11 @@ public class ControllerFrame extends JFrame {
     private static final ImageIcon IC_CONTROLLER2 = R.getImageIcon("controller2.png");
 
     /**
+     * Vezérlőgomb ikonja, amikor a vezérlés kérés visszavonható.
+     */
+    private static final ImageIcon IC_CONTROLLER3 = R.getImageIcon("controller3.png");
+    
+    /**
      * Növekedést jelző ikon.
      */
     private static final ImageIcon IC_INCREASE = R.getImageIcon("increase.png");
@@ -319,8 +324,8 @@ public class ControllerFrame extends JFrame {
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (getData().isControlling() == null) return;
-                getData().getSender().setWantControl(!getData().isControlling());
+                if (getData().isControlling() == null || getData().isWantControl() == null) return;
+                getData().getSender().setWantControl(getData().isWantControl() && !getData().isControlling() ? false : !getData().isControlling());
             }
             
         });
@@ -417,24 +422,26 @@ public class ControllerFrame extends JFrame {
     
     /**
      * A vezérlés átadása/kérése gombot frissíti az adatmodel alapján.
-     * Az alábbi táblázat alapján XNOR művelet dönti el, hogy aktív-e a gomb
-     * és az első opció dönti el az ikon típusát:
+     * Az alábbi táblázat alapján dönti el, hogy aktív-e a gomb,
+     * és hogy mi legyen a típusa:
      *    vezérli? akarja?  esemény
      *    i        i        lemondás aktív
-     *    h        i        kérés inaktív
+     *    h        i        visszavonás aktív
      *    i        h        lemondás inaktív
      *    h        h        kérés aktív
      * Ha a jármű csak figyelhető, akkor a gomb biztosan inaktív.
+     * @param prevWantControl az előző érték
      * Használt getterek:
      * {@link ClientControllerData#isControlling()}
      * {@link ClientControllerData#isViewOnly()}
      * {@link ClientControllerData#isWantControl()}
      */
-    public void refreshControllButton() {
+    public void refreshControllButton(Boolean prevWantControl) {
         if (getData().isControlling() == null || getData().isViewOnly() == null || getData().isWantControl() == null) return;
-        btControll.setIcon(getData().isControlling() ? IC_CONTROLLER1 : IC_CONTROLLER2);
-        btControll.setToolTipText(getData().isControlling() ? "Vezérlés átadása" : "Vezérlés kérése");
-        btControll.setEnabled(!getData().isViewOnly() && !(getData().isControlling() ^ getData().isWantControl()));
+        btControll.setIcon(getData().isControlling() ? IC_CONTROLLER1 : getData().isWantControl() ? IC_CONTROLLER3 : IC_CONTROLLER2);
+        btControll.setToolTipText(getData().isControlling() ? "Vezérlés átadása" : getData().isWantControl() ? "Vezérlés kérés visszavonása" : "Vezérlés kérése");
+        if (prevWantControl != null && ((!prevWantControl && getData().isWantControl()) || (prevWantControl && !getData().isWantControl())) && !getData().isControlling()) btControll.setEnabled(false);
+        else btControll.setEnabled((!getData().isViewOnly() && !(getData().isControlling() && !getData().isWantControl())));
     }
     
     /**

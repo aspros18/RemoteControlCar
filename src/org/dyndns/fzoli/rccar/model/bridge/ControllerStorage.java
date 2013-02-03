@@ -121,10 +121,16 @@ public class ControllerStorage extends Storage<ControllerData> {
             setWantControl(wantControl, true);
         }
 
-        private void setWantControl(Boolean wantControl, boolean fire) { // TODO: kibővíteni a controller státuszt, hogy legyen benne a wantControl paraméter is: a chaten így jelezhető lenne, hogy valaki kéri a vezérlést, de nincs joga rá + vezérlés kérés visszavonási lehetőség is jól jönne (ez is jelződne a chaten a wantControl false miatt)
+        private void setWantControl(Boolean wantControl, boolean fire) { // TODO: kibővíteni a controller státuszt, hogy legyen benne a wantControl paraméter is: a chaten így jelezhető lenne, hogy valaki kéri a vezérlést, de nincs joga rá, illetve meggondolta magát és nem kéri a vezérlést
             if (getHostStorage() == null) return; // ha nincs jármű kiválasztva, nincs min kérni a vezérlést, vagy lemondani a vezérlésről (extra védelem)
             ControllerStorage oldOwner = getHostStorage().getOwner(); // a jelenlegi irányító, aki le lesz váltva, tehát ő a régi irányító
             if (wantControl && oldOwner != null && oldOwner == ControllerStorage.this) return; // ha a kérő vezérlést kért, de már vezérli, nincs teendő
+            
+            if (!wantControl && oldOwner != null && oldOwner != ControllerStorage.this) { // ha a vezérlés kérést szeretnék visszavonni ...
+                getHostStorage().getOwners().remove(ControllerStorage.this); // ... akkor eltávolítás a listából ...
+                getSender().setWantControl(false); // ... és jelzés, hogy megtörtént
+                return; // jogtalan vezérlés elkerülése érdekében a metódus végetér
+            }
             
             ControllerStorage newOwner = wantControl ? ControllerStorage.this : null; // a kérő az új irányító, ha az irányítást kérte, egyébként ...
             if (newOwner == null && getHostStorage().getOwners().size() > 1) { // ... ha van soron következő, akkor ...
@@ -161,6 +167,7 @@ public class ControllerStorage extends Storage<ControllerData> {
                         }
                     }
                     owners.add(pos, newOwner); // miután meg van a megfelelő pozíció, várólistára kerül a kérő, ...
+                    newOwner.getSender().setWantControl(wantControl); // ... visszajelezi a szerver, hogy vége a feldolgozásnak, ...
                     return; // ... és nem fut tovább a metódus, ezzel a jogtalan vezérlést elkerülve
                 }
             }

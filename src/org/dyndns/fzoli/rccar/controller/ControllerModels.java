@@ -385,7 +385,7 @@ public class ControllerModels {
         @Override
         public void setControlling(Boolean controlling) {
             super.setControlling(controlling);
-            if (frameMain != null) frameMain.refreshControllButton();
+            if (frameMain != null) frameMain.refreshControllButton(null);
             if (dialogArrow != null) dialogArrow.refreshControlling();
         }
 
@@ -473,7 +473,7 @@ public class ControllerModels {
         @Override
         public void setViewOnly(Boolean viewOnly) {
             super.setViewOnly(viewOnly);
-            if (frameMain != null) frameMain.refreshControllButton();
+            if (frameMain != null) frameMain.refreshControllButton(null);
         }
         
         /**
@@ -482,8 +482,9 @@ public class ControllerModels {
          */
         @Override
         public void setWantControl(Boolean wantControl) {
+            Boolean prev = getData().isWantControl();
             super.setWantControl(wantControl);
-            if (frameMain != null) frameMain.refreshControllButton();
+            if (frameMain != null) frameMain.refreshControllButton(prev);
         }
 
         /**

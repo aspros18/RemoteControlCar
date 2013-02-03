@@ -302,11 +302,12 @@ public class ControllerModels {
         
         /**
          * Megmondja, hogy a jármű eérhető-e.
-         * Akkor érhető el a jármű, ha van kapcsolat, a kapcsolatokban nincs időtúllépés és a telefonhoz hozzá van kötve az IOIO.
+         * Akkor érhető el a jármű, a kapcsolatokban nincs időtúllépés és a telefonhoz hozzá van kötve az IOIO.
          * @param conn ha false, akkor nem vizsgálja az IOIO-val a kapcsolatot
+         * @param online ha false, akkor nem vizsgálja az offline paramétert a modelben
          */
-        public boolean isVehicleAvailable(boolean conn) {
-            return !isUnderTimeout() && isHostUnderTimeout() != null && !isHostUnderTimeout() && (conn ? (isVehicleConnected() != null && isVehicleConnected()) : true) && isConnected() != null && isConnected();
+        public boolean isVehicleAvailable(boolean conn, boolean online) {
+            return !isUnderTimeout() && isHostUnderTimeout() != null && !isHostUnderTimeout() && (conn ? isVehicleConnected() != null && isVehicleConnected() : true) && (online ? isConnected() != null && isConnected() : true);
         }
 
         /**

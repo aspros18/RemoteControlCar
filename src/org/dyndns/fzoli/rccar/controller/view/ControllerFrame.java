@@ -40,6 +40,7 @@ import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.model.controller.HostState;
 import org.dyndns.fzoli.rccar.ui.UIUtil;
 import org.dyndns.fzoli.ui.LookAndFeelIcon;
+import org.dyndns.fzoli.ui.OptionPane;
 import org.dyndns.fzoli.ui.RoundedPanel;
 import org.imgscalr.Scalr;
 
@@ -191,7 +192,7 @@ public class ControllerFrame extends JFrame {
      */
     private void initFrame() {
         setResizable(false);
-        setDefaultCloseOperation(HIDE_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setIconImage(R.getIconImage());
         setLayout(new BorderLayout());
         setTitle("Mobile-RC");
@@ -296,9 +297,16 @@ public class ControllerFrame extends JFrame {
              * Amikor a szerver megkapja, hogy nincs jármű kiválasztva,
              * elküldi a teljes jármű listát és a kliens megjeleníti a
              * járműválasztó ablakot újra.
+             * Ha a jármű offline, megkérdi, hogy biztos-e a kilépésben a felhasználó,
+             * mivel a kilépés visszavonhatatlan művelet (legalábbis addig, míg offline a jármű).
              */
             @Override
             public void windowClosing(WindowEvent e) {
+                if (!getData().isConnected()) {
+                    int answer = OptionPane.showYesNoDialog(R.getIconImage(), "Ha most kilép a járműválasztóba, ez a jármű nem fog a listában szerepelni, mivel a jármű offline.\nBiztos benne, hogy elhagyja a járművet?", "Kilépés megerősítése");
+                    if (answer == 1) return;
+                }
+                setVisible(false);
                 getData().getSender().setHostName(null);
             }
 
@@ -454,7 +462,7 @@ public class ControllerFrame extends JFrame {
      */
     public void refreshBattery() {
         boolean zero = getData().getControl() == null || getData().getControl().getX() == 0 && getData().getControl().getY() == 0;
-        boolean show = getData().isVehicleAvailable(true) && getData().getBatteryLevel() != null && zero;
+        boolean show = getData().isVehicleAvailable(true, false) && getData().getBatteryLevel() != null && zero;
         pbAccu.setString(show ? ("Akku: " + getData().getBatteryLevel() + " %") : "");
         if (show) pbAccu.setValue(getData().getBatteryLevel());
         pbAccu.setIndeterminate(!show);

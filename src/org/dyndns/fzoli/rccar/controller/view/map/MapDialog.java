@@ -514,7 +514,7 @@ public class MapDialog extends AbstractDialog {
      * - {@link ClientControllerData#isConnected()}
      */
     public void refreshFade() {
-        setFade(getData().isUp2Date() == null || !getData().isUp2Date() || !getData().isVehicleAvailable(false));
+        setFade(getData().isUp2Date() == null || !getData().isUp2Date() || !getData().isVehicleAvailable(false, false));
     }
     
     /**

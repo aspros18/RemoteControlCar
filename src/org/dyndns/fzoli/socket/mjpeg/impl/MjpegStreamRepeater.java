@@ -66,6 +66,7 @@ public class MjpegStreamRepeater extends JpegProvider {
             return in.readMjpegFrame().getJpegBytes();
         }
         catch (Exception ex) {
+            onException(ex);
             return null;
         }
     }

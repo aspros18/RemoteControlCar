@@ -129,6 +129,7 @@ public class ControllerStorage extends Storage<ControllerData> {
             if (!wantControl && oldOwner != null && oldOwner != ControllerStorage.this) { // ha a vezérlés kérést szeretnék visszavonni ...
                 getHostStorage().getOwners().remove(ControllerStorage.this); // ... akkor eltávolítás a listából ...
                 getSender().setWantControl(false); // ... és jelzés, hogy megtörtént
+                broadcastControllerState(new ControllerState(getName(), false, false), !fire); // frissítteti a vezérlő állapotát
                 return; // jogtalan vezérlés elkerülése érdekében a metódus végetér
             }
             
@@ -168,7 +169,8 @@ public class ControllerStorage extends Storage<ControllerData> {
                     }
                     owners.add(pos, newOwner); // miután meg van a megfelelő pozíció, várólistára kerül a kérő, ...
                     newOwner.getSender().setWantControl(wantControl); // ... visszajelezi a szerver, hogy vége a feldolgozásnak, ...
-                    return; // ... és nem fut tovább a metódus, ezzel a jogtalan vezérlést elkerülve
+                    broadcastControllerState(new ControllerState(getName(), false, true), !fire); // ... és frissítteti a vezérlő állapotát
+                    return; // nem fut tovább a metódus, ezzel a jogtalan vezérlést elkerülve
                 }
             }
             
@@ -189,12 +191,12 @@ public class ControllerStorage extends Storage<ControllerData> {
                     oldOwner.getSender().setControlling(false); // mivel kikerül a vezérlők listájából, false küldése
                     oldOwner.getSender().setWantControl(false); // hogy újra kérhessen vezérlést, false küldése
                 }
-                broadcastControllerState(new ControllerState(oldOwner.getName(), false), !fire); // jelzés mindenkinek, hogy a régi irányító már nem irányíthat
+                broadcastControllerState(new ControllerState(oldOwner.getName(), false, false), !fire); // jelzés mindenkinek, hogy a régi irányító már nem irányíthat
             }
             if (newOwner != null) { // jelzés leadása, hogy ki az új irányító, valamint jelzés az új irányítónak, hogy most ő vezérel
                 newOwner.getSender().setControlling(true); // true, mivel ő az irányító
                 newOwner.getSender().setWantControl(true); // true, hogy lemondhasson a vezérlésről
-                broadcastControllerState(new ControllerState(newOwner.getName(), true), !fire); // jelzés mindenkinek, hogy ki az új vezérlő
+                broadcastControllerState(new ControllerState(newOwner.getName(), true, true), !fire); // jelzés mindenkinek, hogy ki az új vezérlő
             }
         }
         
@@ -297,13 +299,18 @@ public class ControllerStorage extends Storage<ControllerData> {
     /**
      * A járműhöz tartozó vezérlők listáját generálja le, ami tartalmazza a vezérlők aktuális paramétereit.
      */
-    private List<ControllerState> createControllers(HostStorage s) {
+    private static List<ControllerState> createControllers(HostStorage s) {
         List<ControllerState> l = new ArrayList<ControllerState>();
         if (s == null) return l;
         for (ControllerStorage cs : s.getControllers()) {
-            l.add(new ControllerState(cs.getName(), cs == s.getOwner()));
+            l.add(createControllerState(s, cs));
         }
         return l;
+    }
+    
+    public static ControllerState createControllerState(HostStorage hs, ControllerStorage cs) {
+        if (hs == null || cs == null) return null;
+        return new ControllerState(cs.getName(), cs == hs.getOwner(), hs.getOwners().contains(cs));
     }
     
     /**

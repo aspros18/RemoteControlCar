@@ -811,8 +811,9 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
      * Akkor hívódik meg, ha az egyik vezérlő állapota megváltozott.
      * Alapértelmezetten nem csinál semmit.
      * @param cs a megváltozott objektum
+     * @param old a változás előtti adatok
      */
-    public void onControllerStateChanged(ControllerState cs) {
+    public void onControllerStateChanged(ControllerState cs, ControllerState old) {
         ;
     }
     

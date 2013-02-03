@@ -9,7 +9,6 @@ import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
 import org.dyndns.fzoli.rccar.model.controller.ControllerData;
-import org.dyndns.fzoli.rccar.model.controller.ControllerState;
 import org.dyndns.fzoli.rccar.model.host.HostData;
 import org.dyndns.fzoli.socket.process.impl.MessageProcess;
 
@@ -226,7 +225,7 @@ public class HostStorage extends Storage<HostData> {
         CONTROLLERS.add(controller);
         if (CONTROLLERS.size() == 1) getSender().setStreaming(true); // MJPEG-stream folytatása, mert az első vezérlő kapcsolódott
         // TODO: itt lehetne megvizsgálni, hogy ha ő az első vezérlő a járműnél, kapjon kérés nélkül vezérlést
-        broadcastControllerChange(new ControllerData.ControllerChange(new ControllerState(controller.getName(), getOwner() == controller)));
+        broadcastControllerChange(new ControllerData.ControllerChange(ControllerStorage.createControllerState(this, controller)));
     }
 
     /**

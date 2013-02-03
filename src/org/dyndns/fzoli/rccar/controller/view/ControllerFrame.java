@@ -440,7 +440,7 @@ public class ControllerFrame extends JFrame {
         if (getData().isControlling() == null || getData().isViewOnly() == null || getData().isWantControl() == null) return;
         btControll.setIcon(getData().isControlling() ? IC_CONTROLLER1 : getData().isWantControl() ? IC_CONTROLLER3 : IC_CONTROLLER2);
         btControll.setToolTipText(getData().isControlling() ? "Vezérlés átadása" : getData().isWantControl() ? "Vezérlés kérés visszavonása" : "Vezérlés kérése");
-        if (prevWantControl != null && ((!prevWantControl && getData().isWantControl()) || (prevWantControl && !getData().isWantControl())) && !getData().isControlling()) btControll.setEnabled(false);
+        if (prevWantControl != null && ((!prevWantControl && getData().isWantControl()) || (prevWantControl && !getData().isWantControl() && getData().isControlling())) && !getData().isControlling()) btControll.setEnabled(false);
         else btControll.setEnabled((!getData().isViewOnly() && !(getData().isControlling() && !getData().isWantControl())));
     }
     

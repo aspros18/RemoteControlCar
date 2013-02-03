@@ -19,13 +19,20 @@ public class ControllerState implements Serializable {
     private boolean controlling;
     
     /**
+     * Akarja-e vezérelni a járművet.
+     */
+    private boolean wantControl;
+    
+    /**
      * Konstruktor a kezdeti paraméterek megadásával.
      * @param name a vezérlő neve
      * @param controlling vezérli-e a járművet
+     * @param wantControl akarja-e vezérelni a járművet
      */
-    public ControllerState(String name, boolean controlling) {
+    public ControllerState(String name, boolean controlling, boolean wantControl) {
         this.NAME = name;
         this.controlling = controlling;
+        this.wantControl = wantControl;
     }
     
     /**
@@ -43,10 +50,24 @@ public class ControllerState implements Serializable {
     }
 
     /**
+     * Megadja, akarja-e vezérelni a járművet a vezérlő.
+     */
+    public boolean isWantControl() {
+        return wantControl;
+    }
+
+    /**
      * Beállítja, vezérli-e a járművet a vezérlő.
      */
     public void setControlling(boolean controlling) {
         this.controlling = controlling;
+    }
+
+    /**
+     * Beállítja, akarja-e vezérelni a járművet a vezérlő.
+     */
+    public void setWantControl(boolean wantControl) {
+        this.wantControl = wantControl;
     }
     
     /**
@@ -56,8 +77,10 @@ public class ControllerState implements Serializable {
      * @param d az adatmodel
      */
     public void apply(ControllerState cs, ControllerData d) {
+        ControllerState old = new ControllerState(getName(), isControlling(), isWantControl());
         setControlling(cs.isControlling());
-        if (d != null) d.onControllerStateChanged(this);
+        setWantControl(cs.isWantControl());
+        if (d != null) d.onControllerStateChanged(this, old);
     }
     
     /**

@@ -148,8 +148,8 @@ public final class Permissions {
                 oldController.getSender().setWantControl(false);
                 newController.getSender().setControlling(true);
                 newController.getSender().setWantControl(true);
-                ControllerState stOld = new ControllerState(oldController.getName(), false);
-                ControllerState stNew = new ControllerState(newController.getName(), true);
+                ControllerState stOld = new ControllerState(oldController.getName(), false, false);
+                ControllerState stNew = new ControllerState(newController.getName(), true, true);
                 ControllerData.ControllerChangePartialControllerData msgOld = new ControllerData.ControllerChangePartialControllerData(new ControllerData.ControllerChange(stOld));
                 ControllerData.ControllerChangePartialControllerData msgNew = new ControllerData.ControllerChangePartialControllerData(new ControllerData.ControllerChange(stNew));
                 List<? extends ControllerStorage> cses = hs.getControllers();

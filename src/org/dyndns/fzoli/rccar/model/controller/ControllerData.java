@@ -22,7 +22,31 @@ import org.dyndns.fzoli.rccar.model.PartialBaseData;
  * @author zoli
  */
 public class ControllerData extends BaseData<ControllerData, PartialBaseData<ControllerData, ?>> {
-    
+
+    /**
+     * Egy jármű offline állapotban módosítható adatait tartalmazza.
+     * Amikor újrakapcsolódik egy jármű, a még bejelentkezettek frissítésére lett létrehozva.
+     */
+    public static class FixDatas implements Serializable {
+
+        /**
+         * Megadja, limitálva van-e a vezérlés.
+         */
+        public final Boolean fullX, fullY;
+        
+        /**
+         * Megadja, hogy a jármű eléri-e az IOIO-t.
+         */
+        public final Boolean vehicleConnected;
+
+        public FixDatas(Boolean fullX, Boolean fullY, Boolean vehicleConnected) {
+            this.fullX = fullX;
+            this.fullY = fullY;
+            this.vehicleConnected = vehicleConnected;
+        }
+
+    }
+
     /**
      * Egy vezérlő változását (kapcsolódás, lekapcsolódás, állapotváltozás) írja le.
      */
@@ -74,7 +98,31 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
         }
         
     }
-    
+
+    /**
+     * Egy jármű offline állapotban módosítható adatait tartalmazó részadat.
+     * Amikor újrakapcsolódik egy jármű, a még bejelentkezettek frissítésére lett létrehozva.
+     */
+    public static class FixPartialControllerData extends PartialControllerData<FixDatas> {
+
+        public FixPartialControllerData(FixDatas data) {
+            super(data);
+        }
+
+        /**
+         * Alkalmazza az adatokat az adatmodelben.
+         */
+        @Override
+        public void apply(ControllerData d) {
+            if (d != null && data != null) {
+                d.setFullX(data.fullX);
+                d.setFullY(data.fullY);
+                d.setVehicleConnected(data.vehicleConnected);
+            }
+        }
+
+    }
+
     /**
      * A ControllerData részadata, ami egy vezérlő állapotváltozását tartalmazza (kapcsolódott, lekapcsolódott).
      */

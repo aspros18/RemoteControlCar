@@ -38,10 +38,16 @@ public class HostSideMessageProcess extends BridgeMessageProcess {
         storage.setConnected(connected);
         HostList.PartialHostList msgLs = new HostList.PartialHostList(getRemoteCommonName(), connected ? HostList.PartialHostList.ChangeType.ADD : HostList.PartialHostList.ChangeType.REMOVE);
         ControllerData.BoolenPartialControllerData msgConn = new ControllerData.BoolenPartialControllerData(connected, ControllerData.BoolenPartialControllerData.BooleanType.CONNECTED);
+        ControllerData.FixPartialControllerData msgFix = new ControllerData.FixPartialControllerData(new ControllerData.FixDatas(storage.getHostData().isFullX(), storage.getHostData().isFullY(), storage.getHostData().isVehicleConnected()));
         for (ControllerStorage cs : controllers) {
             if (Permissions.getConfig().isEnabled(getRemoteCommonName(), cs.getName())) {
-                if (cs.getHostStorage() == null) cs.getMessageProcess().sendMessage(msgLs);
-                if (cs.getHostStorage() == storage) cs.getMessageProcess().sendMessage(msgConn);
+                if (cs.getHostStorage() == null) {
+                    cs.getMessageProcess().sendMessage(msgLs);
+                }
+                if (cs.getHostStorage() == storage) {
+                    cs.getMessageProcess().sendMessage(msgFix);
+                    cs.getMessageProcess().sendMessage(msgConn);
+                }
             }
         }
     }

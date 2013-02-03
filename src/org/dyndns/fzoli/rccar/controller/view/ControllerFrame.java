@@ -303,7 +303,7 @@ public class ControllerFrame extends JFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 if (!getData().isConnected()) {
-                    int answer = OptionPane.showYesNoDialog(R.getIconImage(), "Ha most kilép a járműválasztóba, ez a jármű nem fog a listában szerepelni, mivel a jármű offline.\nBiztos benne, hogy elhagyja a járművet?", "Kilépés megerősítése");
+                    int answer = OptionPane.showYesNoDialog(R.getIconImage(), "Ha most kilép a járműválasztóba, ez a jármű\nnem fog a listában szerepelni, mivel offline.\n\nBiztos benne, hogy elhagyja a járművet?", "A jármű elhagyása");
                     if (answer == 1) return;
                 }
                 setVisible(false);

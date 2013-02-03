@@ -3,6 +3,7 @@ package org.dyndns.fzoli.rccar.bridge.socket;
 import java.io.EOFException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.Arrays;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocket;
@@ -65,11 +66,20 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
     }
     
     /**
+     * A magyar nyelv magánhangzóit tartalmazza.
+     * Arra kell, hogy el lehessen dönteni, a vagy az névelő kerüljön-e a cím elé.
+     */
+    private static final char[] mgh = {'a', 'á', 'e', 'é', 'i', 'í', 'o', 'ó', 'ö', 'ő', 'u', 'ú', 'ü', 'ű'};
+    
+    /**
      * Ha adott klienstől az első kapcsolatfelvétel közben hiba keletkezik, jelzi a felhasználónak és naplózza a hibát.
      * @param message a kijelzendő üzenet
      */
     private void showWarning(String message) {
-        if ((getConnectionId() == null || getConnectionId().equals(0)) && getSocket() != null) logMessage(VAL_WARNING, message + " a " + getSocket().getInetAddress().getHostName() + " [" + getSocket().getInetAddress().getHostAddress() + "] címről.", IconType.WARNING, isWarnEnabled());
+        if ((getConnectionId() == null || getConnectionId().equals(0)) && getSocket() != null) {
+            String name = getSocket().getInetAddress().getHostName();
+            logMessage(VAL_WARNING, message + ' ' + (Arrays.binarySearch(mgh, name.charAt(0)) >= 0 ? "az" : "a") + ' ' + name + " [" + getSocket().getInetAddress().getHostAddress() + "] címről.", IconType.WARNING, isWarnEnabled());
+        }
     }
     
     /**

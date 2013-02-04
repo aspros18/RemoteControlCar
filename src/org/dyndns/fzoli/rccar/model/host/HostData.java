@@ -1,7 +1,6 @@
 package org.dyndns.fzoli.rccar.model.host;
 
 import java.io.Serializable;
-import java.util.Date;
 import org.dyndns.fzoli.rccar.model.BaseData;
 import org.dyndns.fzoli.rccar.model.BatteryPartialBaseData;
 import org.dyndns.fzoli.rccar.model.Control;
@@ -184,6 +183,28 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     }
     
     /**
+     * A HostData részadata, ami a pillanatnyi sebesség változását tartalmazza.
+     */
+    public static class SpeedPartialHostData extends PartialHostData<Double> {
+
+        public SpeedPartialHostData(Double data) {
+            super(data);
+        }
+
+        /**
+         * Alkalmazza a sebesség változását a paraméterben megadott adaton.
+         * @param d a teljes adat, amin a módosítást alkalmazni kell
+         */
+        @Override
+        public void apply(HostData d) {
+            if (d != null) {
+                d.setSpeed(data);
+            }
+        }
+        
+    }
+    
+    /**
      * A HostData vezérlő részadata, ami az autó irányításában játszik szerepet.
      */
     public static class ControlPartialHostData extends ControlPartialBaseData<HostData> {
@@ -219,16 +240,6 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     private Point3D previousGpsPosition, previousMagneticField, previousGravitationalField;
     
     /**
-     * Az utolsó előtti GPS pozíció módosulásának dátuma.
-     */
-    private Date previousGpsChangeDate;
-    
-    /**
-     * Az utolsó GPS pozíció módosulásának dátuma.
-     */
-    private Date gpsChangeDate;
-    
-    /**
      * Folyamatban van-e az MJPEG streamelés.
      * Kezdetben nincs streamelés.
      */
@@ -248,6 +259,11 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
      * Az északtól való eltéréshez hozzáadódó érték.
      */
     private Integer additionalDegree;
+    
+    /**
+     * A pillanatnyi sebesség.
+     */
+    private Double speed;
     
     /**
      * Konstruktor Híd oldalra.
@@ -315,6 +331,14 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     }
 
     /**
+     * Megadja a pillanatnyi sebességet m/s-ban.
+     * @return null, ha nem érhető el
+     */
+    public Double getSpeed() {
+        return speed;
+    }
+
+    /**
      * Megadja az északtól való eltéréshez hozzáadódó értéket.
      */
     public Integer getAdditionalDegree() {
@@ -362,20 +386,6 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     public Point3D getPreviousMagneticField() {
         return previousMagneticField;
     }
-    
-    /**
-     * Megadja az utolsó GPS pozíció módosulásának dátumát.
-     */
-    public Date getGpsChangeDate() {
-        return gpsChangeDate;
-    }
-
-    /**
-     * Megadja az utolsó előtti GPS pozíció módosulásának dátumát.
-     */
-    public Date getPreviousGpsChangeDate() {
-        return previousGpsChangeDate;
-    }
 
     /**
      * Beállítja, van-e streamelés.
@@ -404,6 +414,14 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     }
 
     /**
+     * Beállítja a pillanatnyi sebességet.
+     * @param speed a sebesség m/s-ban
+     */
+    public void setSpeed(Double speed) {
+        this.speed = speed;
+    }
+
+    /**
      * Beállítja az északtól való eltéréshez hozzáadódó értéket.
      */
     public void setAdditionalDegree(Integer additionalDegree) {
@@ -415,8 +433,6 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
      * Még mielőtt megváltozna az adat, az előző adat eltárolódik.
      */
     public void setGpsPosition(Point3D gpsPosition) {
-        previousGpsChangeDate = gpsChangeDate;
-        gpsChangeDate = new Date();
         this.previousGpsPosition = getGpsPosition();
         this.gpsPosition = gpsPosition;
     }
@@ -446,6 +462,7 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
         if (d != null) {
             setStreaming(d.isStreaming());
             setVehicleConnected(d.isVehicleConnected());
+            setSpeed(d.getSpeed());
             setGpsPosition(d.getGpsPosition());
             setGravitationalField(d.getGravitationalField());
             setMagneticField(d.getMagneticField());
@@ -461,6 +478,7 @@ public class HostData extends BaseData<HostData, PartialBaseData<HostData, ?>> {
     @Override
     public void clear() {
         super.clear();
+        speed = null;
         previousMagneticField = magneticField = null;
         previousGravitationalField = gravitationalField = null;
     }

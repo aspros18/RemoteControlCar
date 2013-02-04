@@ -2,7 +2,6 @@ package org.dyndns.fzoli.rccar.model.bridge;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import org.dyndns.fzoli.rccar.bridge.config.Permissions;
 import org.dyndns.fzoli.rccar.model.Control;
@@ -329,6 +328,13 @@ public class ControllerStorage extends Storage<ControllerData> {
     }
     
     /**
+     * Megadja a pillanatnyi sebességet km/h-ban.
+     */
+    private static Double getSpeed(HostData d) {
+        return d.getSpeed() == null ? null : d.getSpeed() * 3.6;
+    }
+    
+    /**
      * Fokban kifejezve megadja a jármű északtól való eltérését.
      */
     private static Integer getAzimuth(HostData d) {
@@ -348,28 +354,6 @@ public class ControllerStorage extends Storage<ControllerData> {
             }
         }
         return null;
-    }
-    
-    /**
-     * Km/h-ban kifejezve megadja a jármű pillanatnyi sebességét.
-     */
-    private static Integer getSpeed(HostData d) {
-        Double v = null;
-        if (d != null) {
-            Point3D loc = d.getGpsPosition();
-            Point3D loc2 = d.getPreviousGpsPosition();
-            Date dat = d.getGpsChangeDate();
-            Date dat2 = d.getPreviousGpsChangeDate();
-            if (loc != null && loc2 != null && dat != null && dat2 != null) {
-                float[] distance = new float[1];
-                Location.distanceBetween(loc.X, loc.Y, loc2.X, loc2.Y, distance);
-                float s = distance[0]; // [m]
-                double t = dat.getTime() - dat2.getTime() / 1000; // [s]
-                v = s / t; // [m/s]
-                v *= 3.6; // [km/h]
-            }
-        }
-        return v == null ? null : v.intValue();
     }
     
 }

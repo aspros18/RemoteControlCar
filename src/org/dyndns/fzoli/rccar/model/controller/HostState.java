@@ -17,7 +17,7 @@ public class HostState implements Serializable {
     /**
      * Pillanatnyi sebesség.
      */
-    public final Integer SPEED;
+    public final Double SPEED;
 
     /**
      * Északtól való eltérés fokban megadva.
@@ -30,7 +30,7 @@ public class HostState implements Serializable {
      * @param speed pillanatnyi sebesség
      * @param azimuth északtól való eltérés fokban megadva
      */
-    public HostState(Point3D location, Integer speed, Integer azimuth) {
+    public HostState(Point3D location, Double speed, Integer azimuth) {
         LOCATION = location;
         SPEED = speed;
         AZIMUTH = azimuth;

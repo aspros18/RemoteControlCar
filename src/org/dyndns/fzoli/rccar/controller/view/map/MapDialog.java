@@ -524,7 +524,11 @@ public class MapDialog extends AbstractDialog {
      */
     public void refreshArrow() {
         HostState hs = getData().getHostState();
-        setArrow(hs == null || hs.AZIMUTH == null ? null : hs.AZIMUTH.doubleValue());
+        Double oldVal = ARROW.getRotation();
+        Double newVal = hs == null || hs.AZIMUTH == null ? null : hs.AZIMUTH.doubleValue();
+        if (oldVal == null && newVal == null) return;
+        if (oldVal != null && newVal == oldVal) return;
+        setArrow(newVal);
     }
     
     /**

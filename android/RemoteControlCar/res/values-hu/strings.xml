@@ -50,5 +50,5 @@
     <string name="not_exists">nincs</string>
     <string name="run_in_background">Futtatás háttérben</string>
     <string name="title_connecting">Kérem, várjon</string>
-    <string name="message_connecting">Kapcsolódás a hídhoz&#8230;</string>
+    <string name="message_connecting">Kapcsolódás a Hídhoz&#8230;</string>
 </resources>

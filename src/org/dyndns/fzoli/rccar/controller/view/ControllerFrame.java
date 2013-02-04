@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.text.DecimalFormat;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -38,7 +39,6 @@ import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_MAP;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.model.controller.HostState;
-import org.dyndns.fzoli.rccar.ui.UIUtil;
 import org.dyndns.fzoli.ui.LookAndFeelIcon;
 import org.dyndns.fzoli.ui.OptionPane;
 import org.dyndns.fzoli.ui.RoundedPanel;
@@ -139,6 +139,11 @@ public class ControllerFrame extends JFrame {
      * Az indikátort megjelenító címke az üzenetpanelen.
      */
     private final JLabel LB_INDICATOR = new JLabel(R.getIndicatorIcon());
+    
+    /**
+     * Sebesség formázó.
+     */
+    private static final DecimalFormat DF_SPEED = new DecimalFormat("0.#");
     
     /**
      * A figyelmeztető-ikont megjelenító címke az üzenetpanelen.
@@ -455,7 +460,7 @@ public class ControllerFrame extends JFrame {
         String text = " "; // üres szöveg helyett egy szóköz, mert az sem látszik, de az elrendezésmenedzsernek számít, hogy üres-e a szöveg
         if (!getData().isUnderTimeout() && getData().isHostUnderTimeout() != null && !getData().isHostUnderTimeout()) {
             HostState hs = getData().getHostState();
-            if (hs != null && hs.SPEED != null && getData().isUp2Date() != null && getData().isUp2Date()) text = "Sebesség: " + Integer.toString(hs.SPEED) + " km/h";
+            if (hs != null && hs.SPEED != null && getData().isUp2Date() != null && getData().isUp2Date()) text = "Sebesség: " + DF_SPEED.format(hs.SPEED) + " km/h";
         }
         lbSpeed.setText(text);
     }

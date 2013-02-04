@@ -820,7 +820,7 @@ public class ConnectionService extends IOIOService {
 	/**
 	 * Megmondja, hogy a GPS szenzor engedélyezve van-e.
 	 */
-	private boolean isGpsEnabled() {
+	public boolean isGpsEnabled() {
 		if (lm == null) lm = (LocationManager) getSystemService(LOCATION_SERVICE);
 		return lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
 	}

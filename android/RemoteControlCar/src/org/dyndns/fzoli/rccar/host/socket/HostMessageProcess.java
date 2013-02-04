@@ -173,6 +173,8 @@ public class HostMessageProcess extends MessageProcess {
 		
 	};
 	
+	
+	
 	/**
 	 * A GPS-hez tartozó eseményfigyelő.
 	 * Feladata, hogy közölje a szerverrel a jármű pozícióját és azt is, hogy naprakész-e a GPS adat.
@@ -185,6 +187,7 @@ public class HostMessageProcess extends MessageProcess {
 		@Override
 		public void onProviderEnabled(String provider) {
 			Log.i(ConnectionService.LOG_TAG, "GPS enabled");
+			gpsEnabled = true;
 		}
 		
 		/**
@@ -193,6 +196,7 @@ public class HostMessageProcess extends MessageProcess {
 		@Override
 		public void onProviderDisabled(String provider) {
 			Log.i(ConnectionService.LOG_TAG, "GPS disabled");
+			gpsEnabled = false;
 			sendUp2Date(false);
 		}
 		
@@ -217,12 +221,13 @@ public class HostMessageProcess extends MessageProcess {
 			mLastLocationMillis = SystemClock.elapsedRealtime();
 			mLastLocation = location;
 			
+			Log.i(ConnectionService.LOG_TAG, "speed: " + (location.getSpeed() * 3.6) + " km/h" + "; accuracy: " + location.getAccuracy() + " m");
+			
 			// up2date frissítése és küldése, ha változott
 			sendUp2Date(location.getAccuracy() <= FINE_ACCURACY);
 			
-			Log.i(ConnectionService.LOG_TAG, "speed: " + (location.getSpeed() * 3.6) + " km/h" + "; accuracy: " + location.getAccuracy() + " m");
-			
-			// pozíció elmentése és üzenet küldése a Hídnak
+			// sebesség, pozíció elmentése és üzenet küldése a Hídnak
+			getHostData().setSpeed((double) location.getSpeed());
 			getHostData().setGpsPosition(new Point3D(location.getLatitude(), location.getLongitude(), location.getAltitude()));
 			fireSensorChanged();
 		}
@@ -295,6 +300,16 @@ public class HostMessageProcess extends MessageProcess {
 	 */
 	private long fireTime;
 	
+	/**
+	 * Az utóljára elküldött sebesség.
+	 */
+	private Double lastSpeed;
+	
+	/**
+	 * Megadja, hogy a GPS-vevő be van-e kapcsolva.
+	 */
+	private boolean gpsEnabled;
+	
 	public HostMessageProcess(ConnectionService service, SecureHandler handler) {
 		super(handler);
 		SERVICE = service;
@@ -303,6 +318,7 @@ public class HostMessageProcess extends MessageProcess {
 		sensorManager = (SensorManager)service.getSystemService(Context.SENSOR_SERVICE);
 		availableLocation = locationManager.getAllProviders().contains(LocationManager.GPS_PROVIDER);
 		availableDirection = !sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER).isEmpty() && !sensorManager.getSensorList(Sensor.TYPE_GRAVITY).isEmpty();
+		gpsEnabled = SERVICE.isGpsEnabled();
 		Log.i(ConnectionService.LOG_TAG, "location supported: " + availableLocation + "; direction supported: " + availableDirection);
 	}
 	
@@ -399,6 +415,7 @@ public class HostMessageProcess extends MessageProcess {
 	 * Menti és elküldi az up2date üzenetet a hídnak, ha a megadott érték eltér a jelenlegi értéktől.
 	 */
 	private void sendUp2Date(boolean up2date) {
+		up2date &= gpsEnabled; // ha a gps nincs engedélyezve, biztos, hogy nincs jel
 		if (getHostData().isUp2Date() != up2date) {
 			getHostData().setUp2Date(up2date);
 			Log.i(ConnectionService.LOG_TAG, "up2date: " + up2date);
@@ -415,6 +432,10 @@ public class HostMessageProcess extends MessageProcess {
 		final long time = new Date().getTime();
 		if (loaded &&  time - fireTime >= REFRESH_INTERVAL) {
 			fireTime = time;
+			if (lastSpeed == null || !lastSpeed.equals(getHostData().getSpeed())) {
+				lastSpeed = getHostData().getSpeed();
+				if (lastSpeed != null) sendMessage(new HostData.SpeedPartialHostData(lastSpeed));
+			}
 			int change = 0;
 			if (getHostData().getGravitationalField() != null && !getHostData().getGravitationalField().equals(getHostData().getPreviousGravitationalField())) {
 				change += 1;

@@ -75,6 +75,11 @@ public class HostStorage extends Storage<HostData> {
     private final HostData RECEIVER = new HostData() {
 
         @Override
+        public void setSpeed(Double speed) {
+            getHostData().setSpeed(speed);
+        }
+
+        @Override
         public void setControl(Control controll) {
             getHostData().setControl(controll);
             broadcastMessage(new ControllerData.ControlPartialControllerData(controll));

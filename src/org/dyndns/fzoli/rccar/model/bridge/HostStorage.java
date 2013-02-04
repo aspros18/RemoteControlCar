@@ -78,23 +78,36 @@ public class HostStorage extends Storage<HostData> {
      */
     private final HostData RECEIVER = new HostData() {
 
+        /**
+         * Beállítja a pillanatnyi sebességet.
+         * Nem kell elküldeni a klienseknek, mert a GPS-pozíció változásakor küldődik ki.
+         */
         @Override
         public void setSpeed(Double speed) {
             getHostData().setSpeed(speed);
         }
 
+        /**
+         * Beállítja és elküldi a vezérlőjelet a járműhöz tartozó vezérlő-klienseknek.
+         */
         @Override
         public void setControl(Control controll) {
             getHostData().setControl(controll);
             broadcastMessage(new ControllerData.ControlPartialControllerData(controll));
         }
 
+        /**
+         * Beállítja, hogy kapcsolódva van-e a jármű és jelez a járműhöz tartozó vezérlő-klienseknek.
+         */
         @Override
         public void setVehicleConnected(Boolean vehicleConnected) {
             getHostData().setVehicleConnected(vehicleConnected);
             broadcastMessage(new ControllerData.BoolenPartialControllerData(vehicleConnected, ControllerData.BoolenPartialControllerData.BooleanType.VEHICLE_CONNECTED));
         }
 
+        /**
+         * Beállítja, hogy a GPS-jel naprakész-e és jelez a járműhöz tartozó vezérlő-klienseknek.
+         */
         @Override
         public void setUp2Date(Boolean up2date) {
             getHostData().setUp2Date(up2date);
@@ -102,30 +115,46 @@ public class HostStorage extends Storage<HostData> {
             broadcastMessage(new ControllerData.BoolenPartialControllerData(up2date, ControllerData.BoolenPartialControllerData.BooleanType.UP_2_DATE));
         }
 
+        /**
+         * Beállítja az akkumulátor-szintet és jelez a járműhöz tartozó vezérlő-klienseknek.
+         */
         @Override
         public void setBatteryLevel(Integer batteryLevel) {
             getHostData().setBatteryLevel(batteryLevel);
             broadcastMessage(new ControllerData.BatteryPartialControllerData(batteryLevel));
         }
 
+        /**
+         * Beállítja a GPS-pozíciót és jelez a járműhöz tartozó vezérlő-klienseknek, ha nem módosul több adat.
+         */
         @Override
         public void setGpsPosition(Point3D gpsPosition) {
             getHostData().setGpsPosition(gpsPosition);
             broadcastHostState();
         }
 
+        /**
+         * Beállítja a gravitációs térerősséget és jelez a járműhöz tartozó vezérlő-klienseknek, ha nem módosul több adat.
+         */
         @Override
         public void setGravitationalField(Point3D gravitationalField) {
             getHostData().setGravitationalField(gravitationalField);
             broadcastHostState();
         }
 
+        /**
+         * Beállítja a mágneses térerősséget és jelez a járműhöz tartozó vezérlő-klienseknek, ha nem módosul több adat.
+         */
         @Override
         public void setMagneticField(Point3D magneticField) {
             getHostData().setMagneticField(magneticField);
             broadcastHostState();
         }
 
+        /**
+         * A gravitációs térerrősség, mágneses térerősség és GPS pozíció beállítása alapján gyárt egy helyzeti állapotot, amit elküld a vezérlő-klienseknek.
+         * Ha még nem állítódott be mindhárom adat, nem küld fölöslegesen adatot.
+         */
         private void broadcastHostState() {
             if (!isPointChanging()) {
                 broadcastMessage(new ControllerData.HostStatePartialControllerData(ControllerStorage.createHostState(HostStorage.this)));

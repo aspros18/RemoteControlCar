@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.dyndns.fzoli.rccar.bridge.socket.ControllerSideDisconnectProcess;
 import org.dyndns.fzoli.rccar.model.Control;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.Point3D;
@@ -173,6 +174,11 @@ public class HostStorage extends Storage<HostData> {
     private boolean underTimeout = false;
     
     /**
+     * Azt adja meg, hány alkalommal lett a vezérlőjel beállítva az üzenetküldés során.
+     */
+    private int controlCount = 0;
+    
+    /**
      * Konstruktor a kezdeti paraméterek megadásával.
      */
     public HostStorage(MessageProcess messageProcess) {
@@ -222,6 +228,31 @@ public class HostStorage extends Storage<HostData> {
         return CONTROLLERS;
     }
 
+    /**
+     * Azt adja meg, hány alkalommal lett a vezérlőjel beállítva az üzenetküldés során.
+     * segítségével megtudható, hogy változott-e a vezérlőjel.
+     * A {@link ControllerSideDisconnectProcess#afterTimeout()} metódus használja.
+     */
+    public int getControlCount() {
+        return controlCount;
+    }
+
+    /**
+     * Növeli a vezérlőjel-beállítás számlálót.
+     * A {@link ControllerData#setControl(org.dyndns.fzoli.rccar.model.Control)} metódus használja (receiver objektum).
+     */
+    void incControlCount() {
+        this.controlCount++;
+    }
+
+    /**
+     * Nullázza a vezérlőjel-beállítás számlálót.
+     * A {@link StorageList#createHostStorage(org.dyndns.fzoli.socket.process.impl.MessageProcess, org.dyndns.fzoli.rccar.model.host.HostData)} metódus használja.
+     */
+    void resetControlCount() {
+        this.controlCount = 0;
+    }
+    
     /**
      * Vezérlő hozzáadása.
      * Ezt a metódust a {@code ControllerStorage.setHostStorage} metódus hívja meg.

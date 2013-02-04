@@ -86,6 +86,7 @@ public class StorageList {
         }
         else {
             s.setMessageProcess(messageProcess);
+            s.resetControlCount();
         }
         s.getHostData().update(data);
         return s;

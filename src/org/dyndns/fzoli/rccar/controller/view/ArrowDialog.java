@@ -682,8 +682,8 @@ public class ArrowDialog extends AbstractDialog {
             ARROW_PANEL.setMaxY(null);
             if (owner != null) {
                 ARROW_PANEL.setIncrease(false);
-                owner.getIncreaseButton().setSelected(false);
-                owner.getIncreaseButton().setEnabled(false);
+                if (!restoring) owner.getIncreaseButton().setSelected(false);
+                owner.getIncreaseButton().setEnabled(restoring);
             }
         }
     }

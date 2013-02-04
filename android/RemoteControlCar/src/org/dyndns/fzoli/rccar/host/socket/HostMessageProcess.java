@@ -3,6 +3,7 @@ package org.dyndns.fzoli.rccar.host.socket;
 import java.io.InvalidClassException;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Iterator;
 
 import org.dyndns.fzoli.rccar.host.ConnectionService;
 import org.dyndns.fzoli.rccar.host.ConnectionService.ConnectionError;
@@ -21,6 +22,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Criteria;
+import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
@@ -52,6 +55,12 @@ public class HostMessageProcess extends MessageProcess {
 	 * Ennyi időközönként küld a kliens adatmódosulásról jelzést.
 	 */
 	private final int REFRESH_INTERVAL;
+	
+	/**
+	 * A már megfelelő GPS pozíció pontosság méterben megadva.
+	 * Értéke: 50 méter
+	 */
+	private final float FINE_ACCURACY = 50;
 	
 	/**
 	 * A mágneses-térerősség és a nehézségi-erő szenzorokhoz lehet vele hozzáférni.
@@ -100,6 +109,11 @@ public class HostMessageProcess extends MessageProcess {
 	};
 
 	/**
+	 * Egy olyan GPS szolgáltató neve, ami ingyenes és megfelelő pontosságú.
+	 */
+	private String provider;
+	
+	/**
 	 * Az utolsó GPS pozíció.
 	 * API bugfix: Ahhoz kell, hogy megállapítható legyen, van-e még GPS jel.
 	 */
@@ -119,12 +133,6 @@ public class HostMessageProcess extends MessageProcess {
 	private final GpsStatus.Listener gpsStatusListener = new GpsStatus.Listener() {
 		
 		/**
-		 * Megadja, hogy van-e GPS jel.
-		 * Kezdetben nincs jel.
-		 */
-		private boolean isGPSFix = false;
-		
-		/**
 		 * Ha a GPS státusza megváltozott, lefut a metódus és eldönti, hogy van-e GPS jel,
 		 * és beállítja, majd elküldi a hídnak az információt.
 		 */
@@ -132,12 +140,33 @@ public class HostMessageProcess extends MessageProcess {
 		public void onGpsStatusChanged(int event) {
 			switch (event) {
 				case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
-					if (mLastLocation != null) isGPSFix = (SystemClock.elapsedRealtime() - mLastLocationMillis) < 3000;
-					sendUp2Date(isGPSFix);
+					Iterator<GpsSatellite> sats = locationManager.getGpsStatus(null).getSatellites().iterator();
+					int count = 0;
+					while (sats.hasNext()) {
+						sats.next();
+						count++;
+					}
+					Log.i(ConnectionService.LOG_TAG, "satellite count: " + count);
+					if (count < 3) {
+						sendUp2Date(false);
+					}
+					else if (mLastLocation != null) {
+						boolean isGPSFix = SystemClock.elapsedRealtime() - mLastLocationMillis < 5000;
+						if (!isGPSFix) {
+							locationManager.requestLocationUpdates(provider, 1000, 10f, locationListener); // helyzetfrissítés újrahívása
+							// sendUp2Date(false); // nincs rá szükség, mert a helyzetfrissítőben meghívódik és pontosság alapján dől el
+						}
+						else {
+							sendUp2Date(mLastLocation.getAccuracy() <= FINE_ACCURACY);
+						} 
+					}
+					else {
+						sendUp2Date(false);
+					}
 					break;
 				case GpsStatus.GPS_EVENT_FIRST_FIX:
-					isGPSFix = true;
-					sendUp2Date(true);
+//					sendUp2Date(true); // nem minden esetre igaz
+					Log.i(ConnectionService.LOG_TAG, "GPS first fix");
 					break;
 			}
 		}
@@ -173,7 +202,7 @@ public class HostMessageProcess extends MessageProcess {
 		 */
 		@Override
 		public void onStatusChanged(String provider, int status, Bundle extras) {
-			;
+//			sendUp2Date(status == LocationProvider.AVAILABLE);
 		}
 		
 		/**
@@ -184,11 +213,14 @@ public class HostMessageProcess extends MessageProcess {
 		@Override
 		public void onLocationChanged(Location location) {
 			if (location == null) return;
-			
 			// a gpsStatusListener-nek az alábbi változók beállítása
 			mLastLocationMillis = SystemClock.elapsedRealtime();
 			mLastLocation = location;
-			sendUp2Date(true);
+			
+			// up2date frissítése és küldése, ha változott
+			sendUp2Date(location.getAccuracy() <= FINE_ACCURACY);
+			
+			Log.i(ConnectionService.LOG_TAG, "speed: " + (location.getSpeed() * 3.6) + " km/h" + "; accuracy: " + location.getAccuracy() + " m");
 			
 			// pozíció elmentése és üzenet küldése a Hídnak
 			getHostData().setGpsPosition(new Point3D(location.getLatitude(), location.getLongitude(), location.getAltitude()));
@@ -235,7 +267,11 @@ public class HostMessageProcess extends MessageProcess {
 			SERVICE.getVehicle().setCallback(vehicleCallback);
 			if (availableLocation) {
 				locationManager.addGpsStatusListener(gpsStatusListener);
-				locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10f, locationListener);
+				final Criteria criteria = new Criteria();
+			    criteria.setCostAllowed(false);
+			    criteria.setAccuracy(Criteria.ACCURACY_FINE);
+			    provider = locationManager.getBestProvider(criteria, true);
+				locationManager.requestLocationUpdates(provider, 1000, 10f, locationListener);
 			}
 			if (availableDirection) {
 				Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -267,7 +303,7 @@ public class HostMessageProcess extends MessageProcess {
 		sensorManager = (SensorManager)service.getSystemService(Context.SENSOR_SERVICE);
 		availableLocation = locationManager.getAllProviders().contains(LocationManager.GPS_PROVIDER);
 		availableDirection = !sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER).isEmpty() && !sensorManager.getSensorList(Sensor.TYPE_GRAVITY).isEmpty();
-		Log.i(ConnectionService.LOG_TAG, "location: " + availableLocation + "; direction: " + availableDirection);
+		Log.i(ConnectionService.LOG_TAG, "location supported: " + availableLocation + "; direction supported: " + availableDirection);
 	}
 	
 	/**
@@ -365,6 +401,7 @@ public class HostMessageProcess extends MessageProcess {
 	private void sendUp2Date(boolean up2date) {
 		if (getHostData().isUp2Date() != up2date) {
 			getHostData().setUp2Date(up2date);
+			Log.i(ConnectionService.LOG_TAG, "up2date: " + up2date);
 			sendMessage(new HostData.BooleanPartialHostData(up2date, HostData.BooleanPartialHostData.BooleanType.UP_2_DATE));
 		}
 	}

@@ -27,7 +27,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
      * Egy jármű offline állapotban módosítható adatait tartalmazza.
      * Amikor újrakapcsolódik egy jármű, a még bejelentkezettek frissítésére lett létrehozva.
      */
-    public static class FixDatas implements Serializable {
+    public static class OfflineChangeableDatas implements Serializable {
 
         /**
          * Megadja, limitálva van-e a vezérlés.
@@ -39,10 +39,22 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
          */
         public final Boolean vehicleConnected;
 
-        public FixDatas(Boolean fullX, Boolean fullY, Boolean vehicleConnected) {
+        /**
+         * Megadja, hogy van-e GPS jel.
+         */
+        public final Boolean up2date;
+        
+        /**
+         * A jármű helyzete.
+         */
+        public final HostState state;
+        
+        public OfflineChangeableDatas(Boolean fullX, Boolean fullY, Boolean vehicleConnected, Boolean up2date, HostState state) {
             this.fullX = fullX;
             this.fullY = fullY;
             this.vehicleConnected = vehicleConnected;
+            this.up2date = up2date;
+            this.state = state;
         }
 
     }
@@ -103,9 +115,9 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
      * Egy jármű offline állapotban módosítható adatait tartalmazó részadat.
      * Amikor újrakapcsolódik egy jármű, a még bejelentkezettek frissítésére lett létrehozva.
      */
-    public static class FixPartialControllerData extends PartialControllerData<FixDatas> {
+    public static class OfflineChangeablePartialControllerData extends PartialControllerData<OfflineChangeableDatas> {
 
-        public FixPartialControllerData(FixDatas data) {
+        public OfflineChangeablePartialControllerData(OfflineChangeableDatas data) {
             super(data);
         }
 
@@ -118,6 +130,8 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
                 d.setFullX(data.fullX);
                 d.setFullY(data.fullY);
                 d.setVehicleConnected(data.vehicleConnected);
+                d.setUp2Date(data.up2date);
+                d.setHostState(data.state);
             }
         }
 

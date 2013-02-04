@@ -12,7 +12,7 @@ import org.dyndns.fzoli.socket.handler.SecureHandler;
 public class ControllerSideDisconnectProcess extends BridgeDisconnectProcess {
 
     /**
-     * A jármű munkamenete.
+     * A vezérlő munkamenete.
      */
     private ControllerStorage storage;
     
@@ -31,7 +31,7 @@ public class ControllerSideDisconnectProcess extends BridgeDisconnectProcess {
     }
 
     /**
-     * A jármű munkamenetét adja vissza.
+     * A vezérlő munkamenetét adja vissza.
      * Ha még nincs meg a referencia, megkeresi azt.
      */
     private ControllerStorage getControllerStorage() {

@@ -330,6 +330,9 @@ public class HostStorage extends Storage<HostData> {
         broadcastMessage(new ControllerData.BoolenPartialControllerData(underTimeout, ControllerData.BoolenPartialControllerData.BooleanType.HOST_UNDER_TIMEOUT));
     }
 
+    /**
+     * Elküldi az üzenetet azoknak a vezérlőknek, akikhez ez a jármű tartozik.
+     */
     private void broadcastMessage(PartialBaseData<ControllerData, ?> msg) {
         if (msg != null) {
             List<ControllerStorage> l = StorageList.getControllerStorageList();

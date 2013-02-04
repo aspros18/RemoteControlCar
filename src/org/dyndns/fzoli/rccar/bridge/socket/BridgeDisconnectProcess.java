@@ -11,28 +11,8 @@ import org.dyndns.fzoli.socket.process.impl.ServerDisconnectProcess;
  */
 abstract class BridgeDisconnectProcess extends ServerDisconnectProcess implements ConnectionKeys {
     
-//    private final DisconnectProcessTester TESTER = new DisconnectProcessTester();
-    
     public BridgeDisconnectProcess(SecureHandler handler) {
         super(handler, DC_TIMEOUT1, DC_TIMEOUT2, DC_DELAY); // 1 és 10 mp időtúllépés, 250 ms sleep
-    }
-
-    @Override
-    protected void onTimeout(Exception ex) throws Exception {
-        super.onTimeout(ex);
-//        TESTER.onTimeout();
-    }
-
-    @Override
-    protected void beforeAnswer() throws Exception {
-        super.beforeAnswer();
-//        TESTER.beforeAnswer();
-    }
-
-    @Override
-    protected void afterAnswer() throws Exception {
-        super.afterAnswer();
-//        TESTER.afterAnswer();
     }
     
     /**

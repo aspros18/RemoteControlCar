@@ -9,7 +9,7 @@ import org.dyndns.fzoli.rccar.model.controller.ControllerData;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 
 /**
- * A vezérlő kliens oldali üzenetfeldolgozó.
+ * A vezérlő-kliens szerver oldali üzenetfeldolgozója.
  * @author zoli
  */
 public class ControllerSideMessageProcess extends BridgeMessageProcess implements ConnectionKeys {

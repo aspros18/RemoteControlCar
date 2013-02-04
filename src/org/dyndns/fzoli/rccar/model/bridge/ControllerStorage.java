@@ -40,8 +40,14 @@ public class ControllerStorage extends Storage<ControllerData> {
         
     };
     
+    /**
+     * A vezérlő által küldött (illetve a szerver oldalon gyártott) üzeneteket dolgozza fel.
+     */
     private final ControllerData RECEIVER = new ControllerData() {
 
+        /**
+         * Chatüzenet érkezés esetén üzenet tárolása és továbbítása a vezérlőknek.
+         */
         private final List<ChatMessage> LS_MSG = new ArrayList<ChatMessage>() {
 
             @Override
@@ -56,6 +62,9 @@ public class ControllerStorage extends Storage<ControllerData> {
             
         };
 
+        /**
+         * A vezérlők módosulása nem tartozik a munkamenethez, ezért a lista tesz semmit.
+         */
         private final List<ControllerState> LS_CNT = new ArrayList<ControllerState>() {
 
             @Override

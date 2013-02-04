@@ -73,6 +73,9 @@ public class HostStorage extends Storage<HostData> {
         
     };
     
+    /**
+     * A jármű által küldött (illetve a szerver oldalon gyártott) üzeneteket dolgozza fel.
+     */
     private final HostData RECEIVER = new HostData() {
 
         @Override

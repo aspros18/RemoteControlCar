@@ -113,41 +113,44 @@ public final class Permissions {
         
         // ha a fehér listában módosul a sorrend, az irányítók sorbarendezése, és új irányító esetén jelzés a vezérlőknek
         List<HostStorage> hls = StorageList.getHostStorageList();
-        for (HostStorage hs : hls) {
+        for (HostStorage hs : hls) { // végigmegy a járműveken
             
             List<ControllerStorage> owners = hs.getOwners();
-            if (owners.isEmpty()) continue;
+            if (owners.isEmpty()) continue; // ha nincsenek a járműnek irányítói, nincs teendő a járművel
             
-            ControllerStorage oldController = hs.getOwner();
-            List<ControllerStorage> newOwners = new ArrayList<ControllerStorage>();
+            ControllerStorage oldController = hs.getOwner(); // az átrendezés előtti vezérlő
+            List<ControllerStorage> newOwners = new ArrayList<ControllerStorage>(); // az új sorrend
             for (ControllerStorage cs : owners) {
                 int order = getOrder(hs, cs);
-                if (order == -1) {
+                if (order == -1) { // ha a vezérlő rangtalan, a végébe kerül. így a rangtalanok időrend szerint maradnak sorrendben
                     newOwners.add(cs);
-                    continue;
+                    continue; // végeztünk ezzel a vezérlővel
                 }
-                int pos = 0;
+                int pos = 0; // a vezérlő új pozíciója
                 for (ControllerStorage ncs : newOwners) {
                     int index = getOrder(hs, ncs);
-                    if (index == -1) break;
-                    if (index < order) pos++;
-                    else break;
+                    if (index == -1) break; // ha elértük a rangtalanokat, nincs több ranggal rendelkező: kilépés
+                    if (index < order) pos++; // ha az aktuális nagyobb rangú, következő következik
+                    else break; // egyébként megtalálva az új hely
                 }
-                newOwners.add(pos, cs);
+                newOwners.add(pos, cs); // vezérlő hozzáadása az új pozícióra
             }
             
-            owners.clear();
-            owners.addAll(newOwners);
+            owners.clear(); // a régi lista kiürítése
+            owners.addAll(newOwners); // és újra feltöltése
             
-            ControllerStorage newController = newOwners.get(0);
-            if (oldController != newController) {
+            ControllerStorage newController = newOwners.get(0); // az új vezérlő
+            if (oldController != newController) { // ha a vezérlő lecserélődött
                 
-                owners.remove(oldController);
+                owners.remove(oldController); // a régi vezérlő eltávolítása
                 
+                // jelzés az érintetteknek:
                 oldController.getSender().setControlling(false);
                 oldController.getSender().setWantControl(false);
                 newController.getSender().setControlling(true);
                 newController.getSender().setWantControl(true);
+                
+                // állapotmódosulás jelzése mindenkinek, aki a járműhöz van csatlakozva:
                 ControllerState stOld = new ControllerState(oldController.getName(), false, false);
                 ControllerState stNew = new ControllerState(newController.getName(), true, true);
                 ControllerData.ControllerChangePartialControllerData msgOld = new ControllerData.ControllerChangePartialControllerData(new ControllerData.ControllerChange(stOld));
@@ -160,16 +163,25 @@ public final class Permissions {
                 
             }
             
+            newOwners.clear(); // a már nem használt lista kiürítése memória felszabadítás céljából
         }
         
     }
     
+    /**
+     * Megadja a rangját az adott vezérlőnek az adott járműhöz.
+     * @return a rang vagy -1 ha nincs rang
+     */
     public static Integer getOrder(HostStorage hs, ControllerStorage cs) {
         int[] res = getOrders(hs, cs);
         if (res == null) return null;
         return res[0];
     }
     
+    /**
+     * Megadja a rangját az adott vezérlőknek az adott járműhöz.
+     * @return a paraméterben megadott vezérlőkkel azonos sorrendben ranglista
+     */
     public static int[] getOrders(HostStorage hs, ControllerStorage ... cses) {
         if (hs == null || cses == null) return null;
         int[] orders = new int[cses.length];

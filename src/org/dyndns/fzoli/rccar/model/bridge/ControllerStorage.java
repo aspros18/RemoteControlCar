@@ -282,12 +282,12 @@ public class ControllerStorage extends Storage<ControllerData> {
                 for (ControllerStorage cs : l) {
                     if (skipMe && cs == ControllerStorage.this) continue;
                     if (hs == cs.getHostStorage()) {
-                        cs.getMessageProcess().sendMessage(msgc);
+                        cs.getMessageProcess().sendMessage(msgc, false);
                     }
                 }
             }
             if (msgh != null && hs != null) {
-                hs.getMessageProcess().sendMessage(msgh);
+                hs.getMessageProcess().sendMessage(msgh, false);
             }
         }
 

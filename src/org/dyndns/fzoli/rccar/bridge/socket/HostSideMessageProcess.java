@@ -53,12 +53,12 @@ public class HostSideMessageProcess extends BridgeMessageProcess {
             if (Permissions.getConfig().isEnabled(getRemoteCommonName(), cs.getName())) {
                 // ha nincs jármű kiválasztva, akkor járműválasztóban van, tehát járműlista változás küldése
                 if (cs.getHostStorage() == null) {
-                    cs.getMessageProcess().sendMessage(msgLs);
+                    cs.getMessageProcess().sendMessage(msgLs, false);
                 }
                 // ha a vezérlő az adott járműhöz tartozik, akkor offline módosulható adatok elküldése és jelzés arról, hogy elérhető-e a jármű
                 if (cs.getHostStorage() == storage) {
-                    cs.getMessageProcess().sendMessage(msgOffDat);
-                    cs.getMessageProcess().sendMessage(msgConn);
+                    cs.getMessageProcess().sendMessage(msgOffDat, false);
+                    cs.getMessageProcess().sendMessage(msgConn, false);
                 }
             }
         }

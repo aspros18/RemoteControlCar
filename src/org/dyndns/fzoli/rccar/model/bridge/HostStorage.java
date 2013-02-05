@@ -375,7 +375,7 @@ public class HostStorage extends Storage<HostData> {
             List<ControllerStorage> l = StorageList.getControllerStorageList();
             for (ControllerStorage cs : l) {
                 if (HostStorage.this == cs.getHostStorage()) {
-                    cs.getMessageProcess().sendMessage(msg);
+                    cs.getMessageProcess().sendMessage(msg, false);
                 }
             }
         }

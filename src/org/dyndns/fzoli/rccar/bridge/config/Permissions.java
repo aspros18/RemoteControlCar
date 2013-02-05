@@ -105,7 +105,7 @@ public final class Permissions {
                     if (!hs.isConnected()) continue; // ha offline a jármű, kihagyja
                     boolean enabled = getConfig().isEnabled(hs.getName(), cs.getName());
                     if (previous.isEnabled(hs.getName(), cs.getName()) != enabled) { // ha megváltozott a járműhöz való engedély
-                        cs.getMessageProcess().sendMessage(new HostList.PartialHostList(hs.getName(), enabled ? HostList.PartialHostList.ChangeType.ADD : HostList.PartialHostList.ChangeType.REMOVE)); // üzenet küldése a vezérlőnek, hogy a járműlista egyik eleme módosult
+                        cs.getMessageProcess().sendMessage(new HostList.PartialHostList(hs.getName(), enabled ? HostList.PartialHostList.ChangeType.ADD : HostList.PartialHostList.ChangeType.REMOVE), false); // üzenet küldése a vezérlőnek, hogy a járműlista egyik eleme módosult
                     }
                 }
             }
@@ -157,8 +157,8 @@ public final class Permissions {
                 ControllerData.ControllerChangePartialControllerData msgNew = new ControllerData.ControllerChangePartialControllerData(new ControllerData.ControllerChange(stNew));
                 List<? extends ControllerStorage> cses = hs.getControllers();
                 for (ControllerStorage cs : cses) {
-                    cs.getMessageProcess().sendMessage(msgOld);
-                    cs.getMessageProcess().sendMessage(msgNew);
+                    cs.getMessageProcess().sendMessage(msgOld, false);
+                    cs.getMessageProcess().sendMessage(msgNew, false);
                 }
                 
             }

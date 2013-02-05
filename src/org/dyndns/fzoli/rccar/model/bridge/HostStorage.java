@@ -287,19 +287,24 @@ public class HostStorage extends Storage<HostData> {
     
     /**
      * Vezérlő hozzáadása.
+     * A hozzáadás után jelez a többi vezérlőnek, hogy kapcsolódás történt.
+     * Ha az első vezérlő adódott hozzá a járműhöz, akkor jelez a járműnek, hogy folytassa az MJPEG-stream küldését.
      * Ezt a metódust a {@code ControllerStorage.setHostStorage} metódus hívja meg.
      */
     void addController(ControllerStorage controller) {
         CONTROLLERS.add(controller);
         if (CONTROLLERS.size() == 1) { // ha ő az első kapcsolódó a járműhöz
             getSender().setStreaming(true); // MJPEG-stream folytatása, mert az első vezérlő kapcsolódott
-//            controller.getReceiver().setWantControl(true); // egyből kapna vezérlést is
+//            controller.getReceiver().setWantControl(true); // egyből kapna vezérlést is, de szándékosan kivettem
         }
         broadcastControllerChange(new ControllerData.ControllerChange(ControllerStorage.createControllerState(this, controller)));
     }
 
     /**
      * Vezérlő eltávolítása.
+     * A vezérlők listájából eltávolítja a vezérlő klienst és jelzi a többieknek a módosulást.
+     * Ha a vezérlő még kapcsolódva van egy járműhöz, leválasztja a szerver róla (ezzel a vezérlés is megvonódik ha éppen vezérelte).
+     * Ha a leválasztás után egy vezérlő se maradt, a járműnek jelez, hogy szüneteltesse a MJPEG-streamet az adatforgalom kímélése érdekében.
      * Ezt a metódust a {@code ControllerStorage.setHostStorage} metódus hívja meg.
      */
     void removeController(ControllerStorage controller) {

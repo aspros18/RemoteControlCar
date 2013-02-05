@@ -111,7 +111,7 @@ public final class Permissions {
             }
         }
         
-        // ha a fehér listában módosul a sorrend, az irányítók sorbarendezése, és új irányító esetén jelzés a vezérlőknek
+        // ha a fehér listában módosul a sorrend, az irányítók sorbarendezése, és új irányító esetén jelzés a vezérlőknek (hasonlóan mint a ControllerStorage.getReceiver().setWantControl() metódusban)
         List<HostStorage> hls = StorageList.getHostStorageList();
         for (HostStorage hs : hls) { // végigmegy a járműveken
             

@@ -2,6 +2,7 @@ package org.dyndns.fzoli.rccar.model.bridge;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.dyndns.fzoli.rccar.bridge.config.Permissions;
 import org.dyndns.fzoli.rccar.model.Control;
@@ -46,10 +47,13 @@ public class ControllerStorage extends Storage<ControllerData> {
     private final ControllerData RECEIVER = new ControllerData() {
 
         /**
-         * Chatüzenet érkezés esetén üzenet tárolása és továbbítása a vezérlőknek.
+         * Chatüzenet feldolgozó.
          */
         private final List<ChatMessage> LS_MSG = new ArrayList<ChatMessage>() {
 
+            /**
+             * Chatüzenet érkezés esetén üzenet tárolása és továbbítása a vezérlőknek.
+             */
             @Override
             public boolean add(ChatMessage e) {
                 if (!e.data.trim().isEmpty() && getHostStorage() != null) {
@@ -67,63 +71,110 @@ public class ControllerStorage extends Storage<ControllerData> {
          */
         private final List<ControllerState> LS_CNT = new ArrayList<ControllerState>() {
 
+            /**
+             * Nincs hozzáadás.
+             */
             @Override
             public boolean add(ControllerState e) {
                 return false;
             }
 
+            /**
+             * Nincs törlés.
+             */
             @Override
             public boolean remove(Object o) {
                 return false;
             }
 
+            /**
+             * Nincs hozzáadás.
+             */
+            @Override
+            public boolean addAll(Collection<? extends ControllerState> c) {
+                return super.addAll(c);
+            }
+
         };
 
+        /**
+         * A chatüzenet feldolgozó listával tér vissza.
+         */
         @Override
         public List<ChatMessage> getChatMessages() {
             return LS_MSG;
         }
 
+        /**
+         * A vezérlőkkel kapcsolatos műveletek nem tartoznak ezen objektum hatáskörébe,
+         * ezért egy olyan listával tér vissza, ami nem csinál semmit hozzáadáskor és törléskor.
+         */
         @Override
         public List<ControllerState> getControllers() {
             return LS_CNT;
         }
 
+        /**
+         * Beállítja a vezérlőjelet, ha a kérő jogosult a vezérlésre és vezérli is a járművet, majd vezérlőjel küldése a klienseknek.
+         */
         @Override
         public void setControl(Control control) {
             HostStorage hs = getHostStorage();
-            if (hs != null && control != null && hs.getHostData().isVehicleConnected() != null && !ControllerStorage.this.isViewOnly() && hs.getHostData().isVehicleConnected() && hs.getOwner() == ControllerStorage.this) {
-                hs.incControlCount();
-                hs.getHostData().setControl(control);
-                HostData.ControlPartialHostData msgh = new HostData.ControlPartialHostData(control);
-                ControllerData.ControlPartialControllerData msgc = new ControllerData.ControlPartialControllerData(control);
-                broadcastMessage(msgc, msgh, true);
+            if (hs != null && control != null && hs.getHostData().isVehicleConnected() != null && !ControllerStorage.this.isViewOnly() && hs.getHostData().isVehicleConnected() && hs.getOwner() == ControllerStorage.this) { // ha van rá jogosultság és irányítható a jármű
+                hs.incControlCount(); // counter inkrementálása, hogy detektálni lehessen több szál esetén, hogy módosult-e a vezérlőjel
+                hs.getHostData().setControl(control); // vezérlőjel beállítása
+                HostData.ControlPartialHostData msgh = new HostData.ControlPartialHostData(control); // vezérlőjelet tartalmazó üzenet létrehozása a jármű számára
+                ControllerData.ControlPartialControllerData msgc = new ControllerData.ControlPartialControllerData(control); // vezérlőjelet tartalmazó üzenet létrehozása a vezérlők számára
+                broadcastMessage(msgc, msgh, true); // üzenet elküldése a vezérlőknek és a járműnek, de a vezérlőjelet küldő vezérlő kihagyásával
             }
         }
 
+        /**
+         * Beállítja a járműválasztóban kiválasztott járművet a munkamenethez vagy kilép a járműből.
+         * Jármű választásakor ha a vezérlő jogosult a jármű használatához, beállítódik a jármű munkamenete és a kliens megkapja a jármű összes adatát.
+         * Jármű elhagyásakor vezérlés lemondatása, majd jármű leválasztása a munkamenetről és járműlista küldése, hogy lehessen újra járművet választani.
+         */
         @Override
         public void setHostName(String hostName) {
             HostList ls = StorageList.createHostList(getName());
-            if (hostName != null && ls.getHosts().contains(hostName)) {
+            if (hostName != null && ls.getHosts().contains(hostName)) { // kapcsolódás a járműhöz: jogosultság ellenőrzés (extra védelem, ha nem támadás történik, nem fordul elő)
                 HostStorage storage = StorageList.findHostStorageByName(hostName);
-                setHostStorage(storage);
-                getMessageProcess().sendMessage(createControllerData());
+                setHostStorage(storage); // jármű munkamenetének beállítása
+                getMessageProcess().sendMessage(createControllerData()); // a kezdeti adatmodel generálása és küldése
             }
-            if (hostName == null) {
-                if (getHostStorage() != null) {
-                    if (ControllerStorage.this == getHostStorage().getOwner()) setWantControl(false, false);
-                    else getHostStorage().getOwners().remove(ControllerStorage.this);
+            if (hostName == null) { // kilépés a járműből
+                if (getHostStorage() != null) { // ha van miből (extra védelem)
+                    if (ControllerStorage.this == getHostStorage().getOwner()) setWantControl(false, false); // ha vezérli a járművet, vezérlés lemondása
+                    else getHostStorage().getOwners().remove(ControllerStorage.this); // egyébként egyszerű törlés a várólistáról
                 }
-                setHostStorage(null);
-                getMessageProcess().sendMessage(ls);
+                setHostStorage(null); // nincs többi jármű kiválasztva a munkamenetben
+                getMessageProcess().sendMessage(ls); // a járműlista küldése, hogy a járműválasztó megjelenhessen
             }
         }
 
+        /**
+         * Beállítja a jármű vezérlőjét.
+         * @see #setWantControl(java.lang.Boolean, boolean)
+         */
         @Override
         public void setWantControl(Boolean wantControl) {
             setWantControl(wantControl, true);
         }
 
+        /**
+         * Beállítja a jármű vezérlőjét.
+         * Ezen metódus segítségével lehet a vezérlést kérni, a kérést visszavonni illetve lemondani a vezérlésről.
+         * A vezérlés kérésekor a kérő megkapja a jármű vezérlését, ha van rá jogosultsága.
+         * Akkor jogosult egy vezérlő az irányítás megszerzésére, ha:
+         * - nincs tíltva a vezérlés
+         * - nem vezérlik már a járművet, vagy a jelenlegi vezérlő rangja alacsonyabb
+         * Ha az irányítás átvételére jelenleg nem jogosult a vezérlő és nincs neki tiltva a vezérlés, várólistára kerül.
+         * Amint a jelenlegi vezérlő lemond a vezérlésről és a listában ő következik, megkapja a vezérlést.
+         * Ha a felhasználó idő közben meggondolja magát, lekerülhet a várólistáról, ha visszavonja a kérést.
+         * Ha a járművet vezérli a felhasználó, bármikor lemondhat a vezérlésről.
+         * A chat ablakban mindig látható, hogy ki az aktuális irányító és rendszerüzenet jelenik meg, ha
+         * valaki várólistára került és szeretne vezérelni illetve visszavonta a kérelmet.
+         */
         private void setWantControl(Boolean wantControl, boolean fire) {
             if (getHostStorage() == null) return; // ha nincs jármű kiválasztva, nincs min kérni a vezérlést, vagy lemondani a vezérlésről (extra védelem)
             ControllerStorage oldOwner = getHostStorage().getOwner(); // a jelenlegi irányító, aki le lesz váltva, tehát ő a régi irányító
@@ -131,17 +182,24 @@ public class ControllerStorage extends Storage<ControllerData> {
             
             if (!wantControl && oldOwner != null && oldOwner != ControllerStorage.this) { // ha a vezérlés kérést szeretnék visszavonni ...
                 getHostStorage().getOwners().remove(ControllerStorage.this); // ... akkor eltávolítás a listából ...
-                getSender().setWantControl(false); // ... és jelzés, hogy megtörtént
+                getSender().setWantControl(false); // ... és jelzés, hogy megtörtént (a vezérléskérő gomb legyen újra aktív)
                 broadcastControllerState(new ControllerState(getName(), false, false), !fire); // frissítteti a vezérlő állapotát
                 return; // jogtalan vezérlés elkerülése érdekében a metódus végetér
             }
             
-            ControllerStorage newOwner = wantControl ? ControllerStorage.this : null; // a kérő az új irányító, ha az irányítást kérte, egyébként ...
+            if (wantControl) { // ha a vezérlő kéri az irányítást, engedély ellenőrzés
+                // csak azt kell nézni, kérhet-e vezérlést, mert ha nem lenne jogosult a jármű kiválasztására, a járműválasztóban nem történne semmi,
+                // így nem választhatná ki a járművet és a munkamenethez nem tartozna jármű (metódus első utasításánál kilépés történik ez esetben)
+                if (ControllerStorage.this.isViewOnly()/* || !Permissions.getConfig().isEnabled(getHostStorage().getName(), getName())*/)
+                    return; // ha jogosulatlan az irányításra, nincs mit tenni (extra védelem, mert valójában az eredeti kliens programból nem lehet jogosulatlanul vezérlést kérni)
+            }
+            
+            ControllerStorage newOwner = wantControl ? ControllerStorage.this : null; // a kérő lesz az új irányító, ha az irányítást kérte, egyébként ...
             if (newOwner == null && getHostStorage().getOwners().size() > 1) { // ... ha van soron következő, akkor ...
                 newOwner = getHostStorage().getOwners().get(1); // ... a soron következő lesz az új irányító
             }
             
-            if (wantControl && oldOwner != null && newOwner != null) { // ha szükség van jogosultság-ellenőrzésre
+            if (wantControl && oldOwner != null && newOwner != null) { // ha szükség van sorrendi jogosultság-ellenőrzésre
                 int[] indexes = Permissions.getOrders(getHostStorage(), oldOwner, newOwner);
                 int oldIndex = indexes[0], newIndex = indexes[1]; // az új és a régi vezérlő rangja (-1 esetén rangtalan)
                 if (
@@ -171,7 +229,7 @@ public class ControllerStorage extends Storage<ControllerData> {
                         }
                     }
                     owners.add(pos, newOwner); // miután meg van a megfelelő pozíció, várólistára kerül a kérő, ...
-                    newOwner.getSender().setWantControl(wantControl); // ... visszajelezi a szerver, hogy vége a feldolgozásnak, ...
+                    newOwner.getSender().setWantControl(wantControl); // ... visszajelezi a szerver, hogy vége a feldolgozásnak (és újra aktív lehet a gomb), ...
                     broadcastControllerState(new ControllerState(getName(), false, true), !fire); // ... és frissítteti a vezérlő állapotát
                     return; // nem fut tovább a metódus, ezzel a jogtalan vezérlést elkerülve
                 }
@@ -203,10 +261,20 @@ public class ControllerStorage extends Storage<ControllerData> {
             }
         }
         
+        /**
+         * Egy vezérlő állapotot küld el a vezérlő klienseknek.
+         * @param skipMe true esetén a metódus nem küld üzenetet annak a vezérlőnek, akihez a munkamenet tartozik
+         */
         private void broadcastControllerState(ControllerState s, boolean skipMe) {
             broadcastMessage(new ControllerData.ControllerChangePartialControllerData(new ControllerChange(s)), null, skipMe);
         }
         
+        /**
+         * Üzenetet küld az összes vezérlő kliensnek és a jármű kliensnek.
+         * @param msgc a vezérlőknek küldendő üzenet
+         * @param msgh a jármű kliensnek küldendő üzenet
+         * @param skipMe true esetén a metódus nem küld üzenetet annak a vezérlőnek, akihez a munkamenet tartozik
+         */
         private void broadcastMessage(PartialBaseData<ControllerData, ?> msgc, PartialBaseData<HostData, ?> msgh, boolean skipMe) {
             HostStorage hs = getHostStorage();
             if (msgc != null && hs != null) {

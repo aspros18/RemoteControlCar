@@ -37,7 +37,7 @@ abstract class BridgeDisconnectProcess extends ServerDisconnectProcess implement
      * Jelez a felhasználónak, kapcsolódást illetve lekapcsolódást, ha kérik.
      */
     private void log(boolean connect) {
-        ConnectionAlert.log(getRemoteCommonName() + ' ' + (connect ? "kapcsolódott a hídhoz" : "lekapcsolódott a hídról"));
+        ConnectionAlert.log(getRemoteCommonName() + " (" + (getDeviceId() == KEY_DEV_CONTROLLER ? "vezérlő" : "jármű") + ") " + (connect ? "kapcsolódott a hídhoz" : "lekapcsolódott a hídról"));
     }
     
 }

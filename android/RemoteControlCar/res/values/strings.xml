@@ -14,6 +14,7 @@
     <string name="title_cam_port">Port</string>
     <string name="title_cam_user">User</string>
     <string name="title_cam_password">Password</string>
+    <string name="title_inspected_stream">Inspected stream</string>
     <string name="title_password">Certificate password</string>
     <string name="title_refresh_interval">Refresh interval</string>
     <string name="title_reconnect_delay">Reconnect delay</string>
@@ -29,6 +30,7 @@
     <string name="summary_cam_port">Edit server port</string>
     <string name="summary_cam_user">Edit server user</string>
     <string name="summary_cam_password">Edit server password</string>
+    <string name="summary_inspected_stream">Use inspected, but slower stream</string>
     <string name="summary_password">Edit optional password</string>
     <string name="summary_refresh_interval">Edit refresh interval</string>
     <string name="summary_reconnect_delay">Edit reconnect delay</string>

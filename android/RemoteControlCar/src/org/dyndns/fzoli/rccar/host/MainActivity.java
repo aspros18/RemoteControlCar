@@ -4,7 +4,7 @@ import java.text.DecimalFormat;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.dyndns.fzoli.rccar.host.socket.HostVideoProcess;
+import org.dyndns.fzoli.rccar.host.socket.UninspectedHostVideoProcess;
 
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -187,7 +187,7 @@ public class MainActivity extends SherlockActivity {
 	protected void onDestroy() {
 		unbindService(false);
 		if (!ConnectionService.isStarted(this) || ConnectionService.isSuspended()) {
-			HostVideoProcess.stopIPWebcamActivity(this);
+			UninspectedHostVideoProcess.stopIPWebcamActivity(this);
 		}
 		super.onDestroy();
 	}

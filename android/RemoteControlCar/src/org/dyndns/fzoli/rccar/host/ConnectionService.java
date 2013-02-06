@@ -868,6 +868,14 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	/**
+	 * Megadja, hogy legyen-e ellenőrzötten streamelve az MJPEG-folyam.
+	 * @param context a meghívó referenciája Pl. Service, Activity
+	 */
+	public static boolean isInspectedStream(Context context) {
+		return getSharedPreferences(context).getBoolean("inspected_stream", false);
+	}
+	
+	/**
 	 * Megadja, hogy kényszerítve van-e a kapcsolódás a Hídhoz.
 	 * Ha igen, akkor nem kell nézni, hogy van-e aktív hálózati kapcsolat, hanem meg kell kísérelni a kapcsolódást.
 	 * @param context a meghívó referenciája Pl. Service, Activity

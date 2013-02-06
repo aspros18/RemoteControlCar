@@ -62,6 +62,11 @@
             android:inputType="textPassword"
             android:defaultValue=""
             android:dependency="cam_user" />
+        <CheckBoxPreference
+            android:key="inspected_stream"
+            android:title="@string/title_inspected_stream"
+            android:summary="@string/summary_inspected_stream"
+            android:defaultValue="false" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/category_other">
         <ListPreference

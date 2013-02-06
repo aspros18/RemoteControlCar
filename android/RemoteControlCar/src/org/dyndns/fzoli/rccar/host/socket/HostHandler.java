@@ -81,7 +81,8 @@ public class HostHandler extends AbstractSecureClientHandler implements Connecti
         	case KEY_CONN_MESSAGE:
         		return new HostMessageProcess(SERVICE, this);
         	case KEY_CONN_VIDEO_STREAM:
-        		return new HostVideoProcess(SERVICE, this);
+        		if (ConnectionService.isInspectedStream(SERVICE)) return new InspectedHostVideoProcess(SERVICE, this);
+        		else return new UninspectedHostVideoProcess(SERVICE, this);
 		}
 		return null;
 	}

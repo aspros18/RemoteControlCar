@@ -1,7 +1,5 @@
 package org.dyndns.fzoli.rccar.host.socket;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.SocketException;
@@ -10,10 +8,8 @@ import java.net.URL;
 import org.apache.commons.ssl.Base64;
 import org.dyndns.fzoli.rccar.host.Config;
 import org.dyndns.fzoli.rccar.host.ConnectionService;
-import org.dyndns.fzoli.rccar.host.ConnectionService.ConnectionError;
 import org.dyndns.fzoli.rccar.host.R;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
-import org.dyndns.fzoli.socket.mjpeg.impl.MjpegStreamRepeater;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
 
 import android.content.Context;
@@ -22,27 +18,27 @@ import android.util.Log;
 
 /**
  * A kamerakép streamelése a hídnak MJPEG folyamként.
- * TODO: előfordul ritkán olyan eset, amikor az IP Webcam futását nem észleli a kód. talán jobb lenne úgy megírni, hogy csak egyszer hívja az activityt.
+ * A Hídnak való streamelés megvalósítása az utód osztályok feladata.
  * @author zoli
  */
-public class HostVideoProcess extends AbstractSecureProcess {
+public abstract class AbstractHostVideoProcess extends AbstractSecureProcess {
 
 	/**
 	 * Az IP Webcam alkalmazás elindításához szükséges.
 	 */
-	private final ConnectionService SERVICE;
+	protected final ConnectionService SERVICE;
 	
 	/**
 	 * A kiépített MJPEG stream HTTP kapcsolata.
 	 */
-	private HttpURLConnection conn;
+	protected HttpURLConnection conn;
 	
 	/**
 	 * Biztonságos MJPEG stream küldő inicializálása.
 	 * @param handler Biztonságos kapcsolatfeldolgozó, ami létrehozza ezt az adatfeldolgozót.
 	 * @throws NullPointerException ha handler null
 	 */
-	public HostVideoProcess(ConnectionService service, SecureHandler handler) {
+	public AbstractHostVideoProcess(ConnectionService service, SecureHandler handler) {
 		super(handler);
 		SERVICE = service;
 	}
@@ -104,7 +100,7 @@ public class HostVideoProcess extends AbstractSecureProcess {
 	 * Ha a harmadik kapcsolódás sem sikerül, szintén újraindítja az IP Webcam alkalmazást.
 	 * @return true, ha sikerült a kapcsolódás és a folyam olvasása, egyébként false
 	 */
-	private boolean openIPWebcamConnection() {
+	protected boolean openIPWebcamConnection() {
 		Config conf = SERVICE.getConfig();
 		String port = conf.getCameraStreamPort(); // szerver port
 		String user = conf.getCameraStreamUser(); // felhasználónév
@@ -161,12 +157,10 @@ public class HostVideoProcess extends AbstractSecureProcess {
 	 * Lezárja a kapcsolatot az IP Webcam alkalmazás szerverével és leállítja az IP Webcam programot.
 	 * @param stop true esetén az IP Webcam program leáll, egyébként csak a kapcsolat zárul le
 	 */
-	private void closeIPWebcamConnection(boolean stop) {
+	protected void closeIPWebcamConnection(boolean stop) {
 		if (conn != null) conn.disconnect();
 		if (stop) stopIPWebcamActivity();
 	}
-	
-	private int runCounter = 0;
 	
 	/**
 	 * Elkezdi streamelni az IP Webcam által küldött MJPEG folyamot.
@@ -176,65 +170,6 @@ public class HostVideoProcess extends AbstractSecureProcess {
 	 * Ha a hídnak való feltöltés közben hiba történik, az egész kapcsolatfeldolgozó újrapéldányosítódik új kapcsolattal.
 	 */
 	@Override
-	public void run() {
-		try {
-			Log.i(ConnectionService.LOG_TAG, "video process started");
-			if (openIPWebcamConnection()) {
-				try {
-					InputStream in = conn.getInputStream();
-					OutputStream out = getSocket().getOutputStream();
-					new MjpegStreamRepeater(in, out, runCounter++ == 0) {
-						
-						protected boolean isUnwriteable() {
-							return !SERVICE.getBinder().getHostData().isStreaming(); // ha nem kell streamelni, akkor tiltja a képkockák továbbítását a Híd felé
-						};
-						
-						@Override
-						protected boolean isInterrupted() {
-							if (getSocket().isClosed()) return true; // ha a socket kapcsolat végetért, befejezi a streamelést
-							return super.isInterrupted();
-						}
-						
-						@Override
-						protected boolean onException(Exception ex, int err) {
-							if (err == ERR_FIRST_READ || err == ERR_READ) { // nem sikerült olvasni a streamet (az IP Webcam talán leállt és nagy valószínűséggel a felhasználó állította le)
-								Log.i(ConnectionService.LOG_TAG, "IP Webcam closed", ex);
-								// mjpeg stream kapcsolat bontása, run metódus rekurzív hívása és return;
-								if (!getSocket().isClosed()) {
-									closeIPWebcamConnection(false);
-									run();
-									return false;
-								}
-							}
-							else if (err == ERR_HEADER_WRITE || err == ERR_WRITE) { // nem sikerült írni a socket kimenő folyamába (a hídnaknak való streamelés közben hiba történt)
-								Log.i(ConnectionService.LOG_TAG, "mjpeg streaming error. socket closed: " + getSocket().isClosed(), ex);
-								// ha a socket nincs lezárva, a feldolgozó kapcsolatának lezárása és új process példányosítása új kapcsolattal
-								if (!getSocket().isClosed()) {
-									closeIPWebcamConnection(false);
-									SERVICE.recreateProcess(HostVideoProcess.this);
-									return false;
-								}
-							}
-							return !getSocket().isClosed();
-						}
-						
-					}.handleConnection();
-				}
-				catch (Exception ex) { // ismeretlen hiba történt
-					Log.i(ConnectionService.LOG_TAG, "unknown error", ex);
-					SERVICE.onConnectionError(ConnectionError.OTHER);
-				}
-			}
-			else {
-				SERVICE.onConnectionError(ConnectionError.WEB_IPCAM_UNREACHABLE); // ip webcam fatális hiba hívása
-			}
-			Log.i(ConnectionService.LOG_TAG, "video process finished");
-			closeIPWebcamConnection(false); // a kapcsolat bontása, de az IP Webcam futva hagyása
-		}
-		catch (Throwable t) { // egyéb hiba történt
-			Log.i(ConnectionService.LOG_TAG, "not important error", t);
-			SERVICE.onConnectionError(ConnectionError.OTHER);
-		}
-	}
+	public abstract void run();
 
 }

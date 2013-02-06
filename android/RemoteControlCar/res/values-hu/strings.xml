@@ -10,6 +10,7 @@
     <string name="title_key">Kulcs</string>
     <string name="title_cam_user">Felhasználónév</string>
     <string name="title_cam_password">Jelszó</string>
+    <string name="title_inspected_stream">Ellenőrzött stream</string>
     <string name="title_password">Tanúsítvány jelszó</string>
     <string name="title_refresh_interval">Frissítési időköz</string>
     <string name="title_reconnect_delay">Kapcsolódás késleltetés</string>
@@ -25,6 +26,7 @@
     <string name="summary_cam_port">Szerver port megadása</string>
     <string name="summary_cam_user">Szerver felhasználónév megadása</string>
     <string name="summary_cam_password">Szerver jelszó megadása</string>
+    <string name="summary_inspected_stream">Ellenőrzött, de lassabb stream</string>
     <string name="summary_password">Opcionális jelszó megadása</string>
     <string name="summary_refresh_interval">Frissítési időköz megadása</string>
     <string name="summary_reconnect_delay">Újrakapcsolódás késleltetés megadása</string>

@@ -242,13 +242,13 @@ public class ControllerStorage extends Storage<ControllerData> {
             
             if (oldOwner != null) { // ha van régi irányító:
                 getHostStorage().getOwners().remove(oldOwner); // eltávolítás az irányítók listájából
-                ConnectionAlert.logMessage("", getHostStorage().getName() + " járművet már nem vezérli: " + oldOwner.getName(), TrayIcon.IconType.INFO, false); // naplózás
+                logControllerChange(oldOwner, false); // naplózás
             }
             
             if (newOwner != null) { // ha van új irányító:
                 getHostStorage().getOwners().remove(newOwner); // ha már szerepel a listában, eltávolítás, hogy aztán ...
                 getHostStorage().getOwners().add(0, newOwner); // ... a lista első helyére kerüljön, ezáltal irányítóvá válva
-                ConnectionAlert.logMessage("", getHostStorage().getName() + " járműnek új vezérlője van: " + newOwner.getName(), TrayIcon.IconType.INFO, false); // naplózás
+                logControllerChange(newOwner, true); // naplózás
             }
             
             if (oldOwner != null) { // jelzés leadása, hogy a régi irányító már nem irányíthat és mivel lekerült a listáról, ha újra vezérelni akar, kérnie kell
@@ -263,6 +263,15 @@ public class ControllerStorage extends Storage<ControllerData> {
                 newOwner.getSender().setWantControl(true); // true, hogy lemondhasson a vezérlésről
                 broadcastControllerState(new ControllerState(newOwner.getName(), true, true), !fire); // jelzés mindenkinek, hogy ki az új vezérlő
             }
+        }
+        
+        /**
+         * Naplózza a vezérlő változását.
+         * @param s a vezérlő, ami vagy megkapta a vezérlést, vagy elvesztette
+         * @param get true esetén megkapta a vezérlést, egyébként elvesztette
+         */
+        private void logControllerChange(ControllerStorage s, boolean get) {
+            ConnectionAlert.logMessage("", "[" + getHostStorage().getName() + "] " + (get ? "járműnek az új vezérlője" : "járművet már nem vezérli") + " [" + s.getName() + "]", TrayIcon.IconType.INFO, false);
         }
         
         /**

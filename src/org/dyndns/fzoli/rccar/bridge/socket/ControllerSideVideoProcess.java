@@ -73,7 +73,7 @@ public class ControllerSideVideoProcess extends AbstractSecureProcess {
          * Ha kivétel keletkezett, a stream olvasó ciklus folytatódhat, de csak akkor, ha nincs lezárva a socket.
          */
         @Override
-        protected boolean onException(Exception ex) {
+        protected boolean onException(Exception ex, int err) {
             return !socket.isClosed();
         }
         

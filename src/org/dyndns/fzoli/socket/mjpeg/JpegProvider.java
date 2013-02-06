@@ -20,6 +20,14 @@ public abstract class JpegProvider {
     private static final String STR_BOUNDARY = "--Ba4oTvQMY8ew04N8dcnM";
     
     /**
+     * Hibakód a kivételkezeléshez.
+     */
+    protected static final int ERR_HEADER_WRITE = 0,
+                               ERR_FIRST_READ = 1,
+                               ERR_READ = 2,
+                               ERR_WRITE = 3;
+    
+    /**
      * MJPEG kimenő folyam.
      */
     private final OutputStream out;
@@ -67,6 +75,14 @@ public abstract class JpegProvider {
      * @return false esetén kiolvasható, egyébként nem
      */
     protected boolean isUnreadable() {
+        return false;
+    }
+    
+    /**
+     * Megadja, hogy az aktuális képkockát ki lehet-e írni a kimenő folyamra.
+     * @return false esetén kiküldhető, egyébként nem
+     */
+    protected boolean isUnwriteable() {
         return false;
     }
     
@@ -130,9 +146,11 @@ public abstract class JpegProvider {
     /**
      * Kivétel keletkezett a ciklusban a kimenetre írás közben.
      * A metódus eredetileg false értékkel tér vissza, ezzel a ciklus végetér.
+     * @param ex a keletkezett kivétel
+     * @param err a kivételhez tartozó hibakód
      * @return true esetén folytatódik a ciklus, egyébként kilép a ciklusból
      */
-    protected boolean onException(Exception ex) {
+    protected boolean onException(Exception ex, int err) {
         return false;
     }
     
@@ -140,23 +158,35 @@ public abstract class JpegProvider {
      * MJPEG folyamot küld a kimenetre.
      * Forrás: http://www.damonkohler.com/2010/10/mjpeg-streaming-protocol.html
      */
-    public void handleConnection() throws Exception {
-        if (sendInfoHeader) {
-            out.write((
-                "HTTP/1.0 200 OK\r\n" +
-                "Server: " + STR_SERVER + "\r\n" +
-                "Connection: close\r\n" +
-                "Max-Age: 0\r\n" +
-                "Expires: 0\r\n" +
-                "Cache-Control: no-cache, private\r\n" + 
-                "Pragma: no-cache\r\n" + 
-                "Content-Type: multipart/x-mixed-replace; " +
-                "boundary=" + STR_BOUNDARY + "\r\n\r\n").getBytes());
+    public void handleConnection() {
+        if (sendInfoHeader) { // ha ki kell küldeni a headert
+            try {
+                out.write(( // header generálása és küldése
+                    "HTTP/1.0 200 OK\r\n" +
+                    "Server: " + STR_SERVER + "\r\n" +
+                    "Connection: close\r\n" +
+                    "Max-Age: 0\r\n" +
+                    "Expires: 0\r\n" +
+                    "Cache-Control: no-cache, private\r\n" + 
+                    "Pragma: no-cache\r\n" + 
+                    "Content-Type: multipart/x-mixed-replace; " +
+                    "boundary=" + STR_BOUNDARY + "\r\n\r\n").getBytes());
+            }
+            catch (Exception ex) { // ha a header küldése közben hiba történt
+                if (!onException(ex, ERR_HEADER_WRITE)) return; // kilépés, ha azt kéri a kivételkezelő
+            }
         }
-        byte[] frame = nextFrame(false);
-        while (!isInterrupted()) {
-            if (frame != null) {
-                try {
+        byte[] frame;
+        try {
+            frame = nextFrame(false); // első képkocka kiolvasása (várakozás nélkül)
+        }
+        catch (Exception ex) {
+            if (!onException(ex, ERR_FIRST_READ)) return; // ha nem sikerült kiolvasni, kilépés, ha azt kéri a kivételkezelő
+            frame = null; // egyébként nincs első képkocka
+        }
+        while (!isInterrupted()) { // amíg nincs megszakítva a streamelés
+            if (frame != null) { // ha van képkocka ...
+                if (!isUnwriteable()) try { // ... és kiküldhető a képkocka, akkor kiküldés
                     out.write((
                         STR_BOUNDARY + "\r\n" +
                         "Content-type: image/jpg\r\n" +
@@ -167,14 +197,24 @@ public abstract class JpegProvider {
                     out.write("\r\n\r\n".getBytes());
                     out.flush();
                 }
-                catch (Exception ex) {
-                    if (!onException(ex)) break;
+                catch (Exception ex) { // ha a küldés közben hiba történt
+                    if (!onException(ex, ERR_WRITE)) break; // kilépés, ha azt kéri a kivételkezelő
                 }
             }
-            else {
-                Thread.sleep(20);
+            else { // ha nincs képkocka
+                try {
+                    Thread.sleep(20); // vár egy kicsit
+                }
+                catch (Exception ex) {
+                    ;
+                }
             }
-            frame = nextFrame(true);
+            try {
+                frame = nextFrame(true); // várakozás a következő képkockára, ami a ciklus elején kerül elküldésre, ha lehetséges
+            }
+            catch (Exception ex) {
+                if (!onException(ex, ERR_READ)) break; // ha nem sikerült a képkocka megszerzése, kilépés, ha azt kéri a kivételkezelő
+            }
         }
     }
 

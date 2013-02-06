@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.dyndns.fzoli.rccar.bridge.ConnectionAlert;
 import org.dyndns.fzoli.rccar.bridge.config.Permissions;
 import org.dyndns.fzoli.rccar.model.Control;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
@@ -15,6 +16,7 @@ import org.dyndns.fzoli.rccar.model.controller.HostList;
 import org.dyndns.fzoli.rccar.model.controller.HostState;
 import org.dyndns.fzoli.rccar.model.host.HostData;
 import org.dyndns.fzoli.socket.process.impl.MessageProcess;
+import org.dyndns.fzoli.ui.systemtray.TrayIcon;
 
 /**
  * Egy konkrét vezerlő kliens adatait tartalmazó tároló.
@@ -240,11 +242,13 @@ public class ControllerStorage extends Storage<ControllerData> {
             
             if (oldOwner != null) { // ha van régi irányító:
                 getHostStorage().getOwners().remove(oldOwner); // eltávolítás az irányítók listájából
+                ConnectionAlert.logMessage("", getHostStorage().getName() + " járművet már nem vezérli: " + oldOwner.getName(), TrayIcon.IconType.INFO, false); // naplózás
             }
             
             if (newOwner != null) { // ha van új irányító:
                 getHostStorage().getOwners().remove(newOwner); // ha már szerepel a listában, eltávolítás, hogy aztán ...
                 getHostStorage().getOwners().add(0, newOwner); // ... a lista első helyére kerüljön, ezáltal irányítóvá válva
+                ConnectionAlert.logMessage("", getHostStorage().getName() + " járműnek új vezérlője van: " + newOwner.getName(), TrayIcon.IconType.INFO, false); // naplózás
             }
             
             if (oldOwner != null) { // jelzés leadása, hogy a régi irányító már nem irányíthat és mivel lekerült a listáról, ha újra vezérelni akar, kérnie kell

@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.socket.mjpeg.impl;
 
+import java.io.InputStream;
 import java.io.OutputStream;
 import org.dyndns.fzoli.socket.mjpeg.JpegProvider;
 import org.dyndns.fzoli.socket.mjpeg.jipcam.MjpegInputStream;
@@ -25,7 +26,7 @@ public class MjpegStreamRepeater extends JpegProvider {
      * @param in a továbbítandó folyam
      * @param out a kimenet, amire a továbbítás történik
      */
-    public MjpegStreamRepeater(MjpegInputStream in, OutputStream out) {
+    public MjpegStreamRepeater(InputStream in, OutputStream out) {
         this(in, out, true);
     }
     
@@ -35,9 +36,9 @@ public class MjpegStreamRepeater extends JpegProvider {
      * @param out a kimenet, amire a továbbítás történik
      * @param sendHeader false esetén nem küldi ki a szerver- és boundary adatokat
      */
-    public MjpegStreamRepeater(MjpegInputStream in, OutputStream out, boolean sendHeader) {
+    public MjpegStreamRepeater(InputStream in, OutputStream out, boolean sendHeader) {
         super(out);
-        this. in = in;
+        this.in = new MjpegInputStream(in);
         setSendInfoHeader(sendHeader);
     }
 
@@ -66,8 +67,7 @@ public class MjpegStreamRepeater extends JpegProvider {
             return in.readMjpegFrame().getJpegBytes();
         }
         catch (Exception ex) {
-            onException(ex);
-            return null;
+            throw new RuntimeException(ex);
         }
     }
 
@@ -83,7 +83,7 @@ public class MjpegStreamRepeater extends JpegProvider {
      * Elkezdi a stream továbbítását.
      */
     @Override
-    public void handleConnection() throws Exception {
+    public void handleConnection() {
         setInterrupted(false);
         super.handleConnection();
     }

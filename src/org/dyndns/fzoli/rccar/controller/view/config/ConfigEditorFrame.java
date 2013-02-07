@@ -442,7 +442,7 @@ public class ConfigEditorFrame extends FrontFrame {
         CONFIG.setPort(Integer.parseInt(tfPort.getText()));
         if (Config.save(CONFIG)) {
             if (!previousConfig.equals(CONFIG) && Main.isConnected()) {
-                int answer = OptionPane.showYesNoDialog(R.getIconImage(), "Szeretne újrakapcsolódni a szerverhez az új beállításokkal?", "Újrakapcsolódás");
+                int answer = OptionPane.showYesNoDialog(ConfigEditorFrame.this, "Szeretne újrakapcsolódni a szerverhez az új beállításokkal?", "Újrakapcsolódás");
                 if (answer == 0) Main.reconnect();
             }
             dispose();

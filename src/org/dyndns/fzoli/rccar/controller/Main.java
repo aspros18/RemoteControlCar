@@ -71,7 +71,7 @@ public class Main {
         public void run() {
             if (CONN.isConnected()) { // ha van kiépített kapcsolat
                 // megkérdi, biztos-e a kilépésben
-                int opt = OptionPane.showYesNoDialog(R.getIconImage(), "Biztos, hogy kilép a programból?", "Megerősítés");
+                int opt = OptionPane.showYesNoDialog(SELECTION_FRAME, "Biztos, hogy kilép a programból?", "Megerősítés");
                 // ha igen, akkor a program kilép
                 if (opt == 0) {
                     exiting = true;

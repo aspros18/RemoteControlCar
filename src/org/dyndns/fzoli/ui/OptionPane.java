@@ -3,6 +3,7 @@ package org.dyndns.fzoli.ui;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Window;
 import java.io.Console;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -143,13 +144,33 @@ public class OptionPane extends JOptionPane {
     }
     
     /**
+     * Igen/Nem kérdező dialógust jelenít meg.
+     * @param owner az ablak, amihez a dialógus tartozik
+     * @param message az üzenet
+     * @param title a címsor szövege
+     */
+    public static int showYesNoDialog(Window owner, String message, String title) {
+        return showOptionDialog(owner, message, title, NO_OPTION, QUESTION_MESSAGE, null, OPTS_YES_NO, OPTS_YES_NO[1]);
+    }
+    
+    /**
      * Igen/Nem kérdező dialógust jelenít meg és a megadott képet használja címsor ikonnak.
      * @param icon a címsorba kerülő ikon képe
      * @param message az üzenet
      * @param title a címsor szövege
      */
     public static int showYesNoDialog(Image icon, String message, String title) {
-        return showOptionDialog(createDummyFrame(icon), message, title, NO_OPTION, QUESTION_MESSAGE, null, OPTS_YES_NO, OPTS_YES_NO[1]);
+        return showYesNoDialog(createDummyFrame(icon), message, title);
+    }
+    
+    /**
+     * Figyelmeztető dialógust jelenít meg és a megadott képet használja címsor ikonnak.
+     * @param owner az ablak, amihez a dialógus tartozik
+     * @param message az üzenet
+     * @param title a címsor szövege
+     */
+    public static int showWarningDialog(Window owner, String message, String title) {
+        return showOptionDialog(owner, message, title, NO_OPTION, WARNING_MESSAGE, null, OPTS_OK, OPTS_OK[0]);
     }
     
     /**
@@ -159,7 +180,7 @@ public class OptionPane extends JOptionPane {
      * @param title a címsor szövege
      */
     public static int showWarningDialog(Image icon, String message, String title) {
-        return showOptionDialog(createDummyFrame(icon), message, title, NO_OPTION, WARNING_MESSAGE, null, OPTS_OK, OPTS_OK[0]);
+        return showWarningDialog(createDummyFrame(icon), message, title);
     }
     
     /**

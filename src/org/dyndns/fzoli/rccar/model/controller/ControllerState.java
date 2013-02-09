@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.model.controller;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Egy vezérlő kliens állapotát adja meg.
@@ -12,6 +13,11 @@ public class ControllerState implements Serializable {
      * A vezérlő neve.
      */
     private final String NAME;
+
+    /**
+     * Az utolsó módosítás dátuma.
+     */
+    private Date lastModified;
 
     /**
      * Vezérli-e a járművet.
@@ -33,6 +39,7 @@ public class ControllerState implements Serializable {
         this.NAME = name;
         this.controlling = controlling;
         this.wantControl = wantControl;
+        this.lastModified = new Date();
     }
     
     /**
@@ -40,6 +47,13 @@ public class ControllerState implements Serializable {
      */
     public String getName() {
         return NAME;
+    }
+
+    /**
+     * Megadja az utolsó módosítás dátumát.
+     */
+    public Date getLastModified() {
+        return lastModified;
     }
 
     /**
@@ -54,6 +68,13 @@ public class ControllerState implements Serializable {
      */
     public boolean isWantControl() {
         return wantControl;
+    }
+
+    /**
+     * Beállítja az utolsó módosítás dátumát.
+     */
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
     }
 
     /**
@@ -78,6 +99,7 @@ public class ControllerState implements Serializable {
      */
     public void apply(ControllerState cs, ControllerData d) {
         ControllerState old = new ControllerState(getName(), isControlling(), isWantControl());
+        setLastModified(cs.getLastModified());
         setControlling(cs.isControlling());
         setWantControl(cs.isWantControl());
         if (d != null) d.onControllerStateChanged(this, old);

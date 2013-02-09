@@ -526,19 +526,21 @@ public class ChatDialog extends AbstractDialog {
     
     /**
      * Rendszerüzenetben figyelmezteti a felhasználót, hogy új vezérlő irányítja a járművet.
+     * @param d a módosulás dátuma
      * @param name az új irányító neve
      */
-    public void showNewController(String name) {
-        addMessage(new Date(), name, "vezérli mostantól a járművet.", true);
+    public void showNewController(Date d, String name) {
+        addMessage(d, name, "vezérli mostantól a járművet.", true);
     }
     
     /**
      * Rendszerüzenetben figyelmezteti a felhasználót, hogy irányítást kért vagy vont vissza egy vezérlő.
+     * @param d a módosulás dátuma
      * @param name a vezérlő neve
      * @param undo true esetén visszavonás történt
      */
-    public void showAskControl(String name, boolean undo) {
-        addMessage(new Date(), name, (undo ? "mégsem szeretné vezérelni" : "vezérelni szeretné") + " a járművet.", true);
+    public void showAskControl(Date d, String name, boolean undo) {
+        addMessage(d, name, (undo ? "mégsem szeretné vezérelni" : "vezérelni szeretné") + " a járművet.", true);
     }
     
     /**

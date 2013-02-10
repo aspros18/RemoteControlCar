@@ -138,9 +138,10 @@ public class OptionPane extends JOptionPane {
      * @param message az üzenet
      * @param title a címsor szövege
      * @param messageType az üzenet típusa, az üzenet melletti ikont folyásolja be
+     * @param showOnTaskbar true esetén megjelenik a dialógus a tálcán is
      */
-    public static void showMessageDialog(Image icon, String message, String title, int messageType) {
-        showMessageDialog(createDummyFrame(icon), message, title, messageType);
+    public static void showMessageDialog(Image icon, String message, String title, int messageType, boolean showOnTaskbar) {
+        showMessageDialog(createDummyFrame(icon, showOnTaskbar ? title : null), message, title, messageType);
     }
     
     /**

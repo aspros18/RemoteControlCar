@@ -27,7 +27,22 @@ public class UIUtil {
      * @param out a kimenet stream
      */
     public static void alert(String title, String text, PrintStream out) {
-        alert(title, text, out, null);
+        alert(title, text, out, false);
+    }
+    
+    /**
+     * Egy tályékoztató szöveget jelenít meg a felhasználónak.
+     * Ha a grafikus felület elérhető, modális ablakban jelenik meg az üzenet,
+     * különben a kimenet streamre megy ki a fejléc és a szöveg.
+     * Ha a kimeneti stream System.err, akkor hibaüzenetes ablakikon,
+     * egyébként figyelmeztetőikon kerül az ablakra.
+     * @param title a fejléc
+     * @param text a megjelenő szöveg
+     * @param out a kimenet stream
+     * @param showOnTaskbar true esetén megjelenik a dialógus a tálcán is
+     */
+    public static void alert(String title, String text, PrintStream out, boolean showOnTaskbar) {
+        alert(title, text, out, null, showOnTaskbar);
     }
     
     /**
@@ -42,11 +57,27 @@ public class UIUtil {
      * @param icon a megjelenő ablak fejlécében megjelenő ikon
      */
     public static void alert(String title, String text, PrintStream out, Image icon) {
+        alert(title, text, out, icon, false);
+    }
+    
+    /**
+     * Egy tályékoztató szöveget jelenít meg a felhasználónak.
+     * Ha a grafikus felület elérhető, modális ablakban jelenik meg az üzenet,
+     * különben a kimenet streamre megy ki a fejléc és a szöveg.
+     * Ha a kimeneti stream System.err, akkor hibaüzenetes ablakikon,
+     * egyébként figyelmeztetőikon kerül az ablakra.
+     * @param title a fejléc
+     * @param text a megjelenő szöveg
+     * @param out a kimenet stream
+     * @param icon a megjelenő ablak fejlécében megjelenő ikon
+     * @param showOnTaskbar true esetén megjelenik a dialógus a tálcán is
+     */
+    public static void alert(String title, String text, PrintStream out, Image icon, boolean showOnTaskbar) {
         if (GraphicsEnvironment.isHeadless()) { // ha nem elérhető a grafikus felület
             print(title, text, out);
         }
         else { // ha van grafikus felület
-            OptionPane.showMessageDialog(icon, text, title, System.err == out ? OptionPane.ERROR_MESSAGE : OptionPane.WARNING_MESSAGE); // dialógus ablak megjelenítése
+            OptionPane.showMessageDialog(icon, text, title, System.err == out ? OptionPane.ERROR_MESSAGE : OptionPane.WARNING_MESSAGE, showOnTaskbar); // dialógus ablak megjelenítése
         }
     }
     

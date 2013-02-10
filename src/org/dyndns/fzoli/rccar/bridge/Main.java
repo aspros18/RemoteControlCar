@@ -168,7 +168,7 @@ public class Main {
      * @param out a kimenet stream
      */
     private static void alert(String title, String text, PrintStream out) {
-        UIUtil.alert(title, text, out, R.getBridgeImage());
+        UIUtil.alert(title, text, out, R.getBridgeImage(), true);
     }
     
     /**

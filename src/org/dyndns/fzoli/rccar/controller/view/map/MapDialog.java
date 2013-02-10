@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.controller.view.map;
 
+import chrriis.dj.nativeswing.NSComponentOptions;
 import chrriis.dj.nativeswing.NativeComponentWrapper;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
@@ -220,7 +221,7 @@ public class MapDialog extends AbstractDialog {
         if (enabled) {
             JWebBrowser webBrowser;
             try {
-                webBrowser = new JWebBrowser();
+                webBrowser = new JWebBrowser(NSComponentOptions.destroyOnFinalization());
             }
             catch (Throwable t) {
                 webBrowser = null;

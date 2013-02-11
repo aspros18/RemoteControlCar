@@ -9,10 +9,11 @@ import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.bridge.resource.R;
 import org.dyndns.fzoli.rccar.bridge.socket.BridgeHandler;
 import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.closeSplashScreen;
-import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.setDefaultSplashMessage;
+import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.setSplashMessage;
 import static org.dyndns.fzoli.rccar.ui.UIUtil.showPasswordInput;
 import org.dyndns.fzoli.rccar.ui.UncaughtExceptionHandler;
 import static org.dyndns.fzoli.rccar.ui.UncaughtExceptionHandler.showException;
+import org.dyndns.fzoli.resource.lng.StringResource;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.ui.UIUtil;
 import static org.dyndns.fzoli.ui.UIUtil.setSystemLookAndFeel;
@@ -31,19 +32,24 @@ public class Main {
     public static final Config CONFIG = Config.getInstance();
     
     /**
+     * A szótár.
+     */
+    private static final StringResource STRINGS = new StringResource(StringResource.getDirectory(R.class, "lng"), CONFIG.getLanguage());
+    
+    /**
      * Általános rendszerváltozók.
      */
     private static final String LS = System.getProperty("line.separator");
     
     /**
-     * Üzenettípusok.
+     * Üzenettípus.
      */
-    private static final String VAL_MESSAGE = "Híd üzenet", VAL_ERROR = "Híd hiba";
+    private static final String VAL_MESSAGE = getString("bridge_message"), VAL_ERROR = getString("bridge_error");
     
     /**
      * Több helyen is használt szövegek.
      */
-    public static final String VAL_WARNING = "Figyelmeztetés", VAL_CONN_LOG = "Kapcsolatjelzés";
+    public static final String VAL_WARNING = getString("warning"), VAL_CONN_LOG = getString("conn_log");
     
     /**
      * A szerver socket referenciája arra kell, hogy eseménykezelővel ki lehessen lépni.
@@ -54,7 +60,7 @@ public class Main {
      * Még mielőtt lefutna a main metódus, beállítódik a rendszer LAF, a saját kivételkezelő, a rendszerikon és az erőforrás-felszabadító szál.
      */
     static {
-        setDefaultSplashMessage(); //TODO: erre nem lesz szükség
+        setSplashMessage(getString("please_wait")); //TODO: erre nem lesz szükség
         setSystemLookAndFeel();
         setExceptionHandler();
         applyConfig();
@@ -92,7 +98,7 @@ public class Main {
         if (CONFIG.isHidden()) return;
         if (SystemTrayIcon.init() && SystemTrayIcon.isSupported()) {
             // az ikon beállítása
-            SystemTrayIcon.setIcon("Mobile-RC híd", R.getBridgeImageStream());
+            SystemTrayIcon.setIcon(getString("app_name"), R.getBridgeImageStream());
             
             // kapcsolatjelzés beállító opció hozzáadása
             SystemTrayIcon.addCheckboxMenuItem(VAL_CONN_LOG, ConnectionAlert.isLogEnabled(), new Runnable() {
@@ -120,7 +126,7 @@ public class Main {
             SystemTrayIcon.addMenuSeparator();
 
             // kilépés opció hozzáadása
-            SystemTrayIcon.addMenuItem("Kilépés", new Runnable() {
+            SystemTrayIcon.addMenuItem(getString("exit"), new Runnable() {
 
                 /**
                  * Ha a kilépésre kattintottak.
@@ -151,7 +157,7 @@ public class Main {
                 catch (IOException ex) {
                     ;
                 }
-                logInfo(VAL_MESSAGE, "A szerver leállt.", false);
+                logInfo(VAL_MESSAGE, getString("log_stop"), false);
             }
             
         }));
@@ -215,7 +221,7 @@ public class Main {
     private static SSLServerSocket createServerSocket(int count) {
         try {
             SSLServerSocket socket = SSLSocketUtil.createServerSocket(CONFIG.getPort(), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile(), CONFIG.getPassword());
-            logInfo(VAL_MESSAGE, "A szerver elindult.", !CONFIG.isQuiet());
+            logInfo(VAL_MESSAGE, getString("log_start"), !CONFIG.isQuiet());
             return socket;
         }
         catch (KeyStoreException ex) {
@@ -254,6 +260,13 @@ public class Main {
                 showException(ex);
             }
         }
+    }
+    
+    /**
+     * A szótárból kikeresi a megadott kulcshoz tartozó szót.
+     */
+    public static String getString(String key) {
+        return STRINGS.getString(key);
     }
     
     /**

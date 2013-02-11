@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <string name="app_name">Mobile-RC bridge</string>
+    <string name="please_wait">Please, wait</string>
+    <string name="exit">Exit</string>
+    <string name="log_start">The server has started.</string>
+    <string name="log_stop">The server has stopped.</string>
+    <string name="bridge_message">Bridge message</string>
+    <string name="bridge_error">Bridge error</string>
+    <string name="warning">Warning</string>
+    <string name="conn_log">Connection logging</string>
+</strings>

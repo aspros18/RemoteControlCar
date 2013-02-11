@@ -11,6 +11,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -34,7 +35,8 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
                                KEY_PASSWORD = "password",
                                KEY_STRICT = "strict",
                                KEY_QUIET = "quiet",
-                               KEY_HIDDEN = "hidden";
+                               KEY_HIDDEN = "hidden",
+                               KEY_LANG = "lang";
     
     /**
      * Általános rendszerváltozók.
@@ -64,10 +66,11 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
             CC + ' ' + KEY_PASSWORD + " optional_cert_password " + CC + " a szerver tanúsítványának jelszava, ha van" + LS +
             CC + ' ' + KEY_STRICT + " true " + CC + " ha true, azok a vezérlők, melyek nem szerepelnek a fehérlistában, nem csatlakozhatnak a hídhoz" + LS +
             CC + ' ' + KEY_QUIET + " true " + CC + " ha true, a program indulásakor az összes figyelmeztetés inaktív" + LS +
-            CC + ' ' + KEY_HIDDEN + " true " + CC + " ha true, a rendszerikon nem jelenik meg annak ellenére sem, hogy van grafikus felület";
+            CC + ' ' + KEY_HIDDEN + " true " + CC + " ha true, a rendszerikon nem jelenik meg annak ellenére sem, hogy van grafikus felület" + LS +
+            CC + ' ' + KEY_LANG + " en " + CC + " a program nyelvét adja meg";
     
     /**
-     * Ideignlenes jelszó a memóriában.
+     * Ideiglenes jelszó a memóriában.
      */
     private char[] password = null;
     
@@ -115,6 +118,14 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
         catch (Exception ex) {
             return false;
         }
+    }
+    
+    /**
+     * A program nyelve.
+     */
+    public Locale getLanguage() {
+        String lang = getValues().get(KEY_LANG);
+        return new Locale(lang == null ? Locale.getDefault().getLanguage() : lang);
     }
     
     /**
@@ -223,6 +234,7 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
                "Password length: " + (getPassword() == null ? -1 : getPassword().length) + LS +
                "Strict: " + isStrict() + LS +
                "Hidden: " + isHidden() + LS +
+               "Lang: " + getLanguage().getLanguage() + LS +
                "Correct? " + isCorrect();
     }
     

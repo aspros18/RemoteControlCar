@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <string name="app_name">Mobile-RC híd</string>
+    <string name="please_wait">Kérem, várjon</string>
+    <string name="exit">Kilépés</string>
+    <string name="log_start">A szerver elindult.</string>
+    <string name="log_stop">A szerver leállt.</string>
+    <string name="bridge_message">Híd üzenet</string>
+    <string name="bridge_error">Híd hiba</string>
+    <string name="warning">Figyelmeztetés</string>
+    <string name="conn_log">Kapcsolatjelzés</string>
+</strings>

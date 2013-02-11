@@ -9,4 +9,10 @@
     <string name="bridge_error">Híd hiba</string>
     <string name="warning">Figyelmeztetés</string>
     <string name="conn_log">Kapcsolatjelzés</string>
+    <string name="msg_wrong_passwd1">Hibás tanúsítvány-jelszó lett megadva</string>
+    <string name="msg_wrong_passwd2a">alkalommal.</string>
+    <string name="msg_wrong_passwd2b">alkalommal.</string>
+    <string name="msg_cert_error">Nem sikerült a szerver elindítása, mert a tanúsítvány hibás vagy nincs jól beállítva</string>
+    <string name="msg_port_error">Nem sikerült a szerver elindítása a megadott porton</string>
+    <string name="msg_os">Az operációsrendszer üzenete</string>
 </strings>

@@ -226,16 +226,16 @@ public class Main {
         }
         catch (KeyStoreException ex) {
             if (ex.getMessage().startsWith("failed to extract")) {
-                if (count > 0) ConnectionAlert.logMessage(VAL_WARNING, "Hibás tanúsítvány-jelszó lett megadva " + count + " alkalommal.", IconType.WARNING, false);
+                if (count > 0) ConnectionAlert.logMessage(VAL_WARNING, getString("msg_wrong_passwd1") + ' ' + count + ' ' + getString("msg_wrong_passwd2" + (count == 1 ? 'a' : 'b')), IconType.WARNING, false);
                 CONFIG.setPassword(showPasswordInput(R.getBridgeImage(), false, true).getPassword());
                 return createServerSocket(++count);
             }
-            alert(VAL_ERROR, "Nem sikerült a szerver elindítása, mert a tanúsítvány hibás vagy nincs jól beállítva", System.err);
+            alert(VAL_ERROR, getString("msg_cert_error"), System.err);
             System.exit(1);
             return null;
         }
         catch(Exception ex) {
-            alert(VAL_ERROR, "Nem sikerült a szerver elindítása a megadott porton: " + CONFIG.getPort() + LS + "Az operációsrendszer üzenete: " + ex.getMessage(), System.err);
+            alert(VAL_ERROR, getString("msg_port_error") + ": " + CONFIG.getPort() + LS + getString("msg_os") + ": " + ex.getMessage(), System.err);
             System.exit(1);
             return null;
         }

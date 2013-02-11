@@ -9,4 +9,10 @@
     <string name="bridge_error">Bridge error</string>
     <string name="warning">Warning</string>
     <string name="conn_log">Connection logging</string>
+    <string name="msg_wrong_passwd1">Wrong certificate-password was given</string>
+    <string name="msg_wrong_passwd2a">time.</string>
+    <string name="msg_wrong_passwd2b">times.</string>
+    <string name="msg_cert_error">The server couldn't be started because the certificate is incorrect or the settings are wrong</string>
+    <string name="msg_port_error">The server couldn't be started on the specified port</string>
+    <string name="msg_os">Message of the OS</string>
 </strings>

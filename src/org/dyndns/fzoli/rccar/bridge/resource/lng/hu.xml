@@ -19,4 +19,13 @@
     <string name="msg_os">Az operációsrendszer üzenete</string>
     <string name="msg_need_permission">A program futtatásához a konfigurációs fájlokhoz olvasási jog szükséges.</string>
     <string name="msg_exit">A program kilép.</string>
+    <string name="msg_conf_created1">A konfigurációs fájl létre lett hozva.</string>
+    <string name="msg_conf_created2">Kérem, állítsa be megfelelően!</string>
+    <string name="msg_conf_created3">A fájl útvonala</string>
+    <string name="msg_conf_incorrect1">Nem megfelelő konfiguráció!</string>
+    <string name="msg_conf_incorrect2">Az alábbi beállításokat kell elvégeznie</string>
+    <string name="msg_conf_incorrect3">Adjon meg egy érvényes portot</string>
+    <string name="msg_conf_incorrect4">Adjon meg létező ca-fájl útvonalat</string>
+    <string name="msg_conf_incorrect5">Adjon meg létező cert-fájl útvonalat</string>
+    <string name="msg_conf_incorrect6">Adjon meg létező key-fájl útvonalat</string>
 </strings>

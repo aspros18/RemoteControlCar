@@ -311,19 +311,19 @@ public class Main {
         else {
             final StringBuilder msg = new StringBuilder();
             if (CONFIG.isNew()) {
-                msg.append("A konfigurációs fájlt létrehoztam.").append(LS)
-                   .append("Kérem, állítsa be megfelelően!").append(LS).append(LS)
-                   .append("Konfig fájl útvonala:").append(LS).append(Config.FILE_CONFIG);
+                msg.append(getString("msg_conf_created1")).append(LS)
+                   .append(getString("msg_conf_created2")).append(LS).append(LS)
+                   .append(getString("msg_conf_created3")).append(':').append(LS).append(Config.FILE_CONFIG);
                 alert(VAL_MESSAGE, msg.toString(), System.out);
                 System.exit(0);
             }
             else {
-                msg.append("Nem megfelelő konfiguráció!").append(LS).append(LS);
-                msg.append("A ").append(Config.FILE_CONFIG).append(" fájl hibásan van paraméterezve:").append(LS);
-                if (CONFIG.getPort() == null) msg.append("- Adjon meg érvényes portot.").append(LS);
-                if (CONFIG.getCAFile() == null) msg.append("- Adjon meg létező ca fájl útvonalat.").append(LS);
-                if (CONFIG.getCertFile() == null) msg.append("- Adjon meg létező cert fájl útvonalat.").append(LS);
-                if (CONFIG.getKeyFile() == null) msg.append("- Adjon meg létező key fájl útvonalat.").append(LS);
+                msg.append(getString("msg_conf_incorrect1")).append(LS).append(LS);
+                msg.append(getString("msg_conf_incorrect2")).append(':').append(LS);
+                if (CONFIG.getPort() == null) msg.append("- ").append(getString("msg_conf_incorrect3")).append('.').append(LS);
+                if (CONFIG.getCAFile() == null) msg.append("- ").append(getString("msg_conf_incorrect4")).append('.').append(LS);
+                if (CONFIG.getCertFile() == null) msg.append("- ").append(getString("msg_conf_incorrect5")).append('.').append(LS);
+                if (CONFIG.getKeyFile() == null) msg.append("- ").append(getString("msg_conf_incorrect6")).append('.').append(LS);
                 alert(VAL_ERROR, msg.toString(), System.err);
                 System.exit(1);
             }

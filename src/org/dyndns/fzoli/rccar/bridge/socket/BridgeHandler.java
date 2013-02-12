@@ -11,6 +11,7 @@ import org.dyndns.fzoli.rccar.ConnectionKeys;
 import static org.dyndns.fzoli.rccar.bridge.ConnectionAlert.logMessage;
 import org.dyndns.fzoli.rccar.bridge.Main;
 import static org.dyndns.fzoli.rccar.bridge.Main.VAL_WARNING;
+import static org.dyndns.fzoli.rccar.bridge.Main.getString;
 import org.dyndns.fzoli.rccar.bridge.config.Permissions;
 import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
 import org.dyndns.fzoli.socket.handler.exception.MultipleCertificateException;
@@ -78,7 +79,8 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
     private void showWarning(String message) {
         if ((getConnectionId() == null || getConnectionId().equals(0)) && getSocket() != null) {
             String name = getSocket().getInetAddress().getHostName();
-            logMessage(VAL_WARNING, message + ' ' + (Arrays.binarySearch(mgh, name.charAt(0)) >= 0 ? "az" : "a") + ' ' + name + " [" + getSocket().getInetAddress().getHostAddress() + "] címről.", IconType.WARNING, isWarnEnabled());
+            String close = getString("warn_addr_prep2");
+            logMessage(VAL_WARNING, message + ' ' + getString("warn_addr_prep1" + (Arrays.binarySearch(mgh, name.charAt(0)) >= 0 ? 'b' : 'a')) + ' ' + name + " [" + getSocket().getInetAddress().getHostAddress() + "]" + (close.trim().isEmpty() ? "" : " ") + close + '.', IconType.WARNING, isWarnEnabled());
         }
     }
     
@@ -105,31 +107,32 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
             throw ex;
         }
         catch (BlockedCommonNameException e) {
-            showWarning("Tiltott kapcsolódás");
+            showWarning(getString("warn_conn1")); // tiltott kapcsolódás
         }
         catch (MultipleCertificateException e) {
-            showWarning("Duplázott tanúsítvány");
+            showWarning(getString("warn_conn2")); // duplázott tanúsítvány
         }
         catch (SecureHandlerException e) {
-            showWarning("Tanúsítvány hiba", e.getMessage());
+            showWarning(getString("warn_conn5"), e.getMessage()); // tanúsítvány hiba
         }
         catch (SSLHandshakeException e) {
-            showWarning(e.getMessage().contains("Extended key usage") ? "Szerverhez való tanúsítvány használat" : "Nem megbízható kapcsolódás");
+            // szerverhez való tanúsítvány érkezett vagy nem megbízható kapcsolódás
+            showWarning(getString("warn_conn" + (e.getMessage().contains("Extended key usage") ? '3' : '4')));
         }
         catch (SSLException e) {
-            showWarning("SSL hiba", e.getMessage());
+            showWarning(getString("warn_conn6"), e.getMessage()); // SSL hiba
         }
         catch (RemoteHandlerException e) {
-            showWarning("Távoli hiba", e.getMessage());
+            showWarning(getString("warn_conn7"), e.getMessage()); // távoli hiba
         }
         catch (SocketException e) {
-            showWarning("Socket hiba", e.getMessage());
+            showWarning(getString("warn_conn8"), e.getMessage()); // socket hiba
         }
         catch (SocketTimeoutException e) {
-            showWarning("Socket időtúllépés", e.getMessage());
+            showWarning(getString("warn_conn9"), e.getMessage()); // socket időtúllépés
         }
         catch (EOFException e) {
-            showWarning("Socket váratlan vég", e.getMessage());
+            showWarning(getString("warn_conn10"), e.getMessage()); // váratlan socket bezárás
         }
         catch (Exception e) {
             // nem várt hiba jelzése

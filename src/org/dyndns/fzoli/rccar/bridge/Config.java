@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import org.dyndns.fzoli.util.Folders;
 
 /**
  * A híd konfigurációját tölti be a bridge.conf fájlból.
@@ -124,8 +125,10 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
      * A program nyelve.
      */
     public Locale getLanguage() {
+        Locale def = Locale.getDefault();
+        if (getValues() == null) return def;
         String lang = getValues().get(KEY_LANG);
-        return new Locale(lang == null ? Locale.getDefault().getLanguage() : lang);
+        return new Locale(lang == null ? def.getLanguage() : lang);
     }
     
     /**
@@ -285,6 +288,7 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
         }
         catch (FileNotFoundException ex) {
             if (def != null) try {
+                if (FILE_CONFIG.isDirectory()) Folders.delete(FILE_CONFIG);
                 BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f)));
                 out.write(def, 0, def.length());
                 out.flush();

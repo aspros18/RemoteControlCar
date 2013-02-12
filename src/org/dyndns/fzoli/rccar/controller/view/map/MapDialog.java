@@ -39,6 +39,7 @@ import org.dyndns.fzoli.rccar.controller.view.AbstractDialog;
 import org.dyndns.fzoli.rccar.controller.view.ControllerFrame;
 import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.controller.HostState;
+import static org.dyndns.fzoli.util.Folders.delete;
 import org.imgscalr.Scalr;
 
 /**
@@ -482,20 +483,6 @@ public class MapDialog extends AbstractDialog {
                "  mapTypeId: google.maps.MapTypeId.HYBRID" + LS +
                "}" + LS +
                "var map = new google.maps.Map(document.getElementById(\"map_canvas\"), mapOptions);";
-    }
-    
-    /**
-     * Rekurzívan törli a megadott fájlt.
-     */
-    private static void delete(File f) {
-        if (f.isDirectory()) { // ha könyvtár
-            for (File c : f.listFiles()) { // a benne lévő összes fájl...
-                delete(c); // ... rekurzív törlése
-            }
-        }
-        if (f.exists()) { // ha a fájlnak már nincs gyermeke és még létezik...
-            f.delete(); // ... a fájl törlése
-        }
     }
 
     /**

@@ -14,5 +14,9 @@
     <string name="msg_wrong_passwd2b">times.</string>
     <string name="msg_cert_error">The server couldn't be started because the certificate is incorrect or the settings are wrong</string>
     <string name="msg_port_error">The server couldn't be started on the specified port</string>
+    <string name="msg_conf_error1">The configuration file couldn't be created.</string>
+    <string name="msg_conf_error2">There's a good chance the application has no permission to write into the directory which from it's running.</string>
     <string name="msg_os">Message of the OS</string>
+    <string name="msg_need_permission">In order to run this application it needs to be able to read the configuration files in the directory which from it's running.</string>
+    <string name="msg_exit">The application is exiting.</string>
 </strings>

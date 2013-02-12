@@ -1,9 +1,9 @@
 package org.dyndns.fzoli.rccar.bridge;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.security.KeyStoreException;
+import java.util.Locale;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.bridge.resource.R;
@@ -27,19 +27,19 @@ import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 public class Main {
     
     /**
+     * Általános rendszerváltozók.
+     */
+    private static final String LS = System.getProperty("line.separator");
+    
+    /**
      * A híd konfigurációja.
      */
-    public static final Config CONFIG = Config.getInstance();
+    public static final Config CONFIG = getConfig();
     
     /**
      * A szótár.
      */
-    private static final StringResource STRINGS = new StringResource(StringResource.getDirectory(R.class, "lng"), CONFIG.getLanguage());
-    
-    /**
-     * Általános rendszerváltozók.
-     */
-    private static final String LS = System.getProperty("line.separator");
+    private static final StringResource STRINGS = createResource(CONFIG.getLanguage());
     
     /**
      * Üzenettípus.
@@ -270,15 +270,38 @@ public class Main {
     }
     
     /**
+     * Létrehozza a konfigurációs objektumot.
+     * Ha az inicializálása közben hiba történik, üzen a felhasználónak.
+     */
+    private static Config getConfig() {
+        try {
+            return Config.getInstance();
+        }
+        catch (Exception ex) {
+            setSystemLookAndFeel();
+            StringResource res = createResource(Locale.getDefault());
+            alert(VAL_ERROR, res.getString("msg_conf_error1") + LS + res.getString("msg_conf_error2"), System.err);
+            System.exit(1);
+            return null;
+        }
+    }
+    
+    /**
+     * Létrehoz egy szótárat a kért nyelvhez.
+     */
+    private static StringResource createResource(Locale locale) {
+        return new StringResource(StringResource.getDirectory(R.class, "lng"), locale);
+    }
+    
+    /**
      * A híd main metódusa.
      * Ha a konfiguráció még nem létezik, lérehozza és figyelmezteti a felhasználót, hogy állítsa be és kilép.
      * Ha a konfiguráció létezik, de rosszul paraméterezett, figyelmezteti a felhasználót és kilép.
      * Ha a program nem lépett ki, a híd szerver elkezdi futását.
      */
     public static void main(String[] args) {
-        final File dir = new File("./");
-        if (!dir.canRead()) {
-            alert(VAL_ERROR, "A program futtatásához olvasási jogra van szükség." + LS + "A program kilép.", System.err);
+        if (Config.FILE_CONFIG.exists() && !Config.FILE_CONFIG.canRead()) { // ha nincs olvasási jog a konfig fájlon
+            alert(VAL_ERROR, getString("msg_need_permission") + LS + getString("msg_exit"), System.err);
             System.exit(1); // hibakóddal lép ki
         }
         if (CONFIG.isCorrect()) {

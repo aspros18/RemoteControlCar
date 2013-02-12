@@ -14,5 +14,9 @@
     <string name="msg_wrong_passwd2b">alkalommal.</string>
     <string name="msg_cert_error">Nem sikerült a szerver elindítása, mert a tanúsítvány hibás vagy nincs jól beállítva</string>
     <string name="msg_port_error">Nem sikerült a szerver elindítása a megadott porton</string>
+    <string name="msg_conf_error1">Nem sikerült létrehozni a konfigurációs fájlt.</string>
+    <string name="msg_conf_error2">Jó esély van rá, hogy az alkalmazásnak nincs joga írni abba a könyvtárba, melyből fut.</string>
     <string name="msg_os">Az operációsrendszer üzenete</string>
+    <string name="msg_need_permission">A program futtatásához a konfigurációs fájlokhoz olvasási jog szükséges.</string>
+    <string name="msg_exit">A program kilép.</string>
 </strings>

@@ -27,6 +27,7 @@
     <string name="warn_conn8">Socket hiba</string>
     <string name="warn_conn9">Socket időtúllépés</string>
     <string name="warn_conn10">Váratlan socket bezárás</string>
+    <string name="warn_wrong_version">a szervernek nem megfelelő verziójú kliens programot használ</string>
     <string name="conn_log">Kapcsolatjelzés</string>
     <string name="msg_wrong_passwd1">Hibás tanúsítvány-jelszó lett megadva</string>
     <string name="msg_wrong_passwd2a">alkalommal.</string>

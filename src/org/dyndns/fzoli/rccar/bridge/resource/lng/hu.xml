@@ -5,6 +5,12 @@
     <string name="exit">Kilépés</string>
     <string name="log_start">A szerver elindult.</string>
     <string name="log_stop">A szerver leállt.</string>
+    <string name="log_conn1a"></string>
+    <string name="log_conn1b"></string>
+    <string name="log_conn2a">(vezérlő)</string>
+    <string name="log_conn2b">(jármű)</string>
+    <string name="log_conn3">kapcsolódott a hídhoz</string>
+    <string name="log_conn4">lekapcsolódott a hídról</string>
     <string name="bridge_message">Híd üzenet</string>
     <string name="bridge_error">Híd hiba</string>
     <string name="warning">Figyelmeztetés</string>

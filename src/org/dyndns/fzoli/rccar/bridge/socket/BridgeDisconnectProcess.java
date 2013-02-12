@@ -2,6 +2,7 @@ package org.dyndns.fzoli.rccar.bridge.socket;
 
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import org.dyndns.fzoli.rccar.bridge.ConnectionAlert;
+import static org.dyndns.fzoli.rccar.bridge.Main.getString;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.impl.ServerDisconnectProcess;
 
@@ -37,7 +38,12 @@ abstract class BridgeDisconnectProcess extends ServerDisconnectProcess implement
      * Jelez a felhasználónak, kapcsolódást illetve lekapcsolódást, ha kérik.
      */
     private void log(boolean connect) {
-        ConnectionAlert.log(getRemoteCommonName() + " (" + (getDeviceId() == KEY_DEV_CONTROLLER ? "vezérlő" : "jármű") + ") " + (connect ? "kapcsolódott a hídhoz" : "lekapcsolódott a hídról"));
+        char c = getDeviceId() == KEY_DEV_CONTROLLER ? 'a' : 'b';
+        String s1 = getString("log_conn1" + c);
+        String s2 = getString("log_conn2" + c);
+        boolean e1 = s1.trim().isEmpty();
+        boolean e2 = s2.trim().isEmpty();
+        ConnectionAlert.log(s1 + (e1 ? "" : " ") + getRemoteCommonName() + (e2 ? "" : " ") + s2 + ' ' + getString(connect ? "log_conn3" : "log_conn4"));
     }
     
 }

@@ -5,6 +5,12 @@
     <string name="exit">Exit</string>
     <string name="log_start">The server has started.</string>
     <string name="log_stop">The server has stopped.</string>
+    <string name="log_conn1a">Controller</string>
+    <string name="log_conn1b">Vehicle</string>
+    <string name="log_conn2a"></string>
+    <string name="log_conn2b"></string>
+    <string name="log_conn3">has connected to the Bridge</string>
+    <string name="log_conn4">has disconnected from the Bridge</string>
     <string name="bridge_message">Bridge message</string>
     <string name="bridge_error">Bridge error</string>
     <string name="warning">Warning</string>
@@ -25,7 +31,7 @@
     <string name="msg_conf_incorrect1">The configuration is incorrect!</string>
     <string name="msg_conf_incorrect2">You have to do the following things</string>
     <string name="msg_conf_incorrect3">Specify a valid port</string>
-    <string name="msg_conf_incorrect4">Specify a location of the ca-file that is exists</string>
-    <string name="msg_conf_incorrect5">Specify a location of the cert-file that is exists</string>
-    <string name="msg_conf_incorrect6">Specify a location of the key-file that is exists</string>
+    <string name="msg_conf_incorrect4">Specify a valid location of the ca-file that exists</string>
+    <string name="msg_conf_incorrect5">Specify a valid location of the cert-file that exists</string>
+    <string name="msg_conf_incorrect6">Specify a valid location of the key-file that exists</string>
 </strings>

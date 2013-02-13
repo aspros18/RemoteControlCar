@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.NoRouteToHostException;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 import java.security.KeyStoreException;
@@ -84,6 +85,9 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
         }
         catch (NoRouteToHostException e) {
             showConnectionStatus(Status.CONNECTION_ERROR);
+        }
+        catch (SocketTimeoutException e) {
+            showConnectionStatus(Status.CONNECTION_TIMEOUT);
         }
         catch (UnknownHostException e) {
             showConnectionStatus(Status.UNKNOWN_HOST);

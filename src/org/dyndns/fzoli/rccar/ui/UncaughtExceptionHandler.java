@@ -20,7 +20,11 @@ import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
  */
 public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
 
-    public static final String KEY_UNEXPECTED_ERROR = "MobileRC.unexpectedError";
+    /**
+     * Kulcs a lokalizált szöveghez.
+     */
+    public static final String KEY_UNEXPECTED_ERROR = "MobileRC.unexpectedError",
+                               KEY_UNEXPECTED_ERROR_MSG = "MobileRC.unexpectedErrorMessage";
     
     /**
      * Az kivételmegjelenítő ablak ikonja.
@@ -32,6 +36,7 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
      */
     static {
         init(KEY_UNEXPECTED_ERROR, "Unexpected error");
+        init(KEY_UNEXPECTED_ERROR_MSG, "Unexpected error had been occurred.");
     }
     
     /**
@@ -44,7 +49,7 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
      * Létrehozza a kivételmegjelenítő ablak megjelenését beállító objektumot.
      */
     private static UncaughtExceptionParameters createParameters() {
-        return new UncaughtExceptionParameters(UIManager.getString(KEY_UNEXPECTED_ERROR), "Nem várt hiba keletkezett a program futása alatt.", "Részletek", "Bezárás", "Másolás", "Mindet kijelöl", icon);
+        return new UncaughtExceptionParameters(UIManager.getString(KEY_UNEXPECTED_ERROR), UIManager.getString(KEY_UNEXPECTED_ERROR_MSG), "Részletek", "Bezárás", "Másolás", "Mindet kijelöl", icon);
     }
     
     /**

@@ -41,6 +41,7 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
         UIManager.put(UIUtil.KEY_CERT_LOAD_ERROR, res.getString("cert_load_error"));
         UIManager.put(UIUtil.KEY_CERT_ENTER_PASSWORD, res.getString("cert_enter_password"));
         UIManager.put(UncaughtExceptionHandler.KEY_UNEXPECTED_ERROR, res.getString("unexpected_error"));
+        UIManager.put(UncaughtExceptionHandler.KEY_UNEXPECTED_ERROR_MSG, res.getString("unexpected_error_msg"));
         return res;
     }
     

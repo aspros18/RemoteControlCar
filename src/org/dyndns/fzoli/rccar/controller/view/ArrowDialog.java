@@ -133,12 +133,15 @@ class ArrowLimit extends ArrowComponent {
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
         g.fillRect(0, 0, getWidth(), getHeight());
         if (!fullY && maxY != null) {
-            g.setColor(Color.RED);
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
             int start = getWidth() / 2 - getWidth() / 20;
             int stop = getWidth() / 10;
+            g.setColor(Color.RED);
             g.fillRect(start, getRelativeMaxY(true), stop, 2);
             g.fillRect(start, getRelativeMaxY(false), stop, 2);
+            g.setColor(Color.WHITE);
+            g.fillRect(start, getRelativeMaxY(true) + 2, stop, 1);
+            g.fillRect(start, getRelativeMaxY(false) - 1, stop, 1);
         }
     }
 

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.security.KeyStoreException;
 import java.util.Locale;
+import java.util.ResourceBundle;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.bridge.resource.R;
@@ -13,7 +14,6 @@ import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.setSplashMess
 import static org.dyndns.fzoli.rccar.ui.UIUtil.showPasswordInput;
 import org.dyndns.fzoli.rccar.ui.UncaughtExceptionHandler;
 import static org.dyndns.fzoli.rccar.ui.UncaughtExceptionHandler.showException;
-import org.dyndns.fzoli.resource.lng.StringResource;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.ui.UIUtil;
 import static org.dyndns.fzoli.ui.UIUtil.setSystemLookAndFeel;
@@ -39,7 +39,7 @@ public class Main {
     /**
      * A szótár.
      */
-    private static final StringResource STRINGS = createResource(CONFIG.getLanguage());
+    private static final ResourceBundle STRINGS = createResource(CONFIG.getLanguage());
     
     /**
      * Üzenettípus.
@@ -279,7 +279,7 @@ public class Main {
         }
         catch (Exception ex) {
             setSystemLookAndFeel();
-            StringResource res = createResource(Locale.getDefault());
+            ResourceBundle res = createResource(Locale.getDefault());
             alert(VAL_ERROR, res.getString("msg_conf_error1") + LS + res.getString("msg_conf_error2"), System.err);
             System.exit(1);
             return null;
@@ -289,8 +289,8 @@ public class Main {
     /**
      * Létrehoz egy szótárat a kért nyelvhez.
      */
-    private static StringResource createResource(Locale locale) {
-        return new StringResource(StringResource.getDirectory(R.class, "lng"), locale);
+    private static ResourceBundle createResource(Locale locale) {
+        return ResourceBundle.getBundle("bridge_lng", locale);
     }
     
     /**

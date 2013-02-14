@@ -18,6 +18,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -651,9 +654,18 @@ public class ArrowDialog extends AbstractDialog {
 
         @Override
         protected void onChange(int x, int y) {
-            getData().getSender().setControl(new Control(x, y));
+            sendControl(x, y);
         }
 
+    };
+    
+    private final WindowFocusListener LISTENER_WINDOW_FOCUS = new WindowAdapter() {
+
+        @Override
+        public void windowLostFocus(WindowEvent e) {
+            sendControl(0, 0);
+        }
+        
     };
     
     private final ItemListener LISTENER_INCREASE = new ItemListener() {
@@ -664,6 +676,13 @@ public class ArrowDialog extends AbstractDialog {
         }
         
     };
+    
+    private static void sendControl(int x, int y) {
+        if (getData().isControlling() != null && getData().isControlling()) {
+            Control c = getData().getControl();
+            if (c == null || c.getX() != x || c.getY() != y) getData().getSender().setControl(new Control(x, y));
+        }
+    }
     
     public ArrowDialog(ControllerFrame owner, ControllerWindows windows) {
         super(owner, "Vezérlő", windows);
@@ -677,9 +696,11 @@ public class ArrowDialog extends AbstractDialog {
         setResizable(false);
         pack();
         
+        addWindowFocusListener(LISTENER_WINDOW_FOCUS);
         if (owner != null) {
             // a főablak is képes irányítani nyilakkal a járművet
             owner.addKeyListener(ARROW_PANEL.LISTENER_KEY);
+            owner.addWindowFocusListener(LISTENER_WINDOW_FOCUS);
             // folyamatos sebességadás átállításának figyelése
             owner.getIncreaseButton().addItemListener(LISTENER_INCREASE);
         }
@@ -761,7 +782,11 @@ public class ArrowDialog extends AbstractDialog {
      * Teszt.
      */
     public static void main(String[] args) {
-        new ArrowDialog(null, null).setVisible(true);
+        new ArrowDialog(null, null) {
+            {
+                setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+            }
+        }.setVisible(true);
     }
     
 }

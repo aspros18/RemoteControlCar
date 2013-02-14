@@ -3,6 +3,8 @@ package org.dyndns.fzoli.rccar.ui;
 import java.awt.Dialog;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import javax.swing.UIManager;
+import static org.dyndns.fzoli.rccar.ui.UIUtil.init;
 import org.dyndns.fzoli.ui.exceptiondialog.UncaughtExceptionDialog;
 import org.dyndns.fzoli.ui.exceptiondialog.UncaughtExceptionParameters;
 import org.dyndns.fzoli.ui.exceptiondialog.event.UncaughtExceptionAdapter;
@@ -18,15 +20,19 @@ import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
  */
 public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
 
-    /**
-     * A kivételmegjelenítő ablak címsor szövege.
-     */
-    private static final String title = "Nem várt hiba";
-
+    public static final String KEY_UNEXPECTED_ERROR = "MobileRC.unexpectedError";
+    
     /**
      * Az kivételmegjelenítő ablak ikonja.
      */
     private static Image icon;
+    
+    /**
+     * Az alapértelmezett szövegek beállítása.
+     */
+    static {
+        init(KEY_UNEXPECTED_ERROR, "Unexpected error");
+    }
     
     /**
      * Nincs szükség példányosításra, se öröklésre.
@@ -38,7 +44,7 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
      * Létrehozza a kivételmegjelenítő ablak megjelenését beállító objektumot.
      */
     private static UncaughtExceptionParameters createParameters() {
-        return new UncaughtExceptionParameters(title, "Nem várt hiba keletkezett a program futása alatt.", "Részletek", "Bezárás", "Másolás", "Mindet kijelöl", icon);
+        return new UncaughtExceptionParameters(UIManager.getString(KEY_UNEXPECTED_ERROR), "Nem várt hiba keletkezett a program futása alatt.", "Részletek", "Bezárás", "Másolás", "Mindet kijelöl", icon);
     }
     
     /**
@@ -115,7 +121,7 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
                 showExceptionDialog(t, ex);
             }
             else {
-                SystemTrayIcon.showMessage(title, "További részletekért kattintson ide.", IconType.ERROR, new Runnable() {
+                SystemTrayIcon.showMessage(UIManager.getString(KEY_UNEXPECTED_ERROR), "További részletekért kattintson ide.", IconType.ERROR, new Runnable() {
                     
                     @Override
                     public void run() {

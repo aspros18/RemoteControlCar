@@ -22,8 +22,15 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
      * Az alapértelmezett szövegek beállítása.
      */
     static {
-        if (UIManager.get(KEY_CERT_LOAD_ERROR) == null) UIManager.put(KEY_CERT_LOAD_ERROR, "Failed to load the certification.");
-        if (UIManager.get(KEY_CERT_ENTER_PASSWORD) == null) UIManager.put(KEY_CERT_ENTER_PASSWORD, "Enter the password of the certification:");
+        init(KEY_CERT_LOAD_ERROR, "Failed to load the certification.");
+        init(KEY_CERT_ENTER_PASSWORD, "Enter the password of the certification:");
+    }
+    
+    /**
+     * Beállítja a kulcs értékét, de csak akkor, ha nincs még beállítva.
+     */
+    static void init(String key, String value) {
+        if (UIManager.get(key) == null) UIManager.put(key, value);
     }
     
     /**
@@ -33,6 +40,7 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
         ResourceBundle res = ResourceBundle.getBundle(baseName, locale);
         UIManager.put(UIUtil.KEY_CERT_LOAD_ERROR, res.getString("cert_load_error"));
         UIManager.put(UIUtil.KEY_CERT_ENTER_PASSWORD, res.getString("cert_enter_password"));
+        UIManager.put(UncaughtExceptionHandler.KEY_UNEXPECTED_ERROR, res.getString("unexpected_error"));
         return res;
     }
     

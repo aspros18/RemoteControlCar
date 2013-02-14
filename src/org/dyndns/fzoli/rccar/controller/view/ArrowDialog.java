@@ -4,6 +4,7 @@ import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.GridBagLayout;
 import java.awt.Polygon;
@@ -69,10 +70,18 @@ abstract class ArrowComponent extends BufferedImage {
      * Polygon elkészítése.
      */
     protected Polygon createPolygon() {
+        return createInnerPolygon(0);
+    }
+    
+    /**
+     * Belső polygon elkészítése.
+     * @param i hány pixellel legyen bentebb
+     */
+    protected Polygon createInnerPolygon(int i) {
         final int size = Math.min(getWidth(), getHeight()) - 1;
         final int s2 = size / 2, s10 = size / 20, s20 = size / 40;
-        final int[] xpoints = {0  , s10      , s10      , s2 - s20  , s2 - s20 , s2 - s10 , s2 , s2 + s10 , s2 + s20 , s2 + s20 , size - s10 , size - s10 , size , size - s10 , size - s10 , s2 + s20 , s2 + s20   , s2 + s10   , s2   , s2 - s10   , s2 - s20   , s2 - s20 , s10      , s10},
-                    ypoints = {s2 , s2 - s10 , s2 - s20 , s2 - s20  , s10      , s10      , 0  , s10      , s10      , s2 - s20 , s2 - s20   , s2 - s10   , s2   , s2 + s10   , s2 + s20   , s2 + s20 , size - s10 , size - s10 , size , size - s10 , size - s10 , s2 + s20 , s2 + s20 , s2 + s10};
+        final int[] xpoints = {1*i  , s10 - 1*i      , s10 - 1*i      , s2 - s20 + 1*i  , s2 - s20 + 1*i , s2 - s10 + 2*i , s2   , s2 + s10 - 2*i , s2 + s20 - 1*i , s2 + s20 - 1*i , size - s10 + 1*i , size - s10 + 1*i , size - 1*i , size - s10 + 1*i , size - s10 + 1*i , s2 + s20 - 1*i , s2 + s20 - 1*i   , s2 + s10 - 2*i   , s2         , s2 - s10 + 2*i   , s2 - s20 + 1*i   , s2 - s20 + 1*i , s10 - 1*i      , s10 - 1*i},
+                    ypoints = {s2   , s2 - s10 + 2*i , s2 - s20 + 1*i , s2 - s20 + 1*i  , s10 - 1*i      , s10 - 1*i      , 1*i  , s10 - 1*i      , s10 - 1*i      , s2 - s20 + 1*i , s2 - s20 + 1*i   , s2 - s10 + 2*i   , s2         , s2 + s10 - 2*i   , s2 + s20 - 1*i   , s2 + s20 - 1*i , size - s10 + 1*i , size - s10 + 1*i , size - 1*i , size - s10 + 1*i , size - s10 + 1*i , s2 + s20 - 1*i , s2 + s20 - 1*i , s2 + s10 - 2*i};
         return new Polygon(xpoints, ypoints, xpoints.length);
     }
     
@@ -98,6 +107,9 @@ class Arrow extends ArrowComponent {
         g.setPaintMode();
         g.setColor(Color.BLACK);
         g.draw(arrow);
+        g.draw(createInnerPolygon(1));
+//        g.setColor(Color.WHITE);
+//        g.draw(createInnerPolygon(2));
         g.dispose();
     }
     
@@ -190,7 +202,7 @@ class ArrowLine extends ArrowComponent {
         Graphics2D g = (Graphics2D) getGraphics();
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, getWidth(), getHeight());
-        g.setColor(Color.GREEN);
+        g.setPaint(new GradientPaint (0.0f, 0.0f, Color.RED, getWidth() / 2, getHeight() / 2, Color.GREEN, true));
         fill(g, getDefaultRectangle());
         fill(g, getRectangleX());
         fill(g, getRectangleY());

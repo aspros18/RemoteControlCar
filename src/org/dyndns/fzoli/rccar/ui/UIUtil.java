@@ -1,6 +1,9 @@
 package org.dyndns.fzoli.rccar.ui;
 
 import java.awt.Image;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import javax.swing.UIManager;
 import org.dyndns.fzoli.ui.OptionPane;
 
 /**
@@ -8,6 +11,30 @@ import org.dyndns.fzoli.ui.OptionPane;
  * @author zoli
  */
 public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
+    
+    /**
+     * Kulcs a lokalizált szöveghez.
+     */
+    public static final String KEY_CERT_LOAD_ERROR = "MobileRC.certLoadError",
+                               KEY_CERT_ENTER_PASSWORD = "MobileRC.certEnterPassword";
+    
+    /**
+     * Az alapértelmezett szövegek beállítása.
+     */
+    static {
+        if (UIManager.get(KEY_CERT_LOAD_ERROR) == null) UIManager.put(KEY_CERT_LOAD_ERROR, "Failed to load the certification.");
+        if (UIManager.get(KEY_CERT_ENTER_PASSWORD) == null) UIManager.put(KEY_CERT_ENTER_PASSWORD, "Enter the password of the certification:");
+    }
+    
+    /**
+     * Létrehoz egy szótárat a kért nyelvhez és az UIManager-ben megadott, több helyen is használt szövegeket beállítja.
+     */
+    public static ResourceBundle createResource(String baseName, Locale locale) {
+        ResourceBundle res = ResourceBundle.getBundle(baseName, locale);
+        UIManager.put(UIUtil.KEY_CERT_LOAD_ERROR, res.getString("cert_load_error"));
+        UIManager.put(UIUtil.KEY_CERT_ENTER_PASSWORD, res.getString("cert_enter_password"));
+        return res;
+    }
     
     /**
      * Bekéri a tanúsítvány jelszavát a felhasználótól.
@@ -36,7 +63,7 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
      * @param extraCallback a középső gomb kattintására lefutó eseménykezelő
      */
     public static OptionPane.PasswordData showPasswordInput(Image icon, boolean saveEnabled, boolean showOnTaskbar, String extraText, Runnable extraCallback) {
-        return OptionPane.showPasswordInput("A tanúsítvány beolvasása sikertelen volt.", "Adja meg a tanúsítvány jelszavát, ha van: ", icon, saveEnabled, showOnTaskbar, extraText, extraCallback);
+        return OptionPane.showPasswordInput(UIManager.getString(KEY_CERT_LOAD_ERROR), UIManager.getString(KEY_CERT_ENTER_PASSWORD), icon, saveEnabled, showOnTaskbar, extraText, extraCallback);
     }
     
 }

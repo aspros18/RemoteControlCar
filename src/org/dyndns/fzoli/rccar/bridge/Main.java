@@ -11,11 +11,11 @@ import org.dyndns.fzoli.rccar.bridge.resource.R;
 import org.dyndns.fzoli.rccar.bridge.socket.BridgeHandler;
 import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.closeSplashScreen;
 import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.setSplashMessage;
+import org.dyndns.fzoli.rccar.ui.UIUtil;
 import static org.dyndns.fzoli.rccar.ui.UIUtil.showPasswordInput;
 import org.dyndns.fzoli.rccar.ui.UncaughtExceptionHandler;
 import static org.dyndns.fzoli.rccar.ui.UncaughtExceptionHandler.showException;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
-import org.dyndns.fzoli.ui.UIUtil;
 import static org.dyndns.fzoli.ui.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.ui.systemtray.SystemTrayIcon;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
@@ -287,10 +287,10 @@ public class Main {
     }
     
     /**
-     * Létrehoz egy szótárat a kért nyelvhez.
+     * Létrehoz egy szótárat a kért nyelvhez és az UIManager-ben megadott, több helyen is használt szövegeket beállítja.
      */
     private static ResourceBundle createResource(Locale locale) {
-        return ResourceBundle.getBundle("bridge_lng", locale);
+        return UIUtil.createResource("bridge_lng", locale);
     }
     
     /**

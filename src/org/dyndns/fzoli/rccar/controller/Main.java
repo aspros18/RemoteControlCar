@@ -8,6 +8,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.SwingUtilities;
@@ -114,6 +116,11 @@ public class Main {
      * A konfigurációt tartalmazó objektum.
      */
     private static final Config CONFIG = Config.getInstance();
+    
+    /**
+     * A szótár.
+     */
+    private static final ResourceBundle STRINGS = createResource(Locale.getDefault());
     
     /**
      * A híd szerverrel építi ki a kapcsolatot.
@@ -370,6 +377,20 @@ public class Main {
             }
             
         }, delay ? 500 : 0);
+    }
+    
+    /**
+     * A szótárból kikeresi a megadott kulcshoz tartozó szót.
+     */
+    public static String getString(String key) {
+        return STRINGS.getString(key);
+    }
+    
+    /**
+     * Létrehoz egy szótárat a kért nyelvhez és az UIManager-ben megadott, több helyen is használt szövegeket beállítja.
+     */
+    private static ResourceBundle createResource(Locale locale) {
+        return UIUtil.createResource("controller_lng", locale);
     }
     
     /**

@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.TreeSet;
-import javax.swing.UIManager;
 import static javax.swing.UIManager.getString;
 import static javax.swing.UIManager.put;
 import org.dyndns.fzoli.ui.OptionPane;
@@ -35,13 +34,6 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
     }
     
     /**
-     * Beállítja a kulcs értékét, de csak akkor, ha nincs még beállítva.
-     */
-    static void init(String key, String value) {
-        if (UIManager.get(key) == null) put(key, value);
-    }
-    
-    /**
      * Létrehoz egy szótárat a kért nyelvhez és az UIManager-ben megadott, több helyen is használt szövegeket beállítja.
      */
     public static ResourceBundle createResource(String baseName, Locale locale) {
@@ -56,6 +48,14 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
         put(UncaughtExceptionHandler.KEY_DETAILS, res.getString("details"));
         put(UncaughtExceptionHandler.KEY_EXIT, res.getString("exit"));
         put(UncaughtExceptionHandler.KEY_SELECT_ALL, res.getString("select_all"));
+        put(OptionPane.KEY_ERROR, res.getString("error"));
+        put(OptionPane.KEY_EXIT, res.getString("exit"));
+        put(OptionPane.KEY_PASSWORD, res.getString("password"));
+        put(OptionPane.KEY_SAVE_PASSWORD, res.getString("save_password"));
+        put(OptionPane.KEY_INPUT_NOT_POSSIBLE, res.getString("input_not_possible"));
+        put(OptionPane.KEY_YES, res.getString("yes"));
+        put(OptionPane.KEY_NO, res.getString("no"));
+        put(OptionPane.KEY_OK, res.getString("ok"));
         return res;
     }
     

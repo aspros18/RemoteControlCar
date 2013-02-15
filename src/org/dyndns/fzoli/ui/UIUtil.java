@@ -17,6 +17,13 @@ public class UIUtil {
     private static final String LS = System.getProperty("line.separator");
     
     /**
+     * Beállítja a kulcshoz tartozó lokalizált szöveget, de csak akkor, ha nincs még beállítva.
+     */
+    public static void init(String key, String value) {
+        if (UIManager.get(key) == null) UIManager.put(key, value);
+    }
+    
+    /**
      * Egy tályékoztató szöveget jelenít meg a felhasználónak.
      * Ha a grafikus felület elérhető, modális ablakban jelenik meg az üzenet,
      * különben a kimenet streamre megy ki a fejléc és a szöveg.

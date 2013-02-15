@@ -11,9 +11,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import static javax.swing.UIManager.getString;
+import static org.dyndns.fzoli.ui.UIUtil.init;
 
 /**
- * Magyar nyelvű dialógusablakokat hoz létre.
+ * Dialógusablakokat hoz létre.
  * @author zoli
  */
 public class OptionPane extends JOptionPane {
@@ -49,11 +51,51 @@ public class OptionPane extends JOptionPane {
     }
     
     /**
-     * Magyar nyelvű gomb opciók.
+     * Kulcs a lokalizált szöveghez.
      */
-    private static final String[] OPTS_OK_EXIT = {"OK", "Kilépés"},
-                                  OPTS_YES_NO = {"Igen", "Nem"},
-                                  OPTS_OK = {"OK"};
+    public static final String KEY_OK = "OptionPane.ok",
+                               KEY_EXIT = "OptionPane.exit",
+                               KEY_YES = "OptionPane.yes",
+                               KEY_NO = "OptionPane.no",
+                               KEY_ERROR = "OptionPane.error",                   
+                               KEY_PASSWORD = "OptionPane.password",                    
+                               KEY_SAVE_PASSWORD = "OptionPane.savePassword",
+                               KEY_INPUT_NOT_POSSIBLE = "OptionPane.inputNotPossible";
+    
+    /**
+     * Az alapértelmezett szövegek beállítása.
+     */
+    static {
+        init(KEY_OK, "OK");
+        init(KEY_EXIT, "Exit");
+        init(KEY_NO, "No");
+        init(KEY_YES, "Yes");
+        init(KEY_ERROR, "Error");
+        init(KEY_PASSWORD, "Password");
+        init(KEY_SAVE_PASSWORD, "Save password");
+        init(KEY_INPUT_NOT_POSSIBLE, "Reading from console is not possible!");
+    }
+    
+    /**
+     * OK és Kilépés szöveget tartalmazó tömb.
+     */
+    private static String[] getOkExitOpts() {
+        return new String[] { getString(KEY_OK), getString(KEY_EXIT) };
+    }
+    
+    /**
+     * Igen és Nem szöveget tartalmazó tömb.
+     */
+    private static String[] getYesNoOpts() {
+        return new String[] { getString(KEY_YES), getString(KEY_NO) };
+    }
+    
+    /**
+     * OK szöveget tartalmazó tömb.
+     */
+    private static String[] getOkOpt() {
+        return new String[] { getString(KEY_OK) };
+    }
     
     /**
      * Jelszóbekérő dialógust jelenít meg.
@@ -91,7 +133,7 @@ public class OptionPane extends JOptionPane {
         if (GraphicsEnvironment.isHeadless()) {
             Console console = System.console();
             if (console == null) {
-                UIUtil.alert("Hiba", "Bevitel nem lehetséges!", System.err);
+                UIUtil.alert(getString(KEY_ERROR), getString(KEY_INPUT_NOT_POSSIBLE), System.err);
                 System.exit(1);
             }
             console.printf("%s%n", message);
@@ -102,7 +144,7 @@ public class OptionPane extends JOptionPane {
             JLabel lbMessage = new JLabel(message);
             JLabel lbRequest = new JLabel(request);
             JPasswordField pass = new JPasswordField(10);
-            JCheckBox save = new JCheckBox("Jelszó mentése");
+            JCheckBox save = new JCheckBox(getString(KEY_SAVE_PASSWORD));
             save.setEnabled(saveEnabled);
             save.setSelected(false);
             panel.add(lbMessage);
@@ -110,9 +152,9 @@ public class OptionPane extends JOptionPane {
             panel.add(pass);
             panel.add(save);
             final boolean hasExtra = extraText != null && extraCallback != null;
-            final String[] opts = hasExtra ? new String[] {OPTS_OK_EXIT[0], extraText, OPTS_OK_EXIT[1]} : OPTS_OK_EXIT;
-            JFrame dummy = createDummyFrame(icon, showOnTaskbar ? "Jelszó" : null);
-            final int option = showOptionDialog(dummy, panel, "Jelszó",
+            final String[] opts = hasExtra ? new String[] {getOkExitOpts()[0], extraText, getOkExitOpts()[1]} : getOkExitOpts();
+            JFrame dummy = createDummyFrame(icon, showOnTaskbar ? getString(KEY_PASSWORD) : null);
+            final int option = showOptionDialog(dummy, panel, getString(KEY_PASSWORD),
                 NO_OPTION, QUESTION_MESSAGE,
                 null, opts, opts[0]);
             dummy.dispose();
@@ -151,7 +193,7 @@ public class OptionPane extends JOptionPane {
      * @param title a címsor szövege
      */
     public static int showYesNoDialog(Window owner, String message, String title) {
-        return showOptionDialog(owner, message, title, NO_OPTION, QUESTION_MESSAGE, null, OPTS_YES_NO, OPTS_YES_NO[1]);
+        return showOptionDialog(owner, message, title, NO_OPTION, QUESTION_MESSAGE, null, getYesNoOpts(), getYesNoOpts()[1]);
     }
     
     /**
@@ -171,7 +213,7 @@ public class OptionPane extends JOptionPane {
      * @param title a címsor szövege
      */
     public static int showWarningDialog(Window owner, String message, String title) {
-        return showOptionDialog(owner, message, title, NO_OPTION, WARNING_MESSAGE, null, OPTS_OK, OPTS_OK[0]);
+        return showOptionDialog(owner, message, title, NO_OPTION, WARNING_MESSAGE, null, getOkOpt(), getOkOpt()[0]);
     }
     
     /**

@@ -4,6 +4,7 @@ import java.awt.Dialog;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import javax.swing.UIManager;
+import static javax.swing.UIManager.getString;
 import static org.dyndns.fzoli.rccar.ui.UIUtil.init;
 import org.dyndns.fzoli.ui.exceptiondialog.UncaughtExceptionDialog;
 import org.dyndns.fzoli.ui.exceptiondialog.UncaughtExceptionParameters;
@@ -24,7 +25,12 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
      * Kulcs a lokalizált szöveghez.
      */
     public static final String KEY_UNEXPECTED_ERROR = "MobileRC.unexpectedError",
-                               KEY_UNEXPECTED_ERROR_MSG = "MobileRC.unexpectedErrorMessage";
+                               KEY_UNEXPECTED_ERROR_MSG = "MobileRC.unexpectedErrorMessage",
+                               KEY_DETAILS = "MobileRC.details",
+                               KEY_COPY = "MobileRC.copy",
+                               KEY_SELECT_ALL = "MobileRC.selectAll",
+                               KEY_CLICK_FOR_DETAILS = "MobileRC.clickForDetails",
+                               KEY_EXIT = "MobileRC.exit", KEY_CLOSE = "MobileRC.close";
     
     /**
      * Az kivételmegjelenítő ablak ikonja.
@@ -37,6 +43,12 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
     static {
         init(KEY_UNEXPECTED_ERROR, "Unexpected error");
         init(KEY_UNEXPECTED_ERROR_MSG, "Unexpected error had been occurred.");
+        init(KEY_CLICK_FOR_DETAILS, "Click here for details.");
+        init(KEY_DETAILS, "Details");
+        init(KEY_COPY, "Copy");
+        init(KEY_SELECT_ALL, "Select all");
+        init(KEY_CLOSE, "Close");
+        init(KEY_EXIT, "Exit");
     }
     
     /**
@@ -48,8 +60,8 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
     /**
      * Létrehozza a kivételmegjelenítő ablak megjelenését beállító objektumot.
      */
-    private static UncaughtExceptionParameters createParameters() {
-        return new UncaughtExceptionParameters(UIManager.getString(KEY_UNEXPECTED_ERROR), UIManager.getString(KEY_UNEXPECTED_ERROR_MSG), "Részletek", "Bezárás", "Másolás", "Mindet kijelöl", icon);
+    private static UncaughtExceptionParameters createParameters(boolean error) {
+        return new UncaughtExceptionParameters(getString(KEY_UNEXPECTED_ERROR), getString(KEY_UNEXPECTED_ERROR_MSG), getString(KEY_DETAILS), error ? getString(KEY_EXIT) : getString(KEY_CLOSE), getString(KEY_COPY), getString(KEY_SELECT_ALL), icon);
     }
     
     /**
@@ -89,7 +101,7 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
      */
     public static void showExceptionDialog(final Thread t, final Throwable ex) {
         final boolean error = ex instanceof Error;
-        UncaughtExceptionDialog.showException(t, ex, error ? Dialog.ModalityType.APPLICATION_MODAL : Dialog.ModalityType.MODELESS, createParameters(), new UncaughtExceptionAdapter() {
+        UncaughtExceptionDialog.showException(t, ex, error ? Dialog.ModalityType.APPLICATION_MODAL : Dialog.ModalityType.MODELESS, createParameters(error), new UncaughtExceptionAdapter() {
 
             @Override
             public void exceptionDialogClosed() {
@@ -126,7 +138,7 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
                 showExceptionDialog(t, ex);
             }
             else {
-                SystemTrayIcon.showMessage(UIManager.getString(KEY_UNEXPECTED_ERROR), "További részletekért kattintson ide.", IconType.ERROR, new Runnable() {
+                SystemTrayIcon.showMessage(UIManager.getString(KEY_UNEXPECTED_ERROR), getString(KEY_CLICK_FOR_DETAILS), IconType.ERROR, new Runnable() {
                     
                     @Override
                     public void run() {

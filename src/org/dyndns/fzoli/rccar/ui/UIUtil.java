@@ -10,6 +10,8 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.swing.UIManager;
+import static javax.swing.UIManager.getString;
+import static javax.swing.UIManager.put;
 import org.dyndns.fzoli.ui.OptionPane;
 
 /**
@@ -36,7 +38,7 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
      * Beállítja a kulcs értékét, de csak akkor, ha nincs még beállítva.
      */
     static void init(String key, String value) {
-        if (UIManager.get(key) == null) UIManager.put(key, value);
+        if (UIManager.get(key) == null) put(key, value);
     }
     
     /**
@@ -44,10 +46,16 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
      */
     public static ResourceBundle createResource(String baseName, Locale locale) {
         ResourceBundle res = ResourceBundle.getBundle(baseName, locale);
-        UIManager.put(UIUtil.KEY_CERT_LOAD_ERROR, res.getString("cert_load_error"));
-        UIManager.put(UIUtil.KEY_CERT_ENTER_PASSWORD, res.getString("cert_enter_password"));
-        UIManager.put(UncaughtExceptionHandler.KEY_UNEXPECTED_ERROR, res.getString("unexpected_error"));
-        UIManager.put(UncaughtExceptionHandler.KEY_UNEXPECTED_ERROR_MSG, res.getString("unexpected_error_msg"));
+        put(UIUtil.KEY_CERT_LOAD_ERROR, res.getString("cert_load_error"));
+        put(UIUtil.KEY_CERT_ENTER_PASSWORD, res.getString("cert_enter_password"));
+        put(UncaughtExceptionHandler.KEY_UNEXPECTED_ERROR, res.getString("unexpected_error"));
+        put(UncaughtExceptionHandler.KEY_UNEXPECTED_ERROR_MSG, res.getString("unexpected_error_msg"));
+        put(UncaughtExceptionHandler.KEY_CLICK_FOR_DETAILS, res.getString("click_for_details"));
+        put(UncaughtExceptionHandler.KEY_CLOSE, res.getString("close"));
+        put(UncaughtExceptionHandler.KEY_COPY, res.getString("copy"));
+        put(UncaughtExceptionHandler.KEY_DETAILS, res.getString("details"));
+        put(UncaughtExceptionHandler.KEY_EXIT, res.getString("exit"));
+        put(UncaughtExceptionHandler.KEY_SELECT_ALL, res.getString("select_all"));
         return res;
     }
     
@@ -125,7 +133,7 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
      * @param extraCallback a középső gomb kattintására lefutó eseménykezelő
      */
     public static OptionPane.PasswordData showPasswordInput(Image icon, boolean saveEnabled, boolean showOnTaskbar, String extraText, Runnable extraCallback) {
-        return OptionPane.showPasswordInput(UIManager.getString(KEY_CERT_LOAD_ERROR), UIManager.getString(KEY_CERT_ENTER_PASSWORD), icon, saveEnabled, showOnTaskbar, extraText, extraCallback);
+        return OptionPane.showPasswordInput(getString(KEY_CERT_LOAD_ERROR), getString(KEY_CERT_ENTER_PASSWORD), icon, saveEnabled, showOnTaskbar, extraText, extraCallback);
     }
     
 }

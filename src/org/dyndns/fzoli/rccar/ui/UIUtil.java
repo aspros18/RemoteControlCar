@@ -1,8 +1,14 @@
 package org.dyndns.fzoli.rccar.ui;
 
 import java.awt.Image;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.TreeSet;
 import javax.swing.UIManager;
 import org.dyndns.fzoli.ui.OptionPane;
 
@@ -43,6 +49,53 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
         UIManager.put(UncaughtExceptionHandler.KEY_UNEXPECTED_ERROR, res.getString("unexpected_error"));
         UIManager.put(UncaughtExceptionHandler.KEY_UNEXPECTED_ERROR_MSG, res.getString("unexpected_error_msg"));
         return res;
+    }
+    
+    /**
+     * Megadja az elérhető nyelvek kódjait és neveit.
+     * A Java források gyökérkönyvtárában keres.
+     * @param bundlename a ResourceBundle baseName paramétere
+     */
+    public static Map<String, String> getBundleLanguages(String bundlename) {
+        Set<String> lngs = getBundleLngs("", bundlename);
+        Map<String, String> res = new HashMap<String, String>();
+        for (Locale l : Locale.getAvailableLocales()) {
+            for (String lng : lngs) {
+                if (lng.equalsIgnoreCase(l.getLanguage())) {
+                    String name = l.getDisplayLanguage();
+                    name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
+                    res.put(lng, name);
+                    break;
+                }
+            }
+        }
+        return res;
+    }
+    
+    /**
+     * Megadja az elérhető nyelvek kódjait.
+     * Forrás: http://stackoverflow.com/questions/2685907/list-all-available-resourcebundle-files
+     * @param bundlepackage a csomag neve, amiben a resource fájlok vannak
+     * @param bundlename a ResourceBundle baseName paramétere
+     */
+    private static Set<String> getBundleLngs(final String bundlepackage, final String bundlename) {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        File root = new File(loader.getResource(bundlepackage.replace('.', '/')).getFile());
+        
+        File[] files = root.listFiles(new FilenameFilter() {
+            
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.matches("^" + bundlename + "(_\\w{2}(_\\w{2})?)?\\.properties$");
+            }
+            
+        });
+
+        Set<String> languages = new TreeSet<String>();
+        for (File file : files) {
+            languages.add(file.getName().replaceAll("^" + bundlename + "(_)?|\\.properties$", ""));
+        }
+        return languages;
     }
     
     /**

@@ -18,7 +18,7 @@ import org.dyndns.fzoli.ui.exceptiondialog.event.UncaughtExceptionSource;
  * de a nem fontosakat már nem írtam meg, ezért hiányos a kommentezés.
  * @author zoli
  */
-public final class UncaughtExceptionDialog extends JDialog { //TODO: ha túl hosszú az üzenet, nem minden rendszeren jelenik meg
+public final class UncaughtExceptionDialog extends JDialog {
     
     private JPanel pc = new JPanel(new GridLayout());
     
@@ -72,13 +72,21 @@ public final class UncaughtExceptionDialog extends JDialog { //TODO: ha túl hos
         p.add(btDetails);
         p.add(btOk);
         add(p, gbc);
-        JPanel pi = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        JLabel li = createMessageIconLabel(params.getMessageIconImage());
+        final JPanel pi = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        final JLabel li = createMessageIconLabel(params.getMessageIconImage());
         if (li != null) {
             li.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
             pi.add(li);
         }
-        final JLabel lb = new JLabel(params.getInfo());
+        final JLabel lb = new JLabel(params.getInfo()) {
+
+            @Override
+            public Dimension getPreferredSize() {
+                Dimension d = super.getPreferredSize();
+                return new Dimension(400 - li.getPreferredSize().width, d.height);
+            }
+            
+        };
         lb.setOpaque(false);
         MouseAdapter lbma = params.getMessageListener();
         if (lbma != null) {

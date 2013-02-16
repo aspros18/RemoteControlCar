@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import static javax.swing.UIManager.getString;
 import static javax.swing.UIManager.put;
+import org.dyndns.fzoli.ui.FilePanel;
 import org.dyndns.fzoli.ui.OptionPane;
 
 /**
@@ -36,7 +37,7 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
     /**
      * Létrehoz egy szótárat a kért nyelvhez és az UIManager-ben megadott, több helyen is használt szövegeket beállítja.
      */
-    public static ResourceBundle createResource(String baseName, Locale locale) {
+    public static ResourceBundle createResource(String baseName, Locale locale, boolean fileChooser) {
         ResourceBundle res = ResourceBundle.getBundle(baseName, locale);
         put(UIUtil.KEY_CERT_LOAD_ERROR, res.getString("cert_load_error"));
         put(UIUtil.KEY_CERT_ENTER_PASSWORD, res.getString("cert_enter_password"));
@@ -56,6 +57,7 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
         put(OptionPane.KEY_YES, res.getString("yes"));
         put(OptionPane.KEY_NO, res.getString("no"));
         put(OptionPane.KEY_OK, res.getString("ok"));
+        if (fileChooser) FilePanel.setResource(res);
         return res;
     }
     

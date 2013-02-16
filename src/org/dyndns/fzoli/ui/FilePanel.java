@@ -7,6 +7,10 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.ResourceBundle;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -22,39 +26,39 @@ import javax.swing.filechooser.FileFilter;
 public class FilePanel extends JPanel {
 
     /**
-     * Beállítja a magyar elnevezéseket a fájl tallózóhoz.
+     * Kulcs a lokalizált szöveghez.
+     */
+    private static final String KEY_SEARCH = "FilePanel.searchButtonText";
+    
+    /**
+     * A lokalizáció beállítása után frissíteni kell a már létrejött panelek feliratait,
+     * erre a célra szolgál ez a lista.
+     */
+    private static final List<FilePanel> PANELS = new ArrayList<FilePanel>();
+    
+    /**
+     * Beállítja az angol elnevezéseket a fájl tallózóhoz, ha még nincs beállítva.
      */
     static {
-        UIManager.put("FileChooser.fileNameLabelText", "Fájlnév");
-        UIManager.put("FileChooser.homeFolderToolTipText", "Kezdőkönyvtár");
-        UIManager.put("FileChooser.newFolderToolTipText", "Új könyvtár");
-        UIManager.put("FileChooser.listViewButtonToolTipTextlist", "Lista");
-        UIManager.put("FileChooser.detailsViewButtonToolTipText", "Részletek");
-        UIManager.put("FileChooser.saveButtonText", "Mentés");
-        UIManager.put("FileChooser.openButtonText", "Megnyitás");
-        UIManager.put("FileChooser.cancelButtonText", "Mégse");
-        UIManager.put("FileChooser.updateButtonText", "Frissítés");
-        UIManager.put("FileChooser.helpButtonText", "Súgó");
-        UIManager.put("FileChooser.saveButtonToolTipText", "Mentés");
-        UIManager.put("FileChooser.openButtonToolTipText", "Megnyitás");
-        UIManager.put("FileChooser.cancelButtonToolTipText", "Mégse");
-        UIManager.put("FileChooser.updateButtonToolTipText", "Frissítés");
-        UIManager.put("FileChooser.helpButtonToolTipText", "Súgó");
-        UIManager.put("FileChooser.filesOfTypeLabelText", "Fájltípus");
-        UIManager.put("FileChooser.upFolderToolTipText", "Fel");
-        UIManager.put("FileChooser.acceptAllFileFilterText", "Minden fájl");
-        UIManager.put("FileChooser.lookInLabelText", "Hely");
-        UIManager.put("FileChooser.listViewButtonAccessibleName", "Lista");
-        UIManager.put("FileChooser.detailsViewButtonAccessibleName", "Részletek");
-        UIManager.put("FileChooser.upFolderAccessibleName", "Fel");
-        UIManager.put("FileChooser.homeFolderAccessibleName", "Kezdőkönyvtár");
-        UIManager.put("FileChooser.fileNameHeaderText", "Név"); 
-        UIManager.put("FileChooser.fileSizeHeaderText", "Méret"); 
-        UIManager.put("FileChooser.fileTypeHeaderText", "Típus"); 
-        UIManager.put("FileChooser.fileDateHeaderText", "Dátum"); 
-        UIManager.put("FileChooser.fileAttrHeaderText", "Tulajdonságok"); 
-        UIManager.put("FileChooser.openDialogTitleText","Megnyitás");
+        UIUtil.init(KEY_SEARCH, "Search");
         UIManager.put("FileChooser.readOnly", Boolean.TRUE);
+    }
+
+    /**
+     * Beállítja az erőforrás alapján a tallózó dialógus szövegeit.
+     */
+    public static void setResource(ResourceBundle b) {
+        Enumeration<String> keys = b.getKeys();
+        while (keys.hasMoreElements()) {
+            String key = keys.nextElement();
+            if ((key.startsWith("FileChooser.") || key.startsWith("FilePanel.")) && !key.equals("FileChooser.readOnly")) {
+                String value = b.getString(key);
+                if (value != null) UIManager.put(key, value);
+            }
+        }
+        for (FilePanel panel : PANELS) {
+            panel.btSearch.setText(UIManager.getString(KEY_SEARCH));
+        }
     }
 
     /**
@@ -102,7 +106,7 @@ public class FilePanel extends JPanel {
      * Tallózás gomb.
      * Megjeleníti a fájlkeresőt.
      */
-    private final JButton btSearch = new JButton("Tallózás");
+    private final JButton btSearch = new JButton(UIManager.getString(KEY_SEARCH));
     
     /**
      * A kiválasztott fájl útvonalát jeleníti meg.
@@ -132,6 +136,7 @@ public class FilePanel extends JPanel {
      */
     public FilePanel(Component parent, String text) {
         super(new GridBagLayout());
+        PANELS.add(this);
         PARENT = parent;
         setOpaque(false);
         GridBagConstraints c = new GridBagConstraints();
@@ -151,7 +156,7 @@ public class FilePanel extends JPanel {
         tfFile.setFocusable(false);
         btSearch.addActionListener(alSearch);
     }
-
+    
     /**
      * A megjelenített/beállított fájlt adja vissza.
      */

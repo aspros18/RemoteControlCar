@@ -424,12 +424,12 @@ public class Main {
     private static void configAlert(boolean help) {
         if (help) {
             if (CONFIG.isDefault()) {
-                showSettingWarning("A konfiguráció beállítása a menüből érhető el. Most ide kattintva is megteheti.", true);
+                showSettingWarning(getString("msg_config_hint"), true);
             }
         }
         if (!help || !CONFIG.isDefault()) {
             if (CONFIG.isCertDefault()) {
-                showSettingWarning("Az alapértelmezett tanúsítvány használatával a kapcsolat nem megbízható!", false);
+                showSettingWarning(getString("msg_config_warn"), false);
             }
         }
     }

@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Locale;
 import org.dyndns.fzoli.resource.MD5Checksum;
 
 /**
@@ -53,6 +54,7 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
     private File ca = new File("test-certs", "ca.crt");
     private File cert = new File("test-certs", "controller.crt");
     private File key = new File("test-certs", "controller.key");
+    private Locale l;
     
     /**
      * Az alapértelmezett crt fájlok ujjlenyomatait tartalmazó tömb.
@@ -237,6 +239,20 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
      */
     public boolean isKeyFileExists() {
         return getKeyFile() != null;
+    }
+    
+    /**
+     * Megadja az alkalmazás nyelvét.
+     */
+    public Locale getLanguage() {
+        return l == null ? Locale.getDefault() : l;
+    }
+    
+    /**
+     * Beállítja az alkalmazás nyelvét.
+     */
+    public void setLanguage(Locale l) {
+        this.l = l;
     }
     
     /**

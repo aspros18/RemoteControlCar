@@ -83,6 +83,20 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
     }
     
     /**
+     * Megkeresi a nyelv kódja alapján a Locale objektumot.
+     */
+    public static Locale getLocale(String key) {
+        if (key != null) {
+            for (Locale l : Locale.getAvailableLocales()) {
+                if (key.equalsIgnoreCase(l.getLanguage())) {
+                    return l;
+                }
+            }
+        }
+        return null;
+    }
+    
+    /**
      * Megadja az elérhető nyelvek kódjait.
      * Forrás: http://stackoverflow.com/questions/2685907/list-all-available-resourcebundle-files
      * @param bundlepackage a csomag neve, amiben a resource fájlok vannak

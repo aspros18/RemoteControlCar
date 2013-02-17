@@ -21,6 +21,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import static org.dyndns.fzoli.rccar.controller.Main.getString;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.controller.view.RelocalizableWindow;
 
@@ -59,7 +60,12 @@ public class HostSelectionFrame extends JFrame implements RelocalizableWindow {
     /**
      * Jármű kiválasztó gomb.
      */
-    private final JButton BT_SELECT = new JButton("Kiválasztás");
+    private final JButton BT_SELECT = new JButton(getString("vehicle_select"));
+    
+    /**
+     * Jármű választásra kérő szöveg.
+     */
+    private final JLabel LB_MSG = new JLabel(getString("vehicle_select_msg"), SwingConstants.CENTER);
     
     /**
      * Megadja, hogy ki lett-e már választva egy hoszt.
@@ -80,7 +86,7 @@ public class HostSelectionFrame extends JFrame implements RelocalizableWindow {
      * Beállítja a komponenseket még a megjelenés előtt.
      */
     private void initFrame() {
-        setTitle("Járműválasztó");
+        setTitle(getString("vehicle_chooser"));
         setIconImage(R.getIconImage());
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -89,7 +95,8 @@ public class HostSelectionFrame extends JFrame implements RelocalizableWindow {
         
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(5, 0, 0, 0);
-        add(new JLabel("Válasszon járművet a listából.", SwingConstants.CENTER), c);
+        
+        add(LB_MSG, c);
         
         c.gridy = 1;
         c.weighty = Integer.MAX_VALUE;
@@ -140,7 +147,9 @@ public class HostSelectionFrame extends JFrame implements RelocalizableWindow {
      */
     @Override
     public void relocalize() {
-        // TODO
+        setTitle(getString("vehicle_chooser"));
+        BT_SELECT.setText(getString("vehicle_select"));
+        LB_MSG.setText(getString("vehicle_select_msg"));
     }
     
     /**

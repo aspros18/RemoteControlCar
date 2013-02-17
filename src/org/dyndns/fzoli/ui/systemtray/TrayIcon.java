@@ -28,6 +28,11 @@ public interface TrayIcon extends Visibility {
     public PopupMenu createPopupMenu();
     
     /**
+     * Eltávolítja a menüt, ha létezik.
+     */
+    public void removePopupMenu();
+    
+    /**
      * Ha az ikonra duplán kattintanak, a paraméterben átadott objektum run metódusa fut le.
      * @param r callback
      */

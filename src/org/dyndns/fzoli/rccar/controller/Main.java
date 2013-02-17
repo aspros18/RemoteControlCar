@@ -179,7 +179,7 @@ public class Main {
         setSystemLookAndFeel();
         setExceptionHandler();
         initNativeInterface();
-        setSystemTrayIcon();
+        setSystemTrayIcon(true);
     }
     
     /**
@@ -205,11 +205,12 @@ public class Main {
     
     /**
      * Beállítja a rendszerikont.
+     * @param setIcon ha true, beállítja az ikont is
      */
-    private static void setSystemTrayIcon() {
+    private static void setSystemTrayIcon(boolean setIcon) {
         if (SystemTrayIcon.init(!isNativeSwingAvailable()) && SystemTrayIcon.isSupported()) {
             // az ikon beállítása
-            SystemTrayIcon.setIcon("Mobile-RC", R.getIconImageStream());
+            if (setIcon) SystemTrayIcon.setIcon("Mobile-RC", R.getIconImageStream());
 
             // nyelv választó opció hozzáadása
             String lngText = getString("language");
@@ -493,6 +494,7 @@ public class Main {
                         PROGRESS_FRAME.relocalize();
                         SELECTION_FRAME.relocalize();
                         CONTROLLER_WINDOWS.relocalize();
+                        setSystemTrayIcon(false);
                         synchronized (CONFIG) {
                             CONFIG.setLanguage(l);
                             Config.save(CONFIG);

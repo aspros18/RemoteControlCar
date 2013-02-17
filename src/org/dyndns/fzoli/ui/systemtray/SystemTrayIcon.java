@@ -49,7 +49,11 @@ public class SystemTrayIcon {
      */
     public static boolean init(boolean noswt) {
         try {
-            if (tray != null && tray.isSupported()) return true;
+            if (tray != null && tray.isSupported()) {
+                icon.setVisible(true);
+                menu = icon.createPopupMenu();
+                return true;
+            }
             noswt = noswt || new File(".noswt").isFile();
             tray = SystemTrayProvider.getSystemTray(true, noswt);
             if (tray.isSupported()) {

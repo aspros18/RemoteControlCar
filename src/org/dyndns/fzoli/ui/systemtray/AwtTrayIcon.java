@@ -45,6 +45,11 @@ class AwtTrayIcon implements TrayIcon {
     }
 
     @Override
+    public void removePopupMenu() {
+        icon.setPopupMenu(null);
+    }
+
+    @Override
     public void setOnClickListener(final Runnable r) {
         if (r != null) {
             icon.addMouseListener(new MouseAdapter() {

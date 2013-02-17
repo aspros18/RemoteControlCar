@@ -54,9 +54,17 @@ class SwtTrayIcon implements TrayIcon {
     
     @Override
     public PopupMenu createPopupMenu() {
-        if (menu != null) menu.setVisible(false);
+        removePopupMenu();
         menu = new SwtPopupMenu(display, shell, item);
         return menu;
+    }
+
+    @Override
+    public void removePopupMenu() {
+        if (menu != null) {
+            menu.setVisible(false);
+            menu = null;
+        }
     }
     
     @Override

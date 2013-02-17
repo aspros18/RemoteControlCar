@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Timer;
@@ -459,12 +459,20 @@ public class Main {
      */
     public static void main(String[] args) throws InterruptedException {
         if (GraphicsEnvironment.isHeadless()) { // ha a grafikus felület nem érhető el
-            System.err.println("A program futtatásához grafikus környezetre van szükség." + LS + "A program kilép.");
+            System.err.println(getString("msg_need_gui") + LS + getString("msg_exit"));
             System.exit(1); // hibakóddal lép ki
         }
-        final File dir = new File("./");
-        if (!dir.canWrite() || !dir.canRead() || (Config.STORE_FILE.exists() && !Config.STORE_FILE.canRead() || !Config.STORE_FILE.canWrite())) {
-            showSettingError("A program futtatásához olvasási és írási jogra van szükség." + LS + "A program kilép.");
+        if (!Config.STORE_FILE.exists()) { // ha a konfig fájl nem létezik
+            try {
+                Config.STORE_FILE.createNewFile(); // megpróbálja létrehozni
+            }
+            catch (IOException ex) { // ha nem lehet létrehozni a fájlt
+                showSettingError(getString("msg_need_dir_permission") + LS + getString("msg_exit"));
+                System.exit(1);
+            }
+        }
+        if (Config.STORE_FILE.exists() && (!Config.STORE_FILE.canRead() || !Config.STORE_FILE.canWrite())) {
+            showSettingError(getString("msg_need_cfg_permission") + LS + getString("msg_exit"));
             System.exit(1);
         }
         SwingUtilities.invokeLater(new Runnable() {
@@ -498,7 +506,7 @@ public class Main {
                     
                 };
                 if (!CONFIG.isCorrect()) { // ha a tanúsítvány fájlok egyike nem létezik
-                    showSettingError((CONFIG.isDefault() ? "Az alapértelmezett konfiguráció nem használható, mert" : "A konfiguráció") + " nem létező fájlra hivatkozik." + LS + "A folytatás előtt a hibát helyre kell hozni.");
+                    showSettingError(getString("warn_config_error1" + (CONFIG.isDefault() ? 'b' : 'a')) + ' ' + getString("warn_config_error2") + LS + getString("warn_config_error3"));
                     showSettingDialog(true, 1); // kényszerített beállítás és tanúsítvány lapfül előtérbe hozása
                 }
                 else {

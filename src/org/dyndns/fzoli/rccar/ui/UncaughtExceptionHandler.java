@@ -131,7 +131,7 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
      * @param ex a nem várt hiba
      */
     public static void showException(final Thread t, final Throwable ex) {
-        if (t.getName().startsWith("AWT-EventQueue")) return; // TODO: a chat ablak idéz elő egy kivételt valamiért, más megoldást kell találni
+//        if (t.getName().startsWith("AWT-EventQueue")) return;
         final boolean error = ex instanceof Error;
         if (!GraphicsEnvironment.isHeadless()) {
             if (error || !SystemTrayIcon.isVisible()) {

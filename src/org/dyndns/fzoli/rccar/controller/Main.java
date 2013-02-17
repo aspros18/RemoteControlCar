@@ -37,11 +37,6 @@ import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 public class Main {
     
     /**
-     * Üzenettípusok.
-     */
-    private static final String VAL_WARNING = "Figyelmeztetés", VAL_ERROR = "Hiba";
-    
-    /**
      * Új sor jel.
      */
     private static final String LS = System.getProperty("line.separator");
@@ -74,7 +69,7 @@ public class Main {
         public void run() {
             if (CONN.isConnected()) { // ha van kiépített kapcsolat
                 // megkérdi, biztos-e a kilépésben
-                int opt = OptionPane.showYesNoDialog(SELECTION_FRAME, "Biztos, hogy kilép a programból?", "Megerősítés");
+                int opt = OptionPane.showYesNoDialog(SELECTION_FRAME, getString("confirm_exit"), getString("confirmation"));
                 // ha igen, akkor a program kilép
                 if (opt == 0) {
                     exiting = true;
@@ -210,7 +205,7 @@ public class Main {
     private static void setSystemTrayIcon(boolean setIcon) {
         if (SystemTrayIcon.init(!isNativeSwingAvailable()) && SystemTrayIcon.isSupported()) {
             // az ikon beállítása
-            if (setIcon) SystemTrayIcon.setIcon("Mobile-RC", R.getIconImageStream());
+            if (setIcon) SystemTrayIcon.setIcon(getString("app_name"), R.getIconImageStream());
 
             // nyelv választó opció hozzáadása
             String lngText = getString("language");
@@ -228,10 +223,10 @@ public class Main {
             SystemTrayIcon.addMenuSeparator();
 
             // kapcsolatbeállítás opció hozzáadása
-            SystemTrayIcon.addMenuItem("Kapcsolatbeállítás", CALLBACK_SETTING);
+            SystemTrayIcon.addMenuItem(getString("connection_settings"), CALLBACK_SETTING);
 
             // újrakapcsolódás opció hozzáadása
-            SystemTrayIcon.addMenuItem("Újrakapcsolódás", new Runnable() {
+            SystemTrayIcon.addMenuItem(getString("reconnect"), new Runnable() {
 
                 @Override
                 public void run() {
@@ -244,7 +239,7 @@ public class Main {
             SystemTrayIcon.addMenuSeparator();
 
             // kilépés opció hozzáadása
-            SystemTrayIcon.addMenuItem("Kilépés", CALLBACK_EXIT);
+            SystemTrayIcon.addMenuItem(getString("exit"), CALLBACK_EXIT);
         }
     }
     
@@ -273,7 +268,7 @@ public class Main {
      * @param text a megjelenő szöveg
      */
     private static void showSettingError(String text) {
-        UIUtil.alert(VAL_ERROR, text, System.err, R.getIconImage());
+        UIUtil.alert(getString("error"), text, System.err, R.getIconImage());
     }
     
     /**
@@ -283,7 +278,7 @@ public class Main {
      * @param showSettings jelenjen-e meg a beállítások ablak kattintás esetén
      */
     private static void showSettingWarning(String text, boolean showSettings) {
-        showMessage(VAL_WARNING, text, IconType.WARNING, showSettings ? CALLBACK_SETTING : null);
+        showMessage(getString("warning"), text, IconType.WARNING, showSettings ? CALLBACK_SETTING : null);
     }
     
     /**
@@ -293,7 +288,7 @@ public class Main {
      */
     private static void showConnecting() {
         if (SplashScreenLoader.isVisible()) {
-            SplashScreenLoader.setSplashMessage("Kapcsolódás a szerverhez");
+            SplashScreenLoader.setSplashMessage(getString("connect_to_server"));
         }
         else {
             showConnectionStatus(Status.CONNECTING);
@@ -342,7 +337,7 @@ public class Main {
      * @return a megadott jelszó adat, ami akkor null, ha a Beállítások gombra kattintottak
      */
     public static PasswordData showPasswordDialog() {
-        PasswordData data = UIUtil.showPasswordInput(R.getIconImage(), true, !PROGRESS_FRAME.isVisible(), "Beállítások", new Runnable() {
+        PasswordData data = UIUtil.showPasswordInput(R.getIconImage(), true, !PROGRESS_FRAME.isVisible(), getString("settings"), new Runnable() {
 
             @Override
             public void run() {

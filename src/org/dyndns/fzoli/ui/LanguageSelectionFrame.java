@@ -56,12 +56,12 @@ public abstract class LanguageSelectionFrame extends JFrame {
     /**
      * A legördülő lista modelje.
      */
-    private final DefaultComboBoxModel<Locale> MODEL_LOCALES = new DefaultComboBoxModel<Locale>();
+    public final DefaultComboBoxModel<Locale> MODEL_LOCALES = new DefaultComboBoxModel<Locale>();
     
     /**
      * A legördülő lista kinézetét szabályozó objektum.
      */
-    private final DefaultListCellRenderer LCR_LOCALES = new DefaultListCellRenderer() {
+    public final DefaultListCellRenderer LCR_LOCALES = new DefaultListCellRenderer() {
 
         /**
          * A felsorolás elemei nagy betűvel kezdődnek és a {@link Locale} nyelvén jelennek meg.

@@ -18,6 +18,7 @@ import java.text.ParseException;
 import java.util.regex.Pattern;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFormattedTextField.AbstractFormatter;
@@ -262,7 +263,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
             
             c.gridy = 0; // nulladik sor
             c.gridwidth = 2; // két oszlopot foglal el a magyarázat
-            JLabel lbMsg = new JLabel("<html>Ezen a lapfülen állíthatja be a híd szervernek az elérési útvonalát.</html>");
+            JLabel lbMsg = new JLabel("<html>Ezen a lapfülön állíthatja be a híd szervernek az elérési útvonalát.</html>");
             lbMsg.setPreferredSize(new Dimension(240, 30)); // két sorba kerül az üzenet, mivel nem fér el egy sorban ezen a méreten
             add(lbMsg, c);
             c.gridwidth = 1; // a többi elem egy oszlopot foglal el
@@ -304,13 +305,36 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
             c.weighty = 1; // teljes helylefoglalás hosszúságban
             c.insets = new Insets(5, 5, 5, 5); // 5 pixeles margó
             c.fill = GridBagConstraints.HORIZONTAL; // teljes helykitöltés horizontálisan (sorkitöltés)
-            JLabel lbMsg = new JLabel("<html>Ezen a lapfülen törölheti a tanúsítvány jelszavát, ha azt régebben megadta.</html>");
+            JLabel lbMsg = new JLabel("<html>Ezen a lapfülön törölheti a tanúsítvány jelszavát, ha azt régebben megadta.</html>");
             lbMsg.setPreferredSize(new Dimension(240, 60)); // két sorba kerül az üzenet, mivel nem fér el egy sorban ezen a méreten
-            add(lbMsg, c);
+            add(lbMsg, c); // üzenet hozzáadása a panelhez
             c.gridy = 1; // a szöveg alá kerül a törlés gomb
             c.insets = new Insets(0, 5, 5, 5); // 5 pixeles margó mindenhol, kivéve felül
             c.fill = GridBagConstraints.NONE; // csak akkora helyet foglal, amennyire szüksége van
             add(btPasswordReset, c);
+        }
+    };
+    
+    private final JPanel languageChooserPanel = new ConfigPanel() {
+        {
+            setLayout(new GridBagLayout());
+            GridBagConstraints c = new GridBagConstraints();
+            c.weightx = 1; // teljes helyfoglalás szélességében
+            c.weighty = 1; // teljes helylefoglalás hosszúságban
+            c.insets = new Insets(5, 5, 5, 5); // 5 pixeles margó
+            c.fill = GridBagConstraints.HORIZONTAL; // teljes helykitöltés horizontálisan (sorkitöltés)
+            JLabel lbMsg = new JLabel("<html>Ezen a lapfülön kiválaszthatja a használni kívánt nyelvet.</html>");
+            lbMsg.setPreferredSize(new Dimension(240, 60)); // két sorba kerül az üzenet, mivel nem fér el egy sorban ezen a méreten
+            add(lbMsg, c); // üzenet hozzáadása a panelhez
+            c.gridy = 1; // a szöveg alá kerül a törlés gomb
+            c.insets = new Insets(0, 5, 5, 5); // 5 pixeles margó mindenhol, kivéve felül
+            c.fill = GridBagConstraints.NONE; // csak akkora helyet foglal, amennyire szüksége van
+            add(new JComboBox(Main.LNG_FRAME.MODEL_LOCALES) { // ugyan azzal a modellel jön létre a legördülő lista, amivel a nyelvkiválasztó ablak, így egyszerre módosulnak
+                {
+                    setRenderer(Main.LNG_FRAME.LCR_LOCALES); // ugyan azt a renderert használja, mint a nyelvkiválasztó ablak
+                    setPreferredSize(new Dimension(Math.max(getPreferredSize().width, 180), getPreferredSize().height)); // 180 pixel széles (vagy nagyobb, ha kell)
+                }
+            }, c);
         }
     };
     
@@ -322,6 +346,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
             addTab("Útvonal", addressPanel);
             addTab("Biztonság", certificatePanel);
             addTab("Jelszó", passwordResetPanel);
+            addTab("Nyelv", languageChooserPanel);
         }
     };
     
@@ -372,7 +397,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
         
         pack(); // legkisebb méretre állítás ...
         setMinimumSize(getSize()); // ... és ennél a méretnél csak nagyobb lehet az ablak
-        setMaximumSize(new Dimension(Integer.MAX_VALUE, getSize().height)); // Java 1.7.0_07 még mindig bugos, de egyszer csak menni fog
+        setMaximumSize(new Dimension(1024, getSize().height)); // Java 1.7.0_07 még mindig bugos, de egyszer csak menni fog
         setLocationRelativeTo(this); // képernyő közepére igazítás
         
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE); // az alapértelmezett bezárás tiltása

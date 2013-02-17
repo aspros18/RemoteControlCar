@@ -137,7 +137,7 @@ public class Main {
     /**
      * Nyelvkiválasztó ablak.
      */
-    private static LanguageSelectionFrame LNG_FRAME;
+    public static LanguageSelectionFrame LNG_FRAME;
     
     /**
      * Konfiguráció-szerkesztő ablak.
@@ -481,10 +481,7 @@ public class Main {
             public void run() {
                 // előinicializálom az ablakokat, míg a nyitóképernyő fent van,
                 // hogy később ne menjen el ezzel a hasznos idő
-                PROGRESS_FRAME = new ConnectionProgressFrame();
-                CONFIG_EDITOR = new ConfigEditorFrame(CONFIG, WL_CFG);
-                SELECTION_FRAME = new HostSelectionFrame(AL_EXIT);
-                CONTROLLER_WINDOWS = new ControllerWindows();
+                // a nyelvkiválasztó ablakkal kezdem, mivel a konfig-szerkesztő ablak használja a referenciáját
                 LNG_FRAME = new LanguageSelectionFrame(R.getIconImage(), "controller_lng", CONFIG.getLanguage()) {
 
                     /**
@@ -505,6 +502,10 @@ public class Main {
                     }
                     
                 };
+                PROGRESS_FRAME = new ConnectionProgressFrame();
+                CONFIG_EDITOR = new ConfigEditorFrame(CONFIG, WL_CFG);
+                SELECTION_FRAME = new HostSelectionFrame(AL_EXIT);
+                CONTROLLER_WINDOWS = new ControllerWindows();
                 if (!CONFIG.isCorrect()) { // ha a tanúsítvány fájlok egyike nem létezik
                     showSettingError(getString("warn_config_error1" + (CONFIG.isDefault() ? 'b' : 'a')) + ' ' + getString("warn_config_error2") + LS + getString("warn_config_error3"));
                     showSettingDialog(true, 1); // kényszerített beállítás és tanúsítvány lapfül előtérbe hozása

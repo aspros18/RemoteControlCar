@@ -76,7 +76,7 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
     /**
      * Az a fájl, amelybe a szerializálás történik.
      */
-    private static final File STORE = new File("controller.ser");
+    public static final File STORE_FILE = new File("controller.ser");
     
     /**
      * Az alapértelmezett konfiguráció.
@@ -334,8 +334,8 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
      */
     public static Config getInstance() {
         try {
-            if (STORE.isFile()) {
-                FileInputStream fis = new FileInputStream(STORE);
+            if (STORE_FILE.isFile()) {
+                FileInputStream fis = new FileInputStream(STORE_FILE);
                 ObjectInputStream oin = new ObjectInputStream(fis);
                 Config config;
                 try {
@@ -365,7 +365,7 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
      */
     public static boolean save(Config config) {
         try {
-            FileOutputStream fos = new FileOutputStream(STORE, false);
+            FileOutputStream fos = new FileOutputStream(STORE_FILE, false);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(config);
             oos.flush();

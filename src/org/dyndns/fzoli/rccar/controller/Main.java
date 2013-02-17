@@ -139,6 +139,9 @@ public class Main {
      */
     private static boolean nativeSwingAvailable = true;
     
+    /**
+     * Nyelvkiválasztó ablak.
+     */
     private static LanguageSelectionFrame LNG_FRAME;
     
     /**
@@ -217,6 +220,9 @@ public class Main {
                 }
 
             });
+
+            //szeparátor hozzáadása
+            SystemTrayIcon.addMenuSeparator();
 
             // kapcsolatbeállítás opció hozzáadása
             SystemTrayIcon.addMenuItem("Kapcsolatbeállítás", CALLBACK_SETTING);
@@ -459,7 +465,7 @@ public class Main {
             System.exit(1); // hibakóddal lép ki
         }
         final File dir = new File("./");
-        if (!dir.canWrite() || !dir.canRead()) {
+        if (!dir.canWrite() || !dir.canRead() || (Config.STORE_FILE.exists() && !Config.STORE_FILE.canRead() || !Config.STORE_FILE.canWrite())) {
             showSettingError("A program futtatásához olvasási és írási jogra van szükség." + LS + "A program kilép.");
             System.exit(1);
         }
@@ -475,6 +481,9 @@ public class Main {
                 CONTROLLER_WINDOWS = new ControllerWindows();
                 LNG_FRAME = new LanguageSelectionFrame(R.getIconImage(), "controller_lng", CONFIG.getLanguage()) {
 
+                    /**
+                     * Ha a nyelv megváltozott, szótár cseréje, feliratok lecserélése és az új nyelv elmentése.
+                     */
                     @Override
                     protected void onLanguageSelected(Locale l) {
                         STRINGS = createResource(l);

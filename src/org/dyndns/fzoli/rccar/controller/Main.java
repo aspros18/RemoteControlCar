@@ -212,7 +212,9 @@ public class Main {
             SystemTrayIcon.setIcon("Mobile-RC", R.getIconImageStream());
 
             // nyelv választó opció hozzáadása
-            SystemTrayIcon.addMenuItem("Nyelv", new Runnable() {
+            String lngText = getString("language");
+            if (!lngText.equalsIgnoreCase("language")) lngText += " (language)";
+            SystemTrayIcon.addMenuItem(lngText, new Runnable() {
 
                 @Override
                 public void run() {

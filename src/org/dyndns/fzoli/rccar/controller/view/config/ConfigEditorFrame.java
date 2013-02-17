@@ -31,6 +31,7 @@ import org.dyndns.fzoli.rccar.controller.Config;
 import org.dyndns.fzoli.rccar.controller.Main;
 import static org.dyndns.fzoli.rccar.controller.Main.runClient;
 import org.dyndns.fzoli.rccar.controller.resource.R;
+import org.dyndns.fzoli.rccar.controller.view.RelocalizableWindow;
 import org.dyndns.fzoli.ui.FilePanel;
 import org.dyndns.fzoli.ui.FrontFrame;
 import org.dyndns.fzoli.ui.OkCancelPanel;
@@ -41,7 +42,7 @@ import org.dyndns.fzoli.ui.RegexPatternFormatter;
  * A vezérlő konfigurációját beállító dialógusablak.
  * @author zoli
  */
-public class ConfigEditorFrame extends FrontFrame {
+public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow {
     
     /**
      * A dialógusablak lapfüleinek tartalma ebbe a panelbe kerül bele.
@@ -400,6 +401,15 @@ public class ConfigEditorFrame extends FrontFrame {
         tfPort.addKeyListener(klEnter);
     }
 
+    /**
+     * A felület feliratait újra beállítja.
+     * Ha a nyelvet megváltoztatja a felhasználó, ez a metódus hívódik meg.
+     */
+    @Override
+    public void relocalize() {
+        // TODO
+    }
+    
     /**
      * Megadja, hogy a helyes konfiguráció beállítása kényszerítve van-e.
      */

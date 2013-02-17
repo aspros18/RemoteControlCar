@@ -705,6 +705,15 @@ public class ArrowDialog extends AbstractDialog {
             owner.getIncreaseButton().addItemListener(LISTENER_INCREASE);
         }
     }
+
+    /**
+     * A felület feliratait újra beállítja.
+     * Ha a nyelvet megváltoztatja a felhasználó, ez a metódus hívódik meg.
+     */
+    @Override
+    public void relocalize() {
+        // TODO
+    }
     
     private void setControlling(boolean b, boolean restoring) {
         ControllerFrame owner = getControllerFrame();

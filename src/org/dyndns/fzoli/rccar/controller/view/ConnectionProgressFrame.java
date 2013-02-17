@@ -12,7 +12,7 @@ import org.dyndns.fzoli.ui.IconTextPanel;
  * A vezérlő kapcsolódásjelző- és kezelő ablaka.
  * @author zoli
  */
-public class ConnectionProgressFrame extends AbstractConnectionProgressFrame {
+public class ConnectionProgressFrame extends AbstractConnectionProgressFrame implements RelocalizableWindow {
 
     /**
      * Az ablakon megjelenő panelek belőle származnak.
@@ -64,6 +64,15 @@ public class ConnectionProgressFrame extends AbstractConnectionProgressFrame {
         setIconImage(R.getIconImage());
     }
 
+    /**
+     * A felület feliratait újra beállítja.
+     * Ha a nyelvet megváltoztatja a felhasználó, ez a metódus hívódik meg.
+     */
+    @Override
+    public void relocalize() {
+        // TODO
+    }
+    
     /**
      * Beállítja a megjelenő panelt és az Újra gombot.
      * Az Újra gomb tiltva lesz {@code Status.CONNECTING} státusz esetén.

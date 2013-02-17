@@ -347,6 +347,15 @@ public class MapDialog extends AbstractDialog {
     }
     
     /**
+     * A felület feliratait újra beállítja.
+     * Ha a nyelvet megváltoztatja a felhasználó, ez a metódus hívódik meg.
+     */
+    @Override
+    public void relocalize() {
+        // TODO
+    }
+    
+    /**
      * Hibaüzenet eltüntetése és térkép újratöltése, ha legutóbb nem sikerült betölteni.
      */
     private void reload() {

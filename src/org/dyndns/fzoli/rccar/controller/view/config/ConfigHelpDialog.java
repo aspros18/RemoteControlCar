@@ -8,12 +8,13 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import org.dyndns.fzoli.rccar.controller.view.RelocalizableWindow;
 
 /**
  * A kapcsolatbeállító ablak súgója.
  * @author zoli
  */
-public class ConfigHelpDialog extends JDialog {
+public class ConfigHelpDialog extends JDialog implements RelocalizableWindow {
 
     /**
      * A szöveg egyszerű HTML kódja.
@@ -38,6 +39,15 @@ public class ConfigHelpDialog extends JDialog {
         pack(); // minimális méret beállítása és ...
         setMinimumSize(new Dimension(getSize().width + 30, 1)); // ... az ablakmagasság csak ennél nagyobb lehet
         setLocationRelativeTo(owner); // szülő ablak szerint középre igazítás
+    }
+    
+    /**
+     * A felület feliratait újra beállítja.
+     * Ha a nyelvet megváltoztatja a felhasználó, ez a metódus hívódik meg.
+     */
+    @Override
+    public void relocalize() {
+        // TODO
     }
     
 }

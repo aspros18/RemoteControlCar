@@ -10,7 +10,7 @@ import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
  * A dialógusablakok közös őse.
  * @author zoli
  */
-public abstract class AbstractDialog extends JDialog {
+public abstract class AbstractDialog extends JDialog implements RelocalizableWindow {
 
     /**
      * Konstruktor.
@@ -31,7 +31,7 @@ public abstract class AbstractDialog extends JDialog {
             
         });
     }
-
+    
     /**
      * A főablak referenciája.
      */

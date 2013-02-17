@@ -49,7 +49,7 @@ import org.imgscalr.Scalr;
  * Tartalmazza a kameraképet, a vezérlőgombokat,
  * valamint a jármű pillanatnyi sebességét és akkumulátorszintjét.
  */
-public class ControllerFrame extends JFrame {
+public class ControllerFrame extends JFrame implements RelocalizableWindow {
     
     /**
      * A képkockát megjelenítő címke.
@@ -334,6 +334,15 @@ public class ControllerFrame extends JFrame {
             }
             
         });
+    }
+    
+    /**
+     * A felület feliratait újra beállítja.
+     * Ha a nyelvet megváltoztatja a felhasználó, ez a metódus hívódik meg.
+     */
+    @Override
+    public void relocalize() {
+        // TODO
     }
     
     /**

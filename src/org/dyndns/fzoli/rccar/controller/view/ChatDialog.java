@@ -426,6 +426,15 @@ public class ChatDialog extends AbstractDialog {
     }
     
     /**
+     * A felület feliratait újra beállítja.
+     * Ha a nyelvet megváltoztatja a felhasználó, ez a metódus hívódik meg.
+     */
+    @Override
+    public void relocalize() {
+        // TODO
+    }
+    
+    /**
      * A kollekcióban lévő chatüzeneteket hozzáadja a felülethez.
      * @param c a chatüzenetek szépen sorrendben
      */
@@ -464,20 +473,6 @@ public class ChatDialog extends AbstractDialog {
     public void removeControllers() {
         ((DefaultListModel) LIST_CONTROLLERS.getModel()).clear();
     }
-    
-//    /**
-//     * A vezérlők listájában megkeresi az adott vezérlő állapotleíróját.
-//     * Így megvizsgálható a felületen lévő model és az aktuális model közti eltérés.
-//     * @return null, ha a felületen nem található a keresett vezérlő
-//     */
-//    public ControllerState findController(String name) {
-//        Enumeration<ControllerState> e = ((DefaultListModel) LIST_CONTROLLERS.getModel()).elements();
-//        while (e.hasMoreElements()) {
-//            ControllerState s = e.nextElement();
-//            if (s.getName().equals(name)) return s;
-//        }
-//        return null;
-//    }
     
     /**
      * A jelenlévők listájához ad hozzá vagy abból vesz el.

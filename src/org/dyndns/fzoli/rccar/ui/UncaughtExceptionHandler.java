@@ -5,7 +5,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import javax.swing.UIManager;
 import static javax.swing.UIManager.getString;
-import static org.dyndns.fzoli.rccar.ui.UIUtil.init;
+import static org.dyndns.fzoli.ui.UIUtil.init;
 import org.dyndns.fzoli.ui.exceptiondialog.UncaughtExceptionDialog;
 import org.dyndns.fzoli.ui.exceptiondialog.UncaughtExceptionParameters;
 import org.dyndns.fzoli.ui.exceptiondialog.event.UncaughtExceptionAdapter;
@@ -131,7 +131,7 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
      * @param ex a nem várt hiba
      */
     public static void showException(final Thread t, final Throwable ex) {
-        if (t.getName().startsWith("AWT-EventQueue")) return;
+        if (t.getName().startsWith("AWT-EventQueue")) return; // TODO: a chat ablak idéz elő egy kivételt valamiért, más megoldást kell találni
         final boolean error = ex instanceof Error;
         if (!GraphicsEnvironment.isHeadless()) {
             if (error || !SystemTrayIcon.isVisible()) {

@@ -27,11 +27,6 @@ public class SplashScreenLoader {
     private static final Graphics2D g;
     
     /**
-     * Az alapértelmezett üzenet.
-     */
-    private static final String DEF_MSG = "Kérem, várjon";
-    
-    /**
      * Inicializálás.
      * Ha nincs grafikus felület, nincs mit tenni.
      * Ha van grafikus felület és nyitóképernyő, a "Mobile-RC" felirat megjelenik,
@@ -78,14 +73,6 @@ public class SplashScreenLoader {
         catch (Exception ex) {
             ;
         }
-    }
-    
-    /**
-     * A nyitóképernyő tályékoztatószövegét alapértelmezésre állatja be.
-     * Ha nincs megadva nyitóképernyő, nem tesz semmit.
-     */
-    public static void setDefaultSplashMessage() {
-        setSplashMessage(DEF_MSG);
     }
     
     /**

@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.SwingUtilities;
-import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.setDefaultSplashMessage;
+import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.setSplashMessage;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.controller.socket.ConnectionHelper;
 import org.dyndns.fzoli.rccar.controller.view.ConnectionProgressFrame;
@@ -22,6 +22,7 @@ import org.dyndns.fzoli.rccar.controller.view.config.ConfigEditorFrame;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
 import org.dyndns.fzoli.rccar.ui.UIUtil;
 import org.dyndns.fzoli.rccar.ui.UncaughtExceptionHandler;
+import org.dyndns.fzoli.ui.LanguageSelectionFrame;
 import org.dyndns.fzoli.ui.OptionPane;
 import org.dyndns.fzoli.ui.OptionPane.PasswordData;
 import static org.dyndns.fzoli.ui.UIUtil.setSystemLookAndFeel;
@@ -120,7 +121,7 @@ public class Main {
     /**
      * A szótár.
      */
-    private static final ResourceBundle STRINGS = createResource(Locale.getDefault());
+    private static ResourceBundle STRINGS = createResource(CONFIG.getLanguage());
     
     /**
      * A híd szerverrel építi ki a kapcsolatot.
@@ -137,6 +138,8 @@ public class Main {
      * Megadja, hogy van-e natív támogatás a böngészőhöz.
      */
     private static boolean nativeSwingAvailable = true;
+    
+    private static LanguageSelectionFrame LNG_FRAME;
     
     /**
      * Konfiguráció-szerkesztő ablak.
@@ -169,7 +172,7 @@ public class Main {
      * és a kivételkezelő valamint a rendszerikon beállítódik.
      */
     static {
-        setDefaultSplashMessage();
+        setSplashMessage(getString("please_wait"));
         setSystemLookAndFeel();
         setExceptionHandler();
         initNativeInterface();
@@ -205,9 +208,20 @@ public class Main {
             // az ikon beállítása
             SystemTrayIcon.setIcon("Mobile-RC", R.getIconImageStream());
 
+            // nyelv választó opció hozzáadása
+            SystemTrayIcon.addMenuItem("Nyelv", new Runnable() {
+
+                @Override
+                public void run() {
+                    if (LNG_FRAME != null) LNG_FRAME.setVisible(true);
+                }
+
+            });
+
             // kapcsolatbeállítás opció hozzáadása
             SystemTrayIcon.addMenuItem("Kapcsolatbeállítás", CALLBACK_SETTING);
 
+            // újrakapcsolódás opció hozzáadása
             SystemTrayIcon.addMenuItem("Újrakapcsolódás", new Runnable() {
 
                 @Override
@@ -232,11 +246,17 @@ public class Main {
      * @param tabIndex a megjelenő lapfül
      */
     public static void showSettingDialog(boolean force, Integer tabIndex) {
-        if (!CONN.isConnected()) CONN.disconnect();
-        PROGRESS_FRAME.setVisible(false);
-        CONFIG_EDITOR.setTabIndex(tabIndex);
-        CONFIG_EDITOR.setForce(force);
-        CONFIG_EDITOR.setVisible(true);
+        if (!CONN.isConnected()) {
+            CONN.disconnect();
+        }
+        if (PROGRESS_FRAME != null) {
+            PROGRESS_FRAME.setVisible(false);
+        }
+        if (CONFIG_EDITOR != null) {
+            CONFIG_EDITOR.setTabIndex(tabIndex);
+            CONFIG_EDITOR.setForce(force);
+            CONFIG_EDITOR.setVisible(true);
+        }
     }
     
     /**
@@ -453,6 +473,17 @@ public class Main {
                 CONFIG_EDITOR = new ConfigEditorFrame(CONFIG, WL_CFG);
                 SELECTION_FRAME = new HostSelectionFrame(AL_EXIT);
                 CONTROLLER_WINDOWS = new ControllerWindows();
+                LNG_FRAME = new LanguageSelectionFrame(R.getIconImage(), "controller_lng", CONFIG.getLanguage()) {
+
+                    @Override
+                    protected void onLanguageSelected(Locale l) {
+                        STRINGS = createResource(l);
+                        // TODO: a már létrejött komponensek feliratainak cseréje
+                        CONFIG.setLanguage(l);
+                        Config.save(CONFIG);
+                    }
+                    
+                };
                 if (!CONFIG.isCorrect()) { // ha a tanúsítvány fájlok egyike nem létezik
                     showSettingError((CONFIG.isDefault() ? "Az alapértelmezett konfiguráció nem használható, mert" : "A konfiguráció") + " nem létező fájlra hivatkozik." + LS + "A folytatás előtt a hibát helyre kell hozni.");
                     showSettingDialog(true, 1); // kényszerített beállítás és tanúsítvány lapfül előtérbe hozása

@@ -487,9 +487,14 @@ public class Main {
                     @Override
                     protected void onLanguageSelected(Locale l) {
                         STRINGS = createResource(l);
-                        // TODO: a már létrejött komponensek feliratainak cseréje
-                        CONFIG.setLanguage(l);
-                        Config.save(CONFIG);
+                        CONFIG_EDITOR.relocalize();
+                        PROGRESS_FRAME.relocalize();
+                        SELECTION_FRAME.relocalize();
+                        CONTROLLER_WINDOWS.relocalize();
+                        synchronized (CONFIG) {
+                            CONFIG.setLanguage(l);
+                            Config.save(CONFIG);
+                        }
                     }
                     
                 };

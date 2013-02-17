@@ -12,6 +12,7 @@ import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.controller.view.ArrowDialog;
 import org.dyndns.fzoli.rccar.controller.view.ChatDialog;
 import org.dyndns.fzoli.rccar.controller.view.ControllerFrame;
+import org.dyndns.fzoli.rccar.controller.view.RelocalizableWindow;
 import org.dyndns.fzoli.rccar.controller.view.map.MapDialog;
 import org.dyndns.fzoli.ui.UIUtil;
 
@@ -19,7 +20,7 @@ import org.dyndns.fzoli.ui.UIUtil;
  * A járművel kapcsolatos ablakok konténere.
  * @author zoli
  */
-public class ControllerWindows {
+public class ControllerWindows implements RelocalizableWindow {
     
     /**
      * Az ablakok felsorolása.
@@ -124,6 +125,18 @@ public class ControllerWindows {
         
         // chatablak pozíciójának beállítása: ha kifér a főablakkal együtt, akkor a főablak alá, egyébként a főablak gombsora fölé
         DIALOG_CHAT.setLocation(FRAME_MAIN.getX(), FRAME_MAIN.getY() + FRAME_MAIN.getHeight() - (isEmptyHeight ? -1 * GAP / 2 : DIALOG_CHAT.getHeight() + FRAME_MAIN.getToolBarHeight() + (GAP / 2)));
+    }
+
+    /**
+     * Az ablakok feliratait újra beállítja.
+     * Ha a nyelvet megváltoztatja a felhasználó, ez a metódus hívódik meg.
+     */
+    @Override
+    public void relocalize() {
+        FRAME_MAIN.relocalize();
+        DIALOG_ARROWS.relocalize();
+        DIALOG_CHAT.relocalize();
+        DIALOG_MAP.relocalize();
     }
     
     /**

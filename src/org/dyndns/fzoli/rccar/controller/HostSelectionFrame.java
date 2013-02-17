@@ -22,12 +22,13 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.dyndns.fzoli.rccar.controller.resource.R;
+import org.dyndns.fzoli.rccar.controller.view.RelocalizableWindow;
 
 /**
  * Járműválasztó ablak.
  * @author zoli
  */
-public class HostSelectionFrame extends JFrame {
+public class HostSelectionFrame extends JFrame implements RelocalizableWindow {
 
     /**
      * A felületen megjelenő lista.
@@ -133,6 +134,15 @@ public class HostSelectionFrame extends JFrame {
         });
     }
 
+    /**
+     * A felület feliratait újra beállítja.
+     * Ha a nyelvet megváltoztatja a felhasználó, ez a metódus hívódik meg.
+     */
+    @Override
+    public void relocalize() {
+        // TODO
+    }
+    
     /**
      * Ha az ablak megjelenését kérik, akkor még nincs kiválasztva a hoszt.
      */

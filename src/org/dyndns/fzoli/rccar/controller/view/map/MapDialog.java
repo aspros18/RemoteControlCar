@@ -29,11 +29,11 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import org.dyndns.fzoli.rccar.controller.ControllerModels.ClientControllerData;
 import static org.dyndns.fzoli.rccar.controller.ControllerModels.getData;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_MAP;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
+import static org.dyndns.fzoli.rccar.controller.Main.getString;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.controller.view.AbstractDialog;
 import org.dyndns.fzoli.rccar.controller.view.ControllerFrame;
@@ -129,13 +129,18 @@ public class MapDialog extends AbstractDialog {
     /**
      * A natív böngésző.
      */
-    private final JWebBrowser webBrowser;
+    private final JWebBrowser WEB_BROWSER;
     
     /**
      * Figyelmeztető üzenet a sikertelen betöltéshez.
      * Kattintásra megpróbálja újratölteni a térképet.
      */
-    private final JLabel lbWarn;
+    private final JLabel LB_WARN;
+    
+    /**
+     * Betöltés szöveg címkéje.
+     */
+    private final JLabel LB_LOADING = new JLabel(getString("loading"));
     
     /**
      * Megadja, hogy a fade effekt engedélyezve van-e.
@@ -173,7 +178,7 @@ public class MapDialog extends AbstractDialog {
     }
     
     public MapDialog(final ControllerFrame owner, ControllerWindows windows, final MapLoadListener callback, final boolean enabled) {
-        super(owner, "Térkép", windows);
+        super(owner, getString("map"), windows);
         getData().setMapDialog(this);
         setIconImage(IC_MAP.getImage());
         getContentPane().setBackground(Color.WHITE);
@@ -192,16 +197,16 @@ public class MapDialog extends AbstractDialog {
                 add(lbInd, c);
                 c.gridy = 1;
                 c.insets = new Insets(5, 5, 5, 5);
-                add(new JLabel("Betöltés"), c);
+                add(LB_LOADING, c);
             }
         };
         getContentPane().add(pInd, BorderLayout.SOUTH);
         pInd.setVisible(false);
         
         // figyelmeztető üzenet jelenik meg, ha a térkép betöltése nem sikerült
-        lbWarn = new JLabel("<html><p style=\"text-align:center; color:red; font-weight: 900\">A térkép betöltése nem sikerült!</p><br><p style=\"text-align:center\">Kattintson ide az újratöltéshez.</p></html>", SwingConstants.CENTER);
-        lbWarn.setPreferredSize(mapPane.getPreferredSize());
-        lbWarn.addMouseListener(new MouseAdapter() {
+        LB_WARN = new JLabel(getWarningLabelText(), SwingConstants.CENTER);
+        LB_WARN.setPreferredSize(mapPane.getPreferredSize());
+        LB_WARN.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseClicked(MouseEvent ev) {
@@ -209,8 +214,8 @@ public class MapDialog extends AbstractDialog {
             }
 
         });
-        getContentPane().add(lbWarn, BorderLayout.WEST);
-        lbWarn.setVisible(false);
+        getContentPane().add(LB_WARN, BorderLayout.WEST);
+        LB_WARN.setVisible(false);
         
         // kezdetben úgy tesz, mint ha nem lenne böngésző támogatás
         final JLabel lbErr = new JLabel("<html><p style=\"text-align:center\">Ha a térkép hamarosan nem tölt be, telepítsen Mozilla Firefox böngészőt.</p></html>", SwingConstants.CENTER);
@@ -227,7 +232,7 @@ public class MapDialog extends AbstractDialog {
             catch (Throwable t) {
                 webBrowser = null;
             }
-            this.webBrowser = webBrowser;
+            this.WEB_BROWSER = webBrowser;
             if (webBrowser != null) {
                 Component webComponent = new NativeComponentWrapper(webBrowser).createEmbeddableComponent();
                 mapPane.add(webComponent, JLayeredPane.DEFAULT_LAYER); // a böngésző a méretezett pane-re kerül
@@ -235,10 +240,10 @@ public class MapDialog extends AbstractDialog {
             }
         }
         else {
-            webBrowser = null;
+            WEB_BROWSER = null;
         }
         
-        if (webBrowser == null) {
+        if (WEB_BROWSER == null) {
             lbErr.setText("<html><p style=\"text-align:center\">A térkép nincs támogatva.</p></html>");
         }
         
@@ -248,21 +253,21 @@ public class MapDialog extends AbstractDialog {
         lbErr.setVisible(true); // hibaüzenet megjelenítése
         mapPane.setVisible(false); // térkép láthatatlanná tétele, míg nem tölt be
         
-        if (webBrowser != null) {
+        if (WEB_BROWSER != null) {
             // a natív böngésző lecsupaszítása
-            webBrowser.setBarsVisible(false);
-            webBrowser.setButtonBarVisible(false);
-            webBrowser.setLocationBarVisible(false);
-            webBrowser.setMenuBarVisible(false);
-            webBrowser.setStatusBarVisible(false);
-            webBrowser.setJavascriptEnabled(true);
-            webBrowser.setDefaultPopupMenuRegistered(false);
+            WEB_BROWSER.setBarsVisible(false);
+            WEB_BROWSER.setButtonBarVisible(false);
+            WEB_BROWSER.setLocationBarVisible(false);
+            WEB_BROWSER.setMenuBarVisible(false);
+            WEB_BROWSER.setStatusBarVisible(false);
+            WEB_BROWSER.setJavascriptEnabled(true);
+            WEB_BROWSER.setDefaultPopupMenuRegistered(false);
 
             // HTML forráskód betöltése
-            webBrowser.setHTMLContent(HTML_SOURCE);
+            WEB_BROWSER.setHTMLContent(HTML_SOURCE);
 
             // várakozás a térkép api betöltésére
-            webBrowser.addWebBrowserListener(new WebBrowserAdapter() {
+            WEB_BROWSER.addWebBrowserListener(new WebBrowserAdapter() {
 
                 private boolean indApp = true, errRemoved = false, fired = false;
 
@@ -315,7 +320,7 @@ public class MapDialog extends AbstractDialog {
                                             indApp = true; // indikátor megjelenítése a legközelebbi betöltéskor
                                             pInd.setVisible(false); // indikátor elrejtése ...
                                             mapPane.setVisible(false); // ... térkép elrejtése ...
-                                            lbWarn.setVisible(true); // ... és figyelmeztető üzenet megjelenítése, mert nem tudott betöltődni a térkép
+                                            LB_WARN.setVisible(true); // ... és figyelmeztető üzenet megjelenítése, mert nem tudott betöltődni a térkép
                                             break; // ha 10 mp alatt nem sikerült inicializálni, feladja és kilép a ciklusból
                                         }
                                         Thread.sleep(100); // újratesztelés kicsit később
@@ -347,25 +352,35 @@ public class MapDialog extends AbstractDialog {
     }
     
     /**
+     * Betöltés hiba szövege a címkéhez.
+     */
+    private String getWarningLabelText() {
+        return "<html><p style=\"text-align:center; color:red; font-weight: 900\">" + getString("map_load_error") + "</p><br><p style=\"text-align:center\">" + getString("click_to_reload") + "</p></html>";
+    }
+    
+    /**
      * A felület feliratait újra beállítja.
      * Ha a nyelvet megváltoztatja a felhasználó, ez a metódus hívódik meg.
      */
     @Override
     public void relocalize() {
         // TODO
+        setTitle(getString("map"));
+        LB_LOADING.setText(getString("loading"));
+        LB_WARN.setText(getWarningLabelText());
     }
     
     /**
      * Hibaüzenet eltüntetése és térkép újratöltése, ha legutóbb nem sikerült betölteni.
      */
     private void reload() {
-        if (!lbWarn.isVisible()) return;
+        if (!LB_WARN.isVisible()) return;
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
-                lbWarn.setVisible(false);
-                webBrowser.setHTMLContent(HTML_SOURCE);
+                LB_WARN.setVisible(false);
+                WEB_BROWSER.setHTMLContent(HTML_SOURCE);
             }
             
         });
@@ -412,7 +427,7 @@ public class MapDialog extends AbstractDialog {
      * @param pos GPS koordináta, null referencia esetén térkép helyett iránytű jelenik meg
      */
     public void setPosition(final Point3D pos) {
-        if (webBrowser == null) return;
+        if (WEB_BROWSER == null) return;
         chkTmpFiles();
         position = pos;
         executeJavascript("map.setCenter(new google.maps.LatLng(" + (position == null ? 1 : position.X) + ", " + (position == null ? 0 : position.Y) + ")); var tag = document.getElementById('info'); tag.style.visibility = '" + (pos == null ? "hidden" : "visible") + "'; tag.innerHTML = '" + (pos == null ? "" : "W " + DF.format(pos.X) + "° H " + DF.format(pos.Y) + "° " + DF2.format(pos.Z) + " m") + "'; document.getElementById('compass').style.visibility = '" + (pos != null ? "hidden" : "visible") + "';");
@@ -425,7 +440,7 @@ public class MapDialog extends AbstractDialog {
      * @param rotation északtól való eltérés, vagy null, ha nincs irány megadva
      */
     public void setArrow(final Double rotation) {
-        if (webBrowser == null) return;
+        if (WEB_BROWSER == null) return;
         chkTmpFiles();
         ARROW.setRotation(rotation); // nyíl frissítése
         writeImage(ARROW, ARROW_FILE); // png formátumban a nyíl mentése a tmp könyvtárba
@@ -437,7 +452,7 @@ public class MapDialog extends AbstractDialog {
      * JavaScript és CSS 3 alapú metódus.
      */
     public void setFade(final boolean enabled) {
-        if (webBrowser == null) return;
+        if (WEB_BROWSER == null) return;
         fadeEnabled = enabled;
         executeJavascript("document.getElementById('map_canvas').className = 'fadeprep" + (enabled ? " fadeon" : "") + "';");
     }
@@ -451,7 +466,7 @@ public class MapDialog extends AbstractDialog {
             
             @Override
             public void run() {
-                webBrowser.executeJavascript(script);
+                WEB_BROWSER.executeJavascript(script);
             }
             
         });

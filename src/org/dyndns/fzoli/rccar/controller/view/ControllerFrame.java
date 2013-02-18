@@ -350,7 +350,7 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
         btIncrease.setToolTipText(getString("increasing_speed"));
         refreshSpeed();
         refreshBattery();
-        refreshControllText();
+        refreshControlText();
         refreshMessage();
     }
     
@@ -459,10 +459,10 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
      * {@link ClientControllerData#isViewOnly()}
      * {@link ClientControllerData#isWantControl()}
      */
-    public void refreshControllButton(Boolean prevWantControl) {
+    public void refreshControlButton(Boolean prevWantControl) {
         if (getData().isControlling() == null || getData().isViewOnly() == null || getData().isWantControl() == null) return;
         btControl.setIcon(getData().isControlling() ? IC_CONTROLLER1 : getData().isWantControl() ? IC_CONTROLLER3 : IC_CONTROLLER2);
-        refreshControllText();
+        refreshControlText();
         if (prevWantControl != null && ((!prevWantControl && getData().isWantControl()) || (prevWantControl && !getData().isWantControl() && getData().isControlling())) && !getData().isControlling()) btControl.setEnabled(false);
         else btControl.setEnabled((!getData().isViewOnly() && !(getData().isControlling() && !getData().isWantControl())));
     }
@@ -470,7 +470,7 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
     /**
      * A vezérlő gomb feliratát frissíti.
      */
-    private void refreshControllText() {
+    private void refreshControlText() {
         if (getData().isControlling() == null || getData().isWantControl() == null) return;
         btControl.setToolTipText(getString(getData().isControlling() ? "give_up_control" : getData().isWantControl() ? "undo_control" : "ask_control"));
     }

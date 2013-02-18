@@ -22,7 +22,7 @@ import org.dyndns.fzoli.rccar.controller.view.config.ConfigEditorFrame;
 import org.dyndns.fzoli.rccar.model.controller.HostList;
 import org.dyndns.fzoli.rccar.ui.UIUtil;
 import org.dyndns.fzoli.rccar.ui.UncaughtExceptionHandler;
-import org.dyndns.fzoli.ui.LanguageSelectionFrame;
+import org.dyndns.fzoli.ui.LanguageChooserFrame;
 import org.dyndns.fzoli.ui.OptionPane;
 import org.dyndns.fzoli.ui.OptionPane.PasswordData;
 import static org.dyndns.fzoli.ui.UIUtil.setSystemLookAndFeel;
@@ -137,7 +137,7 @@ public class Main {
     /**
      * Nyelvkiválasztó ablak.
      */
-    public static LanguageSelectionFrame LNG_FRAME;
+    public static LanguageChooserFrame LNG_FRAME;
     
     /**
      * Konfiguráció-szerkesztő ablak.
@@ -482,7 +482,7 @@ public class Main {
                 // előinicializálom az ablakokat, míg a nyitóképernyő fent van,
                 // hogy később ne menjen el ezzel a hasznos idő
                 // a nyelvkiválasztó ablakkal kezdem, mivel a konfig-szerkesztő ablak használja a referenciáját
-                LNG_FRAME = new LanguageSelectionFrame(R.getIconImage(), "controller_lng", CONFIG.getLanguage()) {
+                LNG_FRAME = new LanguageChooserFrame(R.getIconImage(), "controller_lng", CONFIG.getLanguage()) {
 
                     /**
                      * Ha a nyelv megváltozott, szótár cseréje, feliratok lecserélése és az új nyelv elmentése.

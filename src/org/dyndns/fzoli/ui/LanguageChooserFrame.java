@@ -31,7 +31,7 @@ import javax.swing.JList;
  * Ha a nyelvet módosították, a {@link #onLanguageSelected(java.util.Locale)} metódus hívódik meg, amit implementálni kell az utódokban.
  * @author zoli
  */
-public abstract class LanguageSelectionFrame extends JFrame {
+public abstract class LanguageChooserFrame extends JFrame {
 
     /**
      * A lenyíló listához gyorskereső szöveg.
@@ -140,7 +140,7 @@ public abstract class LanguageSelectionFrame extends JFrame {
      * @param icon az ablak ikonja
      * @param name a {@code properties} fájlok kezdőneve (a ResourceBundle baseName paramétere)
      */
-    public LanguageSelectionFrame(Image icon, String name) {
+    public LanguageChooserFrame(Image icon, String name) {
         this(icon, "", name);
     }
     
@@ -151,7 +151,7 @@ public abstract class LanguageSelectionFrame extends JFrame {
      * @param name a {@code properties} fájlok kezdőneve (a ResourceBundle baseName paramétere)
      * @param def az alapértelmezett nyelv
      */
-    public LanguageSelectionFrame(Image icon, String name, Locale def) {
+    public LanguageChooserFrame(Image icon, String name, Locale def) {
         this(icon, "", name, def);
     }
     
@@ -162,7 +162,7 @@ public abstract class LanguageSelectionFrame extends JFrame {
      * @param pkg a csomag neve, ahol a {@code properties} fájlok vannak
      * @param name a {@code properties} fájlok kezdőneve (a ResourceBundle baseName paramétere)
      */
-    public LanguageSelectionFrame(Image icon, String pkg, String name) {
+    public LanguageChooserFrame(Image icon, String pkg, String name) {
         this(icon, pkg, name, null);
     }
     
@@ -173,7 +173,7 @@ public abstract class LanguageSelectionFrame extends JFrame {
      * @param name a {@code properties} fájlok kezdőneve (a ResourceBundle baseName paramétere)
      * @param def az alapértelmezett nyelv
      */
-    public LanguageSelectionFrame(Image icon, String pkg, String name, Locale def) {
+    public LanguageChooserFrame(Image icon, String pkg, String name, Locale def) {
         super("Languages");
         
         // nyelvek betöltése és legördülő lista feltöltése

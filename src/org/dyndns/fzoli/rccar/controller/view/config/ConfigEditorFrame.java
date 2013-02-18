@@ -48,7 +48,6 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     /**
      * A dialógusablak lapfüleinek tartalma ebbe a panelbe kerül bele.
      * Mindegyik panel átlátszó.
-     * @see GridBagLayout
      */
     private static class ConfigPanel extends JPanel {
         
@@ -56,8 +55,29 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
             setOpaque(false);
         }
         
+        /**
+         * Címkét gyárt a panelhez.
+         * @param text a címke szövege
+         */
+        protected JLabel createLabel(final String text) {
+            final JLabel lbSizer = new JLabel("<html><body style=\"width: 180px\">" + text + "</body></html>");
+            return new JLabel("<html>" + text + "</html>") {
+
+                @Override
+                public Dimension getPreferredSize() {
+                    Dimension d1 = super.getPreferredSize();
+                    Dimension d2 = lbSizer.getPreferredSize();
+                    return new Dimension(Math.min(d1.width, d2.width), d1.height);
+                }
+                
+            };
+        }
+        
     }
     
+    /**
+     * Az ablakhoz tartozó fájl tallózó panelek osztálya.
+     */
     private static class ConfigFilePanel extends FilePanel {
 
         /**
@@ -263,9 +283,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
             
             c.gridy = 0; // nulladik sor
             c.gridwidth = 2; // két oszlopot foglal el a magyarázat
-            JLabel lbMsg = new JLabel("<html>Ezen a lapfülön állíthatja be a híd szervernek az elérési útvonalát.</html>");
-            lbMsg.setPreferredSize(new Dimension(240, 30)); // két sorba kerül az üzenet, mivel nem fér el egy sorban ezen a méreten
-            add(lbMsg, c);
+            add(createLabel("Ezen a lapfülön állíthatja be a híd szervernek az elérési útvonalát."), c);
             c.gridwidth = 1; // a többi elem egy oszlopot foglal el
             
             c.gridy = 1; // első sor (1, 1)
@@ -286,28 +304,19 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     };
     
     /**
-     * Ezen a panelen állítható be a kapcsolathoz használt tanúsítvány.
+     * Erről a panelről érhető el a jelszó törlésére használható gomb.
      */
-    private final JPanel certificatePanel = new ConfigPanel() {
-        {
-            setLayout(new GridLayout(3, 1));
-            add(fpCa);
-            add(fpCert);
-            add(fpKey);
-        }
-    };
-    
     private final JPanel passwordResetPanel = new ConfigPanel() {
         {
             setLayout(new GridBagLayout());
             GridBagConstraints c = new GridBagConstraints();
             c.weightx = 1; // teljes helyfoglalás szélességében
             c.weighty = 1; // teljes helylefoglalás hosszúságban
+            
             c.insets = new Insets(5, 5, 5, 5); // 5 pixeles margó
             c.fill = GridBagConstraints.HORIZONTAL; // teljes helykitöltés horizontálisan (sorkitöltés)
-            JLabel lbMsg = new JLabel("<html>Ezen a lapfülön törölheti a tanúsítvány jelszavát, ha azt régebben megadta.</html>");
-            lbMsg.setPreferredSize(new Dimension(240, 60)); // két sorba kerül az üzenet, mivel nem fér el egy sorban ezen a méreten
-            add(lbMsg, c); // üzenet hozzáadása a panelhez
+            add(createLabel("Ezen a lapfülön törölheti a tanúsítvány jelszavát, ha azt régebben megadta."), c); // üzenet hozzáadása a panelhez
+            
             c.gridy = 1; // a szöveg alá kerül a törlés gomb
             c.insets = new Insets(0, 5, 5, 5); // 5 pixeles margó mindenhol, kivéve felül
             c.fill = GridBagConstraints.NONE; // csak akkora helyet foglal, amennyire szüksége van
@@ -315,17 +324,20 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
         }
     };
     
+    /**
+     * Erről a panelről érhető el a nyelv módosítására használható legördülő lista.
+     */
     private final JPanel languageChooserPanel = new ConfigPanel() {
         {
             setLayout(new GridBagLayout());
             GridBagConstraints c = new GridBagConstraints();
             c.weightx = 1; // teljes helyfoglalás szélességében
             c.weighty = 1; // teljes helylefoglalás hosszúságban
+            
             c.insets = new Insets(5, 5, 5, 5); // 5 pixeles margó
             c.fill = GridBagConstraints.HORIZONTAL; // teljes helykitöltés horizontálisan (sorkitöltés)
-            JLabel lbMsg = new JLabel("<html>Ezen a lapfülön kiválaszthatja a használni kívánt nyelvet.</html>");
-            lbMsg.setPreferredSize(new Dimension(240, 60)); // két sorba kerül az üzenet, mivel nem fér el egy sorban ezen a méreten
-            add(lbMsg, c); // üzenet hozzáadása a panelhez
+            add(createLabel("Ezen a lapfülön kiválaszthatja a használni kívánt nyelvet."), c); // üzenet hozzáadása a panelhez
+            
             c.gridy = 1; // a szöveg alá kerül a törlés gomb
             c.insets = new Insets(0, 5, 5, 5); // 5 pixeles margó mindenhol, kivéve felül
             c.fill = GridBagConstraints.NONE; // csak akkora helyet foglal, amennyire szüksége van
@@ -335,6 +347,18 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
                     setPreferredSize(new Dimension(Math.max(getPreferredSize().width, 180), getPreferredSize().height)); // 180 pixel széles (vagy nagyobb, ha kell)
                 }
             }, c);
+        }
+    };
+    
+    /**
+     * Ezen a panelen állítható be a kapcsolathoz használt tanúsítvány.
+     */
+    private final JPanel certificatePanel = new ConfigPanel() {
+        {
+            setLayout(new GridLayout(3, 1));
+            add(fpCa);
+            add(fpCert);
+            add(fpKey);
         }
     };
     

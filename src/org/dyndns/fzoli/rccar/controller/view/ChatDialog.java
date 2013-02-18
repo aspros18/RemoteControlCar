@@ -40,6 +40,7 @@ import static org.dyndns.fzoli.rccar.controller.ControllerModels.getData;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_CHAT;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
+import static org.dyndns.fzoli.rccar.controller.Main.getString;
 import org.dyndns.fzoli.rccar.model.controller.ChatMessage;
 import org.dyndns.fzoli.rccar.model.controller.ControllerState;
 import org.dyndns.fzoli.ui.FixedStyledEditorKit;
@@ -86,6 +87,11 @@ public class ChatDialog extends AbstractDialog {
      * A szövegeket megjelenítő panelek háttérszíne.
      */
     private static final Color COLOR_BG = Color.WHITE;
+    
+    /**
+     * A "Jelenlévők" szöveget tartalmazó címke.
+     */
+    private final JLabel LB_RECENTS = new JLabel(getString("recents"));
     
     /**
      * Két vezérlő állapotot hasonlít össze a nevük alapján.
@@ -282,14 +288,13 @@ public class ChatDialog extends AbstractDialog {
             pane.setViewportBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createLineBorder(getBackground(), 4)));
             add(pane);
             
-            JLabel lb = new JLabel("Jelenlévők");
-            lb.setFont(new Font(lb.getFont().getFontName(), Font.BOLD, lb.getFont().getSize()));
-            lb.setBorder(BorderFactory.createEmptyBorder(0, 0, 2, 0));
+            LB_RECENTS.setFont(new Font(LB_RECENTS.getFont().getFontName(), Font.BOLD, LB_RECENTS.getFont().getSize()));
+            LB_RECENTS.setBorder(BorderFactory.createEmptyBorder(0, 0, 2, 0));
             
-            panel.add(lb, BorderLayout.NORTH);
+            panel.add(LB_RECENTS, BorderLayout.NORTH);
             panel.add(LIST_CONTROLLERS, BorderLayout.CENTER);
             
-            setMinimumSize(new Dimension(lb.getPreferredSize().width + 14 + pane.getVerticalScrollBar().getPreferredSize().width, 0));
+            setMinimumSize(new Dimension(LB_RECENTS.getPreferredSize().width + 14 + pane.getVerticalScrollBar().getPreferredSize().width, 0));
             setPreferredSize(new Dimension(150 - DIVIDER_SIZE - 2 * MARGIN, 200 - 2 * MARGIN));
         }
     };
@@ -429,13 +434,13 @@ public class ChatDialog extends AbstractDialog {
     /**
      * Rendszerüzenet típus.
      */
-    private static final int SYS_CTRL = 0, SYS_WANT_CTRL = 1, SYS_UNDO_CTRL = 2;
+    private static final int SYS_CONNECT = -1, SYS_DISCONNECT = -2, SYS_CTRL = 0, SYS_WANT_CTRL = 1, SYS_UNDO_CTRL = 2;
     
     /**
      * Konstruktor.
      */
     public ChatDialog(ControllerFrame owner, final ControllerWindows windows) {
-        super(owner, "Chat", windows);
+        super(owner, getString("chat"), windows);
         getData().setChatDialog(this);
         setIconImage(IC_CHAT.getImage());
         setMinimumSize(new Dimension(420, 125));
@@ -510,12 +515,18 @@ public class ChatDialog extends AbstractDialog {
      */
     @Override
     public void relocalize() {
+        setTitle(getString("chat"));
+        LB_RECENTS.setText(getString("recents"));
         Iterator<Entry<Integer, String>> it = sysMessages.entrySet().iterator();
+        Map<Integer, String> newValues = new HashMap<Integer, String>();
         while (it.hasNext()) { // a használt rendszerüzenetek lecserélése az új nyelv alapján
             Entry<Integer, String> e = it.next();
-            replace(e.getValue(), getSysText(e.getKey(), ""), 0, true);
+            String newValue = getSysText(e.getKey(), "");
+            replace(e.getValue(), newValue, 0, true);
+            newValues.put(e.getKey(), newValue);
         }
-        // TODO
+        sysMessages.clear(); // az új értékek nyílvántartásba vétele
+        sysMessages.putAll(newValues);
     }
     
     /**
@@ -585,7 +596,7 @@ public class ChatDialog extends AbstractDialog {
             model.removeElement(state);
         }
         if (notify) {
-            addMessage(new Date(), state.getName(), (visible ? "kapcsolódott a járműhöz" : "lekapcsolódott a járműről") + '.', true);
+            showSysMessage(state.getLastModified(), state.getName(), visible ? SYS_CONNECT : SYS_DISCONNECT);
         }
     }
 
@@ -643,20 +654,27 @@ public class ChatDialog extends AbstractDialog {
      * @param type a rendszerüzenet típusa
      * @param def ha nincs ilyen típus, ezzel tér vissza
      */
-    private String getSysText(int type, String def) { // TODO
-        String s = null;
+    private String getSysText(int type, String def) {
+        String s;
         switch (type) {
+            case SYS_CONNECT:
+                s = getString("sys_connect");
+                break;
+            case SYS_DISCONNECT:
+                s = getString("sys_disconnect");
+                break;
             case SYS_CTRL:
-                s = "vezérli mostantól";
+                s = getString("sys_control");
                 break;
             case SYS_WANT_CTRL:
-                s = "vezérelni szeretné";
+                s = getString("sys_want_control");
                 break;
             case SYS_UNDO_CTRL:
-                s = "mégsem szeretné vezérelni";
+                s = getString("sys_undo_control");
+                break;
+            default:
+                s = def;
         }
-        if (s != null) s += " a járművet.";
-        else return def;
         return s;
     }
     

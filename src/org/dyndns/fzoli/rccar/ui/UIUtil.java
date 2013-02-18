@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.ui;
 
 import java.awt.Image;
+import java.util.Enumeration;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import static javax.swing.UIManager.getString;
@@ -30,9 +31,29 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
     
     /**
      * Létrehoz egy szótárat a kért nyelvhez és az UIManager-ben megadott, több helyen is használt szövegeket beállítja.
+     * A default szótár létrehozása nem szükséges, mert az angol nyelvű szótárban keres, ha nincs a kért nyelvhez szöveg.
      */
     public static ResourceBundle createResource(String baseName, Locale locale, boolean fileChooser) {
-        ResourceBundle res = ResourceBundle.getBundle(baseName, locale);
+        final ResourceBundle lng = ResourceBundle.getBundle(baseName, locale);
+        final ResourceBundle def = ResourceBundle.getBundle(baseName, Locale.ENGLISH);
+        final ResourceBundle res = new ResourceBundle() {
+
+            @Override
+            protected Object handleGetObject(String key) {
+                try {
+                    return lng.getObject(key);
+                }
+                catch (Exception ex) {
+                    return def.getObject(key);
+                }
+            }
+
+            @Override
+            public Enumeration<String> getKeys() {
+                return def.getKeys();
+            }
+            
+        };
         put(UIUtil.KEY_CERT_LOAD_ERROR, res.getString("cert_load_error"));
         put(UIUtil.KEY_CERT_ENTER_PASSWORD, res.getString("cert_enter_password"));
         put(UncaughtExceptionHandler.KEY_UNEXPECTED_ERROR, res.getString("unexpected_error"));

@@ -21,7 +21,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import javax.swing.plaf.metal.MetalToolTipUI;
@@ -413,10 +417,23 @@ public class ChatDialog extends AbstractDialog {
     private static String senderName;
     
     /**
-     * A rendszerüzenetek kezdő és végpontjai a dokumentumban.
+     * A használt rendszerüzenetek típusai és szövegük.
      */
-    private List<Point> sysMessages = Collections.synchronizedList(new ArrayList<Point>());
+    private Map<Integer, String> sysMessages = Collections.synchronizedMap(new HashMap<Integer, String>());
     
+    /**
+     * A rendszerüzenetek dátumait tartalmazó lista.
+     */
+    private List<Date> sysDates = Collections.synchronizedList(new ArrayList<Date>());
+    
+    /**
+     * Rendszerüzenet típus.
+     */
+    private static final int SYS_CTRL = 0, SYS_WANT_CTRL = 1, SYS_UNDO_CTRL = 2;
+    
+    /**
+     * Konstruktor.
+     */
     public ChatDialog(ControllerFrame owner, final ControllerWindows windows) {
         super(owner, "Chat", windows);
         getData().setChatDialog(this);
@@ -431,23 +448,59 @@ public class ChatDialog extends AbstractDialog {
     }
     
     /**
-     * Rekurzívan törli az összes rendszerüzenetet.
-     * @param dif a kezdőparaméter 0, a metódus inkrementálja az értéket attól függően, hány karakter lett már törölve
+     * Kicseréli a chatablak szövegeinek egy részét.
+     * @param from a szöveg, amit cserélni kell
+     * @param to a szöveg, amire cserélni kell
+     * @param start a csere kezdőpozíciója
+     * @param sys true esetén csak rendszerüzenetet cserél
      */
-    private void removeSysMessages(int dif) {
-        if (!sysMessages.isEmpty()) {
-            Point p = sysMessages.get(0);
-            sysMessages.remove(p);
-            int f = p.x;
-            int s = p.y - p.x;
-            if (f == 0) s++;
-            try {
-                doc.remove(Math.max(0, f - dif), Math.min(doc.getLength(), s));
-                removeSysMessages(dif + s);
+    private void replace(String from, String to, int start, boolean sys) {
+        try {
+            String s = doc.getText(0, doc.getLength()); // az üzenetek teljes szövege
+            int i = s.indexOf(from, start); // az első előfordulás a cserélendő szöveghez
+            if (i != -1) { // ha van előfordulás
+                if (sys) { // ha rendszerüzenetet kell csak cserélni
+                    int lineStart = 0; // első sor esetén 0 a sor eleje
+                    for (int j = i; j > 0; j--) { // megkeresi a sor elejét
+                        if (s.charAt(j) == '\n') {
+                            lineStart = j + 1; // a sor eleje megtalálva
+                            break;
+                        }
+                    }
+                    int starIndex = lineStart + 11; // a csillag karakter pozíciója
+                    boolean isSys; // megadja, hogy rendszerüzenet-e
+                    try {
+                        isSys = s.charAt(starIndex) == '*'; // elsőként meg kell nézni, csillag karakter van-e a megfelelő helyen
+                        if (isSys) { // ha csillag karakter van
+                            String chk = s.substring(lineStart, starIndex); // a csillag karakter előtti dátum részletnek ...
+                            boolean date = false;
+                            for (Date d : sysDates) { // ... illeszkednie kell a rendszerüzenetek dátumait tartalmazó listához
+                                if (chk.contains(DATE_FORMAT.format(d))) {
+                                    date = true;
+                                    break;
+                                }
+                            }
+                            isSys &= date; // most már lehet tudni, hogy rendszerüzenet-e az adott üzenet
+                        }
+                    }
+                    catch (Exception ex) {
+                        isSys = false; // hiba esetén biztos, hogy nem rendszerüzenet
+                    }
+                    if (!isSys) { // ha a találat nem rendszerüzenet ...
+                        int lineEnd = s.indexOf("\n", lineStart);
+                        if (lineEnd != -1) replace(from, to, lineEnd, sys); // ugrás a következő sorra, ha van és rekurzív hívás
+                        return; // a rekurzív hívás után visszatér a kód, ezért itt ki kell lépni
+                    }
+                }
+                // a megtalált sor törölhető, ezért törlés, majd új szöveg beillesztése
+                doc.remove(i, from.length());
+                doc.insertString(i, to, doc.getStyle(KEY_REGULAR));
+                // rekurzív újrahívás, hátha van még cserélni való szöveg
+                replace(from, to, ++i, sys);
             }
-            catch (Exception ex) {
-                ;
-            }
+        }
+        catch (Exception ex) {
+            ;
         }
     }
     
@@ -457,7 +510,11 @@ public class ChatDialog extends AbstractDialog {
      */
     @Override
     public void relocalize() {
-        removeSysMessages(0);
+        Iterator<Entry<Integer, String>> it = sysMessages.entrySet().iterator();
+        while (it.hasNext()) { // a használt rendszerüzenetek lecserélése az új nyelv alapján
+            Entry<Integer, String> e = it.next();
+            replace(e.getValue(), getSysText(e.getKey(), ""), 0, true);
+        }
         // TODO
     }
     
@@ -553,9 +610,7 @@ public class ChatDialog extends AbstractDialog {
      * @param name az új irányító neve
      */
     public void showNewController(Date d, String name) {
-        int l = doc.getLength();
-        addMessage(d, name, "vezérli mostantól a járművet.", true);
-        sysMessages.add(new Point(l, doc.getLength()));
+        showSysMessage(d, name, SYS_CTRL);
     }
     
     /**
@@ -565,9 +620,44 @@ public class ChatDialog extends AbstractDialog {
      * @param undo true esetén visszavonás történt
      */
     public void showAskControl(Date d, String name, boolean undo) {
-        int l = doc.getLength();
-        addMessage(d, name, (undo ? "mégsem szeretné vezérelni" : "vezérelni szeretné") + " a járművet.", true);
-        sysMessages.add(new Point(l, doc.getLength()));
+        showSysMessage(d, name, undo ? SYS_UNDO_CTRL : SYS_WANT_CTRL);
+    }
+    
+    /**
+     * Megjeleníti a kért rendszerüzenetet.
+     * @param d az esemény ideje
+     * @param name a módosult felhasználó neve
+     * @param type az esemény típusa
+     */
+    private void showSysMessage(Date d, String name, int type) {
+        String s = getSysText(type, null);
+        if (s != null) {
+            addMessage(d, name, s, true);
+            sysMessages.put(type, s);
+            sysDates.add(d);
+        }
+    }
+    
+    /**
+     * Az aktuális nyelv alapján adja meg a kért rendszerüzenet szövegét.
+     * @param type a rendszerüzenet típusa
+     * @param def ha nincs ilyen típus, ezzel tér vissza
+     */
+    private String getSysText(int type, String def) { // TODO
+        String s = null;
+        switch (type) {
+            case SYS_CTRL:
+                s = "vezérli mostantól";
+                break;
+            case SYS_WANT_CTRL:
+                s = "vezérelni szeretné";
+                break;
+            case SYS_UNDO_CTRL:
+                s = "mégsem szeretné vezérelni";
+        }
+        if (s != null) s += " a járművet.";
+        else return def;
+        return s;
     }
     
     /**

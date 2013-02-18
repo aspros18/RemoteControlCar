@@ -91,7 +91,7 @@ public class ChatDialog extends AbstractDialog {
     /**
      * A "Jelenlévők" szöveget tartalmazó címke.
      */
-    private final JLabel LB_RECENTS = new JLabel(getString("recents"));
+    private final JLabel LB_CONTROLLERS = new JLabel(getString("controllers"));
     
     /**
      * Két vezérlő állapotot hasonlít össze a nevük alapján.
@@ -288,13 +288,13 @@ public class ChatDialog extends AbstractDialog {
             pane.setViewportBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createLineBorder(getBackground(), 4)));
             add(pane);
             
-            LB_RECENTS.setFont(new Font(LB_RECENTS.getFont().getFontName(), Font.BOLD, LB_RECENTS.getFont().getSize()));
-            LB_RECENTS.setBorder(BorderFactory.createEmptyBorder(0, 0, 2, 0));
+            LB_CONTROLLERS.setFont(new Font(LB_CONTROLLERS.getFont().getFontName(), Font.BOLD, LB_CONTROLLERS.getFont().getSize()));
+            LB_CONTROLLERS.setBorder(BorderFactory.createEmptyBorder(0, 0, 2, 0));
             
-            panel.add(LB_RECENTS, BorderLayout.NORTH);
+            panel.add(LB_CONTROLLERS, BorderLayout.NORTH);
             panel.add(LIST_CONTROLLERS, BorderLayout.CENTER);
             
-            setMinimumSize(new Dimension(LB_RECENTS.getPreferredSize().width + 14 + pane.getVerticalScrollBar().getPreferredSize().width, 0));
+            setMinimumSize(new Dimension(LB_CONTROLLERS.getPreferredSize().width + 14 + pane.getVerticalScrollBar().getPreferredSize().width, 0));
             setPreferredSize(new Dimension(150 - DIVIDER_SIZE - 2 * MARGIN, 200 - 2 * MARGIN));
         }
     };
@@ -516,7 +516,7 @@ public class ChatDialog extends AbstractDialog {
     @Override
     public void relocalize() {
         setTitle(getString("chat"));
-        LB_RECENTS.setText(getString("recents"));
+        LB_CONTROLLERS.setText(getString("controllers"));
         Iterator<Entry<Integer, String>> it = sysMessages.entrySet().iterator();
         Map<Integer, String> newValues = new HashMap<Integer, String>();
         while (it.hasNext()) { // a használt rendszerüzenetek lecserélése az új nyelv alapján

@@ -37,6 +37,7 @@ import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_ARROWS;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_CHAT;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_MAP;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
+import static org.dyndns.fzoli.rccar.controller.Main.getString;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.model.controller.HostState;
 import org.dyndns.fzoli.ui.LookAndFeelIcon;
@@ -59,7 +60,7 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
     /**
      * Vezérlőgomb.
      */
-    private JButton btControll;
+    private JButton btControl;
 
     /**
      * Ablakmegjelenítő- és elrejtő gombok.
@@ -275,11 +276,11 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
         
         add(tb, BorderLayout.SOUTH); // az ablak aljára kerül a toolbar
 
-        btControll = createButton(null, IC_CONTROLLER1, JButton.class); // vezérlés kérő gomb
+        btControl = createButton(null, IC_CONTROLLER1, JButton.class); // vezérlés kérő gomb
         addSeparator(); // szeparátor
-        btMap = createButton("Térkép", IC_MAP, JToggleButton.class); // radar ablak láthatóság szabályzó gomb
-        btArrow = createButton("Vezérlő", IC_ARROWS, JToggleButton.class); // vezérlő ablak láthatóság szabályzó gomb
-        btChat = createButton("Chat", IC_CHAT, JToggleButton.class); // chat ablak láthatóság szabályzó gomb
+        btMap = createButton(getString("map"), IC_MAP, JToggleButton.class); // radar ablak láthatóság szabályzó gomb
+        btArrow = createButton(getString("controller"), IC_ARROWS, JToggleButton.class); // vezérlő ablak láthatóság szabályzó gomb
+        btChat = createButton(getString("chat"), IC_CHAT, JToggleButton.class); // chat ablak láthatóság szabályzó gomb
         addSeparator(); // szeparátor
         btIncrease = createButton("Növekedő sebesség", IC_INCREASE, JToggleButton.class); // chat ablak láthatóság szabályzó gomb
 
@@ -322,7 +323,7 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
 
         });
         
-        btControll.addActionListener(new ActionListener() {
+        btControl.addActionListener(new ActionListener() {
 
             /**
              * A vezérlés kérés/átadás gombra kattintva a kliens üzen a Hídnak, hogy kéri/átadja a vezérlést.
@@ -343,6 +344,9 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
     @Override
     public void relocalize() {
         // TODO
+        btMap.setToolTipText(getString("map"));
+        btChat.setToolTipText(getString("chat"));
+        btArrow.setToolTipText(getString("controller"));
     }
     
     /**
@@ -452,10 +456,10 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
      */
     public void refreshControllButton(Boolean prevWantControl) {
         if (getData().isControlling() == null || getData().isViewOnly() == null || getData().isWantControl() == null) return;
-        btControll.setIcon(getData().isControlling() ? IC_CONTROLLER1 : getData().isWantControl() ? IC_CONTROLLER3 : IC_CONTROLLER2);
-        btControll.setToolTipText(getData().isControlling() ? "Vezérlés átadása" : getData().isWantControl() ? "Vezérlés kérés visszavonása" : "Vezérlés kérése");
-        if (prevWantControl != null && ((!prevWantControl && getData().isWantControl()) || (prevWantControl && !getData().isWantControl() && getData().isControlling())) && !getData().isControlling()) btControll.setEnabled(false);
-        else btControll.setEnabled((!getData().isViewOnly() && !(getData().isControlling() && !getData().isWantControl())));
+        btControl.setIcon(getData().isControlling() ? IC_CONTROLLER1 : getData().isWantControl() ? IC_CONTROLLER3 : IC_CONTROLLER2);
+        btControl.setToolTipText(getData().isControlling() ? "Vezérlés átadása" : getData().isWantControl() ? "Vezérlés kérés visszavonása" : "Vezérlés kérése");
+        if (prevWantControl != null && ((!prevWantControl && getData().isWantControl()) || (prevWantControl && !getData().isWantControl() && getData().isControlling())) && !getData().isControlling()) btControl.setEnabled(false);
+        else btControl.setEnabled((!getData().isViewOnly() && !(getData().isControlling() && !getData().isWantControl())));
     }
     
     /**

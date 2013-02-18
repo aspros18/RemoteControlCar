@@ -34,46 +34,52 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
      * A default szótár létrehozása nem szükséges, mert az angol nyelvű szótárban keres, ha nincs a kért nyelvhez szöveg.
      */
     public static ResourceBundle createResource(String baseName, Locale locale, boolean fileChooser) {
-        final ResourceBundle lng = ResourceBundle.getBundle(baseName, locale);
-        final ResourceBundle def = ResourceBundle.getBundle(baseName, Locale.ENGLISH);
-        final ResourceBundle res = new ResourceBundle() {
+        try {
+            final ResourceBundle lng = ResourceBundle.getBundle(baseName, locale);
+            final ResourceBundle def = locale == Locale.ENGLISH ? null : ResourceBundle.getBundle(baseName, Locale.ENGLISH);
+            final ResourceBundle res = def == null ? lng : new ResourceBundle() {
 
-            @Override
-            protected Object handleGetObject(String key) {
-                try {
-                    return lng.getObject(key);
+                @Override
+                protected Object handleGetObject(String key) {
+                    try {
+                        return lng.getObject(key);
+                    }
+                    catch (Exception ex) {
+                        return def.getObject(key);
+                    }
                 }
-                catch (Exception ex) {
-                    return def.getObject(key);
-                }
-            }
 
-            @Override
-            public Enumeration<String> getKeys() {
-                return def.getKeys();
-            }
-            
-        };
-        put(UIUtil.KEY_CERT_LOAD_ERROR, res.getString("cert_load_error"));
-        put(UIUtil.KEY_CERT_ENTER_PASSWORD, res.getString("cert_enter_password"));
-        put(UncaughtExceptionHandler.KEY_UNEXPECTED_ERROR, res.getString("unexpected_error"));
-        put(UncaughtExceptionHandler.KEY_UNEXPECTED_ERROR_MSG, res.getString("unexpected_error_msg"));
-        put(UncaughtExceptionHandler.KEY_CLICK_FOR_DETAILS, res.getString("click_for_details"));
-        put(UncaughtExceptionHandler.KEY_CLOSE, res.getString("close"));
-        put(UncaughtExceptionHandler.KEY_COPY, res.getString("copy"));
-        put(UncaughtExceptionHandler.KEY_DETAILS, res.getString("details"));
-        put(UncaughtExceptionHandler.KEY_EXIT, res.getString("exit"));
-        put(UncaughtExceptionHandler.KEY_SELECT_ALL, res.getString("select_all"));
-        put(OptionPane.KEY_ERROR, res.getString("error"));
-        put(OptionPane.KEY_EXIT, res.getString("exit"));
-        put(OptionPane.KEY_PASSWORD, res.getString("password"));
-        put(OptionPane.KEY_SAVE_PASSWORD, res.getString("save_password"));
-        put(OptionPane.KEY_INPUT_NOT_POSSIBLE, res.getString("input_not_possible"));
-        put(OptionPane.KEY_YES, res.getString("yes"));
-        put(OptionPane.KEY_NO, res.getString("no"));
-        put(OptionPane.KEY_OK, res.getString("ok"));
-        if (fileChooser) FilePanel.setResource(res);
-        return res;
+                @Override
+                public Enumeration<String> getKeys() {
+                    return def.getKeys();
+                }
+
+            };
+            put(UIUtil.KEY_CERT_LOAD_ERROR, res.getString("cert_load_error"));
+            put(UIUtil.KEY_CERT_ENTER_PASSWORD, res.getString("cert_enter_password"));
+            put(UncaughtExceptionHandler.KEY_UNEXPECTED_ERROR, res.getString("unexpected_error"));
+            put(UncaughtExceptionHandler.KEY_UNEXPECTED_ERROR_MSG, res.getString("unexpected_error_msg"));
+            put(UncaughtExceptionHandler.KEY_CLICK_FOR_DETAILS, res.getString("click_for_details"));
+            put(UncaughtExceptionHandler.KEY_CLOSE, res.getString("close"));
+            put(UncaughtExceptionHandler.KEY_COPY, res.getString("copy"));
+            put(UncaughtExceptionHandler.KEY_DETAILS, res.getString("details"));
+            put(UncaughtExceptionHandler.KEY_EXIT, res.getString("exit"));
+            put(UncaughtExceptionHandler.KEY_SELECT_ALL, res.getString("select_all"));
+            put(OptionPane.KEY_ERROR, res.getString("error"));
+            put(OptionPane.KEY_EXIT, res.getString("exit"));
+            put(OptionPane.KEY_PASSWORD, res.getString("password"));
+            put(OptionPane.KEY_SAVE_PASSWORD, res.getString("save_password"));
+            put(OptionPane.KEY_INPUT_NOT_POSSIBLE, res.getString("input_not_possible"));
+            put(OptionPane.KEY_YES, res.getString("yes"));
+            put(OptionPane.KEY_NO, res.getString("no"));
+            put(OptionPane.KEY_OK, res.getString("ok"));
+            if (fileChooser) FilePanel.setResource(res);
+            return res;
+        }
+        catch (RuntimeException ex) {
+            if (locale == Locale.ENGLISH) throw ex;
+            return createResource(baseName, Locale.ENGLISH, fileChooser);
+        }
     }
     
     /**

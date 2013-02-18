@@ -8,6 +8,8 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.HashMap;
@@ -79,40 +81,7 @@ public abstract class LanguageChooserFrame extends JFrame {
     private final JComboBox<Locale> CB_LOCALES = new JComboBox<Locale>(MODEL_LOCALES) {
         {
             setRenderer(LCR_LOCALES);
-            setKeySelectionManager(new KeySelectionManager() {
-
-                /**
-                 * A leütött karaktert hozzáadja a gyorskereső szöveghez,
-                 * ha back space vagy delete gomb lett lenyomva, a gyorskereső szöveget kiüríti, végül
-                 * megkeresi a listában azt a nyelvet, amire illeszkedik a gyorskereső szöveg.
-                 * Ha a gyorskereső szöveg üres, akkor a lista első elemét jelöli ki.
-                 * Ha a gyorskereső szövegre nincs illeszkedés, nem változik a kijelölés.
-                 * Ha nem karaktert ütöttek le (pl. F1, Ctrl, Shift), nem módosul a gyorskereső szöveg.
-                 */
-                @Override
-                public int selectionForKey(char aKey, ComboBoxModel aModel) {
-                    switch (KeyEvent.getExtendedKeyCodeForChar(aKey)) {
-                        case KeyEvent.VK_DELETE:
-                            text = "";
-                            break;
-                        case KeyEvent.VK_BACK_SPACE:
-                            text = "";
-                            break;
-                        default:
-                            if (Character.isLetter(aKey)) text += aKey;
-                    }
-                    if (text.isEmpty()) return 0;
-                    Iterator<Entry<Locale, String>> it = MAP_LOCALES.entrySet().iterator();
-                    while (it.hasNext()) {
-                        Entry<Locale, String> e = it.next();
-                        if (e.getValue().toLowerCase().startsWith(text.toLowerCase())) {
-                            return MODEL_LOCALES.getIndexOf(e.getKey());
-                        }
-                    }
-                    return getSelectedIndex();
-                }
-                
-            });
+            setKeySelectionManager(createKeySelectionManager(this));
             addActionListener(new ActionListener() {
 
                 /**
@@ -213,6 +182,55 @@ public abstract class LanguageChooserFrame extends JFrame {
      * @param l az új nyelv
      */
     protected abstract void onLanguageSelected(Locale l);
+    
+    /**
+     * Gyorskereső menedzser.
+     * @param cb a legördülő lista
+     */
+    public JComboBox.KeySelectionManager createKeySelectionManager(final JComboBox<Locale> cb) {
+        cb.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                text = ""; // ha a komponensre kattintanak, a gyorskeresés újrakezdődik
+            }
+            
+        });
+        return new JComboBox.KeySelectionManager() {
+
+            /**
+             * A leütött karaktert hozzáadja a gyorskereső szöveghez,
+             * ha back space vagy delete gomb lett lenyomva, a gyorskereső szöveget kiüríti, végül
+             * megkeresi a listában azt a nyelvet, amire illeszkedik a gyorskereső szöveg.
+             * Ha a gyorskereső szöveg üres, akkor a lista első elemét jelöli ki.
+             * Ha a gyorskereső szövegre nincs illeszkedés, nem változik a kijelölés.
+             * Ha nem karaktert ütöttek le (pl. F1, Ctrl, Shift), nem módosul a gyorskereső szöveg.
+             */
+            @Override
+            public int selectionForKey(char aKey, ComboBoxModel aModel) {
+                switch (KeyEvent.getExtendedKeyCodeForChar(aKey)) {
+                    case KeyEvent.VK_DELETE:
+                        text = "";
+                        break;
+                    case KeyEvent.VK_BACK_SPACE:
+                        text = "";
+                        break;
+                    default:
+                        if (Character.isLetter(aKey)) text += aKey;
+                }
+                if (text.isEmpty()) return 0;
+                Iterator<Entry<Locale, String>> it = MAP_LOCALES.entrySet().iterator();
+                while (it.hasNext()) {
+                    Entry<Locale, String> e = it.next();
+                    if (e.getValue().toLowerCase().startsWith(text.toLowerCase())) {
+                        return MODEL_LOCALES.getIndexOf(e.getKey());
+                    }
+                }
+                return cb.getSelectedIndex();
+            }
+
+        };
+    }
     
     /**
      * Megadja az elérhető nyelvek kódjait és neveit.

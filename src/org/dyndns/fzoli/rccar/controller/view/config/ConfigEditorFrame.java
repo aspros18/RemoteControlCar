@@ -344,6 +344,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
             add(new JComboBox(Main.LNG_FRAME.MODEL_LOCALES) { // ugyan azzal a modellel jön létre a legördülő lista, amivel a nyelvkiválasztó ablak, így egyszerre módosulnak
                 {
                     setRenderer(Main.LNG_FRAME.LCR_LOCALES); // ugyan azt a renderert használja, mint a nyelvkiválasztó ablak
+                    setKeySelectionManager(Main.LNG_FRAME.createKeySelectionManager(this)); // gyorskereső létrehozása
                     setPreferredSize(new Dimension(Math.max(getPreferredSize().width, 180), getPreferredSize().height)); // 180 pixel széles (vagy nagyobb, ha kell)
                 }
             }, c);

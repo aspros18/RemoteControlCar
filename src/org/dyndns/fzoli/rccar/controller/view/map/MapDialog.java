@@ -135,7 +135,12 @@ public class MapDialog extends AbstractDialog {
      * Figyelmeztető üzenet a sikertelen betöltéshez.
      * Kattintásra megpróbálja újratölteni a térképet.
      */
-    private final JLabel LB_WARN;
+    private final JLabel LB_WARN = new JLabel(getWarningLabelText(), SwingConstants.CENTER);
+    
+    /**
+     * Böngésző támogatás detektálás előtt látható címke.
+     */
+    private final JLabel LB_PRE_LOADING = new JLabel(getPreLoadingLabelText(), SwingConstants.CENTER);
     
     /**
      * Betöltés szöveg címkéje.
@@ -146,6 +151,12 @@ public class MapDialog extends AbstractDialog {
      * Megadja, hogy a fade effekt engedélyezve van-e.
      */
     private boolean fadeEnabled = false;
+    
+    /**
+     * Megadja, hogy elérhető-e a böngésző.
+     * Amíg nem tudni, null az értéke.
+     */
+    private Boolean enabled;
     
     static {
         // az ideiglenes könyvtár létrehozása és feltöltése
@@ -204,7 +215,6 @@ public class MapDialog extends AbstractDialog {
         pInd.setVisible(false);
         
         // figyelmeztető üzenet jelenik meg, ha a térkép betöltése nem sikerült
-        LB_WARN = new JLabel(getWarningLabelText(), SwingConstants.CENTER);
         LB_WARN.setPreferredSize(mapPane.getPreferredSize());
         LB_WARN.addMouseListener(new MouseAdapter() {
 
@@ -218,9 +228,8 @@ public class MapDialog extends AbstractDialog {
         LB_WARN.setVisible(false);
         
         // kezdetben úgy tesz, mint ha nem lenne böngésző támogatás
-        final JLabel lbErr = new JLabel("<html><p style=\"text-align:center\">Ha a térkép hamarosan nem tölt be, telepítsen Mozilla Firefox böngészőt.</p></html>", SwingConstants.CENTER);
-        lbErr.setPreferredSize(mapPane.getPreferredSize()); // a hibaüzenet mérete megegyezik a térképével
-        getContentPane().add(lbErr, BorderLayout.NORTH); // a hibaüzenet az ablak felső részére kerül
+        LB_PRE_LOADING.setPreferredSize(mapPane.getPreferredSize()); // a hibaüzenet mérete megegyezik a térképével
+        getContentPane().add(LB_PRE_LOADING, BorderLayout.NORTH); // a hibaüzenet az ablak felső részére kerül
         
         getContentPane().add(mapPane, BorderLayout.CENTER); // a térkép középre igazítva jelenik meg
         
@@ -243,14 +252,15 @@ public class MapDialog extends AbstractDialog {
             WEB_BROWSER = null;
         }
         
+        this.enabled = WEB_BROWSER != null;
         if (WEB_BROWSER == null) {
-            lbErr.setText("<html><p style=\"text-align:center\">A térkép nincs támogatva.</p></html>");
+            LB_PRE_LOADING.setText(getNoSupportLabelText());
         }
         
         setResizable(false); // ablak átméretezésének tiltása
-        lbErr.setVisible(false); // hibaüzenet elrejtése a pack hívása előtt, hogy ne vegye számításba
+        LB_PRE_LOADING.setVisible(false); // hibaüzenet elrejtése a pack hívása előtt, hogy ne vegye számításba
         pack(); // ablakméret minimalizálása
-        lbErr.setVisible(true); // hibaüzenet megjelenítése
+        LB_PRE_LOADING.setVisible(true); // hibaüzenet megjelenítése
         mapPane.setVisible(false); // térkép láthatatlanná tétele, míg nem tölt be
         
         if (WEB_BROWSER != null) {
@@ -269,15 +279,15 @@ public class MapDialog extends AbstractDialog {
             // várakozás a térkép api betöltésére
             WEB_BROWSER.addWebBrowserListener(new WebBrowserAdapter() {
 
-                private boolean indApp = true, errRemoved = false, fired = false;
+                private boolean indApp = true, preloadRemoved = false, fired = false;
 
                 private boolean test = false; // teszt annak kiderítésére, hogy betöltődött-e a Google Map
 
                 @Override
                 public void loadingProgressChanged(final WebBrowserEvent e) {
-                    if (!errRemoved) { // hibaüzenet eltávolítása és indikátor megjelenítése, mivel van böngésző támogatás
-                        errRemoved = true;
-                        remove(lbErr);
+                    if (!preloadRemoved) { // hibaüzenet eltávolítása és indikátor megjelenítése, mivel van böngésző támogatás
+                        preloadRemoved = true;
+                        remove(LB_PRE_LOADING);
                     }
                     if (indApp) { // indikátor megjelenítése, ha még nem látszik
                         indApp = false;
@@ -352,6 +362,20 @@ public class MapDialog extends AbstractDialog {
     }
     
     /**
+     * Betöltődés megkezdés előtti szöveg a címkéhez.
+     */
+    private String getPreLoadingLabelText() {
+        return "<html><p style=\"text-align:center\">" + getString("map_preload") + "</p></html>";
+    }
+    
+    /**
+     * Nincs térképtámogatás szöveg a címkéhez.
+     */
+    private String getNoSupportLabelText() {
+        return "<html><p style=\"text-align:center\">" + getString("map_unsupported") + "</p></html>";
+    }
+    
+    /**
      * Betöltés hiba szövege a címkéhez.
      */
     private String getWarningLabelText() {
@@ -368,6 +392,8 @@ public class MapDialog extends AbstractDialog {
         setTitle(getString("map"));
         LB_LOADING.setText(getString("loading"));
         LB_WARN.setText(getWarningLabelText());
+        if (enabled == null) LB_PRE_LOADING.setText(getPreLoadingLabelText());
+        else if (!enabled) LB_PRE_LOADING.setText(getNoSupportLabelText());
     }
     
     /**

@@ -33,6 +33,7 @@ import static org.dyndns.fzoli.rccar.controller.ControllerModels.getData;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_ARROWS;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
+import static org.dyndns.fzoli.rccar.controller.Main.getString;
 import org.dyndns.fzoli.rccar.model.Control;
 import org.dyndns.fzoli.ui.RepeatingReleasedEventsFixer;
 
@@ -685,7 +686,7 @@ public class ArrowDialog extends AbstractDialog {
     }
     
     public ArrowDialog(ControllerFrame owner, ControllerWindows windows) {
-        super(owner, "Vezérlő", windows);
+        super(owner, getString("controller"), windows);
         getData().setArrowDialog(this);
         
         // ikon beállítása és panel hozzáadása
@@ -712,7 +713,7 @@ public class ArrowDialog extends AbstractDialog {
      */
     @Override
     public void relocalize() {
-        // TODO
+        setTitle(getString("controller"));
     }
     
     private void setControlling(boolean b, boolean restoring) {

@@ -412,6 +412,11 @@ public class ChatDialog extends AbstractDialog {
      */
     private static String senderName;
     
+    /**
+     * A rendszerüzenetek kezdő és végpontjai a dokumentumban.
+     */
+    private List<Point> sysMessages = Collections.synchronizedList(new ArrayList<Point>());
+    
     public ChatDialog(ControllerFrame owner, final ControllerWindows windows) {
         super(owner, "Chat", windows);
         getData().setChatDialog(this);
@@ -426,11 +431,33 @@ public class ChatDialog extends AbstractDialog {
     }
     
     /**
+     * Rekurzívan törli az összes rendszerüzenetet.
+     * @param dif a kezdőparaméter 0, a metódus inkrementálja az értéket attól függően, hány karakter lett már törölve
+     */
+    private void removeSysMessages(int dif) {
+        if (!sysMessages.isEmpty()) {
+            Point p = sysMessages.get(0);
+            sysMessages.remove(p);
+            int f = p.x;
+            int s = p.y - p.x;
+            if (f == 0) s++;
+            try {
+                doc.remove(Math.max(0, f - dif), Math.min(doc.getLength(), s));
+                removeSysMessages(dif + s);
+            }
+            catch (Exception ex) {
+                ;
+            }
+        }
+    }
+    
+    /**
      * A felület feliratait újra beállítja.
      * Ha a nyelvet megváltoztatja a felhasználó, ez a metódus hívódik meg.
      */
     @Override
     public void relocalize() {
+        removeSysMessages(0);
         // TODO
     }
     
@@ -450,6 +477,7 @@ public class ChatDialog extends AbstractDialog {
     public void removeChatMessages() {
         try {
             lastSender = null;
+            sysMessages.clear();
             doc.remove(0, doc.getLength());
         }
         catch (BadLocationException ex) {
@@ -525,7 +553,9 @@ public class ChatDialog extends AbstractDialog {
      * @param name az új irányító neve
      */
     public void showNewController(Date d, String name) {
+        int l = doc.getLength();
         addMessage(d, name, "vezérli mostantól a járművet.", true);
+        sysMessages.add(new Point(l, doc.getLength()));
     }
     
     /**
@@ -535,7 +565,9 @@ public class ChatDialog extends AbstractDialog {
      * @param undo true esetén visszavonás történt
      */
     public void showAskControl(Date d, String name, boolean undo) {
+        int l = doc.getLength();
         addMessage(d, name, (undo ? "mégsem szeretné vezérelni" : "vezérelni szeretné") + " a járművet.", true);
+        sysMessages.add(new Point(l, doc.getLength()));
     }
     
     /**
@@ -562,7 +594,7 @@ public class ChatDialog extends AbstractDialog {
             if (me) message = message.substring(4);
             me |= sysmsg;
             boolean startNewline = message.indexOf("\n") == 0; // ha új sorral kezdődik az üzenet, egy újsor jel bent marad
-            doc.insertString(doc.getLength(), (lastSender != null ? "\n" : "") + '[' + DATE_FORMAT.format(date) + "] ", doc.getStyle(KEY_DATE));
+            doc.insertString(doc.getLength(), (doc.getLength() > 0 ? "\n" : "") + '[' + DATE_FORMAT.format(date) + "] ", doc.getStyle(KEY_DATE));
             doc.insertString(doc.getLength(), (me ? ("* " + name) : (name.equals(lastSender) ? "..." : (name + ':'))) + ' ', doc.getStyle(sysmsg ? KEY_SYSNAME : isSenderName(name) ? KEY_MYNAME : KEY_NAME));
             doc.insertString(doc.getLength(), (!me && startNewline ? "\n" : "") + message.trim(), doc.getStyle(KEY_REGULAR));
             lastSender = me ? "" : name;

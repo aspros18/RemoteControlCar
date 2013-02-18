@@ -206,7 +206,7 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setIconImage(R.getIconImage());
         setLayout(new BorderLayout());
-        setTitle("Mobile-RC");
+        setTitle(getString("app_name"));
         
         lbImage = new JLabel(IC_BLACK_BG) { // amíg nincs MJPEG stream, fekete
             
@@ -282,7 +282,7 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
         btArrow = createButton(getString("controller"), IC_ARROWS, JToggleButton.class); // vezérlő ablak láthatóság szabályzó gomb
         btChat = createButton(getString("chat"), IC_CHAT, JToggleButton.class); // chat ablak láthatóság szabályzó gomb
         addSeparator(); // szeparátor
-        btIncrease = createButton("Növekedő sebesség", IC_INCREASE, JToggleButton.class); // chat ablak láthatóság szabályzó gomb
+        btIncrease = createButton(getString("increasing_speed"), IC_INCREASE, JToggleButton.class); // növekvő sebesség aktiváló gomb
 
         JPanel pStat = new JPanel(); // a statisztika panel ...
         pStat.setOpaque(false); // ... átlátszó és ...
@@ -292,11 +292,11 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
         c.weightx = Integer.MAX_VALUE; // a panel a maradék hely teljes kitöltésével ...
         tb.add(pStat, c); // ... hozzáadódik a toolbarhoz, mint utolsó komponens
         
-        lbSpeed = new JLabel("Sebesség: 0 km/h");
+        lbSpeed = new JLabel(" ");
         pStat.add(lbSpeed); // sebesség kijelző inicializálása, hozzáadás az ablakhoz
         
         pbAccu = new JProgressBar(); // akkumulátor-szint kijelző inicializálása
-        pbAccu.setString("Akku: 100%");
+        pbAccu.setString(" ");
         pbAccu.setValue(100);
         pbAccu.setStringPainted(true); // a beállított szöveg jelenjen meg
         pStat.add(pbAccu); // hozzáadás az ablakhoz
@@ -314,7 +314,7 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
             @Override
             public void windowClosing(WindowEvent e) {
                 if (!getData().isConnected()) {
-                    int answer = OptionPane.showYesNoDialog(ControllerFrame.this, "Ha most kilép a járműválasztóba, ez a jármű\nnem fog a listában szerepelni, mivel offline.\n\nBiztos benne, hogy elhagyja a járművet?", "A jármű elhagyása");
+                    int answer = OptionPane.showYesNoDialog(ControllerFrame.this, getString("leave_vehicle_msg1") + "\n" + getString("leave_vehicle_msg2") + "\n\n" + getString("leave_vehicle_msg3"), getString("leave_vehicle"));
                     if (answer == 1) return;
                 }
                 setVisible(false);
@@ -343,10 +343,15 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
      */
     @Override
     public void relocalize() {
-        // TODO
+        setTitle(getString("app_name"));
         btMap.setToolTipText(getString("map"));
         btChat.setToolTipText(getString("chat"));
         btArrow.setToolTipText(getString("controller"));
+        btIncrease.setToolTipText(getString("increasing_speed"));
+        refreshSpeed();
+        refreshBattery();
+        refreshControllText();
+        refreshMessage();
     }
     
     /**
@@ -457,9 +462,17 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
     public void refreshControllButton(Boolean prevWantControl) {
         if (getData().isControlling() == null || getData().isViewOnly() == null || getData().isWantControl() == null) return;
         btControl.setIcon(getData().isControlling() ? IC_CONTROLLER1 : getData().isWantControl() ? IC_CONTROLLER3 : IC_CONTROLLER2);
-        btControl.setToolTipText(getData().isControlling() ? "Vezérlés átadása" : getData().isWantControl() ? "Vezérlés kérés visszavonása" : "Vezérlés kérése");
+        refreshControllText();
         if (prevWantControl != null && ((!prevWantControl && getData().isWantControl()) || (prevWantControl && !getData().isWantControl() && getData().isControlling())) && !getData().isControlling()) btControl.setEnabled(false);
         else btControl.setEnabled((!getData().isViewOnly() && !(getData().isControlling() && !getData().isWantControl())));
+    }
+    
+    /**
+     * A vezérlő gomb feliratát frissíti.
+     */
+    private void refreshControllText() {
+        if (getData().isControlling() == null || getData().isWantControl() == null) return;
+        btControl.setToolTipText(getString(getData().isControlling() ? "give_up_control" : getData().isWantControl() ? "undo_control" : "ask_control"));
     }
     
     /**
@@ -473,7 +486,7 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
         String text = " "; // üres szöveg helyett egy szóköz, mert az sem látszik, de az elrendezésmenedzsernek számít, hogy üres-e a szöveg
         if (!getData().isUnderTimeout() && getData().isHostUnderTimeout() != null && !getData().isHostUnderTimeout()) {
             HostState hs = getData().getHostState();
-            if (hs != null && hs.SPEED != null && getData().isUp2Date() != null && getData().isUp2Date()) text = "Sebesség: " + DF_SPEED.format(hs.SPEED) + " km/h";
+            if (hs != null && hs.SPEED != null && getData().isUp2Date() != null && getData().isUp2Date()) text = getString("speed") + ": " + DF_SPEED.format(hs.SPEED) + " km/h";
         }
         lbSpeed.setText(text);
     }
@@ -488,7 +501,7 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
     public void refreshBattery() {
         boolean zero = getData().getControl() == null || getData().getControl().getX() == 0 && getData().getControl().getY() == 0;
         boolean show = getData().isVehicleAvailable(true, false) && getData().getBatteryLevel() != null && zero;
-        pbAccu.setString(show ? ("Akku: " + getData().getBatteryLevel() + " %") : "");
+        pbAccu.setString(show ? (getString("battery") + ": " + getData().getBatteryLevel() + " %") : "");
         if (show) pbAccu.setValue(getData().getBatteryLevel());
         pbAccu.setIndeterminate(!show);
     }
@@ -505,10 +518,10 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
         Boolean htime = getData().isHostUnderTimeout();
         Boolean vconn = getData().isVehicleConnected();
         Boolean tconn = getData().isConnected();
-        if (getData().isUnderTimeout()) setProgressMessage("Várakozás a Híd kapcsolatára.", true);
-        else if (tconn != null && !tconn) setProgressMessage("A jármű offline!", false);
-             else if (htime != null && htime) setProgressMessage("Várakozás a jármű kapcsolatára.", true);
-                  else if (vconn != null && !vconn) setProgressMessage("Várakozás az összeköttetésre.", true); 
+        if (getData().isUnderTimeout()) setProgressMessage(getString("waiting_for_bridge_connection"), true);
+        else if (tconn != null && !tconn) setProgressMessage(getString("offline_vehicle"), false);
+             else if (htime != null && htime) setProgressMessage(getString("waiting_for_vehicle_connection"), true);
+                  else if (vconn != null && !vconn) setProgressMessage(getString("waiting_for_cable_connection"), true); 
                        else setProgressMessage(null, true);
     }
     

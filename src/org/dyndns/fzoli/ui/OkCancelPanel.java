@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.Window;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -27,7 +28,7 @@ public class OkCancelPanel extends JPanel {
         /**
          * Megadja, hogy a gombok szövegének módosulása után legyen-e ablak újraméretezés.
          */
-        public boolean needRepack();
+        public boolean needRepack(Rectangle r);
 
         /**
          * Megadja, hogy a gombok szövegének módosulása után legyen-e ablak újrapozícionálás.
@@ -60,7 +61,7 @@ public class OkCancelPanel extends JPanel {
 
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
-            resizeButtons();
+            resizeButtons(true);
         }
         
     };
@@ -124,7 +125,7 @@ public class OkCancelPanel extends JPanel {
         pc.insets = new Insets(0, 0, 0, 0); // margó vissza eredeti állapotba (nincs margó)
         add(btOk, pc);
         
-        resizeButtons();
+        resizeButtons(false);
         btOk.addPropertyChangeListener(AbstractButton.TEXT_CHANGED_PROPERTY, LR);
         btCancel.addPropertyChangeListener(AbstractButton.TEXT_CHANGED_PROPERTY, LR);
         if (btHelp != null) btHelp.addPropertyChangeListener(AbstractButton.TEXT_CHANGED_PROPERTY, LR);
@@ -134,8 +135,11 @@ public class OkCancelPanel extends JPanel {
      * Átméretezi a gombokat.
      * Az összes gombnak azonos szélességet állít be.
      */
-    public void resizeButtons() {
+    private void resizeButtons(boolean setWin) {
         JButton[] buttons = createButtonArray();
+        
+        Rectangle r = null; // az átméretezés előtti ablakméret és pozíció
+        if (OWNER != null) r = OWNER.getBounds();
         
         // az esetleg előzőleg beállított méret törlése
         for (JButton bt : buttons) {
@@ -158,8 +162,8 @@ public class OkCancelPanel extends JPanel {
         }
         
         OkCancelWindow owner = getOwner();
-        if (owner != null) { // ha van kompatibilis ablak megadva
-            if (owner.needRepack()) owner.pack(); // átméretezi, ha kéri azt
+        if (setWin && owner != null) { // ha van kompatibilis ablak megadva és be kell állítani
+            if (owner.needRepack(r)) owner.pack(); // átméretezi, ha kéri azt
             if (owner.needReloc()) owner.setLocationRelativeTo(null); // középre helyezi, ha kéri azt
         }
     }

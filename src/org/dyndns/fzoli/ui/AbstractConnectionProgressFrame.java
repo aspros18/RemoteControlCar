@@ -2,6 +2,7 @@ package org.dyndns.fzoli.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
@@ -125,7 +126,7 @@ public abstract class AbstractConnectionProgressFrame extends JFrame implements 
      * Megadja, hogy a gombok szövegének módosulása után legyen-e ablak újraméretezés.
      */
     @Override
-    public boolean needRepack() {
+    public boolean needRepack(Rectangle r) {
         return true;
     }
     

@@ -416,7 +416,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
         c.gridy = 1; // következő sor
         c.weighty = 0; // minimális helyfoglalás magasságban ...
         c.fill = GridBagConstraints.HORIZONTAL; // ... és teljes szélesség elfoglalása ...
-        JPanel pButton = new OkCancelPanel(btOk, btCancel, btHelp, 5); // ... a gombokat tartalmazó panelnek
+        JPanel pButton = new OkCancelPanel(this, btOk, btCancel, btHelp, 5); // ... a gombokat tartalmazó panelnek
         pButton.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5)); // margó a gombokat tartalmazó panelre
         add(pButton, c); // gombok hozzáadása az ablakhoz
         

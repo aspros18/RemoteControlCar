@@ -71,6 +71,13 @@ public class IconTextPanel extends JPanel {
     }
     
     /**
+     * A panel szövegét állítja be.
+     */
+    public void setText(String text) {
+        lbText.setText(text);
+    }
+    
+    /**
      * Átméretezi a panelek címkéit.
      * Megkeresi a legnagyobb méretű címként és alkalmazza a többire a méretét.
      * Csak azokat a paneleket veszi figyelembe, melyek tulajdonosa megegyezik az övével.

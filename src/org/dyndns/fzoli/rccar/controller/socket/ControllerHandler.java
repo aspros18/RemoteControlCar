@@ -35,7 +35,7 @@ public class ControllerHandler extends AbstractSecureClientHandler implements Co
             throw ex;
         }
         catch (RemoteHandlerException e) {
-            showConnectionStatus(Status.REFUSED);
+            showConnectionStatus(Status.CONNECTION_REFUSED);
         }
         catch (SocketTimeoutException e) {
             showConnectionStatus(Status.CONNECTION_TIMEOUT);

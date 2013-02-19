@@ -1,10 +1,15 @@
 package org.dyndns.fzoli.ui;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Window;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -14,6 +19,52 @@ import javax.swing.JPanel;
  */
 public class OkCancelPanel extends JPanel {
 
+    /**
+     * Egy ablak, amin a gombpanel megjelenhet és képes szövegmódosulást kezelni.
+     */
+    public static interface OkCancelWindow {
+        
+        /**
+         * Megadja, hogy a gombok szövegének módosulása után legyen-e ablak újraméretezés.
+         */
+        public boolean needRepack();
+
+        /**
+         * Megadja, hogy a gombok szövegének módosulása után legyen-e ablak újrapozícionálás.
+         */
+        public boolean needReloc();
+        
+        /**
+         * Már létező {@link Window} metódus.
+         */
+        public void pack();
+        
+        /**
+         * Már létező {@link Window} metódus.
+         */
+        public void setLocationRelativeTo(Component c);
+        
+    }
+    
+    private final Window OWNER;
+    
+    /**
+     * Az egyik gomb a penelen.
+     */
+    private final JButton BT_OK, BT_CANCEL, BT_HELP;
+    
+    /**
+     * Ha az egyik gomb szövege módosul, meghívja a gombátméretező metódust.
+     */
+    private final PropertyChangeListener LR = new PropertyChangeListener() {
+
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            resizeButtons();
+        }
+        
+    };
+    
     /**
      * Láthatatlan gomb a súgó gomb helyére, ha nincs súgó gomb megadva.
      */
@@ -36,8 +87,8 @@ public class OkCancelPanel extends JPanel {
      * @param gap az Oké és Mégse gomb közötti rés
      * @throws NullPointerException ha bármelyik gomb null
      */
-    public OkCancelPanel(JButton btOk, JButton btCancel, int gap) {
-        this(btOk, btCancel, null, gap);
+    public OkCancelPanel(Window owner, JButton btOk, JButton btCancel, int gap) {
+        this(owner, btOk, btCancel, null, gap);
     }
     
     /**
@@ -48,8 +99,12 @@ public class OkCancelPanel extends JPanel {
      * @param gap az Oké és Mégse gomb közötti rés
      * @throws NullPointerException ha az OK vagy Mégse gomb null
      */
-    public OkCancelPanel(JButton btOk, JButton btCancel, JButton btHelp, int gap) {
+    public OkCancelPanel(Window owner, JButton btOk, JButton btCancel, JButton btHelp, int gap) {
         super(new GridBagLayout());
+        OWNER = owner;
+        BT_OK = btOk;
+        BT_CANCEL = btCancel;
+        BT_HELP = btHelp;
         
         GridBagConstraints pc = new GridBagConstraints();
         pc.fill = GridBagConstraints.NONE; // a gombok mérete ne változzon
@@ -69,16 +124,23 @@ public class OkCancelPanel extends JPanel {
         pc.insets = new Insets(0, 0, 0, 0); // margó vissza eredeti állapotba (nincs margó)
         add(btOk, pc);
         
-        resizeButtons(btOk, btCancel, btHelp); // gombok átméretezése
-        
+        resizeButtons();
+        btOk.addPropertyChangeListener(AbstractButton.TEXT_CHANGED_PROPERTY, LR);
+        btCancel.addPropertyChangeListener(AbstractButton.TEXT_CHANGED_PROPERTY, LR);
+        if (btHelp != null) btHelp.addPropertyChangeListener(AbstractButton.TEXT_CHANGED_PROPERTY, LR);
     }
     
     /**
      * Átméretezi a gombokat.
      * Az összes gombnak azonos szélességet állít be.
      */
-    private static void resizeButtons(JButton btOk, JButton btCancel, JButton btHelp) {
-        JButton[] buttons = createButtonArray(btOk, btCancel, btHelp);
+    public void resizeButtons() {
+        JButton[] buttons = createButtonArray();
+        
+        // az esetleg előzőleg beállított méret törlése
+        for (JButton bt : buttons) {
+            bt.setPreferredSize(null);
+        }
         
         // közönséges maximum kiválasztás
         double size = buttons[0].getPreferredSize().getWidth();
@@ -94,16 +156,30 @@ public class OkCancelPanel extends JPanel {
         for (JButton bt : buttons) {
             bt.setPreferredSize(new Dimension((int) size, bt.getPreferredSize().height));
         }
+        
+        OkCancelWindow owner = getOwner();
+        if (owner != null) { // ha van kompatibilis ablak megadva
+            if (owner.needRepack()) owner.pack(); // átméretezi, ha kéri azt
+            if (owner.needReloc()) owner.setLocationRelativeTo(null); // középre helyezi, ha kéri azt
+        }
     }
     
     /**
-     * Létrehoz egy tömböt a paraméterben átadott gombokkal, hogy iterálni lehessen őket.
+     * Megadja a birtokló ablakot, ha meg lett adva és támogatja a panelt.
      */
-    private static JButton[] createButtonArray(JButton btOk, JButton btCancel, JButton btHelp) {
-        final JButton[] buttons = new JButton[btHelp == null ? 2 : 3];
-        buttons[0] = btOk;
-        buttons[1] = btCancel;
-        if (btHelp != null) buttons[2] = btHelp;
+    private OkCancelWindow getOwner() {
+        if (OWNER != null && OWNER instanceof OkCancelWindow) return (OkCancelWindow) OWNER;
+        return null;
+    }
+    
+    /**
+     * Létrehoz egy tömböt a gombokkal, hogy iterálni lehessen őket.
+     */
+    private JButton[] createButtonArray() {
+        final JButton[] buttons = new JButton[BT_HELP == null ? 2 : 3];
+        buttons[0] = BT_OK;
+        buttons[1] = BT_CANCEL;
+        if (BT_HELP != null) buttons[2] = BT_HELP;
         return buttons;
     }
     

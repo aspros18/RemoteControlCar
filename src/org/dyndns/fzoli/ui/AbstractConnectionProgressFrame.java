@@ -18,13 +18,13 @@ import javax.swing.JPanel;
  * - kilép a programból: végetér a program futása
  * @author zoli
  */
-public abstract class AbstractConnectionProgressFrame extends JFrame {
+public abstract class AbstractConnectionProgressFrame extends JFrame implements OkCancelPanel.OkCancelWindow {
     
     /**
      * Újra gomb.
      * Meghívja az {@code onAgain} metódust, ha kiválasztják.
      */
-    private final JButton btAgain = new JButton("Újra") {
+    private final JButton btAgain = new JButton() {
         {
             addActionListener(new ActionListener() {
 
@@ -41,7 +41,7 @@ public abstract class AbstractConnectionProgressFrame extends JFrame {
      * Kapcsolatbeállítás gomb.
      * Meghívja az {@code onSettings} metódust, ha kiválasztják.
      */
-    private final JButton btSettings = new JButton("Kapcsolatbeállítás") {
+    private final JButton btSettings = new JButton() {
         {
             addActionListener(new ActionListener() {
 
@@ -58,7 +58,7 @@ public abstract class AbstractConnectionProgressFrame extends JFrame {
      * Kilépés gomb.
      * Rákattintva a program végetér.
      */
-    private final JButton btExit = new JButton("Kilépés") {
+    private final JButton btExit = new JButton() {
         {
             addActionListener(new ActionListener() {
 
@@ -81,8 +81,19 @@ public abstract class AbstractConnectionProgressFrame extends JFrame {
      * Alapértelmezetten hibaüzenetet mutat a panel.
      */
     public AbstractConnectionProgressFrame(IconTextPanel[] panels) {
-        super("Kapcsolódáskezelő");
+        this("Connection handler", "Try again", "Connection settings", "Exit", panels);
+    }
+    
+    /**
+     * Konstruktor.
+     * Alapértelmezetten hibaüzenetet mutat a panel.
+     */
+    public AbstractConnectionProgressFrame(String title, String again, String connSettings, String exit, IconTextPanel[] panels) {
+        super(title);
         PANELS = panels;
+        btAgain.setText(again);
+        btSettings.setText(connSettings);
+        btExit.setText(exit);
         
         setLayout(new GridBagLayout()); // kedvenc elrendezésmenedzserem alkalmazása
         setDefaultCloseOperation(EXIT_ON_CLOSE); // X-re kattintva vége a programnak
@@ -101,13 +112,29 @@ public abstract class AbstractConnectionProgressFrame extends JFrame {
         setIconTextPanel(0); // az első panel lesz látható csak
         
         c.gridy = 1; // következő sorba mennek a gombok
-        JPanel pButtons = new OkCancelPanel(btAgain, btSettings, btExit, 5);
+        JPanel pButtons = new OkCancelPanel(this, btAgain, btSettings, btExit, 5);
         pButtons.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5)); // felső margó kivételével mind 5 pixel
         add(pButtons, c);
         
         pack(); // ablak méretének minimalizálása
         setLocationRelativeTo(this); // középre igazítás
         btAgain.requestFocus(); // alapértelmezett opció az Újra gomb
+    }
+    
+    /**
+     * Megadja, hogy a gombok szövegének módosulása után legyen-e ablak újraméretezés.
+     */
+    @Override
+    public boolean needRepack() {
+        return true;
+    }
+    
+    /**
+     * Megadja, hogy a gombok szövegének módosulása után legyen-e ablak újrapozícionálás.
+     */
+    @Override
+    public boolean needReloc() {
+        return false;
     }
     
     /**
@@ -118,6 +145,27 @@ public abstract class AbstractConnectionProgressFrame extends JFrame {
         for (int i = 0; i < PANELS.length; i++) {
             PANELS[i].setVisible(i == index);
         }
+    }
+    
+    /**
+     * Újra próbálkozás szöveg beállítása a gombon.
+     */
+    public void setTryAgainText(String text) {
+        btAgain.setText(text);
+    }
+    
+    /**
+     * Kapcsolatbeállítások szöveg beállítása a gombon.
+     */
+    public void setConnectionSettingsText(String text) {
+        btSettings.setText(text);
+    }
+    
+    /**
+     * Kilépés szöveg beállítása a gombon.
+     */
+    public void setExitText(String text) {
+        btExit.setText(text);
     }
     
     /**

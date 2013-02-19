@@ -2,6 +2,7 @@ package org.dyndns.fzoli.rccar.controller.view;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
+import static org.dyndns.fzoli.rccar.controller.Main.getString;
 import static org.dyndns.fzoli.rccar.controller.Main.runClient;
 import static org.dyndns.fzoli.rccar.controller.Main.showSettingDialog;
 import org.dyndns.fzoli.rccar.controller.resource.R;
@@ -30,37 +31,69 @@ public class ConnectionProgressFrame extends AbstractConnectionProgressFrame imp
      * A kapcsolatok állapotai.
      */
     public static enum Status {
-        CONNECTING,
+        CONNECTING(R.getIndicatorIcon()),
         CONNECTION_ERROR,
-        DISCONNECTED,
-        REFUSED,
+        DISCONNECTED(R.getWarningIcon()),
+        CONNECTION_REFUSED(R.getWarningIcon()),
         UNKNOWN_HOST,
         CONNECTION_TIMEOUT,
         HANDSHAKE_ERROR,
         KEYSTORE_ERROR,
-        SERVER_IS_NOT_CLIENT
+        SERVER_IS_NOT_CLIENT;
+
+        /**
+         * Konstruktor.
+         * Az alapértelmezett ikon a hibát jelző ikon.
+         */
+        private Status() {
+            this(R.getErrorIcon());
+        }
+
+        /**
+         * Konstruktor.
+         * @param icon az állapothoz tartozó ikon
+         */
+        private Status(Icon icon) {
+            ICON = icon;
+        }
+
+        /**
+         * Az állapothoz tartozó ikon,
+         * ami a kaocsolódáskezelő ablakon jelenik meg.
+         */
+        private final Icon ICON;
+        
+        /**
+         * A szótár alapján adja meg a szöveget.
+         */
+        public String text() {
+            return getString(name().toLowerCase());
+        }
+        
+        /**
+         * Legyártja a kapcsolódáskezelő ablakhoz a paneleket.
+         */
+        private static IconTextPanel[] createPanels() {
+            Status[] values = Status.values();
+            IconTextPanel[] panels = new IconTextPanel[values.length];
+            for (int i = 0; i < panels.length; i++) {
+                panels[i] = new ConnProgPanel(values[i].ICON, values[i].text());
+            }
+            return panels;
+        }
+        
     };
     
     /**
      * Az ablakon ezek a panelek jelenhetnek meg.
      */
-    private static final IconTextPanel[] PANELS = {
-        new ConnProgPanel(R.getIndicatorIcon(), "Kapcsolódás folyamatban..."),
-        new ConnProgPanel(R.getErrorIcon(), "Nem sikerült kapcsolódni a szerverhez!"),
-        new ConnProgPanel(R.getWarningIcon(), "Megszakadt a kapcsolat a szerverrel!"),
-        new ConnProgPanel(R.getWarningIcon(), "A szerver elutasította a kérést!"),
-        new ConnProgPanel(R.getErrorIcon(), "A szerver címe nem érhető el!"),
-        new ConnProgPanel(R.getErrorIcon(), "Időtúllépés a kapcsolódás közben!"),
-        new ConnProgPanel(R.getErrorIcon(), "Az SSL kapcsolat létrehozása nem sikerült!"),
-        new ConnProgPanel(R.getErrorIcon(), "A tanúsítványok beállítása nem megfelelő!"),
-        new ConnProgPanel(R.getErrorIcon(), "A szerver kliensekhez való tanúsítványt használ!")
-    };
+    private static final IconTextPanel[] PANELS = Status.createPanels();
     
     /**
      * Beállítja a kis autó ikont és az indikátor animációt.
      */
     public ConnectionProgressFrame() {
-        super(PANELS);
+        super(getString("connection_handler"), getString("reconnect"), getString("connection_settings"), getString("exit"), PANELS);
         setIconImage(R.getIconImage());
     }
 
@@ -70,7 +103,14 @@ public class ConnectionProgressFrame extends AbstractConnectionProgressFrame imp
      */
     @Override
     public void relocalize() {
-        // TODO
+        setTitle(getString("connection_handler"));
+        setExitText(getString("exit"));
+        setTryAgainText(getString("reconnect"));
+        setConnectionSettingsText(getString("connection_settings"));
+        Status[] sa = Status.values();
+        for (int i = 0; i < PANELS.length; i++) {
+            PANELS[i].setText(sa[i].text());
+        }
     }
     
     /**

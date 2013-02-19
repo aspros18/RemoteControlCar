@@ -128,10 +128,17 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
      */
     private final JLabel LB_MSG = new JLabel("", SwingConstants.CENTER) {
 
+        /**
+         * A szöveg módosulása esetén az üzenetmegjelenítő panelt középre igazítja.
+         */
         @Override
-        public Dimension getPreferredSize() {
-            Dimension d = super.getPreferredSize();
-            return new Dimension(d.width + 210, d.height);
+        public void setText(String text) {
+            super.setText(text);
+            if (PANEL_MSG != null && lbImage != null) {
+                Dimension size = lbImage.getPreferredSize();
+                Dimension size2 = PANEL_MSG.getPreferredSize();
+                PANEL_MSG.setBounds(size.width / 2 - size2.width / 2, size.height / 2 - size2.height / 2, size2.width, size2.height);
+            }
         }
         
     };
@@ -177,7 +184,8 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
         @Override
         public Dimension getPreferredSize() {
             Dimension d = super.getPreferredSize();
-            return new Dimension(d.width, d.height + 20);
+            // minimum 150 pixel széles; szélességében 10, hosszúságában 20 pixel többlet
+            return new Dimension(Math.max(150, d.width + 10), d.height + 20);
         }
         
     };

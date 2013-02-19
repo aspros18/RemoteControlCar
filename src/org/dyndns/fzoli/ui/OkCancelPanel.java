@@ -27,13 +27,15 @@ public class OkCancelPanel extends JPanel {
         
         /**
          * Megadja, hogy a gombok szövegének módosulása után legyen-e ablak újraméretezés.
+         * @param r az átméretezés előtti "bounds"
          */
         public boolean needRepack(Rectangle r);
 
         /**
          * Megadja, hogy a gombok szövegének módosulása után legyen-e ablak újrapozícionálás.
+         * @param r az átméretezés előtti "bounds"
          */
-        public boolean needReloc();
+        public boolean needReloc(Rectangle r);
         
         /**
          * Már létező {@link Window} metódus.
@@ -138,8 +140,7 @@ public class OkCancelPanel extends JPanel {
     private void resizeButtons(boolean setWin) {
         JButton[] buttons = createButtonArray();
         
-        Rectangle r = null; // az átméretezés előtti ablakméret és pozíció
-        if (OWNER != null) r = OWNER.getBounds();
+        final Rectangle r = OWNER == null ? null : OWNER.getBounds(); // az átméretezés előtti ablakméret és pozíció
         
         // az esetleg előzőleg beállított méret törlése
         for (JButton bt : buttons) {
@@ -164,7 +165,7 @@ public class OkCancelPanel extends JPanel {
         OkCancelWindow owner = getOwner();
         if (setWin && owner != null) { // ha van kompatibilis ablak megadva és be kell állítani
             if (owner.needRepack(r)) owner.pack(); // átméretezi, ha kéri azt
-            if (owner.needReloc()) owner.setLocationRelativeTo(null); // középre helyezi, ha kéri azt
+            if (owner.needReloc(r)) owner.setLocationRelativeTo(null); // középre helyezi, ha kéri azt
         }
     }
     

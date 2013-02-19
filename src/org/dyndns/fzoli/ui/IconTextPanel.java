@@ -75,6 +75,7 @@ public class IconTextPanel extends JPanel {
      */
     public void setText(String text) {
         lbText.setText(text);
+        IconTextPanel.resizeComponents(parent);
     }
     
     /**
@@ -84,6 +85,11 @@ public class IconTextPanel extends JPanel {
      * @param parent csak azok lesznek átmeretezve, melyek szülője megegyezik a paraméterrel
      */
     public static void resizeComponents(Component parent) {
+        for (IconTextPanel panel : panels) {
+            if (!isParent(parent, panel)) continue;
+            panel.lbIcon.setPreferredSize(null);
+            panel.lbText.setPreferredSize(null);
+        }
         Dimension iconSize = new Dimension(1, 1);
         Dimension panelSize = new Dimension(1, 1);
         for (IconTextPanel panel : panels) {

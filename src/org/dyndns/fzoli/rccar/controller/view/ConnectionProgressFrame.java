@@ -140,7 +140,7 @@ public class ConnectionProgressFrame extends AbstractConnectionProgressFrame imp
      */
     @Override
     protected void onSettings() {
-        showSettingDialog(false, null);
+        showSettingDialog(false, 0);
     }
     
 }

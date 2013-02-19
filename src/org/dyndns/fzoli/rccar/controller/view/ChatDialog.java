@@ -294,7 +294,8 @@ public class ChatDialog extends AbstractDialog {
             panel.add(LB_CONTROLLERS, BorderLayout.NORTH);
             panel.add(LIST_CONTROLLERS, BorderLayout.CENTER);
             
-            setMinimumSize(new Dimension(LB_CONTROLLERS.getPreferredSize().width + 14 + pane.getVerticalScrollBar().getPreferredSize().width, 0));
+            // a minimum size beállítása nem a legszerencsésebb, mivel most már többnyelvű a program és jobb, ha a hosszú "Vezérlők" szöveg vége kipontozódik
+            // setMinimumSize(new Dimension(LB_CONTROLLERS.getPreferredSize().width + 14 + pane.getVerticalScrollBar().getPreferredSize().width, 0));
             setPreferredSize(new Dimension(150 - DIVIDER_SIZE - 2 * MARGIN, 200 - 2 * MARGIN));
         }
     };

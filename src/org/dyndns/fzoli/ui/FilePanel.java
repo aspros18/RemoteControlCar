@@ -103,6 +103,11 @@ public class FilePanel extends JPanel {
     private final Component PARENT;
 
     /**
+     * A szöveget megjelenítő címke.
+     */
+    private final JLabel LB_TEXT;
+    
+    /**
      * Tallózás gomb.
      * Megjeleníti a fájlkeresőt.
      */
@@ -146,7 +151,8 @@ public class FilePanel extends JPanel {
         c.gridx = 0;
         c.gridy = 0;
         c.weightx = 2;
-        add(new JLabel("<html>" + text + ":</html>"), c);
+        LB_TEXT = new JLabel("<html>" + text + ":</html>");
+        add(LB_TEXT, c);
         c.weightx = 1;
         c.gridy = 1;
         add(tfFile, c);
@@ -155,6 +161,13 @@ public class FilePanel extends JPanel {
         tfFile.setEditable(false);
         tfFile.setFocusable(false);
         btSearch.addActionListener(alSearch);
+    }
+    
+    /**
+     * A szöveget cseréli le.
+     */
+    public void setText(String text) {
+        LB_TEXT.setText("<html>" + text + ":</html>");
     }
     
     /**

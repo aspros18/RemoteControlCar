@@ -190,7 +190,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     /**
      * A kiállító fájl tallózó panele.
      */
-    private final FilePanel fpCa = new ConfigFilePanel(this, "Kiállító") {
+    private final FilePanel fpCa = new ConfigFilePanel(this, getString("certifier")) {
         {
             setFileFilter(fnefCrt);
         }
@@ -471,6 +471,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
         btCancel.setText(getString(force ? "exit" : "cancel"));
         btHelp.setText(getString("help"));
         btPasswordReset.setText(getString("delete"));
+        fpCa.setText(getString("certifier"));
     }
     
     /**

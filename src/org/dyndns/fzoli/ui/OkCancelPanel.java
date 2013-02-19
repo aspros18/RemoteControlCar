@@ -1,6 +1,5 @@
 package org.dyndns.fzoli.ui;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
@@ -34,20 +33,15 @@ public class OkCancelPanel extends JPanel {
         public boolean needRepack(Rectangle r);
 
         /**
+         * Megadja, hogy az átméretezkor a magasság maradjon-e a régi.
+         */
+        public boolean keepHeight();
+        
+        /**
          * Megadja, hogy a gombok szövegének módosulása után legyen-e ablak újrapozícionálás.
          * @param r az átméretezés előtti "bounds"
          */
         public boolean needReloc(Rectangle r);
-        
-        /**
-         * Már létező {@link Window} metódus.
-         */
-        public void pack();
-        
-        /**
-         * Már létező {@link Window} metódus.
-         */
-        public void setLocationRelativeTo(Component c);
         
     }
     
@@ -166,8 +160,14 @@ public class OkCancelPanel extends JPanel {
         
         OkCancelWindow owner = getOwner();
         if (setWin && owner != null) { // ha van kompatibilis ablak megadva és be kell állítani
-            if (owner.needRepack(r)) owner.pack(); // átméretezi, ha kéri azt
-            if (owner.needReloc(r)) owner.setLocationRelativeTo(null); // középre helyezi, ha kéri azt
+            if (owner.needRepack(r)) { // átméretezi, ha kéri azt
+                int h = OWNER.getHeight();
+                OWNER.pack(); 
+                if (owner.keepHeight()) OWNER.setSize(OWNER.getWidth(), h);
+            }
+            if (owner.needReloc(r)) {
+                OWNER.setLocationRelativeTo(null); // középre helyezi, ha kéri azt
+            }
         }
     }
     

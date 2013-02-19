@@ -131,6 +131,14 @@ public abstract class AbstractConnectionProgressFrame extends JFrame implements 
     }
     
     /**
+     * Megadja, hogy az átméretezkor a magasság maradjon-e a régi.
+     */
+    @Override
+    public boolean keepHeight() {
+        return false;
+    }
+    
+    /**
      * Megadja, hogy a gombok szövegének módosulása után legyen-e ablak újrapozícionálás.
      * @return Ha 15 pixel pontossággal a képernyő közepén van az ablak, akkor true, egyébként false.
      */

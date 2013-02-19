@@ -152,10 +152,9 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     /**
      * Jelszótörlő gomb.
      */
-    private final JButton btPasswordReset = new JButton("Törlés") {
+    private final JButton btPasswordReset = new JButton(getString("delete")) {
+        
         {
-            // a szükséges helynél 30 pixellel szélesebb méret beállítása
-            setPreferredSize(new Dimension(getPreferredSize().width + 30, getPreferredSize().height));
             // kattintáskor a jelszó törlése a konfigurációból és a gomb letiltása
             addActionListener(new ActionListener() {
 
@@ -168,6 +167,14 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
                 
             });
         }
+
+        @Override
+        public Dimension getPreferredSize() {
+            // a szükséges helynél 30 pixellel szélesebb méret
+            Dimension d = super.getPreferredSize();
+            return new Dimension(d.width + 30, d.height);
+        }
+        
     };
     
     /**
@@ -463,6 +470,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
         btOk.setText(getString("ok"));
         btCancel.setText(getString(force ? "exit" : "cancel"));
         btHelp.setText(getString("help"));
+        btPasswordReset.setText(getString("delete"));
     }
     
     /**

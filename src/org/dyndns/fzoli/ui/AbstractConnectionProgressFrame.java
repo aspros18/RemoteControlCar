@@ -124,6 +124,7 @@ public abstract class AbstractConnectionProgressFrame extends JFrame implements 
     
     /**
      * Megadja, hogy a gombok szövegének módosulása után legyen-e ablak újraméretezés.
+     * @return true
      */
     @Override
     public boolean needRepack(Rectangle r) {
@@ -131,16 +132,17 @@ public abstract class AbstractConnectionProgressFrame extends JFrame implements 
     }
     
     /**
-     * Megadja, hogy az átméretezkor a magasság maradjon-e a régi.
+     * Megadja, hogy az átméretezés után a magasság legyen-e újra a régi.
+     * @return false
      */
     @Override
-    public boolean keepHeight() {
+    public boolean restoreHeight(Rectangle r) {
         return false;
     }
     
     /**
-     * Megadja, hogy a gombok szövegének módosulása után legyen-e ablak újrapozícionálás.
-     * @return Ha 15 pixel pontossággal a képernyő közepén van az ablak, akkor true, egyébként false.
+     * Megadja, hogy az átméretezés után legyen-e ablak újrapozícionálás.
+     * @return ha 15 pixel pontossággal a képernyő közepén van az ablak, akkor true, egyébként false
      */
     @Override
     public boolean needReloc(Rectangle r) {

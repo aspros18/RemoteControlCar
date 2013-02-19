@@ -6,6 +6,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -30,6 +31,7 @@ import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.dyndns.fzoli.rccar.controller.Config;
 import org.dyndns.fzoli.rccar.controller.Main;
+import static org.dyndns.fzoli.rccar.controller.Main.getString;
 import static org.dyndns.fzoli.rccar.controller.Main.runClient;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.controller.view.RelocalizableWindow;
@@ -43,7 +45,7 @@ import org.dyndns.fzoli.ui.RegexPatternFormatter;
  * A vezérlő konfigurációját beállító dialógusablak.
  * @author zoli
  */
-public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow {
+public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow, OkCancelPanel.OkCancelWindow {
     
     /**
      * A dialógusablak lapfüleinek tartalma ebbe a panelbe kerül bele.
@@ -222,7 +224,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
      * Erre a gombra kattintva a konfiguráció elmentődik és bezárul az ablak.
      * De csak akkor, ha érvényesek a beállítások.
      */
-    private final JButton btOk = new JButton("OK") {
+    private final JButton btOk = new JButton(getString("ok")) {
         {
             addActionListener(new ActionListener() {
 
@@ -238,7 +240,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     /**
      * Erre a gombra kattintva bezárul az ablak, a konfiguráció nem változik.
      */
-    private final JButton btCancel = new JButton("Mégse") {
+    private final JButton btCancel = new JButton(getString("cancel")) {
         {
             addActionListener(new ActionListener() {
 
@@ -254,7 +256,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     /**
      * Erre a gombra kattintva előjön a súgó.
      */
-    private final JButton btHelp = new JButton("Súgó") {
+    private final JButton btHelp = new JButton(getString("help")) {
         {
             addActionListener(new ActionListener() {
 
@@ -458,6 +460,9 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     @Override
     public void relocalize() {
         // TODO
+        btOk.setText(getString("ok"));
+        btCancel.setText(getString(force ? "exit" : "cancel"));
+        btHelp.setText(getString("help"));
     }
     
     /**
@@ -472,7 +477,10 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
      * @param force true esetén kényszerített
      */
     public void setForce(boolean force) {
-        this.force = force;
+        if (force != force) {
+            this.force = force;
+            btCancel.setText(getString(force ? "exit" : "cancel"));
+        }
     }
     
     /**
@@ -597,6 +605,33 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
         if (b && !isVisible()) loadConfig();
         if (b) toFront();
         super.setVisible(b);
+    }
+
+    /**
+     * Megadja, hogy a gombok szövegének módosulása után legyen-e ablak újraméretezés.
+     * @return ha a régi szélesség nem elég az új szövegeknek, akkor true, egyébként false
+     */
+    @Override
+    public boolean needRepack(Rectangle r) {
+        return getPreferredSize().width > r.width;
+    }
+    
+    /**
+     * Megadja, hogy az átméretezés után a magasság legyen-e újra a régi.
+     * @return ha a régi magasság nagyobb az új magasságnál, akkor true, egyébként false
+     */
+    @Override
+    public boolean restoreHeight(Rectangle r) {
+        return r.height > getPreferredSize().height;
+    }
+    
+    /**
+     * Megadja, hogy az átméretezés után legyen-e ablak újrapozícionálás.
+     * @return ha 15 pixel pontossággal a képernyő közepén van a téglalap, akkor true, egyébként false
+     */
+    @Override
+    public boolean needReloc(Rectangle r) {
+        return OkCancelPanel.isNearCenter(r);
     }
     
     /**

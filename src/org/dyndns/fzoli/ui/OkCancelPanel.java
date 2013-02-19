@@ -28,18 +28,19 @@ public class OkCancelPanel extends JPanel {
         
         /**
          * Megadja, hogy a gombok szövegének módosulása után legyen-e ablak újraméretezés.
-         * @param r az átméretezés előtti "bounds"
+         * @param r a szövegmódosulás előtti "bounds"
          */
         public boolean needRepack(Rectangle r);
 
         /**
-         * Megadja, hogy az átméretezkor a magasság maradjon-e a régi.
+         * Megadja, hogy az átméretezés után a magasság legyen-e újra a régi.
+         * @param r a szövegmódosulás előtti "bounds"
          */
-        public boolean keepHeight();
+        public boolean restoreHeight(Rectangle r);
         
         /**
-         * Megadja, hogy a gombok szövegének módosulása után legyen-e ablak újrapozícionálás.
-         * @param r az átméretezés előtti "bounds"
+         * Megadja, hogy az átméretezés után legyen-e ablak újrapozícionálás.
+         * @param r a szövegmódosulás előtti "bounds"
          */
         public boolean needReloc(Rectangle r);
         
@@ -163,10 +164,12 @@ public class OkCancelPanel extends JPanel {
             if (owner.needRepack(r)) { // átméretezi, ha kéri azt
                 int h = OWNER.getHeight();
                 OWNER.pack(); 
-                if (owner.keepHeight()) OWNER.setSize(OWNER.getWidth(), h);
-            }
-            if (owner.needReloc(r)) {
-                OWNER.setLocationRelativeTo(null); // középre helyezi, ha kéri azt
+                if (owner.restoreHeight(r)) {
+                    OWNER.setSize(OWNER.getWidth(), h);
+                }
+                if (owner.needReloc(r)) {
+                    OWNER.setLocationRelativeTo(null); // középre helyezi, ha kéri azt
+                }
             }
         }
     }
@@ -193,7 +196,7 @@ public class OkCancelPanel extends JPanel {
     /**
      * Megadja, hogy a képernyő közepén van-e a téglalap.
      * @param r a téglalap
-     * @return Ha 15 pixel pontossággal a képernyő közepén van a téglalap, akkor true, egyébként false.
+     * @return ha 15 pixel pontossággal a képernyő közepén van a téglalap, akkor true, egyébként false
      */
     public static boolean isNearCenter(Rectangle r) {
         Point p = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();

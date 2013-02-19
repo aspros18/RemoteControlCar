@@ -1,9 +1,7 @@
 package org.dyndns.fzoli.ui;
 
-import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -138,12 +136,7 @@ public abstract class AbstractConnectionProgressFrame extends JFrame implements 
      */
     @Override
     public boolean needReloc(Rectangle r) {
-        Point p = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
-        int x = p.x - r.width / 2;
-        int y = p.y - r.height / 2;
-        boolean bX = Math.abs(x - r.x) <= 15;
-        boolean bY = Math.abs(y - r.y) <= 15;
-        return bX && bY;
+        return OkCancelPanel.isNearCenter(r);
     }
     
     /**

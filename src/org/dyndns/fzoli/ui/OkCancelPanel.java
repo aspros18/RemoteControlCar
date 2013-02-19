@@ -3,9 +3,11 @@ package org.dyndns.fzoli.ui;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Window;
 import java.beans.PropertyChangeEvent;
@@ -186,6 +188,20 @@ public class OkCancelPanel extends JPanel {
         buttons[1] = BT_CANCEL;
         if (BT_HELP != null) buttons[2] = BT_HELP;
         return buttons;
+    }
+    
+    /**
+     * Megadja, hogy a képernyő közepén van-e a téglalap.
+     * @param r a téglalap
+     * @return Ha 15 pixel pontossággal a képernyő közepén van a téglalap, akkor true, egyébként false.
+     */
+    public static boolean isNearCenter(Rectangle r) {
+        Point p = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
+        int x = p.x - r.width / 2;
+        int y = p.y - r.height / 2;
+        boolean bX = Math.abs(x - r.x) <= 15;
+        boolean bY = Math.abs(y - r.y) <= 15;
+        return bX && bY;
     }
     
 }

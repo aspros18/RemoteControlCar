@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -22,11 +23,16 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.awt.image.BufferedImage;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
+import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import org.dyndns.fzoli.rccar.controller.ControllerModels.ClientControllerData;
 import static org.dyndns.fzoli.rccar.controller.ControllerModels.getData;
@@ -42,8 +48,11 @@ import org.dyndns.fzoli.ui.RepeatingReleasedEventsFixer;
  */
 abstract class ArrowComponent extends BufferedImage {
 
-    public ArrowComponent(int size) {
+    protected final ArrowPanel panel;
+    
+    public ArrowComponent(ArrowPanel panel, int size) {
         super(size, size, TYPE_INT_ARGB);
+        this.panel = panel;
         paint();
     }
     
@@ -96,8 +105,8 @@ abstract class ArrowComponent extends BufferedImage {
  */
 class Arrow extends ArrowComponent {
 
-    public Arrow(int size) {
-        super(size);
+    public Arrow(ArrowPanel panel, int size) {
+        super(panel, size);
     }
     
     @Override
@@ -127,8 +136,8 @@ class ArrowLimit extends ArrowComponent {
     private Integer maxY = null;
     private boolean fullX = false, fullY = false;
     
-    public ArrowLimit(int size) {
-        super(size);
+    public ArrowLimit(ArrowPanel panel, int size) {
+        super(panel, size);
     }
 
     @Override
@@ -196,8 +205,8 @@ class ArrowLine extends ArrowComponent {
     
     private int x = 0, y = 0;
     
-    public ArrowLine(int size) {
-        super(size);
+    public ArrowLine(ArrowPanel panel, int size) {
+        super(panel, size);
     }
 
     private void fill(Graphics2D g, Rectangle r) {
@@ -214,6 +223,7 @@ class ArrowLine extends ArrowComponent {
         fill(g, getRectangleX());
         fill(g, getRectangleY());
         g.dispose();
+        panel.setXYText();
     }
     
     public int getPercentX() {
@@ -513,25 +523,44 @@ abstract class ArrowPanel extends JPanel {
         
     };
     
+    private DateFormat df = new SimpleDateFormat("HH:mm:ss");
+    private JLabel lbXY = new JLabel("", SwingConstants.CENTER);
+    private JLabel lbDate = new JLabel("", SwingConstants.CENTER);
+    
     public ArrowPanel(int size) {
         super(new GridBagLayout());
         setBackground(Color.WHITE);
         setFocusable(true);
 
+        df.setTimeZone(TimeZone.getTimeZone("GMT"));
+        
         JLayeredPane pane = new JLayeredPane();
         pane.setPreferredSize(new Dimension(size, size));
         pane.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
         
-        JLabel lbBg = new JLabel(new ImageIcon(new Arrow(size)));
-        pane.add(lbBg, JLayeredPane.DRAG_LAYER);
+        JPanel pTexts = new JPanel() {
+            {
+                setLayout(new GridLayout(2, 2));
+                setOpaque(false);
+                add(lbXY);
+                add(lbDate);
+                add(new JLabel());
+                add(new JLabel());
+            }
+        };
+        pane.add(pTexts, JLayeredPane.POPUP_LAYER);
+        pTexts.setBounds(0, 0, size, size);
+        
+        JLabel lbBg = new JLabel(new ImageIcon(new Arrow(this, size)));
+        pane.add(lbBg, JLayeredPane.MODAL_LAYER);
         lbBg.setBounds(0, 0, size, size);
         
-        aLim = new ArrowLimit(size);
+        aLim = new ArrowLimit(this, size);
         JLabel lbLm = new JLabel(new ImageIcon(aLim));
-        pane.add(lbLm, JLayeredPane.POPUP_LAYER);
+        pane.add(lbLm, JLayeredPane.PALETTE_LAYER);
         lbLm.setBounds(0, 0, size, size);
         
-        aLin = new ArrowLine(size);
+        aLin = new ArrowLine(this, size);
         JLabel lbLn = new JLabel(new ImageIcon(aLin));
         pane.add(lbLn, JLayeredPane.DEFAULT_LAYER);
         lbLn.setBounds(0, 0, size, size);
@@ -542,7 +571,17 @@ abstract class ArrowPanel extends JPanel {
         pane.addMouseListener(LISTENER_MOUSE);
         addKeyListener(LISTENER_KEY);
     }
-
+    
+    void setXYText() {
+        if (lbDate.getText().isEmpty()) lbXY.setText("");
+        else lbXY.setText(getPercentX() + " ; " + getPercentY());
+    }
+    
+    public void setTimeout(Long timeout) {
+        lbDate.setText(timeout == null ? "" : df.format(new Date(timeout)));
+        setXYText();
+    }
+    
     public void setFullX(boolean b) {
         aLim.setFullX(b);
     }
@@ -791,8 +830,8 @@ public class ArrowDialog extends AbstractDialog {
     /**
      * Frissíti az időtúllépés számlálót.
      */
-    public void refreshTimeout() { // TODO
-        System.out.println("timeout: " + getData().getTimeout());
+    public void refreshTimeout() {
+        ARROW_PANEL.setTimeout(getData().getTimeout());
     }
     
     /**

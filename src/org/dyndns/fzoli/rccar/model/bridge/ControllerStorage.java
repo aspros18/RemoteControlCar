@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import org.dyndns.fzoli.rccar.bridge.ConnectionAlert;
-import org.dyndns.fzoli.rccar.bridge.Main;
 import org.dyndns.fzoli.rccar.bridge.config.Permissions;
 import org.dyndns.fzoli.rccar.model.Control;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
@@ -26,11 +25,6 @@ import org.dyndns.fzoli.ui.systemtray.TrayIcon;
  * @author zoli
  */
 public class ControllerStorage extends Storage<ControllerData> {
-
-    /**
-     * Az időtúllépés értéke ezredmásodpercben.
-     */
-    private final long TIMEOUT = Main.CONFIG.getTimeout() * 60 * 1000;
     
     /**
      * Időzítő az időtúllépés-detektálóhoz és annak újraindítójához.
@@ -50,11 +44,6 @@ public class ControllerStorage extends Storage<ControllerData> {
      * hogy ne legyen túl terhelő a szerver számára az új időzítő létrehozása és régi megölése.
      */
     private TimerTask taskRestart;
-    
-    /**
-     * A maradék idő a vezérlési időből.
-     */
-    private long timeoutLeft = TIMEOUT;
     
     /**
      * Üzenetküldő a vezérlő oldal irányába.
@@ -386,9 +375,9 @@ public class ControllerStorage extends Storage<ControllerData> {
             }
             
         };
-        if (timeoutLeft <= 0) timeoutLeft = TIMEOUT; // ha letelt az idő, akkor újra teljes időről indul
-        TIMER_CONTROL.schedule(taskControl, timeoutLeft); // időtúllépés-detektáló aktiválása megmaradt időtúllépést használva késleltetésnek
-        broadcastMessage(new ControllerData.TimeoutPartialControllerData(timeoutLeft), null, false); // üzenet küldése a vezérlőknek az új időtúllépésről
+        if (getHostStorage().getTimeout() <= 0) getHostStorage().resetTimeout(); // ha letelt az idő, akkor újra teljes időről indul
+        TIMER_CONTROL.schedule(taskControl, getHostStorage().getTimeout()); // időtúllépés-detektáló aktiválása megmaradt időtúllépést használva késleltetésnek
+        broadcastMessage(new ControllerData.TimeoutPartialControllerData(getHostStorage().getTimeout()), null, false); // üzenet küldése a vezérlőknek az új időtúllépésről
         if (taskRestart != null) return;
         taskRestart = new TimerTask() {
 
@@ -406,7 +395,7 @@ public class ControllerStorage extends Storage<ControllerData> {
                         startControlTask();
                     }
                     else {
-                        timeoutLeft -= 1000; // a maradék idő 1 másodperccel kevesebb lett
+                        getHostStorage().decTimeout(1000); // a maradék idő 1 másodperccel kevesebb lett
                     }
                 }
             }
@@ -431,7 +420,7 @@ public class ControllerStorage extends Storage<ControllerData> {
     private void stopControlTask(boolean stopReseter, boolean reset) {
         if (stopReseter) stopRestarter();
         if (taskControl == null) return;
-        if (reset) timeoutLeft = TIMEOUT;
+        if (reset && getHostStorage() != null) getHostStorage().resetTimeout();
         taskControl.cancel();
         taskControl = null;
         TIMER_CONTROL.purge();
@@ -470,6 +459,7 @@ public class ControllerStorage extends Storage<ControllerData> {
         d.setFullX(s.getHostData().isFullX());
         d.setFullY(s.getHostData().isFullY());
         d.setUp2Date(s.getHostData().isUp2Date());
+        d.setTimeout(s.getOwner() == null ? null : s.getTimeout());
         return d;
     }
     

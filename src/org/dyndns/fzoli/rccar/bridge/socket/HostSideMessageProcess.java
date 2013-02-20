@@ -33,8 +33,8 @@ public class HostSideMessageProcess extends BridgeMessageProcess {
     }
 
     /**
-     * Kapcsolódás után a szerver 10 másodpercet ad a kliensnek, hogy legenerálja a kezdeti adatokat és átküldje azt.
-     * Ha időn belül nem végez, bontja a klienssel az összes kapcsolatot.
+     * Kapcsolódás után a szerver 1 percet ad a kliensnek, hogy legenerálja a kezdeti adatokat és átküldje azt.
+     * Ha időn belül nem érkezik adat, a szerver bontja a klienssel az összes kapcsolatot.
      */
     @Override
     protected void onStart() {
@@ -43,7 +43,7 @@ public class HostSideMessageProcess extends BridgeMessageProcess {
 
             @Override
             public void run() {
-                sleep(10000);
+                sleep(60000);
                 if (storage == null) {
                     getHandler().closeProcesses();
                 }

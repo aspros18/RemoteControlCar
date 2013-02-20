@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.dyndns.fzoli.rccar.bridge.Main;
 import org.dyndns.fzoli.rccar.bridge.socket.ControllerSideDisconnectProcess;
 import org.dyndns.fzoli.rccar.model.Control;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
@@ -33,6 +34,16 @@ import org.dyndns.fzoli.socket.process.impl.MessageProcess;
  * @author zoli
  */
 public class HostStorage extends Storage<HostData> {
+    
+    /**
+     * Az időtúllépés értéke ezredmásodpercben.
+     */
+    private static final long TIMEOUT = Main.CONFIG.getTimeout() * 60 * 1000;
+    
+    /**
+     * A maradék idő a vezérlési időből.
+     */
+    private long timeoutLeft = TIMEOUT;
     
     /**
      * A jármű adatai.
@@ -289,6 +300,27 @@ public class HostStorage extends Storage<HostData> {
      */
     void resetControlCount() {
         this.controlCount = 0;
+    }
+    
+    /**
+     * A jármű vezérlési idejéből megmaradt időt adja meg.
+     */
+    long getTimeout() {
+        return timeoutLeft;
+    }
+    
+    /**
+     * A jármű vezérlési idejéből megmaradt idő csökkentése.
+     */
+    void decTimeout(int dec) {
+        if (timeoutLeft > 0) timeoutLeft -= dec;
+    }
+    
+    /**
+     * A jármű vezérlési idejét állítja helyre.
+     */
+    void resetTimeout() {
+        timeoutLeft = TIMEOUT;
     }
     
     /**

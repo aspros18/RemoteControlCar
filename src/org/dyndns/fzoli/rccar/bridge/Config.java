@@ -113,13 +113,13 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
     /**
      * Megadja az időtúllépést.
      * Ha nincs megadva, az érték 5 perc.
-     * A megadott érték 1 és 60 között korlátolt.
+     * A megadott érték 1 és 120 között korlátolt.
      */
     public int getTimeout() {
         try {
             int val = Integer.parseInt(getValues().get(KEY_TIMEOUT));
             if (val < 1) val = 1;
-            if (val > 60) val = 60;
+            if (val > 120) val = 120;
             return val;
         }
         catch (Exception ex) {

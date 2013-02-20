@@ -338,8 +338,10 @@ public class HostMessageProcess extends MessageProcess {
 	protected void onStart() {
 		loaded = false;
 		sensorThread.start();
+		Date d = new Date();
 		while ((availableDirection && (getHostData().getGravitationalField() == null || getHostData().getMagneticField() == null)) || (getHostData().isVehicleConnected() != null && getHostData().isVehicleConnected() && getHostData().getBatteryLevel() == null)) {
 			sleep(100);
+			if (new Date().getTime() - d.getTime() > 1000) break; // ha valami oknál fogva 1 mp-en belül nem jött meg minden adat, akkor adatküldés
 		}
 		SERVICE.getBinder().sendHostData(this);
 		loaded = true;
@@ -362,6 +364,7 @@ public class HostMessageProcess extends MessageProcess {
 			sensorManager.unregisterListener(sensorEventListener);
 		}
 		getHostData().clear();
+		SERVICE.getVehicle().onReset();
 	}
 	
 	/**

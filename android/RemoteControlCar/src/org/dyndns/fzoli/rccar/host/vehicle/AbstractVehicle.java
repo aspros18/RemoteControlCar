@@ -134,6 +134,14 @@ public abstract class AbstractVehicle extends BaseIOIOLooper implements Vehicle 
 	}
 	
 	/**
+	 * Újrainicializálás esetén előző akku-szint nullázása.
+	 */
+	@Override
+	public void onReset() {
+		oldBatteryLevel = null;
+	}
+	
+	/**
 	 * Állapotváltozás jelzése a szolgáltatásnak.
 	 */
 	private void updateState(boolean connected) {

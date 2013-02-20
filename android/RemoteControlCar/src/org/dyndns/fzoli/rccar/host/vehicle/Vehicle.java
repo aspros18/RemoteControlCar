@@ -64,4 +64,9 @@ public interface Vehicle extends IOIOLooper {
 	 */
 	public float getMinVoltage();
 	
+	/**
+	 * Jelzés, hogy újrainicializálódtak az adatok.
+	 */
+	public void onReset();
+	
 }

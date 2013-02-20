@@ -98,11 +98,17 @@ public class HostStorage extends Storage<HostData> {
 
         /**
          * Beállítja, hogy kapcsolódva van-e a jármű és jelez a járműhöz tartozó vezérlő-klienseknek.
+         * Ha van járművezérlő, akkor elindítja/leállítja az időtúllépés figyelőt.
          */
         @Override
         public void setVehicleConnected(Boolean vehicleConnected) {
             getHostData().setVehicleConnected(vehicleConnected);
             broadcastMessage(new ControllerData.BoolenPartialControllerData(vehicleConnected, ControllerData.BoolenPartialControllerData.BooleanType.VEHICLE_CONNECTED));
+            ControllerStorage owner = getOwner();
+            if (owner != null) {
+                if (vehicleConnected) owner.startControlTask();
+                else owner.stopControlTask();
+            }
         }
 
         /**

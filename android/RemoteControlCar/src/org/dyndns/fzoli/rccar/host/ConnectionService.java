@@ -361,9 +361,12 @@ public class ConnectionService extends IOIOService {
 	 */
 	private void reconnectSchedule(boolean now) {
 		if (now) {
-			if (connTask != null) connTask.run();
-			else reconnect();
-			connTask = null;
+			if (connTask != null) {
+				connTask.cancel();
+				connTask = null;
+				CONN_TIMER.purge();
+			}
+			reconnect();
 		}
 		else if (connTask == null) {
 			connTask = new TimerTask() {
@@ -422,6 +425,7 @@ public class ConnectionService extends IOIOService {
 		if (connTask != null && stopReconnect) { // újrakapcsolódás időzítő inaktiválása
 			connTask.cancel();
 			connTask = null;
+			CONN_TIMER.purge();
 		}
 		if (conn != null) { // lekapcsolódás a hídról
 			conn.disconnect();

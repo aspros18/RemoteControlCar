@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import org.dyndns.fzoli.rccar.bridge.ConnectionAlert;
 import org.dyndns.fzoli.rccar.bridge.config.Permissions;
 import org.dyndns.fzoli.rccar.model.Control;
@@ -24,6 +26,25 @@ import org.dyndns.fzoli.ui.systemtray.TrayIcon;
  */
 public class ControllerStorage extends Storage<ControllerData> {
 
+    /**
+     * Időzítő az időtúllépés detektálóhoz és annak újraindítójához.
+     */
+    private final Timer TIMER_CONTROL = new Timer();
+    
+    /**
+     * Időtúllépés detektáló.
+     * Ha a vezérlő 5 percig nem ad ki vezérlő utasítást, időtúllépés történik és a
+     * szerver lemondatja őt a vezérlésről.
+     */
+    private TimerTask taskControl;
+    
+    /**
+     * Időtúllépés újraindító.
+     * Az időtúllépés újraindítás 1 másodperces egységekben történik,
+     * hogy ne legyen túl terhelő a szerver számára az új időzítő létrehozása és régi megölése.
+     */
+    private TimerTask taskRestart;
+    
     /**
      * Üzenetküldő a vezérlő oldal irányába.
      * A {@link HostStorage} adatainak módosulása esetén van rá szükség.
@@ -252,6 +273,7 @@ public class ControllerStorage extends Storage<ControllerData> {
             }
             
             if (oldOwner != null) { // jelzés leadása, hogy a régi irányító már nem irányíthat és mivel lekerült a listáról, ha újra vezérelni akar, kérnie kell
+                oldOwner.stopControlTask();
                 if (fire) { // ha van értelme üzenetet küldeni a változásról
                     oldOwner.getSender().setControlling(false); // mivel kikerül a vezérlők listájából, false küldése
                     oldOwner.getSender().setWantControl(false); // hogy újra kérhessen vezérlést, false küldése
@@ -259,6 +281,7 @@ public class ControllerStorage extends Storage<ControllerData> {
                 broadcastControllerState(new ControllerState(oldOwner.getName(), false, false), !fire); // jelzés mindenkinek, hogy a régi irányító már nem irányíthat
             }
             if (newOwner != null) { // jelzés leadása, hogy ki az új irányító, valamint jelzés az új irányítónak, hogy most ő vezérel
+                newOwner.startControlTask();
                 newOwner.getSender().setControlling(true); // true, mivel ő az irányító
                 newOwner.getSender().setWantControl(true); // true, hogy lemondhasson a vezérlésről
                 broadcastControllerState(new ControllerState(newOwner.getName(), true, true), !fire); // jelzés mindenkinek, hogy ki az új vezérlő
@@ -353,6 +376,80 @@ public class ControllerStorage extends Storage<ControllerData> {
         if (oldStorage != null) oldStorage.removeController(this);
         if (hostStorage != null) hostStorage.addController(this);
         this.hostStorage = hostStorage;
+    }
+    
+    /**
+     * Elindítja az időtúllépés detektálót és annak újraindítóját, ha még nem futnak.
+     * Ha a járművel nincs összeköttetés, akkor nem indulnak el, de
+     * amint létrejön az összeköttetés, a {@link HostStorage} meghívja ezt a metódust.
+     */
+    void startControlTask() {
+        if (taskControl != null || getHostStorage() == null || !getHostStorage().getHostData().isVehicleConnected()) return;
+        taskControl = new TimerTask() {
+
+            /**
+             * Ha időtúllépés történt, lemondatás a vezérlésről és időtúllépés újraindító leállítása.
+             */
+            @Override
+            public void run() {
+                stopRestarter();
+                getReceiver().setWantControl(false);
+            }
+            
+        };
+        TIMER_CONTROL.schedule(taskControl, 300000); // időtúllépés detektáló aktiválása 5 perc késleltetéssel
+        if (taskRestart != null) return;
+        taskRestart = new TimerTask() {
+
+            private Integer counter;
+            
+            @Override
+            public void run() {
+                if (counter == null) { // ha első alkalommal fut le, egyszerűen elkéri a vezérlőjel-számlálót
+                    if (getHostStorage() != null) counter = getHostStorage().getControlCount();
+                }
+                else if (getHostStorage() != null) { // ha már van viszonyítási alap és jármű is
+                    Control c = getHostStorage().getHostData().getControl(); // vezérlőjel elkérése
+                    // ha éppen vezérlés folyik, vagy vezérlés történt mivel a vezérlőjel-számláló eltér
+                    if (counter != getHostStorage().getControlCount() || c.getX() != 0 || c.getY() != 0) {
+                        counter = getHostStorage().getControlCount(); // számláló frissítése
+                        stopControlTask(false); // időtúllépés detektáló újraindítása
+                        startControlTask();
+                    }
+                }
+            }
+            
+        };
+        TIMER_CONTROL.schedule(taskRestart, 0, 1000); // az újraindító másodpercenként fut le mostantól
+    }
+    
+    /**
+     * Leállítja az időtúllépés detektálót és annak újraindítóját, ha azok futnak.
+     */
+    void stopControlTask() {
+        stopControlTask(true);
+    }
+    
+    /**
+     * Leállítja az időtúllépés detektálót, ha az fut.
+     * @param stopReseter az újraindítót is leállítja, ha true
+     */
+    private void stopControlTask(boolean stopReseter) {
+        if (stopReseter) stopRestarter();
+        if (taskControl == null) return;
+        taskControl.cancel();
+        taskControl = null;
+        TIMER_CONTROL.purge();
+    }
+    
+    /**
+     * Az időtúllépés detektáló újraindítóját állítja le, ha az fut.
+     */
+    private void stopRestarter() {
+        if (taskRestart == null) return;
+        taskRestart.cancel();
+        taskRestart = null;
+        TIMER_CONTROL.purge();
     }
     
     /**

@@ -6,6 +6,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Polygon;
@@ -524,10 +525,12 @@ abstract class ArrowPanel extends JPanel {
     };
     
     private DateFormat df = new SimpleDateFormat("HH:mm:ss");
-    private JLabel lbXY = new JLabel("", SwingConstants.CENTER);
-    private JLabel lbDate = new JLabel("", SwingConstants.CENTER);
+    private JLabel lbX = new JLabel("0", SwingConstants.RIGHT);
+    private JLabel lbY = new JLabel("0", SwingConstants.LEFT);
+    private JLabel lbSep = new JLabel(";", SwingConstants.CENTER);
+    private JLabel lbDate = new JLabel("00:00:00", SwingConstants.CENTER);
     
-    public ArrowPanel(int size) {
+    public ArrowPanel(final int size) {
         super(new GridBagLayout());
         setBackground(Color.WHITE);
         setFocusable(true);
@@ -542,7 +545,28 @@ abstract class ArrowPanel extends JPanel {
             {
                 setLayout(new GridLayout(2, 2));
                 setOpaque(false);
-                add(lbXY);
+                add(new JPanel() {
+                    {
+                        setOpaque(false);
+                        setLayout(new GridBagLayout());
+                        lbX.setPreferredSize(new Dimension(0, 0));
+                        lbY.setPreferredSize(new Dimension(0, 0));
+                        lbSep.setPreferredSize(new Dimension(10, 0));
+                        GridBagConstraints c = new GridBagConstraints();
+                        c.weightx = 1;
+                        c.weighty = 1;
+                        c.fill = GridBagConstraints.BOTH;
+                        add(lbX, c);
+                        c.gridx = 1;
+                        c.weightx = 0;
+                        c.fill = GridBagConstraints.VERTICAL;
+                        add(lbSep, c);
+                        c.gridx = 2;
+                        c.weightx = 1;
+                        c.fill = GridBagConstraints.BOTH;
+                        add(lbY, c);
+                    }
+                });
                 add(lbDate);
                 add(new JLabel());
                 add(new JLabel());
@@ -573,8 +597,16 @@ abstract class ArrowPanel extends JPanel {
     }
     
     void setXYText() {
-        if (lbDate.getText().isEmpty()) lbXY.setText("");
-        else lbXY.setText(getPercentX() + " ; " + getPercentY());
+        if (lbDate.getText().isEmpty()) {
+            lbX.setText("");
+            lbSep.setText("");
+            lbY.setText("");
+        }
+        else {
+            lbX.setText(Integer.toString(getPercentX()));
+            lbSep.setText(";");
+            lbY.setText(Integer.toString(getPercentY()));
+        }
     }
     
     public void setTimeout(Long timeout) {
@@ -649,10 +681,12 @@ abstract class ArrowPanel extends JPanel {
     }
     
     public int getPercentX() {
+        if (aLin == null) return 0;
         return aLin.getPercentX();
     }
     
     public int getPercentY() {
+        if (aLin == null) return 0;
         return aLin.getPercentY();
     }
     

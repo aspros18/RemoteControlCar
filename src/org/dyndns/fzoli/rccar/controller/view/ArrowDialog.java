@@ -4,6 +4,7 @@ import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
@@ -529,6 +530,8 @@ abstract class ArrowPanel extends JPanel {
     private JLabel lbY = new JLabel("0", SwingConstants.LEFT);
     private JLabel lbSep = new JLabel(";", SwingConstants.CENTER);
     private JLabel lbDate = new JLabel("00:00:00", SwingConstants.CENTER);
+    JLabel lbSign = new JLabel(getString("sign"), SwingConstants.CENTER);
+    JLabel lbTime = new JLabel(getString("time_left"), SwingConstants.CENTER);
     
     public ArrowPanel(final int size) {
         super(new GridBagLayout());
@@ -552,10 +555,15 @@ abstract class ArrowPanel extends JPanel {
                         lbX.setPreferredSize(new Dimension(0, 0));
                         lbY.setPreferredSize(new Dimension(0, 0));
                         lbSep.setPreferredSize(new Dimension(10, 0));
+                        lbSign.setFont(new Font(lbSign.getFont().getName(), Font.BOLD, lbSign.getFont().getSize()));
                         GridBagConstraints c = new GridBagConstraints();
                         c.weightx = 1;
                         c.weighty = 1;
                         c.fill = GridBagConstraints.BOTH;
+                        c.gridwidth = 3;
+                        add(lbSign, c);
+                        c.gridwidth = 1;
+                        c.gridy = 1;
                         add(lbX, c);
                         c.gridx = 1;
                         c.weightx = 0;
@@ -567,7 +575,21 @@ abstract class ArrowPanel extends JPanel {
                         add(lbY, c);
                     }
                 });
-                add(lbDate);
+                add(new JPanel() {
+                    {
+                        setOpaque(false);
+                        setLayout(new GridBagLayout());
+                        lbDate.setPreferredSize(new Dimension(0, 0));
+                        lbTime.setFont(new Font(lbTime.getFont().getName(), Font.BOLD, lbTime.getFont().getSize()));
+                        GridBagConstraints c = new GridBagConstraints();
+                        c.weightx = 1;
+                        c.weighty = 1;
+                        c.fill = GridBagConstraints.BOTH;
+                        add(lbTime, c);
+                        c.gridy = 1;
+                        add(lbDate, c);
+                    }
+                });
                 add(new JLabel());
                 add(new JLabel());
             }
@@ -597,20 +619,18 @@ abstract class ArrowPanel extends JPanel {
     }
     
     void setXYText() {
-        if (lbDate.getText().isEmpty()) {
-            lbX.setText("");
-            lbSep.setText("");
-            lbY.setText("");
-        }
-        else {
-            lbX.setText(Integer.toString(getPercentX()));
-            lbSep.setText(";");
-            lbY.setText(Integer.toString(getPercentY()));
-        }
+        lbX.setText(Integer.toString(getPercentX()));
+        lbY.setText(Integer.toString(getPercentY()));
+        boolean show = !lbDate.getText().isEmpty();
+        lbX.setVisible(show);
+        lbY.setVisible(show);
+        lbSep.setVisible(show);
+        lbSign.setVisible(show);
     }
     
     public void setTimeout(Long timeout) {
         lbDate.setText(timeout == null ? "" : df.format(new Date(timeout)));
+        lbTime.setVisible(timeout != null);
         setXYText();
     }
     
@@ -787,6 +807,8 @@ public class ArrowDialog extends AbstractDialog {
     @Override
     public void relocalize() {
         setTitle(getString("controller"));
+        ARROW_PANEL.lbSign.setText("sign");
+        ARROW_PANEL.lbTime.setText("time_left");
     }
     
     private void setControlling(boolean b, boolean restoring) {

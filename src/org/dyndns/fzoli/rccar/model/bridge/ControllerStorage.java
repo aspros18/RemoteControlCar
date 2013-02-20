@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import org.dyndns.fzoli.rccar.bridge.ConnectionAlert;
+import org.dyndns.fzoli.rccar.bridge.Main;
 import org.dyndns.fzoli.rccar.bridge.config.Permissions;
 import org.dyndns.fzoli.rccar.model.Control;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
@@ -26,6 +27,11 @@ import org.dyndns.fzoli.ui.systemtray.TrayIcon;
  */
 public class ControllerStorage extends Storage<ControllerData> {
 
+    /**
+     * Az időtúllépés értéke ezredmásodpercben.
+     */
+    private final long TIMEOUT = Main.CONFIG.getTimeout() * 60 * 1000;
+    
     /**
      * Időzítő az időtúllépés-detektálóhoz és annak újraindítójához.
      */
@@ -375,8 +381,8 @@ public class ControllerStorage extends Storage<ControllerData> {
             }
             
         };
-        TIMER_CONTROL.schedule(taskControl, 300000); // időtúllépés-detektáló aktiválása 5 perc késleltetéssel
-        broadcastMessage(new ControllerData.TimeoutPartialControllerData(300000l), null, false); // üzenet küldése a vezérlőknek az új időtúllépésről
+        TIMER_CONTROL.schedule(taskControl, TIMEOUT); // időtúllépés-detektáló aktiválása a konfigban megadott időtúllépést használva késleltetésnek
+        broadcastMessage(new ControllerData.TimeoutPartialControllerData(TIMEOUT), null, false); // üzenet küldése a vezérlőknek az új időtúllépésről
         if (taskRestart != null) return;
         taskRestart = new TimerTask() {
 

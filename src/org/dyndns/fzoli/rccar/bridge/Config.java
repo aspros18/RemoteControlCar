@@ -37,7 +37,8 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
                                KEY_STRICT = "strict",
                                KEY_QUIET = "quiet",
                                KEY_HIDDEN = "hidden",
-                               KEY_LANG = "lang";
+                               KEY_LANG = "lang",
+                               KEY_TIMEOUT = "timeout";
     
     /**
      * Általános rendszerváltozók.
@@ -65,6 +66,7 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
             KEY_CERT + ' ' + new File("test-certs", "bridge.crt") + ' ' + CC + " a szerver tanúsítvány-fájl" + LS +
             KEY_KEY + ' ' + new File("test-certs", "bridge.key") + ' ' + CC + " a szerver titkos kulcsa" + LS +
             CC + ' ' + KEY_PASSWORD + " optional_cert_password " + CC + " a szerver tanúsítványának jelszava, ha van" + LS +
+            CC + ' ' + KEY_TIMEOUT + " 10 " + CC + " tétlenség esetén ennyi perc múlva szűnik meg a járművezérlés" + LS +
             CC + ' ' + KEY_STRICT + " true " + CC + " ha true, azok a vezérlők, melyek nem szerepelnek a fehérlistában, nem csatlakozhatnak a hídhoz" + LS +
             CC + ' ' + KEY_QUIET + " true " + CC + " ha true, a program indulásakor az összes figyelmeztetés inaktív" + LS +
             CC + ' ' + KEY_HIDDEN + " true " + CC + " ha true, a rendszerikon nem jelenik meg annak ellenére sem, hogy van grafikus felület" + LS +
@@ -106,6 +108,23 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
      */
     public boolean isHidden() {
         return isTrue(KEY_HIDDEN);
+    }
+    
+    /**
+     * Megadja az időtúllépést.
+     * Ha nincs megadva, az érték 5 perc.
+     * A megadott érték 1 és 60 között korlátolt.
+     */
+    public int getTimeout() {
+        try {
+            int val = Integer.parseInt(getValues().get(KEY_TIMEOUT));
+            if (val < 1) val = 1;
+            if (val > 60) val = 60;
+            return val;
+        }
+        catch (Exception ex) {
+            return 5;
+        }
     }
     
     /**
@@ -238,6 +257,7 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
                "Strict: " + isStrict() + LS +
                "Hidden: " + isHidden() + LS +
                "Lang: " + getLanguage().getLanguage() + LS +
+               "Timeout: " + getTimeout() + LS +
                "Correct? " + isCorrect();
     }
     

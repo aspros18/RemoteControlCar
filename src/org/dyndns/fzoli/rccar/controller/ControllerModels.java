@@ -3,6 +3,8 @@ package org.dyndns.fzoli.rccar.controller;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import static org.dyndns.fzoli.rccar.controller.Main.showControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.Main.showHostSelectionFrame;
@@ -223,6 +225,16 @@ public class ControllerModels {
         private final ControllerRefreshList refController;
         
         /**
+         * Az időtúllépés-számláló időzítője.
+         */
+        private final Timer TIMER_TIMEOUT = new Timer();
+        
+        /**
+         * Az időtúllépés-számláló frissítője.
+         */
+        private TimerTask taskTimeout;
+        
+        /**
          * A főablak referenciája.
          */
         private ControllerFrame frameMain;
@@ -366,7 +378,41 @@ public class ControllerModels {
             super.setBatteryLevel(batteryLevel);
             if (frameMain != null) frameMain.refreshBattery();
         }
+        
+        /**
+         * Elindítja/leállítja az időtúllépés számlálót és frissíti a felületet.
+         */
+        @Override
+        public void setTimeout(Long timeout) {
+            super.setTimeout(timeout);
+            if (dialogArrow != null) {
+                dialogArrow.refreshTimeout();
+            }
+            if (timeout != null) {
+                if (taskTimeout == null) {
+                    taskTimeout = new TimerTask() {
 
+                        @Override
+                        public void run() {
+                            Long val = getTimeout();
+                            if (val != null && val > 0) {
+                                val -= 1000;
+                                ClientControllerData.super.setTimeout(val);
+                                if (dialogArrow != null) dialogArrow.refreshTimeout();
+                            }
+                            else {
+                                taskTimeout.cancel();
+                                taskTimeout = null;
+                                TIMER_TIMEOUT.purge();
+                            }
+                        }
+                        
+                    };
+                    TIMER_TIMEOUT.schedule(taskTimeout, 1000, 1000);
+                }
+            }
+        }
+        
         /**
          * A jármű vezérlőjelét állítja be.
          * Az adat módosulása után frissül a főablak és a vezérlő dialógus egy része.

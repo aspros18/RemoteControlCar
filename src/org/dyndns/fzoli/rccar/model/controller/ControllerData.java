@@ -262,6 +262,32 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     }
     
     /**
+     * A ControllerData részadata, ami az új időtúllépést tartalmazza.
+     */
+    public static class TimeoutPartialControllerData extends PartialControllerData<Long> {
+
+        /**
+         * Részadat inicializálása és beállítása.
+         * @param data az aktuális helyzet
+         */
+        public TimeoutPartialControllerData(Long data) {
+            super(data);
+        }
+
+        /**
+         * Alkalmazza az új értéket a paraméterben megadott adaton.
+         * @param d a teljes adat, amin a módosítást alkalmazni kell
+         */
+        @Override
+        public void apply(ControllerData d) {
+            if (d != null) {
+                d.setTimeout(data);
+            }
+        }
+        
+    }
+    
+    /**
      * A ControllerData részadata, ami egy boolean érték változását tartalmazza.
      */
     public static class BoolenPartialControllerData extends PartialControllerData<Boolean> {
@@ -610,6 +636,17 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
         }
 
         /**
+         * Ha tudja, beállítja a vezérlésből hátramaradt időt.
+         * Az adat változását jelzi a másik oldalnak.
+         * @param timeout az ezredmásodpercben megadott idő
+         */
+        @Override
+        public void setTimeout(Long timeout) {
+            sendMessage(new ControllerData.TimeoutPartialControllerData(timeout));
+            if (data != null) data.setTimeout(timeout);
+        }
+
+        /**
          * Ha tudja, beállítja azt, hogy a jármű kapcsolódva van-e a Hídhoz.
          * Az adat változását jelzi a másik oldalnak.
          */
@@ -686,6 +723,11 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
      * A jármű mikrovezérlője kapcsolódva van-e a telefonhoz.
      */
     private Boolean vehicleConnected;
+    
+    /**
+     * A vezérlésből hátramaradt idő.
+     */
+    private Long timeout;
     
     /**
      * Vezérelhető-e a jármű.
@@ -776,6 +818,14 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
     }
 
     /**
+     * A vezérlésből hátramaradt idő ezredmásodpercben.
+     * @return null, ha nem értelmezhető (nincs vezérlés)
+     */
+    public Long getTimeout() {
+        return timeout;
+    }
+
+    /**
      * Megadja, hogy a jármű kapcsolódva van-e a Hídhoz.
      */
     public Boolean isConnected() {
@@ -831,6 +881,14 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
      */
     public void setHostUnderTimeout(Boolean hostConnected) {
         this.hostUnderTimeout = hostConnected;
+    }
+
+    /**
+     * Beállítja a vezérlésből hátramaradt időt.
+     * @param timeout az ezredmásodpercben megadott idő
+     */
+    public void setTimeout(Long timeout) {
+        this.timeout = timeout;
     }
 
     /**
@@ -898,6 +956,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
             setControlling(d.isControlling());
             setWantControl(d.isWantControl());
             setViewOnly(d.isViewOnly());
+            setTimeout(d.getTimeout());
             super.update(d);
         }
     }
@@ -917,6 +976,7 @@ public class ControllerData extends BaseData<ControllerData, PartialBaseData<Con
         viewOnly = null;
         connected = null;
         vehicleConnected = null;
+        timeout = null;
         super.clear();
     }
     

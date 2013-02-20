@@ -27,12 +27,12 @@ import org.dyndns.fzoli.ui.systemtray.TrayIcon;
 public class ControllerStorage extends Storage<ControllerData> {
 
     /**
-     * Időzítő az időtúllépés detektálóhoz és annak újraindítójához.
+     * Időzítő az időtúllépés-detektálóhoz és annak újraindítójához.
      */
     private final Timer TIMER_CONTROL = new Timer();
     
     /**
-     * Időtúllépés detektáló.
+     * Időtúllépés-detektáló.
      * Ha a vezérlő 5 percig nem ad ki vezérlő utasítást, időtúllépés történik és a
      * szerver lemondatja őt a vezérlésről.
      */
@@ -293,7 +293,7 @@ public class ControllerStorage extends Storage<ControllerData> {
          * @param s a vezérlő, ami vagy megkapta a vezérlést, vagy elvesztette
          * @param get true esetén megkapta a vezérlést, egyébként elvesztette
          */
-        private void logControllerChange(ControllerStorage s, boolean get) {
+        private void logControllerChange(ControllerStorage s, boolean get) { // TODO: lokalizálás
             ConnectionAlert.logMessage("", "[" + getHostStorage().getName() + "] " + (get ? "járműnek az új vezérlője" : "járművet már nem vezérli") + " [" + s.getName() + "]", TrayIcon.IconType.INFO, false);
         }
         
@@ -303,28 +303,6 @@ public class ControllerStorage extends Storage<ControllerData> {
          */
         private void broadcastControllerState(ControllerState s, boolean skipMe) {
             broadcastMessage(new ControllerData.ControllerChangePartialControllerData(new ControllerChange(s)), null, skipMe);
-        }
-        
-        /**
-         * Üzenetet küld az összes vezérlő kliensnek és a jármű kliensnek.
-         * @param msgc a vezérlőknek küldendő üzenet
-         * @param msgh a jármű kliensnek küldendő üzenet
-         * @param skipMe true esetén a metódus nem küld üzenetet annak a vezérlőnek, akihez a munkamenet tartozik
-         */
-        private void broadcastMessage(PartialBaseData<ControllerData, ?> msgc, PartialBaseData<HostData, ?> msgh, boolean skipMe) {
-            HostStorage hs = getHostStorage();
-            if (msgc != null && hs != null) {
-                List<ControllerStorage> l = StorageList.getControllerStorageList();
-                for (ControllerStorage cs : l) {
-                    if (skipMe && cs == ControllerStorage.this) continue;
-                    if (hs == cs.getHostStorage()) {
-                        cs.getMessageProcess().sendMessage(msgc, false);
-                    }
-                }
-            }
-            if (msgh != null && hs != null) {
-                hs.getMessageProcess().sendMessage(msgh, false);
-            }
         }
 
     };
@@ -379,7 +357,7 @@ public class ControllerStorage extends Storage<ControllerData> {
     }
     
     /**
-     * Elindítja az időtúllépés detektálót és annak újraindítóját, ha még nem futnak.
+     * Elindítja az időtúllépés-detektálót és annak újraindítóját, ha még nem futnak.
      * Ha a járművel nincs összeköttetés, akkor nem indulnak el, de
      * amint létrejön az összeköttetés, a {@link HostStorage} meghívja ezt a metódust.
      */
@@ -397,7 +375,8 @@ public class ControllerStorage extends Storage<ControllerData> {
             }
             
         };
-        TIMER_CONTROL.schedule(taskControl, 300000); // időtúllépés detektáló aktiválása 5 perc késleltetéssel
+        TIMER_CONTROL.schedule(taskControl, 300000); // időtúllépés-detektáló aktiválása 5 perc késleltetéssel
+        broadcastMessage(new ControllerData.TimeoutPartialControllerData(300000l), null, false); // üzenet küldése a vezérlőknek az új időtúllépésről
         if (taskRestart != null) return;
         taskRestart = new TimerTask() {
 
@@ -409,11 +388,9 @@ public class ControllerStorage extends Storage<ControllerData> {
                     if (getHostStorage() != null) counter = getHostStorage().getControlCount();
                 }
                 else if (getHostStorage() != null) { // ha már van viszonyítási alap és jármű is
-                    Control c = getHostStorage().getHostData().getControl(); // vezérlőjel elkérése
-                    // ha éppen vezérlés folyik, vagy vezérlés történt mivel a vezérlőjel-számláló eltér
-                    if (counter != getHostStorage().getControlCount() || c.getX() != 0 || c.getY() != 0) {
+                    if (counter != getHostStorage().getControlCount()) { // ha vezérlés történt, mivel a vezérlőjel-számláló eltér
                         counter = getHostStorage().getControlCount(); // számláló frissítése
-                        stopControlTask(false); // időtúllépés detektáló újraindítása
+                        stopControlTask(false); // időtúllépés-detektáló újraindítása
                         startControlTask();
                     }
                 }
@@ -424,14 +401,14 @@ public class ControllerStorage extends Storage<ControllerData> {
     }
     
     /**
-     * Leállítja az időtúllépés detektálót és annak újraindítóját, ha azok futnak.
+     * Leállítja az időtúllépés-detektálót és annak újraindítóját, ha azok futnak.
      */
     void stopControlTask() {
         stopControlTask(true);
     }
     
     /**
-     * Leállítja az időtúllépés detektálót, ha az fut.
+     * Leállítja az időtúllépés-detektálót, ha az fut.
      * @param stopReseter az újraindítót is leállítja, ha true
      */
     private void stopControlTask(boolean stopReseter) {
@@ -440,10 +417,11 @@ public class ControllerStorage extends Storage<ControllerData> {
         taskControl.cancel();
         taskControl = null;
         TIMER_CONTROL.purge();
+        if (stopReseter) broadcastMessage(new ControllerData.TimeoutPartialControllerData(null), null, false); // üzenet küldése a vezérlőknek, hogy nincs időtúllépés
     }
     
     /**
-     * Az időtúllépés detektáló újraindítóját állítja le, ha az fut.
+     * Az időtúllépés-detektáló újraindítóját állítja le, ha az fut.
      */
     private void stopRestarter() {
         if (taskRestart == null) return;
@@ -542,6 +520,28 @@ public class ControllerStorage extends Storage<ControllerData> {
             }
         }
         return null;
+    }
+    
+    /**
+     * Üzenetet küld az összes vezérlő kliensnek és a jármű kliensnek.
+     * @param msgc a vezérlőknek küldendő üzenet
+     * @param msgh a jármű kliensnek küldendő üzenet
+     * @param skipMe true esetén a metódus nem küld üzenetet annak a vezérlőnek, akihez a munkamenet tartozik
+     */
+    private void broadcastMessage(PartialBaseData<ControllerData, ?> msgc, PartialBaseData<HostData, ?> msgh, boolean skipMe) {
+        HostStorage hs = getHostStorage();
+        if (msgc != null && hs != null) {
+            List<ControllerStorage> l = StorageList.getControllerStorageList();
+            for (ControllerStorage cs : l) {
+                if (skipMe && cs == ControllerStorage.this) continue;
+                if (hs == cs.getHostStorage()) {
+                    cs.getMessageProcess().sendMessage(msgc, false);
+                }
+            }
+        }
+        if (msgh != null && hs != null) {
+            hs.getMessageProcess().sendMessage(msgh, false);
+        }
     }
     
 }

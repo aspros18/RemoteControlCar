@@ -789,6 +789,13 @@ public class ArrowDialog extends AbstractDialog {
     }
     
     /**
+     * Frissíti az időtúllépés számlálót.
+     */
+    public void refreshTimeout() { // TODO
+        System.out.println("timeout: " + getData().getTimeout());
+    }
+    
+    /**
      * Teszt.
      */
     public static void main(String[] args) {

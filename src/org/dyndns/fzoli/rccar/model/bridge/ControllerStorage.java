@@ -52,6 +52,11 @@ public class ControllerStorage extends Storage<ControllerData> {
     private TimerTask taskRestart;
     
     /**
+     * A maradék idő a vezérlési időből.
+     */
+    private long timeoutLeft = TIMEOUT;
+    
+    /**
      * Üzenetküldő a vezérlő oldal irányába.
      * A {@link HostStorage} adatainak módosulása esetén van rá szükség.
      * Mivel a szerver oldalon nincs tárolva a {@link ControllerData},
@@ -279,7 +284,7 @@ public class ControllerStorage extends Storage<ControllerData> {
             }
             
             if (oldOwner != null) { // jelzés leadása, hogy a régi irányító már nem irányíthat és mivel lekerült a listáról, ha újra vezérelni akar, kérnie kell
-                oldOwner.stopControlTask();
+                oldOwner.stopControlTask(true);
                 if (fire) { // ha van értelme üzenetet küldeni a változásról
                     oldOwner.getSender().setControlling(false); // mivel kikerül a vezérlők listájából, false küldése
                     oldOwner.getSender().setWantControl(false); // hogy újra kérhessen vezérlést, false küldése
@@ -381,8 +386,9 @@ public class ControllerStorage extends Storage<ControllerData> {
             }
             
         };
-        TIMER_CONTROL.schedule(taskControl, TIMEOUT); // időtúllépés-detektáló aktiválása a konfigban megadott időtúllépést használva késleltetésnek
-        broadcastMessage(new ControllerData.TimeoutPartialControllerData(TIMEOUT), null, false); // üzenet küldése a vezérlőknek az új időtúllépésről
+        if (timeoutLeft <= 0) timeoutLeft = TIMEOUT; // ha letelt az idő, akkor újra teljes időről indul
+        TIMER_CONTROL.schedule(taskControl, timeoutLeft); // időtúllépés-detektáló aktiválása megmaradt időtúllépést használva késleltetésnek
+        broadcastMessage(new ControllerData.TimeoutPartialControllerData(timeoutLeft), null, false); // üzenet küldése a vezérlőknek az új időtúllépésről
         if (taskRestart != null) return;
         taskRestart = new TimerTask() {
 
@@ -396,8 +402,11 @@ public class ControllerStorage extends Storage<ControllerData> {
                 else if (getHostStorage() != null) { // ha már van viszonyítási alap és jármű is
                     if (counter != getHostStorage().getControlCount()) { // ha vezérlés történt, mivel a vezérlőjel-számláló eltér
                         counter = getHostStorage().getControlCount(); // számláló frissítése
-                        stopControlTask(false); // időtúllépés-detektáló újraindítása
+                        stopControlTask(false, true); // időtúllépés-detektáló újraindítása
                         startControlTask();
+                    }
+                    else {
+                        timeoutLeft -= 1000; // a maradék idő 1 másodperccel kevesebb lett
                     }
                 }
             }
@@ -408,18 +417,21 @@ public class ControllerStorage extends Storage<ControllerData> {
     
     /**
      * Leállítja az időtúllépés-detektálót és annak újraindítóját, ha azok futnak.
+     * @param reset true esetén a legközelebbi indulás a teljes időtúllépésről kezdődik
      */
-    void stopControlTask() {
-        stopControlTask(true);
+    void stopControlTask(boolean reset) {
+        stopControlTask(true, reset);
     }
     
     /**
      * Leállítja az időtúllépés-detektálót, ha az fut.
      * @param stopReseter az újraindítót is leállítja, ha true
+     * @param reset true esetén a legközelebbi indulás a teljes időtúllépésről kezdődik
      */
-    private void stopControlTask(boolean stopReseter) {
+    private void stopControlTask(boolean stopReseter, boolean reset) {
         if (stopReseter) stopRestarter();
         if (taskControl == null) return;
+        if (reset) timeoutLeft = TIMEOUT;
         taskControl.cancel();
         taskControl = null;
         TIMER_CONTROL.purge();

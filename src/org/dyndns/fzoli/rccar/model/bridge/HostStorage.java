@@ -107,7 +107,7 @@ public class HostStorage extends Storage<HostData> {
             ControllerStorage owner = getOwner();
             if (owner != null) {
                 if (vehicleConnected) owner.startControlTask();
-                else owner.stopControlTask();
+                else owner.stopControlTask(false);
             }
         }
 

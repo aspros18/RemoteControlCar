@@ -120,28 +120,28 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     /**
      * Súgó ablak.
      */
-    private final ConfigHelpDialog dialogHelp = new ConfigHelpDialog(this);
+    private final ConfigHelpDialog DIALOG_HELP = new ConfigHelpDialog(this);
     
     /**
      * Crt fájlszűrő.
      */
-    private static final FileNameExtensionFilter fnefCrt = new FileNameExtensionFilter("Tanúsítvány (*.crt)", new String[] {"crt"});
+    private FileNameExtensionFilter fnefCrt = createCertificateFilter("certificate", "crt");
     
     /**
      * Key fájlszűrő.
      */
-    private static final FileNameExtensionFilter fnefKey = new FileNameExtensionFilter("Tanúsítvány kulcs (*.key)", new String[] {"key"});
+    private FileNameExtensionFilter fnefKey = createCertificateFilter("certificate_key", "key");
     
     /**
      * IP címre és hosztnévre és egyéb egyedi címekre is egész jól használható reguláris kifejezés.
      */
-    private static final Pattern ptAddress = Pattern.compile("^[a-z\\d]{1}[\\w\\.\\d]{0,18}[a-z\\d]{1}$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern PT_ADDRESS = Pattern.compile("^[a-z\\d]{1}[\\w\\.\\d]{0,18}[a-z\\d]{1}$", Pattern.CASE_INSENSITIVE);
     
     /**
      * Port validálására használt reguláris kifejezés.
      * Minimum 1 és maximum 5 karakter, csak szám.
      */
-    private static final Pattern ptPort = Pattern.compile("^[\\d]{1,5}$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern PT_PORT = Pattern.compile("^[\\d]{1,5}$", Pattern.CASE_INSENSITIVE);
     
     /**
      * A konfiguráció, amit használ az ablak.
@@ -151,7 +151,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     /**
      * Jelszótörlő gomb.
      */
-    private final JButton btPasswordReset = new JButton(getString("delete")) {
+    private final JButton BT_PASSWORD_RESET = new JButton(getString("delete")) {
         
         {
             // kattintáskor a jelszó törlése a konfigurációból és a gomb letiltása
@@ -179,17 +179,17 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     /**
      * A szerver címe írható át benne.
      */
-    private final JTextField tfAddress = new JFormattedTextField(createAddressFormatter());
+    private final JTextField TF_ADDRESS = new JFormattedTextField(createAddressFormatter());
     
     /**
      * A szerver portja írható át benne.
      */
-    private final JTextField tfPort = new JFormattedTextField(createPortFormatter());
+    private final JTextField TF_PORT = new JFormattedTextField(createPortFormatter());
     
     /**
      * A kiállító fájl tallózó panele.
      */
-    private final FilePanel fpCa = new ConfigFilePanel(this, getString("certifier")) {
+    private final FilePanel FP_CA = new ConfigFilePanel(this, getString("certifier")) {
         {
             setFileFilter(fnefCrt);
         }
@@ -198,7 +198,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     /**
      * A tanúsítvány fájl tallózó panele.
      */
-    private final FilePanel fpCert = new ConfigFilePanel(this, "Tanúsítvány") {
+    private final FilePanel FP_CERT = new ConfigFilePanel(this, "Tanúsítvány") {
         {
             setFileFilter(fnefCrt);
         }
@@ -207,7 +207,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     /**
      * A tanúsítvány kulcs-fájl tallózó panele.
      */
-    private final FilePanel fpKey = new ConfigFilePanel(this, "Kulcs") {
+    private final FilePanel FP_KEY = new ConfigFilePanel(this, "Kulcs") {
         {
             setFileFilter(fnefKey);
         }
@@ -217,7 +217,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
      * Az ablak bezárásakor lefutó eseménykezelő.
      * Meghívja az {@code onClosing} metódust.
      */
-    private final WindowAdapter closeListener = new WindowAdapter() {
+    private final WindowAdapter WL_CLOSE = new WindowAdapter() {
 
         @Override
         public void windowClosing(WindowEvent e) {
@@ -230,7 +230,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
      * Erre a gombra kattintva a konfiguráció elmentődik és bezárul az ablak.
      * De csak akkor, ha érvényesek a beállítások.
      */
-    private final JButton btOk = new JButton(getString("ok")) {
+    private final JButton BT_OK = new JButton(getString("ok")) {
         {
             addActionListener(new ActionListener() {
 
@@ -246,7 +246,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     /**
      * Erre a gombra kattintva bezárul az ablak, a konfiguráció nem változik.
      */
-    private final JButton btCancel = new JButton(getString("cancel")) {
+    private final JButton BT_CANCEL = new JButton(getString("cancel")) {
         {
             addActionListener(new ActionListener() {
 
@@ -262,14 +262,14 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     /**
      * Erre a gombra kattintva előjön a súgó.
      */
-    private final JButton btHelp = new JButton(getString("help")) {
+    private final JButton BT_HELP = new JButton(getString("help")) {
         {
             addActionListener(new ActionListener() {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    dialogHelp.setLocationRelativeTo(ConfigEditorFrame.this);
-                    dialogHelp.setVisible(true);
+                    DIALOG_HELP.setLocationRelativeTo(ConfigEditorFrame.this);
+                    DIALOG_HELP.setVisible(true);
                 }
                 
             });
@@ -279,7 +279,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     /**
      * Ezen a panelen állítható be a híd szerver elérési útvonala.
      */
-    private final JPanel addressPanel = new ConfigPanel() {
+    private final JPanel PANEL_ADDRESS = new ConfigPanel() {
         {
             setLayout(new GridBagLayout());
             GridBagConstraints c = new GridBagConstraints();
@@ -305,17 +305,17 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
             c.weightx = 1; // kitölti a maradék helyet
             
             c.gridy = 1; // első sor (2, 1)
-            add(tfAddress, c);
+            add(TF_ADDRESS, c);
             
             c.gridy = 2; // második sor (2, 2)
-            add(tfPort, c);
+            add(TF_PORT, c);
         }
     };
     
     /**
      * Erről a panelről érhető el a jelszó törlésére használható gomb.
      */
-    private final JPanel passwordResetPanel = new ConfigPanel() {
+    private final JPanel PANEL_PASSWORD_RESET = new ConfigPanel() {
         {
             setLayout(new GridBagLayout());
             GridBagConstraints c = new GridBagConstraints();
@@ -329,14 +329,14 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
             c.gridy = 1; // a szöveg alá kerül a törlés gomb
             c.insets = new Insets(0, 5, 5, 5); // 5 pixeles margó mindenhol, kivéve felül
             c.fill = GridBagConstraints.NONE; // csak akkora helyet foglal, amennyire szüksége van
-            add(btPasswordReset, c);
+            add(BT_PASSWORD_RESET, c);
         }
     };
     
     /**
      * Erről a panelről érhető el a nyelv módosítására használható legördülő lista.
      */
-    private final JPanel languageChooserPanel = new ConfigPanel() {
+    private final JPanel PANEL_LANGUAGE_CHOOSER = new ConfigPanel() {
         {
             setLayout(new GridBagLayout());
             GridBagConstraints c = new GridBagConstraints();
@@ -363,24 +363,24 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     /**
      * Ezen a panelen állítható be a kapcsolathoz használt tanúsítvány.
      */
-    private final JPanel certificatePanel = new ConfigPanel() {
+    private final JPanel PANEL_CERTIFICATE = new ConfigPanel() {
         {
             setLayout(new GridLayout(3, 1));
-            add(fpCa);
-            add(fpCert);
-            add(fpKey);
+            add(FP_CA);
+            add(FP_CERT);
+            add(FP_KEY);
         }
     };
     
     /**
      * Az ablakot teljes egészében kitöltő lapfüles panel.
      */
-    private final JTabbedPane tabbedPane = new JTabbedPane() {
+    private final JTabbedPane TABBED_PANE = new JTabbedPane() {
         {
-            addTab("Útvonal", addressPanel);
-            addTab("Biztonság", certificatePanel);
-            addTab("Jelszó", passwordResetPanel);
-            addTab("Nyelv", languageChooserPanel);
+            addTab("Útvonal", PANEL_ADDRESS);
+            addTab("Biztonság", PANEL_CERTIFICATE);
+            addTab("Jelszó", PANEL_PASSWORD_RESET);
+            addTab("Nyelv", PANEL_LANGUAGE_CHOOSER);
         }
     };
     
@@ -420,12 +420,12 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
         c.fill = GridBagConstraints.BOTH; // mindkét irányban helykitöltés
         c.weightx = 1; // helyfoglalás szélességében ...
         c.weighty = 1; // ... és hosszúságában is
-        add(tabbedPane, c); // lapfül panel hozzáadása
+        add(TABBED_PANE, c); // lapfül panel hozzáadása
         
         c.gridy = 1; // következő sor
         c.weighty = 0; // minimális helyfoglalás magasságban ...
         c.fill = GridBagConstraints.HORIZONTAL; // ... és teljes szélesség elfoglalása ...
-        JPanel pButton = new OkCancelPanel(this, btOk, btCancel, btHelp, 5); // ... a gombokat tartalmazó panelnek
+        JPanel pButton = new OkCancelPanel(this, BT_OK, BT_CANCEL, BT_HELP, 5); // ... a gombokat tartalmazó panelnek
         pButton.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5)); // margó a gombokat tartalmazó panelre
         add(pButton, c); // gombok hozzáadása az ablakhoz
         
@@ -435,15 +435,15 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
         setLocationRelativeTo(this); // képernyő közepére igazítás
         
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE); // az alapértelmezett bezárás tiltása
-        addWindowListener(closeListener); // bezáráskor saját metódus hívódik meg
+        addWindowListener(WL_CLOSE); // bezáráskor saját metódus hívódik meg
     }
     
     /**
      * Inicializálja a komponenseket.
      */
     private void initComponents() {
-        tabbedPane.setFocusable(false); // zavaró kijelölés jelzés leszedése
-        tabbedPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // 5 x 5 pixeles margó
+        TABBED_PANE.setFocusable(false); // zavaró kijelölés jelzés leszedése
+        TABBED_PANE.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // 5 x 5 pixeles margó
         
         final KeyAdapter klEnter = new KeyAdapter() { // szerkeszthető mezőben enter lenyomására ugyan az történik, mint ha az OK gombra kattintanának, ha jók a beállítások
 
@@ -456,8 +456,8 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
 
         };
         
-        tfAddress.addKeyListener(klEnter);
-        tfPort.addKeyListener(klEnter);
+        TF_ADDRESS.addKeyListener(klEnter);
+        TF_PORT.addKeyListener(klEnter);
     }
 
     /**
@@ -467,12 +467,17 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     @Override
     public void relocalize() {
         // TODO
-        btOk.setText(getString("ok"));
-        btCancel.setText(getString(force ? "exit" : "cancel"));
-        btHelp.setText(getString("help"));
-        btPasswordReset.setText(getString("delete"));
-        fpCa.setText(getString("certifier"));
-        dialogHelp.relocalize();
+        BT_OK.setText(getString("ok"));
+        BT_CANCEL.setText(getString(force ? "exit" : "cancel"));
+        BT_HELP.setText(getString("help"));
+        BT_PASSWORD_RESET.setText(getString("delete"));
+        FP_CA.setText(getString("certifier"));
+        DIALOG_HELP.relocalize();
+        fnefCrt = createCertificateFilter("certificate", "crt");
+        fnefKey = createCertificateFilter("certificate_key", "key");
+        FP_CA.setFileFilter(fnefCrt);
+        FP_CERT.setFileFilter(fnefCrt);
+        FP_KEY.setFileFilter(fnefKey);
     }
     
     /**
@@ -489,7 +494,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     public void setForce(boolean force) {
         if (force != force) {
             this.force = force;
-            btCancel.setText(getString(force ? "exit" : "cancel"));
+            BT_CANCEL.setText(getString(force ? "exit" : "cancel"));
         }
     }
     
@@ -498,12 +503,12 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
      */
     private void loadConfig() {
         previousConfig = Config.getInstance();
-        tfAddress.setText(CONFIG.getAddress());
-        tfPort.setText(Integer.toString(CONFIG.getPort()));
-        fpCa.setFile(CONFIG.getCAFile());
-        fpCert.setFile(CONFIG.getCertFile());
-        fpKey.setFile(CONFIG.getKeyFile());
-        btPasswordReset.setEnabled(CONFIG.isPasswordStored());
+        TF_ADDRESS.setText(CONFIG.getAddress());
+        TF_PORT.setText(Integer.toString(CONFIG.getPort()));
+        FP_CA.setFile(CONFIG.getCAFile());
+        FP_CERT.setFile(CONFIG.getCertFile());
+        FP_KEY.setFile(CONFIG.getKeyFile());
+        BT_PASSWORD_RESET.setEnabled(CONFIG.isPasswordStored());
     }
     
     /**
@@ -513,11 +518,11 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
      * megkérdi, akar-e a felhasználó újrakapcsolódni a hídhoz az új beállításokkal.
      */
     private void saveConfig() {
-        CONFIG.setAddress(tfAddress.getText());
-        CONFIG.setCAFile(fpCa.getFile());
-        CONFIG.setCertFile(fpCert.getFile());
-        CONFIG.setKeyFile(fpKey.getFile());
-        CONFIG.setPort(Integer.parseInt(tfPort.getText()));
+        CONFIG.setAddress(TF_ADDRESS.getText());
+        CONFIG.setCAFile(FP_CA.getFile());
+        CONFIG.setCertFile(FP_CERT.getFile());
+        CONFIG.setKeyFile(FP_KEY.getFile());
+        CONFIG.setPort(Integer.parseInt(TF_PORT.getText()));
         if (Config.save(CONFIG)) {
             if (!previousConfig.equals(CONFIG) && Main.isConnected()) {
                 int answer = OptionPane.showYesNoDialog(ConfigEditorFrame.this, "Szeretne újrakapcsolódni a szerverhez az új beállításokkal?", "Újrakapcsolódás");
@@ -544,7 +549,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
      * Érvényes, ha mindhárom fájl be van állítva és mindkét bemenet megfelel a reguláris kifejezésüknek.
      */
     private boolean isConfigValid() {
-        return isConfigValid(tfAddress.getText(), tfPort.getText(), fpCa.getFile(), fpCert.getFile(), fpKey.getFile());
+        return isConfigValid(TF_ADDRESS.getText(), TF_PORT.getText(), FP_CA.getFile(), FP_CERT.getFile(), FP_KEY.getFile());
     }
     
     /**
@@ -552,8 +557,8 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
      * Érvényes, ha mindhárom fájl be van állítva és mindkét bemenet megfelel a reguláris kifejezésüknek.
      */
     private static boolean isConfigValid(String address, String port, File ca, File cert, File key) {
-        return ptAddress.matcher(address).matches() &&
-               ptPort.matcher(port).matches() &&
+        return PT_ADDRESS.matcher(address).matches() &&
+               PT_PORT.matcher(port).matches() &&
                ca != null &&
                cert != null &&
                key != null;
@@ -563,7 +568,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
      * A cím maszkolására hoz létre egy formázó objektumot.
      */
     private AbstractFormatter createAddressFormatter() {
-        RegexPatternFormatter fmAddress = new RegexPatternFormatter(ptAddress) {
+        RegexPatternFormatter fmAddress = new RegexPatternFormatter(PT_ADDRESS) {
 
             @Override
             public Object stringToValue(String string) throws ParseException {
@@ -581,7 +586,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
      * A port maszkolására hoz létre egy formázó objektumot.
      */
     private AbstractFormatter createPortFormatter() {
-        RegexPatternFormatter fmPort = new RegexPatternFormatter(ptPort) {
+        RegexPatternFormatter fmPort = new RegexPatternFormatter(PT_PORT) {
 
             @Override
             public Object stringToValue(String string) throws ParseException {
@@ -649,7 +654,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
      * @param tabIndex az előtérbe kerülő lapfül indexe
      */
     public void setTabIndex(Integer tabIndex) {
-        if (tabIndex != null) tabbedPane.setSelectedIndex(tabIndex);
+        if (tabIndex != null) TABBED_PANE.setSelectedIndex(tabIndex);
     }
     
     /**
@@ -683,7 +688,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     private void onClosing() {
         if (!checkConfig()) return; // ha a beállítás nem érvényes figyelmeztetés és semmittevés
         getContentPane().requestFocus(); // fókusz átadása az ablaknak, hogy biztosan minden szerkesztés végetérjen
-        if (CONFIG.equals(tfAddress.getText(), Integer.parseInt(tfPort.getText()), fpCa.getFile(), fpCert.getFile(), fpKey.getFile())) {
+        if (CONFIG.equals(TF_ADDRESS.getText(), Integer.parseInt(TF_PORT.getText()), FP_CA.getFile(), FP_CERT.getFile(), FP_KEY.getFile())) {
             unsaveConfig(); // a beállítások nem változtak, nincs mentés
         }
         else {
@@ -701,6 +706,15 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
                     ;
             }
         }
+    }
+    
+    /**
+     * Fájlszűrőt hoz létre.
+     * @param textKey a szöveghez tartozó kulcs a szótárban
+     * @param ext a kiterjesztés, amire szűrni kell
+     */
+    private static FileNameExtensionFilter createCertificateFilter(String textKey, String ext) {
+        return new FileNameExtensionFilter(getString(textKey) + " (*." + ext + ")", new String[] {ext});
     }
     
 }

@@ -8,6 +8,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import static org.dyndns.fzoli.rccar.controller.Main.getString;
 import org.dyndns.fzoli.rccar.controller.view.RelocalizableWindow;
 
 /**
@@ -19,10 +20,25 @@ public class ConfigHelpDialog extends JDialog implements RelocalizableWindow {
     /**
      * A szöveg egyszerű HTML kódja.
      */
-    private static final JLabel taHelp = new JLabel("<html><span style=\"font-size: 11px\"><p style=\"margin: 5px 0px 5px 0px\"><b>Útvonal</b></p>Ahhoz, hogy kapcsolódni lehessen a szerverhez,<br>meg kell adni az elérési útvonalát, ami a címből<br>és a portból áll. A cím lehet IP cím és domain is.<p style=\"margin: 5px 0px 5px 0px\"><b>Tanúsítvány</b></p><p style=\"margin: 0px 0px 5px 0px\">A kommunikáció titkosított kapcsolaton keresztül (SSL)<br>folyik, ezért a kliensnek szüksége van tanúsítványra.</p>A tanúsítvány három fájlból tevődik össze:<br>- Kiállító <i>(CA tanúsítvány)</i><br>- Tanúsítvány <i>(nyílvános kulcs)</i><br>- Kulcs <i>(titkos kulcs)</i><p style=\"margin: 5px 0px 5px 0px\"><b>Mi ez?</b></p>Mindhárom fájl szükséges ahhoz, hogy a kapcsolat<br>létrejöhessen a szerverrel, ezért addig nem indítható<br>a program, míg nincs az útvonal és mindhárom fájl beállítva.</span></html>");
+    private final JLabel taHelp = new JLabel(getLabelText()) {
+        
+        /**
+         * A preferált méret 400 pixel széles és hosszban az eredeti.
+         * Így az ablakméret hosszúságban az 1 soros szövegekhez áll be.
+         */
+        @Override
+        public Dimension getPreferredSize() {
+            Dimension d = super.getPreferredSize();
+            return new Dimension(400, d.height);
+        }
+        
+    };
     
+    /**
+     * Konstruktor.
+     */
     public ConfigHelpDialog(Window owner) {
-        super(owner, "Súgó"); // szülő és címsor szöveg beállítása
+        super(owner, getString("help")); // szülő és címsor szöveg beállítása
         setDefaultCloseOperation(HIDE_ON_CLOSE); // bezáráskor elrejtődés
         setModalityType(ModalityType.APPLICATION_MODAL); // modális dialógus
         
@@ -37,8 +53,15 @@ public class ConfigHelpDialog extends JDialog implements RelocalizableWindow {
         add(sp); // scrollpane hozzáadása az ablakhoz
         
         pack(); // minimális méret beállítása és ...
-        setMinimumSize(new Dimension(getSize().width + 30, 1)); // ... az ablakmagasság csak ennél nagyobb lehet
+        setMinimumSize(new Dimension(400, 50)); // ... az ablakmagasság csak ennél nagyobb lehet
         setLocationRelativeTo(owner); // szülő ablak szerint középre igazítás
+    }
+    
+    /**
+     * Megadja a súgó HTML kódját.
+     */
+    private String getLabelText() {
+        return "<html><span style=\"font-size: 11px\"><p style=\"margin: 5px 0px 5px 0px\"><b>" + getString("path") + "</b></p>" + getString("help_path") + "<p style=\"margin: 5px 0px 5px 0px\"><b>" + getString("certificate") + "</b></p><p style=\"margin: 0px 0px 5px 0px\">" + getString("help_certificate1") + "</p>" + getString("help_certificate2") + ":<br>- " + getString("certifier") + " <i>(" + getString("ca_certificate") + ")</i><br>- " + getString("certificate") + " <i>(" + getString("public_key") + ")</i><br>- " + getString("key") + " <i>(" + getString("private_key") + ")</i><p style=\"margin: 5px 0px 5px 0px\"><b>" + getString("what_is_it") + "</b></p>" + getString("help_what_is_it") + "</span></html>";
     }
     
     /**
@@ -47,7 +70,8 @@ public class ConfigHelpDialog extends JDialog implements RelocalizableWindow {
      */
     @Override
     public void relocalize() {
-        // TODO
+        setTitle(getString("help"));
+        taHelp.setText(getLabelText());
     }
     
 }

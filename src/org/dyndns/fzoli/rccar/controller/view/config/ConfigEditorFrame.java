@@ -20,7 +20,6 @@ import java.util.regex.Pattern;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.JLabel;
@@ -121,7 +120,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     /**
      * Súgó ablak.
      */
-    private final JDialog dialogHelp = new ConfigHelpDialog(this);
+    private final ConfigHelpDialog dialogHelp = new ConfigHelpDialog(this);
     
     /**
      * Crt fájlszűrő.
@@ -472,6 +471,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
         btHelp.setText(getString("help"));
         btPasswordReset.setText(getString("delete"));
         fpCa.setText(getString("certifier"));
+        dialogHelp.relocalize();
     }
     
     /**

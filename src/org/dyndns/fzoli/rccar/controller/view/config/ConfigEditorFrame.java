@@ -548,7 +548,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
      * @param force true esetén kényszerített
      */
     public void setForce(boolean force) {
-        if (force != force) {
+        if (this.force != force) {
             this.force = force;
             BT_CANCEL.setText(getString(force ? "exit" : "cancel"));
         }

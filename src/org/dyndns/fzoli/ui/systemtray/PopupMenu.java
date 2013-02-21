@@ -26,4 +26,10 @@ public interface PopupMenu extends Visibility {
      */
     public void addCheckboxMenuItem(String text, boolean checked, final Runnable r);
     
+    /**
+     * A menü megszüntetése.
+     * Felszabadítja az erőforrásokat.
+     */
+    public void dispose();
+    
 }

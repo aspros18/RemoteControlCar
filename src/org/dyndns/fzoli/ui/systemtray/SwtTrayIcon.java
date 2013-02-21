@@ -62,7 +62,7 @@ class SwtTrayIcon implements TrayIcon {
     @Override
     public void removePopupMenu() {
         if (menu != null) {
-            menu.setVisible(false);
+            menu.dispose();
             menu = null;
         }
     }

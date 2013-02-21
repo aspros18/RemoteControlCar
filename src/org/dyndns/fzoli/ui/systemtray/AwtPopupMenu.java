@@ -24,6 +24,11 @@ class AwtPopupMenu implements PopupMenu {
     }
 
     @Override
+    public void dispose() {
+        setVisible(false);
+    }
+
+    @Override
     public void setVisible(boolean b) {
         if (visible ^ b) {
             if (b) icon.setPopupMenu(menu);

@@ -50,6 +50,20 @@ class SwtPopupMenu implements PopupMenu {
     }
     
     @Override
+    public void dispose() {
+        display.syncExec(new Runnable() {
+
+            @Override
+            public void run() {
+                item.removeListener(SWT.MenuDetect, l);
+                menu.setVisible(false);
+                menu.dispose();
+            }
+            
+        });
+    }
+    
+    @Override
     public void setVisible(final boolean b) {
         if (visible ^ b) {
             visible = b;

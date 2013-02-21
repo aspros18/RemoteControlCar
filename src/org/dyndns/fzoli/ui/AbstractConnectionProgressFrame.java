@@ -128,7 +128,7 @@ public abstract class AbstractConnectionProgressFrame extends JFrame implements 
      */
     @Override
     public boolean needRepack(Rectangle r) {
-        return true;
+        return getPreferredSize().width > r.width;
     }
     
     /**

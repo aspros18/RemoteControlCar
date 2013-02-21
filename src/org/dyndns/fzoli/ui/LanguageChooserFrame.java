@@ -12,7 +12,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
@@ -151,12 +154,34 @@ public abstract class LanguageChooserFrame extends JFrame {
         // ha nincs megadva alapértelmezett nyelv, rendszernyelv használata
         def = def == null ? Locale.getDefault() : def;
         
-        // nyelvek betöltése és legördülő lista feltöltése
+        // nyelvek betöltése egy listába
+        ArrayList<Locale> l = new ArrayList<Locale>();
         MAP_LOCALES = getBundleLanguages(pkg, name, locales);
         Iterator<Locale> it = MAP_LOCALES.keySet().iterator();
         while (it.hasNext()) {
-            MODEL_LOCALES.addElement(it.next());
+            l.add(it.next());
         }
+        
+        // a feltöltött lista rendezése a megjelenő felirat szerint
+        Collections.sort(l, new Comparator<Locale>() {
+
+            @Override
+            public int compare(Locale o1, Locale o2) {
+                return getLocaleDisplayLanguage(o1).compareTo(getLocaleDisplayLanguage(o2));
+            }
+            
+        });
+        
+        // a legördülő lista feltöltése
+        for (Locale locale : l) {
+            MODEL_LOCALES.addElement(locale);
+        }
+        
+        // a lista kiürítése
+        l.clear();
+        
+        // ha üres a lista, disabled lesz a komponens
+        CB_LOCALES.setEnabled(MODEL_LOCALES.getSize() > 0);
         
         // ha a listában nem szerepelt a megadott érték, akkor a rendszernyelv használata
         if (MODEL_LOCALES.getIndexOf(def) == -1) {

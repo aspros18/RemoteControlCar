@@ -300,7 +300,7 @@ public class Main {
      * Létrehoz egy szótárat a kért nyelvhez és az UIManager-ben megadott, több helyen is használt szövegeket beállítja.
      */
     private static ResourceBundle createResource(Locale locale) {
-        return UIUtil.createResource("bridge_lng", locale, false);
+        return UIUtil.createResource("org.dyndns.fzoli.rccar.l10n.bridge", locale, false);
     }
     
     /**

@@ -424,7 +424,7 @@ public class Main {
      * Létrehoz egy szótárat a kért nyelvhez és az UIManager-ben megadott, több helyen is használt szövegeket beállítja.
      */
     private static ResourceBundle createResource(Locale locale) {
-        return UIUtil.createResource("controller_lng", locale, true);
+        return UIUtil.createResource("org.dyndns.fzoli.rccar.l10n.controller", locale, true);
     }
     
     /**
@@ -492,7 +492,7 @@ public class Main {
                 // előinicializálom az ablakokat, míg a nyitóképernyő fent van,
                 // hogy később ne menjen el ezzel a hasznos idő
                 // a nyelvkiválasztó ablakkal kezdem, mivel a konfig-szerkesztő ablak használja a referenciáját
-                LNG_FRAME = new LanguageChooserFrame(R.getIconImage(), "controller_lng", CONFIG.getLanguage(), Locale.ENGLISH, new Locale("hu")) {
+                LNG_FRAME = new LanguageChooserFrame(R.getIconImage(), "org.dyndns.fzoli.rccar.l10n", "controller", CONFIG.getLanguage(), Locale.ENGLISH, new Locale("hu")) {
 
                     /**
                      * Ha a nyelv megváltozott, szótár cseréje, feliratok lecserélése és az új nyelv elmentése.

@@ -61,14 +61,39 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
          * @param text a címke szövege
          */
         protected JLabel createLabel(final String text) {
-            final JLabel lbSizer = new JLabel("<html><body style=\"width: 180px\">" + text + "</body></html>");
-            return new JLabel("<html>" + text + "</html>") {
+            return new JLabel(createLabelText(text)) {
 
+                /**
+                 * A kívánt szélesség generálásában segít.
+                 */
+                private JLabel lbSizer = createSizer();
+                
+                /**
+                 * Miután módosult a szövege a címkének,
+                 * újragenerálja a szélességet megadó címkét.
+                 */
+                @Override
+                public void setText(String text) {
+                    super.setText(text);
+                    lbSizer = createSizer();
+                }
+                
+                /**
+                 * A kívánt szélesség 180 pixel körül van, a magasság változatlan.
+                 */
                 @Override
                 public Dimension getPreferredSize() {
                     Dimension d1 = super.getPreferredSize();
                     Dimension d2 = lbSizer.getPreferredSize();
                     return new Dimension(Math.min(d1.width, d2.width), d1.height);
+                }
+                
+                /**
+                 * Gyárt egy címként, ami szélességében limitálva van 180 pixelre.
+                 * A címke ezt a panelt használja kívánt szélességének megadására.
+                 */
+                private JLabel createSizer() {
+                    return new JLabel("<html><body style=\"width: 180px\">" + text + "</body></html>");
                 }
                 
             };
@@ -149,6 +174,11 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     private final Config CONFIG;
     
     /**
+     * Magyarázó szöveget megjelenítő címke.
+     */
+    private JLabel lbAddressSum, lbPasswordResetSum, lbLanguageChooserSum;
+    
+    /**
      * Jelszótörlő gomb.
      */
     private final JButton BT_PASSWORD_RESET = new JButton(getString("delete")) {
@@ -198,7 +228,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     /**
      * A tanúsítvány fájl tallózó panele.
      */
-    private final FilePanel FP_CERT = new ConfigFilePanel(this, "Tanúsítvány") {
+    private final FilePanel FP_CERT = new ConfigFilePanel(this, getString("certificate")) {
         {
             setFileFilter(fnefCrt);
         }
@@ -207,7 +237,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     /**
      * A tanúsítvány kulcs-fájl tallózó panele.
      */
-    private final FilePanel FP_KEY = new ConfigFilePanel(this, "Kulcs") {
+    private final FilePanel FP_KEY = new ConfigFilePanel(this, getString("key")) {
         {
             setFileFilter(fnefKey);
         }
@@ -292,7 +322,8 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
             
             c.gridy = 0; // nulladik sor
             c.gridwidth = 2; // két oszlopot foglal el a magyarázat
-            add(createLabel("Ezen a lapfülön állíthatja be a híd szervernek az elérési útvonalát."), c);
+            lbAddressSum = createLabel(getString("sum_address"));
+            add(lbAddressSum, c);
             c.gridwidth = 1; // a többi elem egy oszlopot foglal el
             
             c.gridy = 1; // első sor (1, 1)
@@ -324,7 +355,8 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
             
             c.insets = new Insets(5, 5, 5, 5); // 5 pixeles margó
             c.fill = GridBagConstraints.HORIZONTAL; // teljes helykitöltés horizontálisan (sorkitöltés)
-            add(createLabel("Ezen a lapfülön törölheti a tanúsítvány jelszavát, ha azt régebben megadta."), c); // üzenet hozzáadása a panelhez
+            lbPasswordResetSum = createLabel(getString("sum_password_reset"));
+            add(lbPasswordResetSum, c); // üzenet hozzáadása a panelhez
             
             c.gridy = 1; // a szöveg alá kerül a törlés gomb
             c.insets = new Insets(0, 5, 5, 5); // 5 pixeles margó mindenhol, kivéve felül
@@ -345,7 +377,8 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
             
             c.insets = new Insets(5, 5, 5, 5); // 5 pixeles margó
             c.fill = GridBagConstraints.HORIZONTAL; // teljes helykitöltés horizontálisan (sorkitöltés)
-            add(createLabel("Ezen a lapfülön kiválaszthatja a használni kívánt nyelvet."), c); // üzenet hozzáadása a panelhez
+            lbLanguageChooserSum = createLabel(getString("sum_language_chooser"));
+            add(lbLanguageChooserSum, c); // üzenet hozzáadása a panelhez
             
             c.gridy = 1; // a szöveg alá kerül a törlés gomb
             c.insets = new Insets(0, 5, 5, 5); // 5 pixeles margó mindenhol, kivéve felül
@@ -471,13 +504,18 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
         BT_CANCEL.setText(getString(force ? "exit" : "cancel"));
         BT_HELP.setText(getString("help"));
         BT_PASSWORD_RESET.setText(getString("delete"));
-        FP_CA.setText(getString("certifier"));
         DIALOG_HELP.relocalize();
         fnefCrt = createCertificateFilter("certificate", "crt");
         fnefKey = createCertificateFilter("certificate_key", "key");
         FP_CA.setFileFilter(fnefCrt);
         FP_CERT.setFileFilter(fnefCrt);
         FP_KEY.setFileFilter(fnefKey);
+        FP_CA.setText(getString("certifier"));
+        FP_CERT.setText(getString("certificate"));
+        FP_KEY.setText(getString("key"));
+        lbAddressSum.setText(createSummaryText("sum_address"));
+        lbPasswordResetSum.setText(createSummaryText("sum_password_reset"));
+        lbLanguageChooserSum.setText(createSummaryText("sum_language_chooser"));
     }
     
     /**
@@ -706,6 +744,20 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
                     ;
             }
         }
+    }
+    
+    /**
+     * HTML tegek közé teszi a szöveget.
+     */
+    private static String createLabelText(String text) {
+        return "<html>" + text + "</html>";
+    }
+    
+    /**
+     * Szöveget gyárt a magyarázat címkékhez a szótár kód alapján.
+     */
+    private static String createSummaryText(String key) {
+        return "<html>" + getString(key) + "</html>";
     }
     
     /**

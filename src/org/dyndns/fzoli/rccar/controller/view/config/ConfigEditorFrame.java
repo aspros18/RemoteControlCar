@@ -268,6 +268,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    dialogHelp.setLocationRelativeTo(ConfigEditorFrame.this);
                     dialogHelp.setVisible(true);
                 }
                 

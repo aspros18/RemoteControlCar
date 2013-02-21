@@ -183,7 +183,9 @@ public class OptionPane extends JOptionPane {
      * @param showOnTaskbar true esetén megjelenik a dialógus a tálcán is
      */
     public static void showMessageDialog(Image icon, String message, String title, int messageType, boolean showOnTaskbar) {
-        showMessageDialog(createDummyFrame(icon, showOnTaskbar ? title : null), message, title, messageType);
+        JFrame dummy = createDummyFrame(icon, showOnTaskbar ? title : null);
+        showMessageDialog(dummy, message, title, messageType);
+        dummy.dispose();
     }
     
     /**

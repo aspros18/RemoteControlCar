@@ -61,7 +61,7 @@ public class ConfigHelpDialog extends JDialog implements RelocalizableWindow {
      * Megadja a súgó HTML kódját.
      */
     private String getLabelText() {
-        return "<html><span style=\"font-size: 11px\"><p style=\"margin: 5px 0px 5px 0px\"><b>" + getString("path") + "</b></p>" + getString("help_path") + "<p style=\"margin: 5px 0px 5px 0px\"><b>" + getString("certificate") + "</b></p><p style=\"margin: 0px 0px 5px 0px\">" + getString("help_certificate1") + "</p>" + getString("help_certificate2") + ":<br>- " + getString("certifier") + " <i>(" + getString("ca_certificate") + ")</i><br>- " + getString("certificate") + " <i>(" + getString("public_key") + ")</i><br>- " + getString("key") + " <i>(" + getString("private_key") + ")</i><p style=\"margin: 5px 0px 5px 0px\"><b>" + getString("what_is_it") + "</b></p>" + getString("help_what_is_it") + "</span></html>";
+        return "<html><span style=\"font-size: 11px\"><p style=\"margin: 5px 0px 5px 0px\"><b>" + getString("path") + "</b></p>" + getString("help_path") + "<p style=\"margin: 5px 0px 5px 0px\"><b>" + getString("certificate") + "</b></p><p style=\"margin: 0px 0px 5px 0px\">" + getString("help_certificate1") + "</p>" + getString("help_certificate2") + ":<br>- " + getString("certifier") + " <i>(" + getString("ca_certificate") + ")</i><br>- " + getString("certificate") + " <i>(" + getString("public_key") + ")</i><br>- " + getString("key") + " <i>(" + getString("private_key") + ")</i><p style=\"margin: 5px 0px 5px 0px\"><b>" + getString("what_is_this") + "</b></p>" + getString("help_what_is_this") + "</span></html>";
     }
     
     /**

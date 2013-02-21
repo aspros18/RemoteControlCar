@@ -179,6 +179,11 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     private JLabel lbAddressSum, lbPasswordResetSum, lbLanguageChooserSum;
     
     /**
+     * Címke egy szerver paraméterhez.
+     */
+    private JLabel lbServerAddress, lbServerPort;
+    
+    /**
      * Jelszótörlő gomb.
      */
     private final JButton BT_PASSWORD_RESET = new JButton(getString("delete")) {
@@ -327,10 +332,12 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
             c.gridwidth = 1; // a többi elem egy oszlopot foglal el
             
             c.gridy = 1; // első sor (1, 1)
-            add(new JLabel("Szerver cím:"), c);
+            lbServerAddress = new JLabel(getString("server_address") + ':');
+            add(lbServerAddress, c);
             
             c.gridy = 2; // második sor (1, 2)
-            add(new JLabel("Szerver port:"), c);
+            lbServerPort = new JLabel(getString("server_port") + ':');
+            add(lbServerPort, c);
             
             c.gridx = 2; // második oszlop
             c.weightx = 1; // kitölti a maradék helyet
@@ -505,6 +512,8 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
         BT_HELP.setText(getString("help"));
         BT_PASSWORD_RESET.setText(getString("delete"));
         DIALOG_HELP.relocalize();
+        lbServerAddress.setText(getString("server_address") + ':');
+        lbServerPort.setText(getString("server_port") + ':');
         fnefCrt = createCertificateFilter("certificate", "crt");
         fnefKey = createCertificateFilter("certificate_key", "key");
         FP_CA.setFileFilter(fnefCrt);

@@ -125,6 +125,16 @@ public class Main {
             // szeparátor hozzáadása a menühöz
             SystemTrayIcon.addMenuSeparator();
 
+            // szerző opció hozzáadása
+            SystemTrayIcon.addMenuItem(getString("author"), new Runnable() {
+
+                @Override
+                public void run() {
+                    UIUtil.showAuthorDialog(R.getBridgeImage());
+                }
+                
+            });
+            
             // kilépés opció hozzáadása
             SystemTrayIcon.addMenuItem(getString("exit"), new Runnable() {
 

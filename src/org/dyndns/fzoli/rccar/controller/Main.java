@@ -206,7 +206,7 @@ public class Main {
         if (SystemTrayIcon.init(!isNativeSwingAvailable()) && SystemTrayIcon.isSupported()) {
             // az ikon beállítása
             if (setIcon) SystemTrayIcon.setIcon(getString("app_name"), R.getIconImageStream());
-
+            
             // nyelv választó opció hozzáadása
             String lngText = getString("language");
             if (!lngText.equalsIgnoreCase("language")) lngText += " (language)";
@@ -238,6 +238,16 @@ public class Main {
             //szeparátor hozzáadása
             SystemTrayIcon.addMenuSeparator();
 
+            // szerző opció hozzáadása
+            SystemTrayIcon.addMenuItem(getString("author"), new Runnable() {
+
+                @Override
+                public void run() {
+                    UIUtil.showAuthorDialog(R.getIconImage());
+                }
+                
+            });
+            
             // kilépés opció hozzáadása
             SystemTrayIcon.addMenuItem(getString("exit"), CALLBACK_EXIT);
         }

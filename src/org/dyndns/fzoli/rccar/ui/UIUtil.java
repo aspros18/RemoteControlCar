@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import javax.swing.JOptionPane;
 import static javax.swing.UIManager.getString;
 import static javax.swing.UIManager.put;
 import org.dyndns.fzoli.ui.FilePanel;
@@ -19,7 +20,8 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
      * Kulcs a lokalizált szöveghez.
      */
     public static final String KEY_CERT_LOAD_ERROR = "MobileRC.certLoadError",
-                               KEY_CERT_ENTER_PASSWORD = "MobileRC.certEnterPassword";
+                               KEY_CERT_ENTER_PASSWORD = "MobileRC.certEnterPassword",
+                               KEY_AUTHOR = "MobileRC.author", KEY_NEPTUN_ID = "MobileRC.neptunId";
     
     /**
      * Az alapértelmezett szövegek beállítása.
@@ -27,6 +29,8 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
     static {
         init(KEY_CERT_LOAD_ERROR, "Failed to load the certification.");
         init(KEY_CERT_ENTER_PASSWORD, "Enter the password of the certification:");
+        init(KEY_NEPTUN_ID, "Neptun id");
+        init(KEY_AUTHOR, "Author");
     }
     
     /**
@@ -55,6 +59,8 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
                 }
 
             };
+            put(UIUtil.KEY_AUTHOR, res.getString("author"));
+            put(UIUtil.KEY_NEPTUN_ID, res.getString("neptun_id"));
             put(UIUtil.KEY_CERT_LOAD_ERROR, res.getString("cert_load_error"));
             put(UIUtil.KEY_CERT_ENTER_PASSWORD, res.getString("cert_enter_password"));
             put(UncaughtExceptionHandler.KEY_UNEXPECTED_ERROR, res.getString("unexpected_error"));
@@ -80,6 +86,14 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
             if (locale == Locale.ENGLISH) throw ex;
             return createResource(baseName, Locale.ENGLISH, fileChooser);
         }
+    }
+    
+    /**
+     * Információt jelenít meg a program szerzőjéről.
+     * @param a dialógus ikonja
+     */
+    public static void showAuthorDialog(Image icon) {
+        OptionPane.showMessageDialog(icon, getString(KEY_AUTHOR) + ": Farkas Zoltán\n" + getString(KEY_NEPTUN_ID)+": DZ54IQ", getString(KEY_AUTHOR), JOptionPane.INFORMATION_MESSAGE, true);
     }
     
     /**

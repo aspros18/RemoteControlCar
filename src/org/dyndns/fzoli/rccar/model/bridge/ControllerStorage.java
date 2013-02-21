@@ -293,8 +293,8 @@ public class ControllerStorage extends Storage<ControllerData> {
          * @param s a vezérlő, ami vagy megkapta a vezérlést, vagy elvesztette
          * @param get true esetén megkapta a vezérlést, egyébként elvesztette
          */
-        private void logControllerChange(ControllerStorage s, boolean get) { // TODO: lokalizálás
-            ConnectionAlert.logMessage("", "[" + getHostStorage().getName() + "] " + (get ? "járműnek az új vezérlője" : "járművet már nem vezérli") + " [" + s.getName() + "]", TrayIcon.IconType.INFO, false);
+        private void logControllerChange(ControllerStorage s, boolean get) {
+            ConnectionAlert.logMessage("", "[" + getHostStorage().getName() + "] " + (get ? "=>" : "<=") + " [" + s.getName() + "]", TrayIcon.IconType.INFO, false);
         }
         
         /**

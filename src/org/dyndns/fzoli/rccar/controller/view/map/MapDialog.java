@@ -388,7 +388,6 @@ public class MapDialog extends AbstractDialog {
      */
     @Override
     public void relocalize() {
-        // TODO
         setTitle(getString("map"));
         LB_LOADING.setText(getString("loading"));
         LB_WARN.setText(getWarningLabelText());

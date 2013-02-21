@@ -482,7 +482,7 @@ public class Main {
                 // előinicializálom az ablakokat, míg a nyitóképernyő fent van,
                 // hogy később ne menjen el ezzel a hasznos idő
                 // a nyelvkiválasztó ablakkal kezdem, mivel a konfig-szerkesztő ablak használja a referenciáját
-                LNG_FRAME = new LanguageChooserFrame(R.getIconImage(), "controller_lng", CONFIG.getLanguage()) {
+                LNG_FRAME = new LanguageChooserFrame(R.getIconImage(), "controller_lng", CONFIG.getLanguage(), Locale.ENGLISH) {
 
                     /**
                      * Ha a nyelv megváltozott, szótár cseréje, feliratok lecserélése és az új nyelv elmentése.

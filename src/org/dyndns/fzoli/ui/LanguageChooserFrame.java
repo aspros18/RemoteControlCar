@@ -12,6 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
@@ -119,9 +120,10 @@ public abstract class LanguageChooserFrame extends JFrame {
      * @param icon az ablak ikonja
      * @param name a {@code properties} fájlok kezdőneve (a ResourceBundle baseName paramétere)
      * @param def az alapértelmezett nyelv
+     * @param locales az elérhető nyelvek listája (ami bővülhet, ha talál még több nyelvet a program)
      */
-    public LanguageChooserFrame(Image icon, String name, Locale def) {
-        this(icon, "", name, def);
+    public LanguageChooserFrame(Image icon, String name, Locale def, Locale... locales) {
+        this(icon, "", name, def, locales);
     }
     
     /**
@@ -141,19 +143,32 @@ public abstract class LanguageChooserFrame extends JFrame {
      * @param pkg a csomag neve, ahol a {@code properties} fájlok vannak
      * @param name a {@code properties} fájlok kezdőneve (a ResourceBundle baseName paramétere)
      * @param def az alapértelmezett nyelv
+     * @param locales az elérhető nyelvek listája (ami bővülhet, ha talál még több nyelvet a program)
      */
-    public LanguageChooserFrame(Image icon, String pkg, String name, Locale def) {
+    public LanguageChooserFrame(Image icon, String pkg, String name, Locale def, Locale... locales) {
         super("Languages");
         
+        // ha nincs megadva alapértelmezett nyelv, rendszernyelv használata
+        def = def == null ? Locale.getDefault() : def;
+        
         // nyelvek betöltése és legördülő lista feltöltése
-        MAP_LOCALES = getBundleLanguages(pkg, name);
+        MAP_LOCALES = getBundleLanguages(pkg, name, locales);
         Iterator<Locale> it = MAP_LOCALES.keySet().iterator();
         while (it.hasNext()) {
             MODEL_LOCALES.addElement(it.next());
         }
         
-        // az alapértelmezett nyelv kijelölése
-        CB_LOCALES.setSelectedItem(def == null ? Locale.getDefault() : def);
+        // ha a listában nem szerepelt a megadott érték, akkor a rendszernyelv használata
+        if (MODEL_LOCALES.getIndexOf(def) == -1) {
+            def = Locale.getDefault();
+            // ha a rendszernyelv se szerepel a listában, akkor az elérhető nyelvek közül az első lesz használva
+            if (locales.length > 0 && MODEL_LOCALES.getIndexOf(def) == -1) {
+                def = locales[0];
+            }
+        }
+        
+        // a kezdőnyelv kijelölése
+        CB_LOCALES.setSelectedItem(def);
         lastSelection = CB_LOCALES.getSelectedItem();
         
         // felület inicializálása
@@ -237,8 +252,12 @@ public abstract class LanguageChooserFrame extends JFrame {
      * @param bundlepackage a csomag neve, amiben a resource fájlok vannak
      * @param bundlename a ResourceBundle baseName paramétere
      */
-    public static Map<Locale, String> getBundleLanguages(String bundlepackage, String bundlename) {
-        Set<String> lngs = getBundleLngs(bundlepackage, bundlename);
+    public static Map<Locale, String> getBundleLanguages(String bundlepackage, String bundlename, Locale... def) {
+        String[] defKeys = new String[def.length];
+        for (int i = 0; i < def.length; i++) {
+            defKeys[i] = def[i].getLanguage();
+        }
+        Set<String> lngs = getBundleLngs(bundlepackage, bundlename, defKeys);
         Map<Locale, String> res = new HashMap<Locale, String>();
         for (Locale l : Locale.getAvailableLocales()) {
             for (String lng : lngs) {
@@ -279,23 +298,29 @@ public abstract class LanguageChooserFrame extends JFrame {
      * Forrás: http://stackoverflow.com/questions/2685907/list-all-available-resourcebundle-files
      * @param bundlepackage a csomag neve, amiben a resource fájlok vannak
      * @param bundlename a ResourceBundle baseName paramétere
+     * @param def az alapértelmezett nyelvek kódjai, amik keresés nélkül hozzáadódnak a felsoroláshoz
      */
-    private static Set<String> getBundleLngs(final String bundlepackage, final String bundlename) {
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        File root = new File(loader.getResource(bundlepackage.replace('.', '/')).getFile());
-        
-        File[] files = root.listFiles(new FilenameFilter() {
-            
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.matches("^" + bundlename + "(_\\w{2}(_\\w{2})?)?\\.properties$");
-            }
-            
-        });
+    private static Set<String> getBundleLngs(final String bundlepackage, final String bundlename, String... def) {
+        Set<String> languages = new TreeSet<String>(Arrays.asList(def));
+        try {
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            File root = new File(loader.getResource(bundlepackage.replace('.', '/')).getFile());
 
-        Set<String> languages = new TreeSet<String>();
-        for (File file : files) {
-            languages.add(file.getName().replaceAll("^" + bundlename + "(_)?|\\.properties$", ""));
+            File[] files = root.listFiles(new FilenameFilter() {
+
+                @Override
+                public boolean accept(File dir, String name) {
+                    return name.matches("^" + bundlename + "(_\\w{2}(_\\w{2})?)?\\.properties$");
+                }
+
+            });
+
+            for (File file : files) {
+                languages.add(file.getName().replaceAll("^" + bundlename + "(_)?|\\.properties$", ""));
+            }
+        }
+        catch (Exception ex) {
+            ;
         }
         return languages;
     }

@@ -417,10 +417,10 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
      */
     private final JTabbedPane TABBED_PANE = new JTabbedPane() {
         {
-            addTab("Útvonal", PANEL_ADDRESS);
-            addTab("Biztonság", PANEL_CERTIFICATE);
-            addTab("Jelszó", PANEL_PASSWORD_RESET);
-            addTab("Nyelv", PANEL_LANGUAGE_CHOOSER);
+            addTab(getString("path"), PANEL_ADDRESS);
+            addTab(getString("security"), PANEL_CERTIFICATE);
+            addTab(getString("password"), PANEL_PASSWORD_RESET);
+            addTab(getString("language"), PANEL_LANGUAGE_CHOOSER);
         }
     };
     
@@ -452,7 +452,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
      * Inicializálja az ablakot.
      */
     private void initFrame() {
-        setTitle("Kapcsolatbeállító"); // címsor szöveg beállítása
+        setTitle(getString("connection_settings")); // címsor szöveg beállítása
         setIconImage(R.getIconImage()); // címsor ikon beállítása
         setLayout(new GridBagLayout()); // elrendezésmenedzser megadása
         GridBagConstraints c = new GridBagConstraints();
@@ -506,6 +506,11 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
      */
     @Override
     public void relocalize() {
+        setTitle(getString("connection_settings"));
+        TABBED_PANE.setTitleAt(0, getString("path"));
+        TABBED_PANE.setTitleAt(1, getString("security"));
+        TABBED_PANE.setTitleAt(2, getString("password"));
+        TABBED_PANE.setTitleAt(3, getString("language"));
         BT_OK.setText(getString("ok"));
         BT_CANCEL.setText(getString(force ? "exit" : "cancel"));
         BT_HELP.setText(getString("help"));
@@ -524,6 +529,11 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
         lbAddressSum.setText(createSummaryText("sum_address"));
         lbPasswordResetSum.setText(createSummaryText("sum_password_reset"));
         lbLanguageChooserSum.setText(createSummaryText("sum_language_chooser"));
+        Dimension d = getPreferredSize();
+        setMinimumSize(d);
+        if (d.height > getHeight()) {
+            setSize(getWidth(), d.height);
+        }
     }
     
     /**

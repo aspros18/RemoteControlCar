@@ -506,7 +506,6 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
      */
     @Override
     public void relocalize() {
-        // TODO
         BT_OK.setText(getString("ok"));
         BT_CANCEL.setText(getString(force ? "exit" : "cancel"));
         BT_HELP.setText(getString("help"));

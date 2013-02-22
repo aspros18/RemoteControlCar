@@ -138,6 +138,7 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
                 Dimension size = lbImage.getPreferredSize();
                 Dimension size2 = PANEL_MSG.getPreferredSize();
                 PANEL_MSG.setBounds(size.width / 2 - size2.width / 2, size.height / 2 - size2.height / 2, size2.width, size2.height);
+                PANEL_MSG.repaint();
             }
         }
         

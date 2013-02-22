@@ -59,4 +59,6 @@
     <string name="run_in_background">Run in background</string>
     <string name="title_connecting">Please, wait</string>
     <string name="message_connecting">Connecting to the Bridge&#8230;</string>
+    <string name="author">Author</string>
+    <string name="neptun_id">Neptun id</string>
 </resources>

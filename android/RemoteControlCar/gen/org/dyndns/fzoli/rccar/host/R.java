@@ -928,8 +928,9 @@ containing a value of this type.
         public static final int ic_error=0x7f02006f;
         public static final int ic_launcher=0x7f020070;
         public static final int ic_main=0x7f020071;
-        public static final int ic_menu_preferences=0x7f020072;
-        public static final int ic_warning=0x7f020073;
+        public static final int ic_menu_info_details=0x7f020072;
+        public static final int ic_menu_preferences=0x7f020073;
+        public static final int ic_warning=0x7f020074;
     }
     public static final class id {
         public static final int abs__action_bar=0x7f050022;
@@ -982,6 +983,7 @@ containing a value of this type.
         public static final int file_key=0x7f05003c;
         public static final int homeAsUp=0x7f050006;
         public static final int listMode=0x7f050002;
+        public static final int menu_author=0x7f05003e;
         public static final int menu_settings=0x7f05003d;
         public static final int normal=0x7f050001;
         public static final int showCustom=0x7f050008;
@@ -1028,6 +1030,7 @@ containing a value of this type.
     }
     public static final class menu {
         public static final int activity_main=0x7f0d0000;
+        public static final int activity_setting=0x7f0d0001;
     }
     public static final class string {
         /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 
@@ -1076,6 +1079,7 @@ containing a value of this type.
          */
         public static final int abs__shareactionprovider_share_with_application=0x7f0a0009;
         public static final int app_name=0x7f0a000f;
+        public static final int author=0x7f0a004b;
         public static final int bridge_conn=0x7f0a0045;
         public static final int category_cam=0x7f0a0014;
         public static final int category_other=0x7f0a0015;
@@ -1093,6 +1097,7 @@ containing a value of this type.
         public static final int install_cam=0x7f0a0042;
         public static final int menu_settings=0x7f0a0010;
         public static final int message_connecting=0x7f0a004a;
+        public static final int neptun_id=0x7f0a004c;
         public static final int not_exists=0x7f0a0047;
         public static final int run_in_background=0x7f0a0048;
         public static final int sdcard_not_mounted=0x7f0a0043;

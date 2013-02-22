@@ -11,8 +11,11 @@ import org.dyndns.fzoli.android.preference.TextWatcherAdapter;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
+import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
@@ -197,11 +200,37 @@ public class SettingActivity extends SherlockPreferenceActivity {
 		initFilePreferences();
 	}
 	
+	/**
+	 * Amint hivatkoznak a menüre, az activity_setting.xml fájl alapján létrejön és megjelenik.
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getSupportMenuInflater().inflate(R.menu.activity_setting, menu);
+		return true;
+	}
+	
+	/**
+	 * Ha egy menüopcióra kattintottak.
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case android.R.id.home:
-				finish(); // vissza nyílra kattintva, activity bezárása
+			case R.id.menu_author: // információ a szerzőről
+				new AlertDialog.Builder(this)
+				.setTitle(R.string.author)
+				.setMessage(getString(R.string.author) + ": Farkas Zoltán\n" + getString(R.string.neptun_id) + ": DZ54IQ")
+				.setIcon(android.R.drawable.ic_dialog_info)
+				.setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}
+					
+				}).create().show(); // dialógus megjelenítése
+				break;
+			case android.R.id.home: // vissza nyíl
+				finish(); // activity bezárása
 		}
 		return super.onOptionsItemSelected(item);
 	}

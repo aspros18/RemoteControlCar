@@ -53,4 +53,6 @@
     <string name="run_in_background">Futtatás háttérben</string>
     <string name="title_connecting">Kérem, várjon</string>
     <string name="message_connecting">Kapcsolódás a Hídhoz&#8230;</string>
+    <string name="author">Szerző</string>
+    <string name="neptun_id">Neptun kód</string>
 </resources>

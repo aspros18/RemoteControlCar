@@ -251,8 +251,9 @@ int drawable abs__textfield_searchview_right_holo_light 0x7f02006e
 int drawable ic_error 0x7f02006f
 int drawable ic_launcher 0x7f020070
 int drawable ic_main 0x7f020071
-int drawable ic_menu_preferences 0x7f020072
-int drawable ic_warning 0x7f020073
+int drawable ic_menu_info_details 0x7f020072
+int drawable ic_menu_preferences 0x7f020073
+int drawable ic_warning 0x7f020074
 int id abs__action_bar 0x7f050022
 int id abs__action_bar_container 0x7f050021
 int id abs__action_bar_subtitle 0x7f050011
@@ -303,6 +304,7 @@ int id file_crt 0x7f05003b
 int id file_key 0x7f05003c
 int id homeAsUp 0x7f050006
 int id listMode 0x7f050002
+int id menu_author 0x7f05003e
 int id menu_settings 0x7f05003d
 int id normal 0x7f050001
 int id showCustom 0x7f050008
@@ -343,6 +345,7 @@ int layout activity_main 0x7f030017
 int layout sherlock_spinner_dropdown_item 0x7f030018
 int layout sherlock_spinner_item 0x7f030019
 int menu activity_main 0x7f0d0000
+int menu activity_setting 0x7f0d0001
 int string abs__action_bar_home_description 0x7f0a0000
 int string abs__action_bar_up_description 0x7f0a0001
 int string abs__action_menu_overflow_description 0x7f0a0002
@@ -359,6 +362,7 @@ int string abs__share_action_provider_share_with 0x7f0a0006
 int string abs__shareactionprovider_share_with 0x7f0a0008
 int string abs__shareactionprovider_share_with_application 0x7f0a0009
 int string app_name 0x7f0a000f
+int string author 0x7f0a004b
 int string bridge_conn 0x7f0a0045
 int string category_cam 0x7f0a0014
 int string category_other 0x7f0a0015
@@ -376,6 +380,7 @@ int string exists 0x7f0a0046
 int string install_cam 0x7f0a0042
 int string menu_settings 0x7f0a0010
 int string message_connecting 0x7f0a004a
+int string neptun_id 0x7f0a004c
 int string not_exists 0x7f0a0047
 int string run_in_background 0x7f0a0048
 int string sdcard_not_mounted 0x7f0a0043

@@ -218,7 +218,24 @@ public class Main {
                 BridgeHandler.setWarnEnabled(false);
                 ConnectionAlert.setLogEnabled(false);
             }
+            else {
+                showCommandLineHelp();
+            }
         }
+        else if (args.length > 0) {
+            showCommandLineHelp();
+        }
+    }
+    
+    /**
+     * Parancssoros súgót jelenít meg.
+     */
+    private static void showCommandLineHelp() {
+        System.out.println(getString("arg_msg0") + ':');
+        System.out.println("-v   " + getString("arg_msg1") + '.');
+        System.out.println("-vv  " + getString("arg_msg2") + '.');
+        System.out.println("-m   " + getString("arg_msg3") + '.');
+        System.exit(1);
     }
     
     /**

@@ -314,13 +314,14 @@ public abstract class LanguageChooserFrame extends JFrame {
      * A szöveg anyanyelvű és az első karaktere nagy karakter.
      */
     private static String getLocaleDisplayLanguage(Locale l) {
+        if (l == null) return "";
         String name = l.getDisplayLanguage();
         return Character.toUpperCase(name.charAt(0)) + name.substring(1);
     }
     
     /**
      * Megadja az elérhető nyelvek kódjait.
-     * Forrás: http://stackoverflow.com/questions/2685907/list-all-available-resourcebundle-files
+     * Forrás alap: http://stackoverflow.com/questions/2685907/list-all-available-resourcebundle-files
      * @param bundlepackage a csomag neve, amiben a resource fájlok vannak
      * @param bundlename a ResourceBundle baseName paramétere
      * @param def az alapértelmezett nyelvek kódjai, amik keresés nélkül hozzáadódnak a felsoroláshoz

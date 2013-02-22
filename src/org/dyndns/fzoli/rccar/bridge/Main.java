@@ -307,7 +307,7 @@ public class Main {
         catch (Exception ex) {
             setSystemLookAndFeel();
             ResourceBundle res = createResource(Locale.getDefault());
-            alert(VAL_ERROR, res.getString("msg_conf_error1") + LS + res.getString("msg_conf_error2"), System.err);
+            alert(res.getString("bridge_error"), res.getString("msg_conf_error1") + LS + res.getString("msg_conf_error2"), System.err);
             System.exit(1);
             return null;
         }

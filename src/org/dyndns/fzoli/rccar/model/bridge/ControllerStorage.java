@@ -170,7 +170,7 @@ public class ControllerStorage extends Storage<ControllerData> {
                     if (ControllerStorage.this == getHostStorage().getOwner()) setWantControl(false, false); // ha vezérli a járművet, vezérlés lemondása
                     else getHostStorage().getOwners().remove(ControllerStorage.this); // egyébként egyszerű törlés a várólistáról
                 }
-                setHostStorage(null); // nincs többi jármű kiválasztva a munkamenetben
+                setHostStorage(null); // nincs többé jármű kiválasztva a munkamenetben
                 getMessageProcess().sendMessage(ls); // a járműlista küldése, hogy a járműválasztó megjelenhessen
             }
         }
@@ -313,6 +313,11 @@ public class ControllerStorage extends Storage<ControllerData> {
     private HostStorage hostStorage;
     
     /**
+     * Megadja a vezérlő lekapcsolódásakor aktuális járműnek a munkamenet-referenciáját.
+     */
+    private HostStorage disconnectedHost = null;
+    
+    /**
      * Konstruktor a kezdeti paraméterekkel.
      * @param messageProcess a vezérlő kliens üzenetküldésre alkalmas kapcsolatfeldolgozója
      */
@@ -344,6 +349,32 @@ public class ControllerStorage extends Storage<ControllerData> {
         return hostStorage;
     }
 
+    /**
+     * Megadja, hogy van-e visszaállítható jármű a munkamenetben.
+     */
+    public boolean hasDisconnectedHost() {
+        return disconnectedHost != null;
+    }
+
+    /**
+     * Eltárolja az éppen aktuális jármű referenciáját.
+     * Kapcsolatbontáskor hívódik meg.
+     */
+    public void storeDisconnectedHost() {
+        disconnectedHost = getHostStorage();
+    }
+    
+    /**
+     * Visszaállítja a kapcsolatbontáskori járművet.
+     * Ha volt kiválasztva jármű, akkor kiválasztja.
+     */
+    public void restoreDisconnectedHost() {
+        if (disconnectedHost != null) {
+            setHostStorage(disconnectedHost);
+            disconnectedHost = null;
+        }
+    }
+    
     /**
      * A kiválasztott jármű tárolóját állítja be.
      * A {@link HostStorage#addController(ControllerStorage)} is frissítésre kerül.

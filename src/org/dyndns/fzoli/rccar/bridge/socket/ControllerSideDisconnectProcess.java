@@ -67,12 +67,16 @@ public class ControllerSideDisconnectProcess extends BridgeDisconnectProcess {
     }
 
     /**
-     * Ha a vezérlő lekapcsolódott a szerverről, és járműhöz tartozik, leválasztódik róla.
+     * Ha a vezérlő lekapcsolódott a szerverről, és járműhöz tartozik, leválasztódik róla
+     * és eltárolódik, hogy a legközelebbi kapcsolódáskor ne kelljen járművet választani újra.
      */
     @Override
     protected void onDisconnect(Exception ex) {
         ControllerStorage cs = getControllerStorage();
-        if (cs != null && cs.getHostStorage() != null) cs.setHostStorage(null);
+        if (cs != null && cs.getHostStorage() != null) {
+            cs.storeDisconnectedHost();
+            cs.setHostStorage(null);
+        }
         super.onDisconnect(ex);
     }
     

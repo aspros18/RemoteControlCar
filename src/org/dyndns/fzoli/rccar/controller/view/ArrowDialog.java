@@ -807,8 +807,8 @@ public class ArrowDialog extends AbstractDialog {
     @Override
     public void relocalize() {
         setTitle(getString("controller"));
-        ARROW_PANEL.lbSign.setText("sign");
-        ARROW_PANEL.lbTime.setText("time_left");
+        ARROW_PANEL.lbSign.setText(getString("sign"));
+        ARROW_PANEL.lbTime.setText(getString("time_left"));
     }
     
     private void setControlling(boolean b, boolean restoring) {

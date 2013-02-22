@@ -1,2 +1,2 @@
 #!/bin/bash
-java -classpath ui.jar org.dyndns.fzoli.rccar.bridge.Main
+java -classpath ui.jar org.dyndns.fzoli.rccar.bridge.Main "$@"

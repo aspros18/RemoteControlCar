@@ -490,7 +490,7 @@ public class ControllerStorage extends Storage<ControllerData> {
         d.setFullX(s.getHostData().isFullX());
         d.setFullY(s.getHostData().isFullY());
         d.setUp2Date(s.getHostData().isUp2Date());
-        d.setTimeout(s.getOwner() == null ? null : s.getTimeout());
+        d.setTimeout(s.getOwner() == null || !s.getHostData().isVehicleConnected() ? null : s.getTimeout());
         return d;
     }
     

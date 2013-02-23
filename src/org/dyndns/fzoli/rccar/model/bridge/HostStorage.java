@@ -384,9 +384,13 @@ public class HostStorage extends Storage<HostData> {
 
     /**
      * Beállítja, hogy a tárolóhoz tartozik-e élő kapcsolat.
+     * Ha tartozik vezérlő a járműhöz, akkor lekapcsolódás esetén a control task leáll, kapcsolódásakor meg elindul.
      */
     public void setConnected(boolean connected) {
         this.connected = connected;
+        if (getOwner() == null) return;
+        if (connected) getOwner().startControlTask();
+        else getOwner().stopControlTask(false);
     }
 
     /**

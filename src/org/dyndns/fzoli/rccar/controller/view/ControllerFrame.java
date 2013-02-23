@@ -12,6 +12,8 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -346,11 +348,33 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (getData().isControlling() == null || getData().isWantControl() == null) return;
-                getData().getSender().setWantControl(getData().isWantControl() && !getData().isControlling() ? false : !getData().isControlling());
+                setControlling();
             }
             
         });
+        
+        addKeyListener(new KeyAdapter() {
+
+            /**
+             * Shift + Enter leütésére a kliens üzen a Hídnak, hogy kéri/átadja a vezérlést.
+             */
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER && e.isShiftDown()) {
+                    setControlling();
+                }
+            }
+            
+        });
+    }
+    
+    /**
+     * A kliens üzen a Hídnak, hogy kéri/átadja a vezérlést.
+     */
+    private void setControlling() {
+        if (!btControl.isEnabled()) return;
+        if (getData().isControlling() == null || getData().isWantControl() == null) return;
+        getData().getSender().setWantControl(getData().isWantControl() && !getData().isControlling() ? false : !getData().isControlling());
     }
     
     /**

@@ -7,6 +7,8 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Collections;
@@ -133,14 +135,32 @@ public class HostSelectionFrame extends JFrame implements RelocalizableWindow {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                selected = true;
-                BT_SELECT.setEnabled(false);
-                ControllerModels.getData().getSender().setHostName(LIST.getSelectedValue());
+                selectVehicle();
             }
             
         });
+        LIST.addKeyListener(new KeyAdapter() {
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    selectVehicle();
+                }
+            }
+
+        });
     }
 
+    /**
+     * Járművet választ ki, ha van lehetőség jármű kiválasztására.
+     */
+    private void selectVehicle() {
+        if (!BT_SELECT.isEnabled()) return;
+        selected = true;
+        BT_SELECT.setEnabled(false);
+        ControllerModels.getData().getSender().setHostName(LIST.getSelectedValue());
+    }
+    
     /**
      * A felület feliratait újra beállítja.
      * Ha a nyelvet megváltoztatja a felhasználó, ez a metódus hívódik meg.

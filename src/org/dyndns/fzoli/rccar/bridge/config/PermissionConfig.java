@@ -66,6 +66,13 @@ public class PermissionConfig {
     }
     
     /**
+     * Megadja, hogy a konfigurációt tartalmazó fájlok olvashatóak-e.
+     */
+    public boolean canRead() {
+        return blocklist.canRead() && blacklist.canRead() && whitelist.canRead();
+    }
+    
+    /**
      * Megadja, hogy a tanúsítvány-név szerepel-e a tiltólistán.
      * @param name a tanúsítványnév
      */

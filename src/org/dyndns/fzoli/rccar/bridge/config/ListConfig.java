@@ -71,6 +71,14 @@ class ListConfig {
     }
     
     /**
+     * Megadja, hogy a konfigurációt tartalmazó fájl olvasható-e.
+     * @return true ha a fájl olvasható vagy nem létezik, egyébként false
+     */
+    public boolean canRead() {
+        return !FILE_CONFIG.exists() || (FILE_CONFIG.exists() && FILE_CONFIG.canRead());
+    }
+    
+    /**
      * Megadja, hogy a fájlban szerepel-e a felsorolásban az átadott érték.
      * @param value az átadott érték
      * @return true, ha szerepel a felsorolásban az érték, egyébként false

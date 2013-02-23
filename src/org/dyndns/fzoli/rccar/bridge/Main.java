@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
+import org.dyndns.fzoli.rccar.bridge.config.Permissions;
 import org.dyndns.fzoli.rccar.bridge.resource.R;
 import org.dyndns.fzoli.rccar.bridge.socket.BridgeHandler;
 import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.closeSplashScreen;
@@ -248,7 +249,7 @@ public class Main {
     private static SSLServerSocket createServerSocket(int count) {
         try {
             SSLServerSocket socket = SSLSocketUtil.createServerSocket(CONFIG.getPort(), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile(), CONFIG.getPassword());
-            logInfo(VAL_MESSAGE, getString("log_start"), !CONFIG.isQuiet());
+            logInfo(VAL_MESSAGE, getString("log_start"), !CONFIG.isQuiet() && Permissions.getConfig().canRead());
             return socket;
         }
         catch (KeyStoreException ex) {
@@ -332,6 +333,9 @@ public class Main {
             System.exit(1); // hibakóddal lép ki
         }
         if (CONFIG.isCorrect()) {
+            if (!Permissions.getConfig().canRead()) { // ha a jogosultságokat leíró fájl nem olvasható, figyelmezteti a felhasználót
+                SystemTrayIcon.showMessage(VAL_WARNING, getString("warn_without_permissions1") + ' ' + LS + getString("warn_without_permissions2"), IconType.WARNING);
+            }
             readArguments(args);
             runServer();
         }
@@ -363,6 +367,7 @@ public class Main {
                 if (CONFIG.getCAFile() == null) msg.append("- ").append(getString("msg_conf_incorrect4")).append('.').append(LS);
                 if (CONFIG.getCertFile() == null) msg.append("- ").append(getString("msg_conf_incorrect5")).append('.').append(LS);
                 if (CONFIG.getKeyFile() == null) msg.append("- ").append(getString("msg_conf_incorrect6")).append('.').append(LS);
+                msg.append(LS);
                 alert(VAL_ERROR, msg.toString(), System.err);
                 System.exit(1);
             }

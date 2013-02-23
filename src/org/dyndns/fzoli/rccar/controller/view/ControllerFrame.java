@@ -3,7 +3,6 @@ package org.dyndns.fzoli.rccar.controller.view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -31,6 +30,7 @@ import javax.swing.JSeparator;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.dyndns.fzoli.rccar.controller.ControllerModels.ClientControllerData;
@@ -137,18 +137,13 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
         @Override
         public void setText(String text) {
             super.setText(text);
-            EventQueue.invokeLater(new Runnable() {
-
-                @Override
-                public void run() {
-                    if (PANEL_MSG != null && lbImage != null) {
-                        Dimension size = lbImage.getPreferredSize();
-                        Dimension size2 = PANEL_MSG.getPreferredSize();
-                        PANEL_MSG.setBounds(size.width / 2 - size2.width / 2, size.height / 2 - size2.height / 2, size2.width, size2.height);
-                    }
-                }
-                
-            });
+            if (PANEL_MSG != null && lbImage != null) {
+                Dimension size = lbImage.getPreferredSize();
+                Dimension size2 = PANEL_MSG.getPreferredSize();
+                PANEL_MSG.setBounds(size.width / 2 - size2.width / 2, size.height / 2 - size2.height / 2, size2.width, size2.height);
+                PANEL_MSG.revalidate();
+                PANEL_MSG.repaint();
+            }
         }
         
     };
@@ -544,11 +539,19 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
      * {@link ClientControllerData#isVehicleAvailable()}
      */
     public void refreshBattery() {
-        boolean zero = getData().getControl() == null || getData().getControl().getX() == 0 && getData().getControl().getY() == 0;
-        boolean show = getData().isVehicleAvailable(true, false) && getData().getBatteryLevel() != null && zero;
-        pbAccu.setString(show ? (getString("battery") + ": " + getData().getBatteryLevel() + " %") : "");
-        if (show) pbAccu.setValue(getData().getBatteryLevel());
-        pbAccu.setIndeterminate(!show);
+        // setIndeterminate null pointer exceptiont okoz nagyritkán, ha nem az EDT-ben fut
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                boolean zero = getData().getControl() == null || getData().getControl().getX() == 0 && getData().getControl().getY() == 0;
+                boolean show = getData().isVehicleAvailable(true, false) && getData().getBatteryLevel() != null && zero;
+                pbAccu.setString(show ? (getString("battery") + ": " + getData().getBatteryLevel() + " %") : "");
+                if (show) pbAccu.setValue(getData().getBatteryLevel());
+                pbAccu.setIndeterminate(!show);
+            }
+            
+        });
     }
     
     /**

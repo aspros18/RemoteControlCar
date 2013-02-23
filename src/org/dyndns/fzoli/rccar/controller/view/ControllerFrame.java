@@ -3,6 +3,7 @@ package org.dyndns.fzoli.rccar.controller.view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -134,12 +135,18 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
         @Override
         public void setText(String text) {
             super.setText(text);
-            if (PANEL_MSG != null && lbImage != null) {
-                Dimension size = lbImage.getPreferredSize();
-                Dimension size2 = PANEL_MSG.getPreferredSize();
-                PANEL_MSG.setBounds(size.width / 2 - size2.width / 2, size.height / 2 - size2.height / 2, size2.width, size2.height);
-                PANEL_MSG.repaint();
-            }
+            EventQueue.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (PANEL_MSG != null && lbImage != null) {
+                        Dimension size = lbImage.getPreferredSize();
+                        Dimension size2 = PANEL_MSG.getPreferredSize();
+                        PANEL_MSG.setBounds(size.width / 2 - size2.width / 2, size.height / 2 - size2.height / 2, size2.width, size2.height);
+                    }
+                }
+                
+            });
         }
         
     };

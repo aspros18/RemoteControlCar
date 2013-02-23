@@ -356,12 +356,17 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
         addKeyListener(new KeyAdapter() {
 
             /**
-             * Shift + Enter leütésére a kliens üzen a Hídnak, hogy kéri/átadja a vezérlést.
+             * Shift+Enter / Shift+Backspace leütésére a kliens üzen a Hídnak, hogy kéri/átadja a vezérlést.
              */
             @Override
             public void keyReleased(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER && e.isShiftDown()) {
-                    setControlling();
+                if (e.isShiftDown()) {
+                    if (getData().isControlling() == null || !getData().isControlling()) {
+                        if (KeyEvent.VK_ENTER == e.getKeyCode()) setControlling();
+                    }
+                    else {
+                        if (KeyEvent.VK_BACK_SPACE == e.getKeyCode()) setControlling();
+                    }
                 }
             }
             

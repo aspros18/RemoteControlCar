@@ -1,0 +1,6 @@
+<WixLocalization Culture="hu-hu" xmlns="http://wixtoolset.org/schemas/v4/wxl">
+  <!-- Csak a lokalizációból hiányzó szövegrészletek definiálása. -->
+  <String Id="msierrSecureObjectsFailedCreateSD" Overridable="yes">Nem sikerült a biztonsági leíró létrehozása a [3]\[4] helyen, rendszerhiba: [2]</String>
+  <String Id="msierrSecureObjectsFailedSet" Overridable="yes">Nem sikerült a biztonsági leíró beállítása a [3] objektumon, rendszerhiba: [2]</String>
+  <String Id="msierrSecureObjectsUnknownType" Overridable="yes">Ismeretlen objektum típus [3], rendszerhiba: [2]</String>
+</WixLocalization>

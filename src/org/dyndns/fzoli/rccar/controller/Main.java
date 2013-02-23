@@ -39,7 +39,7 @@ public class Main {
     /**
      * Új sor jel.
      */
-    private static final String LS = System.getProperty("line.separator");
+    public static final String LS = System.getProperty("line.separator");
     
     /**
      * Callback, ami megjeleníti a kapcsolatbeállító ablakot.

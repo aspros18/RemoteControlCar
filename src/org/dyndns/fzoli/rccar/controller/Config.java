@@ -8,6 +8,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Locale;
 import org.dyndns.fzoli.resource.MD5Checksum;
+import org.dyndns.fzoli.ui.systemtray.SystemTrayIcon;
+import org.dyndns.fzoli.ui.systemtray.TrayIcon;
 
 /**
  * Ideiglenes konfiguráció a memóriában.
@@ -374,6 +376,7 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
             return true;
         }
         catch (Exception ex) {
+            SystemTrayIcon.showMessage(Main.getString("error"), Main.getString("config_save_error1") + ' ' + Main.LS + Main.getString("config_save_error2"), TrayIcon.IconType.ERROR);
             return false;
         }
     }

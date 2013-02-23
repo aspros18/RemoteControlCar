@@ -128,7 +128,7 @@
                 <Component Id='Manual' Guid='3C67AC75-39CA-4DE9-BDE5-BA52FF59720F'>
                     <File Id='Manual' Name='thesis.pdf' Source='thesis.pdf' KeyPath='yes'>
                         <!-- A Start menüből érhető el. -->
-                        <Shortcut Id='startmenuManual' Directory='ProgramMenuDir' Name='Mobile-RC dokumentáció' Advertise='yes' />
+                        <Shortcut Id='startmenuManual' Directory='ProgramMenuDir' Name='Mobile-RC dokumentáció' Icon="thesis.pdf" IconIndex="0" Advertise='yes' />
                     </File>
                 </Component>
 
@@ -193,6 +193,9 @@
     <!-- A szerver ikon is az exe fájlból van kiolvasva. -->
     <Icon Id="server.exe" SourceFile="server.exe" />
 
+    <!-- A dokumentáció ikonja. -->
+    <Icon Id="thesis.pdf" SourceFile="thesis.pdf" />
+    
     <UI>
         <!-- Olyan felületet ad, mely a lehető legtöbb beállítást tartalmazza. -->
         <UIRef Id="WixUI_MondoNoLicense" />

@@ -338,10 +338,22 @@ public class Main {
         else {
             final StringBuilder msg = new StringBuilder();
             if (CONFIG.isNew()) {
-                msg.append(getString("msg_conf_created1")).append(LS)
-                   .append(getString("msg_conf_created2")).append(LS).append(LS)
-                   .append(getString("msg_conf_created3")).append(':').append(LS).append(Config.FILE_CONFIG);
-                alert(VAL_MESSAGE, msg.toString(), System.out);
+                String title;
+                PrintStream out;
+                if (Config.FILE_CONFIG.exists()) {
+                    title = VAL_MESSAGE;
+                    out = System.out;
+                    msg.append(getString("msg_conf_created1")).append(LS)
+                       .append(getString("msg_conf_created2")).append(LS).append(LS)
+                       .append(getString("msg_conf_created3")).append(':').append(LS).append(Config.FILE_CONFIG);
+                }
+                else {
+                    title = VAL_ERROR;
+                    out = System.err;
+                    msg.append(getString("config_save_error1")).append(LS)
+                       .append(getString("config_save_error2"));
+                }
+                alert(title, msg.toString(), out);
                 System.exit(0);
             }
             else {

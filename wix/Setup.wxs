@@ -205,6 +205,9 @@
     <!-- A vezérlőpultból elérhető program-eltávolító ablak listájában látható ikon. -->
     <Property Id="ARPPRODUCTICON" Value="client.exe" />
 
+    <!-- A vezérlőpultból elérhető program-eltávolító ablak listájában látható súgó hivatkozás. -->
+    <Property Id="ARPHELPLINK" Value="https://github.com/fzoli/RemoteControlCar" />
+
   </Product>
 
   <!-- Egy olyan grafikus felületet leíró teg, mely megegyezik az eredeti WixUI_Mondo teggel, de ebből ki van hagyva a licensz elfogadó ablak. -->

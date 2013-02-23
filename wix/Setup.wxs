@@ -96,7 +96,7 @@
 
                         <!-- A szerver alkalmazást indító fájl elérhető az asztalról és a Start menüből is. -->
                         <Shortcut Id='startmenuServer' Directory="ProgramMenuDir" Name="Mobile-RC szerver" Icon="server.exe" IconIndex="0" WorkingDirectory='INSTALLDIR' Advertise='yes' />
-                        <Shortcut Id='desktopServer' Directory="DesktopFolder" Name="Mobile-RC híd" Icon="server.exe" IconIndex="0" WorkingDirectory='INSTALLDIR' Advertise='yes' />
+                        <Shortcut Id='desktopServer' Directory="DesktopFolder" Name="Mobile-RC Híd" Icon="server.exe" IconIndex="0" WorkingDirectory='INSTALLDIR' Advertise='yes' />
 
                     </File>
 

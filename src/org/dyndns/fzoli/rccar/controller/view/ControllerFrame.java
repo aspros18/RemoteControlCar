@@ -356,7 +356,7 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
             @Override
             public void keyReleased(KeyEvent e) {
                 if (e.isShiftDown()) {
-                    if (getData().isControlling() == null || !getData().isControlling()) {
+                    if ((getData().isControlling() == null || !getData().isControlling()) && (getData().isWantControl() == null || !getData().isWantControl())) {
                         if (KeyEvent.VK_ENTER == e.getKeyCode()) setControlling();
                     }
                     else {

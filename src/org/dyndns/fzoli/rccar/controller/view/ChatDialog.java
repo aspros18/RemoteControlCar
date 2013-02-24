@@ -222,8 +222,18 @@ public class ChatDialog extends AbstractDialog {
                             if (font == null) font = getFont();
                             g.setFont(font);
                             g.setColor(getForeground());
-                            // TODO: kicserélni megbízható osztályra
-                            SwingUtilities2.drawString(getComponent(), g, text, insets.left, insets.top + SwingUtilities2.getFontMetrics(c, g, font).getAscent());
+                            int x = insets.left;
+                            int y = insets.top + SwingUtilities2.getFontMetrics(c, g, font).getAscent();
+                            try {
+                                // TODO: kicserélni megbízható osztályra
+                                // a JLabel kódja alapján rajzolja ki a tool tip feliratát
+                                SwingUtilities2.drawString(getComponent(), g, text, x, y);
+                            }
+                            catch (Throwable t) {
+                                // ha nem sikerült kirajzolni (pl. a SwingUtilities2 osztályt eltávolították)
+                                // menti a menthetőt és "rondán" kirajzolja
+                                g.drawString(text, x, y);
+                            }
                         }
 
                     });

@@ -178,9 +178,13 @@ public class MapDialog extends AbstractDialog {
      */
     private static File createTmpDirectory() {
         try {
+            // megkísérli a rendszerhez igazított helyre létrehozni a tmp könyvtárat
             return Files.createTempDirectory("mobilerc").toFile();
         }
         catch (Throwable ex) {
+            // ha bármi okból nem sikerült létrehozni a tmp könyvtárat az ajánlott helyre
+            // pl. JRE7 alatt (mondjuk JRE6) a Files osztály nem létezik
+            // akkor használja a jelenlegi könyvtárat a tmp fájl létrehozásához
             return new File(System.getProperty("user.dir"), "tmp");
         }
     }

@@ -19,6 +19,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.Timer;
@@ -83,7 +84,7 @@ public class MapDialog extends AbstractDialog {
     /**
      * Ideiglenes könyvtár.
      */
-    private static final File TMP_DIR = new File(System.getProperty("user.dir"), "tmp");
+    private static final File TMP_DIR = createTmpDirectory();
     
     /**
      * A nyilat ábrázoló png kép helye az ideiglenes könyvtárban.
@@ -170,6 +171,18 @@ public class MapDialog extends AbstractDialog {
             }
             
         }));
+    }
+    
+    /**
+     * Ideiglenes könyvtárhoz ad referenciát.
+     */
+    private static File createTmpDirectory() {
+        try {
+            return Files.createTempDirectory("mobilerc").toFile();
+        }
+        catch (Throwable ex) {
+            return new File(System.getProperty("user.dir"), "tmp");
+        }
     }
     
     /**

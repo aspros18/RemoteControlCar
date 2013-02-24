@@ -2,7 +2,9 @@ package org.dyndns.fzoli.rccar.controller;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -41,8 +43,10 @@ class MemConfig {
 }
 
 /**
- * A vezérlő konfigurációját tölti be és menti el a felhasználó könyvtárába egy fájlba.
- * Ha a fájl nem létezik, létrehozza az alapértelmezett adatokkal.
+ * A vezérlő konfigurációját tölti be és menti el a felhasználó appdata könyvtárába egy fájlba.
+ * Az alkalmazásindító-fájl mellé tehető egy {@code controller.ser} nevű fájl,
+ * amiből az alapértelmezett Config objektum töltődik be, ha nem tartozik konfig a felhasználóhoz.
+ * Ha a felhasználóhoz tartozik konfiguráció, akkor az alapértelmezett konfiguráció nem töltődik be.
  * @author zoli
  */
 public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.ClientConfig {
@@ -76,9 +80,19 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
     };
     
     /**
+     * Az alkalmazás adattárolásra használt könyvtára.
+     */
+    public static final File ROOT = new File(getUserDataFolder("Mobile-RC"));
+    
+    /**
      * Az a fájl, amelybe a szerializálás történik.
      */
-    public static final File STORE_FILE = new File("controller.ser");
+    public static final File STORE_FILE = new File(ROOT, "controller.ser");
+    
+    /**
+     * Az alapértelmezett konfigurációra mutató fájl.
+     */
+    private static final File DEF_FILE = new File("controller.ser");
     
     /**
      * Az alapértelmezett konfiguráció.
@@ -337,21 +351,10 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
     public static Config getInstance() {
         try {
             if (STORE_FILE.isFile()) {
-                FileInputStream fis = new FileInputStream(STORE_FILE);
-                ObjectInputStream oin = new ObjectInputStream(fis);
-                Config config;
-                try {
-                    config = (Config) oin.readObject();
-                }
-                catch (Exception ex) {
-                    config = new Config();
-                    save(config);
-                }
-                oin.close();
-                fis.close();
-                return config;
+                return read(STORE_FILE, true);
             }
             else {
+                if (DEF_FILE.isFile()) return read(DEF_FILE, false);
                 return new Config();
             }
         }
@@ -361,12 +364,34 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
     }
     
     /**
+     * A kért fájlból megpróbálja létrehozni a konfigurációt.
+     * @param f a fájl, amiből olvas
+     * @param saveOnError ha olvasás közben hiba történt, írja-e felül a fájlt az alapértelmezéssel
+     */
+    private static Config read(File f, boolean saveOnError) throws FileNotFoundException, IOException {
+        FileInputStream fis = new FileInputStream(f);
+        ObjectInputStream oin = new ObjectInputStream(fis);
+        Config config;
+        try {
+            config = (Config) oin.readObject();
+        }
+        catch (Exception ex) {
+            config = new Config();
+            if (saveOnError) save(config);
+        }
+        oin.close();
+        fis.close();
+        return config;
+    }
+    
+    /**
      * A konfigurációt tartalmazó objektumot fájlba szerializálja.
      * Ha a fájl nem létezik, szerializálás előtt létrehozza.
      * @return true, ha sikerült a szerializálás, egyébként false
      */
     public static boolean save(Config config) {
         try {
+            if (!ROOT.exists()) ROOT.mkdirs();
             FileOutputStream fos = new FileOutputStream(STORE_FILE, false);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(config);
@@ -391,6 +416,30 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
     @Override
     public boolean isCorrect() {
         return isFileExists();
+    }
+    
+    /**
+     * Megadja a felhasználóhoz tartozó, adattárolásra használható könyvtárat.
+     * @param name a kért könyvtár neve
+     */
+    private static String getUserDataFolder(String name) {
+        String path;
+        String OS = System.getProperty("os.name").toUpperCase();
+        if (OS.contains("WIN")) {
+            return org.appkit.osdependant.OSUtils.userDataFolder(name);
+        }
+        else if (OS.contains("MAC")) {
+            path = System.getProperty("user.home") + File.separator + "Library" + File.separator + "Application Support";
+        }
+        else if (OS.contains("NUX")) {
+            String cfg = System.getenv("XDG_CONFIG_HOME");
+            if (cfg == null || cfg.isEmpty()) cfg = System.getProperty("user.home") + File.separator + ".config";
+            path = cfg;
+        }
+        else {
+            path = System.getProperty("user.dir");
+        }
+        return path + File.separator + name + File.separator;
     }
     
 }

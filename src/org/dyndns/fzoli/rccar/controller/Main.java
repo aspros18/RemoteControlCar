@@ -474,9 +474,11 @@ public class Main {
         }
         if (!Config.STORE_FILE.exists()) { // ha a konfig fájl nem létezik
             try {
+                if (!Config.ROOT.exists()) Config.ROOT.mkdirs(); // könyvtár létrehozása, ha nem létezik még
                 Config.STORE_FILE.createNewFile(); // megpróbálja létrehozni
+                Config.STORE_FILE.delete(); // és törli, ha sikerült a létrehozás
             }
-            catch (IOException ex) { // ha nem lehet létrehozni a fájlt
+            catch (IOException ex) { // ha nem lehet létrehozni a fájlt: jogosultság gond
                 showSettingError(getString("msg_need_dir_permission") + LS + getString("msg_exit"));
                 System.exit(1);
             }

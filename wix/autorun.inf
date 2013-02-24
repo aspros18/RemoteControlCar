@@ -1,0 +1,15 @@
+[autorun]
+open=Setup.msi
+icon=bin\desktop\client.exe
+label=Mobile-RC - Farkas Zoltán
+action=Mobile-RC alkalmazás telepítése
+shell\install=Telepítés
+shell\install\command=Setup.msi
+shell\readme=Dokumentáció
+shell\readme\command=start thesis.pdf
+UseAutoPlay=1
+
+[Content]
+MusicFiles=false
+PictureFiles=false
+VideoFiles=false

@@ -74,32 +74,46 @@
                     <File Id='WhitelistCfgFile' Source='whitelist.conf' KeyPath='yes' />
                 </Component>
 
+                <!-- A kliens alkalmazásindító script definiálása. -->
+                <Component Id='ClientScript' Guid='BF8D28A2-40A2-4DE5-9D4D-9197D484CBFC'>
+
+                    <File Id='ClientVBS' Source='client.vbs' KeyPath='yes'>
+
+                        <!-- A kliens alkalmazást indító fájl elérhető az asztalról és a Start menüből is. -->
+                        <Shortcut Id='startmenuClient' Directory="ProgramMenuDir" Name="Mobile-RC kliens" Icon="client.ico" IconIndex="0" WorkingDirectory='INSTALLDIR' Advertise='yes' />
+                        <Shortcut Id='desktopClient' Directory="DesktopFolder" Name="Mobile-RC" Icon="client.ico" IconIndex="0" WorkingDirectory='INSTALLDIR' Advertise='yes' />
+
+                    </File>
+
+                </Component>
+
                 <!-- A kliens alkalmazásindító fájl definiálása. -->
                 <Component Id='ClientExecutable' Guid='B858FCD8-A0B2-48FB-BA41-CE2773C7635C'>
 
-                    <File Id='ClientEXE' Source='client.exe' KeyPath='yes'>
-
-                        <!-- A kliens alkalmazást indító fájl elérhető az asztalról és a Start menüből is. -->
-                        <Shortcut Id='startmenuClient' Directory="ProgramMenuDir" Name="Mobile-RC kliens" Icon="client.exe" IconIndex="0" WorkingDirectory='INSTALLDIR' Advertise='yes' />
-                        <Shortcut Id='desktopClient' Directory="DesktopFolder" Name="Mobile-RC" Icon="client.exe" IconIndex="0" WorkingDirectory='INSTALLDIR' Advertise='yes' />
-
-                    </File>
+                    <File Id='ClientBAT' Source='client.bat' KeyPath='yes' />
 
                     <!-- Az alkalmazás az alábbi fájlokat hozhatja létre, amik telepítéskor még nem léteztek, de eltávolításkor törölni kell őket is. -->
                     <RemoveFile Id='ControllerConfFile' On='uninstall' Name='controller.ser' />
 
                 </Component>
 
+                <!-- A szerver alkalmazásindító script definiálása. -->
+                <Component Id='ServerScript' Guid='28942B06-D656-4A8B-BADB-11EA5751E8B3'>
+
+                    <File Id='ServerVBS' Source='server.vbs' KeyPath='yes'>
+
+                        <!-- A szerver alkalmazást indító fájl elérhető az asztalról és a Start menüből is. -->
+                        <Shortcut Id='startmenuServer' Directory="ProgramMenuDir" Name="Mobile-RC szerver" Icon="server.ico" IconIndex="0" WorkingDirectory='INSTALLDIR' Advertise='yes' />
+                        <Shortcut Id='desktopServer' Directory="DesktopFolder" Name="Mobile-RC Híd" Icon="server.ico" IconIndex="0" WorkingDirectory='INSTALLDIR' Advertise='yes' />
+
+                    </File>
+
+                </Component>
+
                 <!-- A szerver alkalmazásindító fájl definiálása. -->
                 <Component Id='ServerExecutable' Guid='68812160-1B18-43ED-9A94-34EF5E05D1D2'>
 
-                    <File Id='ServerEXE' Source='server.exe' KeyPath='yes'>
-
-                        <!-- A szerver alkalmazást indító fájl elérhető az asztalról és a Start menüből is. -->
-                        <Shortcut Id='startmenuServer' Directory="ProgramMenuDir" Name="Mobile-RC szerver" Icon="server.exe" IconIndex="0" WorkingDirectory='INSTALLDIR' Advertise='yes' />
-                        <Shortcut Id='desktopServer' Directory="DesktopFolder" Name="Mobile-RC Híd" Icon="server.exe" IconIndex="0" WorkingDirectory='INSTALLDIR' Advertise='yes' />
-
-                    </File>
+                    <File Id='ServerBAT' Source='server.bat' KeyPath='yes' />
 
                     <!-- A szerver alkalmazás az alábbi fájlokat hozhatja létre, amik telepítéskor még nem léteztek, de eltávolításkor törölni kell őket is. -->
                     <RemoveFile Id='LogFile' On='uninstall' Name='bridge.log' />
@@ -164,6 +178,8 @@
             <ComponentRef Id='JavaApplication' />
             <ComponentRef Id='ClientExecutable' />
             <ComponentRef Id='ServerExecutable' />
+            <ComponentRef Id='ClientScript' />
+            <ComponentRef Id='ServerScript' />
             <ComponentRef Id='ProgramMenuDir' />
         </Feature>
 
@@ -188,13 +204,13 @@
 
     </Feature>
 
-    <!-- A kliens ikon az exe fájlból van kiolvasva. -->
-    <Icon Id="client.exe" SourceFile="client.exe" />
+    <!-- A kliens ikon a controller.ico fájlból van kiolvasva. -->
+    <Icon Id="client.ico" SourceFile="controller.ico" />
 
-    <!-- A szerver ikon is az exe fájlból van kiolvasva. -->
-    <Icon Id="server.exe" SourceFile="server.exe" />
+    <!-- A szerver ikon a bridge.ico fájlból van kiolvasva. -->
+    <Icon Id="server.ico" SourceFile="bridge.ico" />
 
-    <!-- A dokumentáció ikonja. -->
+    <!-- A dokumentáció ikonja a PDF ikon. -->
     <Icon Id="thesis.pdf" SourceFile="thesis.pdf" />
     
     <UI>
@@ -207,7 +223,7 @@
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
 
     <!-- A vezérlőpultból elérhető program-eltávolító ablak listájában látható ikon. -->
-    <Property Id="ARPPRODUCTICON" Value="client.exe" />
+    <Property Id="ARPPRODUCTICON" Value="client.ico" />
 
     <!-- A vezérlőpultból elérhető program-eltávolító ablak listájában látható súgó hivatkozás. -->
     <Property Id="ARPHELPLINK" Value="https://github.com/fzoli/RemoteControlCar" />

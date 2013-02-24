@@ -30,6 +30,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import org.dyndns.fzoli.rccar.controller.Config;
 import static org.dyndns.fzoli.rccar.controller.ControllerModels.getData;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows;
 import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_MAP;
@@ -185,7 +186,7 @@ public class MapDialog extends AbstractDialog {
             // ha bármi okból nem sikerült létrehozni a tmp könyvtárat az ajánlott helyre
             // pl. JRE7 alatt (mondjuk JRE6) a Files osztály nem létezik
             // akkor használja a jelenlegi könyvtárat a tmp fájl létrehozásához
-            return new File(System.getProperty("user.dir"), "tmp");
+            return new File(Config.ROOT, "tmp");
         }
     }
     

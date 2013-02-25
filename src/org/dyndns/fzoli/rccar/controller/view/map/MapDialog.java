@@ -186,7 +186,14 @@ public class MapDialog extends AbstractDialog {
             // ha bármi okból nem sikerült létrehozni a tmp könyvtárat az ajánlott helyre
             // pl. JRE7 alatt (mondjuk JRE6) a Files osztály nem létezik
             // akkor használja a jelenlegi könyvtárat a tmp fájl létrehozásához
-            return new File(Config.ROOT, "tmp");
+            int i = 0;
+            File f;
+            // keres egy nem létező tmp könyvtárat
+            while ((f = new File(Config.ROOT, "tmp" + i)).exists()) {
+                if (i == Integer.MAX_VALUE) break; // végtelen ciklus elkerülése csak a rend kedvéért
+                i++;
+            }
+            return f;
         }
     }
     

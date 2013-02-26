@@ -54,7 +54,7 @@ DIR_NAME=`echo "$DIR_NAME" ${USER_HOME} | awk '{sub(/^ */,"",$1); sub(/ *$/,"",$
 REMOVING=0
 if [ -d "$DIR_NAME" ] ; then
     dialog --clear --backtitle "$TITLE" --yes-label "Újratelepítés" --no-label "Törlés" \
-    --title "Létező könyvtár" --yesno "Törli vagy újratelepíti az alkalmazást?" 5 60
+    --title "Létező könyvtár" --yesno "Újratelepíti vagy törli az alkalmazást?" 5 60
     [ $? -eq 1 ] && REMOVING=1
 fi
 
@@ -222,6 +222,7 @@ else
 # ELTÁVOLÍTÓ ÁG #
 #################
 
+# az egész könyvtár törlése
 rm -rf $DIR_NAME > /dev/null 2>&1
 
 # törlés vége üzenet

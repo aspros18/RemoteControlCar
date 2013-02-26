@@ -112,7 +112,7 @@ Szeretné telepíteni a teszt tanúsítványokat?" 12 60
 SAMPLE=$?
 
 # az alap fájl-lista
-FILES=('swttest/ui.jar' 'swttest/client.sh' 'swttest/server.sh' 'swttest/nikill')
+FILES=('swttest/ui.jar' 'swttest/client.sh' 'swttest/server.sh' 'swttest/nikill.sh')
 
 # ha kellenek a teszt tanúsítványok is, a könyvtár és a konfigok hozzáadása a listához
 if [ $SAMPLE -eq 0 ] ; then    
@@ -189,7 +189,7 @@ fi
 # futási jogot ad a bash scriptekre
 chmod u+x "$DIR_NAME/client.sh"
 chmod u+x "$DIR_NAME/server.sh"
-chmod u+x "$DIR_NAME/nikill"
+chmod u+x "$DIR_NAME/nikill.sh"
 
 # az asztal könyvtár létrehozása, ha nem létezik
 mkdir -p "$DESKTOP_DIR"

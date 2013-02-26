@@ -1,6 +1,0 @@
-#!/bin/bash
-SUSER=${SUDO_USER}
-[ -z "$SUSER" ] && SUSER=${USER}
-for PID in $(ps aux | grep -v grep | grep "$SUSER" | grep java | grep NativeInterface | awk '{print $2}') ; do
-    kill -9 "$PID" > /dev/null 2>&1
-done

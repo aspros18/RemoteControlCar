@@ -50,8 +50,22 @@ CURR_DIR=`dirname $0`
 USER_HOME=$(eval echo ~"$SUSER")
 DIR_NAME=`echo "$DIR_NAME" ${USER_HOME} | awk '{sub(/^ */,"",$1); sub(/ *$/,"",$1); print $2"/"$1}'`
 
+# ha létezik a könyvtár, megkérdi legyen-e eltávolítás
+REMOVING=0
+if [ -d "$DIR_NAME" ] ; then
+    dialog --clear --backtitle "$TITLE" --yes-label "Újratelepítés" --no-label "Törlés" \
+    --title "Létező könyvtár" --yesno "Törli vagy újratelepíti az alkalmazást?" 5 60
+    [ $? -eq 1 ] && REMOVING=1
+fi
+
+if [ $REMOVING -eq 0 ] ; then
+
+###############
+# TELEPÍTŐ ÁG #
+###############
+
 # könyvtár létrehozása, ha nem létezik
-mkdir -p $DIR_NAME
+mkdir -p "$DIR_NAME"
 
 # ha nem sikerült létrehozni, hibaüzenet és kilépés
 if [ $? -ne 0 ] ; then
@@ -201,5 +215,19 @@ touch "$DIR_NAME/.noswt"
 
 # telepítés vége üzenet
 dialog --clear --backtitle "$TITLE" --msgbox "A telepítés végetért." 5 60
-clear
 
+else
+
+#################
+# ELTÁVOLÍTÓ ÁG #
+#################
+
+rm -rf $DIR_NAME > /dev/null 2>&1
+
+# törlés vége üzenet
+dialog --clear --backtitle "$TITLE" --msgbox "Az eltávolítás végetért." 5 60
+
+fi
+
+# kilépés előtt a képernyő törlése
+clear

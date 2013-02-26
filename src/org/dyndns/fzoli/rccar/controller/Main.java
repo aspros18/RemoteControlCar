@@ -514,7 +514,7 @@ public class Main {
                     }
                     
                 };
-                PROGRESS_FRAME = new ConnectionProgressFrame();
+                PROGRESS_FRAME = new ConnectionProgressFrame(CALLBACK_EXIT);
                 CONFIG_EDITOR = new ConfigEditorFrame(CONFIG, WL_CFG);
                 SELECTION_FRAME = new HostSelectionFrame(AL_EXIT);
                 CONTROLLER_WINDOWS = new ControllerWindows();

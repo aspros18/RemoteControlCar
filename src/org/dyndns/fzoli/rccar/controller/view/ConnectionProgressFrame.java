@@ -90,11 +90,27 @@ public class ConnectionProgressFrame extends AbstractConnectionProgressFrame imp
     private static final IconTextPanel[] PANELS = Status.createPanels();
     
     /**
-     * Beállítja a kis autó ikont és az indikátor animációt.
+     * Megadja, mi történjen a kilépés gombra kattintva.
      */
-    public ConnectionProgressFrame() {
+    private final Runnable ON_EXIT;
+    
+    /**
+     * Beállítja a kis autó ikont és az indikátor animációt.
+     * @param onExit megadja, mi történjen a kilépés gombra kattintva
+     */
+    public ConnectionProgressFrame(Runnable onExit) {
         super(getString("connection_handler"), getString("reconnect"), getString("connection_settings"), getString("exit"), PANELS);
         setIconImage(R.getIconImage());
+        ON_EXIT = onExit;
+    }
+
+    /**
+     * A kilépéskor lefuttatja a konstruktorban átadott Runnable objektumot.
+     */
+    @Override
+    protected void onExit() {
+        if (ON_EXIT != null) ON_EXIT.run();
+        else super.onExit();
     }
 
     /**

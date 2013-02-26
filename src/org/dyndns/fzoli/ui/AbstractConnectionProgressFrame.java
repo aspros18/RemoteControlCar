@@ -57,7 +57,7 @@ public abstract class AbstractConnectionProgressFrame extends JFrame implements 
     
     /**
      * Kilépés gomb.
-     * Rákattintva a program végetér.
+     * Rákattintva az {@link #onExit()} metódus fut le.
      */
     private final JButton btExit = new JButton() {
         {
@@ -65,7 +65,7 @@ public abstract class AbstractConnectionProgressFrame extends JFrame implements 
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    System.exit(0);
+                    onExit();
                 }
                 
             });
@@ -120,6 +120,14 @@ public abstract class AbstractConnectionProgressFrame extends JFrame implements 
         pack(); // ablak méretének minimalizálása
         setLocationRelativeTo(this); // középre igazítás
         btAgain.requestFocus(); // alapértelmezett opció az Újra gomb
+    }
+    
+    /**
+     * A kilépés gombra kattintva ez a metódus fut le.
+     * Alapértelmezés szerint a program végetér.
+     */
+    protected void onExit() {
+        System.exit(0);
     }
     
     /**

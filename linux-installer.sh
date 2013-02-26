@@ -6,9 +6,9 @@ SUSER=${SUDO_USER}
 [ -z "$SUSER" ] && SUSER=${USER}
 
 # konfiguráció
-TMP_DIR=/tmp/mobilerc-installer-$SUSER
-TMP_DIR_NAME=$TMP_DIR/dir_name
-TMP_ERROR=$TMP_DIR/error
+TMP_DIR="/tmp/mobilerc-installer-$SUSER"
+TMP_DIR_NAME="$TMP_DIR/dir_name"
+TMP_ERROR="$TMP_DIR/error"
 DEF_DIR_NAME="Mobile-RC"
 TITLE="Mobile-RC Telepítő ($SUSER)"
 
@@ -69,9 +69,12 @@ CONTROLLER_NAME="mobilerc-controller"
 BRIDGE_ICON_NAME="$BRIDGE_NAME.png"
 CONTROLLER_ICON_NAME="$CONTROLLER_NAME.png"
 
+# az alkalmazásindító fájlok könyvtára
+APPLICATIONS_DIR="$USER_HOME/.local/share/applications"
+
 # a függvény megadja egy indítófájl helyét
 getEntryLoc() {
-    echo -n "$USER_HOME/.local/share/applications/$1.desktop"
+    echo -n "$APPLICATIONS_DIR/$1.desktop"
 }
 
 # az indítófájlok helye
@@ -187,8 +190,14 @@ fi
 chmod u+x "$DIR_NAME/client.sh"
 chmod u+x "$DIR_NAME/server.sh"
 
+# az asztal könyvtár létrehozása, ha nem létezik
+mkdir -p "$DESKTOP_DIR"
+
 # az ikonokat tartalmazó könyvtár létrehozása, ha nincs még létrehozva
 mkdir -p "$ICON_PATH"
+
+# a menükönyvtár létrehozása, ha nem létezik
+mkdir -p "$APPLICATIONS_DIR"
 
 # a függvény megadja egy indítófájl teljes szövegét
 getEntryText() {

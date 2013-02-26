@@ -58,6 +58,31 @@ if [ -d "$DIR_NAME" ] ; then
     [ $? -eq 1 ] && REMOVING=1
 fi
 
+# az ikonokat tartalmazó könyvtár megszerzése
+ICON_PATH="$USER_HOME/.local/share/icons"
+
+# az indítófájlok neve
+BRIDGE_NAME="mobilerc-bridge"
+CONTROLLER_NAME="mobilerc-controller"
+
+# a rendszeren használt ikonnevek
+BRIDGE_ICON_NAME="$BRIDGE_NAME.png"
+CONTROLLER_ICON_NAME="$CONTROLLER_NAME.png"
+
+# a függvény megadja egy indítófájl helyét
+getEntryLoc() {
+    echo -n "$USER_HOME/.local/share/applications/$1.desktop"
+}
+
+# az indítófájlok helye
+BRIDGE_ICON_FILE=$(getEntryLoc "$BRIDGE_NAME")
+CONTROLLER_ICON_FILE=$(getEntryLoc "$CONTROLLER_NAME")
+
+# az asztal útvonalának kiderítése
+: ${XDG_CONFIG_HOME:=~/.config}
+[ -f "${XDG_CONFIG_HOME}/user-dirs.dirs" ] && . "${XDG_CONFIG_HOME}/user-dirs.dirs"
+DESKTOP_DIR="${XDG_DESKTOP_DIR:-~/Desktop}"
+
 if [ $REMOVING -eq 0 ] ; then
 
 ###############
@@ -162,8 +187,7 @@ fi
 chmod u+x "$DIR_NAME/client.sh"
 chmod u+x "$DIR_NAME/server.sh"
 
-# az ikonokat tartalmazó könyvtár megszerzése, ha nincs létrehozása
-ICON_PATH="$USER_HOME/.local/share/icons"
+# az ikonokat tartalmazó könyvtár létrehozása, ha nincs még létrehozva
 mkdir -p "$ICON_PATH"
 
 # a függvény megadja egy indítófájl teljes szövegét
@@ -172,22 +196,9 @@ echo -n "
 #!/usr/bin/env xdg-open\n\n[Desktop Entry]\nName=$1\nName[hu]=$2\nComment=$3\nComment[hu]=$4\nExec=$DIR_NAME/$5\nIcon=$ICON_PATH/$6\nStartupNotify=True\nTerminal=False\nType=Application\nCategories=Network"
 }
 
-# a függvény megadja egy indítófájl helyét
-getEntryLoc() {
-echo -n "$USER_HOME/.local/share/applications/$1.desktop"
-}
-
-# a rendszeren használt ikonnevek
-BRIDGE_ICON_NAME="mobilerc-bridge.png"
-CONTROLLER_ICON_NAME="mobilerc-controller.png"
-
 # az ikonfájlok tartalma
 BRIDGE_ICON_TEXT=$(getEntryText "Mobil-RC Bridge" "Mobile-RC Híd" "The server application" "A szerver alkalmazás" "server.sh" "$BRIDGE_ICON_NAME")
 CONTROLLER_ICON_TEXT=$(getEntryText "Mobil-RC controller" "Mobile-RC vezérlő" "The client application" "A kliens alkalmazás" "client.sh" "$CONTROLLER_ICON_NAME")
-
-# az indítófájlok helye
-BRIDGE_ICON_FILE=$(getEntryLoc "mobilerc-bridge")
-CONTROLLER_ICON_FILE=$(getEntryLoc "mobilerc-controller")
 
 # menüopciók létrehozása
 echo -n -e "$BRIDGE_ICON_TEXT" > "$BRIDGE_ICON_FILE"
@@ -196,11 +207,6 @@ echo -n -e "$CONTROLLER_ICON_TEXT" > "$CONTROLLER_ICON_FILE"
 # futási jog a menüopcióra
 chmod u+x "$BRIDGE_ICON_FILE"
 chmod u+x "$CONTROLLER_ICON_FILE"
-
-# az asztal útvonalának kiderítése
-: ${XDG_CONFIG_HOME:=~/.config}
-[ -f "${XDG_CONFIG_HOME}/user-dirs.dirs" ] && . "${XDG_CONFIG_HOME}/user-dirs.dirs"
-DESKTOP_DIR="${XDG_DESKTOP_DIR:-~/Desktop}"
 
 # szimbólikus link az asztalra
 ln -s "$BRIDGE_ICON_FILE" "$DESKTOP_DIR" > /dev/null 2>&1
@@ -224,6 +230,17 @@ else
 
 # az egész könyvtár törlése
 rm -rf $DIR_NAME > /dev/null 2>&1
+
+# a program által létrehozott konfig könyvtár törlése, hiba figyelmen kívül hagyása
+rm -rf "$USER_HOME/.config/Mobile-RC" > /dev/null 2>&1
+
+# az asztalon lévő ikonok törlése, hiba figyelmen kívül hagyása
+rm "$DESKTOP_DIR/$BRIDGE_NAME.desktop" > /dev/null 2>&1
+rm "$DESKTOP_DIR/$CONTROLLER_NAME.desktop" > /dev/null 2>&1
+
+# a menüben lévő ikonok törlése, hiba figyelmen kívül hagyása
+rm "$BRIDGE_ICON_FILE" > /dev/null 2>&1
+rm "$CONTROLLER_ICON_FILE" > /dev/null 2>&1
 
 # törlés vége üzenet
 dialog --clear --backtitle "$TITLE" --msgbox "Az eltávolítás végetért." 5 60

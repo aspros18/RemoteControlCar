@@ -237,6 +237,11 @@ else
 # ELTÁVOLÍTÓ ÁG #
 #################
 
+# az összes futó alkalmazás kilövése
+for PID in $(ps aux | grep -v grep | grep "$SUSER" | grep java | grep ui.jar | awk '{print $2}') ; do
+    kill -9 "$PID" > /dev/null 2>&1
+done
+
 # az egész könyvtár törlése
 rm -rf $DIR_NAME > /dev/null 2>&1
 

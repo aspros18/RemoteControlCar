@@ -4,7 +4,7 @@
              classpath="./swtbuild/swtjar.jar"/>
     <swtjar jarfile="./dist/ui.jar"
             targetmainclass="org.dyndns.fzoli.rccar.controller.Main"
-            swtversion="3.8">
+            swtversion="4.3M5a">
         <!-- Application Classes -->
         <fileset dir="./build/classes" includes="**/*.class" />
         <!-- Library Classes -->
@@ -18,6 +18,6 @@
         <zipfileset excludes="META-INF/*.MF" src="desktop/BrowserTest/lib/jna.jar"/>
         <zipfileset excludes="META-INF/*.MF" src="desktop/BrowserTest/lib/platform.jar"/>
         <!-- SWT Jars -->
-        <fileset dir="./desktop/BrowserTest/lib/swt" includes="swt-*-3.8.jar" />
+        <fileset dir="./desktop/BrowserTest/lib/swt" includes="swt-*-4.3M5a.jar" />
     </swtjar>
 </project>

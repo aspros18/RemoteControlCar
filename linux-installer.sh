@@ -226,9 +226,6 @@ ln -s "$CONTROLLER_ICON_FILE" "$DESKTOP_DIR" > /dev/null 2>&1
 cp "$CURR_DIR/src/org/dyndns/fzoli/rccar/controller/resource/icon.png" "$ICON_PATH/$CONTROLLER_ICON_NAME"
 cp "$CURR_DIR/src/org/dyndns/fzoli/rccar/bridge/resource/bridge.png" "$ICON_PATH/$BRIDGE_ICON_NAME"
 
-# amíg bugos az swt taskbar, ez a fájl awt-re váltja azt
-touch "$DIR_NAME/.noswt"
-
 # telepítés vége üzenet
 dialog --clear --backtitle "$TITLE" --msgbox "A telepítés végetért." 5 60
 

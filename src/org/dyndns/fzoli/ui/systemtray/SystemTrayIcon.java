@@ -31,7 +31,7 @@ public class SystemTrayIcon {
     
     /**
      * Inicializálás.
-     * Ha az SWT elérhető és a ".noswt" nevű fájl nem létezik, SWT alapú,
+     * Ha az SWT elérhető és az "swt_tray" nevű fájl létezik, SWT alapú,
      * egyébként meg AWT alapú rendszerikon jön létre.
      * @return true, ha sikerült az inicializálás, egyébként false
      */
@@ -41,33 +41,33 @@ public class SystemTrayIcon {
     
     /**
      * Inicializálás.
-     * Ha az SWT elérhető és a ".noswt" nevű fájl nem létezik, SWT alapú,
+     * Ha az SWT elérhető és az "swt_tray" nevű fájl létezik, SWT alapú,
      * egyébként meg AWT alapú rendszerikon jön létre.
      * Ha már egyszer hiba nélkül lefutott az inicializálás, az újbóli hívásnak nincs hatása.
-     * @param noswt ha true, akkor AWT alapú rendszerikon jön létre
+     * @param awt ha true, akkor biztosan AWT alapú rendszerikon jön létre
      * @return true, ha sikerült az inicializálás, egyébként false
      */
-    public static boolean init(boolean noswt) {
+    public static boolean init(boolean awt) {
         try {
             if (tray != null && tray.isSupported()) {
                 icon.setVisible(true);
                 menu = icon.createPopupMenu();
                 return true;
             }
-            noswt = noswt || new File(".noswt").isFile();
-            tray = SystemTrayProvider.getSystemTray(true, noswt);
+            awt = awt || !new File("swt_tray").isFile();
+            tray = SystemTrayProvider.getSystemTray(true, awt);
             if (tray.isSupported()) {
                 icon = tray.addTrayIcon();
                 menu = icon.createPopupMenu();
                 return true;
             }
-            else if (!noswt) {
+            else if (!awt) {
                 return init(true);
             }
             return false;
         }
         catch (Throwable t) {
-            if (!noswt) return init(true);
+            if (!awt) return init(true);
             return false;
         }
     }

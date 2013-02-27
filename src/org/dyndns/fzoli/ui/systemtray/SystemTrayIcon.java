@@ -73,6 +73,18 @@ public class SystemTrayIcon {
     }
     
     /**
+     * Az összes rendszerikon megszüntetése.
+     */
+    public static void dispose() {
+        if (isSupported()) {
+            tray.dispose();
+            tray = null;
+            icon = null;
+            menu = null;
+        }
+    }
+    
+    /**
      * Értéke megadja, hogy támogatott-e a rendszerikon az adott rendszeren.
      * Ha az {@link #init(boolean)} metódus még nem lett meghívva, addig hamissal tér vissza.
      * @return true, ha támogatott a rendszerikon

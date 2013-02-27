@@ -73,11 +73,13 @@ public class Main {
                 // ha igen, akkor a program kilép
                 if (opt == 0) {
                     exiting = true;
+                    SystemTrayIcon.dispose();
                     System.exit(0);
                 }
             }
             else { // ha nincs kiépített kapcsolat, a program kilép
                 exiting = true;
+                SystemTrayIcon.dispose();
                 System.exit(0);
             }
         }

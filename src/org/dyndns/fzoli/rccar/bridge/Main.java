@@ -140,11 +140,11 @@ public class Main {
             SystemTrayIcon.addMenuItem(getString("exit"), new Runnable() {
 
                 /**
-                 * Ha a kilépésre kattintottak.
+                 * Ha a kilépésre kattintottak, a program kilép.
                  */
                 @Override
                 public void run() {
-                    // a program kilép
+                    SystemTrayIcon.dispose();
                     System.exit(0);
                 }
                 

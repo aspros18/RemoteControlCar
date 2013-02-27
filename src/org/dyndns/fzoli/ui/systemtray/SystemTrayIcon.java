@@ -49,22 +49,24 @@ public class SystemTrayIcon {
      */
     public static boolean init(boolean awt) {
         try {
-            if (tray != null && tray.isSupported()) {
-                icon.setVisible(true);
-                menu = icon.createPopupMenu();
-                return true;
+            synchronized (SystemTrayIcon.class) {
+                if (tray != null && tray.isSupported()) {
+                    icon.setVisible(true);
+                    menu = icon.createPopupMenu();
+                    return true;
+                }
+                awt = awt || !new File("swt_tray").isFile();
+                tray = SystemTrayProvider.getSystemTray(true, awt);
+                if (tray.isSupported()) {
+                    icon = tray.addTrayIcon();
+                    menu = icon.createPopupMenu();
+                    return true;
+                }
+                else if (!awt) {
+                    return init(true);
+                }
+                return false;
             }
-            awt = awt || !new File("swt_tray").isFile();
-            tray = SystemTrayProvider.getSystemTray(true, awt);
-            if (tray.isSupported()) {
-                icon = tray.addTrayIcon();
-                menu = icon.createPopupMenu();
-                return true;
-            }
-            else if (!awt) {
-                return init(true);
-            }
-            return false;
         }
         catch (Throwable t) {
             if (!awt) return init(true);
@@ -77,10 +79,17 @@ public class SystemTrayIcon {
      */
     public static void dispose() {
         if (isSupported()) {
-            tray.dispose();
-            tray = null;
-            icon = null;
-            menu = null;
+            try {
+                synchronized (SystemTrayIcon.class) {
+                    tray.dispose();
+                    tray = null;
+                    icon = null;
+                    menu = null;
+                }
+            }
+            catch (Exception ex) {
+                ;
+            }
         }
     }
     

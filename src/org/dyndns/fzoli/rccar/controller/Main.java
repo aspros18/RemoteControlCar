@@ -196,6 +196,7 @@ public class Main {
             NativeInterface.close();
             SwtDisplayProvider.dispose();
         }
+        SystemTrayIcon.dispose();
         System.exit(0);
     }
     

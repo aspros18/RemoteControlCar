@@ -25,6 +25,7 @@ import org.dyndns.fzoli.rccar.ui.UncaughtExceptionHandler;
 import org.dyndns.fzoli.ui.LanguageChooserFrame;
 import org.dyndns.fzoli.ui.OptionPane;
 import org.dyndns.fzoli.ui.OptionPane.PasswordData;
+import org.dyndns.fzoli.ui.SwtDisplayProvider;
 import static org.dyndns.fzoli.ui.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.ui.systemtray.SystemTrayIcon;
 import static org.dyndns.fzoli.ui.systemtray.SystemTrayIcon.showMessage;
@@ -72,15 +73,11 @@ public class Main {
                 int opt = OptionPane.showYesNoDialog(SELECTION_FRAME, getString("confirm_exit"), getString("confirmation"));
                 // ha igen, akkor a program kilép
                 if (opt == 0) {
-                    exiting = true;
-                    SystemTrayIcon.dispose();
-                    System.exit(0);
+                    exit();
                 }
             }
             else { // ha nincs kiépített kapcsolat, a program kilép
-                exiting = true;
-                SystemTrayIcon.dispose();
-                System.exit(0);
+                exit();
             }
         }
 
@@ -169,18 +166,16 @@ public class Main {
     /**
      * Még mielőtt lefutna a main metódus,
      * a nyitóképernyő szövege megjelenik és a rendszer LAF,
-     * és a kivételkezelő valamint a rendszerikon beállítódik.
+     * és a kivételkezelő beállítódik.
      */
     static {
         setSplashMessage(getString("please_wait"));
         setSystemLookAndFeel();
         setExceptionHandler();
-        initNativeInterface();
-        setSystemTrayIcon(true);
     }
     
     /**
-     * A natív böngészőhöz használt interfész inicializálása.
+     * A natív böngészőhöz használt SWT interfész inicializálása.
      */
     private static void initNativeInterface() {
         try {
@@ -189,6 +184,19 @@ public class Main {
         catch (Throwable t) {
             nativeSwingAvailable = false; // a natív támogatás nem érhető el
         }
+    }
+    
+    /**
+     * A program leállítása.
+     * Akkor fut le, amikor a felhasználó ki szeretne lépni a programból.
+     */
+    private static void exit() {
+        exiting = true;
+        if (isNativeSwingAvailable()) {
+            NativeInterface.close();
+            SwtDisplayProvider.dispose();
+        }
+        System.exit(0);
     }
     
     /**
@@ -474,6 +482,8 @@ public class Main {
             System.err.println(getString("msg_need_gui") + LS + getString("msg_exit"));
             System.exit(1); // hibakóddal lép ki
         }
+        initNativeInterface(); // natív interfész inicializálása a webböngészőhöz
+        setSystemTrayIcon(true); // rendszerikon létrehozása
         if (!Config.STORE_FILE.exists()) { // ha a konfig fájl nem létezik
             try {
                 if (!Config.ROOT.exists()) Config.ROOT.mkdirs(); // könyvtár létrehozása, ha nem létezik még
@@ -532,7 +542,7 @@ public class Main {
 
         });
         if (isNativeSwingAvailable()) { // ha van natív támogatás
-            NativeInterface.runEventPump(); // a natív böngésző támogatás igényli
+            NativeInterface.runEventPump(); // SWT eseménypumpáló futtatása
         }
     }
     

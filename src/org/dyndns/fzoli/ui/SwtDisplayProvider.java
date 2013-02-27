@@ -92,6 +92,8 @@ public final class SwtDisplayProvider {
     /**
      * SWT Display inicializálása és GUI frissítés elindítása.
      * Ha már egyszer inicializálták és még nincs megszüntetve, nem inicializál.
+     * Ha a metódus hívása előtt létrehozásra kerül a Display, akkor
+     * a GUI frissítést a létrehozó szálban kell megoldani.
      */
     public static Display getDisplay() {
         if (display == null || display.isDisposed()) { // ha inicializálni kell
@@ -99,10 +101,13 @@ public final class SwtDisplayProvider {
 
                 @Override
                 public void run() {
+                    boolean init = true;
                     synchronized(this) { // runnable lefoglalása
                         if (!GraphicsEnvironment.isHeadless()) {
                             try {
-                                display = new Display(); // display inicializálás, ha van GUI
+                                display = Display.getCurrent();
+                                if (display == null) display = Display.getDefault(); // display inicializálás, ha van GUI
+                                else init = false;
                             }
                             catch (Throwable t) { // az SWT nem tölthető be
                                 ;
@@ -111,7 +116,7 @@ public final class SwtDisplayProvider {
                         notifyAll(); // jelzés, hogy kész az inicializálás
                     }
                     // GUI frissítés elindítása:
-                    try {
+                    if (init) try {
                         while (!display.isDisposed()) {
                             if (!display.readAndDispatch()) {
                                 display.sleep();

@@ -62,29 +62,29 @@ public class Config implements org.dyndns.fzoli.rccar.clients.ClientConfig {
 	
 	/**
 	 * A tanúsítvány kiállító kulcsfájlt adja vissza.
-	 * @return null, ha a fájl nem létezik, vagy nincs beállítva
+	 * @return null, ha a teszt-tanúsítvány vagy a beállított fájl nem létezik
 	 */
 	@Override
 	public File getCAFile() {
-		return createFile("ca");
+		return createFile("ca", "ca.crt");
 	}
 	
 	/**
 	 * A tanúsítvány publikus kulcsfájlt adja vissza.
-	 * @return null, ha a fájl nem létezik, vagy nincs beállítva
+	 * @return null, ha a teszt-tanúsítvány vagy a beállított fájl nem létezik
 	 */
 	@Override
 	public File getCertFile() {
-		return createFile("crt");
+		return createFile("crt", "host.crt");
 	}
 
 	/**
 	 * A tanúsítvány privát kulcsfájlt adja vissza.
-	 * @return null, ha a fájl nem létezik, vagy nincs beállítva
+	 * @return null, ha a teszt-tanúsítvány vagy a beállított fájl nem létezik
 	 */
 	@Override
 	public File getKeyFile() {
-		return createFile("key");
+		return createFile("key", "host.key");
 	}
 
 	/**
@@ -103,10 +103,16 @@ public class Config implements org.dyndns.fzoli.rccar.clients.ClientConfig {
 	/**
 	 * Készít egy File objektumot a beállítás kulcs alapján.
 	 * Ha az nincs beállítva vagy nem létezik a fájl, null referencia adódik vissza.
+	 * @param key a preference kulcs, ami tartalmazza az fájl útvonalat
+	 * @param def az alapértelmezett fájl neve a test-certs könyvtárban
 	 */
-	private File createFile(String key) {
+	private File createFile(String key, String def) {
 		String path = PREFERENCES.getString(key, null);
-		if (path == null) return null;
+		if (path == null) {
+			File defFile = new File("/mnt/sdcard/test-certs/" + def);
+			if (defFile.isFile()) return defFile;
+			return null;
+		}
 		File file = new File(path);
 		if (!file.isFile()) return null;
 		return file;

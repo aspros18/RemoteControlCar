@@ -42,6 +42,7 @@ import static org.dyndns.fzoli.rccar.controller.ControllerWindows.IC_MAP;
 import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
 import static org.dyndns.fzoli.rccar.controller.Main.getString;
 import org.dyndns.fzoli.rccar.controller.resource.R;
+import org.dyndns.fzoli.rccar.model.Command;
 import org.dyndns.fzoli.rccar.model.controller.HostState;
 import org.dyndns.fzoli.ui.LookAndFeelIcon;
 import org.dyndns.fzoli.ui.OptionPane;
@@ -70,6 +71,11 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
      */
     private JToggleButton btChat, btMap, btArrow;
 
+    /**
+     * Dudálás gomb.
+     */
+    private JButton btHorn;
+    
     /**
      * Sebességnövekedés aktiváló/deaktiváló gomb.
      */
@@ -115,6 +121,11 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
      */
     private static final ImageIcon IC_INCREASE = R.getImageIcon("increase.png");
 
+    /**
+     * Dudálás gomb ikonja.
+     */
+    private static final ImageIcon IC_HORN = R.getImageIcon("horn.png");
+    
     /**
      * Teljesen fekete képkocka.
      */
@@ -296,6 +307,7 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
         btChat = createButton(getString("chat"), IC_CHAT, JToggleButton.class); // chat ablak láthatóság szabályzó gomb
         addSeparator(); // szeparátor
         btIncrease = createButton(getString("increasing_speed"), IC_INCREASE, JToggleButton.class); // növekvő sebesség aktiváló gomb
+        btHorn = createButton(getString("horn"), IC_HORN, JButton.class); // dudálás gomb
 
         JPanel pStat = new JPanel(); // a statisztika panel ...
         pStat.setOpaque(false); // ... átlátszó és ...
@@ -348,6 +360,15 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
             
         });
         
+        btHorn.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                getData().sendCommand(Command.PLAY_HORN);
+            }
+            
+        });
+        
         addKeyListener(new KeyAdapter() {
 
             /**
@@ -388,6 +409,7 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
         btChat.setToolTipText(getString("chat"));
         btArrow.setToolTipText(getString("controller"));
         btIncrease.setToolTipText(getString("increasing_speed"));
+        btHorn.setToolTipText(getString("horn"));
         refreshSpeed();
         refreshBattery();
         refreshControlText();
@@ -505,6 +527,7 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
         refreshControlText();
         if (prevWantControl != null && ((!prevWantControl && getData().isWantControl()) || (prevWantControl && !getData().isWantControl() && getData().isControlling())) && !getData().isControlling()) btControl.setEnabled(false);
         else btControl.setEnabled((!getData().isViewOnly() && !(getData().isControlling() && !getData().isWantControl())));
+        btHorn.setEnabled(getData().isControlling());
     }
     
     /**

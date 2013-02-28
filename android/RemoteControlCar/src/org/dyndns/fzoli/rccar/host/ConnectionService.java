@@ -18,6 +18,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -223,6 +224,11 @@ public class ConnectionService extends IOIOService {
 	 * Ha rákattintanak a rendszerikonra, felhozza az alkalmazás főablakát.
 	 */
 	private PendingIntent contentIntent;
+	
+	/**
+	 * Dudahangot játszik le.
+	 */
+	private MediaPlayer mpHorn;
 	
 	/**
 	 * A szolgáltatást felfüggesztése illetve aktiválása.
@@ -435,6 +441,26 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	/**
+	 * A dudahang-lejátszó inicializálása.
+	 */
+	private void createHornPlayer() {
+		try {
+			if (mpHorn == null) mpHorn = MediaPlayer.create(this, R.raw.horn);
+			else mpHorn.prepare();
+		}
+		catch (Exception ex) {
+			;
+		}
+	}
+	
+	/**
+	 * A dudahang-lejátszó felszabadítása.
+	 */
+	private void releaseHornPlayer() {
+		if (mpHorn != null) mpHorn.release();
+	}
+	
+	/**
 	 * A szolgáltatás indulásakor hívódik meg.
 	 * Első induláskor megjelenik az értesítés, hogy a szolgáltatás fut,
 	 * meghívódik a kapcsolódó metódus, frissül az értesítőszöveg és
@@ -453,6 +479,7 @@ public class ConnectionService extends IOIOService {
 			connect(true); // kapcsolódás, ha kell újrakapcsolódás
 			updateNotificationText(); // fő értesítés szövegének frissítése
 			setNotificationsVisible(true); // egyéb értesítések megjelenítése, ha van mit
+			createHornPlayer(); // dudahang-lejátszó inicializálása
 		}
 	}
 	
@@ -516,6 +543,7 @@ public class ConnectionService extends IOIOService {
 		setNotificationsVisible(false);
 		setConnectionError(null, true);
 		removeNotification();
+		releaseHornPlayer();
 		super.onDestroy();
 	}
 	
@@ -560,6 +588,20 @@ public class ConnectionService extends IOIOService {
 	 */
 	public void updateNotificationText() {
 		if (!isSuspended() && isStarted(this)) setNotificationText(getString(R.string.vehicle) + ": " + getString(isVehicleConnected() ? R.string.exists : R.string.not_exists) + "; " + (isOfflineMode(this) ? getString(R.string.title_offline) : (getString(R.string.bridge_conn) + ": " + getString(isBridgeConnected() ? R.string.exists : R.string.not_exists))) + '.');
+	}
+	
+	/**
+	 * Lejátssza a dudahangot.
+	 */
+	public void playHorn() {
+		if (mpHorn != null) {
+			try {
+				if (!mpHorn.isPlaying()) mpHorn.start();
+			}
+			catch (Exception ex) {
+				;
+			}
+		}
 	}
 	
 	/**

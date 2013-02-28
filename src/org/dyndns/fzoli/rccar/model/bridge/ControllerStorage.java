@@ -8,6 +8,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import org.dyndns.fzoli.rccar.bridge.ConnectionAlert;
 import org.dyndns.fzoli.rccar.bridge.config.Permissions;
+import org.dyndns.fzoli.rccar.model.Command;
 import org.dyndns.fzoli.rccar.model.Control;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
 import org.dyndns.fzoli.rccar.model.Point3D;
@@ -325,6 +326,19 @@ public class ControllerStorage extends Storage<ControllerData> {
         super(messageProcess);
     }
 
+    /**
+     * A vezérlő által küldött parancs feldolgozása.
+     */
+    public void onCommand(Command cmd) {
+        switch (cmd) {
+            case PLAY_HORN: // ha a kliens dudálni akar
+                if (getHostStorage() != null && getHostStorage().getOwner() == this) { // ha a kliens vezérli a járművet
+                    getHostStorage().getMessageProcess().sendMessage(cmd); // dudahang-lejátszó parancs továbbítása a járműnek
+                }
+                break;
+        }
+    }
+    
     /**
      * Olyan üzenetküldő, mely a vezérlő kliensnek küld üzenetet a setter metódusokban.
      */

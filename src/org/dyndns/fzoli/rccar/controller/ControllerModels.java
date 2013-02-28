@@ -13,6 +13,7 @@ import org.dyndns.fzoli.rccar.controller.view.ArrowDialog;
 import org.dyndns.fzoli.rccar.controller.view.ChatDialog;
 import org.dyndns.fzoli.rccar.controller.view.ControllerFrame;
 import org.dyndns.fzoli.rccar.controller.view.map.MapDialog;
+import org.dyndns.fzoli.rccar.model.Command;
 import org.dyndns.fzoli.rccar.model.Control;
 import org.dyndns.fzoli.rccar.model.Data;
 import org.dyndns.fzoli.rccar.model.PartialBaseData;
@@ -58,7 +59,7 @@ public class ControllerModels {
                 super(data);
                 setAddEnabled(false); // az üzenetek küldésekor a helyben tárolt lista módosítatlan marad, elkerülve az üzenet duplázódást a küldő oldalán
             }
-
+            
             /**
              * Üzenet küldése a hídnak.
              * Ha nincs kialakítva üzenetküldésre alkalmas kapcsolat, nem küld üzenetet.
@@ -212,7 +213,7 @@ public class ControllerModels {
         /**
          * A kliens oldal üzenetküldője.
          */
-        private final ControllerData sender;
+        private final ClientControllerDataSender sender;
         
         /**
          * Az eredeti chatüzenet-lista GUI frissítéssel kibővítve.
@@ -411,6 +412,13 @@ public class ControllerModels {
                     TIMER_TIMEOUT.schedule(taskTimeout, 1000, 1000);
                 }
             }
+        }
+        
+        /**
+         * Parancsot küld a Hídnak.
+         */
+        public void sendCommand(Command cmd) {
+            sender.sendMessage(cmd);
         }
         
         /**

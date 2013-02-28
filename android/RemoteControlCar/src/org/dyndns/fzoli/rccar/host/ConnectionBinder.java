@@ -239,7 +239,9 @@ public class ConnectionBinder extends Binder {
 	 */
 	public void onCommand(Command cmd) {
 		switch (cmd) {
-			
+			case PLAY_HORN:
+				SERVICE.playHorn();
+				break;
 		}
 	}
 	

@@ -3,6 +3,7 @@ package org.dyndns.fzoli.rccar.ui;
 import java.awt.Dialog;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.awt.SplashScreen;
 import javax.swing.UIManager;
 import static javax.swing.UIManager.getString;
 import static org.dyndns.fzoli.ui.UIUtil.init;
@@ -65,6 +66,14 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
     }
     
     /**
+     * Megadja, hogy a nyitóképernyő látható-e.
+     */
+    private static boolean isSplashVisible() {
+        SplashScreen splash = SplashScreen.getSplashScreen();
+        return splash != null && splash.isVisible();
+    }
+    
+    /**
      * Beállítja a címsorban megjelenő ikont.
      */
     public static void setIcon(Image icon) {
@@ -98,14 +107,15 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
      * Ha nem kivétel, hanem hiba keletkezett, modálisan jelenik meg az ablak és a bezárása után leáll a program.
      * @param t a szál, amiben a hiba keletkezett
      * @param ex a nem várt hiba
+     * @param exit true esetén a dialógus bezárásakor a program végetér
      */
-    public static void showExceptionDialog(final Thread t, final Throwable ex) {
+    public static void showExceptionDialog(final Thread t, final Throwable ex, final boolean exit) {
         final boolean error = ex instanceof Error;
         UncaughtExceptionDialog.showException(t, ex, error ? Dialog.ModalityType.APPLICATION_MODAL : Dialog.ModalityType.MODELESS, createParameters(error), new UncaughtExceptionAdapter() {
 
             @Override
             public void exceptionDialogClosed() {
-                if (error) System.exit(1);
+                if (error || exit) System.exit(1);
             }
 
         });
@@ -131,18 +141,17 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
      * @param ex a nem várt hiba
      */
     public static void showException(final Thread t, final Throwable ex) {
-//        if (t.getName().startsWith("AWT-EventQueue")) return;
         final boolean error = ex instanceof Error;
         if (!GraphicsEnvironment.isHeadless()) {
-            if (error || !SystemTrayIcon.isVisible()) {
-                showExceptionDialog(t, ex);
+            if (error || !SystemTrayIcon.isVisible() || isSplashVisible()) {
+                showExceptionDialog(t, ex, isSplashVisible());
             }
             else {
                 SystemTrayIcon.showMessage(UIManager.getString(KEY_UNEXPECTED_ERROR), getString(KEY_CLICK_FOR_DETAILS), IconType.ERROR, new Runnable() {
                     
                     @Override
                     public void run() {
-                        showExceptionDialog(t, ex);
+                        showExceptionDialog(t, ex, false);
                     }
                     
                 });

@@ -6,3 +6,5 @@
 /dist/
 /nbproject/private/
 /tmp/
+/bridge.log
+/swttest/bridge.log

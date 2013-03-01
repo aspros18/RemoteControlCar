@@ -527,7 +527,15 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
         refreshControlText();
         if (prevWantControl != null && ((!prevWantControl && getData().isWantControl()) || (prevWantControl && !getData().isWantControl() && getData().isControlling())) && !getData().isControlling()) btControl.setEnabled(false);
         else btControl.setEnabled((!getData().isViewOnly() && !(getData().isControlling() && !getData().isWantControl())));
-        btHorn.setEnabled(getData().isControlling());
+        refreshHornButton();
+    }
+    
+    /**
+     * Beállítja a model alapján a dudálás gomb használhatóságát.
+     * Ha a jármű elérhető és a kliens vezérli a járművet, akkor használható, egyébként nem.
+     */
+    public void refreshHornButton() {
+        btHorn.setEnabled(getData().isControlling() == null || (getData().isControlling() && getData().isVehicleAvailable(false, true)));
     }
     
     /**

@@ -510,6 +510,7 @@ public class ControllerModels {
                 frameMain.refreshBattery();
                 frameMain.refreshMessage();
                 frameMain.refreshSpeed();
+                frameMain.refreshHornButton();
             }
             if (dialogArrow != null) {
                 dialogArrow.refreshControlling();

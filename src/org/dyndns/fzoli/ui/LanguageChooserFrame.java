@@ -184,11 +184,11 @@ public abstract class LanguageChooserFrame extends JFrame {
         CB_LOCALES.setEnabled(MODEL_LOCALES.getSize() > 0);
         
         // ha a listában nem szerepelt a megadott érték, akkor a rendszernyelv használata
-        if (MODEL_LOCALES.getIndexOf(def) == -1) {
+        if (indexOf(def) == -1) {
             def = Locale.getDefault();
-            // ha a rendszernyelv se szerepel a listában, akkor az elérhető nyelvek közül az első lesz használva
-            if (locales.length > 0 && MODEL_LOCALES.getIndexOf(def) == -1) {
-                def = locales[0];
+            // ha a rendszernyelv se szerepel a listában, akkor az angol lesz a kezdőnyelv
+            if (locales.length > 0 && indexOf(def) == -1) {
+                def = MODEL_LOCALES.getElementAt(indexOf(Locale.ENGLISH));
             }
         }
         
@@ -215,6 +215,21 @@ public abstract class LanguageChooserFrame extends JFrame {
         
         // jelzés, hogy befejeződött az inicializálás
         loaded = true;
+    }
+    
+    /**
+     * A komponens modelében megkeresi a kért nyelv indexét.
+     * @param l a kért nyelv
+     */
+    private int indexOf(Locale l) {
+        int index = -1;
+        for (int i = 0; i < MODEL_LOCALES.getSize(); i++) {
+            if (MODEL_LOCALES.getElementAt(i).getLanguage().equals(l.getLanguage())) {
+                index = i;
+                break;
+            }
+        }
+        return index;
     }
     
     /**

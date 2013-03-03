@@ -444,6 +444,7 @@ public class ConnectionService extends IOIOService {
 	 * A dudahang-lejátszó inicializálása.
 	 */
 	private void createHornPlayer() {
+		if (isOfflineMode(this)) return;
 		try {
 			if (mpHorn == null) mpHorn = MediaPlayer.create(this, R.raw.horn);
 			else mpHorn.prepare();

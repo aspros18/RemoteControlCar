@@ -23,7 +23,6 @@ import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
@@ -581,13 +580,13 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
         CONFIG.setPort(Integer.parseInt(TF_PORT.getText()));
         if (Config.save(CONFIG)) {
             if (!previousConfig.equals(CONFIG) && Main.isConnected()) {
-                int answer = OptionPane.showYesNoDialog(ConfigEditorFrame.this, "Szeretne újrakapcsolódni a szerverhez az új beállításokkal?", "Újrakapcsolódás");
+                int answer = OptionPane.showYesNoDialog(ConfigEditorFrame.this, getString("reconnect_ask"), getString("reconnect"));
                 if (answer == 0) Main.reconnect();
             }
             dispose();
         }
         else {
-            OptionPane.showWarningDialog(R.getIconImage(), "Nem sikerült lemezre menteni a beállításokat!", "Figyelmeztetés");
+            OptionPane.showWarningDialog(R.getIconImage(), getString("saveError"), getString("warning"));
         }
     }
     
@@ -719,8 +718,8 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
      */
     private boolean checkConfig() {
         if (!isConfigValid()) {
-            String[] opts = new String[] {"OK", "Kilépés"};
-            int sel = JOptionPane.showOptionDialog(this, "A beállítások nem megfelelőek!", "Figyelmeztetés", JOptionPane.NO_OPTION, JOptionPane.WARNING_MESSAGE, null, opts, opts[0]);
+            String[] opts = new String[] {getString("ok"), getString("exit")};
+            int sel = OptionPane.showOptionDialog(this, getString("wrong_settings"), getString("warning"), OptionPane.NO_OPTION, OptionPane.WARNING_MESSAGE, null, opts, opts[0]);
             if (sel != 0) unsaveConfig();
             return false;
         }
@@ -749,8 +748,8 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
         }
         else {
             // a beállítások megváltoztak, legyen mentés?
-            String[] opts = new String[] {"Igen", "Nem", "Mégse"}; // az alapértelmezett opció a Mégse
-            int sel = JOptionPane.showOptionDialog(this, "Menti a módosításokat?", getTitle(), JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, opts, opts[2]);
+            String[] opts = new String[] {getString("yes"), getString("no"), getString("cancel")}; // az alapértelmezett opció a Mégse
+            int sel = OptionPane.showOptionDialog(this, getString("save_ask"), getTitle(), OptionPane.NO_OPTION, OptionPane.QUESTION_MESSAGE, null, opts, opts[2]);
             switch (sel) {
                 case 0: // Igen, legyen mentés
                     saveConfig();

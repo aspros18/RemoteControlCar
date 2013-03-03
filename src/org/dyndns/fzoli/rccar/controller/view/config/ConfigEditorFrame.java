@@ -165,7 +165,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
      * Port validálására használt reguláris kifejezés.
      * Minimum 1 és maximum 5 karakter, csak szám.
      */
-    private static final Pattern PT_PORT = Pattern.compile("^[\\d]{1,5}$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern PT_PORT = Pattern.compile("^[1-9]{1}[\\d]{0,4}$", Pattern.CASE_INSENSITIVE);
     
     /**
      * A konfiguráció, amit használ az ablak.
@@ -627,6 +627,8 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
 
             @Override
             public Object stringToValue(String string) throws ParseException {
+                // egynél több pont nincs megengedve
+                if (string.contains("..")) throw new ParseException("double dot", 0);
                 // ha a szöveg pontra végződik vagy rövidebb két karakternél, az eredeti szöveg kerül a helyére a szerkesztés befejezésekor
                 if (string.length() < 2 || string.endsWith(".")) return CONFIG.getAddress();
                 return ((String)super.stringToValue(string)).toLowerCase(); // a szerkesztés befejezésekor minden karaktert kicsire cserél

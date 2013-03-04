@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.imageio.ImageIO;
+import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
@@ -223,19 +224,7 @@ public class MapDialog extends AbstractDialog {
         mapPane.setPreferredSize(new Dimension(RADAR_SIZE, RADAR_SIZE)); // a méret megadása
         
         // indikátor jelenik meg, míg a térkép töltődik
-        final JPanel pInd = new JPanel() {
-            {
-                final JLabel lbInd = new JLabel(R.getIndicatorIcon());
-                GridBagConstraints c = new GridBagConstraints();
-                setLayout(new GridBagLayout());
-                setPreferredSize(mapPane.getPreferredSize());
-                setOpaque(false);
-                add(lbInd, c);
-                c.gridy = 1;
-                c.insets = new Insets(5, 5, 5, 5);
-                add(LB_LOADING, c);
-            }
-        };
+        final JPanel pInd = createPanel(mapPane, LB_LOADING, R.getIndicatorIcon());
         getContentPane().add(pInd, BorderLayout.SOUTH);
         pInd.setVisible(false);
         
@@ -253,8 +242,8 @@ public class MapDialog extends AbstractDialog {
         LB_WARN.setVisible(false);
         
         // kezdetben úgy tesz, mint ha nem lenne böngésző támogatás
-        LB_PRE_LOADING.setPreferredSize(mapPane.getPreferredSize()); // a hibaüzenet mérete megegyezik a térképével
-        getContentPane().add(LB_PRE_LOADING, BorderLayout.NORTH); // a hibaüzenet az ablak felső részére kerül
+        final JPanel pPre = createPanel(mapPane, LB_PRE_LOADING, R.getWarningIcon());
+        getContentPane().add(pPre, BorderLayout.NORTH); // a figyelmeztető üzenet az ablak felső részére kerül
         
         getContentPane().add(mapPane, BorderLayout.CENTER); // a térkép középre igazítva jelenik meg
         
@@ -283,9 +272,9 @@ public class MapDialog extends AbstractDialog {
         }
         
         setResizable(false); // ablak átméretezésének tiltása
-        LB_PRE_LOADING.setVisible(false); // hibaüzenet elrejtése a pack hívása előtt, hogy ne vegye számításba
+        pPre.setVisible(false); // hibaüzenet elrejtése a pack hívása előtt, hogy ne vegye számításba
         pack(); // ablakméret minimalizálása
-        LB_PRE_LOADING.setVisible(true); // hibaüzenet megjelenítése
+        pPre.setVisible(true); // hibaüzenet megjelenítése
         mapPane.setVisible(false); // térkép láthatatlanná tétele, míg nem tölt be
         
         if (WEB_BROWSER != null) {
@@ -312,7 +301,7 @@ public class MapDialog extends AbstractDialog {
                 public void loadingProgressChanged(final WebBrowserEvent e) {
                     if (!preloadRemoved) { // hibaüzenet eltávolítása és indikátor megjelenítése, mivel van böngésző támogatás
                         preloadRemoved = true;
-                        remove(LB_PRE_LOADING);
+                        remove(pPre);
                     }
                     if (indApp) { // indikátor megjelenítése, ha még nem látszik
                         indApp = false;
@@ -384,6 +373,28 @@ public class MapDialog extends AbstractDialog {
 
             });
         }
+    }
+    
+    /**
+     * Gyárt egy panelt, amin egy ikon alatt egy címke látható.
+     * @param mapPane a komponens, amire kerül a panel
+     * @param lb a címke
+     * @param icon az ikon
+     */
+    private static JPanel createPanel(final JLayeredPane mapPane, final JLabel lb, final Icon icon) {
+        return new JPanel() {
+            {
+                final JLabel lbIcon = new JLabel(icon);
+                GridBagConstraints c = new GridBagConstraints();
+                setLayout(new GridBagLayout());
+                setPreferredSize(mapPane.getPreferredSize());
+                setOpaque(false);
+                add(lbIcon, c);
+                c.gridy = 1;
+                c.insets = new Insets(5, 5, 5, 5);
+                add(lb, c);
+            }
+        };
     }
     
     /**

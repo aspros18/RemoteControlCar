@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -179,6 +180,7 @@ public class Main {
      */
     private static void initNativeInterface() {
         try {
+            if (new File("no_swt").isFile()) throw new Exception(); // ha az SWT tiltva van, natív interfész kihagyása
             NativeInterface.open(); // a natív böngésző támogatás igényli
         }
         catch (Throwable t) {

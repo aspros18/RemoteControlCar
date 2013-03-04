@@ -606,6 +606,7 @@ public class ChatDialog extends AbstractDialog {
         if (!visible && model.contains(state)) {
             model.removeElement(state);
         }
+        LIST_CONTROLLERS.invalidate();
         if (notify) {
             showSysMessage(state.getLastModified(), state.getName(), visible ? SYS_CONNECT : SYS_DISCONNECT);
         }

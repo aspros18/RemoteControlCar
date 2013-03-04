@@ -194,6 +194,9 @@ public class Main {
      */
     private static void exit() {
         exiting = true;
+        if (CONTROLLER_WINDOWS != null) {
+            CONTROLLER_WINDOWS.dispose();
+        }
         if (isNativeSwingAvailable()) {
             NativeInterface.close();
             SwtDisplayProvider.dispose();

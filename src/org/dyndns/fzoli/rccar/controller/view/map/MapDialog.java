@@ -54,6 +54,11 @@ import org.imgscalr.Scalr;
 public class MapDialog extends AbstractDialog {
     
     /**
+     * Megadja, hogy a térkép be lett-e zárva.
+     */
+    private boolean disposed = false;
+    
+    /**
      * A térkép pozíciója.
      */
     private Point3D position;
@@ -435,7 +440,7 @@ public class MapDialog extends AbstractDialog {
      * Hibaüzenet eltüntetése és térkép újratöltése, ha legutóbb nem sikerült betölteni.
      */
     private void reload() {
-        if (!LB_WARN.isVisible()) return;
+        if (!LB_WARN.isVisible() || disposed) return;
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
@@ -488,7 +493,7 @@ public class MapDialog extends AbstractDialog {
      * @param pos GPS koordináta, null referencia esetén térkép helyett iránytű jelenik meg
      */
     public void setPosition(final Point3D pos) {
-        if (WEB_BROWSER == null) return;
+        if (WEB_BROWSER == null || disposed) return;
         chkTmpFiles();
         position = pos;
         executeJavascript("map.setCenter(new google.maps.LatLng(" + (position == null ? 1 : position.X) + ", " + (position == null ? 0 : position.Y) + ")); var tag = document.getElementById('info'); tag.style.visibility = '" + (pos == null ? "hidden" : "visible") + "'; tag.innerHTML = '" + (pos == null ? "" : "W " + DF.format(pos.X) + "° H " + DF.format(pos.Y) + "° " + DF2.format(pos.Z) + " m") + "'; document.getElementById('compass').style.visibility = '" + (pos != null ? "hidden" : "visible") + "';");
@@ -501,7 +506,7 @@ public class MapDialog extends AbstractDialog {
      * @param rotation északtól való eltérés, vagy null, ha nincs irány megadva
      */
     public void setArrow(final Double rotation) {
-        if (WEB_BROWSER == null) return;
+        if (WEB_BROWSER == null || disposed) return;
         chkTmpFiles();
         ARROW.setRotation(rotation); // nyíl frissítése
         writeImage(ARROW, ARROW_FILE); // png formátumban a nyíl mentése a tmp könyvtárba
@@ -513,7 +518,7 @@ public class MapDialog extends AbstractDialog {
      * JavaScript és CSS 3 alapú metódus.
      */
     public void setFade(final boolean enabled) {
-        if (WEB_BROWSER == null) return;
+        if (WEB_BROWSER == null || disposed) return;
         fadeEnabled = enabled;
         executeJavascript("document.getElementById('map_canvas').className = 'fadeprep" + (enabled ? " fadeon" : "") + "';");
     }
@@ -579,6 +584,15 @@ public class MapDialog extends AbstractDialog {
     }
     
     /**
+     * A térkép bezárása.
+     */
+    @Override
+    public void dispose() {
+        disposed = true;
+        super.dispose();
+    }
+    
+    /**
      * Beállítja az áttünést az adatmodel alapján.
      * Használt getterek:
      * - {@link ClientControllerData#isUp2Date()}
@@ -625,11 +639,11 @@ public class MapDialog extends AbstractDialog {
             public void run() {
                 
                 final Timer timer = new Timer();
-                MapDialog radar = new MapDialog(new MapLoadListener() {
+                final MapDialog map = new MapDialog(new MapLoadListener() {
 
                     @Override
-                    public void loadFinished(final MapDialog radar) {
-                        radar.setArrow(null); // kezdetben nincs irány ...
+                    public void loadFinished(final MapDialog map) {
+                        map.setArrow(null); // kezdetben nincs irány ...
                         timer.schedule(new TimerTask() {
                             
                             double angle = 0;
@@ -637,24 +651,25 @@ public class MapDialog extends AbstractDialog {
                             @Override
                             public void run() {
                                 angle += 10;
-                                radar.setArrow(angle);
-                                radar.setFade(angle % 3 == 0);
+                                map.setArrow(angle);
+                                map.setFade(angle % 3 == 0);
                             }
                             
                         }, 5000, 1000); // ... 5 másodperccel később másodpercenként változik az irány és az átfedés ki/be kapcsol
-                        radar.setPosition(47.35021, 19.10236, -100); // a hely Dunaharaszti egyik utcája
-                        radar.setFade(true);
+                        map.setPosition(47.35021, 19.10236, -100); // a hely Dunaharaszti egyik utcája
+                        map.setFade(true);
                     }
                     
                 }, null);
                 
-                radar.setVisible(true); // az ablak megjelenítése azonnal tesztelés céljából
+                map.setVisible(true); // az ablak megjelenítése azonnal tesztelés céljából
                 
                 // az ablak bezárásakor:
-                radar.addWindowListener(new WindowAdapter() {
+                map.addWindowListener(new WindowAdapter() {
 
                     @Override
                     public void windowClosing(WindowEvent e) {
+                        map.dispose(); // felszabadítás
                         timer.cancel(); // időzítő leállítása
                         System.exit(0); // kilépés a programból
                     }

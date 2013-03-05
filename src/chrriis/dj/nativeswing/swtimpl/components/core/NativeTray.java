@@ -6,13 +6,15 @@ import chrriis.dj.nativeswing.swtimpl.components.JTrayContainer;
 import chrriis.dj.nativeswing.swtimpl.components.JTrayItem;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseEvent;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseListener;
+import chrriis.dj.nativeswing.swtimpl.components.core.NativeTrayContainer.TrayItemData;
 import chrriis.dj.nativeswing.swtimpl.components.internal.INativeTray;
 import chrriis.dj.nativeswing.swtimpl.core.SWTNativeInterface;
-import org.eclipse.swt.SWT;
 import java.util.List;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 
@@ -42,7 +44,7 @@ public class NativeTray implements INativeTray {
         }
 
         protected TrayItem getTrayItem(int key) {
-            return getNativeTrayContainer().getTrayItems().get(key);
+            return getNativeTrayContainer().getTrayItemDatas().get(key).ITEM;
         }
         
         protected static void setTrayItemImage(final TrayItem item, final byte[] imageData) {
@@ -104,15 +106,17 @@ public class NativeTray implements INativeTray {
         public Object run(Object[] args) {
             byte[] imageData = (byte[]) args[0];
             String tooltip = (String) args[1];
-            List<TrayItem> items = getNativeTrayContainer().getTrayItems();
+            NativeTrayContainer ntc = getNativeTrayContainer();
+            List<TrayItemData> items = ntc.getTrayItemDatas();
             int key = items.size();
-
-            TrayItem item = createTrayItem(key);
+            
+            TrayItemData itemData = createTrayItem(key);
+            TrayItem item = itemData.ITEM;
             if (imageData != null) setTrayItemImage(item, imageData);
             setTrayItemTooltip(item, tooltip);
             if (imageData != null) setTrayItemVisible(item, true);
             
-            items.add(item);
+            items.add(itemData);
             return key;
         }
 
@@ -127,12 +131,13 @@ public class NativeTray implements INativeTray {
             });
         }
 
-        private static TrayItem createTrayItem(final int key) {
-            return syncReturn(new RunnableReturn<TrayItem>() {
+        private static TrayItemData createTrayItem(final int key) {
+            return syncReturn(new RunnableReturn<TrayItemData>() {
 
                 @Override
-                protected TrayItem createReturn() throws Exception {
+                protected TrayItemData createReturn() throws Exception {
                     TrayItem item = new TrayItem(getSystemTray(), SWT.NONE);
+                    Menu menu = new Menu(NativeTrayContainer.getInstance().getShell(), SWT.POP_UP);
                     item.addListener(SWT.DefaultSelection, new Listener() {
 
                         @Override
@@ -149,7 +154,7 @@ public class NativeTray implements INativeTray {
                         }
                         
                     });
-                    return item;
+                    return new TrayItemData(item, menu);
                 }
 
             });

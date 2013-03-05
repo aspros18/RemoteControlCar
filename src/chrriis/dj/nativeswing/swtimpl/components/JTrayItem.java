@@ -8,7 +8,7 @@ public class JTrayItem {
 
     private final TrayItemData DATA;
 
-    public JTrayItem(TrayItemData data) {
+    JTrayItem(TrayItemData data) {
         DATA = data;
     }
 

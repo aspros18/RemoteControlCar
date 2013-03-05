@@ -2,11 +2,17 @@ package chrriis.dj.nativeswing.swtimpl.components.core;
 
 import chrriis.common.RunnableReturn;
 import chrriis.dj.nativeswing.swtimpl.CommandMessage;
+import chrriis.dj.nativeswing.swtimpl.components.JTray;
+import chrriis.dj.nativeswing.swtimpl.components.JTrayItem;
+import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseEvent;
+import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseListener;
 import chrriis.dj.nativeswing.swtimpl.components.internal.INativeTray;
 import chrriis.dj.nativeswing.swtimpl.core.SWTNativeInterface;
 import org.eclipse.swt.SWT;
 import java.util.List;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 
@@ -14,6 +20,14 @@ public class NativeTray implements INativeTray {
 
     private static abstract class TrayCommandMessage extends CommandMessage {
 
+        protected static void asyncExec(CommandMessage msg, Object ... args) {
+            msg.asyncExec(false, args);
+        }
+        
+        protected static Object syncExec(CommandMessage msg, Object ... args) {
+            return msg.syncExec(false, args);
+        }
+        
         protected static NativeTrayContainer getNativeTrayContainer() {
             return NativeTrayContainer.getInstance();
         }
@@ -66,6 +80,43 @@ public class NativeTray implements INativeTray {
         
     }
 
+    private static abstract class CMJ_clicked extends CommandMessage {
+
+        @Override
+        public Object run(Object[] args) throws Exception {
+            int key = (Integer) args[0];
+            JTrayItem item = JTray.getTrayItem(key);
+            if (item != null) {
+                TrayItemMouseEvent e = new TrayItemMouseEvent(item);
+                for (TrayItemMouseListener l : item.getMouseListeners()) {
+                    handleEvent(l, e);
+                }
+            }
+            return null;
+        }
+        
+        protected abstract void handleEvent(TrayItemMouseListener l, TrayItemMouseEvent e);
+        
+    }
+    
+    private static class CMJ_singleClicked extends CMJ_clicked {
+        
+        @Override
+        protected void handleEvent(TrayItemMouseListener l, TrayItemMouseEvent e) {
+            l.onClick(e);
+        }
+        
+    }
+    
+    private static class CMJ_doubleClicked extends CMJ_clicked {
+        
+        @Override
+        protected void handleEvent(TrayItemMouseListener l, TrayItemMouseEvent e) {
+            l.onDoubleClick(e);
+        }
+        
+    }
+    
     private static class CMN_create extends TrayCommandMessage {
 
         @Override
@@ -75,7 +126,7 @@ public class NativeTray implements INativeTray {
             List<TrayItem> items = getNativeTrayContainer().getTrayItems();
             int key = items.size();
 
-            TrayItem item = createTrayItem();
+            TrayItem item = createTrayItem(key);
             if (imageData != null) setTrayItemImage(item, imageData);
             setTrayItemTooltip(item, tooltip);
             if (imageData != null) setTrayItemVisible(item, true);
@@ -95,12 +146,29 @@ public class NativeTray implements INativeTray {
             });
         }
 
-        private static TrayItem createTrayItem() {
+        private static TrayItem createTrayItem(final int key) {
             return syncReturn(new RunnableReturn<TrayItem>() {
 
                 @Override
                 protected TrayItem createReturn() throws Exception {
-                    return new TrayItem(getSystemTray(), SWT.NONE);
+                    TrayItem item = new TrayItem(getSystemTray(), SWT.NONE);
+                    item.addListener(SWT.DefaultSelection, new Listener() {
+
+                        @Override
+                        public void handleEvent(Event event) {
+                            asyncExec(new CMJ_doubleClicked(), key);
+                        }
+                        
+                    });
+                    item.addListener(SWT.Selection, new Listener() {
+
+                        @Override
+                        public void handleEvent(Event event) {
+                            asyncExec(new CMJ_singleClicked(), key);
+                        }
+                        
+                    });
+                    return item;
                 }
 
             });

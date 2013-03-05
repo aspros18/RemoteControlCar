@@ -4,6 +4,8 @@ import chrriis.dj.nativeswing.swtimpl.components.core.NativeTray;
 import chrriis.dj.nativeswing.swtimpl.components.JTray;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JTrayItem;
+import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseEvent;
+import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseListener;
 import java.awt.image.RenderedImage;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -46,6 +48,19 @@ public class Main {
                 item1.setTooltip("First changed");
                 System.out.println(item1.getTooltip());
                 item2.setImage(org.dyndns.fzoli.rccar.bridge.resource.R.getBridgeImage());
+                item1.addMouseListener(new TrayItemMouseListener() {
+
+                    @Override
+                    public void onClick(TrayItemMouseEvent e) {
+                        System.out.println("single click");
+                    }
+
+                    @Override
+                    public void onDoubleClick(TrayItemMouseEvent e) {
+                        System.out.println("double click");
+                    }
+                    
+                });
             }
             
         });

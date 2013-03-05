@@ -29,4 +29,8 @@ public class JTrayItem {
         DATA.tooltip = text;
     }
 
+    public void setVisible(boolean visible) {
+        NATIVE_TRAY.setVisible(DATA.KEY, visible);
+    }
+    
 }

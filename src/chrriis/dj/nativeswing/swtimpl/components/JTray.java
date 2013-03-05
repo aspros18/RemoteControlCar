@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 
 public class JTray {
 
-    private static INativeTray nativeFileDialog = NativeCoreObjectFactory.create(INativeTray.class, "chrriis.dj.nativeswing.swtimpl.components.core.NativeTray", new Class<?>[0], new Object[0]);
+    final static INativeTray NATIVE_TRAY = NativeCoreObjectFactory.create(INativeTray.class, "chrriis.dj.nativeswing.swtimpl.components.core.NativeTray", new Class<?>[0], new Object[0]);
 
     public static JTrayItem createTrayItem(RenderedImage icon, String tooltip) {
         try {
@@ -23,9 +23,9 @@ public class JTray {
             throw new RuntimeException(ex);
         }
     }
-    
+
     public static JTrayItem createTrayItem(byte[] iconData, String tooltip) {
-        int key = nativeFileDialog.createTrayItem(iconData, tooltip);
+        int key = NATIVE_TRAY.createTrayItem(iconData, tooltip);
         return new JTrayItem(key);
     }
 

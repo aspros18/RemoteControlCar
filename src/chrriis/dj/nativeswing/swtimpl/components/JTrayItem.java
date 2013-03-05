@@ -1,7 +1,6 @@
 package chrriis.dj.nativeswing.swtimpl.components;
 
 import static chrriis.dj.nativeswing.swtimpl.components.JTray.NATIVE_TRAY;
-import static chrriis.dj.nativeswing.swtimpl.components.JTray.createImageData;
 import java.awt.image.RenderedImage;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,7 +37,7 @@ public class JTrayItem {
     }
 
     public void setImage(RenderedImage image) {
-        setImage(createImageData(image));
+        setImage(JTrayContainer.createImageData(image));
     }
 
     public void setImage(byte[] imageData) {

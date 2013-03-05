@@ -2,7 +2,7 @@ package chrriis.dj.nativeswing.swtimpl.components.core;
 
 import chrriis.common.RunnableReturn;
 import chrriis.dj.nativeswing.swtimpl.CommandMessage;
-import chrriis.dj.nativeswing.swtimpl.components.JTray;
+import chrriis.dj.nativeswing.swtimpl.components.JTrayContainer;
 import chrriis.dj.nativeswing.swtimpl.components.JTrayItem;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseEvent;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseListener;
@@ -86,7 +86,7 @@ public class NativeTray implements INativeTray {
         public Object run(Object[] args) throws Exception {
             int key = (Integer) args[0];
             boolean doubleClick = (Boolean) args[1];
-            JTrayItem item = JTray.getTrayItem(key);
+            JTrayItem item = JTrayContainer.getTrayItem(key);
             if (item != null) {
                 TrayItemMouseEvent e = new TrayItemMouseEvent(item, doubleClick);
                 for (TrayItemMouseListener l : item.getMouseListeners()) {

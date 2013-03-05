@@ -19,6 +19,10 @@ public class JTray {
         return new JTrayItem(key);
     }
 
+    public static void dispose() {
+        NATIVE_TRAY.dispose();
+    }
+
     static byte[] createImageData(RenderedImage img) {
         if (img == null) return null;
         try {

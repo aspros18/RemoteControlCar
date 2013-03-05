@@ -17,7 +17,16 @@ public class Main {
 
             @Override
             public void run() {
-                System.exit(0);
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        JTray.dispose();
+                        NativeInterface.close();
+                        System.exit(0);
+                    }
+                
+                });
             }
             
         }, 5000);

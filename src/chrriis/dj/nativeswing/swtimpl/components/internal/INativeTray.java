@@ -8,4 +8,6 @@ public interface INativeTray {
     
     public void setImage(int key, byte[] imageData);
     
+    public void dispose();
+    
 }

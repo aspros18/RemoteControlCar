@@ -29,7 +29,7 @@ public class NativeTray implements INativeTray {
     };
 
     private static class CMN_create extends ControlCommandMessage {
-        
+
         @Override
         public Object run(Object[] args) {
             byte[] imageData = (byte[]) args[0];
@@ -47,7 +47,7 @@ public class NativeTray implements INativeTray {
             items.add(item);
             return key;
         }
-        
+
     }
 
     private static class CMN_image extends ControlCommandMessage {
@@ -61,9 +61,9 @@ public class NativeTray implements INativeTray {
             if (item != null) item.setImage(ntc.createImage(getControl().getDisplay(), imageData));
             return null;
         }
-        
+
     }
-    
+
     private static class CMN_tooltip extends ControlCommandMessage {
 
         @Override
@@ -75,9 +75,19 @@ public class NativeTray implements INativeTray {
             if (item != null) item.setToolTipText(text);
             return null;
         }
-        
+
     }
-    
+
+    private static class CMN_dispose extends ControlCommandMessage {
+
+        @Override
+        public Object run(Object[] args) throws Exception {
+            NativeTrayContainer.getInstance().dispose();
+            return null;
+        }
+
+    }
+
     private static final TrayComponent CMP;
 
     static {
@@ -107,6 +117,11 @@ public class NativeTray implements INativeTray {
     @Override
     public void setImage(int key, byte[] imageData) {
         asyncExec(new CMN_image(), key, imageData);
+    }
+
+    @Override
+    public void dispose() {
+        syncExec(new CMN_dispose());
     }
 
 }

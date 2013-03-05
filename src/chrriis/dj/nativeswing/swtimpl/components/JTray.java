@@ -16,7 +16,7 @@ public class JTray {
 
     public static JTrayItem createTrayItem(byte[] imageData, String tooltip) {
         int key = NATIVE_TRAY.createTrayItem(imageData, tooltip);
-        return new JTrayItem(key);
+        return new JTrayItem(new TrayItemData(key, tooltip));
     }
 
     public static void dispose() {

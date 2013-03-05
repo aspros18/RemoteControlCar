@@ -6,10 +6,14 @@ import java.awt.image.RenderedImage;
 
 public class JTrayItem {
 
-    private final int KEY;
+    private final TrayItemData DATA;
 
-    public JTrayItem(int key) {
-        KEY = key;
+    public JTrayItem(TrayItemData data) {
+        DATA = data;
+    }
+
+    public String getTooltip() {
+        return DATA.tooltip;
     }
 
     public void setImage(RenderedImage image) {
@@ -17,11 +21,12 @@ public class JTrayItem {
     }
 
     public void setImage(byte[] imageData) {
-        NATIVE_TRAY.setImage(KEY, imageData);
+        NATIVE_TRAY.setImage(DATA.KEY, imageData);
     }
 
     public void setTooltip(String text) {
-        NATIVE_TRAY.setTooltip(KEY, text);
+        NATIVE_TRAY.setTooltip(DATA.KEY, text);
+        DATA.tooltip = text;
     }
 
 }

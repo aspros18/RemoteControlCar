@@ -42,7 +42,9 @@ public class Main {
                 RenderedImage testImage = R.getIconImage();
                 JTrayItem item1 = JTray.createTrayItem(testImage, "First");
                 JTrayItem item2 = JTray.createTrayItem(testImage, "Second");
+                System.out.println(item1.getTooltip());
                 item1.setTooltip("First changed");
+                System.out.println(item1.getTooltip());
                 item2.setImage(org.dyndns.fzoli.rccar.bridge.resource.R.getBridgeImage());
             }
             

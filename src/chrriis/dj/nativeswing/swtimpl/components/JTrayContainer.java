@@ -1,6 +1,5 @@
 package chrriis.dj.nativeswing.swtimpl.components;
 
-import static chrriis.dj.nativeswing.swtimpl.components.JTray.NATIVE_TRAY;
 import java.awt.image.RenderedImage;
 import java.io.ByteArrayOutputStream;
 import java.util.Collections;
@@ -32,17 +31,16 @@ public class JTrayContainer {
         TRAY_ITEMS.add(item);
         return item;
     }
+
+    static void clear() {
+        TRAY_ITEMS.clear();
+    }
     
     public static JTrayItem getTrayItem(int key) {
         for (JTrayItem item : TRAY_ITEMS) {
             if (item.getKey() == key) return item;
         }
         return null;
-    }
-    
-    public static void dispose() {
-        NATIVE_TRAY.dispose();
-        TRAY_ITEMS.clear();
     }
     
 }

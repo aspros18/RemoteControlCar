@@ -28,11 +28,11 @@ public class NativeTray implements INativeTray {
 
     };
 
-    private static class CMN_test extends ControlCommandMessage {
+    private static class CMN_create extends ControlCommandMessage {
         
         @Override
         public Object run(Object[] args) {
-            byte[] iconData = (byte[]) args[0];
+            byte[] imageData = (byte[]) args[0];
             String tooltip = (String) args[1];
             Display display = getControl().getDisplay();
             NativeTrayContainer ntc = NativeTrayContainer.getInstance();
@@ -41,15 +41,43 @@ public class NativeTray implements INativeTray {
             
             Tray tray = display.getSystemTray();
             TrayItem item = new TrayItem(tray, SWT.NONE);
-            if (iconData != null) item.setImage(ntc.createImage(display, iconData));
+            if (imageData != null) item.setImage(ntc.createImage(display, imageData));
             if (tooltip != null) item.setToolTipText(tooltip);
-            if (iconData != null) item.setVisible(true);
+            if (imageData != null) item.setVisible(true);
             items.add(item);
             return key;
         }
         
     }
 
+    private static class CMN_image extends ControlCommandMessage {
+
+        @Override
+        public Object run(Object[] args) throws Exception {
+            int key = (Integer) args[0];
+            byte[] imageData = (byte[]) args[1];
+            NativeTrayContainer ntc = NativeTrayContainer.getInstance();
+            TrayItem item = ntc.getTrayItems().get(key);
+            if (item != null) item.setImage(ntc.createImage(getControl().getDisplay(), imageData));
+            return null;
+        }
+        
+    }
+    
+    private static class CMN_tooltip extends ControlCommandMessage {
+
+        @Override
+        public Object run(Object[] args) throws Exception {
+            int key = (Integer) args[0];
+            String text = (String) args[1];
+            NativeTrayContainer ntc = NativeTrayContainer.getInstance();
+            TrayItem item = ntc.getTrayItems().get(key);
+            if (item != null) item.setToolTipText(text);
+            return null;
+        }
+        
+    }
+    
     private static final TrayComponent CMP;
 
     static {
@@ -58,13 +86,27 @@ public class NativeTray implements INativeTray {
         CMP.initializeNativePeer();
     }
 
+    private static void asyncExec(ControlCommandMessage msg, Object... args) {
+        msg.asyncExec(CMP, args);
+    }
+
     private static Object syncExec(ControlCommandMessage msg, Object... args) {
         return msg.syncExec(CMP, args);
     }
-    
+
     @Override
-    public int createTrayItem(byte[] iconData, String tooltip) {
-        return (Integer) syncExec(new CMN_test(), iconData, tooltip);
+    public int createTrayItem(byte[] imageData, String tooltip) {
+        return (Integer) syncExec(new CMN_create(), imageData, tooltip);
     }
-    
+
+    @Override
+    public void setTooltip(int key, String text) {
+        asyncExec(new CMN_tooltip(), key, text);
+    }
+
+    @Override
+    public void setImage(int key, byte[] imageData) {
+        asyncExec(new CMN_image(), key, imageData);
+    }
+
 }

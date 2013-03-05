@@ -14,7 +14,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 
@@ -107,17 +106,20 @@ public class NativeTray implements INativeTray {
             byte[] imageData = (byte[]) args[0];
             String tooltip = (String) args[1];
             NativeTrayContainer ntc = getNativeTrayContainer();
-            List<TrayItemData> items = ntc.getTrayItemDatas();
-            int key = items.size();
-            
-            TrayItemData itemData = createTrayItem(key);
-            TrayItem item = itemData.ITEM;
-            if (imageData != null) setTrayItemImage(item, imageData);
-            setTrayItemTooltip(item, tooltip);
-            if (imageData != null) setTrayItemVisible(item, true);
-            
-            items.add(itemData);
-            return key;
+            final List<TrayItemData> items = ntc.getTrayItemDatas();
+            synchronized (items) {
+                int key = items.size();
+                
+                TrayItemData itemData = createTrayItem(key);
+                TrayItem item = itemData.ITEM;
+                if (imageData != null) setTrayItemImage(item, imageData);
+                setTrayItemTooltip(item, tooltip);
+                if (imageData != null) setTrayItemVisible(item, true);
+                
+                items.add(itemData);
+                
+                return key;
+            }
         }
 
         private static Tray getSystemTray() {
@@ -137,15 +139,6 @@ public class NativeTray implements INativeTray {
                 @Override
                 protected TrayItemData createReturn() throws Exception {
                     TrayItem item = new TrayItem(getSystemTray(), SWT.NONE);
-                    final Menu menu = new Menu(NativeTrayContainer.getInstance().getShell(), SWT.POP_UP);
-                    Listener listenerMenu = new Listener() {
-
-                        @Override
-                        public void handleEvent(Event event) {
-                            menu.setVisible(true);
-                        }
-                        
-                    };
                     item.addListener(SWT.DefaultSelection, new Listener() {
 
                         @Override
@@ -162,7 +155,7 @@ public class NativeTray implements INativeTray {
                         }
                         
                     });
-                    return new TrayItemData(item, menu, listenerMenu);
+                    return new TrayItemData(item);
                 }
 
             });

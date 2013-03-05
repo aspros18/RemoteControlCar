@@ -38,13 +38,13 @@ public class Main {
                 // tray item event test
                 TrayItemMouseListener l = new TrayItemMouseListener() {
 
-                    int i = 1;
+                    int i = 0;
                     
                     @Override
                     public void onClick(TrayItemMouseEvent e) {
-                        if (i >= 5) JTray.dispose();
-                        System.out.println((e.isDoubleClick() ? "double" : "single") + " click " + (item1 == e.getComponent() ? 1 : 2));
                         i++;
+                        if (i == 5) JTray.dispose();
+                        System.out.println((e.isDoubleClick() ? "double" : "single") + " click " + (item1 == e.getComponent() ? 1 : 2));
                     }
 
                 };

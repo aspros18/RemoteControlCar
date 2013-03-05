@@ -11,40 +11,15 @@ import java.util.Set;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.TrayItem;
 
 final class NativeTrayContainer {
-
-    static class TrayItemData {
-        
-        final TrayItem ITEM;
-        
-        final Listener LISTENER_MENU = new Listener() {
-            
-            @Override
-            public void handleEvent(Event event) {
-                if (menu != null) menu.setVisible(true);
-            }
-            
-        };
-        
-        Menu menu;
-        
-        TrayItemData(TrayItem item) {
-            ITEM = item;
-        }
-        
-    }
     
     private static final NativeTrayContainer OBJ = new NativeTrayContainer();
 
     private final Set<Image> IMAGES = Collections.synchronizedSet(new HashSet<Image>());
 
-    private final List<TrayItemData> TRAY_ITEMS = Collections.synchronizedList(new ArrayList<TrayItemData>());
+    private final List<NativeTrayItem> TRAY_ITEMS = Collections.synchronizedList(new ArrayList<NativeTrayItem>());
 
     private Shell shell;
     
@@ -71,7 +46,7 @@ final class NativeTrayContainer {
         return shell = r.getReturn();
     }
     
-    public List<TrayItemData> getTrayItemDatas() {
+    public List<NativeTrayItem> getNativeTrayItems() {
         return TRAY_ITEMS;
     }
     
@@ -84,8 +59,8 @@ final class NativeTrayContainer {
     }
 
     public void dispose() {
-        for (TrayItemData data : TRAY_ITEMS) {
-            data.ITEM.dispose();
+        for (NativeTrayItem item : TRAY_ITEMS) {
+            item.getTrayItem().dispose();
         }
         TRAY_ITEMS.clear();
         for (Image img : IMAGES) {

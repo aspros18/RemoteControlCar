@@ -1,6 +1,9 @@
-package chrriis.test;
+package chrriis.dj.nativeswing.test;
 
+import chrriis.dj.nativeswing.swtimpl.components.core.NativeTray;
+import chrriis.dj.nativeswing.swtimpl.components.JTray;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
+import chrriis.dj.nativeswing.swtimpl.components.JTrayItem;
 import java.awt.image.RenderedImage;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -21,14 +24,15 @@ public class Main {
     }
     
     public static void main(String[] args) {
-        NativeInterface.getConfiguration().addNativeClassPathReferenceClasses(NativeTest.class); // Can this line be automatized? (without calling something before NativeInterface#open) Where should I put this line?
+        NativeInterface.getConfiguration().addNativeClassPathReferenceClasses(NativeTray.class); // Can this line be automatized? (without calling something before NativeInterface#open) Where should I put this line?
         NativeInterface.open();
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
                 RenderedImage testImage = R.getIconImage();
-                JTest.test(testImage);
+                JTrayItem item1 = JTray.createTrayItem(testImage, "First");
+                JTrayItem item2 = JTray.createTrayItem(testImage, "Second");
             }
             
         });

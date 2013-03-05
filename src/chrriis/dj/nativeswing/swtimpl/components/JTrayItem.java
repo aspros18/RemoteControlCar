@@ -8,16 +8,23 @@ import java.util.List;
 
 public class JTrayItem {
 
-    private final TrayItemData DATA;
+    private final int KEY;
+
+    private String tooltip;
+    private byte[] imageData;
+    private boolean visible;
 
     private final List<TrayItemMouseListener> MOUSE_LISTENERS = Collections.synchronizedList(new ArrayList<TrayItemMouseListener>());
 
-    JTrayItem(TrayItemData data) {
-        DATA = data;
+    JTrayItem(int key, String tooltip, byte[] imageData) {
+        this.KEY = key;
+        this.tooltip = tooltip;
+        this.imageData = imageData;
+        this.visible = imageData != null;
     }
 
     int getKey() {
-        return DATA.KEY;
+        return KEY;
     }
     
     public List<TrayItemMouseListener> getMouseListeners() {
@@ -33,11 +40,11 @@ public class JTrayItem {
     }
     
     public String getTooltip() {
-        return DATA.tooltip;
+        return tooltip;
     }
 
     public boolean isVisible() {
-        return DATA.visible && DATA.imageData != null;
+        return visible && imageData != null;
     }
     
     public void setImage(RenderedImage image) {
@@ -46,19 +53,19 @@ public class JTrayItem {
 
     public void setImage(byte[] imageData) {
         if (imageData == null) throw new NullPointerException("Image can't be null");
-        NATIVE_TRAY.setImage(DATA.KEY, imageData);
-        DATA.imageData = imageData;
+        NATIVE_TRAY.setImage(KEY, imageData);
+        this.imageData = imageData;
     }
 
     public void setTooltip(String text) {
-        NATIVE_TRAY.setTooltip(DATA.KEY, text);
-        DATA.tooltip = text;
+        NATIVE_TRAY.setTooltip(KEY, text);
+        this.tooltip = text;
     }
 
     public void setVisible(boolean visible) {
-        if (visible && DATA.imageData == null) throw new NullPointerException("Tray item can't be visible without image");
-        NATIVE_TRAY.setVisible(DATA.KEY, visible);
-        DATA.visible = visible;
+        if (visible && imageData == null) throw new NullPointerException("Tray item can't be visible without image");
+        NATIVE_TRAY.setVisible(KEY, visible);
+        this.visible = visible;
     }
     
 }

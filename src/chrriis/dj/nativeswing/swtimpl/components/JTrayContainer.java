@@ -28,7 +28,7 @@ public class JTrayContainer {
     }
     
     static JTrayItem createTrayItem(int key, byte[] imageData, String tooltip) {
-        JTrayItem item = new JTrayItem(new TrayItemData(key, tooltip, imageData));
+        JTrayItem item = new JTrayItem(key, tooltip, imageData);
         TRAY_ITEMS.add(item);
         return item;
     }

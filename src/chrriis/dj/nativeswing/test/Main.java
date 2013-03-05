@@ -42,20 +42,31 @@ public class Main {
             @Override
             public void run() {
                 RenderedImage testImage = R.getIconImage();
-                JTrayItem item1 = JTray.createTrayItem(testImage, "First");
-                JTrayItem item2 = JTray.createTrayItem(testImage, "Second");
-                System.out.println(item1.getTooltip());
+                final JTrayItem item1 = JTray.createTrayItem(testImage, "First");
+                final JTrayItem item2 = JTray.createTrayItem(testImage, "Second");
+                final JTrayItem item3 = JTray.createTrayItem();
+                System.out.println("item1 visible: " + item1.isVisible());
+                System.out.println("item3 visible: " + item3.isVisible());
+                
+                System.out.println("item1 tip: " + item1.getTooltip());
                 item1.setTooltip("First changed");
-                System.out.println(item1.getTooltip());
+                System.out.println("item1 tip: " + item1.getTooltip());
+                System.out.println("item2 tip: " + item2.getTooltip());
+                
                 item2.setImage(org.dyndns.fzoli.rccar.bridge.resource.R.getBridgeImage());
-                item1.addMouseListener(new TrayItemMouseListener() {
+                
+                TrayItemMouseListener l = new TrayItemMouseListener() {
 
                     @Override
                     public void onClick(TrayItemMouseEvent e) {
-                        System.out.println((e.isDoubleClick() ? "double" : "single") + " click");
+                        System.out.println((e.isDoubleClick() ? "double" : "single") + " click " + (item1 == e.getComponent() ? 1 : 2));
                     }
-                    
-                });
+
+                };
+                item1.addMouseListener(l);
+                item2.addMouseListener(l);
+                
+                item3.setVisible(true); // exception
             }
             
         });

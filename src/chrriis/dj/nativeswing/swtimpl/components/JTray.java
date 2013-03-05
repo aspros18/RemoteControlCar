@@ -8,6 +8,10 @@ public class JTray {
 
     final static INativeTray NATIVE_TRAY = NativeCoreObjectFactory.create(INativeTray.class, "chrriis.dj.nativeswing.swtimpl.components.core.NativeTray", new Class<?>[0], new Object[0]);
     
+    public static JTrayItem createTrayItem() {
+        return createTrayItem((byte[]) null, null);
+    }
+    
     public static JTrayItem createTrayItem(RenderedImage image, String tooltip) {
         return createTrayItem(JTrayContainer.createImageData(image), tooltip);
     }

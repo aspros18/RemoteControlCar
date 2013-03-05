@@ -137,7 +137,15 @@ public class NativeTray implements INativeTray {
                 @Override
                 protected TrayItemData createReturn() throws Exception {
                     TrayItem item = new TrayItem(getSystemTray(), SWT.NONE);
-                    Menu menu = new Menu(NativeTrayContainer.getInstance().getShell(), SWT.POP_UP);
+                    final Menu menu = new Menu(NativeTrayContainer.getInstance().getShell(), SWT.POP_UP);
+                    Listener listenerMenu = new Listener() {
+
+                        @Override
+                        public void handleEvent(Event event) {
+                            menu.setVisible(true);
+                        }
+                        
+                    };
                     item.addListener(SWT.DefaultSelection, new Listener() {
 
                         @Override
@@ -154,7 +162,7 @@ public class NativeTray implements INativeTray {
                         }
                         
                     });
-                    return new TrayItemData(item, menu);
+                    return new TrayItemData(item, menu, listenerMenu);
                 }
 
             });

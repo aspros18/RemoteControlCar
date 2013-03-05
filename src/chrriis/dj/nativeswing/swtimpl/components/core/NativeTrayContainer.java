@@ -11,6 +11,7 @@ import java.util.Set;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TrayItem;
@@ -21,10 +22,12 @@ final class NativeTrayContainer {
         
         final TrayItem ITEM;
         final Menu MENU;
+        final Listener LISTENER_MENU;
 
-        TrayItemData(TrayItem item, Menu menu) {
+        TrayItemData(TrayItem item, Menu menu, Listener listenerMenu) {
             ITEM = item;
             MENU = menu;
+            LISTENER_MENU = listenerMenu;
         }
         
     }

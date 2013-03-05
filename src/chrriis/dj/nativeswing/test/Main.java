@@ -7,32 +7,10 @@ import chrriis.dj.nativeswing.swtimpl.components.JTrayItem;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseEvent;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseListener;
 import java.awt.image.RenderedImage;
-import java.util.Timer;
-import java.util.TimerTask;
 import javax.swing.SwingUtilities;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 
 public class Main {
-
-    private static void autoExit() {
-        new Timer().schedule(new TimerTask() {
-
-            @Override
-            public void run() {
-                SwingUtilities.invokeLater(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        JTray.dispose();
-                        NativeInterface.close();
-                        System.exit(0);
-                    }
-                
-                });
-            }
-            
-        }, 5000);
-    }
     
     public static void main(String[] args) {
         NativeInterface.getConfiguration().addNativeClassPathReferenceClasses(NativeTray.class); // Can this line be automatized? (without calling something before NativeInterface#open) Where should I put this line?
@@ -57,9 +35,13 @@ public class Main {
                 
                 TrayItemMouseListener l = new TrayItemMouseListener() {
 
+                    int i = 1;
+                    
                     @Override
                     public void onClick(TrayItemMouseEvent e) {
+                        if (i >= 5) System.exit(0);
                         System.out.println((e.isDoubleClick() ? "double" : "single") + " click " + (item1 == e.getComponent() ? 1 : 2));
+                        i++;
                     }
 
                 };
@@ -70,7 +52,6 @@ public class Main {
             }
             
         });
-        autoExit();
         NativeInterface.runEventPump();
     }
 

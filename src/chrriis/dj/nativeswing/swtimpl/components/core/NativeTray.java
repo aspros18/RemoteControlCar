@@ -80,39 +80,20 @@ public class NativeTray implements INativeTray {
         
     }
 
-    private static abstract class CMJ_clicked extends CommandMessage {
+    private static class CMJ_clicked extends CommandMessage {
 
         @Override
         public Object run(Object[] args) throws Exception {
             int key = (Integer) args[0];
+            boolean doubleClick = (Boolean) args[1];
             JTrayItem item = JTray.getTrayItem(key);
             if (item != null) {
-                TrayItemMouseEvent e = new TrayItemMouseEvent(item);
+                TrayItemMouseEvent e = new TrayItemMouseEvent(item, doubleClick);
                 for (TrayItemMouseListener l : item.getMouseListeners()) {
-                    handleEvent(l, e);
+                    l.onClick(e);
                 }
             }
             return null;
-        }
-        
-        protected abstract void handleEvent(TrayItemMouseListener l, TrayItemMouseEvent e);
-        
-    }
-    
-    private static class CMJ_singleClicked extends CMJ_clicked {
-        
-        @Override
-        protected void handleEvent(TrayItemMouseListener l, TrayItemMouseEvent e) {
-            l.onClick(e);
-        }
-        
-    }
-    
-    private static class CMJ_doubleClicked extends CMJ_clicked {
-        
-        @Override
-        protected void handleEvent(TrayItemMouseListener l, TrayItemMouseEvent e) {
-            l.onDoubleClick(e);
         }
         
     }
@@ -156,7 +137,7 @@ public class NativeTray implements INativeTray {
 
                         @Override
                         public void handleEvent(Event event) {
-                            asyncExec(new CMJ_doubleClicked(), key);
+                            asyncExec(new CMJ_clicked(), key, true);
                         }
                         
                     });
@@ -164,7 +145,7 @@ public class NativeTray implements INativeTray {
 
                         @Override
                         public void handleEvent(Event event) {
-                            asyncExec(new CMJ_singleClicked(), key);
+                            asyncExec(new CMJ_clicked(), key, false);
                         }
                         
                     });

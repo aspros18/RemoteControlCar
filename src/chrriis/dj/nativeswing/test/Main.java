@@ -52,12 +52,7 @@ public class Main {
 
                     @Override
                     public void onClick(TrayItemMouseEvent e) {
-                        System.out.println("single click");
-                    }
-
-                    @Override
-                    public void onDoubleClick(TrayItemMouseEvent e) {
-                        System.out.println("double click");
+                        System.out.println((e.isDoubleClick() ? "double" : "single") + " click");
                     }
                     
                 });

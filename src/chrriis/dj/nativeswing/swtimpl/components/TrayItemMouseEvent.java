@@ -4,12 +4,19 @@ public class TrayItemMouseEvent {
     
     private final JTrayItem COMPONENT;
 
-    public TrayItemMouseEvent(JTrayItem component) {
+    private final boolean DOUBLE_CLICK;
+    
+    public TrayItemMouseEvent(JTrayItem component, boolean doubleClick) {
         this.COMPONENT = component;
+        this.DOUBLE_CLICK = doubleClick;
     }
 
     public JTrayItem getComponent() {
         return COMPONENT;
+    }
+
+    public boolean isDoubleClick() {
+        return DOUBLE_CLICK;
     }
     
 }

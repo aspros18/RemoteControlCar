@@ -22,8 +22,13 @@ public class JTrayMenu {
     }
     
     public void setTrayItem(JTrayItem trayItem) {
-        if (trayItem == null) DATA.key = null;
-        else DATA.key = trayItem.getKey();
+        if (trayItem == null) {
+            DATA.key = null;
+        }
+        else {
+            if (trayItem.isDisposed()) throw new IllegalStateException("The selected tray item is disposed");
+            DATA.key = trayItem.getKey();
+        }
         this.trayItem = trayItem;
         refresh();
     }

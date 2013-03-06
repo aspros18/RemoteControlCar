@@ -9,6 +9,7 @@ import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseListener;
 import chrriis.dj.nativeswing.swtimpl.components.internal.INativeTray;
 import chrriis.dj.nativeswing.swtimpl.core.SWTNativeInterface;
 import java.util.List;
+import javax.swing.SwingUtilities;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -29,6 +30,11 @@ public class NativeTray implements INativeTray {
             return msg.syncExec(false, args);
         }
         
+        protected static <T> T syncReturn(RunnableReturn<T> r) {
+            getDisplay().syncExec(r);
+            return r.getReturn();
+        }
+        
         protected static NativeTrayContainer getNativeTrayContainer() {
             return NativeTrayContainer.getInstance();
         }
@@ -37,13 +43,15 @@ public class NativeTray implements INativeTray {
             return SWTNativeInterface.getInstance().getDisplay();
         }
 
-        protected static <T> T syncReturn(RunnableReturn<T> r) {
-            getDisplay().syncExec(r);
-            return r.getReturn();
+        protected NativeTrayItem getNativeTrayItem(int key) {
+            for (NativeTrayItem item : getNativeTrayContainer().getNativeTrayItems()) {
+                if (item.getKey() == key) return item;
+            }
+            return null;
         }
-
+        
         protected TrayItem getTrayItem(int key) {
-            return getNativeTrayContainer().getNativeTrayItems().get(key).getTrayItem();
+            return getNativeTrayItem(key).getTrayItem();
         }
         
         protected static void setTrayItemImage(final TrayItem item, final byte[] imageData) {
@@ -92,9 +100,19 @@ public class NativeTray implements INativeTray {
             boolean doubleClick = (Boolean) args[1];
             JTrayItem item = JTrayContainer.getTrayItem(key);
             if (item != null) {
-                TrayItemMouseEvent e = new TrayItemMouseEvent(item, doubleClick);
-                for (TrayItemMouseListener l : item.getMouseListeners()) {
-                    l.onClick(e);
+                final TrayItemMouseEvent e = new TrayItemMouseEvent(item, doubleClick);
+                final List<TrayItemMouseListener> ls = item.getMouseListeners();
+                synchronized (ls) {
+                    for (final TrayItemMouseListener l : ls) {
+                        SwingUtilities.invokeLater(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                l.onClick(e);
+                            }
+                            
+                        });
+                    }
                 }
             }
             return null;
@@ -142,7 +160,7 @@ public class NativeTray implements INativeTray {
                 @Override
                 protected NativeTrayItem createReturn() throws Exception {
                     final TrayItem item = new TrayItem(getSystemTray(), SWT.NONE);
-                    final NativeTrayItem nativeItem = new NativeTrayItem(item);
+                    final NativeTrayItem nativeItem = new NativeTrayItem(item, key);
                     item.addListener(SWT.MenuDetect, new Listener() {
 
                         @Override
@@ -214,8 +232,33 @@ public class NativeTray implements INativeTray {
         }
 
     }
+
+    private static class CMN_disposeTrayItem extends TrayCommandMessage {
+
+        @Override
+        public Object run(Object[] args) throws Exception {
+            final int key = (Integer) args[0];
+            getDisplay().syncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    NativeTrayContainer ntc = getNativeTrayContainer();
+                    NativeTrayItem item = getNativeTrayItem(key);
+                    if (item != null) {
+                        Image img = item.getTrayItem().getImage();
+                        item.getTrayItem().dispose();
+                        ntc.getNativeTrayItems().remove(item);
+                        ntc.removeImage(img);
+                    }
+                }
+                
+            });
+            return null;
+        }
+
+    }
     
-    private static class CMN_dispose extends TrayCommandMessage {
+    private static class CMN_disposeTray extends TrayCommandMessage {
 
         @Override
         public Object run(Object[] args) throws Exception {
@@ -238,9 +281,27 @@ public class NativeTray implements INativeTray {
         public Object run(Object[] args) throws Exception {
             TrayMenuData data = (TrayMenuData) args[0];
             // TODO
-            System.out.println("key: " + data.key);
+//            if (true) {
+//                NativeTrayMenu menu = createTrayMenu(data);
+//                if (data.key != null) {
+//                    NativeTrayItem item = getNativeTrayItem(data.key);
+//                    item.setNativeTrayMenu(menu);
+//                }
+//            }
             return null;
         }
+        
+//        private NativeTrayMenu createTrayMenu(final TrayMenuData data) {
+//            return syncReturn(new RunnableReturn<NativeTrayMenu>() {
+//
+//                @Override
+//                protected NativeTrayMenu createReturn() throws Exception {
+//                    Menu menu = new Menu(getNativeTrayContainer().getShell(), SWT.POP_UP);
+//                    return new NativeTrayMenu(menu, data);
+//                }
+//                
+//            });
+//        }
         
     }
     
@@ -273,8 +334,13 @@ public class NativeTray implements INativeTray {
     }
 
     @Override
+    public void dispose(int key) {
+        syncExec(new CMN_disposeTrayItem(), key);
+    }
+
+    @Override
     public void dispose() {
-        syncExec(new CMN_dispose());
+        syncExec(new CMN_disposeTray());
     }
 
     @Override

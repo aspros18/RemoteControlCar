@@ -12,7 +12,7 @@ public class JTrayItem {
     
     private String tooltip;
     private byte[] imageData;
-    private boolean visible;
+    private boolean visible, disposed;
     
     private final List<TrayItemMouseListener> MOUSE_LISTENERS = Collections.synchronizedList(new ArrayList<TrayItemMouseListener>());
     
@@ -21,6 +21,7 @@ public class JTrayItem {
         this.tooltip = tooltip;
         this.imageData = imageData;
         this.visible = imageData != null;
+        this.disposed = false;
     }
 
     int getKey() {
@@ -32,6 +33,7 @@ public class JTrayItem {
     }
     
     public void addMouseListener(TrayItemMouseListener l) {
+        if (disposed) throw new IllegalStateException("Tray item is disposed");
         MOUSE_LISTENERS.add(l);
     }
     
@@ -52,20 +54,43 @@ public class JTrayItem {
     }
 
     public void setImage(byte[] imageData) {
+        checkState();
         if (imageData == null) throw new NullPointerException("Image can't be null");
         NATIVE_TRAY.setImage(KEY, imageData);
         this.imageData = imageData;
     }
 
     public void setTooltip(String text) {
+        checkState();
         NATIVE_TRAY.setTooltip(KEY, text);
         this.tooltip = text;
     }
 
     public void setVisible(boolean visible) {
+        checkState();
         if (visible && imageData == null) throw new NullPointerException("Tray item can't be visible without image");
         NATIVE_TRAY.setVisible(KEY, visible);
         this.visible = visible;
+    }
+
+    public boolean isDisposed() {
+        return disposed;
+    }
+    
+    public void dispose() {
+        if (disposed) return;
+        NATIVE_TRAY.dispose(KEY);
+        disposed = true;
+        visible = false;
+        tooltip = null;
+        imageData = null;
+        synchronized (MOUSE_LISTENERS) {
+            MOUSE_LISTENERS.clear();
+        }
+    }
+    
+    private void checkState() {
+        if (disposed) throw new IllegalStateException("Tray item is disposed");
     }
     
 }

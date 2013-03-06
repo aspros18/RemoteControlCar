@@ -12,6 +12,8 @@ public interface INativeTray {
     
     public void setVisible(int key, boolean visible);
     
+    public void dispose(int key);
+    
     public void dispose();
     
     public void setTrayMenu(TrayMenuData data);

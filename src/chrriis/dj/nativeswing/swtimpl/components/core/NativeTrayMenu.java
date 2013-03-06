@@ -8,9 +8,9 @@ class NativeTrayMenu {
 
     private final TrayMenuData DATA;
     
-    public NativeTrayMenu(Menu menu) {
+    public NativeTrayMenu(Menu menu, TrayMenuData data) {
         MENU = menu;
-        DATA = new TrayMenuData();
+        DATA = data;
     }
 
     public boolean isActive() {

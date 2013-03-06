@@ -11,6 +11,8 @@ public class JTray {
 
     final static INativeTray NATIVE_TRAY = NativeCoreObjectFactory.create(INativeTray.class, "chrriis.dj.nativeswing.swtimpl.components.core.NativeTray", new Class<?>[0], new Object[0]);
     
+    private static boolean disposed = false;
+    
     private static Timer exitPrevent;
     
     static {
@@ -33,18 +35,25 @@ public class JTray {
     }
 
     public static JTrayItem createTrayItem(byte[] imageData, String tooltip) {
+        checkState();
         if (exitPrevent == null) exitPrevent = new Timer();
         int key = NATIVE_TRAY.createTrayItem(imageData, tooltip);
         return JTrayContainer.createTrayItem(key, imageData, tooltip);
     }
 
     public static void dispose() {
+        if (disposed) return;
+        JTrayContainer.dispose();
         NATIVE_TRAY.dispose();
-        JTrayContainer.clear();
+        disposed = true;
         if (exitPrevent != null) {
             exitPrevent.cancel();
             exitPrevent = null;
         }
     }
 
+    private static void checkState() {
+        if (disposed) throw new IllegalStateException("Tray is disposed");
+    }
+    
 }

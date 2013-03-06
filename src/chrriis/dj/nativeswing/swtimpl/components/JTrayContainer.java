@@ -32,7 +32,10 @@ public class JTrayContainer {
         return item;
     }
 
-    static void clear() {
+    static void dispose() {
+        for (JTrayItem item : TRAY_ITEMS) {
+            if (!item.isDisposed()) item.dispose();
+        }
         TRAY_ITEMS.clear();
     }
     

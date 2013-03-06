@@ -2,7 +2,7 @@ package chrriis.dj.nativeswing.swtimpl.components.core;
 
 import org.eclipse.swt.widgets.Menu;
 
-class NativeTrayMenu {
+class NativeTrayMenu extends NativeTrayObject {
     
     private final Menu MENU;
 
@@ -13,6 +13,11 @@ class NativeTrayMenu {
         DATA = data;
     }
 
+    @Override
+    int getKey() {
+        return DATA.key;
+    }
+    
     public boolean isActive() {
         return DATA.active;
     }

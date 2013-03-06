@@ -2,7 +2,7 @@ package chrriis.dj.nativeswing.swtimpl.components.core;
 
 import org.eclipse.swt.widgets.TrayItem;
 
-class NativeTrayItem {
+class NativeTrayItem extends NativeTrayObject {
 
     private final int KEY;
     
@@ -15,6 +15,7 @@ class NativeTrayItem {
         KEY = key;
     }
 
+    @Override
     int getKey() {
         return KEY;
     }

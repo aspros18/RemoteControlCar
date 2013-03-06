@@ -15,6 +15,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 
@@ -43,14 +44,38 @@ public class NativeTray implements INativeTray {
             return SWTNativeInterface.getInstance().getDisplay();
         }
 
-        protected NativeTrayItem getNativeTrayItem(int key) {
-            for (NativeTrayItem item : getNativeTrayContainer().getNativeTrayItems()) {
-                if (item.getKey() == key) return item;
+        protected static int getNextKey(List<? extends NativeTrayObject> ls) {
+            int key = -1;
+            boolean e;
+            do {
+                key++;
+                e = false;
+                for (NativeTrayObject obj : ls) {
+                    if (obj.getKey() == key) {
+                        e = true;
+                        break;
+                    }
+                }
+            } while (e);
+            return key;
+        }
+        
+        protected static NativeTrayItem getNativeTrayItem(int key) {
+            return getNativeTrayObject(getNativeTrayContainer().getNativeTrayItems(), key);
+        }
+        
+        protected static NativeTrayMenu getNativeTrayMenu(int key) {
+            return getNativeTrayObject(getNativeTrayContainer().getNativeTrayMenus(), key);
+        }
+        
+        private static <T extends NativeTrayObject> T getNativeTrayObject(List<T> ls, int key) {
+            for (T obj : ls) {
+                if (obj.getKey() == key) return obj;
             }
             return null;
         }
         
-        protected TrayItem getTrayItem(int key) {
+        protected static TrayItem getTrayItem(int key) {
             return getNativeTrayItem(key).getTrayItem();
         }
         
@@ -127,9 +152,9 @@ public class NativeTray implements INativeTray {
             byte[] imageData = (byte[]) args[0];
             String tooltip = (String) args[1];
             NativeTrayContainer ntc = getNativeTrayContainer();
-            List<NativeTrayItem> items = ntc.getNativeTrayItems();
+            final List<NativeTrayItem> items = ntc.getNativeTrayItems();
             synchronized (items) {
-                int key = items.size();
+                int key = getNextKey(items);
                 
                 NativeTrayItem nativeItem = createTrayItem(key);
                 items.add(nativeItem);
@@ -291,17 +316,17 @@ public class NativeTray implements INativeTray {
             return null;
         }
         
-//        private NativeTrayMenu createTrayMenu(final TrayMenuData data) {
-//            return syncReturn(new RunnableReturn<NativeTrayMenu>() {
-//
-//                @Override
-//                protected NativeTrayMenu createReturn() throws Exception {
-//                    Menu menu = new Menu(getNativeTrayContainer().getShell(), SWT.POP_UP);
-//                    return new NativeTrayMenu(menu, data);
-//                }
-//                
-//            });
-//        }
+        private NativeTrayMenu createTrayMenu(final TrayMenuData data) {
+            return syncReturn(new RunnableReturn<NativeTrayMenu>() {
+
+                @Override
+                protected NativeTrayMenu createReturn() throws Exception {
+                    Menu menu = new Menu(getNativeTrayContainer().getShell(), SWT.POP_UP);
+                    return new NativeTrayMenu(menu, data);
+                }
+                
+            });
+        }
         
     }
     

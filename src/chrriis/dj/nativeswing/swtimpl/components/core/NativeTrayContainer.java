@@ -14,18 +14,20 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 final class NativeTrayContainer {
-    
+
     private static final NativeTrayContainer OBJ = new NativeTrayContainer();
 
     private final Set<Image> IMAGES = Collections.synchronizedSet(new HashSet<Image>());
 
     private final List<NativeTrayItem> TRAY_ITEMS = Collections.synchronizedList(new ArrayList<NativeTrayItem>());
 
+    private final List<NativeTrayMenu> TRAY_MENUS = Collections.synchronizedList(new ArrayList<NativeTrayMenu>());
+
     private Shell shell;
-    
+
     private NativeTrayContainer() {
     }
-    
+
     public static NativeTrayContainer getInstance() {
         return OBJ;
     }
@@ -49,6 +51,10 @@ final class NativeTrayContainer {
     public List<NativeTrayItem> getNativeTrayItems() {
         return TRAY_ITEMS;
     }
+
+    public List<NativeTrayMenu> getNativeTrayMenus() {
+        return TRAY_MENUS;
+    }
     
     public Image createImage(Display display, byte[] data) {
         BufferedInputStream inputStreamReader = new BufferedInputStream(new ByteArrayInputStream(data));
@@ -70,6 +76,10 @@ final class NativeTrayContainer {
             item.getTrayItem().dispose();
         }
         TRAY_ITEMS.clear();
+        for (NativeTrayMenu menu : TRAY_MENUS) {
+            menu.getMenu().dispose();
+        }
+        TRAY_MENUS.clear();
         for (Image img : IMAGES) {
             img.dispose();
         }

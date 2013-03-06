@@ -279,7 +279,7 @@ public class NativeTray implements INativeTray {
 
     @Override
     public void setTrayMenu(TrayMenuData data) {
-        asyncExec(new CMN_menu(), data);
+        asyncExec(new CMN_menu(), data.clone());
     }
 
 }

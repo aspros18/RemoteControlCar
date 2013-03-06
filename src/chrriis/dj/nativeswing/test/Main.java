@@ -52,12 +52,12 @@ public class Main {
                 item1.addMouseListener(l);
                 item2.addMouseListener(l);
                 
-                // bug finding
-                JTrayMenu menu1 = new JTrayMenu(item1); // NativeSwing[1]: key: 0      OK
-                JTrayMenu menu2 = new JTrayMenu();      // NativeSwing[1]: key: null   OK
-                menu2.setTrayItem(item2);               // NativeSwing[1]: key: null   WRONG (good key: 1)
-                JTrayMenu menu3 = new JTrayMenu(item3); // NativeSwing[1]: key: 2      OK
-                menu3.setTrayItem(item2);               // NativeSwing[1]: key: 2      WRONG (good key: 1)
+                // menu init test
+                JTrayMenu menu1 = new JTrayMenu(item1);
+                JTrayMenu menu2 = new JTrayMenu();
+                menu2.setTrayItem(item2);
+                JTrayMenu menu3 = new JTrayMenu(item3);
+                menu3.setTrayItem(item2);
                 
                 // exception test
                 item3.setVisible(true);

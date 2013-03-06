@@ -16,6 +16,8 @@ public interface INativeTray {
     
     public void dispose();
     
+    public int createTrayMenu();
+    
     public void setTrayMenu(TrayMenuData data);
     
 }

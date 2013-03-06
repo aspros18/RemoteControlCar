@@ -8,14 +8,14 @@ class NativeTrayMenu extends NativeTrayObject {
 
     private final TrayMenuData DATA;
     
-    public NativeTrayMenu(Menu menu, TrayMenuData data) {
+    public NativeTrayMenu(Menu menu, int key) {
         MENU = menu;
-        DATA = data;
+        DATA = new TrayMenuData(key);
     }
 
     @Override
     int getKey() {
-        return DATA.key;
+        return DATA.KEY;
     }
     
     public boolean isActive() {

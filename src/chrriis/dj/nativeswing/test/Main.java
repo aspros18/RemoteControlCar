@@ -57,7 +57,7 @@ public class Main {
                 JTrayMenu menu2 = new JTrayMenu();
                 menu2.setTrayItem(item2);
                 JTrayMenu menu3 = new JTrayMenu(item3);
-                menu3.setTrayItem(item2);
+                menu3.setTrayItem(null);
                 
                 // exception test
                 item3.setVisible(true);

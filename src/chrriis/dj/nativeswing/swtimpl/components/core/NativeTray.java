@@ -82,7 +82,7 @@ public class NativeTray implements INativeTray {
         
     }
 
-    private static class CMJ_clicked extends CommandMessage {
+    private static class CMJ_trayItemOnClick extends CommandMessage {
 
         @Override
         public Object run(Object[] args) throws Exception {
@@ -110,7 +110,7 @@ public class NativeTray implements INativeTray {
         
     }
     
-    private static class CMN_create extends TrayCommandMessage {
+    private static class CMN_trayItemCreate extends TrayCommandMessage {
 
         @Override
         public Object run(Object[] args) {
@@ -164,7 +164,7 @@ public class NativeTray implements INativeTray {
 
                         @Override
                         public void handleEvent(Event event) {
-                            asyncExec(new CMJ_clicked(), key, true);
+                            asyncExec(new CMJ_trayItemOnClick(), key, true);
                         }
                         
                     });
@@ -172,7 +172,7 @@ public class NativeTray implements INativeTray {
 
                         @Override
                         public void handleEvent(Event event) {
-                            asyncExec(new CMJ_clicked(), key, false);
+                            asyncExec(new CMJ_trayItemOnClick(), key, false);
                         }
                         
                     });
@@ -184,7 +184,7 @@ public class NativeTray implements INativeTray {
         
     }
 
-    private static class CMN_image extends TrayCommandMessage {
+    private static class CMN_trayItemSetImage extends TrayCommandMessage {
 
         @Override
         public Object run(Object[] args) throws Exception {
@@ -197,7 +197,7 @@ public class NativeTray implements INativeTray {
 
     }
 
-    private static class CMN_tooltip extends TrayCommandMessage {
+    private static class CMN_trayItemSetTooltip extends TrayCommandMessage {
 
         @Override
         public Object run(Object[] args) throws Exception {
@@ -210,7 +210,7 @@ public class NativeTray implements INativeTray {
 
     }
 
-    private static class CMN_visible extends TrayCommandMessage {
+    private static class CMN_trayItemSetVisible extends TrayCommandMessage {
 
         @Override
         public Object run(Object[] args) throws Exception {
@@ -223,7 +223,7 @@ public class NativeTray implements INativeTray {
 
     }
 
-    private static class CMN_disposeTrayItem extends TrayCommandMessage {
+    private static class CMN_trayItemDispose extends TrayCommandMessage {
 
         @Override
         public Object run(Object[] args) throws Exception {
@@ -248,7 +248,7 @@ public class NativeTray implements INativeTray {
 
     }
     
-    private static class CMN_disposeTray extends TrayCommandMessage {
+    private static class CMN_trayDispose extends TrayCommandMessage {
 
         @Override
         public Object run(Object[] args) throws Exception {
@@ -265,32 +265,42 @@ public class NativeTray implements INativeTray {
 
     }
 
-    private static class CMN_menu extends TrayCommandMessage {
+    private static class CMN_trayMenuCreate extends TrayCommandMessage {
 
         @Override
         public Object run(Object[] args) throws Exception {
-            TrayMenuData data = (TrayMenuData) args[0];
-            // TODO
-//            if (true) {
-//                NativeTrayMenu menu = createTrayMenu(data);
-//                if (data.key != null) {
-//                    NativeTrayItem item = getNativeTrayItem(data.key);
-//                    item.setNativeTrayMenu(menu);
-//                }
-//            }
-            return null;
+            NativeTrayContainer ntc = getNativeTrayContainer();
+            final List<NativeTrayMenu> menus = ntc.getNativeTrayMenus();
+            synchronized (menus) {
+                int key = ntc.getNextTrayMenuKey();
+                NativeTrayMenu menu = createNativeTrayMenu(key);
+                menus.add(menu);
+                return key;
+            }
         }
         
-        private NativeTrayMenu createTrayMenu(final TrayMenuData data) {
+        private NativeTrayMenu createNativeTrayMenu(final int key) {
             return syncReturn(new RunnableReturn<NativeTrayMenu>() {
 
                 @Override
                 protected NativeTrayMenu createReturn() throws Exception {
                     Menu menu = new Menu(getNativeTrayContainer().getShell(), SWT.POP_UP);
-                    return new NativeTrayMenu(menu, data);
+                    return new NativeTrayMenu(menu, key);
                 }
                 
             });
+        }
+        
+    }
+    
+    private static class CMN_trayMenuSet extends TrayCommandMessage {
+
+        @Override
+        public Object run(Object[] args) throws Exception {
+            TrayMenuData data = (TrayMenuData) args[0];
+            // TODO
+            System.out.println("tray menu " + data.KEY + " was setted to " + data.trayItemKey);
+            return null;
         }
         
     }
@@ -305,37 +315,42 @@ public class NativeTray implements INativeTray {
 
     @Override
     public int createTrayItem(byte[] imageData, String tooltip) {
-        return (Integer) syncExec(new CMN_create(), imageData, tooltip);
+        return (Integer) syncExec(new CMN_trayItemCreate(), imageData, tooltip);
     }
 
     @Override
     public void setTooltip(int key, String text) {
-        asyncExec(new CMN_tooltip(), key, text);
+        asyncExec(new CMN_trayItemSetTooltip(), key, text);
     }
 
     @Override
     public void setImage(int key, byte[] imageData) {
-        asyncExec(new CMN_image(), key, imageData);
+        asyncExec(new CMN_trayItemSetImage(), key, imageData);
     }
 
     @Override
     public void setVisible(int key, boolean visible) {
-        asyncExec(new CMN_visible(), key, visible);
+        asyncExec(new CMN_trayItemSetVisible(), key, visible);
     }
 
     @Override
     public void dispose(int key) {
-        syncExec(new CMN_disposeTrayItem(), key);
+        syncExec(new CMN_trayItemDispose(), key);
     }
 
     @Override
     public void dispose() {
-        syncExec(new CMN_disposeTray());
+        syncExec(new CMN_trayDispose());
+    }
+
+    @Override
+    public int createTrayMenu() {
+        return (Integer) syncExec(new CMN_trayMenuCreate());
     }
 
     @Override
     public void setTrayMenu(TrayMenuData data) {
-        asyncExec(new CMN_menu(), data.clone());
+        asyncExec(new CMN_trayMenuSet(), data.clone());
     }
 
 }

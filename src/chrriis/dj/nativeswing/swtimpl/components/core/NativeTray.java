@@ -10,6 +10,7 @@ import chrriis.dj.nativeswing.swtimpl.components.internal.INativeTray;
 import chrriis.dj.nativeswing.swtimpl.core.SWTNativeInterface;
 import java.util.List;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -50,7 +51,10 @@ public class NativeTray implements INativeTray {
 
                 @Override
                 public void run() {
-                    item.setImage(getNativeTrayContainer().createImage(getDisplay(), imageData));
+                    Image prevImg = item.getImage();
+                    NativeTrayContainer ntc = getNativeTrayContainer();
+                    item.setImage(ntc.createImage(getDisplay(), imageData));
+                    ntc.removeImage(prevImg);
                 }
 
             });

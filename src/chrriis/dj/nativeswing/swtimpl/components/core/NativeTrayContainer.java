@@ -58,6 +58,13 @@ final class NativeTrayContainer {
         return image;
     }
 
+    public void removeImage(Image image) {
+        if (image != null) {
+            image.dispose();
+            IMAGES.remove(image);
+        }
+    }
+    
     public void dispose() {
         for (NativeTrayItem item : TRAY_ITEMS) {
             item.getTrayItem().dispose();

@@ -43,41 +43,6 @@ public class NativeTray implements INativeTray {
         protected static Display getDisplay() {
             return SWTNativeInterface.getInstance().getDisplay();
         }
-
-        protected static int getNextKey(List<? extends NativeTrayObject> ls) {
-            int key = -1;
-            boolean e;
-            do {
-                key++;
-                e = false;
-                for (NativeTrayObject obj : ls) {
-                    if (obj.getKey() == key) {
-                        e = true;
-                        break;
-                    }
-                }
-            } while (e);
-            return key;
-        }
-        
-        protected static NativeTrayItem getNativeTrayItem(int key) {
-            return getNativeTrayObject(getNativeTrayContainer().getNativeTrayItems(), key);
-        }
-        
-        protected static NativeTrayMenu getNativeTrayMenu(int key) {
-            return getNativeTrayObject(getNativeTrayContainer().getNativeTrayMenus(), key);
-        }
-        
-        private static <T extends NativeTrayObject> T getNativeTrayObject(List<T> ls, int key) {
-            for (T obj : ls) {
-                if (obj.getKey() == key) return obj;
-            }
-            return null;
-        }
-        
-        protected static TrayItem getTrayItem(int key) {
-            return getNativeTrayItem(key).getTrayItem();
-        }
         
         protected static void setTrayItemImage(final TrayItem item, final byte[] imageData) {
             getDisplay().syncExec(new Runnable() {
@@ -154,7 +119,7 @@ public class NativeTray implements INativeTray {
             NativeTrayContainer ntc = getNativeTrayContainer();
             final List<NativeTrayItem> items = ntc.getNativeTrayItems();
             synchronized (items) {
-                int key = getNextKey(items);
+                int key = ntc.getNextTrayItemKey();
                 
                 NativeTrayItem nativeItem = createTrayItem(key);
                 items.add(nativeItem);
@@ -225,7 +190,7 @@ public class NativeTray implements INativeTray {
         public Object run(Object[] args) throws Exception {
             int key = (Integer) args[0];
             byte[] imageData = (byte[]) args[1];
-            TrayItem item = getTrayItem(key);
+            TrayItem item = getNativeTrayContainer().getTrayItem(key);
             if (item != null) setTrayItemImage(item, imageData);
             return null;
         }
@@ -238,7 +203,7 @@ public class NativeTray implements INativeTray {
         public Object run(Object[] args) throws Exception {
             int key = (Integer) args[0];
             String text = (String) args[1];
-            TrayItem item = getTrayItem(key);
+            TrayItem item = getNativeTrayContainer().getTrayItem(key);
             if (item != null) setTrayItemTooltip(item, text);
             return null;
         }
@@ -251,7 +216,7 @@ public class NativeTray implements INativeTray {
         public Object run(Object[] args) throws Exception {
             int key = (Integer) args[0];
             boolean visible = (Boolean) args[1];
-            TrayItem item = getTrayItem(key);
+            TrayItem item = getNativeTrayContainer().getTrayItem(key);
             if (item != null) setTrayItemVisible(item, visible);
             return null;
         }
@@ -268,7 +233,7 @@ public class NativeTray implements INativeTray {
                 @Override
                 public void run() {
                     NativeTrayContainer ntc = getNativeTrayContainer();
-                    NativeTrayItem item = getNativeTrayItem(key);
+                    NativeTrayItem item = ntc.getNativeTrayItem(key);
                     if (item != null) {
                         Image img = item.getTrayItem().getImage();
                         item.getTrayItem().dispose();

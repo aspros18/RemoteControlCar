@@ -9,6 +9,7 @@ import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseListener;
 import chrriis.dj.nativeswing.swtimpl.components.internal.INativeTray;
 import chrriis.dj.nativeswing.swtimpl.core.SWTNativeInterface;
 import java.util.List;
+import java.util.Set;
 import javax.swing.SwingUtilities;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -117,7 +118,7 @@ public class NativeTray implements INativeTray {
             byte[] imageData = (byte[]) args[0];
             String tooltip = (String) args[1];
             NativeTrayContainer ntc = getNativeTrayContainer();
-            final List<NativeTrayItem> items = ntc.getNativeTrayItems();
+            final Set<NativeTrayItem> items = ntc.getNativeTrayItems();
             synchronized (items) {
                 int key = ntc.getNextTrayItemKey();
                 
@@ -270,7 +271,7 @@ public class NativeTray implements INativeTray {
         @Override
         public Object run(Object[] args) throws Exception {
             NativeTrayContainer ntc = getNativeTrayContainer();
-            final List<NativeTrayMenu> menus = ntc.getNativeTrayMenus();
+            final Set<NativeTrayMenu> menus = ntc.getNativeTrayMenus();
             synchronized (menus) {
                 int key = ntc.getNextTrayMenuKey();
                 NativeTrayMenu menu = createNativeTrayMenu(key);
@@ -299,7 +300,7 @@ public class NativeTray implements INativeTray {
         public Object run(Object[] args) throws Exception {
             TrayMenuData data = (TrayMenuData) args[0];
             // TODO
-            System.out.println("tray menu " + data.KEY + " was setted to " + data.trayItemKey);
+            System.out.println("tray menu " + data.KEY + " was set to " + data.trayItemKey);
             return null;
         }
         

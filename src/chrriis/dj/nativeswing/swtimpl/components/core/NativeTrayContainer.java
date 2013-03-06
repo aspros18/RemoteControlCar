@@ -3,10 +3,8 @@ package chrriis.dj.nativeswing.swtimpl.components.core;
 import chrriis.common.RunnableReturn;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -21,9 +19,9 @@ final class NativeTrayContainer {
 
     private final Set<Image> IMAGES = Collections.synchronizedSet(new HashSet<Image>());
 
-    private final List<NativeTrayItem> TRAY_ITEMS = Collections.synchronizedList(new ArrayList<NativeTrayItem>());
+    private final Set<NativeTrayItem> TRAY_ITEMS = Collections.synchronizedSet(new HashSet<NativeTrayItem>());
 
-    private final List<NativeTrayMenu> TRAY_MENUS = Collections.synchronizedList(new ArrayList<NativeTrayMenu>());
+    private final Set<NativeTrayMenu> TRAY_MENUS = Collections.synchronizedSet(new HashSet<NativeTrayMenu>());
 
     private Shell shell;
 
@@ -50,11 +48,11 @@ final class NativeTrayContainer {
         return shell = r.getReturn();
     }
     
-    public List<NativeTrayItem> getNativeTrayItems() {
+    public Set<NativeTrayItem> getNativeTrayItems() {
         return TRAY_ITEMS;
     }
 
-    public List<NativeTrayMenu> getNativeTrayMenus() {
+    public Set<NativeTrayMenu> getNativeTrayMenus() {
         return TRAY_MENUS;
     }
     
@@ -66,13 +64,13 @@ final class NativeTrayContainer {
         return getNextKey(TRAY_MENUS);
     }
     
-    private static int getNextKey(List<? extends NativeTrayObject> ls) {
+    private static int getNextKey(Set<? extends NativeTrayObject> s) {
         int key = -1;
         boolean e;
         do {
             key++;
             e = false;
-            for (NativeTrayObject obj : ls) {
+            for (NativeTrayObject obj : s) {
                 if (obj.getKey() == key) {
                     e = true;
                     break;
@@ -100,8 +98,8 @@ final class NativeTrayContainer {
         return getNativeTrayObject(TRAY_MENUS, key);
     }
     
-    private static <T extends NativeTrayObject> T getNativeTrayObject(List<T> ls, int key) {
-        for (T obj : ls) {
+    private static <T extends NativeTrayObject> T getNativeTrayObject(Set<T> s, int key) {
+        for (T obj : s) {
             if (obj.getKey() == key) return obj;
         }
         return null;

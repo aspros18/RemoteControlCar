@@ -60,7 +60,7 @@ public class Main {
                 menu3.setTrayItem(item2);
                 
                 // exception test
-//                item3.setVisible(true);
+                item3.setVisible(true);
             }
             
         });

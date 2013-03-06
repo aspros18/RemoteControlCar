@@ -105,7 +105,7 @@ public class NativeTray implements INativeTray {
             byte[] imageData = (byte[]) args[0];
             String tooltip = (String) args[1];
             NativeTrayContainer ntc = getNativeTrayContainer();
-            final List<NativeTrayItem> items = ntc.getNativeTrayItems();
+            List<NativeTrayItem> items = ntc.getNativeTrayItems();
             synchronized (items) {
                 int key = items.size();
                 
@@ -137,7 +137,17 @@ public class NativeTray implements INativeTray {
 
                 @Override
                 protected NativeTrayItem createReturn() throws Exception {
-                    TrayItem item = new TrayItem(getSystemTray(), SWT.NONE);
+                    final TrayItem item = new TrayItem(getSystemTray(), SWT.NONE);
+                    final NativeTrayItem nativeItem = new NativeTrayItem(item);
+                    item.addListener(SWT.MenuDetect, new Listener() {
+
+                        @Override
+                        public void handleEvent(Event event) {
+                            NativeTrayMenu nativeMenu = nativeItem.getNativeTrayMenu();
+                            if (nativeMenu != null && nativeMenu.isActive()) nativeMenu.getMenu().setVisible(true);
+                        }
+                        
+                    });
                     item.addListener(SWT.DefaultSelection, new Listener() {
 
                         @Override
@@ -154,7 +164,7 @@ public class NativeTray implements INativeTray {
                         }
                         
                     });
-                    return new NativeTrayItem(item);
+                    return nativeItem;
                 }
 
             });

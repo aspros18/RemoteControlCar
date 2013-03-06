@@ -43,7 +43,7 @@ public class Main {
                     @Override
                     public void onClick(TrayItemMouseEvent e) {
                         i++;
-                        if (i == 5) JTray.dispose();
+                        if (i == 4) JTray.dispose();
                         System.out.println((e.isDoubleClick() ? "double" : "single") + " click " + (item1 == e.getComponent() ? 1 : 2));
                     }
 

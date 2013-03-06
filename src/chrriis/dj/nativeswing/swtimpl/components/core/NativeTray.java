@@ -232,6 +232,18 @@ public class NativeTray implements INativeTray {
 
     }
 
+    private static class CMN_menu extends TrayCommandMessage {
+
+        @Override
+        public Object run(Object[] args) throws Exception {
+            TrayMenuData data = (TrayMenuData) args[0];
+            // TODO
+            System.out.println("key: " + data.key);
+            return null;
+        }
+        
+    }
+    
     private static void asyncExec(CommandMessage msg, Object... args) {
         msg.asyncExec(true, args);
     }
@@ -263,6 +275,11 @@ public class NativeTray implements INativeTray {
     @Override
     public void dispose() {
         syncExec(new CMN_dispose());
+    }
+
+    @Override
+    public void setTrayMenu(TrayMenuData data) {
+        asyncExec(new CMN_menu(), data);
     }
 
 }

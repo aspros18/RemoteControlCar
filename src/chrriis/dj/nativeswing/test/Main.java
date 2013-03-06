@@ -4,6 +4,7 @@ import chrriis.dj.nativeswing.swtimpl.components.core.NativeTray;
 import chrriis.dj.nativeswing.swtimpl.components.JTray;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JTrayItem;
+import chrriis.dj.nativeswing.swtimpl.components.JTrayMenu;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseEvent;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseListener;
 import java.awt.image.RenderedImage;
@@ -50,6 +51,13 @@ public class Main {
                 };
                 item1.addMouseListener(l);
                 item2.addMouseListener(l);
+                
+                // bug finding
+                JTrayMenu menu1 = new JTrayMenu(item1); // NativeSwing[1]: key: 0      OK
+                JTrayMenu menu2 = new JTrayMenu();      // NativeSwing[1]: key: null   OK
+                menu2.setTrayItem(item2);               // NativeSwing[1]: key: null   WRONG (good key: 1)
+                JTrayMenu menu3 = new JTrayMenu(item3); // NativeSwing[1]: key: 2      OK
+                menu3.setTrayItem(item2);               // NativeSwing[1]: key: 2      WRONG (good key: 1)
                 
                 // exception test
                 item3.setVisible(true);

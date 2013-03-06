@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 public class TrayMenuData implements Serializable {
     
+    public Integer key;
+    
     public boolean active = true;
     
 }

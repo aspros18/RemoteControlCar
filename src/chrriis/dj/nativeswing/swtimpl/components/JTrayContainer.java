@@ -3,7 +3,9 @@ package chrriis.dj.nativeswing.swtimpl.components;
 import java.awt.image.RenderedImage;
 import java.io.ByteArrayOutputStream;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import javax.imageio.ImageIO;
 
@@ -12,6 +14,8 @@ public class JTrayContainer {
     private static final Set<JTrayItem> TRAY_ITEMS = Collections.synchronizedSet(new HashSet<JTrayItem>());
     
     private static final Set<JTrayMenu> TRAY_MENUS = Collections.synchronizedSet(new HashSet<JTrayMenu>());
+    
+    private static final Map<Integer, Runnable> MSG_CALLBACKS = Collections.synchronizedMap(new HashMap<Integer, Runnable>());
     
     static byte[] createImageData(RenderedImage img) {
         if (img == null) return null;
@@ -53,6 +57,7 @@ public class JTrayContainer {
     }
     
     static void dispose() {
+        MSG_CALLBACKS.clear();
         for (JTrayItem item : TRAY_ITEMS) {
             item.dispose();
         }
@@ -68,6 +73,15 @@ public class JTrayContainer {
             if (item.getKey() == key) return item;
         }
         return null;
+    }
+    
+    public static Runnable getMessageCallback(int key) {
+        return MSG_CALLBACKS.get(key);
+    }
+    
+    public static void setMessageCallback(int key, Runnable callback) {
+        if (callback != null) MSG_CALLBACKS.put(key, callback);
+        else MSG_CALLBACKS.remove(key);
     }
     
 }

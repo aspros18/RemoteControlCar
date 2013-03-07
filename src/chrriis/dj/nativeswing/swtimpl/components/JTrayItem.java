@@ -77,6 +77,23 @@ public class JTrayItem {
         this.visible = visible;
     }
 
+    public void showMessage(String title, String message) {
+        showMessage(title, message, null, null);
+    }
+    
+    public void showMessage(String title, String message, TrayMessageType type) {
+        showMessage(title, message, type, null);
+    }
+    
+    public void showMessage(String title, String message, TrayMessageType type, Runnable callback) {
+        checkState();
+        if (title == null) throw new NullPointerException("Title can not be null");
+        if (message == null) throw new NullPointerException("Message can not be null");
+        if (type == null) type = TrayMessageType.INFO;
+        int msgKey = NATIVE_TRAY.showMessage(KEY, title, message, type);
+        if (callback != null) JTrayContainer.setMessageCallback(msgKey, callback);
+    }
+    
     public boolean isDisposed() {
         return disposed;
     }

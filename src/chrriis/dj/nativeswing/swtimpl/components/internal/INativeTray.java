@@ -1,5 +1,6 @@
 package chrriis.dj.nativeswing.swtimpl.components.internal;
 
+import chrriis.dj.nativeswing.swtimpl.components.TrayMessageType;
 import chrriis.dj.nativeswing.swtimpl.components.core.TrayMenuData;
 
 public interface INativeTray {
@@ -11,6 +12,8 @@ public interface INativeTray {
     public void setImage(int key, byte[] imageData);
     
     public void setVisible(int key, boolean visible);
+    
+    public int showMessage(int key, String title, String message, TrayMessageType type);
     
     public void disposeTrayItem(int key);
     

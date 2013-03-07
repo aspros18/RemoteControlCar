@@ -6,6 +6,7 @@ import chrriis.dj.nativeswing.swtimpl.components.JTrayContainer;
 import chrriis.dj.nativeswing.swtimpl.components.JTrayItem;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseEvent;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseListener;
+import chrriis.dj.nativeswing.swtimpl.components.TrayMessageType;
 import chrriis.dj.nativeswing.swtimpl.components.internal.INativeTray;
 import chrriis.dj.nativeswing.swtimpl.core.SWTNativeInterface;
 import java.util.List;
@@ -112,6 +113,19 @@ public class NativeTray implements INativeTray {
         
     }
     
+    private static class CMJ_trayMessageOnClick extends CommandMessage {
+
+        @Override
+        public Object run(Object[] args) throws Exception {
+            int msgKey = (Integer) args[0];
+            Runnable r = JTrayContainer.getMessageCallback(msgKey);
+            if (r != null) SwingUtilities.invokeLater(r);
+            JTrayContainer.setMessageCallback(msgKey, null);
+            return null;
+        }
+        
+    }
+    
     private static class CMN_trayItemCreate extends TrayCommandMessage {
 
         @Override
@@ -212,6 +226,15 @@ public class NativeTray implements INativeTray {
 
     }
 
+    private static class CMN_trayItemShowMessage extends TrayCommandMessage {
+
+        @Override
+        public Object run(Object[] args) throws Exception {
+            return 0; // TODO
+        }
+        
+    }
+    
     private static class CMN_trayItemSetVisible extends TrayCommandMessage {
 
         @Override
@@ -377,6 +400,11 @@ public class NativeTray implements INativeTray {
     @Override
     public void setVisible(int key, boolean visible) {
         asyncExec(new CMN_trayItemSetVisible(), key, visible);
+    }
+
+    @Override
+    public int showMessage(int key, String title, String message, TrayMessageType type) {
+        return (Integer) syncExec(new CMN_trayItemShowMessage(), key, title, message, type);
     }
 
     @Override

@@ -112,8 +112,8 @@ public class MapDialog extends AbstractDialog {
             "  <head>" + LS +
             "    <meta name=\"viewport\" content=\"initial-scale=1.0, user-scalable=no\" />" + LS +
             "    <style type=\"text/css\">" + LS +
-            "      html, body { height: 100% }" + LS +
-            "      body { margin: 0; padding: 0; }" + LS +
+            "      html, body { height: 100%; overflow: hidden }" + LS +
+            "      body { margin: 0; padding: 0 }" + LS +
             "      div#map_canvas, div#border { width: " + MAP_WIDTH + "px; height: " + MAP_HEIGHT + "px }" + LS +
             "      div#border, div#arrow, div#info, div#compass { position: fixed }" + LS +
             "      div#border { z-index: 1000004; top: 0px; left: 0px }" + LS +
@@ -365,6 +365,14 @@ public class MapDialog extends AbstractDialog {
                                     setArrow(ARROW.getRotation());
                                     setPosition(position);
                                     setFade(fadeEnabled);
+                                    executeJavascript( // az összes HTML teg onClick eseményét blokkolja, ezzel kivédve a TAB + ENTER billentyűzet-kombinációval való URL hívás
+                                      "var ls = document.getElementsByTagName('*');" + LS +
+                                      "for (var i = 0, s = ls.length; i < s; i++) {" + LS +
+                                      "    ls[i].onclick = function() {" + LS +
+                                      "        return false;" + LS +
+                                      "    }" + LS +
+                                      "}"
+                                    );
                                 }
                                 if (!fired) { // csak az első betöltéskor van eseménykezelés
                                     fired = true;

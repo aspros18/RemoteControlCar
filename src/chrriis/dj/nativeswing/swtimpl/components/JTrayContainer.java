@@ -54,9 +54,12 @@ public class JTrayContainer {
     
     static void dispose() {
         for (JTrayItem item : TRAY_ITEMS) {
-            if (!item.isDisposed()) item.dispose();
+            item.dispose();
         }
         TRAY_ITEMS.clear();
+        for (JTrayMenu menu : TRAY_MENUS) {
+            menu.dispose(false);
+        }
         TRAY_MENUS.clear();
     }
     

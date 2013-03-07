@@ -250,6 +250,29 @@ public class NativeTray implements INativeTray {
 
     }
     
+    private static class CMN_trayMenuDispose extends TrayCommandMessage {
+
+        @Override
+        public Object run(Object[] args) throws Exception {
+            final int key = (Integer) args[0];
+            getDisplay().syncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    NativeTrayContainer ntc = getNativeTrayContainer();
+                    NativeTrayMenu menu = ntc.getNativeTrayMenu(key);
+                    if (menu != null) {
+                        menu.getMenu().dispose();
+                        ntc.getNativeTrayMenus().remove(menu);
+                    }
+                }
+                
+            });
+            return null;
+        }
+
+    }
+    
     private static class CMN_trayDispose extends TrayCommandMessage {
 
         @Override
@@ -357,8 +380,13 @@ public class NativeTray implements INativeTray {
     }
 
     @Override
-    public void dispose(int key) {
+    public void disposeTrayItem(int key) {
         syncExec(new CMN_trayItemDispose(), key);
+    }
+
+    @Override
+    public void disposeTrayMenu(int key) {
+        syncExec(new CMN_trayMenuDispose(), key);
     }
 
     @Override

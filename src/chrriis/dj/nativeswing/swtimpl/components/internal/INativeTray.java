@@ -12,7 +12,9 @@ public interface INativeTray {
     
     public void setVisible(int key, boolean visible);
     
-    public void dispose(int key);
+    public void disposeTrayItem(int key);
+    
+    public void disposeTrayMenu(int key);
     
     public void dispose();
     

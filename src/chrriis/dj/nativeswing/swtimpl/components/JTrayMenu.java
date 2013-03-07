@@ -7,6 +7,8 @@ public class JTrayMenu {
     
     private final TrayMenuData DATA;
 
+    private boolean disposed = false;
+    
     private JTrayItem trayItem;
     
     public JTrayMenu() {
@@ -24,6 +26,7 @@ public class JTrayMenu {
     }
     
     public void setTrayItem(JTrayItem trayItem) {
+        checkState();
         boolean changed;
         if (trayItem == null) {
             DATA.trayItemKey = null;
@@ -48,8 +51,28 @@ public class JTrayMenu {
     }
     
     public void setActive(boolean active) {
+        checkState();
         DATA.active = active;
         refresh();
+    }
+
+    public boolean isDisposed() {
+        return disposed;
+    }
+    
+    public void dispose() {
+        dispose(true);
+    }
+    
+    void dispose(boolean outer) {
+        if (disposed) return;
+        NATIVE_TRAY.disposeTrayMenu(DATA.KEY);
+        disposed = true;
+        if (outer) JTrayContainer.removeTrayMenu(this);
+    }
+    
+    private void checkState() {
+        if (disposed) throw new IllegalStateException("Tray menu is disposed");
     }
     
     private void refresh() {

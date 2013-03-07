@@ -83,7 +83,7 @@ public class JTrayItem {
     
     public void dispose() {
         if (disposed) return;
-        NATIVE_TRAY.dispose(KEY);
+        NATIVE_TRAY.disposeTrayItem(KEY);
         disposed = true;
         visible = false;
         tooltip = null;

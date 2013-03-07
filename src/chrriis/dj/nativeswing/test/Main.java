@@ -47,24 +47,24 @@ public class Main {
 
                     @Override
                     public void onClick(TrayItemMouseEvent e) {
-                        System.out.println("click " + (item1 == e.getComponent() ? 1 : 2));
+                        // switch menus
                         JTrayItem i1 = menu1.getTrayItem();
                         JTrayItem i2 = menu2.getTrayItem();
-                        System.out.println("s1: " + menu1.getTrayItem() + " " + menu2.getTrayItem());
                         menu1.setTrayItem(i2);
-                        System.out.println("s2: " + menu1.getTrayItem() + " " + menu2.getTrayItem());
                         menu2.setTrayItem(i1);
-                        System.out.println("s3: " + menu1.getTrayItem() + " " + menu2.getTrayItem());
-                        System.out.println("switched: " + (menu1.getTrayItem() != item1));
+                        
                         // show message test
-                        if (e.isDoubleClick()) e.getComponent().showMessage("Exit", "Click to close the application.", TrayMessageType.WARNING, new Runnable() {
+                        if (e.isDoubleClick()) {
+                            boolean switched = menu1.getTrayItem() != item1;
+                            e.getComponent().showMessage("Exit", "Click to close the application.", switched ? TrayMessageType.WARNING : TrayMessageType.INFO, new Runnable() {
 
-                            @Override
-                            public void run() {
-                                JTray.dispose();
-                            }
+                                @Override
+                                public void run() {
+                                    JTray.dispose();
+                                }
 
-                        });
+                            });
+                        }
                     }
 
                 };

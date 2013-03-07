@@ -9,13 +9,19 @@ import java.util.Map;
 import java.util.Set;
 import javax.imageio.ImageIO;
 
-public class JTrayContainer {
+public final class JTrayContainer {
     
-    private static final Set<JTrayItem> TRAY_ITEMS = Collections.synchronizedSet(new HashSet<JTrayItem>());
+    private static final JTrayContainer OBJ = new JTrayContainer();
     
-    private static final Set<JTrayMenu> TRAY_MENUS = Collections.synchronizedSet(new HashSet<JTrayMenu>());
+    private final Set<JTrayItem> TRAY_ITEMS = Collections.synchronizedSet(new HashSet<JTrayItem>());
     
-    private static final Map<Integer, Runnable> MSG_CALLBACKS = Collections.synchronizedMap(new HashMap<Integer, Runnable>());
+    private final Set<JTrayMenu> TRAY_MENUS = Collections.synchronizedSet(new HashSet<JTrayMenu>());
+    
+    private final Map<Integer, Runnable> MSG_CALLBACKS = Collections.synchronizedMap(new HashMap<Integer, Runnable>());
+    
+    public static JTrayContainer getInstance() {
+        return OBJ;
+    }
     
     static byte[] createImageData(RenderedImage img) {
         if (img == null) return null;
@@ -32,21 +38,21 @@ public class JTrayContainer {
         }
     }
     
-    static JTrayItem createTrayItem(int key, byte[] imageData, String tooltip) {
+    JTrayItem createTrayItem(int key, byte[] imageData, String tooltip) {
         JTrayItem item = new JTrayItem(key, tooltip, imageData);
         TRAY_ITEMS.add(item);
         return item;
     }
 
-    static void addTrayMenu(JTrayMenu menu) {
+    void addTrayMenu(JTrayMenu menu) {
         TRAY_MENUS.add(menu);
     }
 
-    static void removeTrayMenu(JTrayMenu menu) {
+    void removeTrayMenu(JTrayMenu menu) {
         TRAY_MENUS.add(menu);
     }
     
-    static JTrayMenu findTrayMenu(JTrayItem item) {
+    JTrayMenu findTrayMenu(JTrayItem item) {
         if (item == null) return null;
         for (JTrayMenu menu : TRAY_MENUS) {
             JTrayItem i = menu.getTrayItem();
@@ -56,7 +62,7 @@ public class JTrayContainer {
         return null;
     }
     
-    static void dispose() {
+    void dispose() {
         MSG_CALLBACKS.clear();
         for (JTrayItem item : TRAY_ITEMS) {
             item.dispose();
@@ -68,18 +74,18 @@ public class JTrayContainer {
         TRAY_MENUS.clear();
     }
     
-    public static JTrayItem getTrayItem(int key) {
+    public JTrayItem getTrayItem(int key) {
         for (JTrayItem item : TRAY_ITEMS) {
             if (item.getKey() == key) return item;
         }
         return null;
     }
     
-    public static Runnable getMessageCallback(int key) {
+    public Runnable getMessageCallback(int key) {
         return MSG_CALLBACKS.get(key);
     }
     
-    public static void setMessageCallback(int key, Runnable callback) {
+    public void setMessageCallback(int key, Runnable callback) {
         if (callback != null) MSG_CALLBACKS.put(key, callback);
         else MSG_CALLBACKS.remove(key);
     }

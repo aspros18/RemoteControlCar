@@ -1,6 +1,7 @@
 package chrriis.dj.nativeswing.swtimpl.components;
 
 import static chrriis.dj.nativeswing.swtimpl.components.JTray.NATIVE_TRAY;
+import static chrriis.dj.nativeswing.swtimpl.components.JTray.getTrayContainer;
 import java.awt.image.RenderedImage;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,7 +30,7 @@ public class JTrayItem {
     }
     
     public JTrayMenu getTrayMenu() {
-        return JTrayContainer.findTrayMenu(this);
+        return getTrayContainer().findTrayMenu(this);
     }
     
     public List<TrayItemMouseListener> getMouseListeners() {
@@ -91,7 +92,7 @@ public class JTrayItem {
         if (message == null) throw new NullPointerException("Message can not be null");
         if (type == null) type = TrayMessageType.INFO;
         int msgKey = NATIVE_TRAY.showMessage(KEY, title, message, type);
-        if (callback != null) JTrayContainer.setMessageCallback(msgKey, callback);
+        if (callback != null) getTrayContainer().setMessageCallback(msgKey, callback);
     }
     
     public boolean isDisposed() {

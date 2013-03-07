@@ -24,6 +24,14 @@ import org.eclipse.swt.widgets.TrayItem;
 
 public class NativeTray implements INativeTray {
 
+    private static abstract class JTrayCommandMessage extends CommandMessage {
+        
+        protected static JTrayContainer getTrayContainer() {
+            return JTrayContainer.getInstance();
+        }
+        
+    }
+    
     private static abstract class TrayCommandMessage extends CommandMessage {
 
         protected static void asyncExec(CommandMessage msg, Object ... args) {
@@ -85,13 +93,13 @@ public class NativeTray implements INativeTray {
         
     }
 
-    private static class CMJ_trayItemOnClick extends CommandMessage {
+    private static class CMJ_trayItemOnClick extends JTrayCommandMessage {
 
         @Override
         public Object run(Object[] args) throws Exception {
             int key = (Integer) args[0];
             boolean doubleClick = (Boolean) args[1];
-            JTrayItem item = JTrayContainer.getTrayItem(key);
+            JTrayItem item = getTrayContainer().getTrayItem(key);
             if (item != null) {
                 final TrayItemMouseEvent e = new TrayItemMouseEvent(item, doubleClick);
                 final List<TrayItemMouseListener> ls = item.getMouseListeners();
@@ -113,14 +121,15 @@ public class NativeTray implements INativeTray {
         
     }
     
-    private static class CMJ_trayMessageOnClick extends CommandMessage {
+    private static class CMJ_trayMessageOnClick extends JTrayCommandMessage {
 
         @Override
         public Object run(Object[] args) throws Exception {
             int msgKey = (Integer) args[0];
-            Runnable r = JTrayContainer.getMessageCallback(msgKey);
+            JTrayContainer tc = getTrayContainer();
+            Runnable r = tc.getMessageCallback(msgKey);
             if (r != null) SwingUtilities.invokeLater(r);
-            JTrayContainer.setMessageCallback(msgKey, null);
+            tc.setMessageCallback(msgKey, null);
             return null;
         }
         

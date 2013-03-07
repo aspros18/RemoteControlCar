@@ -26,6 +26,10 @@ public class JTray {
         });
     }
     
+    static JTrayContainer getTrayContainer() {
+        return JTrayContainer.getInstance();
+    }
+    
     public static JTrayItem createTrayItem() {
         return createTrayItem((byte[]) null, null);
     }
@@ -38,12 +42,12 @@ public class JTray {
         checkState();
         if (exitPrevent == null) exitPrevent = new Timer();
         int key = NATIVE_TRAY.createTrayItem(imageData, tooltip);
-        return JTrayContainer.createTrayItem(key, imageData, tooltip);
+        return getTrayContainer().createTrayItem(key, imageData, tooltip);
     }
 
     public static void dispose() {
         if (disposed) return;
-        JTrayContainer.dispose();
+        getTrayContainer().dispose();
         NATIVE_TRAY.dispose();
         disposed = true;
         if (exitPrevent != null) {

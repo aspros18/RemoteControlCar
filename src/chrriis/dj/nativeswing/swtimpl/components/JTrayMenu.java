@@ -2,6 +2,7 @@ package chrriis.dj.nativeswing.swtimpl.components;
 
 import chrriis.dj.nativeswing.swtimpl.components.core.TrayMenuData;
 import static chrriis.dj.nativeswing.swtimpl.components.JTray.NATIVE_TRAY;
+import static chrriis.dj.nativeswing.swtimpl.components.JTray.getTrayContainer;
 
 public class JTrayMenu {
     
@@ -18,7 +19,7 @@ public class JTrayMenu {
     public JTrayMenu(JTrayItem trayItem) {
         DATA = new TrayMenuData(NATIVE_TRAY.createTrayMenu());
         if (trayItem != null) setTrayItem(trayItem);
-        JTrayContainer.addTrayMenu(this);
+        getTrayContainer().addTrayMenu(this);
     }
     
     public JTrayItem getTrayItem() {
@@ -68,7 +69,7 @@ public class JTrayMenu {
         if (disposed) return;
         NATIVE_TRAY.disposeTrayMenu(DATA.KEY);
         disposed = true;
-        if (outer) JTrayContainer.removeTrayMenu(this);
+        if (outer) getTrayContainer().removeTrayMenu(this);
     }
     
     private void checkState() {

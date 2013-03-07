@@ -57,7 +57,7 @@ public class Main {
                         System.out.println("s3: " + menu1.getTrayItem() + " " + menu2.getTrayItem());
                         System.out.println("switched: " + (menu1.getTrayItem() != item1));
                         // show message test
-                        if (e.isDoubleClick()) item1.showMessage("Exit", "Click to close the application.", TrayMessageType.WARNING, new Runnable() {
+                        if (e.isDoubleClick()) e.getComponent().showMessage("Exit", "Click to close the application.", TrayMessageType.WARNING, new Runnable() {
 
                             @Override
                             public void run() {

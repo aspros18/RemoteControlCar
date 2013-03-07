@@ -6,8 +6,8 @@ import static chrriis.dj.nativeswing.swtimpl.components.JTray.getTrayContainer;
 
 public class JTrayMenu {
     
-    private final TrayMenuData DATA;
-
+    final TrayMenuData DATA;
+    
     private boolean disposed = false;
     
     private JTrayItem trayItem;

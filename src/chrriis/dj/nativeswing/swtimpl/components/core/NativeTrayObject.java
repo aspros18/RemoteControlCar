@@ -1,7 +1,7 @@
 package chrriis.dj.nativeswing.swtimpl.components.core;
 
-abstract class NativeTrayObject {
+interface NativeTrayObject {
     
-    abstract int getKey();
+    public int getKey();
     
 }

@@ -32,6 +32,10 @@ final class NativeTrayContainer {
         return OBJ;
     }
 
+    public static boolean equals(Integer i1, Integer i2) {
+        return !(i1 == null ^ i2 == null) && (i1 == null || i1.equals(i2));
+    }
+    
     public Shell getShell() {
         if (shell != null) return shell;
         final Display display = Display.getCurrent();

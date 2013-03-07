@@ -36,31 +36,27 @@ public class Main {
                 System.out.println("item2 tip: " + item2.getTooltip());
                 item2.setImage(org.dyndns.fzoli.rccar.bridge.resource.R.getBridgeImage());
                 
+                // menu init test
+                final JTrayMenu menu1 = new JTrayMenu(item1);
+                final JTrayMenu menu2 = new JTrayMenu();
+                menu2.setTrayItem(item2);
+                
                 // tray item event test
                 TrayItemMouseListener l = new TrayItemMouseListener() {
 
-                    int i = 0;
-                    
                     @Override
                     public void onClick(TrayItemMouseEvent e) {
-                        i++;
-                        if (i == 4) JTray.dispose();
-                        System.out.println((e.isDoubleClick() ? "double" : "single") + " click " + (item1 == e.getComponent() ? 1 : 2));
+                        System.out.println("click " + (item1 == e.getComponent() ? 1 : 2));
+                        JTrayItem i1 = menu1.getTrayItem();
+                        JTrayItem i2 = menu2.getTrayItem();
+                        menu1.setTrayItem(i2);
+                        menu2.setTrayItem(i1);
+                        if (e.isDoubleClick()) JTray.dispose();
                     }
 
                 };
                 item1.addMouseListener(l);
                 item2.addMouseListener(l);
-                
-                // menu init test
-                JTrayMenu menu1 = new JTrayMenu(item1);
-                JTrayMenu menu2 = new JTrayMenu();
-                menu2.setTrayItem(item2);
-                JTrayMenu menu3 = new JTrayMenu(item3);
-                menu3.setTrayItem(null);
-                
-                // exception test
-                item3.setVisible(true);
             }
             
         });

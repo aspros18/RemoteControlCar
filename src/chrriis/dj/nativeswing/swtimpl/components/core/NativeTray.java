@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 
@@ -286,6 +287,7 @@ public class NativeTray implements INativeTray {
                 @Override
                 protected NativeTrayMenu createReturn() throws Exception {
                     Menu menu = new Menu(getNativeTrayContainer().getShell(), SWT.POP_UP);
+                    new MenuItem(menu, SWT.NONE).setText("Key: " + key); // TODO: remove test
                     return new NativeTrayMenu(menu, key);
                 }
                 
@@ -298,9 +300,29 @@ public class NativeTray implements INativeTray {
 
         @Override
         public Object run(Object[] args) throws Exception {
-            TrayMenuData data = (TrayMenuData) args[0];
-            // TODO
-            System.out.println("tray menu " + data.KEY + " was set to " + data.trayItemKey);
+            final TrayMenuData data = (TrayMenuData) args[0];
+            final NativeTrayContainer ntc = getNativeTrayContainer();
+            final NativeTrayMenu nativeMenu = ntc.getNativeTrayMenu(data.KEY);
+            if (nativeMenu == null) return null;
+            getDisplay().syncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (nativeMenu.isActive() != data.active) {
+                        nativeMenu.setActive(data.active);
+                    }
+                    if (!NativeTrayContainer.equals(nativeMenu.getTrayItemKey(), data.trayItemKey)) {
+                        if (data.trayItemKey != null) {
+                            NativeTrayItem nativeItem = ntc.getNativeTrayItem(data.trayItemKey);
+                            NativeTrayMenu replaced = nativeItem.getNativeTrayMenu();
+                            if (replaced != null) replaced.setTrayItemKey(null);
+                            nativeItem.setNativeTrayMenu(nativeMenu);
+                        }
+                        nativeMenu.setTrayItemKey(data.trayItemKey);
+                    }
+                }
+                
+            });
             return null;
         }
         

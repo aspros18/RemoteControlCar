@@ -4,13 +4,13 @@ import java.io.Serializable;
 
 public class TrayMenuData implements Serializable, Cloneable {
     
-    public final Integer KEY;
+    public final int KEY;
+    
+    public boolean active = true;
     
     public Integer trayItemKey;
     
-    public boolean active = true;
-
-    public TrayMenuData(Integer key) {
+    public TrayMenuData(int key) {
         KEY = key;
     }
     

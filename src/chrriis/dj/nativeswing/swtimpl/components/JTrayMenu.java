@@ -16,6 +16,7 @@ public class JTrayMenu {
     public JTrayMenu(JTrayItem trayItem) {
         DATA = new TrayMenuData(NATIVE_TRAY.createTrayMenu());
         if (trayItem != null) setTrayItem(trayItem);
+        JTrayContainer.addTrayMenu(this);
     }
     
     public JTrayItem getTrayItem() {
@@ -23,15 +24,23 @@ public class JTrayMenu {
     }
     
     public void setTrayItem(JTrayItem trayItem) {
+        boolean changed;
         if (trayItem == null) {
             DATA.trayItemKey = null;
+            changed = this.trayItem != null;
         }
         else {
             if (trayItem.isDisposed()) throw new IllegalStateException("The selected tray item is disposed");
+            JTrayMenu oldMenu = trayItem.getTrayMenu();
+            if (oldMenu != null && this != oldMenu) {
+                oldMenu.trayItem = null;
+                oldMenu.DATA.trayItemKey = null;
+            }
             DATA.trayItemKey = trayItem.getKey();
+            changed = this != oldMenu;
         }
         this.trayItem = trayItem;
-        refresh();
+        if (changed) refresh();
     }
     
     public boolean isActive() {

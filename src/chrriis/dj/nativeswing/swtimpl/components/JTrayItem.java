@@ -28,6 +28,10 @@ public class JTrayItem {
         return KEY;
     }
     
+    public JTrayMenu getTrayMenu() {
+        return JTrayContainer.findTrayMenu(this);
+    }
+    
     public List<TrayItemMouseListener> getMouseListeners() {
         return MOUSE_LISTENERS;
     }

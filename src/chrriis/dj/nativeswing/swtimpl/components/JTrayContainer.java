@@ -11,6 +11,8 @@ public class JTrayContainer {
     
     private static final Set<JTrayItem> TRAY_ITEMS = Collections.synchronizedSet(new HashSet<JTrayItem>());
     
+    private static final Set<JTrayMenu> TRAY_MENUS = Collections.synchronizedSet(new HashSet<JTrayMenu>());
+    
     static byte[] createImageData(RenderedImage img) {
         if (img == null) return null;
         try {
@@ -32,11 +34,30 @@ public class JTrayContainer {
         return item;
     }
 
+    static void addTrayMenu(JTrayMenu menu) {
+        TRAY_MENUS.add(menu);
+    }
+
+    static void removeTrayMenu(JTrayMenu menu) {
+        TRAY_MENUS.add(menu);
+    }
+    
+    static JTrayMenu findTrayMenu(JTrayItem item) {
+        if (item == null) return null;
+        for (JTrayMenu menu : TRAY_MENUS) {
+            JTrayItem i = menu.getTrayItem();
+            if (i == null) continue;
+            if (i == item) return menu;
+        }
+        return null;
+    }
+    
     static void dispose() {
         for (JTrayItem item : TRAY_ITEMS) {
             if (!item.isDisposed()) item.dispose();
         }
         TRAY_ITEMS.clear();
+        TRAY_MENUS.clear();
     }
     
     public static JTrayItem getTrayItem(int key) {

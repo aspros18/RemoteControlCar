@@ -49,8 +49,12 @@ public class Main {
                         System.out.println("click " + (item1 == e.getComponent() ? 1 : 2));
                         JTrayItem i1 = menu1.getTrayItem();
                         JTrayItem i2 = menu2.getTrayItem();
+                        System.out.println("s1: " + menu1.getTrayItem() + " " + menu2.getTrayItem());
                         menu1.setTrayItem(i2);
+                        System.out.println("s2: " + menu1.getTrayItem() + " " + menu2.getTrayItem());
                         menu2.setTrayItem(i1);
+                        System.out.println("s3: " + menu1.getTrayItem() + " " + menu2.getTrayItem());
+                        System.out.println("switched: " + (menu1.getTrayItem() != item1));
                         if (e.isDoubleClick()) JTray.dispose();
                     }
 

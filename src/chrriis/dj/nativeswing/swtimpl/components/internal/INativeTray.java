@@ -7,17 +7,17 @@ public interface INativeTray {
 
     public int createTrayItem(byte[] imageData, String tooltip);
 
-    public void setTooltip(int key, String text);
+    public void setTooltip(int itemKey, String text);
     
-    public void setImage(int key, byte[] imageData);
+    public void setImage(int itemKey, byte[] imageData);
     
-    public void setVisible(int key, boolean visible);
+    public void setVisible(int itemKey, boolean visible);
     
-    public int showMessage(int key, String title, String message, TrayMessageType type);
+    public int showMessage(int itemKey, String title, String message, TrayMessageType type);
     
-    public void disposeTrayItem(int key);
+    public void disposeTrayItem(int itemKey);
     
-    public void disposeTrayMenu(int key);
+    public void disposeTrayMenu(int menuKey);
     
     public void dispose();
     

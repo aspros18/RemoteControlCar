@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import javax.imageio.ImageIO;
@@ -85,9 +86,44 @@ public final class JTrayContainer {
         return MSG_CALLBACKS.get(key);
     }
     
-    public void setMessageCallback(int key, Runnable callback) {
-        if (callback != null) MSG_CALLBACKS.put(key, callback);
-        else MSG_CALLBACKS.remove(key);
+    public int addMessageCallback(Runnable callback) {
+        if (callback == null) return -1;
+        synchronized (MSG_CALLBACKS) {
+            int key = getMessageKey(callback);
+            if (key == -1) {
+                key = getNextMessageKey();
+                MSG_CALLBACKS.put(key, callback);
+            }
+            return key;
+        }
+    }
+
+    public void removeMessageCallback(int key) {
+        synchronized (MSG_CALLBACKS) {
+            MSG_CALLBACKS.remove(key);
+        }
     }
     
+    private int getMessageKey(Runnable callback) {
+        int key = -1;
+        Iterator<Map.Entry<Integer, Runnable>> it = MSG_CALLBACKS.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<Integer, Runnable> e = it.next();
+            if (e.getValue() == callback) {
+                key = e.getKey();
+                break;
+            }
+        }
+        return key;
+    }
+    
+    private int getNextMessageKey() {
+        int i = -1;
+        boolean contains;
+        do {
+            contains = MSG_CALLBACKS.containsKey(++i);
+        } while (contains);
+        return i;
+    }
+
 }

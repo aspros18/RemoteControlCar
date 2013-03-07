@@ -13,7 +13,7 @@ public interface INativeTray {
     
     public void setVisible(int itemKey, boolean visible);
     
-    public int showMessage(int itemKey, String title, String message, TrayMessageType type);
+    public void showMessage(int itemKey, int msgKey, String title, String message, TrayMessageType type);
     
     public void disposeTrayItem(int itemKey);
     

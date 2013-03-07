@@ -7,18 +7,23 @@ import chrriis.dj.nativeswing.swtimpl.components.JTrayItem;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseEvent;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseListener;
 import chrriis.dj.nativeswing.swtimpl.components.TrayMessageType;
+import static chrriis.dj.nativeswing.swtimpl.components.TrayMessageType.ERROR;
+import static chrriis.dj.nativeswing.swtimpl.components.TrayMessageType.WARNING;
 import chrriis.dj.nativeswing.swtimpl.components.internal.INativeTray;
 import chrriis.dj.nativeswing.swtimpl.core.SWTNativeInterface;
 import java.util.List;
 import java.util.Set;
 import javax.swing.SwingUtilities;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.ToolTip;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 
@@ -129,7 +134,7 @@ public class NativeTray implements INativeTray {
             JTrayContainer tc = getTrayContainer();
             Runnable r = tc.getMessageCallback(msgKey);
             if (r != null) SwingUtilities.invokeLater(r);
-            tc.setMessageCallback(msgKey, null);
+            tc.removeMessageCallback(msgKey);
             return null;
         }
         
@@ -239,7 +244,47 @@ public class NativeTray implements INativeTray {
 
         @Override
         public Object run(Object[] args) throws Exception {
-            return 0; // TODO
+            final int itemKey = (Integer) args[0];
+            final int msgKey = (Integer) args[1];
+            final String title = (String) args[2];
+            final String message = (String) args[3];
+            final int type = getTypeCode((TrayMessageType) args[4]);
+            final NativeTrayContainer ntc = getNativeTrayContainer();
+            getDisplay().syncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    final ToolTip tip = new ToolTip(ntc.getShell(), SWT.BALLOON | type);
+                    tip.setText(title);
+                    tip.setMessage(message);
+                    if (msgKey != -1) {
+                        tip.addSelectionListener(new SelectionAdapter() {
+
+                            @Override
+                            public void widgetSelected(SelectionEvent se) {
+                                asyncExec(new CMJ_trayMessageOnClick(), msgKey);
+                            }
+
+                        });
+                    }
+                    ntc.getTrayItem(itemKey).setToolTip(tip);
+                    tip.setVisible(true);
+                }
+                
+            });
+            return 0;
+        }
+        
+        private int getTypeCode(TrayMessageType type) {
+            int typeCode = SWT.ICON_INFORMATION;
+            switch (type) {
+                case WARNING:
+                    typeCode = SWT.ICON_WARNING;
+                    break;
+                case ERROR:
+                    typeCode = SWT.ICON_ERROR;
+            }
+            return typeCode;
         }
         
     }
@@ -412,8 +457,8 @@ public class NativeTray implements INativeTray {
     }
 
     @Override
-    public int showMessage(int key, String title, String message, TrayMessageType type) {
-        return (Integer) syncExec(new CMN_trayItemShowMessage(), key, title, message, type);
+    public void showMessage(int itemKey, int msgKey, String title, String message, TrayMessageType type) {
+        asyncExec(new CMN_trayItemShowMessage(), itemKey, msgKey, title, message, type);
     }
 
     @Override

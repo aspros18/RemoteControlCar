@@ -7,6 +7,7 @@ import chrriis.dj.nativeswing.swtimpl.components.JTrayItem;
 import chrriis.dj.nativeswing.swtimpl.components.JTrayMenu;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseEvent;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseListener;
+import chrriis.dj.nativeswing.swtimpl.components.TrayMessageType;
 import java.awt.image.RenderedImage;
 import javax.swing.SwingUtilities;
 import org.dyndns.fzoli.rccar.controller.resource.R;
@@ -55,7 +56,15 @@ public class Main {
                         menu2.setTrayItem(i1);
                         System.out.println("s3: " + menu1.getTrayItem() + " " + menu2.getTrayItem());
                         System.out.println("switched: " + (menu1.getTrayItem() != item1));
-                        if (e.isDoubleClick()) JTray.dispose();
+                        // show message test
+                        if (e.isDoubleClick()) item1.showMessage("Exit", "Click to close the application.", TrayMessageType.WARNING, new Runnable() {
+
+                            @Override
+                            public void run() {
+                                JTray.dispose();
+                            }
+
+                        });
                     }
 
                 };

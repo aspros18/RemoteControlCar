@@ -91,8 +91,9 @@ public class JTrayItem {
         if (title == null) throw new NullPointerException("Title can not be null");
         if (message == null) throw new NullPointerException("Message can not be null");
         if (type == null) type = TrayMessageType.INFO;
-        int msgKey = NATIVE_TRAY.showMessage(KEY, title, message, type);
-        if (callback != null) getTrayContainer().setMessageCallback(msgKey, callback);
+        int msgKey = -1;
+        if (callback != null) msgKey = getTrayContainer().addMessageCallback(callback);
+        NATIVE_TRAY.showMessage(KEY, msgKey, title, message, type);
     }
     
     public boolean isDisposed() {

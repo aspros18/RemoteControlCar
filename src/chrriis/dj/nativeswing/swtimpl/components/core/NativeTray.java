@@ -258,16 +258,19 @@ public class NativeTray implements INativeTray {
                     tip.setText(title);
                     tip.setMessage(message);
                     if (msgKey != -1) {
-                        tip.addSelectionListener(new SelectionAdapter() {
+                        tip.addListener(SWT.Selection, new Listener() {
 
                             @Override
-                            public void widgetSelected(SelectionEvent se) {
+                            public void handleEvent(Event event) {
                                 asyncExec(new CMJ_trayMessageOnClick(), msgKey);
                             }
-
+                            
                         });
                     }
-                    ntc.getTrayItem(itemKey).setToolTip(tip);
+                    TrayItem item = ntc.getTrayItem(itemKey);
+                    ToolTip oldTip = item.getToolTip();
+                    if (oldTip != null) oldTip.dispose();
+                    item.setToolTip(tip);
                     tip.setVisible(true);
                 }
                 
@@ -312,11 +315,14 @@ public class NativeTray implements INativeTray {
                 @Override
                 public void run() {
                     NativeTrayContainer ntc = getNativeTrayContainer();
-                    NativeTrayItem item = ntc.getNativeTrayItem(key);
-                    if (item != null) {
-                        Image img = item.getTrayItem().getImage();
-                        item.getTrayItem().dispose();
-                        ntc.getNativeTrayItems().remove(item);
+                    NativeTrayItem nativeItem = ntc.getNativeTrayItem(key);
+                    if (nativeItem != null) {
+                        TrayItem item = nativeItem.getTrayItem();
+                        Image img = item.getImage();
+                        ToolTip tip = item.getToolTip();
+                        if (tip != null) tip.dispose();
+                        item.dispose();
+                        ntc.getNativeTrayItems().remove(nativeItem);
                         ntc.removeImage(img);
                     }
                 }

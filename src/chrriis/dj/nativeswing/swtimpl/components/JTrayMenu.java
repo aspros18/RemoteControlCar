@@ -71,7 +71,7 @@ public class JTrayMenu {
         NATIVE_TRAY.setTrayMenuActive(KEY, active);
         this.active = active;
     }
-
+    
     public JMenuItem addMenuItem(String text) {
         return addMenuItem(text, true);
     }
@@ -79,6 +79,19 @@ public class JTrayMenu {
     public JMenuItem addMenuItem(String text, boolean enabled) {
         int key = NATIVE_TRAY.createMenuItem(KEY, text, enabled, false, MenuItemType.NORMAL);
         return new JMenuItem(key);
+    }
+    
+    public JMenuCheckItem addMenuCheckItem(String text) {
+        return addMenuCheckItem(text, false);
+    }
+    
+    public JMenuCheckItem addMenuCheckItem(String text, boolean selected) {
+        return addMenuCheckItem(text, true, selected);
+    }
+    
+    public JMenuCheckItem addMenuCheckItem(String text, boolean enabled, boolean selected) {
+        int key = NATIVE_TRAY.createMenuItem(KEY, text, enabled, selected, MenuItemType.CHECK);
+        return new JMenuCheckItem(key);
     }
     
     public JMenuSeparator addMenuSeparator() {

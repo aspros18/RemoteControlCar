@@ -46,9 +46,11 @@ public class Main {
                 
                 // menu item init test
                 menu1.addMenuItem("Menu1", false);
-                final JMenuSeparator separator = menu1.addMenuSeparator();
-                final JMenuItem menuItem = menu1.addMenuItem("It works!");
+                final JMenuSeparator separator1 = menu1.addMenuSeparator();
+                final JMenuItem menuItem1 = menu1.addMenuItem("It works!");
                 menu2.addMenuItem("Menu2", false);
+                final JMenuSeparator separator2 = menu2.addMenuSeparator();
+                final JMenuItem menuItem2 = menu2.addMenuCheckItem("Is it OK?");
                 
                 // tray item event test
                 TrayItemMouseListener l = new TrayItemMouseListener() {
@@ -76,8 +78,10 @@ public class Main {
                             });
                             
                             // dispose test
-                            separator.dispose();
-                            menuItem.dispose();
+                            separator1.dispose();
+                            menuItem1.dispose();
+                            separator2.dispose();
+                            menuItem2.dispose();
                         }
                     }
 

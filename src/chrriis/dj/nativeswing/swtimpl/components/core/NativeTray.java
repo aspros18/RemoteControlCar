@@ -461,7 +461,7 @@ public final class NativeTray implements INativeTray {
                 protected NativeMenuItem createReturn() throws Exception {
                     MenuItem mi = new MenuItem(menu, typeCode);
                     if (typeCode != SWT.SEPARATOR) {
-                        mi.setText(text);
+                        if (text != null) mi.setText(text);
                         mi.setEnabled(enabled);
                     }
                     if (typeCode == SWT.RADIO || typeCode == SWT.CHECK) {

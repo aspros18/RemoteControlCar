@@ -22,6 +22,8 @@ final class NativeTrayContainer {
     private final Set<NativeTrayItem> TRAY_ITEMS = Collections.synchronizedSet(new HashSet<NativeTrayItem>());
 
     private final Set<NativeTrayMenu> TRAY_MENUS = Collections.synchronizedSet(new HashSet<NativeTrayMenu>());
+    
+    private final Set<NativeMenuItem> MENU_ITEMS = Collections.synchronizedSet(new HashSet<NativeMenuItem>());
 
     private Shell shell;
 
@@ -59,6 +61,10 @@ final class NativeTrayContainer {
     public Set<NativeTrayMenu> getNativeTrayMenus() {
         return TRAY_MENUS;
     }
+
+    public Set<NativeMenuItem> getNativeMenuItems() {
+        return MENU_ITEMS;
+    }
     
     public int getNextTrayItemKey() {
         return getNextKey(TRAY_ITEMS);
@@ -66,6 +72,10 @@ final class NativeTrayContainer {
 
     public int getNextTrayMenuKey() {
         return getNextKey(TRAY_MENUS);
+    }
+    
+    public int getNextMenuItemKey() {
+        return getNextKey(MENU_ITEMS);
     }
     
     private static int getNextKey(Set<? extends NativeTrayObject> s) {
@@ -133,6 +143,10 @@ final class NativeTrayContainer {
             menu.getMenu().dispose();
         }
         TRAY_MENUS.clear();
+        for (NativeMenuItem item : MENU_ITEMS) {
+            item.getMenuItem().dispose();
+        }
+        MENU_ITEMS.clear();
         for (Image img : IMAGES) {
             img.dispose();
         }

@@ -310,7 +310,7 @@ public class NativeTray implements INativeTray {
             return 0;
         }
         
-        private int getTypeCode(TrayMessageType type) {
+        private static int getTypeCode(TrayMessageType type) {
             int typeCode = SWT.ICON_INFORMATION;
             switch (type) {
                 case WARNING:
@@ -341,7 +341,7 @@ public class NativeTray implements INativeTray {
             }
         }
         
-        private NativeTrayMenu createNativeTrayMenu(final NativeTrayContainer ntc, final int menuKey, final boolean active) {
+        private static NativeTrayMenu createNativeTrayMenu(final NativeTrayContainer ntc, final int menuKey, final boolean active) {
             return syncReturn(new RunnableReturn<NativeTrayMenu>() {
 
                 @Override
@@ -349,17 +349,17 @@ public class NativeTray implements INativeTray {
                     Menu menu = new Menu(ntc.getShell(), SWT.POP_UP);
                     
                     // TODO: remove test {
-                    new MenuItem(menu, SWT.NONE).setText("Key: " + menuKey);
-                    MenuItem mi = new MenuItem(menu, SWT.CASCADE);
-                    mi.setText("Test");
-                    Menu childMenu = new Menu(ntc.getShell(), SWT.DROP_DOWN);
-                    mi.setMenu(childMenu);
-                    new MenuItem(childMenu, SWT.CHECK).setText("Check");
-                    new MenuItem(childMenu, SWT.SEPARATOR).setEnabled(false);
-                    MenuItem mi2 = new MenuItem(childMenu, SWT.RADIO);
-                    mi2.setSelection(true);
-                    mi2.setText("One");
-                    new MenuItem(childMenu, SWT.RADIO).setText("Two");
+//                    new MenuItem(menu, SWT.NONE).setText("Key: " + menuKey);
+//                    MenuItem mi = new MenuItem(menu, SWT.CASCADE);
+//                    mi.setText("Test");
+//                    Menu childMenu = new Menu(ntc.getShell(), SWT.DROP_DOWN);
+//                    mi.setMenu(childMenu);
+//                    new MenuItem(childMenu, SWT.CHECK).setText("Check");
+//                    new MenuItem(childMenu, SWT.SEPARATOR).setEnabled(false);
+//                    MenuItem mi2 = new MenuItem(childMenu, SWT.RADIO);
+//                    mi2.setSelection(true);
+//                    mi2.setText("One");
+//                    new MenuItem(childMenu, SWT.RADIO).setText("Two");
                     // }
                     
                     return new NativeTrayMenu(menu, menuKey, active);
@@ -401,6 +401,66 @@ public class NativeTray implements INativeTray {
                 
             });
             return null;
+        }
+        
+    }
+    
+    private static class CMN_menuItemCreate extends TrayCommandMessage {
+
+        @Override
+        public Object run(Object[] args) throws Exception {
+            int menuKey = (Integer) args[0];
+            String text = (String) args[1];
+            boolean enabled = (Boolean) args[2];
+            boolean selected = (Boolean) args[3];
+            MenuItemType type = (MenuItemType) args[4];
+            NativeTrayContainer ntc = getNativeTrayContainer();
+            final Set<NativeMenuItem> items = ntc.getNativeMenuItems();
+            synchronized (items) {
+                int key = ntc.getNextMenuItemKey();
+                NativeMenuItem item = createMenuItem(ntc, key, menuKey, text, enabled, selected, type);
+                items.add(item);
+                return key;
+            }
+        }
+        
+        private static NativeMenuItem createMenuItem(NativeTrayContainer ntc, final int key, int menuKey, final String text, final boolean enabled, final boolean selected, MenuItemType type) {
+            final int typeCode = getTypeCode(type);
+            final Menu menu = ntc.getTrayMenu(menuKey);
+            return syncReturn(new RunnableReturn<NativeMenuItem>() {
+
+                @Override
+                protected NativeMenuItem createReturn() throws Exception {
+                    MenuItem mi = new MenuItem(menu, typeCode);
+                    if (typeCode != SWT.SEPARATOR) {
+                        mi.setText(text);
+                        mi.setEnabled(enabled);
+                    }
+                    if (typeCode == SWT.RADIO || typeCode == SWT.CHECK) {
+                        mi.setSelection(selected);
+                    }
+                    return new NativeMenuItem(key, mi);
+                }
+                
+            });
+        }
+        
+        private static int getTypeCode(MenuItemType type) {
+            int typeCode = SWT.NONE;
+            switch (type) {
+                case CHECK:
+                    typeCode = SWT.CHECK;
+                    break;
+                case RADIO:
+                    typeCode = SWT.RADIO;
+                    break;
+                case SEPARATOR:
+                    typeCode = SWT.SEPARATOR;
+                    break;
+//                case DROP_DOWN:
+//                    typeCode = SWT.CASCADE;
+            }
+            return typeCode;
         }
         
     }
@@ -523,13 +583,13 @@ public class NativeTray implements INativeTray {
 
     @Override
     public int createMenuItem(int menuKey, String text, boolean enabled, boolean selected, MenuItemType type) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return (Integer) syncExec(new CMN_menuItemCreate(), menuKey, text, enabled, selected, type);
     }
 
-    @Override
-    public void setMenuItem(int menuItemKey, Integer menuKey) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+//    @Override
+//    public void setMenuItem(int menuItemKey, Integer menuKey) {
+//        throw new UnsupportedOperationException("Not supported yet.");
+//    }
 
     @Override
     public void setMenuItemText(int menuItemKey, String text) {

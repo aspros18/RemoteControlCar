@@ -72,6 +72,20 @@ public class JTrayMenu {
         this.active = active;
     }
 
+    public JMenuItem addMenuItem(String text) {
+        return addMenuItem(text, true);
+    }
+    
+    public JMenuItem addMenuItem(String text, boolean enabled) {
+        int key = NATIVE_TRAY.createMenuItem(KEY, text, enabled, false, MenuItemType.NORMAL);
+        return new JMenuItem(key);
+    }
+    
+    public JMenuSeparator addMenuSeparator() {
+        int key = NATIVE_TRAY.createMenuItem(KEY, null, false, false, MenuItemType.SEPARATOR);
+        return new JMenuSeparator(key);
+    }
+    
     public boolean isDisposed() {
         return disposed;
     }

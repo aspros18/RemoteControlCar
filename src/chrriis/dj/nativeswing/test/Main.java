@@ -42,6 +42,12 @@ public class Main {
                 final JTrayMenu menu2 = new JTrayMenu();
                 menu2.setTrayItem(item2);
                 
+                // menu item init test
+                menu1.addMenuItem("Menu1", false);
+                menu1.addMenuSeparator();
+                menu1.addMenuItem("It works!");
+                menu2.addMenuItem("Menu2", false);
+                
                 // tray item event test
                 TrayItemMouseListener l = new TrayItemMouseListener() {
 

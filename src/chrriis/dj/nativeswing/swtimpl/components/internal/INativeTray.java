@@ -23,7 +23,7 @@ public interface INativeTray {
     
     public int createMenuItem(int menuKey, String text, boolean enabled, boolean selected, MenuItemType type);
     
-    public void setMenuItem(int menuItemKey, Integer menuKey);
+//    public void setMenuItem(int menuItemKey, Integer menuKey);
     
     public void setMenuItemText(int menuItemKey, String text);
     

@@ -1,8 +1,8 @@
 package chrriis.dj.nativeswing.swtimpl.components;
 
-public class JMenuItem extends JMenuBaseItem {
+public class JMenuSeparator extends JMenuBaseItem {
 
-    JMenuItem(int key) {
+    JMenuSeparator(int key) {
         super(key);
     }
     

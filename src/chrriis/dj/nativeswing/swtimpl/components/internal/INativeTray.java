@@ -14,16 +14,16 @@ public interface INativeTray {
     
     public void showMessage(int itemKey, int msgKey, String title, String message, TrayMessageType type);
     
+    public int createTrayMenu(Integer itemKey, boolean active);
+    
+    public void setTrayMenu(int menuKey, Integer itemKey);
+    
+    public void setTrayMenuActive(int menuKey, boolean active);
+    
     public void disposeTrayItem(int itemKey);
     
     public void disposeTrayMenu(int menuKey);
     
     public void dispose();
-    
-    public int createTrayMenu();
-    
-    public void setTrayMenu(int menuKey, Integer itemKey);
-    
-    public void setTrayMenuActive(int menuKey, boolean active);
     
 }

@@ -94,6 +94,26 @@ public class NativeTray implements INativeTray {
             });
         }
         
+        protected static void setTrayMenu(final NativeTrayMenu nativeMenu, final Integer itemKey) {
+            final NativeTrayContainer ntc = getNativeTrayContainer();
+            if (nativeMenu == null) return;
+            if (NativeTrayContainer.equals(nativeMenu.getTrayItemKey(), itemKey)) return;
+            getDisplay().syncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (itemKey != null) {
+                        NativeTrayItem nativeItem = ntc.getNativeTrayItem(itemKey);
+                        NativeTrayMenu replaced = nativeItem.getNativeTrayMenu();
+                        if (replaced != null) replaced.setTrayItemKey(null);
+                        nativeItem.setNativeTrayMenu(nativeMenu);
+                    }
+                    nativeMenu.setTrayItemKey(itemKey);
+                }
+                
+            });
+        }
+        
     }
 
     private static class CMJ_trayItemOnClick extends JTrayCommandMessage {
@@ -237,6 +257,19 @@ public class NativeTray implements INativeTray {
         }
 
     }
+    
+    private static class CMN_trayItemSetVisible extends TrayCommandMessage {
+
+        @Override
+        public Object run(Object[] args) throws Exception {
+            int key = (Integer) args[0];
+            boolean visible = (Boolean) args[1];
+            TrayItem item = getNativeTrayContainer().getTrayItem(key);
+            if (item != null) setTrayItemVisible(item, visible);
+            return null;
+        }
+
+    }
 
     private static class CMN_trayItemShowMessage extends TrayCommandMessage {
 
@@ -290,19 +323,87 @@ public class NativeTray implements INativeTray {
         
     }
     
-    private static class CMN_trayItemSetVisible extends TrayCommandMessage {
+    private static class CMN_trayMenuCreate extends TrayCommandMessage {
 
         @Override
         public Object run(Object[] args) throws Exception {
-            int key = (Integer) args[0];
-            boolean visible = (Boolean) args[1];
-            TrayItem item = getNativeTrayContainer().getTrayItem(key);
-            if (item != null) setTrayItemVisible(item, visible);
+            Integer itemKey = (Integer) args[0];
+            boolean active = (Boolean) args[1];
+            NativeTrayContainer ntc = getNativeTrayContainer();
+            final Set<NativeTrayMenu> menus = ntc.getNativeTrayMenus();
+            synchronized (menus) {
+                int menuKey = ntc.getNextTrayMenuKey();
+                NativeTrayMenu menu = createNativeTrayMenu(ntc, menuKey, active);
+                menus.add(menu);
+                setTrayMenu(menu, itemKey);
+                return menuKey;
+            }
+        }
+        
+        private NativeTrayMenu createNativeTrayMenu(final NativeTrayContainer ntc, final int menuKey, final boolean active) {
+            return syncReturn(new RunnableReturn<NativeTrayMenu>() {
+
+                @Override
+                protected NativeTrayMenu createReturn() throws Exception {
+                    Menu menu = new Menu(ntc.getShell(), SWT.POP_UP);
+                    
+                    // TODO: remove test {
+                    new MenuItem(menu, SWT.NONE).setText("Key: " + menuKey);
+                    MenuItem mi = new MenuItem(menu, SWT.CASCADE);
+                    mi.setText("Test");
+                    Menu childMenu = new Menu(ntc.getShell(), SWT.DROP_DOWN);
+                    mi.setMenu(childMenu);
+                    new MenuItem(childMenu, SWT.CHECK).setText("Check");
+                    new MenuItem(childMenu, SWT.SEPARATOR).setEnabled(false);
+                    MenuItem mi2 = new MenuItem(childMenu, SWT.RADIO);
+                    mi2.setSelection(true);
+                    mi2.setText("One");
+                    new MenuItem(childMenu, SWT.RADIO).setText("Two");
+                    // }
+                    
+                    return new NativeTrayMenu(menu, menuKey, active);
+                }
+                
+            });
+        }
+        
+    }
+    
+    private static class CMN_trayMenuSet extends TrayCommandMessage {
+
+        @Override
+        public Object run(Object[] args) throws Exception {
+            final int menuKey = (Integer) args[0];
+            final Integer itemKey = (Integer) args[1];
+            final NativeTrayMenu nativeMenu = getNativeTrayContainer().getNativeTrayMenu(menuKey);
+            setTrayMenu(nativeMenu, itemKey);
             return null;
         }
-
+        
     }
+    
+    private static class CMN_trayMenuSetActive extends TrayCommandMessage {
 
+        @Override
+        public Object run(Object[] args) throws Exception {
+            final int key = (Integer) args[0];
+            final boolean active = (Boolean) args[1];
+            final NativeTrayMenu nativeMenu = getNativeTrayContainer().getNativeTrayMenu(key);
+            if (nativeMenu == null) return null;
+            if (nativeMenu.isActive() != active) return null;
+            getDisplay().syncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    nativeMenu.setActive(active);
+                }
+                
+            });
+            return null;
+        }
+        
+    }
+    
     private static class CMN_trayItemDispose extends TrayCommandMessage {
 
         @Override
@@ -370,100 +471,6 @@ public class NativeTray implements INativeTray {
         }
 
     }
-
-    private static class CMN_trayMenuCreate extends TrayCommandMessage {
-
-        @Override
-        public Object run(Object[] args) throws Exception {
-            NativeTrayContainer ntc = getNativeTrayContainer();
-            final Set<NativeTrayMenu> menus = ntc.getNativeTrayMenus();
-            synchronized (menus) {
-                int key = ntc.getNextTrayMenuKey();
-                NativeTrayMenu menu = createNativeTrayMenu(key);
-                menus.add(menu);
-                return key;
-            }
-        }
-        
-        private NativeTrayMenu createNativeTrayMenu(final int key) {
-            return syncReturn(new RunnableReturn<NativeTrayMenu>() {
-
-                @Override
-                protected NativeTrayMenu createReturn() throws Exception {
-                    Menu menu = new Menu(getNativeTrayContainer().getShell(), SWT.POP_UP);
-                    
-                    // TODO: remove test {
-                    new MenuItem(menu, SWT.NONE).setText("Key: " + key);
-                    MenuItem mi = new MenuItem(menu, SWT.CASCADE);
-                    mi.setText("Test");
-                    Menu childMenu = new Menu(getNativeTrayContainer().getShell(), SWT.DROP_DOWN);
-                    mi.setMenu(childMenu);
-                    new MenuItem(childMenu, SWT.CHECK).setText("Check");
-                    new MenuItem(childMenu, SWT.SEPARATOR).setEnabled(false);
-                    MenuItem mi2 = new MenuItem(childMenu, SWT.RADIO);
-                    mi2.setSelection(true);
-                    mi2.setText("One");
-                    new MenuItem(childMenu, SWT.RADIO).setText("Two");
-                    // }
-                    
-                    return new NativeTrayMenu(menu, key);
-                }
-                
-            });
-        }
-        
-    }
-    
-    private static class CMN_trayMenuSet extends TrayCommandMessage {
-
-        @Override
-        public Object run(Object[] args) throws Exception {
-            final int menuKey = (Integer) args[0];
-            final Integer itemKey = (Integer) args[1];
-            final NativeTrayContainer ntc = getNativeTrayContainer();
-            final NativeTrayMenu nativeMenu = ntc.getNativeTrayMenu(menuKey);
-            if (nativeMenu == null) return null;
-            if (NativeTrayContainer.equals(nativeMenu.getTrayItemKey(), itemKey)) return null;
-            getDisplay().syncExec(new Runnable() {
-
-                @Override
-                public void run() {
-                    if (itemKey != null) {
-                        NativeTrayItem nativeItem = ntc.getNativeTrayItem(itemKey);
-                        NativeTrayMenu replaced = nativeItem.getNativeTrayMenu();
-                        if (replaced != null) replaced.setTrayItemKey(null);
-                        nativeItem.setNativeTrayMenu(nativeMenu);
-                    }
-                    nativeMenu.setTrayItemKey(itemKey);
-                }
-                
-            });
-            return null;
-        }
-        
-    }
-    
-    private static class CMN_trayMenuSetActive extends TrayCommandMessage {
-
-        @Override
-        public Object run(Object[] args) throws Exception {
-            final int key = (Integer) args[0];
-            final boolean active = (Boolean) args[1];
-            final NativeTrayMenu nativeMenu = getNativeTrayContainer().getNativeTrayMenu(key);
-            if (nativeMenu == null) return null;
-            if (nativeMenu.isActive() != active) return null;
-            getDisplay().syncExec(new Runnable() {
-
-                @Override
-                public void run() {
-                    nativeMenu.setActive(active);
-                }
-                
-            });
-            return null;
-        }
-        
-    }
     
     private static void asyncExec(CommandMessage msg, Object... args) {
         msg.asyncExec(true, args);
@@ -499,6 +506,21 @@ public class NativeTray implements INativeTray {
     }
 
     @Override
+    public int createTrayMenu(Integer itemKey, boolean active) {
+        return (Integer) syncExec(new CMN_trayMenuCreate(), itemKey, active);
+    }
+
+    @Override
+    public void setTrayMenu(int menuKey, Integer itemKey) {
+        asyncExec(new CMN_trayMenuSet(), menuKey, itemKey);
+    }
+
+    @Override
+    public void setTrayMenuActive(int menuKey, boolean active) {
+        asyncExec(new CMN_trayMenuSetActive(), menuKey, active);
+    }
+    
+    @Override
     public void disposeTrayItem(int key) {
         syncExec(new CMN_trayItemDispose(), key);
     }
@@ -511,21 +533,6 @@ public class NativeTray implements INativeTray {
     @Override
     public void dispose() {
         syncExec(new CMN_trayDispose());
-    }
-
-    @Override
-    public int createTrayMenu() {
-        return (Integer) syncExec(new CMN_trayMenuCreate());
-    }
-
-    @Override
-    public void setTrayMenu(int menuKey, Integer itemKey) {
-        asyncExec(new CMN_trayMenuSet(), menuKey, itemKey);
-    }
-
-    @Override
-    public void setTrayMenuActive(int menuKey, boolean active) {
-        asyncExec(new CMN_trayMenuSetActive(), menuKey, active);
     }
 
 }

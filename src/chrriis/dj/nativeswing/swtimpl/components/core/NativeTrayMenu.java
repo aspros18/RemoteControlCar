@@ -12,14 +12,19 @@ class NativeTrayMenu implements NativeTrayObject {
     
     private boolean active = true;
     
-    public NativeTrayMenu(Menu menu, int key) {
-        MENU = menu;
-        KEY = key;
+    public NativeTrayMenu(Menu menu, int key, boolean active) {
+        this.MENU = menu;
+        this.KEY = key;
+        this.active = active;
     }
 
     @Override
     public int getKey() {
         return KEY;
+    }
+    
+    public Menu getMenu() {
+        return MENU;
     }
     
     public Integer getTrayItemKey() {
@@ -40,10 +45,6 @@ class NativeTrayMenu implements NativeTrayObject {
     public void setActive(boolean active) {
         this.active = active;
         if (!active) getMenu().setVisible(false);
-    }
-    
-    public Menu getMenu() {
-        return MENU;
     }
     
 }

@@ -11,7 +11,7 @@ public class JTrayMenu {
     
     private JTrayItem trayItem;
     
-    private boolean active = true;
+    private boolean active;
     
     private boolean disposed = false;
     
@@ -20,9 +20,33 @@ public class JTrayMenu {
     }
 
     public JTrayMenu(JTrayItem trayItem) {
-        KEY = NATIVE_TRAY.createTrayMenu();
-        if (trayItem != null) setTrayItem(trayItem);
+        this(trayItem, true);
+    }
+    
+    public JTrayMenu(JTrayItem trayItem, boolean active) {
+        applyTrayItem(trayItem);
+        this.active = active;
+        this.KEY = NATIVE_TRAY.createTrayMenu(trayItem == null ? null : trayItem.getKey(), active);
         getTrayContainer().addTrayMenu(this);
+    }
+
+    private JTrayMenu applyTrayItem(JTrayItem trayItem) {
+        if (trayItem == null) {
+            this.trayItem = null;
+            this.trayItemKey = null;
+            return null;
+        }
+        if (trayItem.isDisposed()) {
+            throw new IllegalStateException("The selected tray item is disposed");
+        }
+        JTrayMenu oldMenu = trayItem.getTrayMenu();
+        if (oldMenu != null && this != oldMenu) {
+            oldMenu.trayItem = null;
+            oldMenu.trayItemKey = null;
+        }
+        this.trayItem = trayItem;
+        this.trayItemKey = trayItem.getKey();
+        return oldMenu;
     }
     
     public JTrayItem getTrayItem() {
@@ -31,22 +55,10 @@ public class JTrayMenu {
     
     public void setTrayItem(JTrayItem trayItem) {
         checkState();
+        JTrayMenu oldMenu = applyTrayItem(trayItem);
         boolean changed;
-        if (trayItem == null) {
-            trayItemKey = null;
-            changed = this.trayItem != null;
-        }
-        else {
-            if (trayItem.isDisposed()) throw new IllegalStateException("The selected tray item is disposed");
-            JTrayMenu oldMenu = trayItem.getTrayMenu();
-            if (oldMenu != null && this != oldMenu) {
-                oldMenu.trayItem = null;
-                oldMenu.trayItemKey = null;
-            }
-            trayItemKey = trayItem.getKey();
-            changed = this != oldMenu;
-        }
-        this.trayItem = trayItem;
+        if (trayItem == null) changed = this.trayItem != null;
+        else changed = this != oldMenu;
         if (changed) NATIVE_TRAY.setTrayMenu(KEY, trayItemKey);
     }
     
@@ -56,8 +68,8 @@ public class JTrayMenu {
     
     public void setActive(boolean active) {
         checkState();
-        this.active = active;
         NATIVE_TRAY.setTrayMenuActive(KEY, active);
+        this.active = active;
     }
 
     public boolean isDisposed() {

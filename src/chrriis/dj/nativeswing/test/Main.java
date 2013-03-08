@@ -1,6 +1,5 @@
 package chrriis.dj.nativeswing.test;
 
-import chrriis.dj.nativeswing.swtimpl.components.core.NativeTray;
 import chrriis.dj.nativeswing.swtimpl.components.JTray;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JTrayItem;
@@ -8,6 +7,7 @@ import chrriis.dj.nativeswing.swtimpl.components.JTrayMenu;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseEvent;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseListener;
 import chrriis.dj.nativeswing.swtimpl.components.TrayMessageType;
+import chrriis.dj.nativeswing.swtimpl.components.core.NativeTray;
 import java.awt.image.RenderedImage;
 import javax.swing.SwingUtilities;
 import org.dyndns.fzoli.rccar.controller.resource.R;

@@ -26,18 +26,44 @@ import org.eclipse.swt.widgets.ToolTip;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 
-public class NativeTray implements INativeTray {
-
-    private static abstract class JTrayCommandMessage extends CommandMessage {
+public final class NativeTray implements INativeTray {
+    
+    private static abstract class BaseTrayCommandMessage extends CommandMessage {
         
-        protected static JTrayContainer getTrayContainer() {
-            return JTrayContainer.getInstance();
+        protected final Double PASSKEY;
+
+        public BaseTrayCommandMessage() {
+            this(null);
+        }
+
+        public BaseTrayCommandMessage(Double passkey) {
+            PASSKEY = passkey;
         }
         
     }
     
-    private static abstract class TrayCommandMessage extends CommandMessage {
+    private static abstract class JTrayCommandMessage extends BaseTrayCommandMessage {
+        
+        public JTrayCommandMessage(double passkey) {
+            super(passkey);
+        }
+        
+        protected JTrayContainer getTrayContainer() {
+            return JTrayContainer.getInstance(PASSKEY);
+        }
+        
+    }
+    
+    private static abstract class TrayCommandMessage extends BaseTrayCommandMessage {
 
+        public TrayCommandMessage() {
+            super();
+        }
+
+        public TrayCommandMessage(double passkey) {
+            super(passkey);
+        }
+        
         protected static void asyncExec(CommandMessage msg, Object ... args) {
             msg.asyncExec(false, args);
         }
@@ -119,6 +145,10 @@ public class NativeTray implements INativeTray {
 
     private static class CMJ_trayItemOnClick extends JTrayCommandMessage {
 
+        public CMJ_trayItemOnClick(double passkey) {
+            super(passkey);
+        }
+
         @Override
         public Object run(Object[] args) throws Exception {
             int key = (Integer) args[0];
@@ -147,6 +177,10 @@ public class NativeTray implements INativeTray {
     
     private static class CMJ_trayMessageOnClick extends JTrayCommandMessage {
 
+        public CMJ_trayMessageOnClick(double passkey) {
+            super(passkey);
+        }
+
         @Override
         public Object run(Object[] args) throws Exception {
             int msgKey = (Integer) args[0];
@@ -160,6 +194,10 @@ public class NativeTray implements INativeTray {
     }
     
     private static class CMN_trayItemCreate extends TrayCommandMessage {
+
+        public CMN_trayItemCreate(double passkey) {
+            super(passkey);
+        }
 
         @Override
         public Object run(Object[] args) {
@@ -193,7 +231,7 @@ public class NativeTray implements INativeTray {
             });
         }
 
-        private static NativeTrayItem createTrayItem(final int key) {
+        private NativeTrayItem createTrayItem(final int key) {
             return syncReturn(new RunnableReturn<NativeTrayItem>() {
 
                 @Override
@@ -213,7 +251,7 @@ public class NativeTray implements INativeTray {
 
                         @Override
                         public void handleEvent(Event event) {
-                            asyncExec(new CMJ_trayItemOnClick(), key, true);
+                            asyncExec(new CMJ_trayItemOnClick(PASSKEY), key, true);
                         }
                         
                     });
@@ -221,7 +259,7 @@ public class NativeTray implements INativeTray {
 
                         @Override
                         public void handleEvent(Event event) {
-                            asyncExec(new CMJ_trayItemOnClick(), key, false);
+                            asyncExec(new CMJ_trayItemOnClick(PASSKEY), key, false);
                         }
                         
                     });
@@ -274,6 +312,10 @@ public class NativeTray implements INativeTray {
 
     private static class CMN_trayItemShowMessage extends TrayCommandMessage {
 
+        public CMN_trayItemShowMessage(double passkey) {
+            super(passkey);
+        }
+
         @Override
         public Object run(Object[] args) throws Exception {
             final int itemKey = (Integer) args[0];
@@ -294,7 +336,7 @@ public class NativeTray implements INativeTray {
 
                             @Override
                             public void handleEvent(Event event) {
-                                asyncExec(new CMJ_trayMessageOnClick(), msgKey);
+                                asyncExec(new CMJ_trayMessageOnClick(PASSKEY), msgKey);
                             }
                             
                         });
@@ -347,21 +389,7 @@ public class NativeTray implements INativeTray {
                 @Override
                 protected NativeTrayMenu createReturn() throws Exception {
                     Menu menu = new Menu(ntc.getShell(), SWT.POP_UP);
-                    
-                    // TODO: remove test {
-//                    new MenuItem(menu, SWT.NONE).setText("Key: " + menuKey);
-//                    MenuItem mi = new MenuItem(menu, SWT.CASCADE);
-//                    mi.setText("Test");
-//                    Menu childMenu = new Menu(ntc.getShell(), SWT.DROP_DOWN);
-//                    mi.setMenu(childMenu);
-//                    new MenuItem(childMenu, SWT.CHECK).setText("Check");
-//                    new MenuItem(childMenu, SWT.SEPARATOR).setEnabled(false);
-//                    MenuItem mi2 = new MenuItem(childMenu, SWT.RADIO);
-//                    mi2.setSelection(true);
-//                    mi2.setText("One");
-//                    new MenuItem(childMenu, SWT.RADIO).setText("Two");
-                    // }
-                    
+                    // TODO: add type parameter in order to create SWT.DROP_DOWN menu too
                     return new NativeTrayMenu(menu, menuKey, active);
                 }
                 
@@ -532,6 +560,12 @@ public class NativeTray implements INativeTray {
         }
 
     }
+
+    private final double PASSKEY;
+    
+    NativeTray(Double passkey) {
+        PASSKEY = passkey;
+    }
     
     private static void asyncExec(CommandMessage msg, Object... args) {
         msg.asyncExec(true, args);
@@ -543,7 +577,7 @@ public class NativeTray implements INativeTray {
 
     @Override
     public int createTrayItem(byte[] imageData, String tooltip) {
-        return (Integer) syncExec(new CMN_trayItemCreate(), imageData, tooltip);
+        return (Integer) syncExec(new CMN_trayItemCreate(PASSKEY), imageData, tooltip);
     }
 
     @Override
@@ -563,7 +597,7 @@ public class NativeTray implements INativeTray {
 
     @Override
     public void showMessage(int itemKey, int msgKey, String title, String message, TrayMessageType type) {
-        asyncExec(new CMN_trayItemShowMessage(), itemKey, msgKey, title, message, type);
+        asyncExec(new CMN_trayItemShowMessage(PASSKEY), itemKey, msgKey, title, message, type);
     }
 
     @Override

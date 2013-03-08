@@ -20,7 +20,8 @@ public final class JTrayContainer {
     
     private final Map<Integer, Runnable> MSG_CALLBACKS = Collections.synchronizedMap(new HashMap<Integer, Runnable>());
     
-    public static JTrayContainer getInstance() {
+    public static JTrayContainer getInstance(double passkey) {
+        if (JTray.PASSKEY != passkey) throw new IllegalAccessError();
         return OBJ;
     }
     

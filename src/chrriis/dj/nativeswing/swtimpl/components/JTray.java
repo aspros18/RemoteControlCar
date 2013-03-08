@@ -7,9 +7,11 @@ import chrriis.dj.nativeswing.swtimpl.components.internal.INativeTray;
 import java.awt.image.RenderedImage;
 import java.util.Timer;
 
-public class JTray {
+public final class JTray {
 
-    final static INativeTray NATIVE_TRAY = NativeCoreObjectFactory.create(INativeTray.class, "chrriis.dj.nativeswing.swtimpl.components.core.NativeTray", new Class<?>[0], new Object[0]);
+    final static double PASSKEY = Math.random();
+    
+    final static INativeTray NATIVE_TRAY = NativeCoreObjectFactory.create(INativeTray.class, "chrriis.dj.nativeswing.swtimpl.components.core.NativeTray", new Class<?>[] {Double.class}, new Object[] {PASSKEY});
     
     private static boolean disposed = false;
     
@@ -27,7 +29,7 @@ public class JTray {
     }
     
     static JTrayContainer getTrayContainer() {
-        return JTrayContainer.getInstance();
+        return JTrayContainer.getInstance(PASSKEY);
     }
     
     public static JTrayItem createTrayItem() {

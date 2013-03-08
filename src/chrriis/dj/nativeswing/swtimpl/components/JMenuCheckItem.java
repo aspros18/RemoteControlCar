@@ -2,8 +2,8 @@ package chrriis.dj.nativeswing.swtimpl.components;
 
 public class JMenuCheckItem extends JMenuSelectableItem {
 
-    JMenuCheckItem(int key) {
-        super(key);
+    JMenuCheckItem(JTrayMenu parent, int key, String text, boolean enabled, boolean selected) {
+        super(parent, key, text, enabled, selected);
     }
     
 }

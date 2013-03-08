@@ -78,7 +78,7 @@ public class JTrayMenu {
     
     public JMenuItem addMenuItem(String text, boolean enabled) {
         int key = NATIVE_TRAY.createMenuItem(KEY, text, enabled, false, MenuItemType.NORMAL);
-        return new JMenuItem(key);
+        return new JMenuItem(this, key, text, enabled);
     }
     
     public JMenuCheckItem addMenuCheckItem(String text) {
@@ -91,12 +91,25 @@ public class JTrayMenu {
     
     public JMenuCheckItem addMenuCheckItem(String text, boolean enabled, boolean selected) {
         int key = NATIVE_TRAY.createMenuItem(KEY, text, enabled, selected, MenuItemType.CHECK);
-        return new JMenuCheckItem(key);
+        return new JMenuCheckItem(this, key, text, enabled, selected);
+    }
+    
+    public JMenuRadioItem addMenuRadioItem(String text) {
+        return addMenuRadioItem(text, false);
+    }
+    
+    public JMenuRadioItem addMenuRadioItem(String text, boolean selected) {
+        return addMenuRadioItem(text, true, selected);
+    }
+    
+    public JMenuRadioItem addMenuRadioItem(String text, boolean enabled, boolean selected) {
+        int key = NATIVE_TRAY.createMenuItem(KEY, text, enabled, selected, MenuItemType.RADIO);
+        return new JMenuRadioItem(this, key, text, enabled, selected);
     }
     
     public JMenuSeparator addMenuSeparator() {
         int key = NATIVE_TRAY.createMenuItem(KEY, null, false, false, MenuItemType.SEPARATOR);
-        return new JMenuSeparator(key);
+        return new JMenuSeparator(this, key);
     }
     
     public boolean isDisposed() {

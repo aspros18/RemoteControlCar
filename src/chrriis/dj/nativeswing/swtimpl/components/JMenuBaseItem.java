@@ -6,14 +6,21 @@ abstract class JMenuBaseItem {
 
     private final int KEY;
     
+    private final JTrayMenu PARENT;
+    
     private boolean disposed = false;
     
-    JMenuBaseItem(int key) {
+    JMenuBaseItem(JTrayMenu parent, int key) {
         KEY = key;
+        PARENT = parent;
     }
 
     int getKey() {
         return KEY;
+    }
+
+    public JTrayMenu getParent() {
+        return PARENT;
     }
 
     public boolean isDisposed() {
@@ -27,6 +34,7 @@ abstract class JMenuBaseItem {
     }
     
     protected void checkState() {
+        if (PARENT.isDisposed()) throw new IllegalStateException("Parent menu is disposed");
         if (disposed) throw new IllegalStateException("Menu item is disposed");
     }
     

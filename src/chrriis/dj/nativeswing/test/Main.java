@@ -51,6 +51,9 @@ public class Main {
                 menu2.addMenuItem("Menu2", false);
                 final JMenuSeparator separator2 = menu2.addMenuSeparator();
                 final JMenuItem menuItem2 = menu2.addMenuCheckItem("Is it OK?");
+                menu2.addMenuSeparator();
+                menu2.addMenuRadioItem("One", true);
+                menu2.addMenuRadioItem("Two");
                 
                 // tray item event test
                 TrayItemMouseListener l = new TrayItemMouseListener() {

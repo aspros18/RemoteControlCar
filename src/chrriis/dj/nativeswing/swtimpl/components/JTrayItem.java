@@ -38,7 +38,7 @@ public class JTrayItem {
     }
     
     public void addMouseListener(TrayItemMouseListener l) {
-        if (disposed) throw new IllegalStateException("Tray item is disposed");
+        checkState();
         MOUSE_LISTENERS.add(l);
     }
     

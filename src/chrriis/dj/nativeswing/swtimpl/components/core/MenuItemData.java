@@ -1,21 +1,19 @@
 package chrriis.dj.nativeswing.swtimpl.components.core;
 
-import java.io.Serializable;
-
-public class MenuItemData implements Serializable {
+public class MenuItemData extends TrayData<MenuItemData> {
     
-    private final int KEY;
+    public String text;
     
-    private String text;
+    public Boolean checked;
     
-    private Boolean checked;
+    public Boolean selected;
     
-    private Boolean selected;
+    public MenuItemData child;
     
-    private MenuItemData child;
-
+    public boolean enabled = true;
+    
     public MenuItemData(int key) {
-        KEY = key;
+        super(key);
     }
     
 }

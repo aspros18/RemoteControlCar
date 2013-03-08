@@ -391,7 +391,21 @@ public class NativeTray implements INativeTray {
                 @Override
                 protected NativeTrayMenu createReturn() throws Exception {
                     Menu menu = new Menu(getNativeTrayContainer().getShell(), SWT.POP_UP);
-                    new MenuItem(menu, SWT.NONE).setText("Key: " + key); // TODO: remove test
+                    
+                    // TODO: remove test {
+                    new MenuItem(menu, SWT.NONE).setText("Key: " + key);
+                    MenuItem mi = new MenuItem(menu, SWT.CASCADE);
+                    mi.setText("Test");
+                    Menu childMenu = new Menu(getNativeTrayContainer().getShell(), SWT.DROP_DOWN);
+                    mi.setMenu(childMenu);
+                    new MenuItem(childMenu, SWT.CHECK).setText("Check");
+                    new MenuItem(childMenu, SWT.SEPARATOR).setEnabled(false);
+                    MenuItem mi2 = new MenuItem(childMenu, SWT.RADIO);
+                    mi2.setSelection(true);
+                    mi2.setText("One");
+                    new MenuItem(childMenu, SWT.RADIO).setText("Two");
+                    // }
+                    
                     return new NativeTrayMenu(menu, key);
                 }
                 

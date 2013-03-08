@@ -4,6 +4,7 @@ import chrriis.common.RunnableReturn;
 import chrriis.dj.nativeswing.swtimpl.CommandMessage;
 import chrriis.dj.nativeswing.swtimpl.components.JTrayContainer;
 import chrriis.dj.nativeswing.swtimpl.components.JTrayItem;
+import chrriis.dj.nativeswing.swtimpl.components.MenuItemType;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseEvent;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseListener;
 import chrriis.dj.nativeswing.swtimpl.components.TrayMessageType;
@@ -519,6 +520,31 @@ public class NativeTray implements INativeTray {
     public void setTrayMenuActive(int menuKey, boolean active) {
         asyncExec(new CMN_trayMenuSetActive(), menuKey, active);
     }
+
+    @Override
+    public int createMenuItem(int menuKey, String text, boolean enabled, boolean selected, MenuItemType type) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setMenuItem(int menuItemKey, Integer menuKey) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setMenuItemText(int menuItemKey, String text) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setMenuItemEnabled(int menuItemKey, boolean enabled) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setMenuItemSelected(int menuItemKey, boolean selected) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
     
     @Override
     public void disposeTrayItem(int key) {
@@ -528,6 +554,11 @@ public class NativeTray implements INativeTray {
     @Override
     public void disposeTrayMenu(int key) {
         syncExec(new CMN_trayMenuDispose(), key);
+    }
+
+    @Override
+    public void disposeMenuItem(int menuItemKey) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override

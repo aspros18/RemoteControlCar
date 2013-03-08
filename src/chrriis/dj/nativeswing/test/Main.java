@@ -2,6 +2,8 @@ package chrriis.dj.nativeswing.test;
 
 import chrriis.dj.nativeswing.swtimpl.components.JTray;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
+import chrriis.dj.nativeswing.swtimpl.components.JMenuItem;
+import chrriis.dj.nativeswing.swtimpl.components.JMenuSeparator;
 import chrriis.dj.nativeswing.swtimpl.components.JTrayItem;
 import chrriis.dj.nativeswing.swtimpl.components.JTrayMenu;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseEvent;
@@ -44,8 +46,8 @@ public class Main {
                 
                 // menu item init test
                 menu1.addMenuItem("Menu1", false);
-                menu1.addMenuSeparator();
-                menu1.addMenuItem("It works!");
+                final JMenuSeparator separator = menu1.addMenuSeparator();
+                final JMenuItem menuItem = menu1.addMenuItem("It works!");
                 menu2.addMenuItem("Menu2", false);
                 
                 // tray item event test
@@ -59,8 +61,10 @@ public class Main {
                         menu1.setTrayItem(i2);
                         menu2.setTrayItem(i1);
                         
-                        // show message test
+                        // double click test
                         if (e.isDoubleClick()) {
+                            
+                            // show message test
                             boolean switched = menu1.getTrayItem() != item1;
                             e.getComponent().showMessage("Exit", "Click to close the application.", switched ? TrayMessageType.WARNING : TrayMessageType.INFO, new Runnable() {
 
@@ -70,6 +74,10 @@ public class Main {
                                 }
 
                             });
+                            
+                            // dispose test
+                            separator.dispose();
+                            menuItem.dispose();
                         }
                     }
 

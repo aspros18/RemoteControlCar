@@ -10,6 +10,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TrayItem;
 
@@ -104,12 +105,21 @@ final class NativeTrayContainer {
         return o == null ? null : o.getMenu();
     }
     
+    public MenuItem getMenuItem(int key) {
+        NativeMenuItem o = getNativeMenuItem(key);
+        return o == null ? null : o.getMenuItem();
+    }
+    
     public NativeTrayItem getNativeTrayItem(int key) {
         return getNativeTrayObject(TRAY_ITEMS, key);
     }
     
     public NativeTrayMenu getNativeTrayMenu(int key) {
         return getNativeTrayObject(TRAY_MENUS, key);
+    }
+    
+    public NativeMenuItem getNativeMenuItem(int key) {
+        return getNativeTrayObject(MENU_ITEMS, key);
     }
     
     private static <T extends NativeTrayObject> T getNativeTrayObject(Set<T> s, int key) {

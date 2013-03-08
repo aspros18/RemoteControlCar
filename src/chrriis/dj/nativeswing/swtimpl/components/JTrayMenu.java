@@ -1,23 +1,26 @@
 package chrriis.dj.nativeswing.swtimpl.components;
 
-import chrriis.dj.nativeswing.swtimpl.components.core.TrayMenuData;
 import static chrriis.dj.nativeswing.swtimpl.components.JTray.NATIVE_TRAY;
 import static chrriis.dj.nativeswing.swtimpl.components.JTray.getTrayContainer;
 
 public class JTrayMenu {
     
-    final TrayMenuData DATA;
+    private final int KEY;
     
-    private boolean disposed = false;
+    private Integer trayItemKey;
     
     private JTrayItem trayItem;
+    
+    private boolean active = true;
+    
+    private boolean disposed = false;
     
     public JTrayMenu() {
         this(null);
     }
 
     public JTrayMenu(JTrayItem trayItem) {
-        DATA = new TrayMenuData(NATIVE_TRAY.createTrayMenu());
+        KEY = NATIVE_TRAY.createTrayMenu();
         if (trayItem != null) setTrayItem(trayItem);
         getTrayContainer().addTrayMenu(this);
     }
@@ -30,7 +33,7 @@ public class JTrayMenu {
         checkState();
         boolean changed;
         if (trayItem == null) {
-            DATA.trayItemKey = null;
+            trayItemKey = null;
             changed = this.trayItem != null;
         }
         else {
@@ -38,23 +41,23 @@ public class JTrayMenu {
             JTrayMenu oldMenu = trayItem.getTrayMenu();
             if (oldMenu != null && this != oldMenu) {
                 oldMenu.trayItem = null;
-                oldMenu.DATA.trayItemKey = null;
+                oldMenu.trayItemKey = null;
             }
-            DATA.trayItemKey = trayItem.getKey();
+            trayItemKey = trayItem.getKey();
             changed = this != oldMenu;
         }
         this.trayItem = trayItem;
-        if (changed) refresh();
+        if (changed) NATIVE_TRAY.setTrayMenu(KEY, trayItemKey);
     }
     
     public boolean isActive() {
-        return DATA.active;
+        return active;
     }
     
     public void setActive(boolean active) {
         checkState();
-        DATA.active = active;
-        refresh();
+        this.active = active;
+        NATIVE_TRAY.setTrayMenuActive(KEY, active);
     }
 
     public boolean isDisposed() {
@@ -67,17 +70,13 @@ public class JTrayMenu {
     
     void dispose(boolean outer) {
         if (disposed) return;
-        NATIVE_TRAY.disposeTrayMenu(DATA.KEY);
+        NATIVE_TRAY.disposeTrayMenu(KEY);
         disposed = true;
         if (outer) getTrayContainer().removeTrayMenu(this);
     }
     
     private void checkState() {
         if (disposed) throw new IllegalStateException("Tray menu is disposed");
-    }
-    
-    private void refresh() {
-        NATIVE_TRAY.setTrayMenu(DATA);
     }
     
 }

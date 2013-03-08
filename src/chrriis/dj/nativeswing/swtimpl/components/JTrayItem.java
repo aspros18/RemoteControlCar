@@ -61,20 +61,20 @@ public class JTrayItem {
     public void setImage(byte[] imageData) {
         checkState();
         if (imageData == null) throw new NullPointerException("Image can't be null");
-        NATIVE_TRAY.setImage(KEY, imageData);
+        NATIVE_TRAY.setTrayItemImage(KEY, imageData);
         this.imageData = imageData;
     }
 
     public void setTooltip(String text) {
         checkState();
-        NATIVE_TRAY.setTooltip(KEY, text);
+        NATIVE_TRAY.setTrayItemTooltip(KEY, text);
         this.tooltip = text;
     }
 
     public void setVisible(boolean visible) {
         checkState();
         if (visible && imageData == null) throw new NullPointerException("Tray item can't be visible without image");
-        NATIVE_TRAY.setVisible(KEY, visible);
+        NATIVE_TRAY.setTrayItemVisible(KEY, visible);
         this.visible = visible;
     }
 

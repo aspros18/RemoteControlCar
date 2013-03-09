@@ -3,9 +3,14 @@ package chrriis.dj.nativeswing.swtimpl.components.core;
 import chrriis.common.RunnableReturn;
 import chrriis.dj.nativeswing.swtimpl.CommandMessage;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
+import chrriis.dj.nativeswing.swtimpl.components.JMenuItem;
+import chrriis.dj.nativeswing.swtimpl.components.JMenuSelectionItem;
 import chrriis.dj.nativeswing.swtimpl.components.JTrayContainer;
 import chrriis.dj.nativeswing.swtimpl.components.JTrayItem;
+import chrriis.dj.nativeswing.swtimpl.components.MenuItemActionListener;
+import chrriis.dj.nativeswing.swtimpl.components.MenuItemSelectionListener;
 import chrriis.dj.nativeswing.swtimpl.components.MenuItemType;
+import chrriis.dj.nativeswing.swtimpl.components.TrayActionEvent;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseEvent;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseListener;
 import chrriis.dj.nativeswing.swtimpl.components.TrayMessageType;
@@ -194,18 +199,43 @@ public final class NativeTray implements INativeTray {
         
     }
     
-    private static class CMJ_menuItemChanged extends JTrayCommandMessage {
+    private static class CMJ_menuItemSelected extends JTrayCommandMessage {
 
-        public CMJ_menuItemChanged(double passkey) {
+        public CMJ_menuItemSelected(double passkey) {
             super(passkey);
         }
 
         @Override
         public Object run(Object[] args) throws Exception {
             int key = (Integer) args[0];
-            boolean selected = (Boolean) args[1];
-            // TODO
-            System.out.println(key + ". " + (selected ? "selected" : "not selected"));
+            Boolean selected = (Boolean) args[1];
+            if (selected == null) {
+                final JMenuItem item = getTrayContainer().getMenuItem(key);
+                for (final MenuItemActionListener l : item.getActionListeners()) {
+                    SwingUtilities.invokeLater(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            l.onAction(new TrayActionEvent<JMenuItem>(item));
+                        }
+                        
+                    });
+                }
+            }
+            else {
+                final JMenuSelectionItem item = getTrayContainer().getMenuSelectionItem(key);
+                item.setSelected(selected);
+                for (final MenuItemSelectionListener l : item.getActionListeners()) {
+                    SwingUtilities.invokeLater(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            l.onSelection(new TrayActionEvent<JMenuSelectionItem>(item));
+                        }
+                        
+                    });
+                }
+            }
             return null;
         }
         
@@ -489,22 +519,24 @@ public final class NativeTray implements INativeTray {
 
                 @Override
                 protected NativeMenuItem createReturn() throws Exception {
+                    final boolean active = typeCode != SWT.SEPARATOR;
+                    final boolean selectable = typeCode == SWT.RADIO || typeCode == SWT.CHECK;
                     final MenuItem mi = new MenuItem(menu, typeCode);
-                    if (typeCode != SWT.SEPARATOR) {
+                    if (active) {
                         if (text != null) mi.setText(text);
                         mi.setEnabled(enabled);
                     }
-                    if (typeCode == SWT.RADIO || typeCode == SWT.CHECK) {
+                    if (selectable) {
                         mi.setSelection(selected);
-                    }
-                    mi.addListener(SWT.Selection, new Listener() {
+                        mi.addListener(SWT.Selection, new Listener() {
 
-                        @Override
-                        public void handleEvent(Event event) {
-                            asyncExec(new CMJ_menuItemChanged(PASSKEY), key, mi.getSelection());
-                        }
-                        
-                    });
+                            @Override
+                            public void handleEvent(Event event) {
+                                asyncExec(new CMJ_menuItemSelected(PASSKEY), key, selectable ? mi.getSelection() : null);
+                            }
+
+                        });
+                    }
                     return new NativeMenuItem(key, mi);
                 }
                 

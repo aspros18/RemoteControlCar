@@ -14,6 +14,10 @@ public class JMenuSelectionItem extends JMenuActiveItem<MenuItemSelectionListene
         return selected;
     }
 
+    public void setSelected(boolean selected) {
+        this.selected = selected; // TODO: rekurzió kivédése
+    }
+
     @Override
     public boolean dispose() {
         return dispose(true);

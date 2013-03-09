@@ -520,7 +520,7 @@ public final class NativeTray implements INativeTray {
             final Menu menu = ntc.getTrayMenu(menuKey);
             return syncReturn(new RunnableReturn<NativeMenuItem>() {
 
-                private MenuItem createMenuItem(Menu menu, int typeCode, Integer index) {
+                private MenuItem createMenuItem() {
                     MenuItem mi;
                     if (index == null ) {
                         mi = new MenuItem(menu, typeCode);
@@ -538,7 +538,7 @@ public final class NativeTray implements INativeTray {
                 protected NativeMenuItem createReturn() throws Exception {
                     final boolean active = typeCode != SWT.SEPARATOR;
                     final boolean selectable = typeCode == SWT.RADIO || typeCode == SWT.CHECK;
-                    final MenuItem mi = createMenuItem(menu, typeCode, index);
+                    final MenuItem mi = createMenuItem();
                     if (active) {
                         if (text != null) mi.setText(text);
                         mi.setEnabled(enabled);
@@ -737,6 +737,11 @@ public final class NativeTray implements INativeTray {
 //    public void setMenuItem(int menuItemKey, Integer menuKey) {
 //        throw new UnsupportedOperationException("Not supported yet.");
 //    }
+
+    @Override
+    public void setMenuItemImage(int menuItemKey, byte[] imageData) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
     @Override
     public void setMenuItemText(int menuItemKey, String text) {

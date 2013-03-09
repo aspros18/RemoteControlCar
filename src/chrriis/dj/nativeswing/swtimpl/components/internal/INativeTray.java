@@ -25,6 +25,8 @@ public interface INativeTray {
     
 //    public void setMenuItem(int menuItemKey, Integer menuKey);
     
+    public void setMenuItemImage(int menuItemKey, byte[] imageData);
+    
     public void setMenuItemText(int menuItemKey, String text);
     
     public void setMenuItemEnabled(int menuItemKey, boolean enabled);

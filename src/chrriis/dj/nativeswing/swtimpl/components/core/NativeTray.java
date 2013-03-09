@@ -211,6 +211,7 @@ public final class NativeTray implements INativeTray {
             Boolean selected = (Boolean) args[1];
             if (selected == null) {
                 final JMenuItem item = getTrayContainer().getMenuItem(key);
+                if (item == null) return null;
                 for (final MenuItemActionListener l : item.getActionListeners()) {
                     SwingUtilities.invokeLater(new Runnable() {
 
@@ -224,6 +225,7 @@ public final class NativeTray implements INativeTray {
             }
             else {
                 final JMenuSelectionItem item = getTrayContainer().getMenuSelectionItem(key);
+                if (item == null) return null;
                 item.setSelected(selected);
                 for (final MenuItemSelectionListener l : item.getActionListeners()) {
                     SwingUtilities.invokeLater(new Runnable() {
@@ -528,6 +530,8 @@ public final class NativeTray implements INativeTray {
                     }
                     if (selectable) {
                         mi.setSelection(selected);
+                    }
+                    if (active) {
                         mi.addListener(SWT.Selection, new Listener() {
 
                             @Override

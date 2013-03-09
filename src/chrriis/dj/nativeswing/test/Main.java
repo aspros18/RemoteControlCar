@@ -7,6 +7,7 @@ import chrriis.dj.nativeswing.swtimpl.components.JMenuItem;
 import chrriis.dj.nativeswing.swtimpl.components.JMenuSeparator;
 import chrriis.dj.nativeswing.swtimpl.components.JTrayItem;
 import chrriis.dj.nativeswing.swtimpl.components.JTrayMenu;
+import chrriis.dj.nativeswing.swtimpl.components.MenuItemActionListener;
 import chrriis.dj.nativeswing.swtimpl.components.TrayActionEvent;
 import chrriis.dj.nativeswing.swtimpl.components.MenuItemSelectionListener;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseEvent;
@@ -50,7 +51,7 @@ public class Main {
                 // menu item init test
                 menu1.addMenuItem("Menu1", false);
                 final JMenuSeparator separator1 = menu1.addMenuSeparator();
-                final JMenuItem menuItem1 = menu1.addMenuItem("It works!");
+                final JMenuItem menuItem1 = menu1.addMenuItem("Does it work?");
                 menu2.addMenuItem("Menu2", false);
                 final JMenuSeparator separator2 = menu2.addMenuSeparator();
                 final JMenuSelectionItem menuItem2 = menu2.addMenuCheckItem("Is it OK?");
@@ -69,6 +70,14 @@ public class Main {
                 };
                 radio1.addActionListener(ml);
                 radio2.addActionListener(ml);
+                menuItem1.addActionListener(new MenuItemActionListener() {
+
+                    @Override
+                    public void onAction(TrayActionEvent<JMenuItem> e) {
+                        System.out.println("Yes, it works!");
+                    }
+                    
+                });
                 
                 // tray item event test
                 TrayItemMouseListener tl = new TrayItemMouseListener() {

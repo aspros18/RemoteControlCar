@@ -20,9 +20,10 @@ import org.dyndns.fzoli.socket.SSLSocketUtil;
 import static org.dyndns.fzoli.ui.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.ui.systemtray.SystemTrayIcon;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
+import static org.dyndns.fzoli.rccar.ui.UIUtil.setApplicationName;
 
 /**
- * A híd indító osztálya.
+ * A Híd indító osztálya.
  * @author zoli
  */
 public class Main {
@@ -61,13 +62,14 @@ public class Main {
      * Még mielőtt lefutna a main metódus, beállítódik a rendszer LAF, a saját kivételkezelő, a rendszerikon és az erőforrás-felszabadító szál.
      */
     static {
-        setSplashMessage(getString("please_wait")); //TODO: erre nem lesz szükség
+        setApplicationName("Mobile-RC Server");
+        setSplashMessage(getString("please_wait")); // NetBeansből indítva van rá szükség, egyébként nincs hatása
         setSystemLookAndFeel();
         setExceptionHandler();
         applyConfig();
         setSystemTrayIcon();
         addShutdownHook();
-        closeSplashScreen(); //TODO: erre nem lesz szükség
+        closeSplashScreen(); // NetBeansből indítva van rá szükség, egyébként nincs hatása
     }
     
     /**

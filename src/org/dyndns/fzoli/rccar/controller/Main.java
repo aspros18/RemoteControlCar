@@ -31,6 +31,7 @@ import static org.dyndns.fzoli.ui.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.ui.systemtray.SystemTrayIcon;
 import static org.dyndns.fzoli.ui.systemtray.SystemTrayIcon.showMessage;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
+import static org.dyndns.fzoli.rccar.ui.UIUtil.setApplicationName;
 
 /**
  * A vezérlő indító osztálya.
@@ -170,6 +171,7 @@ public class Main {
      * és a kivételkezelő beállítódik.
      */
     static {
+        setApplicationName("Mobile-RC");
         setSplashMessage(getString("please_wait"));
         setSystemLookAndFeel();
         setExceptionHandler();

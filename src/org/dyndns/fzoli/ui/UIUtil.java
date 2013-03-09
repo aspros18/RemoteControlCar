@@ -2,6 +2,7 @@ package org.dyndns.fzoli.ui;
 
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.io.PrintStream;
 import javax.swing.UIManager;
 
@@ -117,6 +118,28 @@ public class UIUtil {
                     ;
                 }
             }
+        }
+    }
+    
+    /**
+     * Beállítja az alkalmazás nevét az adott ablakhoz.
+     * A tálcán jelenik meg, amikor már elég sok ablak nyitva van és egy csoportba kerülnek az ablakok.
+     * @param text az alkalmazás neve
+     */
+    public static void setApplicationName(String text) {
+        try {
+            Toolkit xToolkit = Toolkit.getDefaultToolkit();
+            java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField("awtAppClassName");
+            awtAppClassNameField.setAccessible(true);
+            awtAppClassNameField.set(xToolkit, text);
+            
+            String os = System.getProperty("os.name").toLowerCase();
+            if (!os.startsWith("mac")) return;
+            System.setProperty("apple.laf.useScreenMenuBar", "true");
+            System.setProperty("com.apple.mrj.application.apple.menu.about.name", text);  
+        }
+        catch (Exception ex) {
+            ;
         }
     }
     

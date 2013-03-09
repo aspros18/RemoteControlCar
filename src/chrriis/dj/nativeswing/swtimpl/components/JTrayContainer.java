@@ -18,6 +18,10 @@ public final class JTrayContainer {
     
     private final Set<JTrayMenu> TRAY_MENUS = Collections.synchronizedSet(new HashSet<JTrayMenu>());
     
+    private final Set<JMenuItem> MENU_ITEMS = Collections.synchronizedSet(new HashSet<JMenuItem>());
+    
+    private final Set<JMenuSelectionItem> MENU_SELECTION_ITEMS = Collections.synchronizedSet(new HashSet<JMenuSelectionItem>());
+    
     private final Map<Integer, Runnable> MSG_CALLBACKS = Collections.synchronizedMap(new HashMap<Integer, Runnable>());
     
     public static JTrayContainer getInstance(double passkey) {
@@ -39,21 +43,21 @@ public final class JTrayContainer {
             throw new RuntimeException(ex);
         }
     }
-    
-    void addTrayItem(JTrayItem item) {
-        TRAY_ITEMS.add(item);
+
+    Set<JTrayItem> getTrayItems() {
+        return TRAY_ITEMS;
     }
 
-    void removeTrayItem(JTrayItem item) {
-        TRAY_ITEMS.remove(item);
-    }
-    
-    void addTrayMenu(JTrayMenu menu) {
-        TRAY_MENUS.add(menu);
+    Set<JTrayMenu> getTrayMenus() {
+        return TRAY_MENUS;
     }
 
-    void removeTrayMenu(JTrayMenu menu) {
-        TRAY_MENUS.remove(menu);
+    Set<JMenuItem> getMenuItems() {
+        return MENU_ITEMS;
+    }
+
+    Set<JMenuSelectionItem> getMenuSelectionItems() {
+        return MENU_SELECTION_ITEMS;
     }
     
     JTrayMenu findTrayMenu(JTrayItem item) {
@@ -67,20 +71,44 @@ public final class JTrayContainer {
     }
     
     void dispose() {
-        MSG_CALLBACKS.clear();
         for (JTrayItem item : TRAY_ITEMS) {
             item.dispose(false);
         }
         TRAY_ITEMS.clear();
+        
         for (JTrayMenu menu : TRAY_MENUS) {
             menu.dispose(false);
         }
         TRAY_MENUS.clear();
+        
+        for (JMenuItem item : MENU_ITEMS) {
+            item.dispose(false);
+        }
+        MENU_ITEMS.clear();
+        
+        for (JMenuSelectionItem item : MENU_SELECTION_ITEMS) {
+            item.dispose(false);
+        }
+        MENU_SELECTION_ITEMS.clear();
+        
+        MSG_CALLBACKS.clear();
     }
     
     public JTrayItem getTrayItem(int key) {
-        for (JTrayItem item : TRAY_ITEMS) {
-            if (item.getKey() == key) return item;
+        return getTrayObject(TRAY_ITEMS, key);
+    }
+
+    public JMenuItem getMenuItem(int key) {
+        return getTrayObject(MENU_ITEMS, key);
+    }
+    
+    public JMenuSelectionItem getMenuSelectionItem(int key) {
+        return getTrayObject(MENU_SELECTION_ITEMS, key);
+    }
+    
+    private <T extends JTrayObject> T getTrayObject(Set<T> s, int key) {
+        for (T o : s) {
+            if (o.getKey() == key) return o;
         }
         return null;
     }

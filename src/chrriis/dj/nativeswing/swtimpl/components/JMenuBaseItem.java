@@ -16,10 +16,10 @@ class JMenuBaseItem extends JTrayObject {
     }
     
     @Override
-    public void dispose() {
-        if (isDisposed()) return;
+    public boolean dispose() {
+        if (isDisposed()) return false;
         NATIVE_TRAY.disposeMenuItem(getKey());
-        super.dispose();
+        return super.dispose();
     }
     
     @Override

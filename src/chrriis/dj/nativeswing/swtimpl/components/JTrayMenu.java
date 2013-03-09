@@ -1,7 +1,6 @@
 package chrriis.dj.nativeswing.swtimpl.components;
 
 import static chrriis.dj.nativeswing.swtimpl.components.JTray.NATIVE_TRAY;
-import static chrriis.dj.nativeswing.swtimpl.components.JTray.getTrayContainer;
 
 public class JTrayMenu extends JTrayObject {
     
@@ -23,7 +22,7 @@ public class JTrayMenu extends JTrayObject {
         super(NATIVE_TRAY.createTrayMenu(trayItem == null ? null : trayItem.getKey(), active));
         this.active = active;
         applyTrayItem(trayItem);
-        getTrayContainer().addTrayMenu(this);
+        getTrayContainer().getTrayMenus().add(this);
     }
 
     private JTrayMenu applyTrayItem(JTrayItem trayItem) {
@@ -112,15 +111,16 @@ public class JTrayMenu extends JTrayObject {
     }
     
     @Override
-    public void dispose() {
-        dispose(true);
+    public boolean dispose() {
+        return dispose(true);
     }
     
-    void dispose(boolean outer) {
-        if (isDisposed()) return;
+    boolean dispose(boolean outer) {
+        if (isDisposed()) return false;
         NATIVE_TRAY.disposeTrayMenu(getKey());
         super.dispose();
-        if (outer) getTrayContainer().removeTrayMenu(this);
+        if (outer) getTrayContainer().getTrayMenus().remove(this);
+        return true;
     }
     
     @Override

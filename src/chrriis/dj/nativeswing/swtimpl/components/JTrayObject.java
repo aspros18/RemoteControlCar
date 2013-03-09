@@ -18,10 +18,16 @@ abstract class JTrayObject {
         return disposed;
     }
     
-    void dispose() {
+    boolean dispose() {
+        if (disposed) return false;
         this.disposed = true;
+        return true;
     }
     
     abstract void checkState();
+    
+    JTrayContainer getTrayContainer() {
+        return JTray.getTrayContainer();
+    }
     
 }

@@ -1,7 +1,6 @@
 package chrriis.dj.nativeswing.swtimpl.components;
 
 import static chrriis.dj.nativeswing.swtimpl.components.JTray.NATIVE_TRAY;
-import static chrriis.dj.nativeswing.swtimpl.components.JTray.getTrayContainer;
 import java.awt.image.RenderedImage;
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +18,7 @@ public class JTrayItem extends JTrayObject {
         this.tooltip = tooltip;
         this.imageData = imageData;
         this.visible = imageData != null;
-        getTrayContainer().addTrayItem(this);
+        getTrayContainer().getTrayItems().add(this);
     }
     
     public JTrayMenu getTrayMenu() {
@@ -89,14 +88,14 @@ public class JTrayItem extends JTrayObject {
     }
     
     @Override
-    public void dispose() {
-        dispose(true);
+    public boolean dispose() {
+        return dispose(true);
     }
     
-    void dispose(boolean outer) {
-        if (isDisposed()) return;
+    boolean dispose(boolean outer) {
+        if (isDisposed()) return false;
         NATIVE_TRAY.disposeTrayItem(getKey());
-        if (outer) getTrayContainer().removeTrayItem(this);
+        if (outer) getTrayContainer().getTrayItems().remove(this);
         super.dispose();
         visible = false;
         tooltip = null;
@@ -104,6 +103,7 @@ public class JTrayItem extends JTrayObject {
         synchronized (MOUSE_LISTENERS) {
             MOUSE_LISTENERS.clear();
         }
+        return true;
     }
     
     @Override

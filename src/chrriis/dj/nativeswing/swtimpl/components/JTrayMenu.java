@@ -77,30 +77,33 @@ public class JTrayMenu extends JTrayObject {
         return new JMenuItem(this, key, text, enabled);
     }
     
-    public JMenuCheckItem addMenuCheckItem(String text) {
+    public JMenuSelectionItem addMenuCheckItem(String text) {
         return addMenuCheckItem(text, false);
     }
     
-    public JMenuCheckItem addMenuCheckItem(String text, boolean selected) {
+    public JMenuSelectionItem addMenuCheckItem(String text, boolean selected) {
         return addMenuCheckItem(text, true, selected);
     }
     
-    public JMenuCheckItem addMenuCheckItem(String text, boolean enabled, boolean selected) {
-        int key = NATIVE_TRAY.createMenuItem(getKey(), text, enabled, selected, MenuItemType.CHECK);
-        return new JMenuCheckItem(this, key, text, enabled, selected);
+    public JMenuSelectionItem addMenuCheckItem(String text, boolean enabled, boolean selected) {
+        return addMenuCheckItem(text, enabled, selected, false);
     }
     
-    public JMenuRadioItem addMenuRadioItem(String text) {
+    public JMenuSelectionItem addMenuRadioItem(String text) {
         return addMenuRadioItem(text, false);
     }
     
-    public JMenuRadioItem addMenuRadioItem(String text, boolean selected) {
+    public JMenuSelectionItem addMenuRadioItem(String text, boolean selected) {
         return addMenuRadioItem(text, true, selected);
     }
     
-    public JMenuRadioItem addMenuRadioItem(String text, boolean enabled, boolean selected) {
-        int key = NATIVE_TRAY.createMenuItem(getKey(), text, enabled, selected, MenuItemType.RADIO);
-        return new JMenuRadioItem(this, key, text, enabled, selected);
+    public JMenuSelectionItem addMenuRadioItem(String text, boolean enabled, boolean selected) {
+        return addMenuCheckItem(text, enabled, selected, true);
+    }
+
+    private JMenuSelectionItem addMenuCheckItem(String text, boolean enabled, boolean selected, boolean radio) {
+        int key = NATIVE_TRAY.createMenuItem(getKey(), text, enabled, selected, radio ? MenuItemType.RADIO : MenuItemType.CHECK);
+        return new JMenuSelectionItem(this, key, text, enabled, selected);
     }
     
     public JMenuSeparator addMenuSeparator() {

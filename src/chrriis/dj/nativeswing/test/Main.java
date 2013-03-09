@@ -2,8 +2,8 @@ package chrriis.dj.nativeswing.test;
 
 import chrriis.dj.nativeswing.swtimpl.components.JTray;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
+import chrriis.dj.nativeswing.swtimpl.components.JMenuSelectionItem;
 import chrriis.dj.nativeswing.swtimpl.components.JMenuItem;
-import chrriis.dj.nativeswing.swtimpl.components.JMenuRadioItem;
 import chrriis.dj.nativeswing.swtimpl.components.JMenuSeparator;
 import chrriis.dj.nativeswing.swtimpl.components.JTrayItem;
 import chrriis.dj.nativeswing.swtimpl.components.JTrayMenu;
@@ -55,18 +55,20 @@ public class Main {
                 final JMenuSeparator separator2 = menu2.addMenuSeparator();
                 final JMenuItem menuItem2 = menu2.addMenuCheckItem("Is it OK?");
                 menu2.addMenuSeparator();
-                final JMenuRadioItem radio1 = menu2.addMenuRadioItem("One", true);
-                final JMenuRadioItem radio2 = menu2.addMenuRadioItem("Two");
+                final JMenuSelectionItem radio1 = menu2.addMenuRadioItem("One", true);
+                final JMenuSelectionItem radio2 = menu2.addMenuRadioItem("Two");
                 
                 // menu item event test
-                MenuItemActionListener<JMenuRadioItem> ml = new MenuItemActionListener<JMenuRadioItem>() {
+                MenuItemActionListener<JMenuSelectionItem> ml = new MenuItemActionListener<JMenuSelectionItem>() {
 
                     @Override
-                    public void onSelected(MenuItemActionEvent<JMenuRadioItem> e) {
+                    public void onAction(MenuItemActionEvent<JMenuSelectionItem> e) {
                         System.out.println("radio" + (e.getComponent() == radio1 ? '1' : '2') + " has been " + (e.getComponent().isSelected() ? "" : "un") + "selected.");
                     }
                     
                 };
+                radio1.addActionListener(ml);
+                radio2.addActionListener(ml);
                 
                 // tray item event test
                 TrayItemMouseListener tl = new TrayItemMouseListener() {

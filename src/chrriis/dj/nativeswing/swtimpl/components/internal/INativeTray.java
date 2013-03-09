@@ -1,10 +1,22 @@
 package chrriis.dj.nativeswing.swtimpl.components.internal;
 
-import chrriis.dj.nativeswing.swtimpl.components.MenuItemType;
 import chrriis.dj.nativeswing.swtimpl.components.TrayMessageType;
 
 public interface INativeTray {
-
+    
+    public enum MenuItemType {
+        NORMAL,
+        RADIO,
+        CHECK,
+        SEPARATOR,
+//        DROP_DOWN
+    }
+    
+    public enum MenuItemProperty {
+        ENABLED,
+        SELECTION
+    }
+    
     public int createTrayItem(byte[] imageData, String tooltip);
 
     public void setTrayItemTooltip(int trayItemKey, String text);
@@ -29,9 +41,7 @@ public interface INativeTray {
     
     public void setMenuItemText(int menuItemKey, String text);
     
-    public void setMenuItemEnabled(int menuItemKey, boolean enabled);
-    
-    public void setMenuItemSelected(int menuItemKey, boolean selected);
+    public void setMenuItemProperty(int menuItemKey, MenuItemProperty property, boolean value);
     
     public void disposeTrayItem(int trayItemKey);
     

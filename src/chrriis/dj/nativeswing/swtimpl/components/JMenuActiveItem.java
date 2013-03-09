@@ -3,6 +3,7 @@ package chrriis.dj.nativeswing.swtimpl.components;
 import java.util.Collections;
 import java.util.List;
 import static chrriis.dj.nativeswing.swtimpl.components.JTray.NATIVE_TRAY;
+import chrriis.dj.nativeswing.swtimpl.components.internal.INativeTray.MenuItemProperty;
 
 class JMenuActiveItem<T> extends JMenuBaseItem {
 
@@ -45,7 +46,7 @@ class JMenuActiveItem<T> extends JMenuBaseItem {
     }
 
     public void setEnabled(boolean enabled) {
-        NATIVE_TRAY.setMenuItemEnabled(getKey(), enabled);
+        NATIVE_TRAY.setMenuItemProperty(getKey(), MenuItemProperty.ENABLED, enabled);
         this.enabled = enabled;
     }
     

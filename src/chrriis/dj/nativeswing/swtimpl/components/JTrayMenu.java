@@ -1,6 +1,7 @@
 package chrriis.dj.nativeswing.swtimpl.components;
 
 import static chrriis.dj.nativeswing.swtimpl.components.JTray.NATIVE_TRAY;
+import chrriis.dj.nativeswing.swtimpl.components.internal.INativeTray.MenuItemType;
 
 public class JTrayMenu extends JTrayObject {
     

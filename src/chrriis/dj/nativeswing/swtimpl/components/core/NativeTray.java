@@ -9,7 +9,6 @@ import chrriis.dj.nativeswing.swtimpl.components.JTrayContainer;
 import chrriis.dj.nativeswing.swtimpl.components.JTrayItem;
 import chrriis.dj.nativeswing.swtimpl.components.MenuItemActionListener;
 import chrriis.dj.nativeswing.swtimpl.components.MenuItemSelectionListener;
-import chrriis.dj.nativeswing.swtimpl.components.MenuItemType;
 import chrriis.dj.nativeswing.swtimpl.components.TrayActionEvent;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseEvent;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseListener;
@@ -627,19 +626,26 @@ public final class NativeTray implements INativeTray {
         
     }
     
-    private static class CMN_menuItemSetEnabled extends TrayCommandMessage {
+    private static class CMN_menuItemSetProperty extends TrayCommandMessage {
 
         @Override
         public Object run(Object[] args) throws Exception {
             final int key = (Integer) args[0];
-            final boolean enabled = (Boolean) args[1];
+            final MenuItemProperty property = (MenuItemProperty) args[1];
+            final boolean value = (Boolean) args[2];
             final MenuItem item = getNativeTrayContainer().getMenuItem(key);
             if (item == null) return null;
             getDisplay().syncExec(new Runnable() {
 
                 @Override
                 public void run() {
-                    item.setEnabled(enabled);
+                    switch (property) {
+                        case ENABLED:
+                            item.setEnabled(value);
+                            break;
+                        case SELECTION:
+                            item.setSelection(value);
+                    }
                 }
                 
             });
@@ -815,13 +821,8 @@ public final class NativeTray implements INativeTray {
     }
 
     @Override
-    public void setMenuItemEnabled(int menuItemKey, boolean enabled) {
-        asyncExec(new CMN_menuItemSetEnabled(), menuItemKey, enabled);
-    }
-
-    @Override
-    public void setMenuItemSelected(int menuItemKey, boolean selected) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void setMenuItemProperty(int menuItemKey, MenuItemProperty property, boolean value) {
+        asyncExec(new CMN_menuItemSetProperty(), menuItemKey, property, value);
     }
     
     @Override

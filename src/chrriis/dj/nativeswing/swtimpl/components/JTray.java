@@ -44,13 +44,13 @@ public final class JTray {
         checkState();
         if (exitPrevent == null) exitPrevent = new Timer();
         int key = NATIVE_TRAY.createTrayItem(imageData, tooltip);
-        return getTrayContainer().createTrayItem(key, imageData, tooltip);
+        return new JTrayItem(key, tooltip, imageData);
     }
 
     public static void dispose() {
         if (disposed) return;
-        getTrayContainer().dispose();
         NATIVE_TRAY.dispose();
+        getTrayContainer().dispose();
         disposed = true;
         if (exitPrevent != null) {
             exitPrevent.cancel();

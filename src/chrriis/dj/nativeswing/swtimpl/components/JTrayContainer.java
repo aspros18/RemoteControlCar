@@ -40,18 +40,20 @@ public final class JTrayContainer {
         }
     }
     
-    JTrayItem createTrayItem(int key, byte[] imageData, String tooltip) {
-        JTrayItem item = new JTrayItem(key, tooltip, imageData);
+    void addTrayItem(JTrayItem item) {
         TRAY_ITEMS.add(item);
-        return item;
     }
 
+    void removeTrayItem(JTrayItem item) {
+        TRAY_ITEMS.remove(item);
+    }
+    
     void addTrayMenu(JTrayMenu menu) {
         TRAY_MENUS.add(menu);
     }
 
     void removeTrayMenu(JTrayMenu menu) {
-        TRAY_MENUS.add(menu);
+        TRAY_MENUS.remove(menu);
     }
     
     JTrayMenu findTrayMenu(JTrayItem item) {
@@ -67,7 +69,7 @@ public final class JTrayContainer {
     void dispose() {
         MSG_CALLBACKS.clear();
         for (JTrayItem item : TRAY_ITEMS) {
-            item.dispose();
+            item.dispose(false);
         }
         TRAY_ITEMS.clear();
         for (JTrayMenu menu : TRAY_MENUS) {

@@ -23,6 +23,7 @@ public class JTrayItem {
         this.imageData = imageData;
         this.visible = imageData != null;
         this.disposed = false;
+        getTrayContainer().addTrayItem(this);
     }
 
     int getKey() {
@@ -101,8 +102,13 @@ public class JTrayItem {
     }
     
     public void dispose() {
+        dispose(true);
+    }
+    
+    void dispose(boolean outer) {
         if (disposed) return;
         NATIVE_TRAY.disposeTrayItem(KEY);
+        if (outer) getTrayContainer().removeTrayItem(this);
         disposed = true;
         visible = false;
         tooltip = null;

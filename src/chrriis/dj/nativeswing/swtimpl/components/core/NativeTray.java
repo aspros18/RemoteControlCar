@@ -500,30 +500,45 @@ public final class NativeTray implements INativeTray {
         @Override
         public Object run(Object[] args) throws Exception {
             int menuKey = (Integer) args[0];
-            String text = (String) args[1];
-            boolean enabled = (Boolean) args[2];
-            boolean selected = (Boolean) args[3];
-            MenuItemType type = (MenuItemType) args[4];
+            Integer index = (Integer) args[1];
+            String text = (String) args[2];
+            boolean enabled = (Boolean) args[3];
+            boolean selected = (Boolean) args[4];
+            MenuItemType type = (MenuItemType) args[5];
             NativeTrayContainer ntc = getNativeTrayContainer();
             final Set<NativeMenuItem> items = ntc.getNativeMenuItems();
             synchronized (items) {
                 int key = ntc.getNextMenuItemKey();
-                NativeMenuItem item = createMenuItem(ntc, key, menuKey, text, enabled, selected, type);
+                NativeMenuItem item = createMenuItem(ntc, key, menuKey, index, text, enabled, selected, type);
                 items.add(item);
                 return key;
             }
         }
         
-        private NativeMenuItem createMenuItem(NativeTrayContainer ntc, final int key, int menuKey, final String text, final boolean enabled, final boolean selected, MenuItemType type) {
+        private NativeMenuItem createMenuItem(NativeTrayContainer ntc, final int key, int menuKey, final Integer index, final String text, final boolean enabled, final boolean selected, MenuItemType type) {
             final int typeCode = getTypeCode(type);
             final Menu menu = ntc.getTrayMenu(menuKey);
             return syncReturn(new RunnableReturn<NativeMenuItem>() {
 
+                private MenuItem createMenuItem(Menu menu, int typeCode, Integer index) {
+                    MenuItem mi;
+                    if (index == null ) {
+                        mi = new MenuItem(menu, typeCode);
+                    }
+                    else try {
+                        mi = new MenuItem(menu, typeCode, index);
+                    }
+                    catch (Exception ex) {
+                        mi = new MenuItem(menu, typeCode);
+                    }
+                    return mi;
+                }
+                
                 @Override
                 protected NativeMenuItem createReturn() throws Exception {
                     final boolean active = typeCode != SWT.SEPARATOR;
                     final boolean selectable = typeCode == SWT.RADIO || typeCode == SWT.CHECK;
-                    final MenuItem mi = new MenuItem(menu, typeCode);
+                    final MenuItem mi = createMenuItem(menu, typeCode, index);
                     if (active) {
                         if (text != null) mi.setText(text);
                         mi.setEnabled(enabled);
@@ -714,8 +729,8 @@ public final class NativeTray implements INativeTray {
     }
 
     @Override
-    public int createMenuItem(int menuKey, String text, boolean enabled, boolean selected, MenuItemType type) {
-        return (Integer) syncExec(new CMN_menuItemCreate(PASSKEY), menuKey, text, enabled, selected, type);
+    public int createMenuItem(int menuKey, Integer index, String text, boolean enabled, boolean selected, MenuItemType type) {
+        return (Integer) syncExec(new CMN_menuItemCreate(PASSKEY), menuKey, index, text, enabled, selected, type);
     }
 
 //    @Override

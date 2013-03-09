@@ -72,7 +72,11 @@ public class JTrayMenu extends JTrayObject {
     }
     
     public JMenuItem addMenuItem(String text, boolean enabled) {
-        int key = NATIVE_TRAY.createMenuItem(getKey(), text, enabled, false, MenuItemType.NORMAL);
+        return addMenuItem(null, text, enabled);
+    }
+    
+    public JMenuItem addMenuItem(Integer index, String text, boolean enabled) {
+        int key = NATIVE_TRAY.createMenuItem(getKey(), index, text, enabled, false, MenuItemType.NORMAL);
         return new JMenuItem(this, key, text, enabled);
     }
     
@@ -85,7 +89,11 @@ public class JTrayMenu extends JTrayObject {
     }
     
     public JMenuSelectionItem addMenuCheckItem(String text, boolean enabled, boolean selected) {
-        return addMenuCheckItem(text, enabled, selected, false);
+        return addMenuCheckItem(null, text, enabled, selected);
+    }
+    
+    public JMenuSelectionItem addMenuCheckItem(Integer index, String text, boolean enabled, boolean selected) {
+        return addMenuCheckItem(index, text, enabled, selected, false);
     }
     
     public JMenuSelectionItem addMenuRadioItem(String text) {
@@ -97,16 +105,24 @@ public class JTrayMenu extends JTrayObject {
     }
     
     public JMenuSelectionItem addMenuRadioItem(String text, boolean enabled, boolean selected) {
-        return addMenuCheckItem(text, enabled, selected, true);
+        return addMenuRadioItem(null, text, enabled, selected);
     }
-
-    private JMenuSelectionItem addMenuCheckItem(String text, boolean enabled, boolean selected, boolean radio) {
-        int key = NATIVE_TRAY.createMenuItem(getKey(), text, enabled, selected, radio ? MenuItemType.RADIO : MenuItemType.CHECK);
+    
+    public JMenuSelectionItem addMenuRadioItem(Integer index, String text, boolean enabled, boolean selected) {
+        return addMenuCheckItem(index, text, enabled, selected, true);
+    }
+    
+    private JMenuSelectionItem addMenuCheckItem(Integer index, String text, boolean enabled, boolean selected, boolean radio) {
+        int key = NATIVE_TRAY.createMenuItem(getKey(), index, text, enabled, selected, radio ? MenuItemType.RADIO : MenuItemType.CHECK);
         return new JMenuSelectionItem(this, key, text, enabled, selected);
     }
     
     public JMenuSeparator addMenuSeparator() {
-        int key = NATIVE_TRAY.createMenuItem(getKey(), null, false, false, MenuItemType.SEPARATOR);
+        return addMenuSeparator(null);
+    }
+    
+    public JMenuSeparator addMenuSeparator(Integer index) {
+        int key = NATIVE_TRAY.createMenuItem(getKey(), index, null, false, false, MenuItemType.SEPARATOR);
         return new JMenuSeparator(this, key);
     }
     

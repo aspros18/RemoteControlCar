@@ -21,7 +21,7 @@ public interface INativeTray {
     
     public void setTrayMenuActive(int menuKey, boolean active);
     
-    public int createMenuItem(int menuKey, String text, boolean enabled, boolean selected, MenuItemType type);
+    public int createMenuItem(int menuKey, Integer index, String text, boolean enabled, boolean selected, MenuItemType type);
     
 //    public void setMenuItem(int menuItemKey, Integer menuKey);
     

@@ -130,11 +130,16 @@ final class NativeTrayContainer {
     }
     
     public Image createImage(Display display, byte[] data) {
-        BufferedInputStream inputStreamReader = new BufferedInputStream(new ByteArrayInputStream(data));
-        ImageData imageData = new ImageData(inputStreamReader);
-        Image image = new Image(display, imageData);
-        IMAGES.add(image);
-        return image;
+        try {
+            BufferedInputStream inputStreamReader = new BufferedInputStream(new ByteArrayInputStream(data));
+            ImageData imageData = new ImageData(inputStreamReader);
+            Image image = new Image(display, imageData);
+            IMAGES.add(image);
+            return image;
+        }
+        catch (Exception ex) {
+            return null;
+        }
     }
 
     public void removeImage(Image image) {

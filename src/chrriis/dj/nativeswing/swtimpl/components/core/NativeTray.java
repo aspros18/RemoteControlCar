@@ -582,6 +582,30 @@ public final class NativeTray implements INativeTray {
         
     }
     
+    private static class CMN_menuItemSetImage extends TrayCommandMessage {
+
+        @Override
+        public Object run(Object[] args) throws Exception {
+            final int key = (Integer) args[0];
+            final byte[] imageData = (byte[]) args[1];
+            final NativeTrayContainer ntc = getNativeTrayContainer();
+            final MenuItem item = ntc.getMenuItem(key);
+            if (item == null) return null;
+            getDisplay().syncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    Image img = ntc.createImage(getDisplay(), imageData);
+                    ntc.removeImage(item.getImage());
+                    item.setImage(img);
+                }
+                
+            });
+            return null;
+        }
+        
+    }
+    
     private static class CMN_trayItemDispose extends TrayCommandMessage {
 
         @Override
@@ -740,7 +764,7 @@ public final class NativeTray implements INativeTray {
 
     @Override
     public void setMenuItemImage(int menuItemKey, byte[] imageData) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        asyncExec(new CMN_menuItemSetImage(), menuItemKey, imageData);
     }
 
     @Override

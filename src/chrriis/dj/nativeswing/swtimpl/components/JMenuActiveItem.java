@@ -1,7 +1,9 @@
 package chrriis.dj.nativeswing.swtimpl.components;
 
+import java.awt.image.RenderedImage;
 import java.util.Collections;
 import java.util.List;
+import static chrriis.dj.nativeswing.swtimpl.components.JTray.NATIVE_TRAY;
 
 class JMenuActiveItem<T> extends JMenuBaseItem {
 
@@ -35,6 +37,14 @@ class JMenuActiveItem<T> extends JMenuBaseItem {
 
     public boolean isEnabled() {
         return enabled;
+    }
+    
+    public void setImage(RenderedImage img) {
+        setImage(JTrayContainer.createImageData(img));
+    }
+    
+    public void setImage(byte[] imageData) {
+        NATIVE_TRAY.setMenuItemImage(getKey(), imageData);
     }
     
 }

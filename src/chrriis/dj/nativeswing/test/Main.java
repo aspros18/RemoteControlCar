@@ -28,6 +28,9 @@ public class Main {
             @Override
             public void run() {
                 RenderedImage testImage = R.getIconImage();
+                RenderedImage testImage2 = org.dyndns.fzoli.rccar.bridge.resource.R.getBridgeImage();
+                RenderedImage testImage3 = R.getImage("horn.png");
+                
                 final JTrayItem item1 = JTray.createTrayItem(testImage, "First");
                 final JTrayItem item2 = JTray.createTrayItem(testImage, "Second");
                 final JTrayItem item3 = JTray.createTrayItem();
@@ -41,7 +44,7 @@ public class Main {
                 item1.setTooltip("First changed");
                 System.out.println("item1 tip: " + item1.getTooltip());
                 System.out.println("item2 tip: " + item2.getTooltip());
-                item2.setImage(org.dyndns.fzoli.rccar.bridge.resource.R.getBridgeImage());
+                item2.setImage(testImage2);
                 
                 // menu init test
                 final JTrayMenu menu1 = new JTrayMenu(item1);
@@ -52,6 +55,7 @@ public class Main {
                 menu1.addMenuItem("Menu1", false);
                 final JMenuSeparator separator1 = menu1.addMenuSeparator();
                 final JMenuItem menuItem1 = menu1.addMenuItem("Does it work?");
+                menuItem1.setImage(testImage3);
                 menu2.addMenuItem("Menu2", false);
                 final JMenuSeparator separator2 = menu2.addMenuSeparator();
                 final JMenuSelectionItem menuItem2 = menu2.addMenuCheckItem("Is it OK?");

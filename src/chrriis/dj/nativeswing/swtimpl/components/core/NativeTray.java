@@ -2,6 +2,7 @@ package chrriis.dj.nativeswing.swtimpl.components.core;
 
 import chrriis.common.RunnableReturn;
 import chrriis.dj.nativeswing.swtimpl.CommandMessage;
+import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JTrayContainer;
 import chrriis.dj.nativeswing.swtimpl.components.JTrayItem;
 import chrriis.dj.nativeswing.swtimpl.components.MenuItemType;
@@ -628,11 +629,12 @@ public final class NativeTray implements INativeTray {
     }
     
     private static void asyncExec(CommandMessage msg, Object... args) {
-        msg.asyncExec(true, args);
+        if (NativeInterface.isOpen()) msg.asyncExec(true, args);
     }
 
     private static Object syncExec(CommandMessage msg, Object... args) {
-        return msg.syncExec(true, args);
+        if (NativeInterface.isOpen()) return msg.syncExec(true, args);
+        return null;
     }
 
     @Override

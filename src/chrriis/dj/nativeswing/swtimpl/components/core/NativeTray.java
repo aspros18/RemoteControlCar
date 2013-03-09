@@ -193,6 +193,23 @@ public final class NativeTray implements INativeTray {
         
     }
     
+    private static class CMJ_menuItemChanged extends JTrayCommandMessage {
+
+        public CMJ_menuItemChanged(double passkey) {
+            super(passkey);
+        }
+
+        @Override
+        public Object run(Object[] args) throws Exception {
+            int key = (Integer) args[0];
+            boolean selected = (Boolean) args[1];
+            // TODO
+            System.out.println(key + ". " + (selected ? "selected" : "not selected"));
+            return null;
+        }
+        
+    }
+    
     private static class CMN_trayItemCreate extends TrayCommandMessage {
 
         public CMN_trayItemCreate(double passkey) {
@@ -435,6 +452,10 @@ public final class NativeTray implements INativeTray {
     
     private static class CMN_menuItemCreate extends TrayCommandMessage {
 
+        public CMN_menuItemCreate(double passkey) {
+            super(passkey);
+        }
+
         @Override
         public Object run(Object[] args) throws Exception {
             int menuKey = (Integer) args[0];
@@ -452,14 +473,14 @@ public final class NativeTray implements INativeTray {
             }
         }
         
-        private static NativeMenuItem createMenuItem(NativeTrayContainer ntc, final int key, int menuKey, final String text, final boolean enabled, final boolean selected, MenuItemType type) {
+        private NativeMenuItem createMenuItem(NativeTrayContainer ntc, final int key, int menuKey, final String text, final boolean enabled, final boolean selected, MenuItemType type) {
             final int typeCode = getTypeCode(type);
             final Menu menu = ntc.getTrayMenu(menuKey);
             return syncReturn(new RunnableReturn<NativeMenuItem>() {
 
                 @Override
                 protected NativeMenuItem createReturn() throws Exception {
-                    MenuItem mi = new MenuItem(menu, typeCode);
+                    final MenuItem mi = new MenuItem(menu, typeCode);
                     if (typeCode != SWT.SEPARATOR) {
                         if (text != null) mi.setText(text);
                         mi.setEnabled(enabled);
@@ -467,6 +488,14 @@ public final class NativeTray implements INativeTray {
                     if (typeCode == SWT.RADIO || typeCode == SWT.CHECK) {
                         mi.setSelection(selected);
                     }
+                    mi.addListener(SWT.Selection, new Listener() {
+
+                        @Override
+                        public void handleEvent(Event event) {
+                            asyncExec(new CMJ_menuItemChanged(PASSKEY), key, mi.getSelection());
+                        }
+                        
+                    });
                     return new NativeMenuItem(key, mi);
                 }
                 
@@ -640,7 +669,7 @@ public final class NativeTray implements INativeTray {
 
     @Override
     public int createMenuItem(int menuKey, String text, boolean enabled, boolean selected, MenuItemType type) {
-        return (Integer) syncExec(new CMN_menuItemCreate(), menuKey, text, enabled, selected, type);
+        return (Integer) syncExec(new CMN_menuItemCreate(PASSKEY), menuKey, text, enabled, selected, type);
     }
 
 //    @Override

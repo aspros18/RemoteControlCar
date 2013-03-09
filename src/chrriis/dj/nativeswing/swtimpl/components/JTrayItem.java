@@ -3,56 +3,10 @@ package chrriis.dj.nativeswing.swtimpl.components;
 import static chrriis.dj.nativeswing.swtimpl.components.JTray.NATIVE_TRAY;
 import static chrriis.dj.nativeswing.swtimpl.components.JTray.getTrayContainer;
 import java.awt.image.RenderedImage;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-abstract class JTrayObject {
-    
-    abstract void checkState();
-    
-}
-
-class TrayObjectList<T> extends ArrayList<T> {
-
-    private final JTrayObject OWNER;
-    
-    public TrayObjectList(JTrayObject owner) {
-        OWNER = owner;
-    }
-
-    private void checkState() {
-        if (OWNER != null) OWNER.checkState();
-    }
-    
-    @Override
-    public boolean add(T e) {
-        checkState();
-        return super.add(e);
-    }
-
-    @Override
-    public void add(int index, T element) {
-        checkState();
-        super.add(index, element);
-    }
-
-    @Override
-    public boolean addAll(Collection<? extends T> c) {
-        checkState();
-        return super.addAll(c);
-    }
-
-    @Override
-    public boolean addAll(int index, Collection<? extends T> c) {
-        checkState();
-        return super.addAll(index, c);
-    }
-    
-}
-
-public class JTrayItem extends JTrayObject {
+public class JTrayItem extends JTrayListenerObject {
 
     private final int KEY;
     
@@ -60,7 +14,7 @@ public class JTrayItem extends JTrayObject {
     private byte[] imageData;
     private boolean visible, disposed;
     
-    private final List<TrayItemMouseListener> MOUSE_LISTENERS = Collections.synchronizedList(new TrayObjectList<TrayItemMouseListener>(this));
+    private final List<TrayItemMouseListener> MOUSE_LISTENERS = Collections.synchronizedList(new JTrayListenerList<TrayItemMouseListener>(this));
     
     JTrayItem(int key, String tooltip, byte[] imageData) {
         this.KEY = key;

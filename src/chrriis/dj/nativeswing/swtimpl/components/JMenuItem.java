@@ -5,7 +5,7 @@ import java.util.List;
 
 public class JMenuItem<T extends JMenuItem> extends JMenuBaseItem {
 
-    private final List<MenuItemActionListener<T>> ACTION_LISTENERS = Collections.synchronizedList(new TrayObjectList<MenuItemActionListener<T>>(this));
+    private final List<MenuItemActionListener<T>> ACTION_LISTENERS = Collections.synchronizedList(new JTrayListenerList<MenuItemActionListener<T>>(this));
     
     private String text;
     

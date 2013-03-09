@@ -2,7 +2,7 @@ package chrriis.dj.nativeswing.swtimpl.components;
 
 import static chrriis.dj.nativeswing.swtimpl.components.JTray.NATIVE_TRAY;
 
-abstract class JMenuBaseItem extends JTrayObject {
+class JMenuBaseItem extends JTrayObject {
 
     private final JTrayMenu PARENT;
     

@@ -1,6 +1,6 @@
 package chrriis.dj.nativeswing.swtimpl.components;
 
-public class JMenuSelectionItem extends JMenuItem<JMenuSelectionItem> {
+public class JMenuSelectionItem extends JMenuActiveItem<MenuItemSelectionListener> {
 
     private boolean selected;
     

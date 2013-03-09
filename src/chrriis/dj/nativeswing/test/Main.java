@@ -7,8 +7,8 @@ import chrriis.dj.nativeswing.swtimpl.components.JMenuItem;
 import chrriis.dj.nativeswing.swtimpl.components.JMenuSeparator;
 import chrriis.dj.nativeswing.swtimpl.components.JTrayItem;
 import chrriis.dj.nativeswing.swtimpl.components.JTrayMenu;
-import chrriis.dj.nativeswing.swtimpl.components.MenuItemActionEvent;
-import chrriis.dj.nativeswing.swtimpl.components.MenuItemActionListener;
+import chrriis.dj.nativeswing.swtimpl.components.TrayActionEvent;
+import chrriis.dj.nativeswing.swtimpl.components.MenuItemSelectionListener;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseEvent;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseListener;
 import chrriis.dj.nativeswing.swtimpl.components.TrayMessageType;
@@ -53,16 +53,16 @@ public class Main {
                 final JMenuItem menuItem1 = menu1.addMenuItem("It works!");
                 menu2.addMenuItem("Menu2", false);
                 final JMenuSeparator separator2 = menu2.addMenuSeparator();
-                final JMenuItem menuItem2 = menu2.addMenuCheckItem("Is it OK?");
+                final JMenuSelectionItem menuItem2 = menu2.addMenuCheckItem("Is it OK?");
                 menu2.addMenuSeparator();
                 final JMenuSelectionItem radio1 = menu2.addMenuRadioItem("One", true);
                 final JMenuSelectionItem radio2 = menu2.addMenuRadioItem("Two");
                 
                 // menu item event test
-                MenuItemActionListener<JMenuSelectionItem> ml = new MenuItemActionListener<JMenuSelectionItem>() {
+                MenuItemSelectionListener ml = new MenuItemSelectionListener() {
 
                     @Override
-                    public void onAction(MenuItemActionEvent<JMenuSelectionItem> e) {
+                    public void onSelection(TrayActionEvent<JMenuSelectionItem> e) {
                         System.out.println("radio" + (e.getComponent() == radio1 ? '1' : '2') + " has been " + (e.getComponent().isSelected() ? "" : "un") + "selected.");
                     }
                     

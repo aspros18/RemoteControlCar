@@ -1,7 +1,7 @@
 package chrriis.dj.nativeswing.swtimpl.components;
 
-public interface MenuItemActionListener<T extends JMenuItem> {
+public interface MenuItemActionListener {
     
-    public void onAction(MenuItemActionEvent<T> e);
+    public void onAction(TrayActionEvent<JMenuItem> e);
     
 }

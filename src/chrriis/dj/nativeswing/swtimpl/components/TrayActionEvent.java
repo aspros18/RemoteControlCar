@@ -1,6 +1,6 @@
 package chrriis.dj.nativeswing.swtimpl.components;
 
-class TrayActionEvent<T> {
+public class TrayActionEvent<T> {
     
     private final T COMPONENT;
     

@@ -4,10 +4,55 @@ import static chrriis.dj.nativeswing.swtimpl.components.JTray.NATIVE_TRAY;
 import static chrriis.dj.nativeswing.swtimpl.components.JTray.getTrayContainer;
 import java.awt.image.RenderedImage;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class JTrayItem {
+abstract class JTrayObject {
+    
+    abstract void checkState();
+    
+}
+
+class TrayObjectList<T> extends ArrayList<T> {
+
+    private final JTrayObject OWNER;
+    
+    public TrayObjectList(JTrayObject owner) {
+        OWNER = owner;
+    }
+
+    private void checkState() {
+        if (OWNER != null) OWNER.checkState();
+    }
+    
+    @Override
+    public boolean add(T e) {
+        checkState();
+        return super.add(e);
+    }
+
+    @Override
+    public void add(int index, T element) {
+        checkState();
+        super.add(index, element);
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends T> c) {
+        checkState();
+        return super.addAll(c);
+    }
+
+    @Override
+    public boolean addAll(int index, Collection<? extends T> c) {
+        checkState();
+        return super.addAll(index, c);
+    }
+    
+}
+
+public class JTrayItem extends JTrayObject {
 
     private final int KEY;
     
@@ -15,7 +60,7 @@ public class JTrayItem {
     private byte[] imageData;
     private boolean visible, disposed;
     
-    private final List<TrayItemMouseListener> MOUSE_LISTENERS = Collections.synchronizedList(new ArrayList<TrayItemMouseListener>());
+    private final List<TrayItemMouseListener> MOUSE_LISTENERS = Collections.synchronizedList(new TrayObjectList<TrayItemMouseListener>(this));
     
     JTrayItem(int key, String tooltip, byte[] imageData) {
         this.KEY = key;
@@ -39,7 +84,6 @@ public class JTrayItem {
     }
     
     public void addMouseListener(TrayItemMouseListener l) {
-        checkState();
         MOUSE_LISTENERS.add(l);
     }
     
@@ -118,7 +162,8 @@ public class JTrayItem {
         }
     }
     
-    private void checkState() {
+    @Override
+    void checkState() {
         if (disposed) throw new IllegalStateException("Tray item is disposed");
     }
     

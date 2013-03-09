@@ -2,7 +2,7 @@ package chrriis.dj.nativeswing.swtimpl.components;
 
 import static chrriis.dj.nativeswing.swtimpl.components.JTray.NATIVE_TRAY;
 
-abstract class JMenuBaseItem {
+abstract class JMenuBaseItem extends JTrayObject {
 
     private final int KEY;
     
@@ -33,7 +33,8 @@ abstract class JMenuBaseItem {
         disposed = true;
     }
     
-    protected void checkState() {
+    @Override
+    void checkState() {
         if (PARENT.isDisposed()) throw new IllegalStateException("Parent menu is disposed");
         if (disposed) throw new IllegalStateException("Menu item is disposed");
     }

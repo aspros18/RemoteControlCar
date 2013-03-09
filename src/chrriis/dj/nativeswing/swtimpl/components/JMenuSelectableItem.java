@@ -1,6 +1,6 @@
 package chrriis.dj.nativeswing.swtimpl.components;
 
-abstract class JMenuSelectableItem extends JMenuItem {
+abstract class JMenuSelectableItem<T extends JMenuSelectableItem> extends JMenuItem<T> {
 
     private boolean selected;
     

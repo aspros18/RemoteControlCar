@@ -1,7 +1,12 @@
 package chrriis.dj.nativeswing.swtimpl.components;
 
-public class JMenuItem extends JMenuBaseItem {
+import java.util.Collections;
+import java.util.List;
 
+public class JMenuItem<T extends JMenuItem> extends JMenuBaseItem {
+
+    private final List<MenuItemActionListener<T>> ACTION_LISTENERS = Collections.synchronizedList(new TrayObjectList<MenuItemActionListener<T>>(this));
+    
     private String text;
     
     private boolean enabled;
@@ -12,6 +17,18 @@ public class JMenuItem extends JMenuBaseItem {
         this.enabled = enabled;
     }
 
+    public List<MenuItemActionListener<T>> getActionListeners() {
+        return ACTION_LISTENERS;
+    }
+    
+    public void addActionListener(MenuItemActionListener<T> l) {
+        ACTION_LISTENERS.add(l);
+    }
+    
+    public void removeActionListener(MenuItemActionListener<T> l) {
+        ACTION_LISTENERS.remove(l);
+    }
+    
     public String getText() {
         return text;
     }

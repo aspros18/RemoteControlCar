@@ -3,9 +3,12 @@ package chrriis.dj.nativeswing.test;
 import chrriis.dj.nativeswing.swtimpl.components.JTray;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JMenuItem;
+import chrriis.dj.nativeswing.swtimpl.components.JMenuRadioItem;
 import chrriis.dj.nativeswing.swtimpl.components.JMenuSeparator;
 import chrriis.dj.nativeswing.swtimpl.components.JTrayItem;
 import chrriis.dj.nativeswing.swtimpl.components.JTrayMenu;
+import chrriis.dj.nativeswing.swtimpl.components.MenuItemActionEvent;
+import chrriis.dj.nativeswing.swtimpl.components.MenuItemActionListener;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseEvent;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseListener;
 import chrriis.dj.nativeswing.swtimpl.components.TrayMessageType;
@@ -52,11 +55,21 @@ public class Main {
                 final JMenuSeparator separator2 = menu2.addMenuSeparator();
                 final JMenuItem menuItem2 = menu2.addMenuCheckItem("Is it OK?");
                 menu2.addMenuSeparator();
-                menu2.addMenuRadioItem("One", true);
-                menu2.addMenuRadioItem("Two");
+                final JMenuRadioItem radio1 = menu2.addMenuRadioItem("One", true);
+                final JMenuRadioItem radio2 = menu2.addMenuRadioItem("Two");
+                
+                // menu item event test
+                MenuItemActionListener<JMenuRadioItem> ml = new MenuItemActionListener<JMenuRadioItem>() {
+
+                    @Override
+                    public void onSelected(MenuItemActionEvent<JMenuRadioItem> e) {
+                        System.out.println("radio" + (e.getComponent() == radio1 ? '1' : '2') + " has been " + (e.getComponent().isSelected() ? "" : "un") + "selected.");
+                    }
+                    
+                };
                 
                 // tray item event test
-                TrayItemMouseListener l = new TrayItemMouseListener() {
+                TrayItemMouseListener tl = new TrayItemMouseListener() {
 
                     @Override
                     public void onClick(TrayItemMouseEvent e) {
@@ -89,8 +102,8 @@ public class Main {
                     }
 
                 };
-                item1.addMouseListener(l);
-                item2.addMouseListener(l);
+                item1.addMouseListener(tl);
+                item2.addMouseListener(tl);
             }
             
         });

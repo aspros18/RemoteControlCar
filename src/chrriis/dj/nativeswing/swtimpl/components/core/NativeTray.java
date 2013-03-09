@@ -606,6 +606,48 @@ public final class NativeTray implements INativeTray {
         
     }
     
+    private static class CMN_menuItemSetText extends TrayCommandMessage {
+
+        @Override
+        public Object run(Object[] args) throws Exception {
+            final int key = (Integer) args[0];
+            final String text = (String) args[1];
+            final MenuItem item = getNativeTrayContainer().getMenuItem(key);
+            if (item == null) return null;
+            getDisplay().syncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    item.setText(text);
+                }
+                
+            });
+            return null;
+        }
+        
+    }
+    
+    private static class CMN_menuItemSetEnabled extends TrayCommandMessage {
+
+        @Override
+        public Object run(Object[] args) throws Exception {
+            final int key = (Integer) args[0];
+            final boolean enabled = (Boolean) args[1];
+            final MenuItem item = getNativeTrayContainer().getMenuItem(key);
+            if (item == null) return null;
+            getDisplay().syncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    item.setEnabled(enabled);
+                }
+                
+            });
+            return null;
+        }
+        
+    }
+    
     private static class CMN_trayItemDispose extends TrayCommandMessage {
 
         @Override
@@ -769,12 +811,12 @@ public final class NativeTray implements INativeTray {
 
     @Override
     public void setMenuItemText(int menuItemKey, String text) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        asyncExec(new CMN_menuItemSetText(), menuItemKey, text);
     }
 
     @Override
     public void setMenuItemEnabled(int menuItemKey, boolean enabled) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        asyncExec(new CMN_menuItemSetEnabled(), menuItemKey, enabled);
     }
 
     @Override

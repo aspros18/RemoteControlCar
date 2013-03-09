@@ -2,41 +2,30 @@ package chrriis.dj.nativeswing.swtimpl.components;
 
 import static chrriis.dj.nativeswing.swtimpl.components.JTray.NATIVE_TRAY;
 
-abstract class JMenuBaseItem extends JTrayListenerObject {
+abstract class JMenuBaseItem extends JTrayObject {
 
-    private final int KEY;
-    
     private final JTrayMenu PARENT;
     
-    private boolean disposed = false;
-    
     JMenuBaseItem(JTrayMenu parent, int key) {
-        KEY = key;
+        super(key);
         PARENT = parent;
-    }
-
-    int getKey() {
-        return KEY;
     }
 
     public JTrayMenu getParent() {
         return PARENT;
     }
-
-    public boolean isDisposed() {
-        return disposed;
-    }
     
+    @Override
     public void dispose() {
-        if (disposed) return;
-        NATIVE_TRAY.disposeMenuItem(KEY);
-        disposed = true;
+        if (isDisposed()) return;
+        NATIVE_TRAY.disposeMenuItem(getKey());
+        super.dispose();
     }
     
     @Override
     void checkState() {
         if (PARENT.isDisposed()) throw new IllegalStateException("Parent menu is disposed");
-        if (disposed) throw new IllegalStateException("Menu item is disposed");
+        if (isDisposed()) throw new IllegalStateException("Menu item is disposed");
     }
     
 }

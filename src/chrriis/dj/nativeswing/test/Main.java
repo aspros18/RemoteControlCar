@@ -84,7 +84,7 @@ public class Main {
                             
                             // show message test
                             boolean switched = menu1.getTrayItem() != item1;
-                            e.getComponent().showMessage("Exit", "Click to close the application.", switched ? TrayMessageType.WARNING : TrayMessageType.INFO, new Runnable() {
+                            e.getComponent().showMessage("Exit", (switched ? "WARNING! " : "") + "Click to close the application.", switched ? TrayMessageType.WARNING : TrayMessageType.INFO, new Runnable() {
 
                                 @Override
                                 public void run() {

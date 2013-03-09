@@ -3,17 +3,11 @@ package chrriis.dj.nativeswing.swtimpl.components;
 import java.util.ArrayList;
 import java.util.Collection;
 
-abstract class JTrayListenerObject {
-    
-    abstract void checkState();
-    
-}
-
 class JTrayListenerList<T> extends ArrayList<T> {
 
-    private final JTrayListenerObject OWNER;
+    private final JTrayObject OWNER;
     
-    public JTrayListenerList(JTrayListenerObject owner) {
+    public JTrayListenerList(JTrayObject owner) {
         OWNER = owner;
     }
 

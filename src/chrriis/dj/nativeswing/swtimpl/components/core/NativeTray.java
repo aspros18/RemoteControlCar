@@ -362,6 +362,14 @@ public final class NativeTray implements INativeTray {
                     ToolTip oldTip = item.getToolTip();
                     if (oldTip != null) oldTip.dispose();
                     item.setToolTip(tip);
+                    item.addListener(SWT.Dispose, new Listener() {
+
+                        @Override
+                        public void handleEvent(Event event) {
+                            tip.dispose();
+                        }
+                        
+                    });
                     tip.setVisible(true);
                 }
                 

@@ -6,27 +6,20 @@ import java.awt.image.RenderedImage;
 import java.util.Collections;
 import java.util.List;
 
-public class JTrayItem extends JTrayListenerObject {
+public class JTrayItem extends JTrayObject {
 
-    private final int KEY;
-    
     private String tooltip;
     private byte[] imageData;
-    private boolean visible, disposed;
+    private boolean visible;
     
     private final List<TrayItemMouseListener> MOUSE_LISTENERS = Collections.synchronizedList(new JTrayListenerList<TrayItemMouseListener>(this));
     
     JTrayItem(int key, String tooltip, byte[] imageData) {
-        this.KEY = key;
+        super(key);
         this.tooltip = tooltip;
         this.imageData = imageData;
         this.visible = imageData != null;
-        this.disposed = false;
         getTrayContainer().addTrayItem(this);
-    }
-
-    int getKey() {
-        return KEY;
     }
     
     public JTrayMenu getTrayMenu() {
@@ -60,20 +53,20 @@ public class JTrayItem extends JTrayListenerObject {
     public void setImage(byte[] imageData) {
         checkState();
         if (imageData == null) throw new NullPointerException("Image can't be null");
-        NATIVE_TRAY.setTrayItemImage(KEY, imageData);
+        NATIVE_TRAY.setTrayItemImage(getKey(), imageData);
         this.imageData = imageData;
     }
 
     public void setTooltip(String text) {
         checkState();
-        NATIVE_TRAY.setTrayItemTooltip(KEY, text);
+        NATIVE_TRAY.setTrayItemTooltip(getKey(), text);
         this.tooltip = text;
     }
 
     public void setVisible(boolean visible) {
         checkState();
         if (visible && imageData == null) throw new NullPointerException("Tray item can't be visible without image");
-        NATIVE_TRAY.setTrayItemVisible(KEY, visible);
+        NATIVE_TRAY.setTrayItemVisible(getKey(), visible);
         this.visible = visible;
     }
 
@@ -92,22 +85,19 @@ public class JTrayItem extends JTrayListenerObject {
         if (type == null) type = TrayMessageType.INFO;
         int msgKey = -1;
         if (callback != null) msgKey = getTrayContainer().addMessageCallback(callback);
-        NATIVE_TRAY.showMessage(KEY, msgKey, title, message, type);
+        NATIVE_TRAY.showMessage(getKey(), msgKey, title, message, type);
     }
     
-    public boolean isDisposed() {
-        return disposed;
-    }
-    
+    @Override
     public void dispose() {
         dispose(true);
     }
     
     void dispose(boolean outer) {
-        if (disposed) return;
-        NATIVE_TRAY.disposeTrayItem(KEY);
+        if (isDisposed()) return;
+        NATIVE_TRAY.disposeTrayItem(getKey());
         if (outer) getTrayContainer().removeTrayItem(this);
-        disposed = true;
+        super.dispose();
         visible = false;
         tooltip = null;
         imageData = null;
@@ -118,7 +108,7 @@ public class JTrayItem extends JTrayListenerObject {
     
     @Override
     void checkState() {
-        if (disposed) throw new IllegalStateException("Tray item is disposed");
+        if (isDisposed()) throw new IllegalStateException("Tray item is disposed");
     }
     
 }

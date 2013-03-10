@@ -501,10 +501,17 @@ public final class NativeTray implements INativeTray {
 
         @Override
         public Object run(Object[] args) throws Exception {
-            final int menuKey = (Integer) args[0];
-            final Integer itemKey = (Integer) args[1];
-            final NativeTrayBaseMenu nativeMenu = getNativeTrayContainer().getNativeTrayMenu(menuKey);
-            setTrayMenu((NativeTrayMenu) nativeMenu, itemKey);
+            int menuKey = (Integer) args[0];
+            Integer itemKey = (Integer) args[1];
+            boolean submenu = (Boolean) args[2];
+            if (!submenu) {
+                NativeTrayBaseMenu nativeMenu = getNativeTrayContainer().getNativeTrayMenu(menuKey);
+                setTrayMenu((NativeTrayMenu) nativeMenu, itemKey);
+            }
+            else {
+                NativeTrayBaseMenu nativeMenu = getNativeTrayContainer().getNativeTrayMenu(itemKey);
+                setTraySubmenu(menuKey, (NativeTraySubmenu) nativeMenu);
+            }
             return null;
         }
         
@@ -834,7 +841,7 @@ public final class NativeTray implements INativeTray {
 
     @Override
     public void setTrayMenu(int menuKey, Integer itemKey) {
-        asyncExec(new CMN_trayMenuSet(), menuKey, itemKey);
+        asyncExec(new CMN_trayMenuSet(), menuKey, itemKey, false);
     }
 
     @Override
@@ -849,7 +856,7 @@ public final class NativeTray implements INativeTray {
 
     @Override
     public void setTraySubmenu(int dropDownMenuItemKey, Integer submenuKey) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        asyncExec(new CMN_trayMenuSet(), dropDownMenuItemKey, submenuKey, true);
     }
     
     @Override

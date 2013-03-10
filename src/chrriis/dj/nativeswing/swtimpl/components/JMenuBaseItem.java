@@ -9,6 +9,7 @@ class JMenuBaseItem extends JTrayObject {
     JMenuBaseItem(JTrayBaseMenu parent, int key) {
         super(key);
         PARENT = parent;
+        getTrayContainer().getMenuItems().add(this);
     }
     
     JTrayBaseMenu getParent() {
@@ -17,8 +18,13 @@ class JMenuBaseItem extends JTrayObject {
     
     @Override
     public boolean dispose() {
+        return dispose(true);
+    }
+    
+    boolean dispose(boolean outer) {
         if (!super.dispose()) return false;
         NATIVE_TRAY.disposeMenuItem(getKey());
+        if (outer) getTrayContainer().getMenuItems().remove(this);
         return true;
     }
     

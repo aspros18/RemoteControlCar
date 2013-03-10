@@ -18,9 +18,7 @@ public final class JTrayContainer {
     
     private final Set<JTrayMenu> TRAY_MENUS = Collections.synchronizedSet(new HashSet<JTrayMenu>());
     
-    private final Set<JMenuItem> MENU_ITEMS = Collections.synchronizedSet(new HashSet<JMenuItem>());
-    
-    private final Set<JMenuSelectionItem> MENU_SELECTION_ITEMS = Collections.synchronizedSet(new HashSet<JMenuSelectionItem>());
+    private final Set<JMenuBaseItem> MENU_ITEMS = Collections.synchronizedSet(new HashSet<JMenuBaseItem>());
     
     private final Map<Integer, Runnable> MSG_CALLBACKS = Collections.synchronizedMap(new HashMap<Integer, Runnable>());
     
@@ -52,12 +50,8 @@ public final class JTrayContainer {
         return TRAY_MENUS;
     }
 
-    Set<JMenuItem> getMenuItems() {
+    Set<JMenuBaseItem> getMenuItems() {
         return MENU_ITEMS;
-    }
-
-    Set<JMenuSelectionItem> getMenuSelectionItems() {
-        return MENU_SELECTION_ITEMS;
     }
     
     JTrayMenu findTrayMenu(JTrayItem item) {
@@ -78,11 +72,6 @@ public final class JTrayContainer {
                 items.add(item);
             }
         }
-        for (JMenuBaseItem item : MENU_SELECTION_ITEMS) {
-            if (menu == item.getParent()) {
-                items.add(item);
-            }
-        }
         return items;
     }
     
@@ -97,15 +86,10 @@ public final class JTrayContainer {
         }
         TRAY_MENUS.clear();
         
-        for (JMenuItem item : MENU_ITEMS) {
+        for (JMenuBaseItem item : MENU_ITEMS) {
             item.dispose(false);
         }
         MENU_ITEMS.clear();
-        
-        for (JMenuSelectionItem item : MENU_SELECTION_ITEMS) {
-            item.dispose(false);
-        }
-        MENU_SELECTION_ITEMS.clear();
         
         MSG_CALLBACKS.clear();
     }
@@ -114,12 +98,8 @@ public final class JTrayContainer {
         return getTrayObject(TRAY_ITEMS, key);
     }
 
-    public JMenuItem getMenuItem(int key) {
+    public JMenuBaseItem getMenuItem(int key) {
         return getTrayObject(MENU_ITEMS, key);
-    }
-    
-    public JMenuSelectionItem getMenuSelectionItem(int key) {
-        return getTrayObject(MENU_SELECTION_ITEMS, key);
     }
     
     private <T extends JTrayObject> T getTrayObject(Set<T> s, int key) {

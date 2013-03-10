@@ -7,7 +7,6 @@ public class JMenuItem extends JMenuActiveItem<MenuItemActionListener> {
 
     JMenuItem(JTrayBaseMenu parent, int key, String text, boolean enabled) {
         super(parent, key, text, enabled);
-        getTrayContainer().getMenuItems().add(this);
     }
 
     public void setImage(RenderedImage img) {
@@ -17,17 +16,6 @@ public class JMenuItem extends JMenuActiveItem<MenuItemActionListener> {
     public void setImage(byte[] imageData) {
         checkState();
         NATIVE_TRAY.setMenuItemImage(getKey(), imageData);
-    }
-    
-    @Override
-    public boolean dispose() {
-        return dispose(true);
-    }
-    
-    boolean dispose(boolean outer) {
-        if (!super.dispose()) return false;
-        if (outer) getTrayContainer().getMenuItems().remove(this);
-        return true;
     }
     
 }

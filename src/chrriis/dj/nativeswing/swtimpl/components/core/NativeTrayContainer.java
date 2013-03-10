@@ -22,7 +22,7 @@ final class NativeTrayContainer {
 
     private final Set<NativeTrayItem> TRAY_ITEMS = Collections.synchronizedSet(new HashSet<NativeTrayItem>());
 
-    private final Set<NativeTrayMenu> TRAY_MENUS = Collections.synchronizedSet(new HashSet<NativeTrayMenu>());
+    private final Set<NativeTrayBaseMenu> TRAY_MENUS = Collections.synchronizedSet(new HashSet<NativeTrayBaseMenu>());
     
     private final Set<NativeMenuItem> MENU_ITEMS = Collections.synchronizedSet(new HashSet<NativeMenuItem>());
 
@@ -59,7 +59,7 @@ final class NativeTrayContainer {
         return TRAY_ITEMS;
     }
 
-    public Set<NativeTrayMenu> getNativeTrayMenus() {
+    public Set<NativeTrayBaseMenu> getNativeTrayMenus() {
         return TRAY_MENUS;
     }
 
@@ -101,7 +101,7 @@ final class NativeTrayContainer {
     }
 
     public Menu getTrayMenu(int key) {
-        NativeTrayMenu o = getNativeTrayMenu(key);
+        NativeTrayBaseMenu o = getNativeTrayMenu(key);
         return o == null ? null : o.getMenu();
     }
     
@@ -114,7 +114,7 @@ final class NativeTrayContainer {
         return getNativeTrayObject(TRAY_ITEMS, key);
     }
     
-    public NativeTrayMenu getNativeTrayMenu(int key) {
+    public NativeTrayBaseMenu getNativeTrayMenu(int key) {
         return getNativeTrayObject(TRAY_MENUS, key);
     }
     
@@ -154,7 +154,7 @@ final class NativeTrayContainer {
             item.getTrayItem().dispose();
         }
         TRAY_ITEMS.clear();
-        for (NativeTrayMenu menu : TRAY_MENUS) {
+        for (NativeTrayBaseMenu menu : TRAY_MENUS) {
             menu.getMenu().dispose();
         }
         TRAY_MENUS.clear();

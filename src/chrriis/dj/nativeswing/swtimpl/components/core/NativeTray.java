@@ -428,9 +428,10 @@ public final class NativeTray implements INativeTray {
         @Override
         public Object run(Object[] args) throws Exception {
             Integer itemKey = (Integer) args[0];
-            boolean active = (Boolean) args[1];
+            boolean submenu = (Boolean) args[1];
+            Boolean active = (Boolean) args[2];
             NativeTrayContainer ntc = getNativeTrayContainer();
-            final Set<NativeTrayMenu> menus = ntc.getNativeTrayMenus();
+            final Set<NativeTrayBaseMenu> menus = ntc.getNativeTrayMenus();
             synchronized (menus) {
                 int menuKey = ntc.getNextTrayMenuKey();
                 NativeTrayMenu menu = createNativeTrayMenu(ntc, menuKey, active);
@@ -452,6 +453,18 @@ public final class NativeTray implements INativeTray {
             });
         }
         
+        private static NativeTraySubmenu createNativeTraySubMenu(final NativeTrayContainer ntc, final int menuKey) {
+            return syncReturn(new RunnableReturn<NativeTraySubmenu>() {
+
+                @Override
+                protected NativeTraySubmenu createReturn() throws Exception {
+                    Menu menu = new Menu(ntc.getShell(), SWT.DROP_DOWN);
+                    return new NativeTraySubmenu(menu, menuKey);
+                }
+                
+            });
+        }
+        
     }
     
     private static class CMN_trayMenuSet extends TrayCommandMessage {
@@ -460,8 +473,8 @@ public final class NativeTray implements INativeTray {
         public Object run(Object[] args) throws Exception {
             final int menuKey = (Integer) args[0];
             final Integer itemKey = (Integer) args[1];
-            final NativeTrayMenu nativeMenu = getNativeTrayContainer().getNativeTrayMenu(menuKey);
-            setTrayMenu(nativeMenu, itemKey);
+            final NativeTrayBaseMenu nativeMenu = getNativeTrayContainer().getNativeTrayMenu(menuKey);
+            setTrayMenu((NativeTrayMenu) nativeMenu, itemKey);
             return null;
         }
         
@@ -473,7 +486,7 @@ public final class NativeTray implements INativeTray {
         public Object run(Object[] args) throws Exception {
             final int key = (Integer) args[0];
             final boolean active = (Boolean) args[1];
-            final NativeTrayMenu nativeMenu = getNativeTrayContainer().getNativeTrayMenu(key);
+            final NativeTrayMenu nativeMenu = (NativeTrayMenu) getNativeTrayContainer().getNativeTrayMenu(key);
             if (nativeMenu == null) return null;
             if (nativeMenu.isActive() != active) return null;
             getDisplay().syncExec(new Runnable() {
@@ -485,30 +498,6 @@ public final class NativeTray implements INativeTray {
                 
             });
             return null;
-        }
-        
-    }
-    
-    private static class CMN_traySubMenuCreate extends TrayCommandMessage {
-
-        @Override
-        public Object run(Object[] args) throws Exception {
-            Integer menuItemKey = (Integer) args[0];
-            NativeTrayContainer ntc = getNativeTrayContainer();
-            // TODO
-            return -1;
-        }
-        
-        private static NativeTraySubmenu createNativeTraySubmenu(final NativeTrayContainer ntc, final int menuKey) {
-            return syncReturn(new RunnableReturn<NativeTraySubmenu>() {
-
-                @Override
-                protected NativeTraySubmenu createReturn() throws Exception {
-                    Menu menu = new Menu(ntc.getShell(), SWT.DROP_DOWN);
-                    return new NativeTraySubmenu(menu, menuKey);
-                }
-                
-            });
         }
         
     }
@@ -715,7 +704,7 @@ public final class NativeTray implements INativeTray {
                 @Override
                 public void run() {
                     NativeTrayContainer ntc = getNativeTrayContainer();
-                    NativeTrayMenu menu = ntc.getNativeTrayMenu(key);
+                    NativeTrayBaseMenu menu = ntc.getNativeTrayMenu(key);
                     if (menu != null) {
                         menu.getMenu().dispose();
                         ntc.getNativeTrayMenus().remove(menu);
@@ -810,7 +799,7 @@ public final class NativeTray implements INativeTray {
 
     @Override
     public int createTrayMenu(Integer itemKey, boolean active) {
-        return (Integer) syncExec(new CMN_trayMenuCreate(), itemKey, active);
+        return (Integer) syncExec(new CMN_trayMenuCreate(), itemKey, false, active);
     }
 
     @Override
@@ -825,7 +814,7 @@ public final class NativeTray implements INativeTray {
 
     @Override
     public int createTraySubmenu(Integer dropDownMenuItemKey) {
-        return (Integer) syncExec(new CMN_traySubMenuCreate(), dropDownMenuItemKey);
+        return (Integer) syncExec(new CMN_trayMenuCreate(), dropDownMenuItemKey, true, null);
     }
 
     @Override

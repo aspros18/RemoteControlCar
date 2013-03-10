@@ -17,6 +17,8 @@ public interface INativeTray {
         SELECTION
     }
     
+    public boolean isSupported();
+    
     public int createTrayItem(byte[] imageData, String tooltip);
 
     public void setTrayItemTooltip(int trayItemKey, String text);

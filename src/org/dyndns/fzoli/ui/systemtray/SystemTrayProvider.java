@@ -52,7 +52,7 @@ public final class SystemTrayProvider {
      */
     private static boolean isSwtTrayAvailable() {
         try {
-            Class.forName("org.eclipse.swt.widgets.Tray", false, SystemTrayProvider.class.getClassLoader());
+            Class.forName("chrriis.dj.nativeswing.swtimpl.components.JTray", false, SystemTrayProvider.class.getClassLoader());
             return true;
         }
         catch (ClassNotFoundException ex) {

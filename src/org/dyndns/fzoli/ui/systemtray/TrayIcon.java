@@ -1,6 +1,6 @@
 package org.dyndns.fzoli.ui.systemtray;
 
-import java.io.InputStream;
+import java.awt.image.BufferedImage;
 
 /**
  * Rendszerikon.
@@ -58,7 +58,7 @@ public interface TrayIcon extends Visibility {
     /**
      * Az ikon képének beállítása.
      */
-    public void setImage(InputStream in);
+    public void setImage(BufferedImage img);
     
     /**
      * Tool tip üzenet beállítása.

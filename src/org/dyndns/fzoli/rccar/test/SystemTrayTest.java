@@ -18,7 +18,7 @@ public class SystemTrayTest {
     public static void main(String[] args) {
         final SystemTray tray = SystemTrayProvider.getSystemTray();
         final TrayIcon icon = tray.addTrayIcon();
-        icon.setImage(R.class.getResourceAsStream("icon.png"));
+        icon.setImage(R.getIconImage());
         icon.setToolTip("Tooltip");
         final PopupMenu menu = icon.createPopupMenu();
         menu.addMenuItem("Test1", new Runnable() {

@@ -79,6 +79,8 @@ public final class NativeTray implements INativeTray {
         }
         
         protected static <T> T syncReturn(RunnableReturn<T> r) {
+            Display display = getDisplay();
+            if (display == null) return null;
             getDisplay().syncExec(r);
             return r.getReturn();
         }
@@ -91,15 +93,29 @@ public final class NativeTray implements INativeTray {
             return SWTNativeInterface.getInstance().getDisplay();
         }
         
-        protected static void setTrayItemImage(final TrayItem item, final byte[] imageData) {
+        protected static Tray getSystemTray() {
+            return syncReturn(new RunnableReturn<Tray>() {
+
+                @Override
+                protected Tray createReturn() throws Exception {
+                    return getDisplay().getSystemTray();
+                }
+
+            });
+        }
+        
+        protected static void setTrayItemImage(final NativeTrayItem nativeItem, final byte[] imageData) {
             getDisplay().syncExec(new Runnable() {
 
                 @Override
                 public void run() {
+                    boolean visible = nativeItem.isVisible();
+                    TrayItem item = nativeItem.getTrayItem();
                     Image prevImg = item.getImage();
                     NativeTrayContainer ntc = getNativeTrayContainer();
                     item.setImage(ntc.createImage(getDisplay(), imageData));
                     ntc.removeImage(prevImg);
+                    item.setVisible(visible);
                 }
 
             });
@@ -111,17 +127,6 @@ public final class NativeTray implements INativeTray {
                 @Override
                 public void run() {
                     item.setToolTipText(text);
-                }
-
-            });
-        }
-        
-        protected static void setTrayItemVisible(final TrayItem item, final boolean visible) {
-            getDisplay().syncExec(new Runnable() {
-
-                @Override
-                public void run() {
-                    item.setVisible(visible);
                 }
 
             });
@@ -243,6 +248,15 @@ public final class NativeTray implements INativeTray {
         
     }
     
+    private static class CMN_trayGetSupported extends TrayCommandMessage {
+
+        @Override
+        public Object run(Object[] args) throws Exception {
+            return getSystemTray() != null;
+        }
+        
+    }
+    
     private static class CMN_trayItemCreate extends TrayCommandMessage {
 
         public CMN_trayItemCreate(double passkey) {
@@ -262,23 +276,11 @@ public final class NativeTray implements INativeTray {
                 items.add(nativeItem);
                 
                 TrayItem item = nativeItem.getTrayItem();
-                if (imageData != null) setTrayItemImage(item, imageData);
+                if (imageData != null) setTrayItemImage(nativeItem, imageData);
                 setTrayItemTooltip(item, tooltip);
-                if (imageData != null) setTrayItemVisible(item, true);
                 
                 return key;
             }
-        }
-
-        private static Tray getSystemTray() {
-            return syncReturn(new RunnableReturn<Tray>() {
-
-                @Override
-                protected Tray createReturn() throws Exception {
-                    return getDisplay().getSystemTray();
-                }
-
-            });
         }
 
         private NativeTrayItem createTrayItem(final int key) {
@@ -327,7 +329,7 @@ public final class NativeTray implements INativeTray {
         public Object run(Object[] args) throws Exception {
             int key = (Integer) args[0];
             byte[] imageData = (byte[]) args[1];
-            TrayItem item = getNativeTrayContainer().getTrayItem(key);
+            NativeTrayItem item = getNativeTrayContainer().getNativeTrayItem(key);
             if (item != null) setTrayItemImage(item, imageData);
             return null;
         }
@@ -351,13 +353,21 @@ public final class NativeTray implements INativeTray {
 
         @Override
         public Object run(Object[] args) throws Exception {
-            int key = (Integer) args[0];
-            boolean visible = (Boolean) args[1];
-            TrayItem item = getNativeTrayContainer().getTrayItem(key);
-            if (item != null) setTrayItemVisible(item, visible);
+            final int key = (Integer) args[0];
+            final boolean visible = (Boolean) args[1];
+            final NativeTrayItem item = getNativeTrayContainer().getNativeTrayItem(key);
+            if (item == null) return null;
+            getDisplay().syncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    item.setVisible(visible);
+                }
+
+            });
             return null;
         }
-
+        
     }
 
     private static class CMN_trayItemShowMessage extends TrayCommandMessage {
@@ -775,6 +785,16 @@ public final class NativeTray implements INativeTray {
     private static Object syncExec(CommandMessage msg, Object... args) {
         if (NativeInterface.isOpen()) return msg.syncExec(true, args);
         return null;
+    }
+
+    @Override
+    public boolean isSupported() {
+        try {
+            return (Boolean) syncExec(new CMN_trayGetSupported());
+        }
+        catch (Exception ex) {
+            return false;
+        }
     }
 
     @Override

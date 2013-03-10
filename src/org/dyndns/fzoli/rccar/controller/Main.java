@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.controller;
 
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
+import chrriis.dj.nativeswing.swtimpl.components.core.NativeTray;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,7 +27,6 @@ import org.dyndns.fzoli.rccar.ui.UncaughtExceptionHandler;
 import org.dyndns.fzoli.ui.LanguageChooserFrame;
 import org.dyndns.fzoli.ui.OptionPane;
 import org.dyndns.fzoli.ui.OptionPane.PasswordData;
-import org.dyndns.fzoli.ui.SwtDisplayProvider;
 import static org.dyndns.fzoli.ui.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.ui.systemtray.SystemTrayIcon;
 import static org.dyndns.fzoli.ui.systemtray.SystemTrayIcon.showMessage;
@@ -183,6 +183,7 @@ public class Main {
     private static void initNativeInterface() {
         try {
             if (new File("no_swt").isFile()) throw new Exception(); // ha az SWT tiltva van, natív interfész kihagyása
+            NativeInterface.getConfiguration().addNativeClassPathReferenceClasses(NativeTray.class); // SWT System Tray kiegészítés regisztrálása
             NativeInterface.open(); // a natív böngésző támogatás igényli
         }
         catch (Throwable t) {
@@ -201,7 +202,6 @@ public class Main {
         }
         if (isNativeSwingAvailable()) {
             NativeInterface.close();
-            SwtDisplayProvider.dispose();
         }
         SystemTrayIcon.dispose();
         System.exit(0);
@@ -223,7 +223,7 @@ public class Main {
     private static void setSystemTrayIcon(boolean setIcon) {
         if (SystemTrayIcon.init(!isNativeSwingAvailable()) && SystemTrayIcon.isSupported()) {
             // az ikon beállítása
-            if (setIcon) SystemTrayIcon.setIcon(getString("app_name"), R.getIconImageStream());
+            if (setIcon) SystemTrayIcon.setIcon(getString("app_name"), R.getIconImage());
             
             // nyelv választó opció hozzáadása
             String lngText = getString("language");
@@ -490,27 +490,29 @@ public class Main {
             System.err.println(getString("msg_need_gui") + LS + getString("msg_exit"));
             System.exit(1); // hibakóddal lép ki
         }
-        initNativeInterface(); // natív interfész inicializálása a webböngészőhöz
-        setSystemTrayIcon(true); // rendszerikon létrehozása
-        if (!Config.STORE_FILE.exists()) { // ha a konfig fájl nem létezik
-            try {
-                if (!Config.ROOT.exists()) Config.ROOT.mkdirs(); // könyvtár létrehozása, ha nem létezik még
-                Config.STORE_FILE.createNewFile(); // megpróbálja létrehozni
-                Config.STORE_FILE.delete(); // és törli, ha sikerült a létrehozás
-            }
-            catch (IOException ex) { // ha nem lehet létrehozni a fájlt: jogosultság gond
-                showSettingError(getString("msg_need_dir_permission") + LS + getString("msg_exit"));
-                System.exit(1);
-            }
-        }
-        if (Config.STORE_FILE.exists() && (!Config.STORE_FILE.canRead() || !Config.STORE_FILE.canWrite())) {
-            showSettingError(getString("msg_need_cfg_permission") + LS + getString("msg_exit"));
-            System.exit(1);
-        }
+        initNativeInterface(); // natív interfész inicializálása a webböngészőhöz és a rendszerikonhoz
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
+                setSystemTrayIcon(true); // rendszerikon létrehozása
+                
+                if (!Config.STORE_FILE.exists()) { // ha a konfig fájl nem létezik
+                    try {
+                        if (!Config.ROOT.exists()) Config.ROOT.mkdirs(); // könyvtár létrehozása, ha nem létezik még
+                        Config.STORE_FILE.createNewFile(); // megpróbálja létrehozni
+                        Config.STORE_FILE.delete(); // és törli, ha sikerült a létrehozás
+                    }
+                    catch (IOException ex) { // ha nem lehet létrehozni a fájlt: jogosultság gond
+                        showSettingError(getString("msg_need_dir_permission") + LS + getString("msg_exit"));
+                        System.exit(1);
+                    }
+                }
+                if (Config.STORE_FILE.exists() && (!Config.STORE_FILE.canRead() || !Config.STORE_FILE.canWrite())) {
+                    showSettingError(getString("msg_need_cfg_permission") + LS + getString("msg_exit"));
+                    System.exit(1);
+                }
+                
                 // előinicializálom az ablakokat, míg a nyitóképernyő fent van,
                 // hogy később ne menjen el ezzel a hasznos idő
                 // a nyelvkiválasztó ablakkal kezdem, mivel a konfig-szerkesztő ablak használja a referenciáját

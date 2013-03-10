@@ -15,6 +15,8 @@ public final class JTray {
     
     private static boolean disposed = false;
     
+    private static Boolean supported;
+    
     private static Timer exitPrevent;
     
     static {
@@ -30,6 +32,14 @@ public final class JTray {
     
     static JTrayContainer getTrayContainer() {
         return JTrayContainer.getInstance(PASSKEY);
+    }
+    
+    public static boolean isSupported() {
+        return supported == null ? supported = NATIVE_TRAY.isSupported() : supported;
+    }
+    
+    public static boolean isDisposed() {
+        return disposed;
     }
     
     public static JTrayItem createTrayItem() {
@@ -48,7 +58,8 @@ public final class JTray {
     }
 
     public static void dispose() {
-        if (disposed) return;
+        if (isDisposed()) return;
+        if (!isSupported()) return;
         NATIVE_TRAY.dispose();
         getTrayContainer().dispose();
         disposed = true;
@@ -58,8 +69,9 @@ public final class JTray {
         }
     }
 
-    private static void checkState() {
-        if (disposed) throw new IllegalStateException("Tray is disposed");
+    static void checkState() {
+        if (!isSupported()) throw new IllegalStateException("Tray is not supported");
+        if (isDisposed()) throw new IllegalStateException("Tray is disposed");
     }
     
 }

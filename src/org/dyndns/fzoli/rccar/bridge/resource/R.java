@@ -26,7 +26,7 @@ public class R {
     /**
      * Egy hidat ábrázoló kép folyamát adja vissza.
      */
-    public static InputStream getBridgeImageStream() {
+    private static InputStream getBridgeImageStream() {
         return R.class.getResourceAsStream("bridge.png");
     }
     

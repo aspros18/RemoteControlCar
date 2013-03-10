@@ -101,7 +101,7 @@ public class Main {
         if (CONFIG.isHidden()) return;
         if (SystemTrayIcon.init() && SystemTrayIcon.isSupported()) {
             // az ikon beállítása
-            SystemTrayIcon.setIcon(getString("app_name"), R.getBridgeImageStream());
+            SystemTrayIcon.setIcon(getString("app_name"), R.getBridgeImage());
             
             // kapcsolatjelzés beállító opció hozzáadása
             SystemTrayIcon.addCheckboxMenuItem(VAL_CONN_LOG, ConnectionAlert.isLogEnabled(), new Runnable() {

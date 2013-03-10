@@ -29,13 +29,6 @@ public class R {
     }
     
     /**
-     * A program ikonjának folyamát adja vissza.
-     */
-    public static InputStream getIconImageStream() {
-        return getStream("icon.png");
-    }
-    
-    /**
      * Indikátor animációt készít.
      * @throws RuntimeException ha a forrás fájl nem található
      */

@@ -19,12 +19,17 @@ public class JTrayMenu extends JTrayBaseMenu {
     }
     
     public JTrayMenu(JTrayItem trayItem, boolean active) {
-        super(NATIVE_TRAY.createTrayMenu(trayItem == null ? null : trayItem.getKey(), active));
+        super(createTrayMenu(trayItem, active));
         this.active = active;
         applyTrayItem(trayItem);
         getTrayContainer().getTrayMenus().add(this);
     }
 
+    private static int createTrayMenu(JTrayItem trayItem, boolean active) {
+        JTray.checkState();
+        return NATIVE_TRAY.createTrayMenu(trayItem == null ? null : trayItem.getKey(), active);
+    }
+    
     private JTrayMenu applyTrayItem(JTrayItem trayItem) {
         if (trayItem == null) {
             this.trayItem = null;

@@ -1,7 +1,7 @@
 package org.dyndns.fzoli.ui.systemtray;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.InputStream;
 import org.dyndns.fzoli.ui.UIUtil;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 
@@ -55,7 +55,7 @@ public class SystemTrayIcon {
                     menu = icon.createPopupMenu();
                     return true;
                 }
-                awt = awt || !new File("swt_tray").isFile();
+                awt = awt || new File("no_swt").isFile();
                 tray = SystemTrayProvider.getSystemTray(true, awt);
                 if (tray.isSupported()) {
                     icon = tray.addTrayIcon();
@@ -148,10 +148,11 @@ public class SystemTrayIcon {
      * @param img az a kép, ami megjelenik az ikonban
      * @throws NullPointerException ha a kép null
      */
-    public static void setIcon(String tooltip, InputStream in) {
+    public static void setIcon(String tooltip, BufferedImage img) {
         if (isSupported()) {
             icon.setToolTip(tooltip);
-            icon.setImage(in);
+            icon.setImage(img);
+            icon.setVisible(true);
         }
     }
     

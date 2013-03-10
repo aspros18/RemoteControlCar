@@ -228,7 +228,7 @@ public class Main {
             // nyelv választó opció hozzáadása
             String lngText = getString("language");
             if (!lngText.equalsIgnoreCase("language")) lngText += " (language)";
-            SystemTrayIcon.addMenuItem(lngText, new Runnable() {
+            SystemTrayIcon.addMenuItem(lngText, R.getImage("languages.png"), new Runnable() {
 
                 @Override
                 public void run() {
@@ -241,10 +241,10 @@ public class Main {
             SystemTrayIcon.addMenuSeparator();
 
             // kapcsolatbeállítás opció hozzáadása
-            SystemTrayIcon.addMenuItem(getString("connection_settings"), CALLBACK_SETTING);
+            SystemTrayIcon.addMenuItem(getString("connection_settings"), R.getImage("preferences.png"), CALLBACK_SETTING);
 
             // újrakapcsolódás opció hozzáadása
-            SystemTrayIcon.addMenuItem(getString("reconnect"), new Runnable() {
+            SystemTrayIcon.addMenuItem(getString("reconnect"), R.getImage("connect.png"), new Runnable() {
 
                 @Override
                 public void run() {
@@ -257,7 +257,7 @@ public class Main {
             SystemTrayIcon.addMenuSeparator();
 
             // szerző opció hozzáadása
-            SystemTrayIcon.addMenuItem(getString("author"), new Runnable() {
+            SystemTrayIcon.addMenuItem(getString("author"), R.getImage("question.png"), new Runnable() {
 
                 @Override
                 public void run() {
@@ -267,7 +267,7 @@ public class Main {
             });
             
             // kilépés opció hozzáadása
-            SystemTrayIcon.addMenuItem(getString("exit"), CALLBACK_EXIT);
+            SystemTrayIcon.addMenuItem(getString("exit"), R.getImage("exit.png"), CALLBACK_EXIT);
         }
     }
     

@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.image.BufferedImage;
 
 /**
  * Az alapértelmezett AWT PopupMenu adaptere.
@@ -48,6 +49,11 @@ class AwtPopupMenu implements PopupMenu {
 
     @Override
     public void addMenuItem(String text, final Runnable r) {
+        addMenuItem(text, null, r);
+    }
+    
+    @Override
+    public void addMenuItem(String text, BufferedImage img, final Runnable r) {
         java.awt.MenuItem item = new MenuItem(text);
         if (r != null) {
             item.addActionListener(new ActionListener() {

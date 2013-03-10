@@ -1,5 +1,7 @@
 package org.dyndns.fzoli.ui.systemtray;
 
+import java.awt.image.BufferedImage;
+
 /**
  * A rendszerikon felugró menüje.
  * @author zoli
@@ -17,6 +19,14 @@ public interface PopupMenu extends Visibility {
      * @param r callback, ami akkor hívódik meg, ha a menüelemre kattintanak.
      */
     public void addMenuItem(String text, final Runnable r);
+    
+    /**
+     * Menüelem hozzáadása a menühöz.
+     * @param text megjelenő szöveg
+     * @param img SWT menü esetén megjelenő kép
+     * @param r callback, ami akkor hívódik meg, ha a menüelemre kattintanak.
+     */
+    public void addMenuItem(String text, BufferedImage img, final Runnable r);
     
     /**
      * Checkbox menüelem hozzáadása a menühöz.

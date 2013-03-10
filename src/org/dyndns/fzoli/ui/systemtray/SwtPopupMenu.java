@@ -7,6 +7,7 @@ import chrriis.dj.nativeswing.swtimpl.components.JTrayMenu;
 import chrriis.dj.nativeswing.swtimpl.components.MenuItemActionListener;
 import chrriis.dj.nativeswing.swtimpl.components.MenuItemSelectionListener;
 import chrriis.dj.nativeswing.swtimpl.components.TrayActionEvent;
+import java.awt.image.BufferedImage;
 
 /**
  * Az SWT PopupMenu adaptere.
@@ -42,7 +43,13 @@ class SwtPopupMenu implements PopupMenu {
     
     @Override
     public void addMenuItem(String text, final Runnable r) {
+        addMenuItem(text, null, r);
+    }
+    
+    @Override
+    public void addMenuItem(String text, BufferedImage img, final Runnable r) {
         JMenuItem mi = MENU.addMenuItem(text);
+        if (img != null) mi.setImage(img);
         if (r == null) return;
         mi.addActionListener(new MenuItemActionListener() {
 

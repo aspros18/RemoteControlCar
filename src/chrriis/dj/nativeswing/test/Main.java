@@ -90,13 +90,8 @@ public class Main {
                 menuItem2.addActionListener(ml);
                 MenuItemActionListener al = new MenuItemActionListener() {
 
-                    int i = 0;
-                    
                     @Override
                     public void onAction(TrayActionEvent<JMenuItem> e) {
-                        boolean enabled = ++i % 2 == 0;
-                        dropItem1.setEnabled(enabled);
-                        menu2.setActive(enabled);
                         System.out.println(e.getComponent() == subitem1 ? "Subitem works too." : "Yes, it works!");
                     }
 
@@ -114,7 +109,9 @@ public class Main {
                 
                 // tray item event test
                 TrayItemMouseListener tl = new TrayItemMouseListener() {
-
+                    
+                    int i = 0;
+                    
                     @Override
                     public void onClick(TrayItemMouseEvent e) {
                         // switch menus
@@ -142,6 +139,11 @@ public class Main {
                             menuItem1.dispose();
                             separator2.dispose();
                             menuItem2.dispose();
+                            
+                            // enable-disable test
+                            boolean enabled = ++i % 2 == 0;
+                            dropItem1.setEnabled(enabled);
+                            menu2.setActive(enabled);
                         }
                     }
 

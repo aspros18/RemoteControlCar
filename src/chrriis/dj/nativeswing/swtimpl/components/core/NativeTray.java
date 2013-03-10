@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolTip;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
@@ -435,65 +436,33 @@ public final class NativeTray implements INativeTray {
             synchronized (menus) {
                 int menuKey = ntc.getNextTrayMenuKey();
                 NativeTrayBaseMenu menu;
-                if (!submenu) menu = createNativeTrayMenu(ntc, menuKey, active);
-                else menu = createNativeTraySubMenu(ntc, menuKey);
+                if (!submenu) menu = createNativeTrayMenu(ntc.getShell(), menuKey, active);
+                else menu = createNativeTraySubMenu(ntc.getShell(), ntc.getNativeMenuItem(itemKey), menuKey);
                 menus.add(menu);
                 if (!submenu) setTrayMenu((NativeTrayMenu) menu, itemKey);
-                else setTraySubmenu(itemKey, (NativeTraySubmenu) menu);
                 return menuKey;
             }
         }
         
-        private static void setTraySubmenu(Integer itemKey, final NativeTraySubmenu nativeMenu) {
-            final NativeTrayContainer ntc = getNativeTrayContainer();
-            final NativeMenuItem nativeItem = ntc.getNativeMenuItem(itemKey);
-            if (nativeItem == null) return;
-            final MenuItem menuItem = nativeItem.getMenuItem();
-            getDisplay().syncExec(new Runnable() {
-
-                @Override
-                public void run() {
-                    Menu oldSubmenu = menuItem.getMenu();
-                    boolean visible = false;
-                    if (oldSubmenu != null) {
-                        visible = oldSubmenu.isVisible();
-                        oldSubmenu.setVisible(false);
-                    }
-                    menuItem.setMenu(null);
-                    if (nativeMenu != null) {
-                        Menu menu = nativeMenu.getMenu();
-                        MenuItem oldItem = menu.getParentItem();
-                        if (oldItem != null) {
-                            System.out.println("removed");
-                            oldItem.setMenu(null);
-                        }
-                        System.out.println("menu change");
-                        menuItem.setMenu(menu);
-                        if (visible) nativeMenu.getMenu().setVisible(true);
-                    }
-                }
-                
-            });
-        }
-        
-        private static NativeTrayMenu createNativeTrayMenu(final NativeTrayContainer ntc, final int menuKey, final boolean active) {
+        private static NativeTrayMenu createNativeTrayMenu(final Shell shell, final int menuKey, final boolean active) {
             return syncReturn(new RunnableReturn<NativeTrayMenu>() {
 
                 @Override
                 protected NativeTrayMenu createReturn() throws Exception {
-                    Menu menu = new Menu(ntc.getShell(), SWT.POP_UP);
+                    Menu menu = new Menu(shell, SWT.POP_UP);
                     return new NativeTrayMenu(menu, menuKey, active);
                 }
                 
             });
         }
         
-        private static NativeTraySubmenu createNativeTraySubMenu(final NativeTrayContainer ntc, final int menuKey) {
+        private static NativeTraySubmenu createNativeTraySubMenu(final Shell shell, final NativeMenuItem nativeItem, final int menuKey) {
             return syncReturn(new RunnableReturn<NativeTraySubmenu>() {
 
                 @Override
                 protected NativeTraySubmenu createReturn() throws Exception {
-                    Menu menu = new Menu(ntc.getShell(), SWT.DROP_DOWN);
+                    Menu menu = new Menu(shell, SWT.DROP_DOWN);
+                    nativeItem.getMenuItem().setMenu(menu);
                     return new NativeTraySubmenu(menu, menuKey);
                 }
                 

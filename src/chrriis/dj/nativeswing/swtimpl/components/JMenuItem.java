@@ -15,6 +15,7 @@ public class JMenuItem extends JMenuActiveItem<MenuItemActionListener> {
     }
     
     public void setImage(byte[] imageData) {
+        checkState();
         NATIVE_TRAY.setMenuItemImage(getKey(), imageData);
     }
     

@@ -11,6 +11,10 @@ class JMenuBaseItem extends JTrayObject {
         PARENT = parent;
     }
     
+    JTrayBaseMenu getParent() {
+        return PARENT;
+    }
+    
     @Override
     public boolean dispose() {
         if (!super.dispose()) return false;

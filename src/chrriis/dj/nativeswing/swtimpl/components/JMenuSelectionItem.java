@@ -18,6 +18,7 @@ public class JMenuSelectionItem extends JMenuActiveItem<MenuItemSelectionListene
     }
 
     public void setSelected(boolean selected) {
+        checkState();
         this.selected = selected;
         NATIVE_TRAY.setMenuItemProperty(getKey(), MenuItemProperty.SELECTION, selected);
     }

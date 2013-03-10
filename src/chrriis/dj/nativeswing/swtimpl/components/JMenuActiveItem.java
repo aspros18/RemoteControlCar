@@ -37,6 +37,7 @@ class JMenuActiveItem<T> extends JMenuBaseItem {
 
     public void setText(String text) {
         if (text == null) throw new IllegalArgumentException("Menu item text can not be null");
+        checkState();
         NATIVE_TRAY.setMenuItemText(getKey(), text);
         this.text = text;
     }
@@ -46,6 +47,7 @@ class JMenuActiveItem<T> extends JMenuBaseItem {
     }
 
     public void setEnabled(boolean enabled) {
+        checkState();
         NATIVE_TRAY.setMenuItemProperty(getKey(), MenuItemProperty.ENABLED, enabled);
         this.enabled = enabled;
     }

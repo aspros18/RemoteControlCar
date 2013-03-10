@@ -70,6 +70,22 @@ public final class JTrayContainer {
         return null;
     }
     
+    Set<JMenuBaseItem> findMenuItems(JTrayBaseMenu menu) {
+        Set<JMenuBaseItem> items = new HashSet<JMenuBaseItem>();
+        if (menu == null) return items;
+        for (JMenuBaseItem item : MENU_ITEMS) {
+            if (menu == item.getParent()) {
+                items.add(item);
+            }
+        }
+        for (JMenuBaseItem item : MENU_SELECTION_ITEMS) {
+            if (menu == item.getParent()) {
+                items.add(item);
+            }
+        }
+        return items;
+    }
+    
     void dispose() {
         for (JTrayItem item : TRAY_ITEMS) {
             item.dispose(false);

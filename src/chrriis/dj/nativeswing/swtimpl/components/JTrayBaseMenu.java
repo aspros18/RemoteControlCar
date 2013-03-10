@@ -2,6 +2,7 @@ package chrriis.dj.nativeswing.swtimpl.components;
 
 import static chrriis.dj.nativeswing.swtimpl.components.JTray.NATIVE_TRAY;
 import chrriis.dj.nativeswing.swtimpl.components.internal.INativeTray.MenuItemType;
+import java.util.Set;
 
 class JTrayBaseMenu extends JTrayObject {
 
@@ -71,6 +72,10 @@ class JTrayBaseMenu extends JTrayObject {
     @Override
     boolean dispose() {
         if (!super.dispose()) return false;
+        Set<JMenuBaseItem> items = getTrayContainer().findMenuItems(this);
+        for (JMenuBaseItem item : items) {
+            item.dispose();
+        }
         NATIVE_TRAY.disposeTrayMenu(getKey());
         return true;
     }

@@ -13,10 +13,10 @@ class NativeTrayItem implements NativeTrayObject {
     
     private boolean visible;
     
-    public NativeTrayItem(TrayItem trayItem, int key, boolean visible) {
+    public NativeTrayItem(TrayItem trayItem, int key) {
         TRAY_ITEM = trayItem;
         KEY = key;
-        setVisible(visible);
+        setVisible(true);
     }
 
     @Override
@@ -30,12 +30,15 @@ class NativeTrayItem implements NativeTrayObject {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
-        TRAY_ITEM.setVisible(isVisible());
+        boolean v = isVisible();
+        if (v != TRAY_ITEM.getVisible()) {
+            TRAY_ITEM.setVisible(v);
+        }
     }
 
     public void setImage(Image img) {
         TRAY_ITEM.setImage(img);
-        TRAY_ITEM.setVisible(visible);
+        setVisible(true);
     }
     
     public TrayItem getTrayItem() {

@@ -152,7 +152,6 @@ public class SystemTrayIcon {
         if (isSupported()) {
             icon.setToolTip(tooltip);
             icon.setImage(img);
-            icon.setVisible(true);
         }
     }
     

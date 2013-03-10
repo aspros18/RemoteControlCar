@@ -259,20 +259,20 @@ public final class NativeTray implements INativeTray {
             final Set<NativeTrayItem> items = ntc.getNativeTrayItems();
             synchronized (items) {
                 int key = ntc.getNextTrayItemKey();
-                NativeTrayItem nativeItem = createTrayItem(key, tooltip, imageData != null);
+                NativeTrayItem nativeItem = createTrayItem(key, tooltip);
                 items.add(nativeItem);
                 setTrayItemImage(nativeItem, imageData);
                 return key;
             }
         }
 
-        private NativeTrayItem createTrayItem(final int key, final String tooltip, final boolean visible) {
+        private NativeTrayItem createTrayItem(final int key, final String tooltip) {
             return syncReturn(new RunnableReturn<NativeTrayItem>() {
 
                 @Override
                 protected NativeTrayItem createReturn() throws Exception {
                     final TrayItem item = new TrayItem(getSystemTray(), SWT.NONE);
-                    final NativeTrayItem nativeItem = new NativeTrayItem(item, key, visible);
+                    final NativeTrayItem nativeItem = new NativeTrayItem(item, key);
                     if (tooltip != null) item.setToolTipText(tooltip);
                     item.addListener(SWT.MenuDetect, new Listener() {
 

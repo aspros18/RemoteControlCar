@@ -102,6 +102,7 @@ class AwtTrayIcon implements TrayIcon {
     @Override
     public void setImage(BufferedImage img) {
         icon.setImage(img);
+        setVisible(true);
     }
 
     @Override

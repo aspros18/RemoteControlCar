@@ -54,6 +54,7 @@ public class JTrayItem extends JTrayObject {
         if (imageData == null) throw new NullPointerException("Image can't be null");
         NATIVE_TRAY.setTrayItemImage(getKey(), imageData);
         this.imageData = imageData;
+        this.visible = true;
     }
 
     public void setTooltip(String text) {

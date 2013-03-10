@@ -493,6 +493,7 @@ public final class NativeTray implements INativeTray {
 
         @Override
         public Object run(Object[] args) throws Exception {
+            Integer menuItemKey = (Integer) args[0];
             NativeTrayContainer ntc = getNativeTrayContainer();
             // TODO
             return -1;
@@ -823,8 +824,8 @@ public final class NativeTray implements INativeTray {
     }
 
     @Override
-    public int createTraySubmenu() {
-        return (Integer) syncExec(new CMN_traySubMenuCreate());
+    public int createTraySubmenu(Integer dropDownMenuItemKey) {
+        return (Integer) syncExec(new CMN_traySubMenuCreate(), dropDownMenuItemKey);
     }
 
     @Override

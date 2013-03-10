@@ -110,19 +110,20 @@ final class NativeTrayContainer {
         return o == null ? null : o.getMenuItem();
     }
     
-    public NativeTrayItem getNativeTrayItem(int key) {
+    public NativeTrayItem getNativeTrayItem(Integer key) {
         return getNativeTrayObject(TRAY_ITEMS, key);
     }
     
-    public NativeTrayBaseMenu getNativeTrayMenu(int key) {
+    public NativeTrayBaseMenu getNativeTrayMenu(Integer key) {
         return getNativeTrayObject(TRAY_MENUS, key);
     }
     
-    public NativeMenuItem getNativeMenuItem(int key) {
+    public NativeMenuItem getNativeMenuItem(Integer key) {
         return getNativeTrayObject(MENU_ITEMS, key);
     }
     
-    private static <T extends NativeTrayObject> T getNativeTrayObject(Set<T> s, int key) {
+    private static <T extends NativeTrayObject> T getNativeTrayObject(Set<T> s, Integer key) {
+        if (key == null) return null;
         for (T obj : s) {
             if (obj.getKey() == key) return obj;
         }

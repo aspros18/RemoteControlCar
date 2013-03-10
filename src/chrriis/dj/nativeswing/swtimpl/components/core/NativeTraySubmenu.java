@@ -7,5 +7,5 @@ class NativeTraySubmenu extends NativeTrayBaseMenu {
     public NativeTraySubmenu(Menu menu, int key) {
         super(menu, key);
     }
-    
+
 }

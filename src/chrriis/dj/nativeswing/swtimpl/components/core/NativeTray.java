@@ -146,6 +146,33 @@ public final class NativeTray implements INativeTray {
             });
         }
         
+        protected static void setTraySubmenu(Integer itemKey, final NativeTraySubmenu nativeMenu) {
+            final NativeTrayContainer ntc = getNativeTrayContainer();
+            final NativeMenuItem nativeItem = ntc.getNativeMenuItem(itemKey);
+            if (nativeItem == null) return;
+            final MenuItem menuItem = nativeItem.getMenuItem();
+            getDisplay().syncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    Menu oldSubmenu = menuItem.getMenu();
+                    boolean visible = false;
+                    if (oldSubmenu != null) {
+                        visible = oldSubmenu.isVisible();
+                        oldSubmenu.setVisible(false);
+                    }
+                    if (nativeMenu == null) {
+                        menuItem.setMenu(null);
+                    }
+                    else {
+                        menuItem.setMenu(nativeMenu.getMenu());
+                        if (visible) nativeMenu.getMenu().setVisible(true);
+                    }
+                }
+                
+            });
+        }
+        
     }
 
     private static class CMJ_trayItemOnClick extends JTrayCommandMessage {
@@ -439,6 +466,7 @@ public final class NativeTray implements INativeTray {
                 else menu = createNativeTraySubMenu(ntc, menuKey);
                 menus.add(menu);
                 if (!submenu) setTrayMenu((NativeTrayMenu) menu, itemKey);
+                else setTraySubmenu(itemKey, (NativeTraySubmenu) menu);
                 return menuKey;
             }
         }

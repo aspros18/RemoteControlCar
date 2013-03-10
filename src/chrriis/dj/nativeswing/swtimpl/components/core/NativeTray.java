@@ -641,10 +641,10 @@ public final class NativeTray implements INativeTray {
                 public void run() {
                     switch (property) {
                         case ENABLED:
-                            item.setEnabled(value);
+                            if (item.isEnabled() != value) item.setEnabled(value);
                             break;
                         case SELECTION:
-                            item.setSelection(value);
+                            if (item.getSelection() != value) item.setSelection(value);
                     }
                 }
                 

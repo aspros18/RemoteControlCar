@@ -1,5 +1,8 @@
 package chrriis.dj.nativeswing.swtimpl.components;
 
+import static chrriis.dj.nativeswing.swtimpl.components.JTray.NATIVE_TRAY;
+import chrriis.dj.nativeswing.swtimpl.components.internal.INativeTray.MenuItemProperty;
+
 public class JMenuSelectionItem extends JMenuActiveItem<MenuItemSelectionListener> {
 
     private boolean selected;
@@ -15,7 +18,8 @@ public class JMenuSelectionItem extends JMenuActiveItem<MenuItemSelectionListene
     }
 
     public void setSelected(boolean selected) {
-        this.selected = selected; // TODO: rekurzió kivédése
+        this.selected = selected;
+        NATIVE_TRAY.setMenuItemProperty(getKey(), MenuItemProperty.SELECTION, selected);
     }
 
     @Override

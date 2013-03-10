@@ -56,7 +56,9 @@ public class Main {
                 
                 // menu item init test
                 menu1.addMenuItem("Menu1", false);
+                menu1.addMenuSeparator();
                 final JMenuDropDownItem dropItem1 = menu1.addMenuDropDownItem("Submenu");
+                final JTraySubmenu submenu1 = dropItem1.getSubmenu();
                 dropItem1.setImage(testImage3);
                 final JMenuSeparator separator1 = menu1.addMenuSeparator();
                 final JMenuItem menuItem1 = menu1.addMenuItem("Does it work?");
@@ -67,11 +69,9 @@ public class Main {
                 menu2.addMenuSeparator();
                 final JMenuSelectionItem radio1 = menu2.addMenuRadioItem("One", true);
                 final JMenuSelectionItem radio2 = menu2.addMenuRadioItem("Two");
-                
-                final JTraySubmenu submenu1 = new JTraySubmenu(dropItem1);
                 final JMenuItem subitem1 = submenu1.addMenuItem("Subitem 1");
                 final JMenuDropDownItem dropItem2 = submenu1.addMenuDropDownItem("Subitem 2");
-                final JTraySubmenu submenu2 = new JTraySubmenu(dropItem2);
+                final JTraySubmenu submenu2 = dropItem2.getSubmenu();
                 submenu2.addMenuItem("Nice submenu", false);
                 submenu2.addMenuSeparator();
                 final JMenuItem subitem2 = submenu2.addMenuItem("Dispose");
@@ -90,8 +90,13 @@ public class Main {
                 menuItem2.addActionListener(ml);
                 MenuItemActionListener al = new MenuItemActionListener() {
 
+                    int i = 0;
+                    
                     @Override
                     public void onAction(TrayActionEvent<JMenuItem> e) {
+                        boolean enabled = ++i % 2 == 0;
+                        dropItem1.setEnabled(enabled);
+                        menu2.setActive(enabled);
                         System.out.println(e.getComponent() == subitem1 ? "Subitem works too." : "Yes, it works!");
                     }
 

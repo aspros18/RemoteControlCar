@@ -130,7 +130,7 @@ public final class NativeTray implements INativeTray {
         protected static void setTrayMenu(final NativeTrayMenu nativeMenu, final Integer itemKey) {
             final NativeTrayContainer ntc = getNativeTrayContainer();
             if (nativeMenu == null) return;
-            if (NativeTrayContainer.equals(nativeMenu.getTrayItemKey(), itemKey)) return;
+            if (NativeTrayContainer.equals(nativeMenu.getParentKey(), itemKey)) return;
             getDisplay().syncExec(new Runnable() {
 
                 @Override
@@ -138,10 +138,10 @@ public final class NativeTray implements INativeTray {
                     if (itemKey != null) {
                         NativeTrayItem nativeItem = ntc.getNativeTrayItem(itemKey);
                         NativeTrayMenu replaced = nativeItem.getNativeTrayMenu();
-                        if (replaced != null) replaced.setTrayItemKey(null);
+                        if (replaced != null) replaced.setParentKey(null);
                         nativeItem.setNativeTrayMenu(nativeMenu);
                     }
-                    nativeMenu.setTrayItemKey(itemKey);
+                    nativeMenu.setParentKey(itemKey);
                 }
                 
             });
@@ -463,7 +463,7 @@ public final class NativeTray implements INativeTray {
                 protected NativeTraySubmenu createReturn() throws Exception {
                     Menu menu = new Menu(shell, SWT.DROP_DOWN);
                     nativeItem.getMenuItem().setMenu(menu);
-                    return new NativeTraySubmenu(menu, menuKey);
+                    return new NativeTraySubmenu(menu, nativeItem, menuKey);
                 }
                 
             });
@@ -490,9 +490,9 @@ public final class NativeTray implements INativeTray {
         public Object run(Object[] args) throws Exception {
             final int key = (Integer) args[0];
             final boolean active = (Boolean) args[1];
-            final NativeTrayMenu nativeMenu = (NativeTrayMenu) getNativeTrayContainer().getNativeTrayMenu(key);
+            final NativeTrayBaseMenu nativeMenu = getNativeTrayContainer().getNativeTrayMenu(key);
             if (nativeMenu == null) return null;
-            if (nativeMenu.isActive() != active) return null;
+            if (nativeMenu.isActive() == active) return null;
             getDisplay().syncExec(new Runnable() {
 
                 @Override

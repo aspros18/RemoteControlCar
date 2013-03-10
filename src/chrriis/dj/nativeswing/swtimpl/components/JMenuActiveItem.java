@@ -48,8 +48,12 @@ class JMenuActiveItem<T> extends JMenuBaseItem {
 
     public void setEnabled(boolean enabled) {
         checkState();
-        NATIVE_TRAY.setMenuItemProperty(getKey(), MenuItemProperty.ENABLED, enabled);
+        applyEnabled(enabled);
         this.enabled = enabled;
+    }
+    
+    protected void applyEnabled(boolean enabled) {
+        NATIVE_TRAY.setMenuItemProperty(getKey(), MenuItemProperty.ENABLED, enabled);
     }
     
 }

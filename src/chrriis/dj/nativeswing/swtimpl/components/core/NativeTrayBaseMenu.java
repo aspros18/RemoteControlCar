@@ -2,15 +2,18 @@ package chrriis.dj.nativeswing.swtimpl.components.core;
 
 import org.eclipse.swt.widgets.Menu;
 
-class NativeTrayBaseMenu implements NativeTrayObject {
+abstract class NativeTrayBaseMenu implements NativeTrayObject {
     
     private final int KEY;
     
     private final Menu MENU;
     
-    public NativeTrayBaseMenu(Menu menu, int key) {
-        KEY = key;
-        MENU = menu;
+    private boolean active;
+    
+    public NativeTrayBaseMenu(Menu menu, int key, boolean active) {
+        this.KEY = key;
+        this.MENU = menu;
+        this.active = active;
     }
     
     @Override
@@ -18,8 +21,19 @@ class NativeTrayBaseMenu implements NativeTrayObject {
         return KEY;
     }
     
+    public abstract Integer getParentKey();
+    
     public Menu getMenu() {
         return MENU;
+    }
+    
+    public boolean isActive() {
+        return active;
+    }
+    
+    public void setActive(boolean active) {
+        this.active = active;
+        if (!active) getMenu().setVisible(false);
     }
     
 }

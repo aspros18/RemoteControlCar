@@ -4,12 +4,15 @@ import static chrriis.dj.nativeswing.swtimpl.components.JTray.NATIVE_TRAY;
 
 public class JTraySubmenu extends JTrayBaseMenu {
 
-    public JTraySubmenu() {
-        this(null);
+    private final JMenuDropDownItem PARENT;
+    
+    JTraySubmenu(JMenuDropDownItem parent) {
+        super(NATIVE_TRAY.createTraySubmenu(parent.getKey()));
+        PARENT = parent;
     }
 
-    public JTraySubmenu(JMenuDropDownItem item) {
-        super(NATIVE_TRAY.createTraySubmenu(item.getKey()));
+    public JMenuDropDownItem getParent() {
+        return PARENT;
     }
 
 }

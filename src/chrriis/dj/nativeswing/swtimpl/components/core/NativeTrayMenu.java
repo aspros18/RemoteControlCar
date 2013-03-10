@@ -6,31 +6,20 @@ class NativeTrayMenu extends NativeTrayBaseMenu {
     
     private Integer trayItemKey;
     
-    private boolean active = true;
-    
     public NativeTrayMenu(Menu menu, int key, boolean active) {
-        super(menu, key);
-        this.active = active;
+        super(menu, key, active);
     }
-    
-    public Integer getTrayItemKey() {
+
+    @Override
+    public Integer getParentKey() {
         return trayItemKey;
     }
     
-    public void setTrayItemKey(Integer trayItemKey) {
+    public void setParentKey(Integer trayItemKey) {
         this.trayItemKey = trayItemKey;
         boolean visible = getMenu().isVisible();
         getMenu().setVisible(false);
         if (visible && trayItemKey != null) getMenu().setVisible(true);
-    }
-    
-    public boolean isActive() {
-        return active;
-    }
-    
-    public void setActive(boolean active) {
-        this.active = active;
-        if (!active) getMenu().setVisible(false);
     }
     
 }

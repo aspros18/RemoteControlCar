@@ -434,9 +434,11 @@ public final class NativeTray implements INativeTray {
             final Set<NativeTrayBaseMenu> menus = ntc.getNativeTrayMenus();
             synchronized (menus) {
                 int menuKey = ntc.getNextTrayMenuKey();
-                NativeTrayMenu menu = createNativeTrayMenu(ntc, menuKey, active);
+                NativeTrayBaseMenu menu;
+                if (!submenu) menu = createNativeTrayMenu(ntc, menuKey, active);
+                else menu = createNativeTraySubMenu(ntc, menuKey);
                 menus.add(menu);
-                setTrayMenu(menu, itemKey);
+                if (!submenu) setTrayMenu((NativeTrayMenu) menu, itemKey);
                 return menuKey;
             }
         }

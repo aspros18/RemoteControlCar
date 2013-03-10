@@ -56,7 +56,7 @@ public class Main {
                 
                 // menu item init test
                 menu1.addMenuItem("Menu1", false);
-                JMenuDropDownItem dropItem1 = menu1.addMenuDropDownItem("Submenu");
+                final JMenuDropDownItem dropItem1 = menu1.addMenuDropDownItem("Submenu");
                 dropItem1.setImage(testImage3);
                 final JMenuSeparator separator1 = menu1.addMenuSeparator();
                 final JMenuItem menuItem1 = menu1.addMenuItem("Does it work?");
@@ -70,9 +70,11 @@ public class Main {
                 
                 final JTraySubmenu submenu1 = new JTraySubmenu(dropItem1);
                 final JMenuItem subitem1 = submenu1.addMenuItem("Subitem 1");
-                JMenuDropDownItem dropItem2 = submenu1.addMenuDropDownItem("Subitem 2");
+                final JMenuDropDownItem dropItem2 = submenu1.addMenuDropDownItem("Subitem 2");
                 final JTraySubmenu submenu2 = new JTraySubmenu(dropItem2);
-                final JMenuItem subitem2 = submenu2.addMenuItem("Nice menu");
+                submenu2.addMenuItem("Nice submenu", false);
+                submenu2.addMenuSeparator();
+                final JMenuItem subitem2 = submenu2.addMenuItem("Dispose");
                 
                 // menu item event test
                 MenuItemSelectionListener ml = new MenuItemSelectionListener() {
@@ -95,6 +97,14 @@ public class Main {
                 };
                 menuItem1.addActionListener(al);
                 subitem1.addActionListener(al);
+                subitem2.addActionListener(new MenuItemActionListener() {
+
+                    @Override
+                    public void onAction(TrayActionEvent<JMenuItem> e) {
+                        JTray.dispose();
+                    }
+                    
+                });
                 
                 // tray item event test
                 TrayItemMouseListener tl = new TrayItemMouseListener() {

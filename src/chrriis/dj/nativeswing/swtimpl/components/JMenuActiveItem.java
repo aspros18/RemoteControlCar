@@ -19,15 +19,15 @@ class JMenuActiveItem<T> extends JMenuBaseItem {
         this.enabled = enabled;
     }
     
-    public List<T> getActionListeners() {
+    protected List<T> getActionListeners() {
         return LISTENERS;
     }
     
-    public void addActionListener(T l) {
+    protected void addActionListener(T l) {
         LISTENERS.add(l);
     }
     
-    public void removeActionListener(T l) {
+    protected void removeActionListener(T l) {
         LISTENERS.remove(l);
     }
     

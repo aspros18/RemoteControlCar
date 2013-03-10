@@ -60,6 +60,19 @@ class JTrayBaseMenu extends JTrayObject {
         return new JMenuSelectionItem(this, key, text, enabled, selected);
     }
     
+    public JMenuDropDownItem addMenuDropDownItem(String text) {
+        return addMenuDropDownItem(text, true);
+    }
+    
+    public JMenuDropDownItem addMenuDropDownItem(String text, boolean enabled) {
+        return addMenuDropDownItem(null, text, enabled);
+    }
+    
+    public JMenuDropDownItem addMenuDropDownItem(Integer index, String text, boolean enabled) {
+        int key = NATIVE_TRAY.createMenuItem(getKey(), index, text, enabled, false, MenuItemType.DROP_DOWN);
+        return new JMenuDropDownItem(this, key, text, enabled);
+    }
+    
     public JMenuSeparator addMenuSeparator() {
         return addMenuSeparator(null);
     }

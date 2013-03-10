@@ -585,6 +585,7 @@ public final class NativeTray implements INativeTray {
                 @Override
                 protected NativeMenuItem createReturn() throws Exception {
                     final boolean active = typeCode != SWT.SEPARATOR;
+                    final boolean dropDown = typeCode == SWT.CASCADE;
                     final boolean selectable = typeCode == SWT.RADIO || typeCode == SWT.CHECK;
                     final MenuItem mi = createMenuItem();
                     if (active) {
@@ -594,7 +595,7 @@ public final class NativeTray implements INativeTray {
                     if (selectable) {
                         mi.setSelection(selected);
                     }
-                    if (active) {
+                    if (active && !dropDown) {
                         mi.addListener(SWT.Selection, new Listener() {
 
                             @Override

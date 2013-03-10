@@ -446,7 +446,6 @@ public final class NativeTray implements INativeTray {
                 @Override
                 protected NativeTrayMenu createReturn() throws Exception {
                     Menu menu = new Menu(ntc.getShell(), SWT.POP_UP);
-                    // TODO: add type parameter in order to create SWT.DROP_DOWN menu too
                     return new NativeTrayMenu(menu, menuKey, active);
                 }
                 
@@ -486,6 +485,30 @@ public final class NativeTray implements INativeTray {
                 
             });
             return null;
+        }
+        
+    }
+    
+    private static class CMN_traySubMenuCreate extends TrayCommandMessage {
+
+        @Override
+        public Object run(Object[] args) throws Exception {
+            int itemKey = (Integer) args[0];
+            NativeTrayContainer ntc = getNativeTrayContainer();
+            // TODO
+            return -1;
+        }
+        
+        private static NativeTraySubmenu createNativeTraySubmenu(final NativeTrayContainer ntc, final int menuKey) {
+            return syncReturn(new RunnableReturn<NativeTraySubmenu>() {
+
+                @Override
+                protected NativeTraySubmenu createReturn() throws Exception {
+                    Menu menu = new Menu(ntc.getShell(), SWT.DROP_DOWN);
+                    return new NativeTraySubmenu(menu, menuKey);
+                }
+                
+            });
         }
         
     }
@@ -573,8 +596,8 @@ public final class NativeTray implements INativeTray {
                 case SEPARATOR:
                     typeCode = SWT.SEPARATOR;
                     break;
-//                case DROP_DOWN:
-//                    typeCode = SWT.CASCADE;
+                case DROP_DOWN:
+                    typeCode = SWT.CASCADE;
             }
             return typeCode;
         }
@@ -801,14 +824,19 @@ public final class NativeTray implements INativeTray {
     }
 
     @Override
+    public int createTraySubmenu(int itemKey) {
+        return (Integer) syncExec(new CMN_traySubMenuCreate(), itemKey);
+    }
+
+    @Override
+    public void setDropDownMenuItem(int dropDownMenuItemKey, int submenuKey) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    @Override
     public int createMenuItem(int menuKey, Integer index, String text, boolean enabled, boolean selected, MenuItemType type) {
         return (Integer) syncExec(new CMN_menuItemCreate(PASSKEY), menuKey, index, text, enabled, selected, type);
     }
-
-//    @Override
-//    public void setMenuItem(int menuItemKey, Integer menuKey) {
-//        throw new UnsupportedOperationException("Not supported yet.");
-//    }
 
     @Override
     public void setMenuItemImage(int menuItemKey, byte[] imageData) {

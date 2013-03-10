@@ -9,7 +9,7 @@ public interface INativeTray {
         RADIO,
         CHECK,
         SEPARATOR,
-//        DROP_DOWN
+        DROP_DOWN
     }
     
     public enum MenuItemProperty {
@@ -33,9 +33,11 @@ public interface INativeTray {
     
     public void setTrayMenuActive(int menuKey, boolean active);
     
-    public int createMenuItem(int menuKey, Integer index, String text, boolean enabled, boolean selected, MenuItemType type);
+    public int createTraySubmenu(int dropDownMenuItemKey);
     
-//    public void setMenuItem(int menuItemKey, Integer menuKey);
+    public void setDropDownMenuItem(int dropDownMenuItemKey, int submenuKey);
+    
+    public int createMenuItem(int menuKey, Integer index, String text, boolean enabled, boolean selected, MenuItemType type);
     
     public void setMenuItemImage(int menuItemKey, byte[] imageData);
     

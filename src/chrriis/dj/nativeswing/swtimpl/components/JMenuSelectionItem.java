@@ -7,7 +7,7 @@ public class JMenuSelectionItem extends JMenuActiveItem<MenuItemSelectionListene
 
     private boolean selected;
     
-    JMenuSelectionItem(JTrayMenu parent, int key, String text, boolean enabled, boolean selected) {
+    JMenuSelectionItem(JTrayBaseMenu parent, int key, String text, boolean enabled, boolean selected) {
         super(parent, key, text, enabled);
         this.selected = selected;
         getTrayContainer().getMenuSelectionItems().add(this);

@@ -5,7 +5,7 @@ import java.awt.image.RenderedImage;
 
 public class JMenuItem extends JMenuActiveItem<MenuItemActionListener> {
 
-    JMenuItem(JTrayMenu parent, int key, String text, boolean enabled) {
+    JMenuItem(JTrayBaseMenu parent, int key, String text, boolean enabled) {
         super(parent, key, text, enabled);
         getTrayContainer().getMenuItems().add(this);
     }

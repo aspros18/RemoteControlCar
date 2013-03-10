@@ -4,22 +4,18 @@ import static chrriis.dj.nativeswing.swtimpl.components.JTray.NATIVE_TRAY;
 
 class JMenuBaseItem extends JTrayObject {
 
-    private final JTrayMenu PARENT;
+    private final JTrayBaseMenu PARENT;
     
-    JMenuBaseItem(JTrayMenu parent, int key) {
+    JMenuBaseItem(JTrayBaseMenu parent, int key) {
         super(key);
         PARENT = parent;
-    }
-
-    public JTrayMenu getParent() {
-        return PARENT;
     }
     
     @Override
     public boolean dispose() {
-        if (isDisposed()) return false;
+        if (!super.dispose()) return false;
         NATIVE_TRAY.disposeMenuItem(getKey());
-        return super.dispose();
+        return true;
     }
     
     @Override

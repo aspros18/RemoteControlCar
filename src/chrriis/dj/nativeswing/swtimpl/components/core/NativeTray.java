@@ -105,36 +105,24 @@ public final class NativeTray implements INativeTray {
         }
         
         protected static void setTrayItemImage(final NativeTrayItem nativeItem, final byte[] imageData) {
+            if (imageData == null || nativeItem == null) return;
             getDisplay().syncExec(new Runnable() {
 
                 @Override
                 public void run() {
-                    boolean visible = nativeItem.isVisible();
                     TrayItem item = nativeItem.getTrayItem();
                     Image prevImg = item.getImage();
                     NativeTrayContainer ntc = getNativeTrayContainer();
-                    item.setImage(ntc.createImage(getDisplay(), imageData));
+                    nativeItem.setImage(ntc.createImage(getDisplay(), imageData));
                     ntc.removeImage(prevImg);
-                    item.setVisible(visible);
-                }
-
-            });
-        }
-
-        protected static void setTrayItemTooltip(final TrayItem item, final String text) {
-            getDisplay().syncExec(new Runnable() {
-
-                @Override
-                public void run() {
-                    item.setToolTipText(text);
                 }
 
             });
         }
         
         protected static void setTrayMenu(final NativeTrayMenu nativeMenu, final Integer itemKey) {
-            final NativeTrayContainer ntc = getNativeTrayContainer();
             if (nativeMenu == null) return;
+            final NativeTrayContainer ntc = getNativeTrayContainer();
             if (NativeTrayContainer.equals(nativeMenu.getParentKey(), itemKey)) return;
             getDisplay().syncExec(new Runnable() {
 
@@ -271,25 +259,21 @@ public final class NativeTray implements INativeTray {
             final Set<NativeTrayItem> items = ntc.getNativeTrayItems();
             synchronized (items) {
                 int key = ntc.getNextTrayItemKey();
-                
-                NativeTrayItem nativeItem = createTrayItem(key);
+                NativeTrayItem nativeItem = createTrayItem(key, tooltip, imageData != null);
                 items.add(nativeItem);
-                
-                TrayItem item = nativeItem.getTrayItem();
-                if (imageData != null) setTrayItemImage(nativeItem, imageData);
-                setTrayItemTooltip(item, tooltip);
-                
+                setTrayItemImage(nativeItem, imageData);
                 return key;
             }
         }
 
-        private NativeTrayItem createTrayItem(final int key) {
+        private NativeTrayItem createTrayItem(final int key, final String tooltip, final boolean visible) {
             return syncReturn(new RunnableReturn<NativeTrayItem>() {
 
                 @Override
                 protected NativeTrayItem createReturn() throws Exception {
                     final TrayItem item = new TrayItem(getSystemTray(), SWT.NONE);
-                    final NativeTrayItem nativeItem = new NativeTrayItem(item, key);
+                    final NativeTrayItem nativeItem = new NativeTrayItem(item, key, visible);
+                    if (tooltip != null) item.setToolTipText(tooltip);
                     item.addListener(SWT.MenuDetect, new Listener() {
 
                         @Override
@@ -330,7 +314,7 @@ public final class NativeTray implements INativeTray {
             int key = (Integer) args[0];
             byte[] imageData = (byte[]) args[1];
             NativeTrayItem item = getNativeTrayContainer().getNativeTrayItem(key);
-            if (item != null) setTrayItemImage(item, imageData);
+            setTrayItemImage(item, imageData);
             return null;
         }
 
@@ -340,10 +324,18 @@ public final class NativeTray implements INativeTray {
 
         @Override
         public Object run(Object[] args) throws Exception {
-            int key = (Integer) args[0];
-            String text = (String) args[1];
-            TrayItem item = getNativeTrayContainer().getTrayItem(key);
-            if (item != null) setTrayItemTooltip(item, text);
+            final int key = (Integer) args[0];
+            final String text = (String) args[1];
+            final TrayItem item = getNativeTrayContainer().getTrayItem(key);
+            if (item == null) return null;
+            getDisplay().syncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    item.setToolTipText(text);
+                }
+
+            });
             return null;
         }
 

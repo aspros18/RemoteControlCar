@@ -1,5 +1,6 @@
 package chrriis.dj.nativeswing.swtimpl.components.core;
 
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.TrayItem;
 
 class NativeTrayItem implements NativeTrayObject {
@@ -12,10 +13,10 @@ class NativeTrayItem implements NativeTrayObject {
     
     private boolean visible;
     
-    public NativeTrayItem(TrayItem trayItem, int key) {
+    public NativeTrayItem(TrayItem trayItem, int key, boolean visible) {
         TRAY_ITEM = trayItem;
         KEY = key;
-        setVisible(true);
+        setVisible(visible);
     }
 
     @Override
@@ -24,15 +25,19 @@ class NativeTrayItem implements NativeTrayObject {
     }
 
     public boolean isVisible() {
-        return visible;
+        return visible && TRAY_ITEM.getImage() != null;
     }
 
     public void setVisible(boolean visible) {
-        if (TRAY_ITEM.getImage() == null) visible = false;
-        TRAY_ITEM.setVisible(visible);
         this.visible = visible;
+        TRAY_ITEM.setVisible(isVisible());
     }
 
+    public void setImage(Image img) {
+        TRAY_ITEM.setImage(img);
+        TRAY_ITEM.setVisible(visible);
+    }
+    
     public TrayItem getTrayItem() {
         return TRAY_ITEM;
     }

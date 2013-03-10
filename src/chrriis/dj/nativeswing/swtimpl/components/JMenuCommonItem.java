@@ -3,7 +3,7 @@ package chrriis.dj.nativeswing.swtimpl.components;
 import static chrriis.dj.nativeswing.swtimpl.components.JTray.NATIVE_TRAY;
 import java.awt.image.RenderedImage;
 
-class JMenuCommonItem extends JMenuActiveItem<MenuItemActionListener> {
+class JMenuCommonItem<T> extends JMenuActiveItem<T> {
 
     public JMenuCommonItem(JTrayBaseMenu parent, int key, String text, boolean enabled) {
         super(parent, key, text, enabled);

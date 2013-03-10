@@ -2,7 +2,7 @@ package chrriis.dj.nativeswing.swtimpl.components;
 
 import java.util.List;
 
-public class JMenuItem extends JMenuCommonItem {
+public class JMenuItem extends JMenuCommonItem<MenuItemActionListener> {
 
     JMenuItem(JTrayBaseMenu parent, int key, String text, boolean enabled) {
         super(parent, key, text, enabled);

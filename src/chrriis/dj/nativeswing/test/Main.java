@@ -29,6 +29,7 @@ public class Main {
 
             @Override
             public void run() {
+                // test images
                 RenderedImage testImage = R.getIconImage();
                 RenderedImage testImage2 = org.dyndns.fzoli.rccar.bridge.resource.R.getBridgeImage();
                 RenderedImage testImage3 = R.getImage("horn.png");
@@ -67,11 +68,11 @@ public class Main {
                 final JMenuSelectionItem radio1 = menu2.addMenuRadioItem("One", true);
                 final JMenuSelectionItem radio2 = menu2.addMenuRadioItem("Two");
                 
-                JTraySubmenu submenu1 = new JTraySubmenu(dropItem1);
-                final JMenuItem subitem = submenu1.addMenuItem("Subitem 1");
+                final JTraySubmenu submenu1 = new JTraySubmenu(dropItem1);
+                final JMenuItem subitem1 = submenu1.addMenuItem("Subitem 1");
                 JMenuDropDownItem dropItem2 = submenu1.addMenuDropDownItem("Subitem 2");
-                JTraySubmenu submenu2 = new JTraySubmenu(dropItem2);
-                submenu2.addMenuItem("Nice menu", false);
+                final JTraySubmenu submenu2 = new JTraySubmenu(dropItem2);
+                final JMenuItem subitem2 = submenu2.addMenuItem("Nice menu");
                 
                 // menu item event test
                 MenuItemSelectionListener ml = new MenuItemSelectionListener() {
@@ -88,12 +89,13 @@ public class Main {
 
                     @Override
                     public void onAction(TrayActionEvent<JMenuItem> e) {
-                        System.out.println(e.getComponent() == subitem ? "Subitem works too." : "Yes, it works!");
+                        System.out.println(e.getComponent() == subitem1 ? "Subitem works too." : "Yes, it works!");
                     }
 
                 };
                 menuItem1.addActionListener(al);
-                subitem.addActionListener(al);
+                subitem1.addActionListener(al);
+                
                 // tray item event test
                 TrayItemMouseListener tl = new TrayItemMouseListener() {
 

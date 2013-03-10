@@ -203,7 +203,7 @@ mkdir -p "$APPLICATIONS_DIR"
 # a függvény megadja egy indítófájl teljes szövegét
 getEntryText() {
 echo -n "
-#!/usr/bin/env xdg-open\n\n[Desktop Entry]\nName=$1\nName[hu]=$2\nComment=$3\nComment[hu]=$4\nExec=$DIR_NAME/$5\nIcon=$ICON_PATH/$6\nStartupNotify=True\nTerminal=False\nType=Application\nCategories=Network"
+#!/usr/bin/env xdg-open\n\n[Desktop Entry]\nName=$1\nName[hu]=$2\nComment=$3\nComment[hu]=$4\nExec=$DIR_NAME/$5\nIcon=$ICON_PATH/$6\nStartupNotify=False\nTerminal=False\nType=Application\nCategories=Network"
 }
 
 # az ikonfájlok tartalma

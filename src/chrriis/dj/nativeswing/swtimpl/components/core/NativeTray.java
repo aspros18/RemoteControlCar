@@ -161,11 +161,12 @@ public final class NativeTray implements INativeTray {
                         visible = oldSubmenu.isVisible();
                         oldSubmenu.setVisible(false);
                     }
-                    if (nativeMenu == null) {
-                        menuItem.setMenu(null);
-                    }
-                    else {
-                        menuItem.setMenu(nativeMenu.getMenu());
+                    menuItem.setMenu(null);
+                    if (nativeMenu != null) {
+                        Menu menu = nativeMenu.getMenu();
+                        MenuItem oldItem = menu.getParentItem();
+                        if (oldItem != null) oldItem.setMenu(null);
+                        menuItem.setMenu(menu);
                         if (visible) nativeMenu.getMenu().setVisible(true);
                     }
                 }

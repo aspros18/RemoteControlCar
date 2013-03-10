@@ -33,9 +33,9 @@ public interface INativeTray {
     
     public void setTrayMenuActive(int menuKey, boolean active);
     
-    public int createTraySubmenu(int dropDownMenuItemKey);
+    public int createTraySubmenu();
     
-    public void setDropDownMenuItem(int dropDownMenuItemKey, int submenuKey);
+    public void setTraySubmenu(int dropDownMenuItemKey, Integer submenuKey);
     
     public int createMenuItem(int menuKey, Integer index, String text, boolean enabled, boolean selected, MenuItemType type);
     

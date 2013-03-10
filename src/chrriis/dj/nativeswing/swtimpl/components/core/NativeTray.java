@@ -493,7 +493,6 @@ public final class NativeTray implements INativeTray {
 
         @Override
         public Object run(Object[] args) throws Exception {
-            int itemKey = (Integer) args[0];
             NativeTrayContainer ntc = getNativeTrayContainer();
             // TODO
             return -1;
@@ -824,12 +823,12 @@ public final class NativeTray implements INativeTray {
     }
 
     @Override
-    public int createTraySubmenu(int itemKey) {
-        return (Integer) syncExec(new CMN_traySubMenuCreate(), itemKey);
+    public int createTraySubmenu() {
+        return (Integer) syncExec(new CMN_traySubMenuCreate());
     }
 
     @Override
-    public void setDropDownMenuItem(int dropDownMenuItemKey, int submenuKey) {
+    public void setTraySubmenu(int dropDownMenuItemKey, Integer submenuKey) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     

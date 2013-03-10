@@ -81,12 +81,13 @@ public class Main {
 
                     @Override
                     public void onSelection(TrayActionEvent<JMenuSelectionItem> e) {
-                        System.out.println("radio" + (e.getComponent() == radio1 ? '1' : '2') + " has been " + (e.getComponent().isSelected() ? "" : "un") + "selected.");
+                        System.out.println((e.getComponent() == menuItem2 ? "check item" : ("radio" + (e.getComponent() == radio1 ? '1' : '2'))) + " has been " + (e.getComponent().isSelected() ? "" : "un") + "selected.");
                     }
                     
                 };
                 radio1.addActionListener(ml);
                 radio2.addActionListener(ml);
+                menuItem2.addActionListener(ml);
                 MenuItemActionListener al = new MenuItemActionListener() {
 
                     @Override

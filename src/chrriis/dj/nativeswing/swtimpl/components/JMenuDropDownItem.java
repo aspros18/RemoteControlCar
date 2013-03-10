@@ -8,8 +8,4 @@ public class JMenuDropDownItem extends JMenuCommonItem<Object> {
         super(parent, key, text, enabled);
     }
     
-    public void setTraySubmenu(JTraySubmenu submenu) {
-        NATIVE_TRAY.setTraySubmenu(getKey(), submenu == null ? null : submenu.getKey());
-    }
-    
 }

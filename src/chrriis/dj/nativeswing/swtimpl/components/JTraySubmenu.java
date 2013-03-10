@@ -9,7 +9,7 @@ public class JTraySubmenu extends JTrayBaseMenu {
     }
 
     public JTraySubmenu(JMenuDropDownItem item) {
-        super(NATIVE_TRAY.createTraySubmenu(item == null ? null : item.getKey()));
+        super(NATIVE_TRAY.createTraySubmenu(item.getKey()));
     }
 
 }

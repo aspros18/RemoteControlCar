@@ -721,10 +721,13 @@ public final class NativeTray implements INativeTray {
                 @Override
                 public void run() {
                     NativeTrayContainer ntc = getNativeTrayContainer();
-                    NativeMenuItem item = ntc.getNativeMenuItem(key);
-                    if (item != null) {
-                        item.getMenuItem().dispose();
-                        ntc.getNativeMenuItems().remove(item);
+                    NativeMenuItem nativeItem = ntc.getNativeMenuItem(key);
+                    if (nativeItem != null) {
+                        MenuItem item = nativeItem.getMenuItem();
+                        Image img = item.getImage();
+                        item.dispose();
+                        ntc.removeImage(img);
+                        ntc.getNativeMenuItems().remove(nativeItem);
                     }
                 }
                 

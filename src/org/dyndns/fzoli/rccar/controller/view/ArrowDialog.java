@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -525,13 +526,42 @@ abstract class ArrowPanel extends JPanel {
         
     };
     
+    private static class ArrowLabel extends JLabel {
+
+        private final int width;
+        
+        public ArrowLabel(String text, int horizontalAlignment) {
+            this(text, horizontalAlignment, 0, false);
+        }
+        
+        public ArrowLabel(String text, int horizontalAlignment, boolean bold) {
+            this(text, horizontalAlignment, 0, bold);
+        }
+        
+        public ArrowLabel(String text, int horizontalAlignment, int width) {
+            this(text, horizontalAlignment, width, false);
+        }
+        
+        public ArrowLabel(String text, int horizontalAlignment, int width, boolean bold) {
+            super(text, horizontalAlignment);
+            if (bold) setFont(new Font(getFont().getName(), Font.BOLD, getFont().getSize()));
+            this.width = width;
+        }
+
+        @Override
+        public Dimension getPreferredSize() {
+            return new Dimension(width, super.getPreferredSize().height);
+        }
+        
+    }
+    
     private DateFormat df = new SimpleDateFormat("HH:mm:ss");
-    private JLabel lbX = new JLabel("0", SwingConstants.RIGHT);
-    private JLabel lbY = new JLabel("0", SwingConstants.LEFT);
-    private JLabel lbSep = new JLabel(";", SwingConstants.CENTER);
-    private JLabel lbDate = new JLabel("00:00:00", SwingConstants.CENTER);
-    JLabel lbSign = new JLabel(getString("sign"), SwingConstants.CENTER);
-    JLabel lbTime = new JLabel(getString("time_left"), SwingConstants.CENTER);
+    private JLabel lbX = new ArrowLabel("0", SwingConstants.RIGHT);
+    private JLabel lbY = new ArrowLabel("0", SwingConstants.LEFT);
+    private JLabel lbSep = new ArrowLabel(";", SwingConstants.CENTER, 10);
+    private JLabel lbDate = new ArrowLabel("00:00:00", SwingConstants.CENTER);
+    JLabel lbSign = new ArrowLabel(getString("sign"), SwingConstants.CENTER, true);
+    JLabel lbTime = new ArrowLabel(getString("time_left"), SwingConstants.CENTER, true);
     
     public ArrowPanel(final int size) {
         super(new GridBagLayout());
@@ -552,14 +582,10 @@ abstract class ArrowPanel extends JPanel {
                     {
                         setOpaque(false);
                         setLayout(new GridBagLayout());
-                        lbX.setPreferredSize(new Dimension(0, 0));
-                        lbY.setPreferredSize(new Dimension(0, 0));
-                        lbSep.setPreferredSize(new Dimension(10, 0));
-                        lbSign.setFont(new Font(lbSign.getFont().getName(), Font.BOLD, lbSign.getFont().getSize()));
                         GridBagConstraints c = new GridBagConstraints();
                         c.weightx = 1;
-                        c.weighty = 1;
-                        c.fill = GridBagConstraints.BOTH;
+                        c.insets = new Insets(3, 0, 3, 0);
+                        c.fill = GridBagConstraints.HORIZONTAL;
                         c.gridwidth = 3;
                         add(lbSign, c);
                         c.gridwidth = 1;
@@ -571,7 +597,7 @@ abstract class ArrowPanel extends JPanel {
                         add(lbSep, c);
                         c.gridx = 2;
                         c.weightx = 1;
-                        c.fill = GridBagConstraints.BOTH;
+                        c.fill = GridBagConstraints.HORIZONTAL;
                         add(lbY, c);
                     }
                 });
@@ -579,12 +605,10 @@ abstract class ArrowPanel extends JPanel {
                     {
                         setOpaque(false);
                         setLayout(new GridBagLayout());
-                        lbDate.setPreferredSize(new Dimension(0, 0));
-                        lbTime.setFont(new Font(lbTime.getFont().getName(), Font.BOLD, lbTime.getFont().getSize()));
                         GridBagConstraints c = new GridBagConstraints();
                         c.weightx = 1;
-                        c.weighty = 1;
-                        c.fill = GridBagConstraints.BOTH;
+                        c.insets = new Insets(3, 0, 3, 0);
+                        c.fill = GridBagConstraints.HORIZONTAL;
                         add(lbTime, c);
                         c.gridy = 1;
                         add(lbDate, c);

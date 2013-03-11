@@ -31,7 +31,7 @@ public class SystemTrayIcon {
     
     /**
      * Inicializálás.
-     * Ha az SWT elérhető és az "swt_tray" nevű fájl létezik, SWT alapú,
+     * Ha az SWT elérhető és az "no_swt" nevű fájl nem létezik, SWT alapú,
      * egyébként meg AWT alapú rendszerikon jön létre.
      * @return true, ha sikerült az inicializálás, egyébként false
      */
@@ -41,7 +41,7 @@ public class SystemTrayIcon {
     
     /**
      * Inicializálás.
-     * Ha az SWT elérhető és az "swt_tray" nevű fájl létezik, SWT alapú,
+     * Ha az SWT elérhető és az "no_swt" nevű fájl nem létezik, SWT alapú,
      * egyébként meg AWT alapú rendszerikon jön létre.
      * Ha már egyszer hiba nélkül lefutott az inicializálás, az újbóli hívásnak nincs hatása.
      * @param awt ha true, akkor biztosan AWT alapú rendszerikon jön létre

@@ -197,13 +197,13 @@ public class Main {
      */
     private static void exit() {
         exiting = true;
+        SystemTrayIcon.dispose();
         if (CONTROLLER_WINDOWS != null) {
             CONTROLLER_WINDOWS.dispose();
         }
         if (isNativeSwingAvailable()) {
             NativeInterface.close();
         }
-        SystemTrayIcon.dispose();
         System.exit(0);
     }
     

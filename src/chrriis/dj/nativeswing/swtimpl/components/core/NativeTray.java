@@ -104,22 +104,6 @@ public final class NativeTray implements INativeTray {
             });
         }
         
-        protected static void setTrayItemImage(final NativeTrayItem nativeItem, final byte[] imageData) {
-            if (imageData == null || nativeItem == null) return;
-            getDisplay().syncExec(new Runnable() {
-
-                @Override
-                public void run() {
-                    TrayItem item = nativeItem.getTrayItem();
-                    Image prevImg = item.getImage();
-                    NativeTrayContainer ntc = getNativeTrayContainer();
-                    nativeItem.setImage(ntc.createImage(getDisplay(), imageData));
-                    ntc.removeImage(prevImg);
-                }
-
-            });
-        }
-        
         protected static void setTrayMenu(final NativeTrayMenu nativeMenu, final Integer itemKey) {
             if (nativeMenu == null) return;
             final NativeTrayContainer ntc = getNativeTrayContainer();
@@ -259,20 +243,20 @@ public final class NativeTray implements INativeTray {
             final Set<NativeTrayItem> items = ntc.getNativeTrayItems();
             synchronized (items) {
                 int key = ntc.getNextTrayItemKey();
-                NativeTrayItem nativeItem = createTrayItem(key, tooltip);
+                NativeTrayItem nativeItem = createTrayItem(ntc, key, tooltip, imageData);
                 items.add(nativeItem);
-                setTrayItemImage(nativeItem, imageData);
                 return key;
             }
         }
 
-        private NativeTrayItem createTrayItem(final int key, final String tooltip) {
+        private NativeTrayItem createTrayItem(final NativeTrayContainer ntc, final int key, final String tooltip, final byte[] imgData) {
             return syncReturn(new RunnableReturn<NativeTrayItem>() {
 
                 @Override
                 protected NativeTrayItem createReturn() throws Exception {
                     final TrayItem item = new TrayItem(getSystemTray(), SWT.NONE);
-                    final NativeTrayItem nativeItem = new NativeTrayItem(item, key);
+                    final Image img = ntc.createImage(getDisplay(), imgData);
+                    final NativeTrayItem nativeItem = new NativeTrayItem(item, img, key);
                     if (tooltip != null) item.setToolTipText(tooltip);
                     item.addListener(SWT.MenuDetect, new Listener() {
 
@@ -311,13 +295,25 @@ public final class NativeTray implements INativeTray {
 
         @Override
         public Object run(Object[] args) throws Exception {
-            int key = (Integer) args[0];
-            byte[] imageData = (byte[]) args[1];
-            NativeTrayItem item = getNativeTrayContainer().getNativeTrayItem(key);
-            setTrayItemImage(item, imageData);
+            final int key = (Integer) args[0];
+            final byte[] imageData = (byte[]) args[1];
+            final NativeTrayContainer ntc = getNativeTrayContainer();
+            final NativeTrayItem nativeItem = ntc.getNativeTrayItem(key);
+            if (imageData == null || nativeItem == null) return null;
+            getDisplay().syncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    TrayItem item = nativeItem.getTrayItem();
+                    Image prevImg = item.getImage();
+                    nativeItem.setImage(ntc.createImage(getDisplay(), imageData));
+                    ntc.removeImage(prevImg);
+                }
+
+            });
             return null;
         }
-
+        
     }
 
     private static class CMN_trayItemSetTooltip extends TrayCommandMessage {

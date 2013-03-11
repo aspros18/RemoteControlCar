@@ -13,10 +13,11 @@ class NativeTrayItem implements NativeTrayObject {
     
     private boolean visible;
     
-    public NativeTrayItem(TrayItem trayItem, int key) {
+    public NativeTrayItem(TrayItem trayItem, Image img, int key) {
         TRAY_ITEM = trayItem;
         KEY = key;
-        setVisible(true);
+        if (img != null) setImage(img);
+        else setVisible(true);
     }
 
     @Override

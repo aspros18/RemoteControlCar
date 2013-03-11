@@ -132,6 +132,7 @@ final class NativeTrayContainer {
     
     public Image createImage(Display display, byte[] data) {
         try {
+            if (display == null || data == null) return null;
             BufferedInputStream inputStreamReader = new BufferedInputStream(new ByteArrayInputStream(data));
             ImageData imageData = new ImageData(inputStreamReader);
             Image image = new Image(display, imageData);

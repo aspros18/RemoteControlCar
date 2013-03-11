@@ -15,7 +15,19 @@ class NativeTrayMenu extends NativeTrayBaseMenu {
         return trayItemKey;
     }
     
-    public void setParentKey(Integer trayItemKey) {
+    public void setTrayItem(NativeTrayItem nativeItem) {
+        if (nativeItem != null) {
+            NativeTrayMenu replaced = nativeItem.getNativeTrayMenu();
+            if (replaced != null) replaced.setParentKey(null);
+            nativeItem.setNativeTrayMenu(this);
+            setParentKey(nativeItem.getKey());
+        }
+        else {
+            setParentKey(null);
+        }
+    }
+    
+    private void setParentKey(Integer trayItemKey) {
         this.trayItemKey = trayItemKey;
         boolean visible = getMenu().isVisible();
         getMenu().setVisible(false);

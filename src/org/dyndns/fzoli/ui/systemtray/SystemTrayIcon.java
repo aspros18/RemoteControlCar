@@ -1,7 +1,6 @@
 package org.dyndns.fzoli.ui.systemtray;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import org.dyndns.fzoli.ui.UIUtil;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 
@@ -31,8 +30,7 @@ public class SystemTrayIcon {
     
     /**
      * Inicializálás.
-     * Ha az SWT elérhető és az "no_swt" nevű fájl nem létezik, SWT alapú,
-     * egyébként meg AWT alapú rendszerikon jön létre.
+     * Ha az SWT elérhető, SWT alapú, egyébként meg AWT alapú rendszerikon jön létre.
      * @return true, ha sikerült az inicializálás, egyébként false
      */
     public static boolean init() {
@@ -41,8 +39,7 @@ public class SystemTrayIcon {
     
     /**
      * Inicializálás.
-     * Ha az SWT elérhető és az "no_swt" nevű fájl nem létezik, SWT alapú,
-     * egyébként meg AWT alapú rendszerikon jön létre.
+     * Ha az SWT elérhető, SWT alapú, egyébként meg AWT alapú rendszerikon jön létre.
      * Ha már egyszer hiba nélkül lefutott az inicializálás, az újbóli hívásnak nincs hatása.
      * @param awt ha true, akkor biztosan AWT alapú rendszerikon jön létre
      * @return true, ha sikerült az inicializálás, egyébként false
@@ -55,7 +52,6 @@ public class SystemTrayIcon {
                     menu = icon.createPopupMenu();
                     return true;
                 }
-                awt = awt || new File("no_swt").isFile();
                 tray = SystemTrayProvider.getSystemTray(true, awt);
                 if (tray.isSupported()) {
                     icon = tray.addTrayIcon();

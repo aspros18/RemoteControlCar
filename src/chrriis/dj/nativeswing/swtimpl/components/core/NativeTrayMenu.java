@@ -10,7 +10,7 @@ package chrriis.dj.nativeswing.swtimpl.components.core;
 import org.eclipse.swt.widgets.Menu;
 
 /**
- * Methods of tray menu.
+ * Methods of the tray menu.
  * @author Zolt&aacute;n Farkas
  */
 class NativeTrayMenu extends NativeTrayBaseMenu {

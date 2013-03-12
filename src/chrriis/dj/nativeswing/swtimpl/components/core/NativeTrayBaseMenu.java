@@ -33,21 +33,36 @@ abstract class NativeTrayBaseMenu implements NativeTrayObject {
         this.active = active;
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getKey() {
         return KEY;
     }
     
+    /**
+     * Returns the menu's parent that shows this menu.
+     * @return key of the menu's parent or null if it has no parent yet
+     */
     public abstract Integer getParentKey();
     
     public Menu getMenu() {
         return MENU;
     }
     
+    /**
+     * Returns whether the menu is active or inactive.
+     * @return true if the menu is active; otherwise false
+     */
     public boolean isActive() {
         return active;
     }
     
+    /**
+     * Sets the menu to active or inactive.
+     * Inactivated menu will be hidden.
+     */
     public void setActive(boolean active) {
         this.active = active;
         if (!active) getMenu().setVisible(false);

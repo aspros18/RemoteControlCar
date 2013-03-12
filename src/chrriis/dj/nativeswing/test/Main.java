@@ -20,6 +20,10 @@ import java.awt.image.RenderedImage;
 import javax.swing.SwingUtilities;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 
+/**
+ * System Tray test.
+ * @author Zoltán Farkas
+ */
 public class Main {
     
     public static void main(String[] args) {

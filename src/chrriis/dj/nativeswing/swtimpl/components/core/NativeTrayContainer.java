@@ -1,3 +1,10 @@
+/*
+ * Christopher Deckers (chrriis@nextencia.net)
+ * http://www.nextencia.net
+ *
+ * See the file "readme.txt" for information on usage and redistribution of
+ * this file, and for a DISCLAIMER OF ALL WARRANTIES.
+ */
 package chrriis.dj.nativeswing.swtimpl.components.core;
 
 import chrriis.common.RunnableReturn;
@@ -14,6 +21,10 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TrayItem;
 
+/**
+ * Native side container that stores native components.
+ * @author Zoltán Farkas
+ */
 final class NativeTrayContainer {
 
     private static final NativeTrayContainer OBJ = new NativeTrayContainer();
@@ -28,17 +39,32 @@ final class NativeTrayContainer {
 
     private Shell shell;
 
+    /**
+     * Inheritance and instantiation are disabled.
+     */
     private NativeTrayContainer() {
     }
 
+    /**
+     * Returns an instance of the <code>NativeTrayContainer</code>.
+     */
     public static NativeTrayContainer getInstance() {
         return OBJ;
     }
 
+    /**
+     * Safe equals.
+     * @return true if <code>i1</code> and <code>i2</code> are equals
+     * or both of them are <code>null</code>; otherwise false
+     */
     public static boolean equals(Object i1, Object i2) {
         return !(i1 == null ^ i2 == null) && (i1 == null || i1.equals(i2));
     }
     
+    /**
+     * Returns an SWT <code>Shell</code> to create <code>Menu</code> and <code>ToolTip</code>.
+     * The <code>Shell</code> is created at the first call.
+     */
     public Shell getShell() {
         if (shell != null) return shell;
         final Display display = Display.getCurrent();
@@ -79,6 +105,10 @@ final class NativeTrayContainer {
         return getNextKey(MENU_ITEMS);
     }
     
+    /**
+     * Returns the first free key in the specified <code>Set</code>.
+     * @param s the <code>Set</code>
+     */
     private static int getNextKey(Set<? extends NativeTrayObject> s) {
         int key = -1;
         boolean e;
@@ -122,6 +152,12 @@ final class NativeTrayContainer {
         return getNativeTrayObject(MENU_ITEMS, key);
     }
     
+    /**
+     * Finds the tray object in the specified <code>Set</code>.
+     * @param s the <code>Set</code>
+     * @param key the key of the object
+     * @return tray object or <code>null</code>
+     */
     private static <T extends NativeTrayObject> T getNativeTrayObject(Set<T> s, Integer key) {
         if (key == null) return null;
         for (T obj : s) {
@@ -130,6 +166,13 @@ final class NativeTrayContainer {
         return null;
     }
     
+    /**
+     * Creates an image from the byte array.
+     * @param display the SWT <code>Display</code>
+     * @param data the byte array
+     * @see #removeImage(Image) 
+     * @see #dispose()
+     */
     public Image createImage(Display display, byte[] data) {
         try {
             if (display == null || data == null) return null;
@@ -144,6 +187,9 @@ final class NativeTrayContainer {
         }
     }
 
+    /**
+     * Removes and disposes the specified image.
+     */
     public void removeImage(Image image) {
         if (image != null) {
             image.dispose();
@@ -151,6 +197,9 @@ final class NativeTrayContainer {
         }
     }
     
+    /**
+     * Disposes tray items, tray menus, menu items and images.
+     */
     public void dispose() {
         for (NativeTrayItem item : TRAY_ITEMS) {
             item.getTrayItem().dispose();

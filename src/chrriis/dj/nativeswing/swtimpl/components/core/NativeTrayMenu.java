@@ -1,7 +1,18 @@
+/*
+ * Christopher Deckers (chrriis@nextencia.net)
+ * http://www.nextencia.net
+ *
+ * See the file "readme.txt" for information on usage and redistribution of
+ * this file, and for a DISCLAIMER OF ALL WARRANTIES.
+ */
 package chrriis.dj.nativeswing.swtimpl.components.core;
 
 import org.eclipse.swt.widgets.Menu;
 
+/**
+ * Methods of tray menu.
+ * @author Zolt&aacute;n Farkas
+ */
 class NativeTrayMenu extends NativeTrayBaseMenu {
     
     private Integer trayItemKey;
@@ -10,11 +21,19 @@ class NativeTrayMenu extends NativeTrayBaseMenu {
         super(menu, key, active);
     }
 
+    /**
+     * Returns the tray item's key.
+     * @return key of the menu's parent or null if it has no parent yet
+     */
     @Override
     public Integer getParentKey() {
         return trayItemKey;
     }
     
+    /**
+     * Sets the specified tray item.
+     * @param nativeItem the tray item or null
+     */
     public void setTrayItem(NativeTrayItem nativeItem) {
         if (nativeItem != null) {
             NativeTrayMenu replaced = nativeItem.getNativeTrayMenu();
@@ -27,6 +46,12 @@ class NativeTrayMenu extends NativeTrayBaseMenu {
         }
     }
     
+    /**
+     * Sets the specified tray item's key.
+     * The previous menu of the tray item is visible,
+     * it will be hidden and the new one will be showed.
+     * @param trayItemKey the key of the tray item or null
+     */
     private void setParentKey(Integer trayItemKey) {
         this.trayItemKey = trayItemKey;
         boolean visible = getMenu().isVisible();

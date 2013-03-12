@@ -93,14 +93,23 @@ final class NativeTrayContainer {
         return MENU_ITEMS;
     }
     
+    /**
+     * @see #getNextKey(Set)
+     */
     public int getNextTrayItemKey() {
         return getNextKey(TRAY_ITEMS);
     }
 
+    /**
+     * @see #getNextKey(Set)
+     */
     public int getNextTrayMenuKey() {
         return getNextKey(TRAY_MENUS);
     }
     
+    /**
+     * @see #getNextKey(Set)
+     */
     public int getNextMenuItemKey() {
         return getNextKey(MENU_ITEMS);
     }
@@ -125,29 +134,47 @@ final class NativeTrayContainer {
         return key;
     }
     
+    /**
+     * @see #getNativeTrayObject(Set, Integer)
+     */
     public TrayItem getTrayItem(int key) {
         NativeTrayItem o = getNativeTrayItem(key);
         return o == null ? null : o.getTrayItem();
     }
 
+    /**
+     * @see #getNativeTrayObject(Set, Integer)
+     */
     public Menu getTrayMenu(int key) {
         NativeTrayBaseMenu o = getNativeTrayMenu(key);
         return o == null ? null : o.getMenu();
     }
     
+    /**
+     * @see #getNativeTrayObject(Set, Integer)
+     */
     public MenuItem getMenuItem(int key) {
         NativeMenuItem o = getNativeMenuItem(key);
         return o == null ? null : o.getMenuItem();
     }
     
+    /**
+     * @see #getNativeTrayObject(Set, Integer)
+     */
     public NativeTrayItem getNativeTrayItem(Integer key) {
         return getNativeTrayObject(TRAY_ITEMS, key);
     }
     
+    /**
+     * @see #getNativeTrayObject(Set, Integer)
+     */
     public NativeTrayBaseMenu getNativeTrayMenu(Integer key) {
         return getNativeTrayObject(TRAY_MENUS, key);
     }
     
+    /**
+     * @see #getNativeTrayObject(Set, Integer)
+     */
     public NativeMenuItem getNativeMenuItem(Integer key) {
         return getNativeTrayObject(MENU_ITEMS, key);
     }

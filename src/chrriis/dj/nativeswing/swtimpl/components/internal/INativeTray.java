@@ -11,7 +11,7 @@ import chrriis.dj.nativeswing.swtimpl.components.TrayMessageType;
 
 /**
  * Native system tray support.
- * @author Zoltán Farkas
+ * @author Zolt&aacute;n Farkas
  */
 public interface INativeTray {
     

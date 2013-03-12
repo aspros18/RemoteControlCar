@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.TrayItem;
 
 /**
  * Native side container that stores native components.
- * @author Zoltán Farkas
+ * @author Zolt&aacute;n Farkas
  */
 final class NativeTrayContainer {
 

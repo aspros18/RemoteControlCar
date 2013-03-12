@@ -22,7 +22,7 @@ import org.dyndns.fzoli.rccar.controller.resource.R;
 
 /**
  * System Tray test.
- * @author Zoltán Farkas
+ * @author Zolt&aacute;n Farkas
  */
 public class Main {
     

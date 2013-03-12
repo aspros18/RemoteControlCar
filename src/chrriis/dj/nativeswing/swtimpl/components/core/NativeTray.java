@@ -1,3 +1,10 @@
+/*
+ * Christopher Deckers (chrriis@nextencia.net)
+ * http://www.nextencia.net
+ *
+ * See the file "readme.txt" for information on usage and redistribution of
+ * this file, and for a DISCLAIMER OF ALL WARRANTIES.
+ */
 package chrriis.dj.nativeswing.swtimpl.components.core;
 
 import chrriis.common.RunnableReturn;
@@ -28,13 +35,20 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolTip;
-import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 
+/**
+ * Native system tray support implementation.
+ * @author Zolt&aacute;n Farkas
+ */
 public final class NativeTray implements INativeTray {
     
     private static abstract class BaseTrayCommandMessage extends CommandMessage {
         
+        /**
+         * Passkey for the instance of the {@link JTrayContainer} class.
+         * @see JTrayContainer#getInstance(double)
+         */
         protected final Double PASSKEY;
 
         public BaseTrayCommandMessage() {
@@ -47,18 +61,28 @@ public final class NativeTray implements INativeTray {
         
     }
     
+    /**
+     * AWT side message.
+     */
     private static abstract class JTrayCommandMessage extends BaseTrayCommandMessage {
         
         public JTrayCommandMessage(double passkey) {
             super(passkey);
         }
         
+        /**
+         * Returns the instance of the {@link JTrayContainer} class.
+         * @see #PASSKEY
+         */
         protected JTrayContainer getTrayContainer() {
             return JTrayContainer.getInstance(PASSKEY);
         }
         
     }
     
+    /**
+     * Native side message.
+     */
     private static abstract class TrayCommandMessage extends BaseTrayCommandMessage {
 
         public TrayCommandMessage() {
@@ -69,14 +93,28 @@ public final class NativeTray implements INativeTray {
             super(passkey);
         }
         
+        /**
+         * Executes the specified message asynchronously with the given arguments at AWT side.
+         * @param msg the message to be execute
+         * @param args the arguments, which must be serializable
+         */
         protected static void asyncExec(CommandMessage msg, Object ... args) {
             msg.asyncExec(false, args);
         }
         
+        /**
+         * Executes the specified message synchronously with the given arguments at AWT side.
+         * @param msg the message to be execute
+         * @param args the arguments, which must be serializable
+         */
         protected static Object syncExec(CommandMessage msg, Object ... args) {
             return msg.syncExec(false, args);
         }
         
+        /**
+         * Executes a method in the SWT UI-thread and returns a typed object.
+         * @param r the method that returns a typed object
+         */
         protected static <T> T syncReturn(RunnableReturn<T> r) {
             Display display = getDisplay();
             if (display == null) return null;
@@ -84,23 +122,18 @@ public final class NativeTray implements INativeTray {
             return r.getReturn();
         }
         
+        /**
+         * Returns the instance of the native tray container.
+         */
         protected static NativeTrayContainer getNativeTrayContainer() {
             return NativeTrayContainer.getInstance();
         }
 
+        /**
+         * Returns the SWT Display.
+         */
         protected static Display getDisplay() {
             return SWTNativeInterface.getInstance().getDisplay();
-        }
-        
-        protected static Tray getSystemTray() {
-            return syncReturn(new RunnableReturn<Tray>() {
-
-                @Override
-                protected Tray createReturn() throws Exception {
-                    return getDisplay().getSystemTray();
-                }
-
-            });
         }
         
     }
@@ -203,7 +236,15 @@ public final class NativeTray implements INativeTray {
 
         @Override
         public Object run(Object[] args) throws Exception {
-            return getSystemTray() != null;
+            Object tray = syncReturn(new RunnableReturn<Object>() {
+
+                @Override
+                protected Object createReturn() throws Exception {
+                    return getDisplay().getSystemTray();
+                }
+
+            });
+            return tray != null;
         }
         
     }
@@ -233,8 +274,9 @@ public final class NativeTray implements INativeTray {
 
                 @Override
                 protected NativeTrayItem createReturn() throws Exception {
-                    final TrayItem item = new TrayItem(getSystemTray(), SWT.NONE);
-                    final Image img = ntc.createImage(getDisplay(), imgData);
+                    final Display display = getDisplay();
+                    final TrayItem item = new TrayItem(display.getSystemTray(), SWT.NONE);
+                    final Image img = ntc.createImage(display, imgData);
                     final NativeTrayItem nativeItem = new NativeTrayItem(item, img, key);
                     if (tooltip != null) item.setToolTipText(tooltip);
                     item.addListener(SWT.MenuDetect, new Listener() {

@@ -17,6 +17,7 @@ public interface INativeTray {
     
     /**
      * Menu item type.
+     * @author Zolt&aacute;n Farkas
      */
     public enum MenuItemType {
         NORMAL,
@@ -28,6 +29,7 @@ public interface INativeTray {
     
     /**
      * Menu item boolean property.
+     * @author Zolt&aacute;n Farkas
      */
     public enum MenuItemProperty {
         ENABLED,

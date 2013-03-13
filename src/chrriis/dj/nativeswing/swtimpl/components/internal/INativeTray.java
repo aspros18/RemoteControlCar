@@ -16,7 +16,7 @@ import chrriis.dj.nativeswing.swtimpl.components.TrayMessageType;
 public interface INativeTray {
     
     /**
-     * Menu item type.
+     * Type of the menu item.
      * @author Zolt&aacute;n Farkas
      */
     public enum MenuItemType {
@@ -28,7 +28,7 @@ public interface INativeTray {
     }
     
     /**
-     * Menu item boolean property.
+     * Boolean property of the menu item.
      * @author Zolt&aacute;n Farkas
      */
     public enum MenuItemProperty {

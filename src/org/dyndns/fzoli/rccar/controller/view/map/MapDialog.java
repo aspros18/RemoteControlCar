@@ -140,8 +140,13 @@ public class MapDialog extends AbstractDialog {
     private final JWebBrowser WEB_BROWSER;
     
     /**
-     * Figyelmeztető üzenet a sikertelen betöltéshez.
+     * Sikertelen betöltődés üzenetet jelző panel.
      * Kattintásra megpróbálja újratölteni a térképet.
+     */
+    private final JPanel PANEL_WARN;
+    
+    /**
+     * Figyelmeztető üzenet a sikertelen betöltéshez.
      */
     private final JLabel LB_WARN = new JLabel(getWarningLabelText(), SwingConstants.CENTER);
     
@@ -153,7 +158,7 @@ public class MapDialog extends AbstractDialog {
     /**
      * Betöltés szöveg címkéje.
      */
-    private final JLabel LB_LOADING = new JLabel(getString("loading"));
+    private final JLabel LB_LOADING = new JLabel(getString("loading"), SwingConstants.CENTER);
     
     /**
      * Megadja, hogy a fade effekt engedélyezve van-e.
@@ -234,8 +239,8 @@ public class MapDialog extends AbstractDialog {
         pInd.setVisible(false);
         
         // figyelmeztető üzenet jelenik meg, ha a térkép betöltése nem sikerült
-        LB_WARN.setPreferredSize(mapPane.getPreferredSize());
-        LB_WARN.addMouseListener(new MouseAdapter() {
+        PANEL_WARN = createPanel(mapPane, LB_WARN, R.getErrorIcon());
+        PANEL_WARN.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseClicked(MouseEvent ev) {
@@ -243,8 +248,8 @@ public class MapDialog extends AbstractDialog {
             }
 
         });
-        getContentPane().add(LB_WARN, BorderLayout.WEST);
-        LB_WARN.setVisible(false);
+        getContentPane().add(PANEL_WARN, BorderLayout.WEST);
+        PANEL_WARN.setVisible(false);
         
         // kezdetben úgy tesz, mint ha nem lenne böngésző támogatás
         final JPanel pPre = createPanel(mapPane, LB_PRE_LOADING, R.getWarningIcon());
@@ -349,7 +354,7 @@ public class MapDialog extends AbstractDialog {
                                             indApp = true; // indikátor megjelenítése a legközelebbi betöltéskor
                                             pInd.setVisible(false); // indikátor elrejtése ...
                                             mapPane.setVisible(false); // ... térkép elrejtése ...
-                                            LB_WARN.setVisible(true); // ... és figyelmeztető üzenet megjelenítése, mert nem tudott betöltődni a térkép
+                                            PANEL_WARN.setVisible(true); // ... és figyelmeztető üzenet megjelenítése, mert nem tudott betöltődni a térkép
                                             break; // ha 10 mp alatt nem sikerült inicializálni, feladja és kilép a ciklusból
                                         }
                                         Thread.sleep(100); // újratesztelés kicsit később
@@ -404,6 +409,8 @@ public class MapDialog extends AbstractDialog {
                 setOpaque(false);
                 add(lbIcon, c);
                 c.gridy = 1;
+                c.weightx = 1;
+                c.fill = GridBagConstraints.HORIZONTAL;
                 c.insets = new Insets(5, 5, 5, 5);
                 add(lb, c);
             }
@@ -448,12 +455,12 @@ public class MapDialog extends AbstractDialog {
      * Hibaüzenet eltüntetése és térkép újratöltése, ha legutóbb nem sikerült betölteni.
      */
     private void reload() {
-        if (!LB_WARN.isVisible() || disposed) return;
+        if (!PANEL_WARN.isVisible() || disposed) return;
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
-                LB_WARN.setVisible(false);
+                PANEL_WARN.setVisible(false);
                 WEB_BROWSER.setHTMLContent(HTML_SOURCE);
             }
             

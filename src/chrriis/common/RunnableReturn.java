@@ -10,7 +10,7 @@ package chrriis.common;
 /**
  * Runnable that returns a typed object.
  * @param <T> type of the return
- * @author Zoltán Farkas
+ * @author Zolt&aacute;n Farkas
  */
 public abstract class RunnableReturn<T> implements Runnable {
 
@@ -21,7 +21,7 @@ public abstract class RunnableReturn<T> implements Runnable {
 
     /**
      * Implementable method that returns a typed object.
-     * @throws Exception if an exception occured
+     * @throws Exception if an exception occurs
      * @return a typed object
      */
     protected abstract T createReturn() throws Exception;
@@ -34,7 +34,7 @@ public abstract class RunnableReturn<T> implements Runnable {
     }
 
     /**
-     * Called if an exception occures during {@link #createReturn()}.
+     * Called if an exception occurs during {@link #createReturn()}.
      */
     protected void onException(Exception ex) {
         ;

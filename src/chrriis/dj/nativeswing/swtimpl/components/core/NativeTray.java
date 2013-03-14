@@ -796,8 +796,17 @@ public final class NativeTray implements INativeTray {
 
     }
 
+    /**
+     * Passkey for the instance of the {@link JTrayContainer} class.
+     * @see JTrayContainer#getInstance(double)
+     */
     private final double PASSKEY;
     
+    /**
+     * Initializer.
+     * @param passkey the non-null passkey for the instance of the {@link JTrayContainer} class
+     * @see JTrayContainer#getInstance(double)
+     */
     NativeTray(Double passkey) {
         PASSKEY = passkey;
     }

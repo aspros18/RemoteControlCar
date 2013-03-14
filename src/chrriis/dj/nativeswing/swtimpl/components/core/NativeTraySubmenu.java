@@ -10,7 +10,7 @@ package chrriis.dj.nativeswing.swtimpl.components.core;
 import org.eclipse.swt.widgets.Menu;
 
 /**
- * Methods of the submenu.
+ * Class that contains the additional methods of the submenu.
  * @author Zolt&aacute;n Farkas
  */
 class NativeTraySubmenu extends NativeTrayBaseMenu {

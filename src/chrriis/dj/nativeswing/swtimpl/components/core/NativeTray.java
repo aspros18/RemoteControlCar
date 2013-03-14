@@ -62,7 +62,7 @@ public final class NativeTray implements INativeTray {
     }
     
     /**
-     * AWT side message.
+     * Message that runs on Swing side.
      */
     private static abstract class JTrayCommandMessage extends BaseTrayCommandMessage {
         
@@ -81,7 +81,7 @@ public final class NativeTray implements INativeTray {
     }
     
     /**
-     * Native side message.
+     * Message that runs on native side.
      */
     private static abstract class TrayCommandMessage extends BaseTrayCommandMessage {
 
@@ -94,8 +94,8 @@ public final class NativeTray implements INativeTray {
         }
         
         /**
-         * Executes the specified message asynchronously with the given arguments at AWT side.
-         * @param msg the message to be execute
+         * Executes the specified message asynchronously with the given arguments on Swing side.
+         * @param msg the message to be executed
          * @param args the arguments, which must be serializable
          */
         protected static void asyncExec(CommandMessage msg, Object ... args) {
@@ -103,8 +103,8 @@ public final class NativeTray implements INativeTray {
         }
         
         /**
-         * Executes the specified message synchronously with the given arguments at AWT side.
-         * @param msg the message to be execute
+         * Executes the specified message synchronously with the given arguments on Swing side.
+         * @param msg the message to be executed
          * @param args the arguments, which must be serializable
          */
         protected static Object syncExec(CommandMessage msg, Object ... args) {

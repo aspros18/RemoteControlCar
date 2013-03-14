@@ -10,7 +10,7 @@ package chrriis.dj.nativeswing.swtimpl.components.core;
 import org.eclipse.swt.widgets.Menu;
 
 /**
- * Methods of the tray menu.
+ * Class that contains the additional methods of the tray menu.
  * @author Zolt&aacute;n Farkas
  */
 class NativeTrayMenu extends NativeTrayBaseMenu {
@@ -48,7 +48,7 @@ class NativeTrayMenu extends NativeTrayBaseMenu {
     
     /**
      * Sets the specified tray item's key.
-     * The previous menu of the tray item is visible,
+     * If the previous menu of the tray item is visible,
      * it will be hidden and the new one will be showed.
      * @param trayItemKey the key of the tray item or null
      */

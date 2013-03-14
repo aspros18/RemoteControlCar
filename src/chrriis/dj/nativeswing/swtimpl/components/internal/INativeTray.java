@@ -76,10 +76,10 @@ public interface INativeTray {
     
     /**
      * Displays a popup message near the system tray item.
-     * The message will disappear after a time or if the user clicks on it.
+     * The message will disappear after a while or if the user clicks on it.
      * Clicking on the message may trigger an event.
      * @param trayItemKey the key of the tray item
-     * @param msgKey the key of the event callback
+     * @param msgKey the key of the event's callback handler
      * @param title the non-null text displayed above the message, usually in bold
      * @param message the non-null text displayed for the particular message
      * @param type an enum indicating the message type
@@ -102,7 +102,7 @@ public interface INativeTray {
     public void setTrayMenu(int menuKey, Integer itemKey);
     
     /**
-     * Sets tray menu active or inactive.
+     * Sets the tray menu active or inactive.
      * @param menuKey the key of the tray menu
      * @param active true to make the tray menu active; false to make it inactive
      */

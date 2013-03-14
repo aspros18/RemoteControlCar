@@ -10,7 +10,7 @@ package chrriis.dj.nativeswing.swtimpl.components.core;
 import org.eclipse.swt.widgets.MenuItem;
 
 /**
- * Methods of the menu item.
+ * Class that contains the additional methods of the menu item.
  * @author Zolt&aacute;n Farkas
  */
 public class NativeMenuItem implements NativeTrayObject {

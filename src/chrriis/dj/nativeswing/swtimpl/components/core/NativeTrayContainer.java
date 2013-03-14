@@ -54,7 +54,7 @@ final class NativeTrayContainer {
 
     /**
      * Safe equals.
-     * @return true if <code>i1</code> and <code>i2</code> are equals
+     * @return true if <code>i1</code> and <code>i2</code> are equal
      * or both of them are <code>null</code>; otherwise false
      */
     public static boolean equals(Object i1, Object i2) {
@@ -63,7 +63,7 @@ final class NativeTrayContainer {
     
     /**
      * Returns an SWT <code>Shell</code> to create <code>Menu</code> and <code>ToolTip</code>.
-     * The <code>Shell</code> is created at the first call.
+     * The <code>Shell</code> is created on first call.
      */
     public Shell getShell() {
         if (shell != null) return shell;
@@ -115,7 +115,7 @@ final class NativeTrayContainer {
     }
     
     /**
-     * Returns the first free key in the specified <code>Set</code>.
+     * Returns the first available key in the specified <code>Set</code>.
      * @param s the <code>Set</code>
      */
     private static int getNextKey(Set<? extends NativeTrayObject> s) {

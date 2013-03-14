@@ -11,7 +11,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.TrayItem;
 
 /**
- * Methods of the tray item.
+ * Class that contains the additional methods of the tray item.
  * @author Zolt&aacute;n Farkas
  */
 class NativeTrayItem implements NativeTrayObject {
@@ -74,7 +74,7 @@ class NativeTrayItem implements NativeTrayObject {
      */
     public void setImage(Image img) {
         TRAY_ITEM.setImage(img);
-        setVisible(true); // it's automatic on GTK; maybe on Windows too
+        setVisible(true); // it's automatic on GTK; perhaps on Windows too
     }
     
     public TrayItem getTrayItem() {

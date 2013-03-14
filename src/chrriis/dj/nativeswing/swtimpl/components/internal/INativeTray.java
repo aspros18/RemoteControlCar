@@ -169,7 +169,7 @@ public interface INativeTray {
     
     /**
      * Disposes every native components and releases the resources held by it.
-     * The <code>Tray</code> won't be able to create any component after that call.
+     * The <code>Tray</code> won't be able to create any component after this method has been called.
      */
     public void dispose();
     

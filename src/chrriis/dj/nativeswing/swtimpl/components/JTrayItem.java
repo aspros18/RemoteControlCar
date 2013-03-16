@@ -96,7 +96,10 @@ public class JTrayItem extends JTrayObject {
     boolean dispose(boolean outer) {
         if (!super.dispose()) return false;
         NATIVE_TRAY.disposeTrayItem(getKey());
-        if (outer) getTrayContainer().getTrayItems().remove(this);
+        if (outer) {
+            getTrayContainer().getTrayItems().remove(this);
+            JTray.onDispose();
+        }
         visible = false;
         tooltip = null;
         imageData = null;

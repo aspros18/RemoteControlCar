@@ -51,6 +51,9 @@ public final class JTray {
      */
     private static Timer exitPrevent;
     
+    /**
+     * Registrates a listener that will dispose the system tray if NativeInterface is closed.
+     */
     static {
         NativeInterface.addNativeInterfaceListener(new NativeInterfaceAdapter() {
 
@@ -60,6 +63,13 @@ public final class JTray {
             }
             
         });
+    }
+
+    /**
+     * Inheritance and instantiation are disabled.
+     */
+    private JTray() {
+        ;
     }
     
     static JTrayContainer getTrayContainer() {

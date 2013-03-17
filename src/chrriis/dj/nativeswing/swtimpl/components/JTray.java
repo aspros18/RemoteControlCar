@@ -107,14 +107,38 @@ public final class JTray {
         return disposed;
     }
     
+    /**
+     * Creates a tray item to the native system tray.
+     * The tray item will be invisible till it has no image specified.
+     * @throws UnsupportedOperationException if the native system tray is not supported
+     * @throws IllegalStateException if the native system tray is disposed
+     */
     public static JTrayItem createTrayItem() {
         return createTrayItem((byte[]) null, null);
     }
     
+    /**
+     * Creates a tray item to the native system tray.
+     * The tray item becomes visible in the system tray once it is created with image.
+     * @param image the image to be used or <code>null</code>
+     * @param tooltip the string for the tooltip;
+     * if the value is <code>null</code> no tooltip is shown
+     * @throws UnsupportedOperationException if the native system tray is not supported
+     * @throws IllegalStateException if the native system tray is disposed
+     */
     public static JTrayItem createTrayItem(RenderedImage image, String tooltip) {
         return createTrayItem(JTrayContainer.createImageData(image), tooltip);
     }
 
+    /**
+     * Creates a tray item to the native system tray.
+     * The tray item becomes visible in the system tray once it is created with image.
+     * @param imageData the bytes of the image to be used or <code>null</code>
+     * @param tooltip the string for the tooltip;
+     * if the value is <code>null</code> no tooltip is shown
+     * @throws UnsupportedOperationException if the native system tray is not supported
+     * @throws IllegalStateException if the native system tray is disposed
+     */
     public static JTrayItem createTrayItem(byte[] imageData, String tooltip) {
         checkState();
         if (exitPrevent == null) exitPrevent = new Timer();
@@ -122,6 +146,13 @@ public final class JTray {
         return new JTrayItem(key, tooltip, imageData);
     }
 
+    /**
+     * Disposes every native components and releases the resources held by it.
+     * The <code>JTray</code> won't be able to create any component
+     * after this method has been called.
+     * {@link NativeInterface#runEventPump()} will be finished after
+     * this call if there are not other native components.
+     */
     public static void dispose() {
         if (isDisposed()) return;
         if (!isSupported()) return;
@@ -131,6 +162,11 @@ public final class JTray {
         onDispose();
     }
 
+    /**
+     * If there are no more tray items, cancels the timer that prevents
+     * {@link NativeInterface#runEventPump()} to be finished.
+     * It is called after a tray item or every native components are disposed.
+     */
     static void onDispose() {
         if (exitPrevent != null && getTrayContainer().getTrayItems().isEmpty()) {
             exitPrevent.cancel();
@@ -138,6 +174,11 @@ public final class JTray {
         }
     }
     
+    /**
+     * Avoids unexpected errors, instead throws communicative exceptions.
+     * @throws UnsupportedOperationException if the native system tray is not supported
+     * @throws IllegalStateException if the native system tray is disposed
+     */
     static void checkState() {
         if (!isSupported()) throw new UnsupportedOperationException("Tray is not supported");
         if (isDisposed()) throw new IllegalStateException("Tray is disposed");

@@ -140,16 +140,6 @@ public class ControllerWindows implements RelocalizableWindow {
     }
     
     /**
-     * Leállítás előtt az erőforrások felszabadítása.
-     */
-    public void dispose() {
-        DIALOG_MAP.dispose();
-        DIALOG_ARROWS.dispose();
-        DIALOG_CHAT.dispose();
-        FRAME_MAIN.dispose();
-    }
-    
-    /**
      * A megadott ablak megjelenítése/eltüntetése és esemény küldése a főablaknak.
      * @param w az ablak
      * @param b true esetén megjelenik, egyébként eltűnik

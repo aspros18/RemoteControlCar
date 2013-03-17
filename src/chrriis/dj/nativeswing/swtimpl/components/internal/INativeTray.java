@@ -37,7 +37,7 @@ public interface INativeTray {
     }
     
     /**
-     * Returns whether the system tray is supported on the current platform.
+     * Returns whether the native system tray is supported on the current platform.
      * @return true if the native system tray is available, otherwise false
      */
     public boolean isSupported();

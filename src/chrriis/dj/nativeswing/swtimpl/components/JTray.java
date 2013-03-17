@@ -46,13 +46,15 @@ public final class JTray {
     private static Boolean supported;
     
     /**
-     * A timer that is not used for nothing but if it exists, it prevents {@link NativeInterface#runEventPump()} to be finished.
+     * A timer that is not used for nothing but if it exists,
+     * it prevents {@link NativeInterface#runEventPump()} to be finished.
      * @see #onDispose()
      */
     private static Timer exitPrevent;
     
     /**
-     * Registrates a listener that will dispose the system tray if NativeInterface is closed.
+     * Registrates a listener that will dispose the system tray
+     * if NativeInterface is closed.
      */
     static {
         NativeInterface.addNativeInterfaceListener(new NativeInterfaceAdapter() {
@@ -72,14 +74,35 @@ public final class JTray {
         ;
     }
     
+    /**
+     * Returns the container of the Swing side that is used by
+     * {@link JTrayObject} to registrate itself and find other objects.
+     * {@link JTrayContainer#getInstance(double)} waits a passkey
+     * that is used for check whether the caller has the permission
+     * to use the container.
+     * This method is available inside the package so tray objects
+     * are able to use the container but other objects are not.
+     */
     static JTrayContainer getTrayContainer() {
         return JTrayContainer.getInstance(PASSKEY);
     }
     
+    /**
+     * Returns whether the native system tray is supported on the current platform.
+     * If the native system tray is not supported, {@link #createTrayItem(byte[], String)}
+     * will throw an {@link UnsupportedOperationException} when it is called.
+     * @return true if the native system tray is available, otherwise false
+     */
     public static boolean isSupported() {
         return supported == null ? supported = NATIVE_TRAY.isSupported() : supported;
     }
     
+    /**
+     * Returns whether the native system tray is disposed.
+     * If the native system tray is disposed, {@link #createTrayItem(byte[], String)}
+     * will throw an {@link IllegalStateException} when it is called.
+     * @return true if the native system tray is disposed, otherwise false
+     */
     public static boolean isDisposed() {
         return disposed;
     }

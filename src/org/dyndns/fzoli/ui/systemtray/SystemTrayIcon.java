@@ -111,8 +111,8 @@ public class SystemTrayIcon {
      * @param label a menüben megjelenő szöveg
      * @param callback eseménykezelő
      */
-    public static void addMenuItem(String label, Runnable callback) {
-        addMenuItem(label, null, callback);
+    public static MenuItem addMenuItem(String label, Runnable callback) {
+        return addMenuItem(label, null, callback);
     }
     
     /**
@@ -121,10 +121,11 @@ public class SystemTrayIcon {
      * @param img SWT menü esetén megjelenő kép
      * @param callback eseménykezelő
      */
-    public static void addMenuItem(String label, BufferedImage img, Runnable callback) {
+    public static MenuItem addMenuItem(String label, BufferedImage img, Runnable callback) {
         if (isSupported()) {
-            menu.addMenuItem(label, img, callback);
+            return menu.addMenuItem(label, img, callback);
         }
+        return null;
     }
     
     /**

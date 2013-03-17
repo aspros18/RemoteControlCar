@@ -18,7 +18,7 @@ public interface PopupMenu extends Visibility {
      * @param text megjelenő szöveg
      * @param r callback, ami akkor hívódik meg, ha a menüelemre kattintanak.
      */
-    public void addMenuItem(String text, final Runnable r);
+    public MenuItem addMenuItem(String text, final Runnable r);
     
     /**
      * Menüelem hozzáadása a menühöz.
@@ -26,7 +26,7 @@ public interface PopupMenu extends Visibility {
      * @param img SWT menü esetén megjelenő kép
      * @param r callback, ami akkor hívódik meg, ha a menüelemre kattintanak.
      */
-    public void addMenuItem(String text, BufferedImage img, final Runnable r);
+    public MenuItem addMenuItem(String text, BufferedImage img, final Runnable r);
     
     /**
      * Checkbox menüelem hozzáadása a menühöz.

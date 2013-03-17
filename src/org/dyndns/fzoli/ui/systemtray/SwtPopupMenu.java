@@ -42,37 +42,40 @@ class SwtPopupMenu implements PopupMenu {
     }
     
     @Override
-    public void addMenuItem(String text, final Runnable r) {
-        addMenuItem(text, null, r);
+    public MenuItem addMenuItem(String text, final Runnable r) {
+        return addMenuItem(text, null, r);
     }
     
     @Override
-    public void addMenuItem(String text, BufferedImage img, final Runnable r) {
+    public MenuItem addMenuItem(String text, BufferedImage img, final Runnable r) {
         JMenuItem mi = MENU.addMenuItem(text);
         if (img != null) mi.setImage(img);
-        if (r == null) return;
-        mi.addActionListener(new MenuItemActionListener() {
+        if (r != null) {
+            mi.addActionListener(new MenuItemActionListener() {
 
-            @Override
-            public void onAction(TrayActionEvent<JMenuItem> e) {
-                r.run();
-            }
-            
-        });
+                @Override
+                public void onAction(TrayActionEvent<JMenuItem> e) {
+                    r.run();
+                }
+
+            });
+        }
+        return new SwtMenuItem(mi);
     }
 
     @Override
     public void addCheckboxMenuItem(String text, boolean checked, final Runnable r) {
         JMenuSelectionItem mi = MENU.addMenuCheckItem(text, checked);
-        if (r == null) return;
-        mi.addActionListener(new MenuItemSelectionListener() {
+        if (r != null) {
+            mi.addActionListener(new MenuItemSelectionListener() {
 
-            @Override
-            public void onSelection(TrayActionEvent<JMenuSelectionItem> e) {
-                r.run();
-            }
-            
-        });
+                @Override
+                public void onSelection(TrayActionEvent<JMenuSelectionItem> e) {
+                    r.run();
+                }
+
+            });
+        }
     }
     
 }

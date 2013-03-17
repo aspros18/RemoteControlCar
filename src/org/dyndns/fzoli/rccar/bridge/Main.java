@@ -21,6 +21,7 @@ import static org.dyndns.fzoli.ui.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.ui.systemtray.SystemTrayIcon;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 import static org.dyndns.fzoli.rccar.ui.UIUtil.setApplicationName;
+import org.dyndns.fzoli.ui.systemtray.MenuItem;
 
 /**
  * A Híd indító osztálya.
@@ -57,6 +58,11 @@ public class Main {
      * A szerver socket referenciája arra kell, hogy eseménykezelővel ki lehessen lépni.
      */
     private static SSLServerSocket SERVER_SOCKET;
+    
+    /**
+     * A szerző dialógust megjelenítő menüelem, ami inaktív, míg a dialógus látható.
+     */
+    private static MenuItem MI_AUTHOR;
     
     /**
      * Még mielőtt lefutna a main metódus, beállítódik a rendszer LAF, a saját kivételkezelő, a rendszerikon és az erőforrás-felszabadító szál.
@@ -129,11 +135,11 @@ public class Main {
             SystemTrayIcon.addMenuSeparator();
 
             // szerző opció hozzáadása
-            SystemTrayIcon.addMenuItem(getString("author"), new Runnable() {
+            MI_AUTHOR = SystemTrayIcon.addMenuItem(getString("author"), new Runnable() {
 
                 @Override
                 public void run() {
-                    UIUtil.showAuthorDialog(R.getBridgeImage());
+                    UIUtil.showAuthorDialog(MI_AUTHOR, R.getBridgeImage());
                 }
                 
             });

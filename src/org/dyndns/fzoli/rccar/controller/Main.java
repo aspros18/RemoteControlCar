@@ -32,6 +32,7 @@ import org.dyndns.fzoli.ui.systemtray.SystemTrayIcon;
 import static org.dyndns.fzoli.ui.systemtray.SystemTrayIcon.showMessage;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 import static org.dyndns.fzoli.rccar.ui.UIUtil.setApplicationName;
+import org.dyndns.fzoli.ui.systemtray.MenuItem;
 
 /**
  * A vezérlő indító osztálya.
@@ -161,6 +162,12 @@ public class Main {
     private static ControllerWindows CONTROLLER_WINDOWS;
     
     /**
+     * A szerző dialógust megjelenítő menüelem, ami inaktív,
+     * míg a dialógus látható.
+     */
+    private static MenuItem MI_AUTHOR;
+    
+    /**
      * Segédváltozó kapcsolódás kérés detektálására.
      */
     private static boolean connecting = false;
@@ -251,11 +258,11 @@ public class Main {
             SystemTrayIcon.addMenuSeparator();
 
             // szerző opció hozzáadása
-            SystemTrayIcon.addMenuItem(getString("author"), R.getImage("question.png"), new Runnable() {
+            MI_AUTHOR = SystemTrayIcon.addMenuItem(getString("author"), R.getImage("question.png"), new Runnable() {
 
                 @Override
                 public void run() {
-                    UIUtil.showAuthorDialog(R.getIconImage());
+                    UIUtil.showAuthorDialog(MI_AUTHOR, R.getIconImage());
                 }
                 
             });

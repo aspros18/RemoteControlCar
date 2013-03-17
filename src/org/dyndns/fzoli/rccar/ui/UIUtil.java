@@ -9,6 +9,7 @@ import static javax.swing.UIManager.getString;
 import static javax.swing.UIManager.put;
 import org.dyndns.fzoli.ui.FilePanel;
 import org.dyndns.fzoli.ui.OptionPane;
+import org.dyndns.fzoli.ui.systemtray.MenuItem;
 
 /**
  * Általános UI metódusok, amik kellhetnek több helyen is.
@@ -90,10 +91,14 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
     
     /**
      * Információt jelenít meg a program szerzőjéről.
-     * @param a dialógus ikonja
+     * A dialógust meghívó menüelem inaktív, míg a dialógus látható.
+     * @param mi a menüelem, amire kattintva ez a metódus meghívódott
+     * @param icon a dialógus ikonja
      */
-    public static void showAuthorDialog(Image icon) {
+    public static void showAuthorDialog(MenuItem mi, Image icon) {
+        mi.setEnabled(false);
         OptionPane.showMessageDialog(icon, getString(KEY_AUTHOR) + ": Farkas Zoltán\n" + getString(KEY_NEPTUN_ID)+": DZ54IQ", getString(KEY_AUTHOR), JOptionPane.INFORMATION_MESSAGE, true);
+        mi.setEnabled(true);
     }
     
     /**

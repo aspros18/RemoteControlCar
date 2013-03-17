@@ -1,7 +1,6 @@
 package org.dyndns.fzoli.ui.systemtray;
 
 import java.awt.CheckboxMenuItem;
-import java.awt.MenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -48,13 +47,13 @@ class AwtPopupMenu implements PopupMenu {
     }
 
     @Override
-    public void addMenuItem(String text, final Runnable r) {
-        addMenuItem(text, null, r);
+    public MenuItem addMenuItem(String text, final Runnable r) {
+        return addMenuItem(text, null, r);
     }
     
     @Override
-    public void addMenuItem(String text, BufferedImage img, final Runnable r) {
-        java.awt.MenuItem item = new MenuItem(text);
+    public MenuItem addMenuItem(String text, BufferedImage img, final Runnable r) {
+        java.awt.MenuItem item = new java.awt.MenuItem(text);
         if (r != null) {
             item.addActionListener(new ActionListener() {
 
@@ -66,6 +65,7 @@ class AwtPopupMenu implements PopupMenu {
             });
         }
         menu.add(item);
+        return new AwtMenuItem(item);
     }
 
     @Override

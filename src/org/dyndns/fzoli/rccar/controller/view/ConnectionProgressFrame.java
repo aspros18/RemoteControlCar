@@ -144,6 +144,9 @@ public class ConnectionProgressFrame extends AbstractConnectionProgressFrame imp
             setAgainButtonEnabled(enabled);
             setIconTextPanel(status.ordinal());
         }
+        else {
+            miReconn.setEnabled(true);
+        }
         setVisible(status != null);
     }
     

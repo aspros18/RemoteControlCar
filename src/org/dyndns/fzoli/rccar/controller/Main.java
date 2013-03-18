@@ -398,6 +398,7 @@ public class Main {
      * Ha van kiépítve kapcsolat, bontja azt és új kapcsolatot alakít ki.
      */
     public static void reconnect() {
+        if (CONN.isConnecting()) return;
         CONN.disconnect();
         runClient(true, false);
     }

@@ -1,0 +1,10 @@
+<project name="Mobile-RC MAC tar">
+<delete file="./build/jar/UIApp/Mobile-RC.app/Contents/MacOS/JavaApplicationStub" />
+<mkdir dir="./build/jar/UILauncher/Mobile-RC.app/Contents/MacOS/" />
+<copy file="./JavaApplicationStub" 
+      todir="./build/jar/UILauncher/Mobile-RC.app/Contents/MacOS/" />
+<tar destfile="./build/jars/Mobile-RC.app.tar">
+  <tarfileset dir="./build/jar/UILauncher/" filemode="777" />
+  <tarfileset dir="./build/jar/UIApp/" />
+</tar>
+</project>

@@ -8,6 +8,7 @@ import static org.dyndns.fzoli.rccar.controller.Main.showSettingDialog;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.ui.AbstractConnectionProgressFrame;
 import org.dyndns.fzoli.ui.IconTextPanel;
+import org.dyndns.fzoli.ui.systemtray.MenuItem;
 
 /**
  * A vezérlő kapcsolódásjelző- és kezelő ablaka.
@@ -134,10 +135,13 @@ public class ConnectionProgressFrame extends AbstractConnectionProgressFrame imp
      * Az Újra gomb tiltva lesz {@code Status.CONNECTING} státusz esetén.
      * Ha nincs megadva státusz, az ablak elrejtődik.
      * @param status a kapcsolat egyik állapota
+     * @param miReconn újrakapcsolódás opció a rendszerikon menüjében
      */
-    public void setStatus(Status status) {
+    public void setStatus(Status status, MenuItem miReconn) {
         if (status != null) {
-            setAgainButtonEnabled(status != Status.CONNECTING);
+            boolean enabled = status != Status.CONNECTING;
+            miReconn.setEnabled(enabled);
+            setAgainButtonEnabled(enabled);
             setIconTextPanel(status.ordinal());
         }
         setVisible(status != null);

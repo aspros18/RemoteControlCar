@@ -168,6 +168,11 @@ public class Main {
     private static MenuItem MI_AUTHOR;
     
     /**
+     * Újrakapcsolódás menüopció.
+     */
+    private static MenuItem MI_RECONNECT;
+    
+    /**
      * Segédváltozó kapcsolódás kérés detektálására.
      */
     private static boolean connecting = false;
@@ -245,7 +250,7 @@ public class Main {
             SystemTrayIcon.addMenuItem(getString("connection_settings"), R.getImage("preferences.png"), CALLBACK_SETTING);
 
             // újrakapcsolódás opció hozzáadása
-            SystemTrayIcon.addMenuItem(getString("reconnect"), R.getImage("connect.png"), new Runnable() {
+            MI_RECONNECT = SystemTrayIcon.addMenuItem(getString("reconnect"), R.getImage("connect.png"), new Runnable() {
 
                 @Override
                 public void run() {
@@ -335,7 +340,7 @@ public class Main {
     public static void showConnectionStatus(Status status) {
         if (exiting || CONFIG_EDITOR.isVisible()) return;
         if (connecting && status != Status.CONNECTING) return;
-        PROGRESS_FRAME.setStatus(status);
+        PROGRESS_FRAME.setStatus(status, MI_RECONNECT);
         SELECTION_FRAME.setVisible(false);
         CONTROLLER_WINDOWS.setVisible(false);
     }
@@ -393,10 +398,8 @@ public class Main {
      * Ha van kiépítve kapcsolat, bontja azt és új kapcsolatot alakít ki.
      */
     public static void reconnect() {
-        if (CONN.isConnected()) {
-            CONN.disconnect();
-            runClient(true, false);
-        }
+        CONN.disconnect();
+        runClient(true, false);
     }
     
     /**

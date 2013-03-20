@@ -7,7 +7,7 @@ class JTrayListenerList<T> extends ArrayList<T> {
 
     private final JTrayObject OWNER;
     
-    public JTrayListenerList(JTrayObject owner) {
+    JTrayListenerList(JTrayObject owner) {
         OWNER = owner;
     }
 

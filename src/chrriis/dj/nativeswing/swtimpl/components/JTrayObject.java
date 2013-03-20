@@ -6,7 +6,7 @@ abstract class JTrayObject {
 
     private boolean disposed = false;
     
-    public JTrayObject(int key) {
+    JTrayObject(int key) {
         KEY = key;
     }
     

@@ -6,7 +6,7 @@ import java.util.Set;
 
 class JTrayBaseMenu extends JTrayObject {
 
-    public JTrayBaseMenu(int key) {
+    JTrayBaseMenu(int key) {
         super(key);
     }
 

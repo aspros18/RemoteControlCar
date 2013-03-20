@@ -5,7 +5,7 @@ import java.awt.image.RenderedImage;
 
 class JMenuCommonItem<T> extends JMenuActiveItem<T> {
 
-    public JMenuCommonItem(JTrayBaseMenu parent, int key, String text, boolean enabled) {
+    JMenuCommonItem(JTrayBaseMenu parent, int key, String text, boolean enabled) {
         super(parent, key, text, enabled);
     }
     

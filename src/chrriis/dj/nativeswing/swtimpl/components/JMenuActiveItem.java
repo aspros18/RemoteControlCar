@@ -13,7 +13,7 @@ class JMenuActiveItem<T> extends JMenuBaseItem {
     
     private boolean enabled;
     
-    public JMenuActiveItem(JTrayBaseMenu parent, int key, String text, boolean enabled) {
+    JMenuActiveItem(JTrayBaseMenu parent, int key, String text, boolean enabled) {
         super(parent, key);
         this.text = text;
         this.enabled = enabled;

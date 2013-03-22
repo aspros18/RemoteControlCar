@@ -221,7 +221,7 @@ public final class NativeTray implements INativeTray {
 
                         @Override
                         public void run() {
-                            l.onSelection(new TrayActionEvent<JMenuSelectionItem>(item));
+                            l.onSelectionChanged(new TrayActionEvent<JMenuSelectionItem>(item));
                         }
                         
                     });

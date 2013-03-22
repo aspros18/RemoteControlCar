@@ -70,7 +70,7 @@ class SwtPopupMenu implements PopupMenu {
             mi.addActionListener(new MenuItemSelectionListener() {
 
                 @Override
-                public void onSelection(TrayActionEvent<JMenuSelectionItem> e) {
+                public void onSelectionChanged(TrayActionEvent<JMenuSelectionItem> e) {
                     r.run();
                 }
 

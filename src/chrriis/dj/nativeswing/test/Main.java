@@ -84,7 +84,7 @@ public class Main {
                 MenuItemSelectionListener ml = new MenuItemSelectionListener() {
 
                     @Override
-                    public void onSelection(TrayActionEvent<JMenuSelectionItem> e) {
+                    public void onSelectionChanged(TrayActionEvent<JMenuSelectionItem> e) {
                         System.out.println((e.getComponent() == menuItem2 ? "check item" : ("radio" + (e.getComponent() == radio1 ? '1' : '2'))) + " has been " + (e.getComponent().isSelected() ? "" : "un") + "selected.");
                     }
                     

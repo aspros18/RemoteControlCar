@@ -175,7 +175,9 @@ public class Main {
                 catch (IOException ex) {
                     ;
                 }
-                logInfo(VAL_MESSAGE, getString("log_stop"), false);
+                if (CONFIG.isCorrect()) {
+                    logInfo(VAL_MESSAGE, getString("log_stop"), false);
+                }
             }
             
         }));

@@ -3,7 +3,7 @@
     <taskdef name="swtjar" classname="org.swtjar.ant.SWTJarTask"
              classpath="./swtbuild/swtjar.jar"/>
     <swtjar jarfile="./dist/ui.jar"
-            targetmainclass="org.dyndns.fzoli.rccar.controller.Main"
+            targetmainclass="org.dyndns.fzoli.rccar.Main"
             swtversion="4.3M5a">
         <!-- Application Classes -->
         <fileset dir="./build/classes" includes="**/*.class" />

@@ -1,2 +1,2 @@
 @echo off
-java -jar ui.jar %*
+java -jar ui.jar client

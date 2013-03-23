@@ -1,14 +1,11 @@
 package org.dyndns.fzoli.rccar.controller;
 
-import chrriis.dj.nativeswing.swtimpl.NativeInterface;
-import chrriis.dj.nativeswing.swtimpl.components.core.NativeTray;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -132,11 +129,6 @@ public class Main {
     private static boolean exiting = false;
     
     /**
-     * Megadja, hogy van-e natív támogatás a böngészőhöz.
-     */
-    private static boolean nativeSwingAvailable = true;
-    
-    /**
      * Nyelvkiválasztó ablak.
      */
     public static LanguageChooserFrame LNG_FRAME;
@@ -190,20 +182,6 @@ public class Main {
     }
     
     /**
-     * A natív böngészőhöz használt SWT interfész inicializálása.
-     */
-    private static void initNativeInterface() {
-        try {
-            if (new File("no_swt").isFile()) throw new Exception(); // ha az SWT tiltva van, natív interfész kihagyása
-            NativeInterface.getConfiguration().addNativeClassPathReferenceClasses(NativeTray.class); // SWT System Tray kiegészítés regisztrálása
-            NativeInterface.open(); // a natív böngésző támogatás igényli
-        }
-        catch (Throwable t) {
-            nativeSwingAvailable = false; // a natív támogatás nem érhető el
-        }
-    }
-    
-    /**
      * A program leállítása.
      * Akkor fut le, amikor a felhasználó ki szeretne lépni a programból.
      */
@@ -227,7 +205,7 @@ public class Main {
      * @param setIcon ha true, beállítja az ikont is
      */
     private static void setSystemTrayIcon(boolean setIcon) {
-        if (SystemTrayIcon.init(!isNativeSwingAvailable()) && SystemTrayIcon.isSupported()) {
+        if (SystemTrayIcon.init(!UIUtil.isNativeSwingAvailable()) && SystemTrayIcon.isSupported()) {
             // az ikon beállítása
             if (setIcon) SystemTrayIcon.setIcon(getString("app_name"), R.getIconImage());
             
@@ -263,7 +241,7 @@ public class Main {
             SystemTrayIcon.addMenuSeparator();
 
             // szerző opció hozzáadása
-            MI_AUTHOR = SystemTrayIcon.addMenuItem(getString("author"), R.getImage("question.png"), new Runnable() {
+            MI_AUTHOR = SystemTrayIcon.addMenuItem(getString("author"), R.getQuestionImage(), new Runnable() {
 
                 @Override
                 public void run() {
@@ -273,7 +251,7 @@ public class Main {
             });
             
             // kilépés opció hozzáadása
-            SystemTrayIcon.addMenuItem(getString("exit"), R.getImage("exit.png"), CALLBACK_EXIT);
+            SystemTrayIcon.addMenuItem(getString("exit"), R.getExitImage(), CALLBACK_EXIT);
         }
     }
     
@@ -475,13 +453,6 @@ public class Main {
     }
     
     /**
-     * Megadja, hogy van-e natív támogatás a böngészőhöz.
-     */
-    public static boolean isNativeSwingAvailable() {
-        return nativeSwingAvailable;
-    }
-    
-    /**
      * A vezérlő main metódusa.
      * Ha a grafikus felület nem érhető el, konzolra írja a szomorú tényt és a program végetér.
      * Ha a konfigurációban megadott tanúsítványfájlok nem léteznek, közli a hibát és kényszeríti a kijavítását úgy,
@@ -490,12 +461,12 @@ public class Main {
      * Ha a konfiguráció teljes egészében megegyezik az eredeti beállításokkal, a program közli, hol állítható át.
      * Végül a kliens program elkezdi futását.
      */
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         if (GraphicsEnvironment.isHeadless()) { // ha a grafikus felület nem érhető el
             System.err.println(getString("msg_need_gui") + LS + getString("msg_exit"));
             System.exit(1); // hibakóddal lép ki
         }
-        initNativeInterface(); // natív interfész inicializálása a webböngészőhöz és a rendszerikonhoz
+        UIUtil.initNativeInterface(); // natív interfész inicializálása a webböngészőhöz és a rendszerikonhoz
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
@@ -556,9 +527,7 @@ public class Main {
             }
 
         });
-        if (isNativeSwingAvailable()) { // ha van natív támogatás
-            NativeInterface.runEventPump(); // SWT eseménypumpáló futtatása
-        }
+        UIUtil.runNativeEventPump();
     }
     
 }

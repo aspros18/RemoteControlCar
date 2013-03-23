@@ -69,13 +69,12 @@ public class Main {
      */
     static {
         setApplicationName("Mobile-RC Server");
-        setSplashMessage(getString("please_wait")); // NetBeansből indítva van rá szükség, egyébként nincs hatása
+        setSplashMessage(getString("please_wait"));
         setSystemLookAndFeel();
         setExceptionHandler();
         applyConfig();
-        setSystemTrayIcon();
         addShutdownHook();
-        closeSplashScreen(); // NetBeansből indítva van rá szükség, egyébként nincs hatása
+        closeSplashScreen();
     }
     
     /**
@@ -105,7 +104,7 @@ public class Main {
      */
     private static void setSystemTrayIcon() {
         if (CONFIG.isHidden()) return;
-        if (SystemTrayIcon.init() && SystemTrayIcon.isSupported()) {
+        if (SystemTrayIcon.init(!UIUtil.isNativeSwingAvailable()) && SystemTrayIcon.isSupported()) {
             // az ikon beállítása
             SystemTrayIcon.setIcon(getString("app_name"), R.getBridgeImage());
             
@@ -135,7 +134,7 @@ public class Main {
             SystemTrayIcon.addMenuSeparator();
 
             // szerző opció hozzáadása
-            MI_AUTHOR = SystemTrayIcon.addMenuItem(getString("author"), new Runnable() {
+            MI_AUTHOR = SystemTrayIcon.addMenuItem(getString("author"), R.getQuestionImage(), new Runnable() {
 
                 @Override
                 public void run() {
@@ -145,7 +144,7 @@ public class Main {
             });
             
             // kilépés opció hozzáadása
-            SystemTrayIcon.addMenuItem(getString("exit"), new Runnable() {
+            SystemTrayIcon.addMenuItem(getString("exit"), R.getExitImage(), new Runnable() {
 
                 /**
                  * Ha a kilépésre kattintottak, a program kilép.
@@ -284,18 +283,25 @@ public class Main {
      * @throws RuntimeException ha nem várt kivétel képződik
      */
     private static void runServer() {
-        final SSLServerSocket ss = createServerSocket(0); // socket szerver létrehozása kezdetben nincs 1 hibás próbálkozás sem a jelszóbevitelnél
-        while (!ss.isClosed()) { // ameddig nincs lezárva a socket szerver
-            SSLSocket s = null;
-            try {
-                s = (SSLSocket) ss.accept(); // kliensre várakozik, és ha kapcsolódtak, ...
-                new Thread(new BridgeHandler(s)).start(); // ... új szálban kezeli a kapcsolatot
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                final SSLServerSocket ss = createServerSocket(0); // socket szerver létrehozása kezdetben nincs 1 hibás próbálkozás sem a jelszóbevitelnél
+                while (!ss.isClosed()) { // ameddig nincs lezárva a socket szerver
+                    SSLSocket s = null;
+                    try {
+                        s = (SSLSocket) ss.accept(); // kliensre várakozik, és ha kapcsolódtak, ...
+                        new Thread(new BridgeHandler(s)).start(); // ... új szálban kezeli a kapcsolatot
+                    }
+                    catch (Exception ex) {
+                        // ha bármilyen kivétel keletkezik, nem áll le a szerver, csak közli a kivételt
+                        showException(ex);
+                    }
+                }
             }
-            catch (Exception ex) {
-                // ha bármilyen kivétel keletkezik, nem áll le a szerver, csak közli a kivételt
-                showException(ex);
-            }
-        }
+            
+        }).start();
     }
     
     /**
@@ -335,17 +341,20 @@ public class Main {
      * Ha a konfiguráció létezik, de rosszul paraméterezett, figyelmezteti a felhasználót és kilép.
      * Ha a program nem lépett ki, a híd szerver elkezdi futását.
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         if (Config.FILE_CONFIG.exists() && !Config.FILE_CONFIG.canRead()) { // ha nincs olvasási jog a konfig fájlon
             alert(VAL_ERROR, getString("msg_need_permission") + LS + getString("msg_exit"), System.err);
             System.exit(1); // hibakóddal lép ki
         }
         if (CONFIG.isCorrect()) {
+            UIUtil.initNativeInterface();
+            setSystemTrayIcon();
             if (!Permissions.getConfig().canRead()) { // ha a jogosultságokat leíró fájl nem olvasható, figyelmezteti a felhasználót
                 SystemTrayIcon.showMessage(VAL_WARNING, getString("warn_without_permissions1") + ' ' + LS + getString("warn_without_permissions2"), IconType.WARNING);
             }
             readArguments(args);
             runServer();
+            UIUtil.runNativeEventPump();
         }
         else {
             final StringBuilder msg = new StringBuilder();

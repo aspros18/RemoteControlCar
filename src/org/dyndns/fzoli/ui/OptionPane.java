@@ -11,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.SwingUtilities;
 import static javax.swing.UIManager.getString;
 import static org.dyndns.fzoli.ui.UIUtil.init;
 
@@ -185,7 +186,7 @@ public class OptionPane extends JOptionPane {
     public static void showMessageDialog(Image icon, String message, String title, int messageType, boolean showOnTaskbar) {
         JFrame dummy = createDummyFrame(icon, showOnTaskbar ? title : null);
         showMessageDialog(dummy, message, title, messageType);
-        dummy.dispose();
+        if (dummy != null) dummy.dispose();
     }
     
     /**
@@ -251,7 +252,7 @@ public class OptionPane extends JOptionPane {
             dummy = new JFrame();
             dummy.setIconImage(icon);
         }
-        if (title != null) {
+        if (dummy != null && title != null) {
             dummy.setSize(0, 0);
             dummy.setUndecorated(true);
             dummy.setLocationRelativeTo(null);

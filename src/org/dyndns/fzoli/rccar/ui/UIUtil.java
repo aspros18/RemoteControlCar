@@ -1,6 +1,10 @@
 package org.dyndns.fzoli.rccar.ui;
 
+import chrriis.dj.nativeswing.swtimpl.NativeInterface;
+import chrriis.dj.nativeswing.swtimpl.components.core.NativeTray;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.io.File;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -16,6 +20,11 @@ import org.dyndns.fzoli.ui.systemtray.MenuItem;
  * @author zoli
  */
 public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
+    
+    /**
+     * Megadja, hogy van-e SWT támogatás.
+     */
+    private static boolean nativeSwingAvailable = false;
     
     /**
      * Kulcs a lokalizált szöveghez.
@@ -129,6 +138,41 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
      */
     public static OptionPane.PasswordData showPasswordInput(Image icon, boolean saveEnabled, boolean showOnTaskbar, String extraText, Runnable extraCallback) {
         return OptionPane.showPasswordInput(getString(KEY_CERT_LOAD_ERROR), getString(KEY_CERT_ENTER_PASSWORD), icon, saveEnabled, showOnTaskbar, extraText, extraCallback);
+    }
+    
+    /**
+     * Megadja, hogy van-e SWT támogatás.
+     * @return true, ha sikeresen inicializálódott a natív interfész, egyébként false
+     */
+    public static boolean isNativeSwingAvailable() {
+        return nativeSwingAvailable;
+    }
+    
+    /**
+     * SWT eseménypumpáló futtatása.
+     * Ha nincs natív támogatás, nem tesz semmit.
+     */
+    public static void runNativeEventPump() {
+        if (isNativeSwingAvailable()) { // ha van natív támogatás
+            NativeInterface.runEventPump(); // SWT eseménypumpáló futtatása
+        }
+    }
+    
+    /**
+     * A natív böngészőhöz és rendszerikonhoz használt SWT interfész inicializálása.
+     * @return true, ha sikerült az inicializálás, egyébként false
+     */
+    public static boolean initNativeInterface() {
+        try {
+            if (nativeSwingAvailable) return true; // ha már inicializálva van, kilépés
+            if (GraphicsEnvironment.isHeadless() || new File("no_swt").isFile()) throw new Exception(); // ha nincs GUI vagy az SWT tiltva van, kilépés
+            NativeInterface.getConfiguration().addNativeClassPathReferenceClasses(NativeTray.class); // SWT System Tray kiegészítés regisztrálása
+            NativeInterface.open(); // a natív rendszerikon- és böngésző-támogatás igényli
+            return nativeSwingAvailable = true; // a natív támogatás elindítva
+        }
+        catch (Throwable t) {
+            return nativeSwingAvailable = false; // a natív támogatás nem érhető el
+        }
     }
     
 }

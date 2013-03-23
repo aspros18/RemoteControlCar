@@ -1,24 +1,14 @@
 package org.dyndns.fzoli.rccar.controller.resource;
 
 import java.awt.image.BufferedImage;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import org.dyndns.fzoli.ui.LookAndFeelIcon;
 
 /**
  * A vezérlő erőforráskezelő osztálya.
  * @author zoli
  */
-public class R {
-    
-    /**
-     * Az egyszer már betöltött képek referenciáit tárolja.
-     */
-    private static final Map<String, BufferedImage> IMAGES = new HashMap<String, BufferedImage>();
+public class R extends org.dyndns.fzoli.rccar.resource.R {
     
     /**
      * A program ikonjának képét adja vissza.
@@ -42,20 +32,6 @@ public class R {
     }
     
     /**
-     * A LookAndFeel hibaikonjával tér vissza.
-     */
-    public static Icon getErrorIcon() {
-        return LookAndFeelIcon.createIcon(null, "OptionPane.errorIcon", null);
-    }
-    
-    /**
-     * A LookAndFeel hibaikonjával tér vissza.
-     */
-    public static Icon getWarningIcon() {
-        return LookAndFeelIcon.createIcon(null, "OptionPane.warningIcon", null);
-    }
-    
-    /**
      * Fájlnév alapján betölti a képet és ikont ad vissza.
      * @param name a fájl neve
      * @throws RuntimeException ha a forrás fájl nem található
@@ -70,26 +46,7 @@ public class R {
      * @throws RuntimeException ha a forrás fájl nem található
      */
     public static BufferedImage getImage(String name) {
-        synchronized (IMAGES) {
-            BufferedImage img = IMAGES.get(name);
-            if (img != null) return img;
-            try {
-                img = ImageIO.read(getStream(name));
-                IMAGES.put(name, img);
-                return img;
-            }
-            catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-    }
-    
-    /**
-     * A fájl bejövő folyamát adja vissza.
-     * @param name a fájl neve
-     */
-    public static InputStream getStream(String name) {
-        return R.class.getResourceAsStream(name);
+        return getImage(R.class, name);
     }
     
 }

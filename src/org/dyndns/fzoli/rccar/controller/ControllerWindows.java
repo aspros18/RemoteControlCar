@@ -14,7 +14,7 @@ import org.dyndns.fzoli.rccar.controller.view.ChatDialog;
 import org.dyndns.fzoli.rccar.controller.view.ControllerFrame;
 import org.dyndns.fzoli.rccar.controller.view.RelocalizableWindow;
 import org.dyndns.fzoli.rccar.controller.view.map.MapDialog;
-import org.dyndns.fzoli.ui.UIUtil;
+import org.dyndns.fzoli.rccar.ui.UIUtil;
 
 /**
  * A járművel kapcsolatos ablakok konténere.
@@ -65,7 +65,7 @@ public class ControllerWindows implements RelocalizableWindow {
     /**
      * Térkép dialógus.
      */
-    private final MapDialog DIALOG_MAP = new MapDialog(FRAME_MAIN, this, null, Main.isNativeSwingAvailable());
+    private final MapDialog DIALOG_MAP = new MapDialog(FRAME_MAIN, this, null, UIUtil.isNativeSwingAvailable());
     
     /**
      * Hézag az ablakok között.

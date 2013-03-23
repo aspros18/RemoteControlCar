@@ -37,6 +37,7 @@ public class R {
      */
     public static BufferedImage getImage(Class clazz, String name) {
         synchronized (IMAGES) {
+            if (clazz == null) clazz = R.class;
             BufferedImage img = IMAGES.get(name);
             if (img != null) return img;
             try {

@@ -66,7 +66,8 @@ abstract class JTrayObject {
     
     /**
      * Returns the {@link JTrayContainer} that stores the tray objects
-     * so tray objects can communicate to each other.
+     * so tray objects can communicate to each other by
+     * registering themselves to the tray container.
      */
     JTrayContainer getTrayContainer() {
         return JTray.getTrayContainer();

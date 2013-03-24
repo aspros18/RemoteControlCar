@@ -6,4 +6,4 @@
 # Megjegyzés: ugyan azzal a géppel és rendszerrel, Xfce 4 felületen nincs ez a bug.
 cd `dirname $0`
 # Az alkalmazást futtatja 64-bites Linux alatt.
-java -classpath desktop/BrowserTest/lib/swt/swt-linux64-4.3M5a.jar:swttest/ui.jar org.dyndns.fzoli.rccar.Main "$@"
+java -splash:src/org/dyndns/fzoli/rccar/resource/splash.gif -classpath desktop/BrowserTest/lib/swt/swt-linux64-4.3M5a.jar:swttest/ui.jar org.dyndns.fzoli.rccar.Main "$@"

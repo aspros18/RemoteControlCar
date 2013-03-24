@@ -9,8 +9,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -40,6 +44,7 @@ public class Main extends JFrame {
     static {
         setApplicationName("Mobile-RC");
         setSystemLookAndFeel();
+        loadSWT();
     }
 
     /**
@@ -95,6 +100,63 @@ public class Main extends JFrame {
         setLocationRelativeTo(this);
         setResizable(false);
         setVisible(true);
+    }
+    
+    /**
+     * Megadja a külső SWT jarfájl elérhetőségét.
+     * Elsőként az aktuális könyvtárban keresi, ha ott nem találja, akkor az alkalmazást tartalmazó könyvtárban keres.
+     * Az SWT jarfájloknak ezen a könyvtáron belül egy <code>swt</code> nevű könyvtárban kell lenniük a következő fájlnevek egyikével:
+     * swt-win32.jar; swt-win64.jar; swt-linux32.jar; swt-linux64.jar; swt-osx32.jar; swt-osx64.jar
+     * @return null, ha a fájl nem található, egyébként az OS-függő jar fájl
+     */
+    private static File getSwtJar() {
+        File swtFile = null;
+        String osName = System.getProperty("os.name").toLowerCase();
+        String swtFileNameArchPart = System.getProperty("os.arch").toLowerCase().contains("64") ? "64" : "32";
+        String swtFileNameOsPart = osName.contains("win") ? "win" : osName.contains("mac") ? "osx" : osName.contains("linux") || osName.contains("nix") ? "linux" : null;
+        if (swtFileNameOsPart != null) {
+            String swtFileName = "swt-" + swtFileNameOsPart + swtFileNameArchPart + ".jar";
+            swtFile = new File("swt", swtFileName).getAbsoluteFile();
+            if (!swtFile.exists()) {
+                try {
+                    File srcFile = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+                    swtFile = new File(new File(srcFile.getParentFile(), "swt"), swtFileName);
+                    if (!swtFile.exists()) swtFile = null;
+                }
+                catch (Exception ex) {
+                    swtFile = null;
+                }
+            }
+        }
+        return swtFile;
+    }
+    
+    /**
+     * Külső forrásból betölti az SWT-t, ha az még nem lett betöltve.
+     * @see #getSwtJar()
+     */
+    private static void loadSWT() {
+        boolean available;
+        try {
+            Class.forName("org.eclipse.swt.SWT", false, Main.class.getClassLoader());
+            available = true; // már betöltve
+        }
+        catch (ClassNotFoundException ex) {
+            available = false; // még nincs betöltve
+        }
+        if (!available) { // ha még nincs betöltve
+            File swtJar = getSwtJar();
+            if (swtJar == null) return; // ha nincs mit betölteni, kilépés
+            try { // kísérlet a betöltésre
+                URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+                Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[] {URL.class});
+                method.setAccessible(true);
+                method.invoke(sysloader, new Object[] {swtJar.toURI().toURL()});
+            }
+            catch (Throwable t) { // hiba esetén nincs mit tenni, a program SWT nélkül fut tovább
+                ;
+            }
+        }
     }
     
     /**

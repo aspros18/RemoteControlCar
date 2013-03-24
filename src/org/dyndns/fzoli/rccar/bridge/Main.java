@@ -10,8 +10,8 @@ import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.bridge.config.Permissions;
 import org.dyndns.fzoli.rccar.bridge.resource.R;
 import org.dyndns.fzoli.rccar.bridge.socket.BridgeHandler;
-import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.closeSplashScreen;
-import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.setSplashMessage;
+import static org.dyndns.fzoli.rccar.SplashScreenLoader.closeSplashScreen;
+import static org.dyndns.fzoli.rccar.SplashScreenLoader.setSplashMessage;
 import org.dyndns.fzoli.rccar.ui.UIUtil;
 import static org.dyndns.fzoli.rccar.ui.UIUtil.showPasswordInput;
 import org.dyndns.fzoli.rccar.ui.UncaughtExceptionHandler;
@@ -74,7 +74,6 @@ public class Main {
         setExceptionHandler();
         applyConfig();
         addShutdownHook();
-        closeSplashScreen();
     }
     
     /**
@@ -290,6 +289,7 @@ public class Main {
             @Override
             public void run() {
                 final SSLServerSocket ss = createServerSocket(0); // socket szerver létrehozása kezdetben nincs 1 hibás próbálkozás sem a jelszóbevitelnél
+                closeSplashScreen();
                 while (!ss.isClosed()) { // ameddig nincs lezárva a socket szerver
                     SSLSocket s = null;
                     try {
@@ -350,6 +350,7 @@ public class Main {
         }
         if (CONFIG.isCorrect()) {
             UIUtil.initNativeInterface();
+            setSplashMessage(getString("start_server"));
             setSystemTrayIcon();
             if (!Permissions.getConfig().canRead()) { // ha a jogosultságokat leíró fájl nem olvasható, figyelmezteti a felhasználót
                 SystemTrayIcon.showMessage(VAL_WARNING, getString("warn_without_permissions1") + ' ' + LS + getString("warn_without_permissions2"), IconType.WARNING);

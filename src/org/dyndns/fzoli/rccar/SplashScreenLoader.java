@@ -1,4 +1,4 @@
-package org.dyndns.fzoli.rccar.controller;
+package org.dyndns.fzoli.rccar;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -81,7 +81,7 @@ public class SplashScreenLoader {
      * @param s a kirajzolandó szöveg
      */
     public static void setSplashMessage(String s) {
-        if (g != null && s != null) {
+        if (g != null && s != null && splash.isVisible()) {
             int y = 185;
             g.setComposite(AlphaComposite.Clear);
             g.fillRect(1, y - 10, splash.getSize().width - 2, 20);

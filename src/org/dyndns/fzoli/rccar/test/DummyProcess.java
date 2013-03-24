@@ -1,6 +1,6 @@
 package org.dyndns.fzoli.rccar.test;
 
-import org.dyndns.fzoli.rccar.controller.SplashScreenLoader;
+import org.dyndns.fzoli.rccar.SplashScreenLoader;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
 

@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.controller;
 
+import org.dyndns.fzoli.rccar.SplashScreenLoader;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,7 +13,7 @@ import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.SwingUtilities;
-import static org.dyndns.fzoli.rccar.controller.SplashScreenLoader.setSplashMessage;
+import static org.dyndns.fzoli.rccar.SplashScreenLoader.setSplashMessage;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.controller.socket.ConnectionHelper;
 import org.dyndns.fzoli.rccar.controller.view.ConnectionProgressFrame;

@@ -93,7 +93,7 @@ if [ $REMOVING -eq 0 ] ; then
 ###############
 
 # könyvtár létrehozása, ha nem létezik
-mkdir -p "$DIR_NAME"
+mkdir -p "$DIR_NAME"/lib
 
 # ha nem sikerült létrehozni, hibaüzenet és kilépés
 if [ $? -ne 0 ] ; then
@@ -112,7 +112,8 @@ Szeretné telepíteni a teszt tanúsítványokat?" 12 60
 SAMPLE=$?
 
 # az alap fájl-lista
-FILES=('swttest/ui.jar' 'swttest/client.sh' 'swttest/server.sh')
+FILES=('swttest/ui-outer.jar' 'swttest/client.sh' 'swttest/server.sh' 'desktop/BrowserTest/lib/swt/swt-linux32-4.3M5a.jar' 'desktop/BrowserTest/lib/swt/swt-linux64-4.3M5a.jar')
+FILES_TO=('ui.jar' 'client.sh' 'server.sh' 'lib/swt-linux32.jar' 'lib/swt-linux64.jar')
 
 # ha kellenek a teszt tanúsítványok is, a könyvtár és a konfigok hozzáadása a listához
 if [ $SAMPLE -eq 0 ] ; then    
@@ -138,7 +139,7 @@ FILE_NAME=${FILES[$COUNTER]}
 # innen másol
 SRC_FILE="$CURR_DIR/$FILE_NAME"
 # mostantól csak fájlnév
-FILE_NAME=$(basename "$FILE_NAME")
+FILE_NAME=${FILES_TO[$COUNTER]}
 # ide másol
 DST_FILE="$DIR_NAME/$FILE_NAME"
 

@@ -340,6 +340,8 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
      * @return null, ha nem létezik a fájl, egyébként a megadott fájl
      */
     private static File getFile(File f) {
+        if (f == null) return null;
+        if (!f.exists()) f = UIUtil.createFile(f.getPath(), f);
         return f.isFile() ? f : null;
     }
     

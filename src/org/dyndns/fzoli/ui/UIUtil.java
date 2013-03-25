@@ -147,22 +147,31 @@ public class UIUtil {
     /**
      * Elkészíti a kért fájlnévre mutató fájl-objektumot.
      * Ha az aktuális könyvtárban nem található a megadott fájl, a forrás könyvtárban is megnézi.
-     * @return a megtalált fájl vagy az aktuális könyvtárba mutató fájl
+     * @return a megtalált fájl vagy az aktuális könyvtárba mutató fájl ill. az alapértelmezés, ha meg van adva
      */
-    public static File createFile(String fileName) {
+    public static File createFile(String fileName, File def) {
         File f = new File(System.getProperty("user.dir"), fileName);
         if (!f.exists()) {
             try {
                 File oldFile = f;
                 File srcFile = new File(UIUtil.class.getProtectionDomain().getCodeSource().getLocation().toURI());
                 f = new File(srcFile.getParentFile(), fileName);
-                if (!f.exists()) f = oldFile;
+                if (!f.exists()) f = def == null ? oldFile : def;
             }
             catch (Exception ex) {
                 f = null;
             }
         }
         return f;
+    }
+    
+    /**
+     * Elkészíti a kért fájlnévre mutató fájl-objektumot.
+     * Ha az aktuális könyvtárban nem található a megadott fájl, a forrás könyvtárban is megnézi.
+     * @return a megtalált fájl vagy az aktuális könyvtárba mutató fájl
+     */
+    public static File createFile(String fileName) {
+        return createFile(fileName, null);
     }
     
 }

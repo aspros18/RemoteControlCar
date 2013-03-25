@@ -77,8 +77,7 @@ public class Main extends JFrame {
         c.weightx = 1; // kezdetben csak szélességében van teljes helykitöltés
         
         c.gridwidth = 2; // mivel 2 gomb van, 2 cellát foglal el az alkalmazásválasztásra felszólító szöveg
-        add(new JLabel("Please select an application by clicking to one of the button.", SwingConstants.CENTER), c);
-        
+        add(new JLabel("To select an application, click one of the buttons.", SwingConstants.CENTER), c);
         c.gridwidth = 1; // a gombok 1 cellát foglalnak el
         c.weighty = 1; // hosszúságukban is kitöltve a maradék helyet
         c.gridy = 1; // és a felszólító szöveg alá kerülnek

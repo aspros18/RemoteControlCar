@@ -15,6 +15,8 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -23,6 +25,7 @@ import javax.swing.SwingConstants;
 import static org.dyndns.fzoli.ui.UIUtil.setApplicationName;
 import static org.dyndns.fzoli.ui.UIUtil.setSystemLookAndFeel;
 import static org.dyndns.fzoli.rccar.SplashScreenLoader.setSplashMessage;
+import org.dyndns.fzoli.rccar.ui.UIUtil;
 import org.imgscalr.Scalr;
 
 /**
@@ -47,12 +50,18 @@ import org.imgscalr.Scalr;
 public class Main extends JFrame {
     
     /**
-     * Az alkalmazás indítása előtt
+     * Az alkalmazásválasztó szótára.
+     */
+    private static ResourceBundle res;
+    
+    /**
+     * Az alkalmazás indítása előtt a szótár,
      * az alkalmazásnév és a Look and Feel beállítódik.
      */
     static {
         setApplicationName("Mobile-RC");
         setSystemLookAndFeel();
+        loadLanguage();
         loadSWT();
     }
 
@@ -67,7 +76,7 @@ public class Main extends JFrame {
      * Inicializálódik az ablak felülete, majd megjelenik az ablak.
      */
     public Main() throws HeadlessException {
-        super("Application chooser"); // címsor-szöveg beállítása konstruktor segítségével
+        super(res.getString("app-chooser")); // címsor-szöveg beállítása konstruktor segítségével
         setDefaultCloseOperation(DISPOSE_ON_CLOSE); // az ablak bezárása esetén felszabadítás
         setIconImage(org.dyndns.fzoli.rccar.resource.R.getImage(null, "app-chooser.png")); // címsor-ikon beállítása
         GridBagConstraints c = new GridBagConstraints();
@@ -77,7 +86,7 @@ public class Main extends JFrame {
         c.weightx = 1; // kezdetben csak szélességében van teljes helykitöltés
         
         c.gridwidth = 2; // mivel 2 gomb van, 2 cellát foglal el az alkalmazásválasztásra felszólító szöveg
-        add(new JLabel("To select an application, click one of the buttons.", SwingConstants.CENTER), c);
+        add(new JLabel(res.getString("summary"), SwingConstants.CENTER), c);
         c.gridwidth = 1; // a gombok 1 cellát foglalnak el
         c.weighty = 1; // hosszúságukban is kitöltve a maradék helyet
         c.gridy = 1; // és a felszólító szöveg alá kerülnek
@@ -102,10 +111,10 @@ public class Main extends JFrame {
             
         }
         
-        add(new AppButton("Controller", org.dyndns.fzoli.rccar.controller.resource.R.getIconImage(), "client"), c); // a vezérlő indító gomb létrehozása
+        add(new AppButton(res.getString("controller"), org.dyndns.fzoli.rccar.controller.resource.R.getIconImage(), "client"), c); // a vezérlő indító gomb létrehozása
         
         c.gridx = 1;
-        add(new AppButton("Bridge", org.dyndns.fzoli.rccar.bridge.resource.R.getBridgeImage(), "server"), c); // a Híd indító gomb létrehozása
+        add(new AppButton(res.getString("bridge"), org.dyndns.fzoli.rccar.bridge.resource.R.getBridgeImage(), "server"), c); // a Híd indító gomb létrehozása
         
         pack(); // minimális méret beállítása
         setLocationRelativeTo(this); // ablak középre helyezése
@@ -140,6 +149,15 @@ public class Main extends JFrame {
             }
         }
         return swtFile;
+    }
+    
+    /**
+     * Szótár betöltése.
+     * A szótár a rendszer nyelvén töltődik be, de ha a rendszernyelvhez nem tartozik szótár,
+     * akkor az angol nyelvű szótár töltődik be.
+     */
+    private static void loadLanguage() {
+        res = UIUtil.createResource("org.dyndns.fzoli.rccar.l10n.chooser", Locale.getDefault());
     }
     
     /**
@@ -217,7 +235,7 @@ public class Main extends JFrame {
                 // addig kérdez, míg nincs helyes válasz megadva
                 while (answer == null || !(answer.isEmpty() || answer.equalsIgnoreCase("y") || answer.equalsIgnoreCase("n"))) {
                     // megkérdi, induljon-e el a szerver alkalmazás
-                    System.err.print("Would you like to run the server application? (y/N) ");
+                    System.err.print(res.getString("bridge-run") + " (y/N) ");
                     answer = reader.readLine().trim(); // a megadott válasz tárolása
                 }
                 reader.close(); // bemenet felszabadítása
@@ -225,12 +243,12 @@ public class Main extends JFrame {
                 if (answer.equalsIgnoreCase("y")) runApp("server", args);
             }
             catch (IOException ex) {
-                System.err.println("Input error."); // jelzi, ha hiba történt a bemenet olvasásakor
+                System.err.println(res.getString("input-error")); // jelzi, ha hiba történt a bemenet olvasásakor
             }
         }
         else { // ha a grafikus felület elérhető
             // jelzés a felhasználónak, hogy alkalmazásválasztás következik
-            setSplashMessage("Opening the application chooser");
+            setSplashMessage(res.getString("loading"));
             // alkalmazásválasztó ablak megjelenítése
             Main main = new Main();
             // várakozás az alkalmazásválasztó-ablak bezárására

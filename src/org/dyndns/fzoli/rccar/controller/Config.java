@@ -9,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Locale;
+import org.dyndns.fzoli.rccar.ui.UIUtil;
 import org.dyndns.fzoli.resource.MD5Checksum;
 import org.dyndns.fzoli.ui.systemtray.SystemTrayIcon;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon;
@@ -92,7 +93,7 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
     /**
      * Az alapértelmezett konfigurációra mutató fájl.
      */
-    private static final File DEF_FILE = new File("controller.ser");
+    private static final File DEF_FILE = UIUtil.createFile("controller.ser");
     
     /**
      * Az alapértelmezett konfiguráció.

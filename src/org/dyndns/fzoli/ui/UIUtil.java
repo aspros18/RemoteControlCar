@@ -3,6 +3,7 @@ package org.dyndns.fzoli.ui;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.io.File;
 import java.io.PrintStream;
 import javax.swing.UIManager;
 
@@ -141,6 +142,27 @@ public class UIUtil {
         catch (Exception ex) {
             ;
         }
+    }
+    
+    /**
+     * Elkészíti a kért fájlnévre mutató fájl-objektumot.
+     * Ha az aktuális könyvtárban nem található a megadott fájl, a forrás könyvtárban is megnézi.
+     * @return a megtalált fájl vagy az aktuális könyvtárba mutató fájl
+     */
+    public static File createFile(String fileName) {
+        File f = new File(System.getProperty("user.dir"), fileName);
+        if (!f.exists()) {
+            try {
+                File oldFile = f;
+                File srcFile = new File(UIUtil.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+                f = new File(srcFile.getParentFile(), fileName);
+                if (!f.exists()) f = oldFile;
+            }
+            catch (Exception ex) {
+                f = null;
+            }
+        }
+        return f;
     }
     
 }

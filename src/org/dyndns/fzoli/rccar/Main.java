@@ -48,12 +48,10 @@ public class Main extends JFrame {
     
     /**
      * Az alkalmazás indítása előtt
-     * az alkalmazásnév és a Look and Feel beállítódik;
-     * a felhasználó értesítést kap az alkalmazásválasztó indulásáról.
+     * az alkalmazásnév és a Look and Feel beállítódik.
      */
     static {
         setApplicationName("Mobile-RC");
-        setSplashMessage("Opening the application chooser");
         setSystemLookAndFeel();
         loadSWT();
     }
@@ -232,6 +230,8 @@ public class Main extends JFrame {
             }
         }
         else { // ha a grafikus felület elérhető
+            // jelzés a felhasználónak, hogy alkalmazásválasztás következik
+            setSplashMessage("Opening the application chooser");
             // alkalmazásválasztó ablak megjelenítése
             Main main = new Main();
             // várakozás az alkalmazásválasztó-ablak bezárására

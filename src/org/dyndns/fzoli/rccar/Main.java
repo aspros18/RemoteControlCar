@@ -22,6 +22,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import static org.dyndns.fzoli.ui.UIUtil.setApplicationName;
 import static org.dyndns.fzoli.ui.UIUtil.setSystemLookAndFeel;
+import static org.dyndns.fzoli.rccar.SplashScreenLoader.setSplashMessage;
 import org.imgscalr.Scalr;
 
 /**
@@ -47,10 +48,12 @@ public class Main extends JFrame {
     
     /**
      * Az alkalmazás indítása előtt
-     * az alkalmazásnév és a Look and Feel beállítódik.
+     * az alkalmazásnév és a Look and Feel beállítódik;
+     * a felhasználó értesítést kap az alkalmazásválasztó indulásáról.
      */
     static {
         setApplicationName("Mobile-RC");
+        setSplashMessage("Opening the application chooser");
         setSystemLookAndFeel();
         loadSWT();
     }

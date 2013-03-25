@@ -139,6 +139,21 @@
 
                 </Component>
 
+                <!-- A Windows alatt használt lib fájlok könyvtára. -->
+                <Directory Id='LibFolder' Name='lib'>
+
+                    <!-- A 32-bites JRE alatt használt SWT lib. -->
+                    <Component Id='SwtLib32' Guid='F867C946-6A38-4421-95FC-B120A6B8C22F'>
+                        <File Id='SwtLib32File' Source='swt-win32.jar' KeyPath='yes' />
+                    </Component>
+
+                    <!-- A 64-bites JRE alatt használt SWT lib. -->
+                    <Component Id='SwtLib64' Guid='C2C06C50-8F49-4173-BDF9-2396078C61CA'>
+                        <File Id='SwtLib64File' Source='swt-win64.jar' KeyPath='yes' />
+                    </Component>
+
+                </Directory>
+
                 <!-- A diplomamunka PDF formátumban. -->
                 <Component Id='Manual' Guid='3C67AC75-39CA-4DE9-BDE5-BA52FF59720F'>
                     <File Id='Manual' Name='thesis.pdf' Source='thesis.pdf' KeyPath='yes'>
@@ -176,6 +191,8 @@
         <!-- Alapértelmezés szerint csak az alkalmazás és a parancsikonok vannak telepítésre jelölve. -->
         <Feature Id='MainProgram' Absent='disallow' Title='Program' Description='Az alkalmazás és a parancsikonok.' Level='1'>
             <ComponentRef Id='JavaApplication' />
+            <ComponentRef Id='SwtLib32' />
+            <ComponentRef Id='SwtLib64' />
             <ComponentRef Id='ClientExecutable' />
             <ComponentRef Id='ServerExecutable' />
             <ComponentRef Id='ClientScript' />

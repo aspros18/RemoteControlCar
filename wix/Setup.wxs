@@ -12,6 +12,13 @@
     <!-- A telepítő ebből a cabinet fájlból bontja ki a telepítés helyére a benne lévő fájlokat és a cabinet fájlt a telepítő tartalmazza. -->
     <Media Id='1' Cabinet='media.cab' EmbedCab='yes' />
 
+    <!-- Megkeresi az Oracle JRE verzióját. -->
+    <Property Id="JAVA_JRE_VERSION">
+      <RegistrySearch Id="SUN_JRE_VERSION" Root="HKLM" Key="SOFTWARE\JavaSoft\Java Runtime Environment" Name="CurrentVersion" Type="raw" />
+    </Property>
+    <!-- Új telepítéskor ha nincs legalább Oracle JRE 6 telepítve, figyelmezteti a felhasználót és kilép. -->
+    <Condition Message="A Java virtuális gép nincs telepítve!&#13;&#10;Telepítse az Oracle JRE 1.6-os vagy újabb verzióját."><![CDATA[Installed OR (JAVA_JRE_VERSION >= "1.6")]]></Condition>
+    
     <Directory Id='TARGETDIR' Name='SourceDir'>
 
         <!-- A Program fájlok könyvtárba települ az alkalmazás. -->

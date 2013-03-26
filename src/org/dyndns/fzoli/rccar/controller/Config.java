@@ -429,7 +429,13 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
         String path;
         String OS = System.getProperty("os.name").toUpperCase();
         if (OS.contains("WIN")) {
-            return org.appkit.osdependant.OSUtils.userDataFolder(name);
+            try {
+                return org.appkit.osdependant.OSUtils.userDataFolder(name);
+            }
+            catch (Throwable t) {
+                // ha az SWT nem érhető el, az alapértelmezett útvonal használata
+                path = System.getProperty("user.dir");
+            }
         }
         else if (OS.contains("MAC")) {
             path = System.getProperty("user.home") + File.separator + "Library" + File.separator + "Application Support";

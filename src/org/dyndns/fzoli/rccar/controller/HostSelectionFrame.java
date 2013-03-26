@@ -71,6 +71,7 @@ public class HostSelectionFrame extends JFrame implements RelocalizableWindow {
      */
     private final JButton BT_SETTINGS = new JButton(new ImageIcon(R.getImage("preferences.png"))) {
         {
+            setFocusable(false);
             addActionListener(new ActionListener() {
 
                 @Override

@@ -308,7 +308,7 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
         }
         catch (FileNotFoundException ex) {
             if (def != null) try {
-                if (FILE_CONFIG.isDirectory()) Folders.delete(FILE_CONFIG);
+                if (f.isDirectory()) Folders.delete(f);
                 BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f)));
                 out.write(def, 0, def.length());
                 out.flush();

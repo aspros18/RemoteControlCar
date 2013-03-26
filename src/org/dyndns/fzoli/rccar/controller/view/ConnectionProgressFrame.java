@@ -4,7 +4,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import static org.dyndns.fzoli.rccar.controller.Main.getString;
 import static org.dyndns.fzoli.rccar.controller.Main.runClient;
-import static org.dyndns.fzoli.rccar.controller.Main.showSettingDialog;
+import static org.dyndns.fzoli.rccar.controller.Main.showSettingFrame;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.ui.AbstractConnectionProgressFrame;
 import org.dyndns.fzoli.ui.IconTextPanel;
@@ -163,7 +163,7 @@ public class ConnectionProgressFrame extends AbstractConnectionProgressFrame imp
      */
     @Override
     protected void onSettings() {
-        showSettingDialog(false, 0);
+        showSettingFrame(false, 0);
     }
     
 }

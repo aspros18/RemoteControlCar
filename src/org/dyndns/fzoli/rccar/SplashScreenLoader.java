@@ -38,7 +38,16 @@ public class SplashScreenLoader {
             g = null;
         }
         else {
-            splash = SplashScreen.getSplashScreen();
+            SplashScreen spl;
+            try {
+                spl = SplashScreen.getSplashScreen();
+            }
+            catch (Throwable t) {
+                // csak az OpenJDK és Oracle JRE tartalmazza a SplashScreen osztályt
+                // más JRE alatt error képződik, amit kezelni kell
+                spl = null;
+            }
+            splash = spl;
             if (splash != null) {
                 g = splash.createGraphics();
                 if (g != null) {

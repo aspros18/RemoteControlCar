@@ -51,7 +51,7 @@ public class Main {
         @Override
         public void run() {
             // kapcsolatbeállító ablak megjelenítése
-            showSettingDialog(false, null);
+            showSettingFrame(false, null);
         }
 
     };
@@ -262,7 +262,7 @@ public class Main {
      * @param force kényszerítve legyen-e a felhasználó helyes konfiguráció megadására
      * @param tabIndex a megjelenő lapfül
      */
-    public static void showSettingDialog(boolean force, Integer tabIndex) {
+    public static void showSettingFrame(boolean force, Integer tabIndex) {
         if (!CONN.isConnected()) {
             CONN.disconnect();
         }
@@ -270,6 +270,9 @@ public class Main {
             PROGRESS_FRAME.setVisible(false);
         }
         if (CONFIG_EDITOR != null) {
+            if (SELECTION_FRAME != null && SELECTION_FRAME.isVisible()) {
+                CONFIG_EDITOR.setLocationRelativeTo(SELECTION_FRAME);
+            }
             CONFIG_EDITOR.setTabIndex(tabIndex);
             CONFIG_EDITOR.setForce(force);
             CONFIG_EDITOR.setVisible(true);
@@ -354,7 +357,7 @@ public class Main {
 
             @Override
             public void run() {
-                showSettingDialog(false, 1);
+                showSettingFrame(false, 1);
             }
 
         });
@@ -519,7 +522,7 @@ public class Main {
                 CONTROLLER_WINDOWS = new ControllerWindows();
                 if (!CONFIG.isCorrect()) { // ha a tanúsítvány fájlok egyike nem létezik
                     showSettingError(getString("warn_config_error1" + (CONFIG.isDefault() ? 'b' : 'a')) + ' ' + getString("warn_config_error2") + LS + getString("warn_config_error3"));
-                    showSettingDialog(true, 1); // kényszerített beállítás és tanúsítvány lapfül előtérbe hozása
+                    showSettingFrame(true, 1); // kényszerített beállítás és tanúsítvány lapfül előtérbe hozása
                 }
                 else {
                     configAlert(true); // súgó figyelmeztetés, ha kell

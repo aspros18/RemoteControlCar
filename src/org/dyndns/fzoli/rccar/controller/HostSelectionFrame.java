@@ -14,6 +14,7 @@ import java.awt.event.WindowEvent;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -24,6 +25,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import static org.dyndns.fzoli.rccar.controller.Main.getString;
+import static org.dyndns.fzoli.rccar.controller.Main.showSettingFrame;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.controller.view.RelocalizableWindow;
 
@@ -65,6 +67,22 @@ public class HostSelectionFrame extends JFrame implements RelocalizableWindow {
     private final JButton BT_SELECT = new JButton(getString("vehicle_select"));
     
     /**
+     * A kapcsolatbeállító-ablakot megjelenítő gomb.
+     */
+    private final JButton BT_SETTINGS = new JButton(new ImageIcon(R.getImage("preferences.png"))) {
+        {
+            addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    showSettingFrame(false, null);
+                }
+                
+            });
+        }
+    };
+    
+    /**
      * Jármű választásra kérő szöveg.
      */
     private final JLabel LB_MSG = new JLabel(getString("vehicle_select_msg"), SwingConstants.CENTER);
@@ -94,6 +112,7 @@ public class HostSelectionFrame extends JFrame implements RelocalizableWindow {
         GridBagConstraints c = new GridBagConstraints();
         c.weightx = 1;
         c.weighty = 1;
+        c.gridwidth = 3;
         
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(5, 0, 0, 0);
@@ -106,14 +125,37 @@ public class HostSelectionFrame extends JFrame implements RelocalizableWindow {
         c.insets = new Insets(5, 5, 5, 5);
         add(PANE, c);
         
+        c.gridwidth = 1;
         c.gridy = 2;
         c.weighty = 1;
         c.fill = GridBagConstraints.NONE;
+        
+        c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(0, 5, 5, 0);
+        BT_SETTINGS.setToolTipText(getString("connection_settings"));
+        add(BT_SETTINGS, c);
+        
+        c.gridx = 1;
+        c.anchor = GridBagConstraints.CENTER;
         c.insets = new Insets(0, 0, 5, 0);
         add(BT_SELECT, c);
         
+        c.gridx = 2;
+        c.anchor = GridBagConstraints.LINE_END;
+        c.insets = new Insets(0, 0, 5, 5);
+        JLabel lbRight = new JLabel() {
+
+            @Override
+            public Dimension getPreferredSize() {
+                return BT_SETTINGS.getPreferredSize();
+            }
+            
+        };
+        add(lbRight, c);
+        
         setMinimumSize(new Dimension(300, 200));
         pack();
+        setMinimumSize(getSize());
         setLocationRelativeTo(this);
     }
     
@@ -170,6 +212,7 @@ public class HostSelectionFrame extends JFrame implements RelocalizableWindow {
         setTitle(getString("vehicle_chooser"));
         BT_SELECT.setText(getString("vehicle_select"));
         LB_MSG.setText(getString("vehicle_select_msg"));
+        BT_SETTINGS.setToolTipText(getString("connection_settings"));
     }
     
     /**

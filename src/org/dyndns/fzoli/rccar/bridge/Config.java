@@ -277,14 +277,19 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
         File file;
         List<String> conf;
         try {
-            file = new File(Folders.getSourceDir().getAbsoluteFile(), CFG_NAME);
-            if (!file.exists() && FILE_CONFIG.exists()) throw new Exception();
-            conf = read(file, DEFAULT_CONFIG);
+            // ha a konfigurációs fájl meg van találva vagy Mac OS X rendszeren fut az alkalmazás, a forráskönyvtár kihagyása
+            // TODO: megtudakolni, hogy mennyire "szabványos" Mac alatt az, ha a csomagolt alkalmazáskönyvtárba kerül esetleg a konfig fájl
+            if (FILE_CONFIG.exists() || System.getProperty("os.name").toUpperCase().contains("MAC")) throw new Exception();
+            // a forráskönyvtárból olvassa ki a konfigot, vagy ha nem létezik, megpróbálja létrehozni
+            conf = read(file = new File(Folders.getSourceDir().getAbsoluteFile(), CFG_NAME), DEFAULT_CONFIG);
         }
         catch (Exception ex) {
+            // ha nem a forráskönyvtárat van használva, akkor a "cd" könyvtár használata
             conf = read(file = FILE_CONFIG, DEFAULT_CONFIG);
         }
+        // konfig létrehozása és a konfig fájl helyének megadása
         Config config = new Config(file);
+        // konfig beállítása, ha sikerült a konfig fájl beolvasása
         if (conf != null) {
             int ind;
             String key, val;
@@ -308,6 +313,7 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
      * @throws RuntimeException ha bármi hiba történik. Pl. nincs olvasási/írási jog
      */
     public static List<String> read(File f, String def) {
+        // kísérlet a konfig fájl beolvasására
         if (f != null) try {
             int ind;
             String ln;
@@ -323,6 +329,7 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
             in.close();
             return ls;
         }
+        // ha a konfig fájl nem létezik, létrehozza azt az alapértelmezéssel, ha meg van adva
         catch (FileNotFoundException ex) {
             if (def != null) try {
                 if (f.isDirectory()) Folders.delete(f);

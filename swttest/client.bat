@@ -1,2 +1,2 @@
 @echo off
-java -jar ui.jar client
+start "Mobile-RC client" /B java -jar ui.jar client

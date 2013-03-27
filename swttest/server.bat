@@ -1,2 +1,2 @@
 @echo off
-java -jar ui.jar server %*
+start "Mobile-RC server" /B java -jar ui.jar server %*

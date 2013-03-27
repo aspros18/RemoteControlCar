@@ -2,8 +2,6 @@ package org.dyndns.fzoli.ui;
 
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
-import java.awt.Toolkit;
-import java.io.File;
 import java.io.PrintStream;
 import javax.swing.UIManager;
 
@@ -120,58 +118,6 @@ public class UIUtil {
                 }
             }
         }
-    }
-    
-    /**
-     * Beállítja az alkalmazás nevét az adott ablakhoz.
-     * A tálcán jelenik meg, amikor már elég sok ablak nyitva van és egy csoportba kerülnek az ablakok.
-     * @param text az alkalmazás neve
-     */
-    public static void setApplicationName(String text) {
-        try {
-            Toolkit xToolkit = Toolkit.getDefaultToolkit();
-            java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField("awtAppClassName");
-            awtAppClassNameField.setAccessible(true);
-            awtAppClassNameField.set(xToolkit, text);
-            
-            String os = System.getProperty("os.name").toLowerCase();
-            if (!os.startsWith("mac")) return;
-            System.setProperty("apple.laf.useScreenMenuBar", "true");
-            System.setProperty("com.apple.mrj.application.apple.menu.about.name", text);  
-        }
-        catch (Exception ex) {
-            ;
-        }
-    }
-    
-    /**
-     * Elkészíti a kért fájlnévre mutató fájl-objektumot.
-     * Ha az aktuális könyvtárban nem található a megadott fájl, a forrás könyvtárban is megnézi.
-     * @return a megtalált fájl vagy az aktuális könyvtárba mutató fájl ill. az alapértelmezés, ha meg van adva
-     */
-    public static File createFile(String fileName, File def) {
-        File f = new File(System.getProperty("user.dir"), fileName);
-        if (!f.exists()) {
-            try {
-                File oldFile = f;
-                File srcFile = new File(UIUtil.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-                f = new File(srcFile.getParentFile(), fileName);
-                if (!f.exists()) f = def == null ? oldFile : def;
-            }
-            catch (Exception ex) {
-                f = null;
-            }
-        }
-        return f;
-    }
-    
-    /**
-     * Elkészíti a kért fájlnévre mutató fájl-objektumot.
-     * Ha az aktuális könyvtárban nem található a megadott fájl, a forrás könyvtárban is megnézi.
-     * @return a megtalált fájl vagy az aktuális könyvtárba mutató fájl
-     */
-    public static File createFile(String fileName) {
-        return createFile(fileName, null);
     }
     
 }

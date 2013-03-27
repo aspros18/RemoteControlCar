@@ -9,10 +9,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Locale;
-import org.dyndns.fzoli.rccar.ui.UIUtil;
 import org.dyndns.fzoli.resource.MD5Checksum;
 import org.dyndns.fzoli.ui.systemtray.SystemTrayIcon;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon;
+import org.dyndns.fzoli.util.Folders;
+import org.dyndns.fzoli.util.OSUtils;
 
 /**
  * Ideiglenes konfiguráció a memóriában.
@@ -83,7 +84,7 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
     /**
      * Az alkalmazás adattárolásra használt könyvtára.
      */
-    public static final File ROOT = new File(getUserDataFolder("Mobile-RC"));
+    public static final File ROOT = new File(OSUtils.getUserDataFolder("Mobile-RC"));
     
     /**
      * Az a fájl, amelybe a szerializálás történik.
@@ -93,7 +94,7 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
     /**
      * Az alapértelmezett konfigurációra mutató fájl.
      */
-    private static final File DEF_FILE = UIUtil.createFile("controller.ser");
+    private static final File DEF_FILE = Folders.createFile("controller.ser");
     
     /**
      * Az alapértelmezett konfiguráció.
@@ -341,7 +342,7 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
      */
     private static File getFile(File f) {
         if (f == null) return null;
-        if (!f.exists()) f = UIUtil.createFile(f.getPath(), f);
+        if (!f.exists()) f = Folders.createFile(f.getPath(), f);
         return f.isFile() ? f : null;
     }
     
@@ -419,36 +420,6 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
     @Override
     public boolean isCorrect() {
         return isFileExists();
-    }
-    
-    /**
-     * Megadja a felhasználóhoz tartozó, adattárolásra használható könyvtárat.
-     * @param name a kért könyvtár neve
-     */
-    private static String getUserDataFolder(String name) {
-        String path;
-        String OS = System.getProperty("os.name").toUpperCase();
-        if (OS.contains("WIN")) {
-            try {
-                return org.appkit.osdependant.OSUtils.userDataFolder(name);
-            }
-            catch (Throwable t) {
-                // ha az SWT nem érhető el, az alapértelmezett útvonal használata
-                path = System.getProperty("user.dir");
-            }
-        }
-        else if (OS.contains("MAC")) {
-            path = System.getProperty("user.home") + File.separator + "Library" + File.separator + "Application Support";
-        }
-        else if (OS.contains("NUX")) {
-            String cfg = System.getenv("XDG_CONFIG_HOME");
-            if (cfg == null || cfg.isEmpty()) cfg = System.getProperty("user.home") + File.separator + ".config";
-            path = cfg;
-        }
-        else {
-            path = System.getProperty("user.dir");
-        }
-        return path + File.separator + name + File.separator;
     }
     
 }

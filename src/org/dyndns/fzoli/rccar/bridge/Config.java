@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import org.dyndns.fzoli.rccar.ui.UIUtil;
 import org.dyndns.fzoli.util.Folders;
 
 /**
@@ -54,7 +53,7 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
     /**
      * A konfig fájl eléréséhez létrehozott objektum.
      */
-    public static final File FILE_CONFIG = UIUtil.createFile("bridge.conf");
+    public static final File FILE_CONFIG = Folders.createFile("bridge.conf");
     
     /**
      * Az alapértelmezett fájl tartalma.
@@ -333,7 +332,7 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
         String path = getValues().get(key);
         if (path == null) return null;
         File f = new File(path);
-        if (!f.exists()) f = UIUtil.createFile(path);
+        if (!f.exists()) f = Folders.createFile(path);
         if (!f.exists() || !f.isFile()) return null;
         return f;
     }

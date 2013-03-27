@@ -22,7 +22,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
-import static org.dyndns.fzoli.ui.UIUtil.setApplicationName;
+import static org.dyndns.fzoli.util.OSUtils.setApplicationName;
 import static org.dyndns.fzoli.ui.UIUtil.setSystemLookAndFeel;
 import static org.dyndns.fzoli.rccar.SplashScreenLoader.setSplashMessage;
 import org.dyndns.fzoli.rccar.ui.UIUtil;

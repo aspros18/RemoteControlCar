@@ -20,7 +20,7 @@ import org.dyndns.fzoli.socket.SSLSocketUtil;
 import static org.dyndns.fzoli.ui.UIUtil.setSystemLookAndFeel;
 import org.dyndns.fzoli.ui.systemtray.SystemTrayIcon;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
-import static org.dyndns.fzoli.rccar.ui.UIUtil.setApplicationName;
+import static org.dyndns.fzoli.util.OSUtils.setApplicationName;
 import org.dyndns.fzoli.ui.systemtray.MenuItem;
 
 /**

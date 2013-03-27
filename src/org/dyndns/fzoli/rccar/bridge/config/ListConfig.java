@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import org.dyndns.fzoli.rccar.bridge.Config;
-import org.dyndns.fzoli.rccar.ui.UIUtil;
+import org.dyndns.fzoli.util.Folders;
 
 /**
  * Fehérlista, feketelista és tiltólista közös metódusai.
@@ -44,7 +44,7 @@ class ListConfig {
      * @param fileName a konfig fájl neve, ami abban a könyvtárban szerepel, ahonnan indították a programot
      */
     public ListConfig(String fileName) {
-        FILE_CONFIG = UIUtil.createFile(fileName);
+        FILE_CONFIG = Folders.createFile(fileName);
         if (FILE_CONFIG.isFile() && FILE_CONFIG.canRead()) {
             LAST_MODIFIED = FILE_CONFIG.lastModified();
             VALUES = Config.read(FILE_CONFIG, null);

@@ -111,9 +111,11 @@ public class Main extends JFrame {
             
         }
         
+        c.insets = new Insets(0, 5, 5, 5);
         add(new AppButton(res.getString("controller"), org.dyndns.fzoli.rccar.controller.resource.R.getIconImage(), "client"), c); // a vezérlő indító gomb létrehozása
         
         c.gridx = 1;
+        c.insets = new Insets(0, 0, 5, 5);
         add(new AppButton(res.getString("bridge"), org.dyndns.fzoli.rccar.bridge.resource.R.getBridgeImage(), "server"), c); // a Híd indító gomb létrehozása
         
         pack(); // minimális méret beállítása

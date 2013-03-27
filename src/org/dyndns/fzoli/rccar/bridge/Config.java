@@ -50,10 +50,14 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
      */
     private static final String CC = "#";
     
+    private static final String CFG_NAME = "bridge.conf";
+    
     /**
      * A konfig fájl eléréséhez létrehozott objektum.
      */
-    public static final File FILE_CONFIG = Folders.createFile("bridge.conf");
+    private static final File FILE_CONFIG = Folders.createFile(CFG_NAME);
+    
+    public final File FILE;
     
     /**
      * Az alapértelmezett fájl tartalma.
@@ -79,7 +83,12 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
     /**
      * Ez az osztály nem példányosítható kívülről és nem származhatnak belőle újabb osztályok.
      */
-    private Config() {
+    private Config(File file) {
+        FILE = file;
+    }
+
+    public File getFile() {
+        return FILE;
     }
 
     /**
@@ -265,8 +274,17 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
      * @throws RuntimeException ha bármi hiba történik. Pl. nincs olvasási/írási jog
      */
     public static Config getInstance() {
-        Config config = new Config();
-        List<String> conf = read(FILE_CONFIG, DEFAULT_CONFIG);
+        File file;
+        List<String> conf;
+        try {
+            file = new File(Folders.getSourceDir().getAbsoluteFile(), CFG_NAME);
+            if (!file.exists() && FILE_CONFIG.exists()) throw new Exception();
+            conf = read(file, DEFAULT_CONFIG);
+        }
+        catch (Exception ex) {
+            conf = read(file = FILE_CONFIG, DEFAULT_CONFIG);
+        }
+        Config config = new Config(file);
         if (conf != null) {
             int ind;
             String key, val;

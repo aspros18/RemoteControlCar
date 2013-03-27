@@ -92,7 +92,10 @@ if [ $REMOVING -eq 0 ] ; then
 # TELEPÍTŐ ÁG #
 ###############
 
-# könyvtár létrehozása, ha nem létezik
+# könyvtár törlése, ha létezik, hátha nem üres
+rm -rf "$DIR_NAME" > /dev/null 2>&1
+
+# könyvtár létrehozása
 mkdir -p "$DIR_NAME"/lib
 
 # ha nem sikerült létrehozni, hibaüzenet és kilépés
@@ -154,7 +157,7 @@ XXX
 EOF
 
 # fájl másolása
-cp -r $SRC_FILE $DST_FILE
+cp -R $SRC_FILE $DST_FILE
 
 # ha nem sikerült a fájl másolása, fájlnév mentése és kilépés az alprogramból
 if [ $? -ne 0 ] ; then

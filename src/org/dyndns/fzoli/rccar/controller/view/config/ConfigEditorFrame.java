@@ -38,6 +38,7 @@ import org.dyndns.fzoli.ui.FrontFrame;
 import org.dyndns.fzoli.ui.OkCancelPanel;
 import org.dyndns.fzoli.ui.OptionPane;
 import org.dyndns.fzoli.ui.RegexPatternFormatter;
+import org.dyndns.fzoli.util.Folders;
 
 /**
  * A vezérlő konfigurációját beállító dialógusablak.
@@ -128,8 +129,12 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
             File file = super.getFile(); // az eredeti fájl
             try {
                 final String absFileName = file.getAbsolutePath(); // az eredeti fájl teljes útvonala
-                if (absFileName.startsWith(currentDir)) { // ha a fájl a "cd" könyvtáron belül van
-                    final int rootLength = currentDir.length(); // a "cd" könyvtár hossza
+                String root = currentDir; // "cd" könyvtár
+                if (!absFileName.startsWith(root) && Folders.getSourceDir() != null) { // ha nem a "cd" könyvtárban van a fájl
+                    root = Folders.getSourceDir().getAbsolutePath(); // "cd" helyett forrás könyvtár
+                }
+                if (absFileName.startsWith(root)) { // ha a fájl a "cd" vagy a forrás könyvtáron belül van
+                    final int rootLength = root.length(); // a "cd"/forrás könyvtár hossza
                     final String relFileName = absFileName.substring(rootLength + 1); // a relatív útvonal
                     file = new File(relFileName); // relatív útvonallal gyártott fájl
                 }

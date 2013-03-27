@@ -27,6 +27,32 @@ public class Folders {
     }
     
     /**
+     * Meadja, hogy az alkalmazás melyik könyvtárban van.
+     * @return az útvonal vagy null, ha nem sikerült lekérni
+     */
+    public static File getSourceDir() {
+        try {
+            return getSourceFile().getParentFile();
+        }
+        catch (Exception ex) {
+            return null;
+        }
+    }
+    
+    /**
+     * Meadja, hogy az alkalmazás honnan fut.
+     * @return az útvonal vagy null, ha nem sikerült lekérni
+     */
+    public static File getSourceFile() {
+        try {
+            return new File(UIUtil.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+        }
+        catch (Exception ex) {
+            return null;
+        }
+    }
+    
+    /**
      * Elkészíti a kért fájlnévre mutató fájl-objektumot.
      * Ha az aktuális könyvtárban nem található a megadott fájl, a forrás könyvtárban is megnézi.
      * @return a megtalált fájl vagy az aktuális könyvtárba mutató fájl ill. az alapértelmezés, ha meg van adva
@@ -36,7 +62,7 @@ public class Folders {
         if (!f.exists()) {
             try {
                 File oldFile = f;
-                File srcFile = new File(UIUtil.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+                File srcFile = getSourceFile();
                 f = new File(srcFile.getParentFile(), fileName);
                 if (!f.exists()) f = def == null ? oldFile : def;
             }

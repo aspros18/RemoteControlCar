@@ -344,7 +344,7 @@ public class Main {
      * Ha a program nem lépett ki, a híd szerver elkezdi futását.
      */
     public static void main(final String[] args) {
-        if (Config.FILE_CONFIG.exists() && !Config.FILE_CONFIG.canRead()) { // ha nincs olvasási jog a konfig fájlon
+        if (CONFIG.getFile().exists() && !CONFIG.getFile().canRead()) { // ha nincs olvasási jog a konfig fájlon
             alert(VAL_ERROR, getString("msg_need_permission") + LS + getString("msg_exit"), System.err);
             System.exit(1); // hibakóddal lép ki
         }
@@ -364,12 +364,12 @@ public class Main {
             if (CONFIG.isNew()) {
                 String title;
                 PrintStream out;
-                if (Config.FILE_CONFIG.exists()) {
+                if (CONFIG.getFile().exists()) {
                     title = VAL_MESSAGE;
                     out = System.out;
                     msg.append(getString("msg_conf_created1")).append(LS)
                        .append(getString("msg_conf_created2")).append(LS).append(LS)
-                       .append(getString("msg_conf_created3")).append(':').append(LS).append(Config.FILE_CONFIG);
+                       .append(getString("msg_conf_created3")).append(':').append(LS).append(CONFIG.getFile());
                 }
                 else {
                     title = VAL_ERROR;

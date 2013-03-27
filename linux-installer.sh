@@ -116,10 +116,13 @@ FILES=('swttest/ui-outer.jar' 'swttest/client.sh' 'swttest/server.sh' 'desktop/B
 FILES_TO=('ui.jar' 'client.sh' 'server.sh' 'lib/swt-linux32.jar' 'lib/swt-linux64.jar')
 
 # ha kellenek a teszt tanúsítványok is, a könyvtár és a konfigok hozzáadása a listához
-if [ $SAMPLE -eq 0 ] ; then    
-    FILES+=('test-certs-passwd')    
+if [ $SAMPLE -eq 0 ] ; then
+    FILES+=('test-certs-passwd')
+    FILES_TO+=('test-certs-passwd')
     FILES+=('bridge.conf')
+    FILES_TO+=('bridge.conf')
     FILES+=('controller.ser')
+    FILES_TO+=('controller.ser')
 fi
 
 # a fájl-lista mérete

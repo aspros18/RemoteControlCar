@@ -193,7 +193,7 @@ public abstract class LanguageChooserFrame extends JFrame {
         }
         
         // a kezdőnyelv kijelölése
-        CB_LOCALES.setSelectedItem(def);
+        CB_LOCALES.setSelectedIndex(indexOf(def));
         lastSelection = CB_LOCALES.getSelectedItem();
         
         // felület inicializálása

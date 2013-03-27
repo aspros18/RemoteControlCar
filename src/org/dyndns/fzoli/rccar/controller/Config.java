@@ -56,6 +56,7 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
     /**
      * Változók deklarálása és az alapértelmezések beállítása.
      */
+    private boolean replacedCerts = false;
     private int port = 8443;
     private char[] password = null;
     private String address = "localhost";
@@ -110,6 +111,14 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
      * Ez az osztály nem példányosítható kívülről és nem származhatnak belőle újabb osztályok.
      */
     private Config() {
+    }
+
+    /**
+     * Megadja, hogy a tanúsítványfájlok le lettek-e cserélve,
+     * mert a felhasználói beállítások helytelen útvonalra mutatnak.
+     */
+    public boolean isReplacedCerts() {
+        return replacedCerts;
     }
 
     /**
@@ -288,7 +297,7 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
     }
 
     /**
-     * Beállítja az egyetlen megbízahtó tanúsítvány-kiállítót.
+     * Beállítja az egyetlen megbízható tanúsítvány-kiállítót.
      */
     public void setCAFile(File ca) {
         this.ca = ca;
@@ -351,11 +360,25 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
      * A szerializált fájlból beolvassa az adatokat.
      * Ha nem létezik a fájl vagy nem olvasható, az alapértelmezett adatokkal tér vissza.
      * Ha a fájl létezik, de nem Config objektum van benne, a fájl felülíródik.
+     * Ha a felhasználó által beállított tanúsítványfájlok nem találhatóak,
+     * de létezik alapértelmezett konfiguráció, amiben érvényesek a beállítások,
+     * lecseréli az alapértelmezett beállításokra az útvonalakat és a jelszót.
      */
     public static Config getInstance() {
         try {
             if (STORE_FILE.isFile()) {
-                return read(STORE_FILE, true);
+                Config cfg = read(STORE_FILE, true);
+                if (!cfg.isFileExists() && DEF_FILE.isFile()) {
+                    Config def = read(DEF_FILE, false);
+                    if (def.isFileExists()) {
+                        cfg.setCAFile(def.getCAFile());
+                        cfg.setCertFile(def.getCertFile());
+                        cfg.setKeyFile(def.getKeyFile());
+                        cfg.setPassword(def.getPassword(), false);
+                        cfg.replacedCerts = true;
+                    }
+                }
+                return cfg;
             }
             else {
                 if (DEF_FILE.isFile()) return read(DEF_FILE, false);

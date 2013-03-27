@@ -443,7 +443,10 @@ public class Main {
             }
         }
         if (!help || !CONFIG.isDefault()) {
-            if (CONFIG.isCertDefault()) {
+            if (CONFIG.isReplacedCerts()) {
+                showSettingWarning(getString("msg_config_replaced"), false);
+            }
+            else if (CONFIG.isCertDefault()) {
                 showSettingWarning(getString("msg_config_warn"), false);
             }
         }

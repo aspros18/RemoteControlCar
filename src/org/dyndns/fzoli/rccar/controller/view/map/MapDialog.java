@@ -3,6 +3,7 @@ package org.dyndns.fzoli.rccar.controller.view.map;
 import chrriis.dj.nativeswing.NSComponentOptions;
 import chrriis.dj.nativeswing.NativeComponentWrapper;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
+import chrriis.dj.nativeswing.swtimpl.NativeInterfaceAdapter;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserAdapter;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserEvent;
@@ -171,6 +172,12 @@ public class MapDialog extends AbstractDialog {
      */
     private Boolean enabled;
     
+    /**
+     * Megadja, hogy tíltva van-e a térkép.
+     * Akkor fordulhat elő, ha bezárul a natív interfész valami oknál fogva.
+     */
+    private boolean disabled = false;
+    
     static {
         // az ideiglenes könyvtár létrehozása és feltöltése
         chkTmpFiles();
@@ -299,7 +306,23 @@ public class MapDialog extends AbstractDialog {
 
             // HTML forráskód betöltése
             WEB_BROWSER.setHTMLContent(HTML_SOURCE);
+            
+            // ha a natív interfészt bezárják, térkép inaktiválása és hiba közlése
+            NativeInterface.addNativeInterfaceListener(new NativeInterfaceAdapter() {
 
+                @Override
+                public void nativeInterfaceClosed() {
+                    if (disabled || disposed) return;
+                    disabled = true;
+                    relocalize();
+                    mapPane.setVisible(false);
+                    getContentPane().remove(mapPane);
+                    getContentPane().add(pPre, BorderLayout.CENTER);
+                    pPre.setVisible(true);
+                }
+                
+            });
+            
             // várakozás a térkép api betöltésére
             WEB_BROWSER.addWebBrowserListener(new WebBrowserAdapter() {
 
@@ -448,14 +471,14 @@ public class MapDialog extends AbstractDialog {
         LB_LOADING.setText(getString("loading"));
         LB_WARN.setText(getWarningLabelText());
         if (enabled == null) LB_PRE_LOADING.setText(getPreLoadingLabelText());
-        else if (!enabled) LB_PRE_LOADING.setText(getNoSupportLabelText());
+        else if (disabled || !enabled) LB_PRE_LOADING.setText(getNoSupportLabelText());
     }
     
     /**
      * Hibaüzenet eltüntetése és térkép újratöltése, ha legutóbb nem sikerült betölteni.
      */
     private void reload() {
-        if (!PANEL_WARN.isVisible() || disposed) return;
+        if (!PANEL_WARN.isVisible() || disposed || disabled) return;
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
@@ -476,6 +499,13 @@ public class MapDialog extends AbstractDialog {
         boolean v = isVisible();
         super.setVisible(b);
         if (b && !v) reload();
+    }
+
+    /**
+     * Megadja, hogy az áttünés aktív-e.
+     */
+    public boolean isFade() {
+        return fadeEnabled;
     }
     
     /**
@@ -508,7 +538,7 @@ public class MapDialog extends AbstractDialog {
      * @param pos GPS koordináta, null referencia esetén térkép helyett iránytű jelenik meg
      */
     public void setPosition(final Point3D pos) {
-        if (WEB_BROWSER == null || disposed) return;
+        if (WEB_BROWSER == null || disposed || disabled) return;
         chkTmpFiles();
         position = pos;
         executeJavascript("map.setCenter(new google.maps.LatLng(" + (position == null ? 1 : position.X) + ", " + (position == null ? 0 : position.Y) + ")); var tag = document.getElementById('info'); tag.style.visibility = '" + (pos == null ? "hidden" : "visible") + "'; tag.innerHTML = '" + (pos == null ? "" : "W " + DF.format(pos.X) + "° H " + DF.format(pos.Y) + "° " + DF2.format(pos.Z) + " m") + "'; document.getElementById('compass').style.visibility = '" + (pos != null ? "hidden" : "visible") + "';");
@@ -521,7 +551,7 @@ public class MapDialog extends AbstractDialog {
      * @param rotation északtól való eltérés, vagy null, ha nincs irány megadva
      */
     public void setArrow(final Double rotation) {
-        if (WEB_BROWSER == null || disposed) return;
+        if (WEB_BROWSER == null || disposed || disabled) return;
         chkTmpFiles();
         ARROW.setRotation(rotation); // nyíl frissítése
         writeImage(ARROW, ARROW_FILE); // png formátumban a nyíl mentése a tmp könyvtárba
@@ -533,7 +563,7 @@ public class MapDialog extends AbstractDialog {
      * JavaScript és CSS 3 alapú metódus.
      */
     public void setFade(final boolean enabled) {
-        if (WEB_BROWSER == null || disposed) return;
+        if (WEB_BROWSER == null || disposed || disabled) return;
         fadeEnabled = enabled;
         executeJavascript("document.getElementById('map_canvas').className = 'fadeprep" + (enabled ? " fadeon" : "") + "';");
     }

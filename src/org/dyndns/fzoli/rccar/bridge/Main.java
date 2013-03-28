@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.bridge;
 
+import chrriis.dj.nativeswing.swtimpl.NativeInterfaceAdapter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.security.KeyStoreException;
@@ -63,6 +64,22 @@ public class Main {
      * A szerző dialógust megjelenítő menüelem, ami inaktív, míg a dialógus látható.
      */
     private static MenuItem MI_AUTHOR;
+    
+    /**
+     * A Natív Interfész bezárásakor lefutó eseményfigyelő, ami a rendszerikont újrainicializálja AWT alapokon.
+     */
+    private static final NativeInterfaceAdapter NI_LISTENER = new NativeInterfaceAdapter() {
+
+        private boolean closed = false;
+        
+        @Override
+        public void nativeInterfaceClosed() {
+            if (closed) return;
+            closed = true;
+            setSystemTrayIcon();
+        }
+        
+    };
     
     /**
      * Még mielőtt lefutna a main metódus, beállítódik a rendszer LAF, a saját kivételkezelő, a rendszerikon és az erőforrás-felszabadító szál.
@@ -350,6 +367,7 @@ public class Main {
         }
         if (CONFIG.isCorrect()) {
             UIUtil.initNativeInterface();
+            UIUtil.addNativeInterfaceListener(NI_LISTENER);
             setSplashMessage(getString("start_server"));
             setSystemTrayIcon();
             if (!Permissions.getConfig().canRead()) { // ha a jogosultságokat leíró fájl nem olvasható, figyelmezteti a felhasználót

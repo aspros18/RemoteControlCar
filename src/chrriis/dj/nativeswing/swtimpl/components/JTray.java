@@ -94,7 +94,7 @@ public final class JTray {
      * @return true if the native system tray is available, otherwise false
      */
     public static boolean isSupported() {
-        return supported == null ? supported = NATIVE_TRAY.isSupported() : supported;
+        return supported == null ? supported = NATIVE_TRAY.isSupported() : !disposed && supported;
     }
     
     /**

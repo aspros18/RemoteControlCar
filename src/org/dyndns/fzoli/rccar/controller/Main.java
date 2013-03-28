@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.controller;
 
+import chrriis.dj.nativeswing.swtimpl.NativeInterfaceAdapter;
 import org.dyndns.fzoli.rccar.SplashScreenLoader;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
@@ -109,6 +110,22 @@ public class Main {
     };
     
     /**
+     * A Natív Interfész bezárásakor lefutó eseményfigyelő, ami a rendszerikont újrainicializálja AWT alapokon.
+     */
+    private static final NativeInterfaceAdapter NI_LISTENER = new NativeInterfaceAdapter() {
+
+        private boolean closed = false;
+        
+        @Override
+        public void nativeInterfaceClosed() {
+            if (closed) return;
+            closed = true;
+            setSystemTrayIcon();
+        }
+        
+    };
+    
+    /**
      * A konfigurációt tartalmazó objektum.
      */
     private static final Config CONFIG = Config.getInstance();
@@ -203,12 +220,11 @@ public class Main {
     
     /**
      * Beállítja a rendszerikont.
-     * @param setIcon ha true, beállítja az ikont is
      */
-    private static void setSystemTrayIcon(boolean setIcon) {
+    private static void setSystemTrayIcon() {
         if (SystemTrayIcon.init(!UIUtil.isNativeSwingAvailable()) && SystemTrayIcon.isSupported()) {
             // az ikon beállítása
-            if (setIcon) SystemTrayIcon.setIcon(getString("app_name"), R.getIconImage());
+            SystemTrayIcon.setIcon(getString("app_name"), R.getIconImage());
             
             // nyelv választó opció hozzáadása
             String lngText = getString("language");
@@ -474,11 +490,12 @@ public class Main {
             System.exit(1); // hibakóddal lép ki
         }
         UIUtil.initNativeInterface(); // natív interfész inicializálása a webböngészőhöz és a rendszerikonhoz
+        UIUtil.addNativeInterfaceListener(NI_LISTENER); // natív interfész eseménykezelő hozzáadása
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
-                setSystemTrayIcon(true); // rendszerikon létrehozása
+                setSystemTrayIcon(); // rendszerikon létrehozása
                 
                 if (!Config.STORE_FILE.exists()) { // ha a konfig fájl nem létezik
                     try {
@@ -511,7 +528,7 @@ public class Main {
                         PROGRESS_FRAME.relocalize();
                         SELECTION_FRAME.relocalize();
                         CONTROLLER_WINDOWS.relocalize();
-                        setSystemTrayIcon(false);
+                        setSystemTrayIcon();
                         synchronized (CONFIG) {
                             CONFIG.setLanguage(l);
                             Config.save(CONFIG);

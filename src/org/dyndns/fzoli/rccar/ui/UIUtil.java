@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.ui;
 
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
+import chrriis.dj.nativeswing.swtimpl.NativeInterfaceListener;
 import chrriis.dj.nativeswing.swtimpl.components.core.NativeTray;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
@@ -164,6 +165,15 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
     public static void runNativeEventPump() {
         if (isNativeSwingAvailable()) { // ha van natív támogatás
             NativeInterface.runEventPump(); // SWT eseménypumpáló futtatása
+        }
+    }
+    
+    /**
+     * Eseménykezelőt ad hozzá a Natív Interfészhez, ha az elérhető.
+     */
+    public static void addNativeInterfaceListener(NativeInterfaceListener l) {
+        if (nativeSwingAvailable) {
+            NativeInterface.addNativeInterfaceListener(l);
         }
     }
     

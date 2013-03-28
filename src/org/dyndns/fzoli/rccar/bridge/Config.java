@@ -278,7 +278,6 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
         List<String> conf;
         try {
             // ha a konfigurációs fájl meg van találva vagy Mac OS X rendszeren fut az alkalmazás, a forráskönyvtár kihagyása
-            // TODO: megtudakolni, hogy mennyire "szabványos" Mac alatt az, ha a csomagolt alkalmazáskönyvtárba kerül esetleg a konfig fájl
             if (FILE_CONFIG.exists() || System.getProperty("os.name").toUpperCase().contains("MAC")) throw new Exception();
             // a forráskönyvtárból olvassa ki a konfigot, vagy ha nem létezik, megpróbálja létrehozni
             conf = read(file = new File(Folders.getSourceDir().getAbsoluteFile(), CFG_NAME), DEFAULT_CONFIG);

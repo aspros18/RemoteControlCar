@@ -177,8 +177,8 @@ public class Main {
     
     /**
      * A program leállítása előtt nem árt az erőforrásokat felszabadítani.
-     * Leállításkor ha sikerült a szerver socket létrehozása, bezárja azt,
-     * végül naplózza a leállást.
+     * Leállításkor ha sikerült a szerver socket létrehozása, bezárja azt
+     * és naplózza a leállást.
      */
     private static void addShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
@@ -186,13 +186,11 @@ public class Main {
             @Override
             public void run() {
                 if (SERVER_SOCKET != null) try {
+                    logInfo(VAL_MESSAGE, getString("log_stop"), false);
                     SERVER_SOCKET.close();
                 }
                 catch (IOException ex) {
                     ;
-                }
-                if (CONFIG.isCorrect()) {
-                    logInfo(VAL_MESSAGE, getString("log_stop"), false);
                 }
             }
             
@@ -267,15 +265,12 @@ public class Main {
     /**
      * SSL Server socket létrehozása a konfig fájl alapján.
      * Ha valamiért nem sikerül a tanúsítvány használata, jelszó bevitel jelenik meg.
-     * A szerver socket sikeres létrehozása után naplózza és közli a felhasználóval, hogy fut a szerver.
      * @param count ha jelszóvédett a tanúsítvány, a hibás próbálkozások számát jelzi (rekurzívan) a naplózáshoz
      * @throws Error ha nem sikerül a szerver socket létrehozása
      */
     private static SSLServerSocket createServerSocket(int count) {
         try {
-            SSLServerSocket socket = SSLSocketUtil.createServerSocket(CONFIG.getPort(), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile(), CONFIG.getPassword());
-            logInfo(VAL_MESSAGE, getString("log_start"), !CONFIG.isQuiet() && Permissions.getConfig().canRead());
-            return socket;
+            return SERVER_SOCKET = SSLSocketUtil.createServerSocket(CONFIG.getPort(), CONFIG.getCAFile(), CONFIG.getCertFile(), CONFIG.getKeyFile(), CONFIG.getPassword());
         }
         catch (KeyStoreException ex) {
             if (ex.getMessage().startsWith("failed to extract")) {
@@ -298,6 +293,7 @@ public class Main {
      * A szerver socket elindítása, a program értelme.
      * Ha nem megbízható kapcsolat jön létre, jelzi a felhasználónak.
      * Ha nem várt kivétel képződik, kivételt dob, ami a felhasználó tudtára lesz adva.
+     * A szerver socket sikeres létrehozása után naplózza és közli a felhasználóval, hogy fut a szerver.
      * @throws RuntimeException ha nem várt kivétel képződik
      */
     private static void runServer() {
@@ -306,7 +302,8 @@ public class Main {
             @Override
             public void run() {
                 final SSLServerSocket ss = createServerSocket(0); // socket szerver létrehozása kezdetben nincs 1 hibás próbálkozás sem a jelszóbevitelnél
-                closeSplashScreen();
+                closeSplashScreen(); // sikeres létrehozás esetén splash screen eltüntetése és naplózás; hiba esetén hibaüzenet jelenik meg és a splash screen magától eltűnik
+                logInfo(VAL_MESSAGE, getString("log_start"), !CONFIG.isQuiet() && Permissions.getConfig().canRead());
                 while (!ss.isClosed()) { // ameddig nincs lezárva a socket szerver
                     SSLSocket s = null;
                     try {

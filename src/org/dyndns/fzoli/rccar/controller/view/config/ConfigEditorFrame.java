@@ -598,9 +598,13 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     /**
      * Bezárja az ablakot a konfiguráció mentése nélkül.
      * Ha nem megfelelő az érvényben lévő konfiguráció, de meg van követelve a helyes konfiguráció, a program leáll.
+     * Ha a nyelv módosult miközben az ablak látható volt, az ablak megjelenése előtti nyelvre vált vissza a program.
      */
     private void unsaveConfig() {
         if (isForce() && !CONFIG.isFileExists()) System.exit(0);
+        if (!previousConfig.getLanguage().equals(CONFIG.getLanguage())) {
+            Main.setLanguage(previousConfig.getLanguage());
+        }
         dispose();
     }
     

@@ -193,8 +193,7 @@ public abstract class LanguageChooserFrame extends JFrame {
         }
         
         // a kezdőnyelv kijelölése
-        CB_LOCALES.setSelectedIndex(indexOf(def));
-        lastSelection = CB_LOCALES.getSelectedItem();
+        setLanguage(def);
         
         // felület inicializálása
         setIconImage(icon);
@@ -215,6 +214,22 @@ public abstract class LanguageChooserFrame extends JFrame {
         
         // jelzés, hogy befejeződött az inicializálás
         loaded = true;
+    }
+    
+    /**
+     * Megadja a kiválasztott nyelvet.
+     */
+    public Locale getLanguage() {
+        return (Locale) CB_LOCALES.getSelectedItem();
+    }
+    
+    /**
+     * A legördülőlista új értékét állítja be.
+     * @param l a kért nyelv
+     */
+    public void setLanguage(Locale l) {
+        CB_LOCALES.setSelectedIndex(indexOf(l));
+        lastSelection = CB_LOCALES.getSelectedItem();
     }
     
     /**

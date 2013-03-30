@@ -476,6 +476,27 @@ public class Main {
     }
     
     /**
+     * Beállítja a kért nyelvet.
+     * Ha a nyelv megváltozott, szótár cseréje,
+     * feliratok lecserélése és ha a konfigszerkesztő-ablak nem látható,
+     * az új nyelv elmentése.
+     */
+    public static void setLanguage(Locale l) {
+        if (CONFIG.getLanguage().equals(l)) return;
+        STRINGS = createResource(l);
+        CONFIG_EDITOR.relocalize();
+        PROGRESS_FRAME.relocalize();
+        SELECTION_FRAME.relocalize();
+        CONTROLLER_WINDOWS.relocalize();
+        setSystemTrayIcon();
+        synchronized (CONFIG) {
+            CONFIG.setLanguage(l);
+            if (!CONFIG_EDITOR.isVisible()) Config.save(CONFIG);
+            else LNG_FRAME.setLanguage(l);
+        }
+    }
+    
+    /**
      * A vezérlő main metódusa.
      * Ha a grafikus felület nem érhető el, konzolra írja a szomorú tényt és a program végetér.
      * Ha a konfigurációban megadott tanúsítványfájlok nem léteznek, közli a hibát és kényszeríti a kijavítását úgy,
@@ -519,20 +540,11 @@ public class Main {
                 LNG_FRAME = new LanguageChooserFrame(R.getIconImage(), "org.dyndns.fzoli.rccar.l10n", "controller", CONFIG.getLanguage(), Locale.ENGLISH, new Locale("hu")) {
 
                     /**
-                     * Ha a nyelv megváltozott, szótár cseréje, feliratok lecserélése és az új nyelv elmentése.
+                     * Ha a nyelv megváltozott, kért nyelv beállítása.
                      */
                     @Override
                     protected void onLanguageSelected(Locale l) {
-                        STRINGS = createResource(l);
-                        CONFIG_EDITOR.relocalize();
-                        PROGRESS_FRAME.relocalize();
-                        SELECTION_FRAME.relocalize();
-                        CONTROLLER_WINDOWS.relocalize();
-                        setSystemTrayIcon();
-                        synchronized (CONFIG) {
-                            CONFIG.setLanguage(l);
-                            Config.save(CONFIG);
-                        }
+                        Main.setLanguage(l);
                     }
                     
                 };

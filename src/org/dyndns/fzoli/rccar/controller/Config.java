@@ -366,26 +366,35 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
      */
     public static Config getInstance() {
         try {
+            // ha a felhasználó konfigja létezik
             if (STORE_FILE.isFile()) {
+                // betölti onnan a konfigot
                 Config cfg = read(STORE_FILE, true);
+                // ha a megadott cert fájlok nem találhatóak...
                 if (!cfg.isFileExists() && DEF_FILE.isFile()) {
                     Config def = read(DEF_FILE, false);
+                    // de a default konfigban érvényesek a cert fájlok...
                     if (def.isFileExists()) {
+                        // akkor beállítja a default cert fájlokat
                         cfg.setCAFile(def.getCAFile());
                         cfg.setCertFile(def.getCertFile());
                         cfg.setKeyFile(def.getKeyFile());
                         cfg.setPassword(def.getPassword(), false);
+                        // jelzi, hogy nem az eredeti cert fájlokat használja
                         cfg.replacedCerts = true;
                     }
                 }
                 return cfg;
             }
             else {
+                // ha nincs felhasználói konfig, de van default konfig, akkor betölti
                 if (DEF_FILE.isFile()) return read(DEF_FILE, false);
+                // egyébként meg se próbálja betölteni a default konfigot, új konfigot használ
                 return new Config();
             }
         }
         catch (Exception ex) {
+            // bármiféle hiba esetén új konfig
             return new Config();
         }
     }
@@ -403,7 +412,11 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
             config = (Config) oin.readObject();
         }
         catch (Exception ex) {
-            config = new Config();
+            // ha létezik default konfig és más fájl lett sikertelenül betöltve, betölti a default konfigot
+            // egyébként új konfigot hoz létre
+            if (DEF_FILE.equals(f) || !DEF_FILE.isFile()) config = new Config();
+            else config = read(DEF_FILE, false);
+            // menti a konfigot, ha kérték
             if (saveOnError) save(config);
         }
         oin.close();

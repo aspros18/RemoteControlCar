@@ -142,7 +142,7 @@
                     </CreateFolder>
 
                     <!-- A kliens és a szerver alkalmazás is létrehozhatja az alábbi fájlokat, amik telepítéskor még nem léteztek, de eltávolításkor törölni kell őket is. -->
-                    <RemoveFile Id='NoSwtFile' On='uninstall' Name='.noswt' />
+                    <RemoveFile Id='NoSwtFile' On='uninstall' Name='no_swt' />
 
                 </Component>
 

@@ -62,8 +62,7 @@ public class OSUtils {
                 int hResult = instance.SHGetFolderPath(hwndOwner, nFolder, hToken, dwFlags, pszPath);
                 if (Shell32.S_OK == hResult) {
                     path = new String(pszPath);
-                    int len = path.indexOf('\0');
-                    return path.substring(0, len);
+                    path = path.substring(0, path.indexOf('\0'));
                 }
                 else {
                     // ha a Shell32 nem működne, az alapértelmezett útvonal használata
@@ -86,7 +85,8 @@ public class OSUtils {
         else {
             path = System.getProperty("user.dir");
         }
-        return path + File.separator + name + File.separator;
+        if (name == null || name.isEmpty()) return path + File.separator;
+        else return path + File.separator + name + File.separator;
     }
     
     /**

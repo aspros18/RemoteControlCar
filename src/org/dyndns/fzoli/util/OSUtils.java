@@ -79,13 +79,13 @@ public class OSUtils {
         }
         else if (OS.contains("NUX")) {
             String cfg = System.getenv("XDG_CONFIG_HOME");
-            if (cfg == null || cfg.isEmpty()) cfg = System.getProperty("user.home") + File.separator + ".config";
+            if (cfg == null || cfg.trim().isEmpty()) cfg = System.getProperty("user.home") + File.separator + ".config";
             path = cfg;
         }
         else {
             path = System.getProperty("user.dir");
         }
-        if (name == null || name.isEmpty()) return path + File.separator;
+        if (name == null || name.trim().isEmpty()) return path + File.separator;
         else return path + File.separator + name + File.separator;
     }
     

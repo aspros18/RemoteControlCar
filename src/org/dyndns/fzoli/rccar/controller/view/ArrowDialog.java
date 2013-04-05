@@ -555,6 +555,7 @@ abstract class ArrowPanel extends JPanel {
         
     }
     
+    private JLayeredPane pane;
     private DateFormat df = new SimpleDateFormat("HH:mm:ss");
     private JLabel lbX = new ArrowLabel("0", SwingConstants.RIGHT);
     private JLabel lbY = new ArrowLabel("0", SwingConstants.LEFT);
@@ -570,7 +571,7 @@ abstract class ArrowPanel extends JPanel {
 
         df.setTimeZone(TimeZone.getTimeZone("GMT"));
         
-        JLayeredPane pane = new JLayeredPane();
+        pane = new JLayeredPane();
         pane.setPreferredSize(new Dimension(size, size));
         pane.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
         
@@ -684,6 +685,7 @@ abstract class ArrowPanel extends JPanel {
     
     public void setControlling(boolean controlling, boolean restoring) {
         this.controlling = controlling;
+        pane.setCursor(new Cursor(controlling ? Cursor.CROSSHAIR_CURSOR : Cursor.DEFAULT_CURSOR));
         if (controlling && restoring) {
             if (oldX != null) setPercentX(oldX);
             if (oldY != null) setPercentY(oldY);

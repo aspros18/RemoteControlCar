@@ -35,11 +35,34 @@ public abstract class AbstractVehicle extends BaseIOIOLooper implements Vehicle 
 	private AnalogInput inBattery;
 	
 	/**
+	 * Feszültséghatár százalékszámításhoz.
+	 */
+	private final float MAX_VOLTAGE, MIN_VOLTAGE;
+	
+	/**
 	 * Konstruktor.
 	 * @param service a szolgáltatás a vezérlőjelet tartalmazó objektum referenciájának megszerzéséhez
 	 */
 	public AbstractVehicle(ConnectionService service) {
 		SERVICE = service;
+		MAX_VOLTAGE = SERVICE.getVoltageLimit(true);
+		MIN_VOLTAGE = SERVICE.getVoltageLimit(false);
+	}
+	
+	/**
+	 * Maximum feszültséghatár az akkumulátor-szint becséléshez.
+	 */
+	@Override
+	public float getMaxVoltage() {
+		return MAX_VOLTAGE;
+	}
+
+	/**
+	 * Minimum feszültséghatár az akkumulátor-szint becséléshez.
+	 */
+	@Override
+	public float getMinVoltage() {
+		return MIN_VOLTAGE;
 	}
 	
 	/**
@@ -105,7 +128,7 @@ public abstract class AbstractVehicle extends BaseIOIOLooper implements Vehicle 
 	 */
 	private void refreshBattery(Integer level) {
 		if (callback != null && getX() == 0 && getY() == 0) { // ha van eseménykezelő és megbízható az adat (egyik motor sem jár)
-			if ((oldBatteryLevel == null || !oldBatteryLevel.equals(level)) && (level == null || level > 0)) { // ha változott az akkuszint és az akkuszint nem nulla
+			if ((oldBatteryLevel == null || !oldBatteryLevel.equals(level)) && (level == null || level > 0)) { // ha változott az akkuszint és az akkuszint pozitív
 				oldBatteryLevel = level; // akkuszint frissítése
 				SERVICE.getBinder().getHostData().setBatteryLevel(level); // host data frissítése
 				callback.onBatteryLevelChanged(level); // callback hívása

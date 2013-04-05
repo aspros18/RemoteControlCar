@@ -3,6 +3,7 @@
     <string name="wrong_value">Hibás érték!</string>
     <string name="category_path">Útvonal</string>
     <string name="category_security">Biztonság</string>
+    <string name="category_battery">Akkumulátor</string>
     <string name="category_other">Egyéb</string>
     <string name="title_address">Cím</string>
     <string name="title_ca">Kiállító</string>
@@ -18,6 +19,8 @@
     <string name="title_vehicle">Jármű</string>
     <string name="title_force_connect">Kényszerített kapcsolódás</string>
     <string name="title_offline">Offline mód</string>
+    <string name="title_max_voltage">Max feszültség</string>
+    <string name="title_min_voltage">Min feszültség</string>
     <string name="summary_address">Szerver cím megadása</string>
     <string name="summary_port">Szerver port megadása</string>
     <string name="summary_ca">Certificate Authority tallózása</string>
@@ -33,6 +36,8 @@
     <string name="summary_additional_degree">Fok eltérés megadása</string>
     <string name="summary_vehicle">Jármű kiválasztása</string>
     <string name="summary_offline">Hálózati kapcsolat nélküli mód</string>
+    <string name="summary_max_voltage">Maximum feszültséghatár</string>
+    <string name="summary_min_voltage">Minimum feszültséghatár</string>
     <string name="err_1">Sikertelen kapcsolódás.</string>
     <string name="err_2">Megszakadt a kapcsolat.</string>
     <string name="err_3">Kapcsolat elutasítva.</string>

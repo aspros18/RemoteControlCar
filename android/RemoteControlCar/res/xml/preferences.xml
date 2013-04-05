@@ -68,6 +68,24 @@
             android:summary="@string/summary_inspected_stream"
             android:defaultValue="false" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/category_battery">
+        <EditTextPreference
+            android:key="max_voltage"
+            android:title="@string/title_max_voltage"
+            android:summary="@string/summary_max_voltage"
+            android:maxLength="4"
+            android:inputType="numberDecimal"
+            android:defaultValue="2.41"
+            android:dependency="offline" />
+        <EditTextPreference
+            android:key="min_voltage"
+            android:title="@string/title_min_voltage"
+            android:summary="@string/summary_min_voltage"
+            android:maxLength="4"
+            android:inputType="numberDecimal"
+            android:defaultValue="2.12"
+            android:dependency="offline" />
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/category_other">
         <ListPreference
             android:key="vehicle"

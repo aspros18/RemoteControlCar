@@ -42,24 +42,6 @@ public class DefaultVehicle extends AbstractVehicle {
 	}
 
 	/**
-	 * Maximum feszültséghatár akkumulátor-szint becsélésre.
-	 * @return 2.71 V alapesetben
-	 */
-	@Override
-	public float getMaxVoltage() {
-		return 2.71f;
-	}
-
-	/**
-	 * Minimum feszültséghatár akkumulátor-szint becsélésre.
-	 * @return 2.395 V alapesetben
-	 */
-	@Override
-	public float getMinVoltage() {
-		return 2.395f;
-	}
-
-	/**
 	 * Megadja, hogy támogatva van-e a precíz kormányzás.
 	 * @return nem támogatott a precíz vezérlés, ezért mindig true
 	 */

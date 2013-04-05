@@ -792,6 +792,14 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	/**
+	 * Feszültséghatár lekérése.
+	 * @param max true esetén maximum határ, false esetén minimum határ
+	 */
+	public float getVoltageLimit(boolean max) {
+		return Float.parseFloat(getSharedPreferences(this).getString(max ? "max_voltage" : "min_voltage", max ? "4.0" : "2.0"));
+	}
+	
+	/**
 	 * A Híd oldalán a generált északtól való eltéréshez hozzáadódó értéket adja meg.
 	 */
 	public int getAdditionalDegree() {

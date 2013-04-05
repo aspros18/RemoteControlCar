@@ -26,7 +26,12 @@ public class PWMVehicle extends AbstractVehicle {
 	/**
 	 * A jármű vezérléséhez használt láb azonosítója.
 	 */
-	protected int PIN_FRONT = 11, PIN_BACK = 10, PIN_LEFT = 13, PIN_RIGHT = 12, OUT_FREQ = 1000;
+	protected int PIN_FRONT = 11, PIN_BACK = 10, PIN_LEFT = 13, PIN_RIGHT = 12;
+	
+	/**
+	 * PWM frekvencia: 1 kHz
+	 */
+	protected int OUT_FREQ = 1000;
 	
 	/**
 	 * Konstruktor.
@@ -61,24 +66,6 @@ public class PWMVehicle extends AbstractVehicle {
 	@Override
 	public int getBatteryPin() {
 		return 33;
-	}
-
-	/**
-	 * Maximum feszültséghatár akkumulátor-szint becsélésre.
-	 * @return 2.7 V
-	 */
-	@Override
-	public float getMaxVoltage() {
-		return 2.7f;
-	}
-	
-	/**
-	 * Minimum feszültséghatár akkumulátor-szint becsélésre.
-	 * @return 2.35 V
-	 */
-	@Override
-	public float getMinVoltage() {
-		return 2.35f;
 	}
 	
 	/**

@@ -5,6 +5,7 @@
     <string name="category_path">Path</string>
     <string name="category_security">Security</string>
     <string name="category_cam">IP Webcam</string>
+    <string name="category_battery">Battery</string>
     <string name="category_other">Other</string>
     <string name="title_address">Address</string>
     <string name="title_port">Port</string>
@@ -22,6 +23,8 @@
     <string name="title_vehicle">Vehicle</string>
     <string name="title_force_connect">Forced connection</string>
     <string name="title_offline">Offline</string>
+    <string name="title_max_voltage">Max Voltage</string>
+    <string name="title_min_voltage">Min Voltage</string>
     <string name="summary_address">Edit server address</string>
     <string name="summary_port">Edit server port</string>
     <string name="summary_ca">Search Certificate Authority</string>
@@ -37,6 +40,8 @@
     <string name="summary_additional_degree">Edit additional degree</string>
     <string name="summary_vehicle">Select vehicle</string>
     <string name="summary_offline">Offline mode</string>
+    <string name="summary_max_voltage">Maximum voltage-limit</string>
+    <string name="summary_min_voltage">Minimum voltage-limit</string>
     <string name="text_start">Start</string>
     <string name="text_stop">Stop</string>
     <string name="err_1">Connection error.</string>

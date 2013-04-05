@@ -50,23 +50,38 @@ public class SettingActivity extends SherlockPreferenceActivity {
 	 * Nem engedi meg, hogy a beírt érték 0 alá vagy 65535 felé menjen, miközben gépel a felhasználó.
 	 * Ha pozitív szám lett megadva, a fölösleges nullákat is eltávolítja.
 	 */
-	private static final TextWatcher TW_PORT = createNumberMaskWatcher(65535);
+	private static final TextWatcher TW_PORT = createNumberMaskWatcher(65535, false);
 	
 	/**
 	 * Nem engedi meg, hogy a beírt érték 0 alá vagy 1000 felé menjen, miközben gépel a felhasználó.
 	 * Ha pozitív szám lett megadva, a fölösleges nullákat is eltávolítja.
 	 */
-	private static final TextWatcher TW_REFRESH = createNumberMaskWatcher(1000);
+	private static final TextWatcher TW_REFRESH = createNumberMaskWatcher(1000, false);
+	
+	/**
+	 * A maximum akkumulátor-szint nem lehet 12 voltnál nagyobb.
+	 */
+	private static final TextWatcher TW_MAX_BATT = createNumberMaskWatcher(12, true);
+	
+	/**
+	 * A minimum akkumulátor-szint nem lehet 8 voltnál nagyobb.
+	 */
+	private static final TextWatcher TW_MIN_BATT = createNumberMaskWatcher(9, true);
+	
+	/**
+	 * Az akkumulátor-szint értéke 1 és 13 volt között érvényes.
+	 */
+	private final OnPreferenceChangeListener CL_BATT = createNumberMaskChangeListener(1, 13, true);
 	
 	/**
 	 * Még mielőtt a megváltozott szöveg elmentődne, megnézi, megfelel-e az intervallumnak (1 - 65535), és ha nem felel meg, az adat a szerkesztés előtti marad.
 	 */
-	private final OnPreferenceChangeListener CL_PORT = createNumberMaskChangeListener(1, 65535);
+	private final OnPreferenceChangeListener CL_PORT = createNumberMaskChangeListener(1, 65535, false);
 	
 	/**
 	 * Még mielőtt a megváltozott szöveg elmentődne, megnézi, megfelel-e az intervallumnak (0 - 1000), és ha nem felel meg, az adat a szerkesztés előtti marad.
 	 */
-	private final OnPreferenceChangeListener CL_REFRESH = createNumberMaskChangeListener(0, 1000);
+	private final OnPreferenceChangeListener CL_REFRESH = createNumberMaskChangeListener(0, 1000, false);
 	
 	/**
 	 * A cím ellenőrzésére használt regex.
@@ -292,6 +307,8 @@ public class SettingActivity extends SherlockPreferenceActivity {
 		initEditTextPreference("cam_port", TW_PORT, CL_PORT);
 		initEditTextPreference("cam_user", TW_LOGIN, CL_LOGIN);
 		initEditTextPreference("cam_password", TW_LOGIN, CL_LOGIN);
+		initEditTextPreference("max_voltage", TW_MAX_BATT, CL_BATT);
+		initEditTextPreference("min_voltage", TW_MIN_BATT, CL_BATT);
 	}
 	
 	/**
@@ -318,14 +335,15 @@ public class SettingActivity extends SherlockPreferenceActivity {
 	 * Ellenőrző eseményfigyelő gyártása szám alapú bevitelre.
 	 * @param min minimum érték
 	 * @param max maximum érték
+	 * @param dec true esetén double, false esetén integer van használva
 	 */
-	private OnPreferenceChangeListener createNumberMaskChangeListener(final int min, final int max) {
+	private OnPreferenceChangeListener createNumberMaskChangeListener(final int min, final int max, final boolean dec) {
 		return new OnPreferenceChangeListener() {
 			
 			@Override
 			public boolean onPreferenceChange(Preference preference, Object newValue) {
 				try {
-					int port = Integer.parseInt(newValue.toString());
+					int port = dec ? (int) Double.parseDouble(newValue.toString()) : Integer.parseInt(newValue.toString());
 					boolean ok = port >= min && port <= max;
 					if (!ok) showWarning();
 					return ok;
@@ -343,20 +361,24 @@ public class SettingActivity extends SherlockPreferenceActivity {
 	 * Maszkolást végző változásfigyelő gyártása szám alapú bevitelhez.
 	 * A minimum érték mindig nulla.
 	 * @param max a maximum érték
+	 * @param dec true esetén double, false esetén integer van használva
 	 */
-	private static TextWatcher createNumberMaskWatcher(final int max) {
+	private static TextWatcher createNumberMaskWatcher(final int max, final boolean dec) {
 		return new TextWatcherAdapter() {
 			
 			@Override
 			public void afterTextChanged(Editable s) {
+				if (dec && s.toString().endsWith(".") && !s.toString().endsWith("..")) {
+					return;
+				}
 				try {
-					int port = Integer.parseInt(s.toString());
-					if (port > max) setText(s, Integer.toString(max));
-					if (port < 0) setText(s, "0");
-					if (port != 0 && s.toString().startsWith("0")) setText(s, Integer.toString(port));
+					int num = dec ? (int) Double.parseDouble(s.toString()) : Integer.parseInt(s.toString());
+					if (num > max) setText(s, Integer.toString(max));
+					if (num < 0) setText(s, "0");
+					if (num != 0 && s.toString().startsWith("0")) setText(s, Integer.toString(num));
 				}
 				catch (NumberFormatException ex) {
-					setText(s, "0");
+					if (!s.toString().equals("0")) setText(s, "0");
 				}
 			}
 			

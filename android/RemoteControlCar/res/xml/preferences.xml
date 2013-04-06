@@ -83,7 +83,7 @@
             android:summary="@string/summary_min_voltage"
             android:maxLength="4"
             android:inputType="numberDecimal"
-            android:defaultValue="2.12"
+            android:defaultValue="1.94"
             android:dependency="offline" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/category_other">

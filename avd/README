@@ -49,6 +49,12 @@ adb push test-certs-passwd /mnt/sdcard/test-certs
 
 A parancs a test-certs-passwd könyvtár tartalmát másolja a futó virtuális gép (vagy telefon, ha USB-n össze van kötve a géppel és az adb nincs tiltva) SD-kártyájára, azon belül is a test-certs könyvtárba, ami a program alapértelmezett könyvtára.
 
+Ha az alábbi hibaüzenet jelenik meg
+failed to copy 'test-certs-passwd/host.crt' to '/mnt/sdcard/test-certs/host.crt': No such file or directory
+akkor vagy nincs SD-kártya felcsattolva, vagy régebbi Android rendszer fut a telefonon.
+Ha fel van csattolva az SD-kártya, /mnt/sdcard útvonal helyett csak simán /sdcard legyen a parancsban, tehát:
+adb push test-certs-passwd /sdcard/test-certs
+
 Az SD-kártya méretét elsőre 10 MB-ra állítottam, de az nem volt elég, hogy a program kibontsa a tanúsítványokat, így nem tudott kapcsolódni a Hídhoz.
 30 MB-ra állítva az SD-kártya méretét az SD-kártya formázódott, így másolhattam újra rá a tanúsítványokat, de ennyi hely már elég volt ahhoz, hogy a program megfelelően működjön.
 

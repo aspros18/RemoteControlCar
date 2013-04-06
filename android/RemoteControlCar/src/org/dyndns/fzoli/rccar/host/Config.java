@@ -3,6 +3,7 @@ package org.dyndns.fzoli.rccar.host;
 import java.io.File;
 
 import android.content.SharedPreferences;
+import android.os.Environment;
 
 /**
  * A hídhoz való kapcsolódás konfigurációja.
@@ -103,13 +104,15 @@ public class Config implements org.dyndns.fzoli.rccar.clients.ClientConfig {
 	/**
 	 * Készít egy File objektumot a beállítás kulcs alapján.
 	 * Ha az nincs beállítva vagy nem létezik a fájl, null referencia adódik vissza.
+	 * Ha a felhasználó nem állította még be, megkeresi a fájlt a /sdcard/test-certs könyvtárban, és ha létezik, azzal tér vissza.
 	 * @param key a preference kulcs, ami tartalmazza az fájl útvonalat
 	 * @param def az alapértelmezett fájl neve a test-certs könyvtárban
+	 * @return null, ha a kért fájl nem létezik, egyébként a kért útvonalra mutató File objektum
 	 */
 	private File createFile(String key, String def) {
 		String path = PREFERENCES.getString(key, null);
 		if (path == null) {
-			File defFile = new File("/mnt/sdcard/test-certs/" + def);
+			File defFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/test-certs/" + def);
 			if (defFile.isFile()) return defFile;
 			return null;
 		}

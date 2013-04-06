@@ -541,7 +541,7 @@ public class MapDialog extends AbstractDialog {
         if (WEB_BROWSER == null || disposed || disabled) return;
         chkTmpFiles();
         position = pos;
-        executeJavascript("map.setCenter(new google.maps.LatLng(" + (position == null ? 1 : position.X) + ", " + (position == null ? 0 : position.Y) + ")); var tag = document.getElementById('info'); tag.style.visibility = '" + (pos == null ? "hidden" : "visible") + "'; tag.innerHTML = '" + (pos == null ? "" : "W " + DF.format(pos.X) + "° H " + DF.format(pos.Y) + "° " + DF2.format(pos.Z) + " m") + "'; document.getElementById('compass').style.visibility = '" + (pos != null ? "hidden" : "visible") + "';");
+        executeJavascript("map.setCenter(new google.maps.LatLng(" + (position == null ? 1 : position.X) + ", " + (position == null ? 0 : position.Y) + ")); var tag = document.getElementById('info'); tag.style.visibility = '" + (pos == null ? "hidden" : "visible") + "'; tag.innerHTML = '" + (pos == null ? "" : "W " + DF.format(pos.X) + "° H " + DF.format(pos.Y) + "°" + (pos.Z == 0 ? "" : " " + DF2.format(pos.Z) + " m")) + "'; document.getElementById('compass').style.visibility = '" + (pos != null ? "hidden" : "visible") + "';");
     }
     
     /**

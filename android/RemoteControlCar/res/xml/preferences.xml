@@ -75,7 +75,7 @@
             android:summary="@string/summary_max_voltage"
             android:maxLength="4"
             android:inputType="numberDecimal"
-            android:defaultValue="2.41"
+            android:defaultValue="2.42"
             android:dependency="offline" />
         <EditTextPreference
             android:key="min_voltage"

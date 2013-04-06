@@ -840,18 +840,16 @@ public class ArrowDialog extends AbstractDialog {
     private void setControlling(boolean b, boolean restoring) {
         ControllerFrame owner = getControllerFrame();
         ARROW_PANEL.setControlling(b, restoring);
-        if (b) {
-            if (owner != null && !ARROW_PANEL.isFullY()) {
-                owner.getIncreaseButton().setEnabled(true);
+        if (owner != null) {
+            boolean inc = restoring && !ARROW_PANEL.isFullY();
+            owner.getIncreaseButton().setEnabled(inc);
+            if (!inc) {
+                ARROW_PANEL.setIncrease(false);
+                owner.getIncreaseButton().setSelected(false);
             }
         }
-        else {
+        if (!b) {
             ARROW_PANEL.setMaxY(null);
-            if (owner != null) {
-                ARROW_PANEL.setIncrease(false);
-                if (!restoring) owner.getIncreaseButton().setSelected(false);
-                owner.getIncreaseButton().setEnabled(restoring);
-            }
         }
     }
     
@@ -859,13 +857,15 @@ public class ArrowDialog extends AbstractDialog {
         ARROW_PANEL.setFullX(fullX);
         ARROW_PANEL.setFullY(fullY);
         ControllerFrame owner = getControllerFrame();
-        if (owner != null && !fullY && ARROW_PANEL.isControlling()) {
-            owner.getIncreaseButton().setEnabled(true);
-        }
-        if (owner != null && fullY) {
-            ARROW_PANEL.setIncrease(false);
-            owner.getIncreaseButton().setSelected(false);
-            owner.getIncreaseButton().setEnabled(false);
+        if (owner != null) {
+            if (fullY) {
+                ARROW_PANEL.setIncrease(false);
+                owner.getIncreaseButton().setSelected(false);
+                owner.getIncreaseButton().setEnabled(false);
+            }
+            else {
+                owner.getIncreaseButton().setEnabled(ARROW_PANEL.isControlling());
+            }
         }
     }
     

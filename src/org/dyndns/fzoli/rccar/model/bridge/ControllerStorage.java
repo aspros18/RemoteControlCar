@@ -407,7 +407,7 @@ public class ControllerStorage extends Storage<ControllerData> {
      * amint létrejön az összeköttetés, a {@link HostStorage} meghívja ezt a metódust.
      */
     void startControlTask() {
-        if (taskControl != null || getHostStorage() == null || !getHostStorage().getHostData().isVehicleConnected()) return;
+        if (taskControl != null || getHostStorage() == null || !getHostStorage().isConnected() || !getHostStorage().getHostData().isVehicleConnected()) return;
         taskControl = new TimerTask() {
 
             /**

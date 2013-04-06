@@ -148,7 +148,12 @@ public class HostSelectionFrame extends JFrame implements RelocalizableWindow {
 
             @Override
             public Dimension getPreferredSize() {
-                return BT_SETTINGS.getPreferredSize();
+                return BT_SETTINGS.getSize();
+            }
+
+            @Override
+            public Dimension getMinimumSize() {
+                return getPreferredSize();
             }
             
         };

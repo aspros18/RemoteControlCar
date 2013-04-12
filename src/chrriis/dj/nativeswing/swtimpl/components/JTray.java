@@ -81,7 +81,7 @@ public final class JTray {
      * that is used for check whether the caller has the permission
      * to use the container.
      * This method is available inside the package so tray objects
-     * are able to use the container but other objects are not.
+     * are able to use the container but other objects can not.
      */
     static JTrayContainer getTrayContainer() {
         return JTrayContainer.getInstance(PASSKEY);

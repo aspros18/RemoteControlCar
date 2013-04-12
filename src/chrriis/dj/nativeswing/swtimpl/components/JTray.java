@@ -112,6 +112,7 @@ public final class JTray {
      * The tray item will be invisible till it has no image specified.
      * @throws UnsupportedOperationException if the native system tray is not supported
      * @throws IllegalStateException if the native system tray is disposed
+     * @see #createTrayItem(RenderedImage, String)
      */
     public static JTrayItem createTrayItem() {
         return createTrayItem((byte[]) null, null);

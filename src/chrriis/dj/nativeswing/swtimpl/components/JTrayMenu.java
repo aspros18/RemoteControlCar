@@ -10,7 +10,7 @@ package chrriis.dj.nativeswing.swtimpl.components;
 import static chrriis.dj.nativeswing.swtimpl.components.JTray.NATIVE_TRAY;
 
 /**
- * A pull-down menu component that is deployed from a tray icon.
+ * A popup menu component that is deployed from a tray icon.
  * @author Zolt&aacute;n Farkas
  */
 public class JTrayMenu extends JTrayBaseMenu {

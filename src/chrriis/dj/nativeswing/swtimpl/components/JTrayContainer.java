@@ -1,3 +1,10 @@
+/*
+ * Christopher Deckers (chrriis@nextencia.net)
+ * http://www.nextencia.net
+ *
+ * See the file "readme.txt" for information on usage and redistribution of
+ * this file, and for a DISCLAIMER OF ALL WARRANTIES.
+ */
 package chrriis.dj.nativeswing.swtimpl.components;
 
 import java.awt.image.RenderedImage;
@@ -10,16 +17,38 @@ import java.util.Map;
 import java.util.Set;
 import javax.imageio.ImageIO;
 
+/**
+ * A container that stores tray objects.
+ * Tray objects can communicate to each other by
+ * registering themselves to the tray container.
+ * This class should not used outside from the API.
+ * @author Zolt&aacute;n Farkas
+ */
 public final class JTrayContainer {
     
+    /**
+     * An instance of the {@link JTrayContainer}.
+     */
     private static final JTrayContainer OBJ = new JTrayContainer();
     
+    /**
+     * A Set that contains the tray items.
+     */
     private final Set<JTrayItem> TRAY_ITEMS = Collections.synchronizedSet(new HashSet<JTrayItem>());
     
+    /**
+     * A Set that contains the tray menus.
+     */
     private final Set<JTrayMenu> TRAY_MENUS = Collections.synchronizedSet(new HashSet<JTrayMenu>());
     
+    /**
+     * A Set that contains the menu items (every types).
+     */
     private final Set<JMenuBaseItem> MENU_ITEMS = Collections.synchronizedSet(new HashSet<JMenuBaseItem>());
     
+    /**
+     * A Map that contains the callbacks of the tray item's balloon messages.
+     */
     private final Map<Integer, Runnable> MSG_CALLBACKS = Collections.synchronizedMap(new HashMap<Integer, Runnable>());
     
     public static JTrayContainer getInstance(double passkey) {

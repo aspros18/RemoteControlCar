@@ -51,11 +51,19 @@ public final class JTrayContainer {
      */
     private final Map<Integer, Runnable> MSG_CALLBACKS = Collections.synchronizedMap(new HashMap<Integer, Runnable>());
     
+    /**
+     * Returns an instance of the <code>JTrayContainer</code>.
+     * Used for event handling and native pairing.
+     */
     public static JTrayContainer getInstance(double passkey) {
         if (JTray.PASSKEY != passkey) throw new IllegalAccessError();
         return OBJ;
     }
     
+    /**
+     * Creates a byte array from the {@link RenderedImage}.
+     * Used by {@link JTray}, {@link JTrayItem}, {@link JMenuCommonItem}
+     */
     static byte[] createImageData(RenderedImage img) {
         if (img == null) return null;
         try {
@@ -71,18 +79,36 @@ public final class JTrayContainer {
         }
     }
 
+    /**
+     * Returns the Set that contains the tray items.
+     * Used by constructor of {@link JTrayItem} and {@link JTrayItem#dispose(boolean)}.
+     */
     Set<JTrayItem> getTrayItems() {
         return TRAY_ITEMS;
     }
 
+    /**
+     * Returns the Set that contains the tray menus.
+     * Used by constructor of {@link JTrayMenu} and {@link JTrayMenu#dispose(boolean)}.
+     */
     Set<JTrayMenu> getTrayMenus() {
         return TRAY_MENUS;
     }
 
+    /**
+     * Returns the Set that contains the menu items (every types).
+     * Used by constructor of {@link JMenuBaseItem} and {@link JMenuBaseItem#dispose(boolean)}.
+     */
     Set<JMenuBaseItem> getMenuItems() {
         return MENU_ITEMS;
     }
     
+    /**
+     * Returns the tray menu of the specified tray item.
+     * Used by {@link JTrayItem#getTrayMenu()}
+     * @param item a tray item
+     * @return a tray menu or <code>null</code>
+     */
     JTrayMenu findTrayMenu(JTrayItem item) {
         if (item == null) return null;
         for (JTrayMenu menu : TRAY_MENUS) {
@@ -93,6 +119,10 @@ public final class JTrayContainer {
         return null;
     }
     
+    /**
+     * Returns every menu items that belong to the specified menu.
+     * Used by {@link JTrayBaseMenu#dispose()} to dispose the child items.
+     */
     Set<JMenuBaseItem> findMenuItems(JTrayBaseMenu menu) {
         Set<JMenuBaseItem> items = new HashSet<JMenuBaseItem>();
         if (menu == null) return items;
@@ -104,6 +134,10 @@ public final class JTrayContainer {
         return items;
     }
     
+    /**
+     * Disposes every tray object and clears the container.
+     * Used by {@link JTray#dispose()}.
+     */
     void dispose() {
         for (JTrayItem item : TRAY_ITEMS) {
             item.dispose(false);
@@ -123,14 +157,33 @@ public final class JTrayContainer {
         MSG_CALLBACKS.clear();
     }
     
+    /**
+     * Returns the tray item whose key equals to the specified key.
+     * Used by the native side to iterate {@link TrayItemMouseListener}s.
+     * @return a tray item or <code>null</code>
+     */
     public JTrayItem getTrayItem(int key) {
         return getTrayObject(TRAY_ITEMS, key);
     }
 
+    /**
+     * Returns the menu item whose key equals to the specified key.
+     * Used by the native side to iterate {@link MenuItemActionListener}s and {@link MenuItemSelectionListener}s.
+     * @return a menu item or <code>null</code>
+     */
     public JMenuBaseItem getMenuItem(int key) {
         return getTrayObject(MENU_ITEMS, key);
     }
     
+    /**
+     * Returns the tray object whose key equals to the specified key.
+     * Used by this container.
+     * @param s the set to be iterated
+     * @param key the specified key
+     * @return a tray object or <code>null</code>
+     * @see #getTrayItem(int)
+     * @see #getMenuItem(int)
+     */
     private <T extends JTrayObject> T getTrayObject(Set<T> s, int key) {
         for (T o : s) {
             if (o.getKey() == key) return o;
@@ -138,10 +191,20 @@ public final class JTrayContainer {
         return null;
     }
     
+    /**
+     * Returns the callback whose key equals to the specified key.
+     * Used by the native side to execute the callback.
+     * @return a callback or <code>null</code>
+     */
     public Runnable getMessageCallback(int key) {
         return MSG_CALLBACKS.get(key);
     }
     
+    /**
+     * Adds the specified callback to the container and returns the callback's key.
+     * Used by {@link JTrayItem#showMessage(String, String, TrayMessageType, Runnable)}.
+     * @return the key of the registered callback
+     */
     public int addMessageCallback(Runnable callback) {
         if (callback == null) return -1;
         synchronized (MSG_CALLBACKS) {
@@ -154,12 +217,22 @@ public final class JTrayContainer {
         }
     }
 
+    /**
+     * Removes the callback whose key equals to the specified key.
+     * Used by the native side when a balloon tooltip message is disposed.
+     */
     public void removeMessageCallback(int key) {
         synchronized (MSG_CALLBACKS) {
             MSG_CALLBACKS.remove(key);
         }
     }
     
+    /**
+     * Returns the key of the specified callback.
+     * Used by this container.
+     * @see #addMessageCallback(Runnable)
+     * @return -1 if the callback is not in the container; otherwise the key
+     */
     private int getMessageKey(Runnable callback) {
         int key = -1;
         Iterator<Map.Entry<Integer, Runnable>> it = MSG_CALLBACKS.entrySet().iterator();
@@ -173,6 +246,11 @@ public final class JTrayContainer {
         return key;
     }
     
+    /**
+     * Returns the first available key in the callback container.
+     * Used by this container.
+     * @see #addMessageCallback(Runnable)
+     */
     private int getNextMessageKey() {
         int i = -1;
         boolean contains;

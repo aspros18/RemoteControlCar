@@ -70,16 +70,19 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
      * Arra kellenek, hogy detektálni lehessen, hogy az alapértelmezett crt fájl van-e használva.
      */
     private static final String[] DEFAULT_MD5_SUMS = {
-        "cdd3bb2582891a0a3648df8bde333b01",
-        "2d561463be9984ebb7e3f93637f5629f",
-        "256799a47b53bbbdb3f47e13296e8982",
-        "80ef24662cef2cda28776bbbe846d611",
-        "5b3e0eba53a6911ac66b372e75028b9f",
-        "213ecbe458669ef1d421c042fae71c3d",
-        "f92448f855bf7c2b78c73108bb41103b",
-        "012d65bb6f7ab6413a9f6f7fe4ba5741",
-        "0f8fee741445bfc18e2fc7056e892cf0",
-        "2f80d63448093efc150a061a87ea3ab6"
+        // test-certs könyvtár:
+        "cdd3bb2582891a0a3648df8bde333b01", // bridge.crt
+        "2d561463be9984ebb7e3f93637f5629f", // ca.crt
+        "256799a47b53bbbdb3f47e13296e8982", // controller2.crt
+        "80ef24662cef2cda28776bbbe846d611", // controller.crt
+        "5b3e0eba53a6911ac66b372e75028b9f", // host2.crt
+        "213ecbe458669ef1d421c042fae71c3d", // host.crt
+        // test-certs-passwd könyvtár:
+        "bde899271289da920351412f939369e5", // big.crt
+        "f92448f855bf7c2b78c73108bb41103b", // bridge.crt
+        "012d65bb6f7ab6413a9f6f7fe4ba5741", // ca.crt
+        "0f8fee741445bfc18e2fc7056e892cf0", // controller.crt
+        "2f80d63448093efc150a061a87ea3ab6"  // host.crt
     };
     
     /**

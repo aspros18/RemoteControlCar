@@ -179,10 +179,23 @@ public final class NativeTray implements INativeTray {
         @Override
         public Object run(Object[] args) throws Exception {
             int msgKey = (Integer) args[0];
-            JTrayContainer tc = getTrayContainer();
-            Runnable r = tc.getMessageCallback(msgKey);
+            Runnable r = getTrayContainer().getMessageCallback(msgKey);
             if (r != null) SwingUtilities.invokeLater(r);
-            tc.removeMessageCallback(msgKey);
+            return null;
+        }
+        
+    }
+    
+    private static class CMJ_trayMessageDisposed extends JTrayCommandMessage {
+
+        public CMJ_trayMessageDisposed(double passkey) {
+            super(passkey);
+        }
+
+        @Override
+        public Object run(Object[] args) throws Exception {
+            int msgKey = (Integer) args[0];
+            getTrayContainer().removeMessageCallback(msgKey);
             return null;
         }
         
@@ -406,6 +419,14 @@ public final class NativeTray implements INativeTray {
                             @Override
                             public void handleEvent(Event event) {
                                 asyncExec(new CMJ_trayMessageOnClick(PASSKEY), msgKey);
+                            }
+                            
+                        });
+                        tip.addListener(SWT.Dispose, new Listener() {
+
+                            @Override
+                            public void handleEvent(Event event) {
+                                asyncExec(new CMJ_trayMessageDisposed(PASSKEY), msgKey);
                             }
                             
                         });

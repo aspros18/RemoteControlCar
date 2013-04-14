@@ -1,9 +1,20 @@
+/*
+ * Christopher Deckers (chrriis@nextencia.net)
+ * http://www.nextencia.net
+ *
+ * See the file "readme.txt" for information on usage and redistribution of
+ * this file, and for a DISCLAIMER OF ALL WARRANTIES.
+ */
 package chrriis.dj.nativeswing.swtimpl.components;
 
 import static chrriis.dj.nativeswing.swtimpl.components.JTray.NATIVE_TRAY;
 import chrriis.dj.nativeswing.swtimpl.components.internal.INativeTray.MenuItemType;
 import java.util.Set;
 
+/**
+ * Common methods of {@link JTrayMenu} and {@link JTraySubmenu}.
+ * They can create every types of the menu items.
+ */
 class JTrayBaseMenu extends JTrayObject {
 
     JTrayBaseMenu(int key) {

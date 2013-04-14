@@ -13,6 +13,7 @@ import java.awt.image.RenderedImage;
 /**
  * Common methods of {@link JMenuItem} and {@link JMenuDropDownItem}.
  * A common menu item has no selection state but it can have an image.
+ * @author Zolt&aacute;n Farkas
  */
 class JMenuCommonItem<T> extends JMenuActiveItem<T> {
     

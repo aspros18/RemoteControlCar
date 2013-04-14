@@ -1,7 +1,18 @@
+/*
+ * Christopher Deckers (chrriis@nextencia.net)
+ * http://www.nextencia.net
+ *
+ * See the file "readme.txt" for information on usage and redistribution of
+ * this file, and for a DISCLAIMER OF ALL WARRANTIES.
+ */
 package chrriis.dj.nativeswing.swtimpl.components;
 
 import static chrriis.dj.nativeswing.swtimpl.components.JTray.NATIVE_TRAY;
 
+/**
+ * Defines common behaviors for tray menu items.
+ * @author Zolt&aacute;n Farkas
+ */
 class JMenuBaseItem extends JTrayObject {
 
     private final JTrayBaseMenu PARENT;

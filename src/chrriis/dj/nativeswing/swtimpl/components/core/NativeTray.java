@@ -264,6 +264,8 @@ public final class NativeTray implements INativeTray {
     
     private static class CMN_trayItemCreate extends TrayCommandMessage {
 
+        private static final boolean IS_MAC = System.getProperty("os.name").toLowerCase().contains("mac");
+        
         public CMN_trayItemCreate(double passkey) {
             super(passkey);
         }
@@ -272,19 +274,20 @@ public final class NativeTray implements INativeTray {
         public Object run(Object[] args) {
             byte[] imageData = (byte[]) args[0];
             String tooltip = (String) args[1];
+            Boolean handleLeftClick = (Boolean) args[2];
             NativeTrayContainer ntc = getNativeTrayContainer();
             final Set<NativeTrayItem> items = ntc.getNativeTrayItems();
             synchronized (items) {
                 int key = ntc.getNextTrayItemKey();
-                NativeTrayItem nativeItem = createTrayItem(ntc, key, tooltip, imageData);
+                NativeTrayItem nativeItem = createTrayItem(ntc, key, tooltip, imageData, handleLeftClick);
                 items.add(nativeItem);
                 return key;
             }
         }
 
-        private NativeTrayItem createTrayItem(final NativeTrayContainer ntc, final int key, final String tooltip, final byte[] imgData) {
+        private NativeTrayItem createTrayItem(final NativeTrayContainer ntc, final int key, final String tooltip, final byte[] imgData, final Boolean handleLeftClick) {
             return syncReturn(new RunnableReturn<NativeTrayItem>() {
-
+                
                 @Override
                 protected NativeTrayItem createReturn() throws Exception {
                     final Display display = getDisplay();
@@ -301,22 +304,24 @@ public final class NativeTray implements INativeTray {
                         }
                         
                     });
-                    item.addListener(SWT.DefaultSelection, new Listener() {
+                    if (handleLeftClick == null ? !IS_MAC : handleLeftClick) {
+                        item.addListener(SWT.DefaultSelection, new Listener() {
 
-                        @Override
-                        public void handleEvent(Event event) {
-                            asyncExec(new CMJ_trayItemOnClick(PASSKEY), key, true);
-                        }
-                        
-                    });
-                    item.addListener(SWT.Selection, new Listener() {
+                            @Override
+                            public void handleEvent(Event event) {
+                                asyncExec(new CMJ_trayItemOnClick(PASSKEY), key, true);
+                            }
 
-                        @Override
-                        public void handleEvent(Event event) {
-                            asyncExec(new CMJ_trayItemOnClick(PASSKEY), key, false);
-                        }
-                        
-                    });
+                        });
+                        item.addListener(SWT.Selection, new Listener() {
+
+                            @Override
+                            public void handleEvent(Event event) {
+                                asyncExec(new CMJ_trayItemOnClick(PASSKEY), key, false);
+                            }
+
+                        });
+                    }
                     return nativeItem;
                 }
 
@@ -852,8 +857,8 @@ public final class NativeTray implements INativeTray {
     }
 
     @Override
-    public int createTrayItem(byte[] imageData, String tooltip) {
-        return (Integer) syncExec(new CMN_trayItemCreate(PASSKEY), imageData, tooltip);
+    public int createTrayItem(byte[] imageData, String tooltip, Boolean handleLeftClick) {
+        return (Integer) syncExec(new CMN_trayItemCreate(PASSKEY), imageData, tooltip, handleLeftClick);
     }
 
     @Override

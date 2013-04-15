@@ -141,9 +141,41 @@ public final class JTray {
      * @throws IllegalStateException if the native system tray is disposed
      */
     public static JTrayItem createTrayItem(byte[] imageData, String tooltip) {
+        return createTrayItem(imageData, tooltip, null);
+    }
+
+    /**
+     * Creates a tray item to the native system tray.
+     * The tray item becomes visible in the system tray once it is created with image.
+     * @param image the image to be used or <code>null</code>
+     * @param tooltip the string for the tooltip;
+     * if the value is <code>null</code> no tooltip is shown
+     * @param handleLeftClick if true, the menu won't display on Mac
+     * when the user clicks on the tray item with left mouse button;
+     * the default value is false on Mac, true on other systems
+     * @throws UnsupportedOperationException if the native system tray is not supported
+     * @throws IllegalStateException if the native system tray is disposed
+     */
+    public static JTrayItem createTrayItem(RenderedImage image, String tooltip, Boolean handleLeftClick) {
+        return createTrayItem(JTrayContainer.createImageData(image), tooltip, handleLeftClick);
+    }
+    
+    /**
+     * Creates a tray item to the native system tray.
+     * The tray item becomes visible in the system tray once it is created with image.
+     * @param imageData the bytes of the image to be used or <code>null</code>
+     * @param tooltip the string for the tooltip;
+     * if the value is <code>null</code> no tooltip is shown
+     * @param handleLeftClick if true, the menu won't display on Mac
+     * when the user clicks on the tray item with left mouse button;
+     * the default value is false on Mac, true on other systems
+     * @throws UnsupportedOperationException if the native system tray is not supported
+     * @throws IllegalStateException if the native system tray is disposed
+     */
+    public static JTrayItem createTrayItem(byte[] imageData, String tooltip, Boolean handleLeftClick) {
         checkState();
         if (exitPrevent == null) exitPrevent = new Timer();
-        int key = NATIVE_TRAY.createTrayItem(imageData, tooltip);
+        int key = NATIVE_TRAY.createTrayItem(imageData, tooltip, handleLeftClick);
         return new JTrayItem(key, tooltip, imageData);
     }
 

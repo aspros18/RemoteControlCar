@@ -47,9 +47,12 @@ public interface INativeTray {
      * @param imageData bytes of the image to be used
      * @param tooltip the string to be used as tooltip text; if the
      * value is <code>null</code> no tooltip is shown
+     * @param handleLeftClick if true, the menu won't display on Mac
+     * when the user clicks on the tray item with left mouse button;
+     * the default value is false on Mac, true on other systems
      * @return the key of the tray item
      */
-    public int createTrayItem(byte[] imageData, String tooltip);
+    public int createTrayItem(byte[] imageData, String tooltip, Boolean handleLeftClick);
 
     /**
      * Sets the tooltip string for the specified system tray item.

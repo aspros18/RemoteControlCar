@@ -100,11 +100,23 @@ public class OSUtils {
             java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField("awtAppClassName");
             awtAppClassNameField.setAccessible(true);
             awtAppClassNameField.set(xToolkit, text);
-            
+        }
+        catch (Exception ex) {
+            ;
+        }
+        
+        try {
+            org.eclipse.swt.widgets.Display.setAppName(text);
+        }
+        catch (Throwable t) {
+            ;
+        }
+        
+        try {
             String os = System.getProperty("os.name").toLowerCase();
             if (!os.startsWith("mac")) return;
             System.setProperty("apple.laf.useScreenMenuBar", "true");
-            System.setProperty("com.apple.mrj.application.apple.menu.about.name", text);  
+            System.setProperty("com.apple.mrj.application.apple.menu.about.name", text);
         }
         catch (Exception ex) {
             ;

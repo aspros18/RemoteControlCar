@@ -26,7 +26,10 @@ import org.dyndns.fzoli.rccar.ui.UncaughtExceptionHandler;
 import org.dyndns.fzoli.ui.LanguageChooserFrame;
 import org.dyndns.fzoli.ui.OptionPane;
 import org.dyndns.fzoli.ui.OptionPane.PasswordData;
-import static org.dyndns.fzoli.ui.UIUtil.setSystemLookAndFeel;
+import static org.dyndns.fzoli.rccar.ui.UIUtil.setSystemLookAndFeel;
+import static org.dyndns.fzoli.rccar.ui.UIUtil.initNativeInterface;
+import static org.dyndns.fzoli.rccar.ui.UIUtil.addNativeInterfaceListener;
+import static org.dyndns.fzoli.rccar.ui.UIUtil.runNativeEventPump;
 import org.dyndns.fzoli.ui.systemtray.SystemTrayIcon;
 import static org.dyndns.fzoli.ui.systemtray.SystemTrayIcon.showMessage;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
@@ -186,18 +189,6 @@ public class Main {
      * Segédváltozó kapcsolódás kérés detektálására.
      */
     private static boolean connecting = false;
-    
-    /**
-     * Még mielőtt lefutna a main metódus,
-     * a nyitóképernyő szövege megjelenik és a rendszer LAF,
-     * és a kivételkezelő beállítódik.
-     */
-    static {
-        setApplicationName("Mobile-RC");
-        setSplashMessage(getString("please_wait"));
-        setSystemLookAndFeel();
-        setExceptionHandler();
-    }
     
     /**
      * A program leállítása.
@@ -498,6 +489,7 @@ public class Main {
     
     /**
      * A vezérlő main metódusa.
+     * A nyitóképernyő szövege megjelenik és a rendszer LAF valamint a kivételkezelő beállítódik, majd:
      * Ha a grafikus felület nem érhető el, konzolra írja a szomorú tényt és a program végetér.
      * Ha a konfigurációban megadott tanúsítványfájlok nem léteznek, közli a hibát és kényszeríti a kijavítását úgy,
      * hogy feldobja a konfiguráció beállító ablakot és addig nem lehet elhagyni, míg nincs létező fájl beállítva.
@@ -506,12 +498,16 @@ public class Main {
      * Végül a kliens program elkezdi futását.
      */
     public static void main(String[] args) {
+        setApplicationName("Mobile-RC");
+        setSplashMessage(getString("please_wait"));
+        initNativeInterface(); // natív interfész inicializálása a webböngészőhöz és a rendszerikonhoz
+        addNativeInterfaceListener(NI_LISTENER); // natív interfész eseménykezelő hozzáadása
+        setSystemLookAndFeel();
+        setExceptionHandler();
         if (GraphicsEnvironment.isHeadless()) { // ha a grafikus felület nem érhető el
             System.err.println(getString("msg_need_gui") + LS + getString("msg_exit"));
             System.exit(1); // hibakóddal lép ki
         }
-        UIUtil.initNativeInterface(); // natív interfész inicializálása a webböngészőhöz és a rendszerikonhoz
-        UIUtil.addNativeInterfaceListener(NI_LISTENER); // natív interfész eseménykezelő hozzáadása
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
@@ -563,7 +559,7 @@ public class Main {
             }
 
         });
-        UIUtil.runNativeEventPump();
+        runNativeEventPump();
     }
     
 }

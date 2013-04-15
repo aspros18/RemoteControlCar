@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSocket;
+import javax.swing.SwingUtilities;
 import org.dyndns.fzoli.rccar.bridge.config.Permissions;
 import org.dyndns.fzoli.rccar.bridge.resource.R;
 import org.dyndns.fzoli.rccar.bridge.socket.BridgeHandler;
@@ -15,6 +16,9 @@ import static org.dyndns.fzoli.rccar.SplashScreenLoader.closeSplashScreen;
 import static org.dyndns.fzoli.rccar.SplashScreenLoader.setSplashMessage;
 import org.dyndns.fzoli.rccar.ui.UIUtil;
 import static org.dyndns.fzoli.rccar.ui.UIUtil.showPasswordInput;
+import static org.dyndns.fzoli.rccar.ui.UIUtil.initNativeInterface;
+import static org.dyndns.fzoli.rccar.ui.UIUtil.addNativeInterfaceListener;
+import static org.dyndns.fzoli.rccar.ui.UIUtil.runNativeEventPump;
 import org.dyndns.fzoli.rccar.ui.UncaughtExceptionHandler;
 import static org.dyndns.fzoli.rccar.ui.UncaughtExceptionHandler.showException;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
@@ -80,18 +84,6 @@ public class Main {
         }
         
     };
-    
-    /**
-     * Még mielőtt lefutna a main metódus, beállítódik a rendszer LAF, a saját kivételkezelő, a rendszerikon és az erőforrás-felszabadító szál.
-     */
-    static {
-        setApplicationName("Mobile-RC Server");
-        setSplashMessage(getString("please_wait"));
-        setSystemLookAndFeel();
-        setExceptionHandler();
-        applyConfig();
-        addShutdownHook();
-    }
     
     /**
      * Beállítja a híd kivételkezelő metódusát.
@@ -353,26 +345,40 @@ public class Main {
     
     /**
      * A híd main metódusa.
+     * Beállítódik a rendszer LAF, a saját kivételkezelő, a rendszerikon és az erőforrás-felszabadító szál, majd:
      * Ha a konfiguráció még nem létezik, lérehozza és figyelmezteti a felhasználót, hogy állítsa be és kilép.
      * Ha a konfiguráció létezik, de rosszul paraméterezett, figyelmezteti a felhasználót és kilép.
      * Ha a program nem lépett ki, a híd szerver elkezdi futását.
      */
     public static void main(final String[] args) {
+        setApplicationName("Mobile-RC Server");
+        setSplashMessage(getString("please_wait"));
+        initNativeInterface();
+        addNativeInterfaceListener(NI_LISTENER);
+        setSystemLookAndFeel();
+        setExceptionHandler();
+        applyConfig();
+        addShutdownHook();
         if (CONFIG.getFile().exists() && !CONFIG.getFile().canRead()) { // ha nincs olvasási jog a konfig fájlon
             alert(VAL_ERROR, getString("msg_need_permission") + LS + getString("msg_exit"), System.err);
             System.exit(1); // hibakóddal lép ki
         }
         if (CONFIG.isCorrect()) {
-            UIUtil.initNativeInterface();
-            UIUtil.addNativeInterfaceListener(NI_LISTENER);
             setSplashMessage(getString("start_server"));
-            setSystemTrayIcon();
-            if (!Permissions.getConfig().canRead()) { // ha a jogosultságokat leíró fájl nem olvasható, figyelmezteti a felhasználót
-                SystemTrayIcon.showMessage(VAL_WARNING, getString("warn_without_permissions1") + ' ' + LS + getString("warn_without_permissions2"), IconType.WARNING);
-            }
-            readArguments(args);
-            runServer();
-            UIUtil.runNativeEventPump();
+            SwingUtilities.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    setSystemTrayIcon();
+                    if (!Permissions.getConfig().canRead()) { // ha a jogosultságokat leíró fájl nem olvasható, figyelmezteti a felhasználót
+                        SystemTrayIcon.showMessage(VAL_WARNING, getString("warn_without_permissions1") + ' ' + LS + getString("warn_without_permissions2"), IconType.WARNING);
+                    }
+                    readArguments(args);
+                    runServer();
+                }
+                
+            });
+            runNativeEventPump();
         }
         else {
             final StringBuilder msg = new StringBuilder();

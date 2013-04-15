@@ -106,7 +106,14 @@ public class UIUtil {
         if (!GraphicsEnvironment.isHeadless()) {
             try {
                 // Linuxra GTK LAF beállítása
-                UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+                // az OS ellenőrzés szükséges, mert Mac-en is van GTK LAF
+                if (System.getProperty("os.name").toLowerCase().contains("nux")) {
+                    UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+                }
+                // nem szép dolog, de így legalább nem kell a catch blokkot külön metódusba tenni
+                else {
+                    throw new Exception();
+                }
             }
             catch (Exception ex) {
                 // Ha nem Linuxon fut a program, rendszer LAF beállítása

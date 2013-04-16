@@ -408,6 +408,7 @@ public class Main {
                 if (CONFIG.getCAFile() == null) msg.append("- ").append(getString("msg_conf_incorrect4")).append('.').append(LS);
                 if (CONFIG.getCertFile() == null) msg.append("- ").append(getString("msg_conf_incorrect5")).append('.').append(LS);
                 if (CONFIG.getKeyFile() == null) msg.append("- ").append(getString("msg_conf_incorrect6")).append('.').append(LS);
+                msg.append(LS).append(getString("msg_conf_created3")).append(':').append(LS).append(CONFIG.getFile());
                 msg.append(LS);
                 alert(VAL_ERROR, msg.toString(), System.err);
                 System.exit(1);

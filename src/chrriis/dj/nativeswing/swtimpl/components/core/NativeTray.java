@@ -8,6 +8,7 @@
 package chrriis.dj.nativeswing.swtimpl.components.core;
 
 import chrriis.common.RunnableReturn;
+import chrriis.common.SystemProperty;
 import chrriis.dj.nativeswing.swtimpl.CommandMessage;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JMenuItem;
@@ -264,7 +265,7 @@ public final class NativeTray implements INativeTray {
     
     private static class CMN_trayItemCreate extends TrayCommandMessage {
 
-        private static final boolean IS_MAC = System.getProperty("os.name").toLowerCase().contains("mac");
+        private static final boolean IS_MAC = System.getProperty(SystemProperty.OS_NAME.getName()).toUpperCase().startsWith("MAC");
         
         public CMN_trayItemCreate(double passkey) {
             super(passkey);

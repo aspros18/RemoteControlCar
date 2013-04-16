@@ -1,13 +1,6 @@
 package org.dyndns.fzoli.rccar;
 
 import java.awt.GraphicsEnvironment;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.HeadlessException;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -17,16 +10,13 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import static org.dyndns.fzoli.util.OSUtils.setApplicationName;
 import static org.dyndns.fzoli.ui.UIUtil.setSystemLookAndFeel;
 import static org.dyndns.fzoli.rccar.SplashScreenLoader.setSplashMessage;
 import org.dyndns.fzoli.rccar.ui.UIUtil;
-import org.imgscalr.Scalr;
+import static org.dyndns.fzoli.rccar.ui.UIUtil.initNativeInterface;
+import static org.dyndns.fzoli.rccar.ui.UIUtil.runNativeEventPump;
 
 /**
  * A Híd- vagy a vezérlő-alkalmazás elindító osztálya.
@@ -47,82 +37,12 @@ import org.imgscalr.Scalr;
  * AWT alapú rendszerikon lesz használva és a térkép tiltás alá kerül.)
  * @author zoli
  */
-public class Main extends JFrame {
+public class Main {
     
     /**
      * Az alkalmazásválasztó szótára.
      */
-    private static ResourceBundle res;
-    
-    /**
-     * Az alkalmazás indítása előtt a szótár,
-     * az alkalmazásnév és a Look and Feel beállítódik.
-     */
-    static {
-        setApplicationName("Mobile-RC");
-        setSystemLookAndFeel();
-        loadLanguage();
-        loadSWT();
-    }
-
-    /**
-     * A felületről kiválasztott alkalmazás típusa.
-     * (<code>client</code> vagy <code>server</code>)
-     */
-    private String selectedApp;
-    
-    /**
-     * Az alkalmazásválasztó-ablak konstruktora.
-     * Inicializálódik az ablak felülete, majd megjelenik az ablak.
-     */
-    public Main() throws HeadlessException {
-        super(res.getString("app-chooser")); // címsor-szöveg beállítása konstruktor segítségével
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE); // az ablak bezárása esetén felszabadítás
-        setIconImage(org.dyndns.fzoli.rccar.resource.R.getImage(null, "app-chooser.png")); // címsor-ikon beállítása
-        GridBagConstraints c = new GridBagConstraints();
-        setLayout(new GridBagLayout()); // elrendezés-menedzser beállítása GBL-ra
-        c.insets = new Insets(5, 5, 5, 5); // 5x5 pixel széles margó a komponensek között
-        c.fill = GridBagConstraints.BOTH; // mindkét irányba helykitöltés engedélyezés
-        c.weightx = 1; // kezdetben csak szélességében van teljes helykitöltés
-        
-        c.gridwidth = 2; // mivel 2 gomb van, 2 cellát foglal el az alkalmazásválasztásra felszólító szöveg
-        add(new JLabel(res.getString("summary"), SwingConstants.CENTER), c);
-        c.gridwidth = 1; // a gombok 1 cellát foglalnak el
-        c.weighty = 1; // hosszúságukban is kitöltve a maradék helyet
-        c.gridy = 1; // és a felszólító szöveg alá kerülnek
-        
-        class AppButton extends JButton { // az alkalmazásindító gombok osztálya
-            
-            public AppButton(String text, BufferedImage imgIcon, final String app) {
-                super(text, new ImageIcon(Scalr.resize(imgIcon, Scalr.Method.ULTRA_QUALITY, Scalr.Mode.AUTOMATIC, 64, Scalr.OP_ANTIALIAS))); // 64x64 méretű kép használata
-                setHorizontalTextPosition(SwingConstants.CENTER); // a gombfelirat a gomb közepére és ...
-                setVerticalTextPosition(SwingConstants.BOTTOM); // ... a kép alá kerül
-                addActionListener(new ActionListener() {
-                    
-                    /** Alkalmazásválasztás esetén beállítódik a kiválasztott alkalmazás, az alkalmazásválasztó-ablak megszűnik és a main metódus folytatódik tovább. */
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        selectedApp = app;
-                        Main.this.dispose();
-                    }
-                    
-                });
-            }
-            
-        }
-        
-        c.insets = new Insets(0, 5, 5, 5);
-        add(new AppButton(res.getString("controller"), org.dyndns.fzoli.rccar.controller.resource.R.getIconImage(), "client"), c); // a vezérlő indító gomb létrehozása
-        
-        c.gridx = 1;
-        c.insets = new Insets(0, 0, 5, 5);
-        add(new AppButton(res.getString("bridge"), org.dyndns.fzoli.rccar.bridge.resource.R.getBridgeImage(), "server"), c); // a Híd indító gomb létrehozása
-        
-        pack(); // minimális méret beállítása
-        setLocationRelativeTo(this); // ablak középre helyezése
-        setResizable(false); // átméretezés tiltása
-        setVisible(true); // megjelenítés
-    }
+    static ResourceBundle res;
     
     /**
      * Megadja a külső SWT-jarfájl elérhetőségét.
@@ -211,10 +131,23 @@ public class Main extends JFrame {
     }
     
     /**
+     * Alkalmazásválasztó ablak.
+     * Csak akkor jön létre, ha van grafikus környezet.
+     */
+    private static AppChooserFrame frame;
+    
+    /**
      * A Híd- vagy a vezérlő-alkalmazást elindító metódus.
+     * Az ablak megjelenítése előtt a szótár,
+     * az alkalmazásnév és a Look and Feel beállítódik.
      * @see Main
      */
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(final String[] args) {
+        loadSWT(); // SWT lib betöltése, ha még nem történt meg
+        setApplicationName("Mobile-RC"); // alkalmazásnév beállítása mielőtt AWT vagy SWT komponensek kerülnek használatra
+        initNativeInterface(); // SWT alapú, natív interfész elindítása
+        loadLanguage(); // szótár betöltése
+        
         // ha legalább 1 paraméter meg lett adva
         if (args.length > 0) {
             // az első paraméter kivételével minden más
@@ -229,6 +162,7 @@ public class Main extends JFrame {
                 return;
             }
         }
+        
         // ha nem lett paraméter megadva, vagy az első paraméter nem alkalmazás-paraméter
         if (GraphicsEnvironment.isHeadless()) { // ha csak a konzol érhető el
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in)); // konzol bemenet olvasásához
@@ -249,20 +183,40 @@ public class Main extends JFrame {
             }
         }
         else { // ha a grafikus felület elérhető
-            // jelzés a felhasználónak, hogy alkalmazásválasztás következik
-            setSplashMessage(res.getString("loading"));
-            // alkalmazásválasztó ablak megjelenítése
-            Main main = new Main();
-            // várakozás az alkalmazásválasztó-ablak bezárására
-            while (main.isVisible()) {
-                Thread.sleep(100);
-            }
-            String app = main.selectedApp; // a kiválasztott alkalmazás lekérése
-            main = null; // az ablak referenciájának megszüntetése, hogy a GC törölhesse
-            // ha ki lett választva az alkalmazás, alkalmazás indítása
-            if (app != null) {
-                runApp(app, args);
-            }
+            setSplashMessage(res.getString("loading")); // jelzés a felhasználónak, hogy alkalmazásválasztás következik
+            setSystemLookAndFeel(); // LAF beállítása
+            new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    // várakozás az alkalmazásválasztó-ablak bezárására
+                    while (frame == null || frame.isVisible()) {
+                        try {
+                            Thread.sleep(100);
+                        }
+                        catch (Exception ex) {
+                            ;
+                        }
+                    }
+                    String app = frame.getSelectedApp(); // a kiválasztott alkalmazás lekérése
+                    frame = null; // az ablak referenciájának megszüntetése, hogy a GC törölhesse
+                    // ha ki lett választva az alkalmazás, alkalmazás indítása
+                    if (app != null) {
+                        runApp(app, args);
+                    }
+                }
+                
+            }).start();
+            SwingUtilities.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    // alkalmazásválasztó ablak megjelenítése
+                    frame = new AppChooserFrame();
+                }
+                
+            });
+            runNativeEventPump(); // a natív interfész eseménypumpálójának indítása
         }
     }
     

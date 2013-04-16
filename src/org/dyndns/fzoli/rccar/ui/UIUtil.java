@@ -28,6 +28,11 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
     private static boolean nativeSwingAvailable = false;
     
     /**
+     * Megadja, hogy fut-e az SWT eseménypumpáló.
+     */
+    private static boolean nativeEventPumpRunning = false;
+    
+    /**
      * Kulcs a lokalizált szöveghez.
      */
     public static final String KEY_CERT_LOAD_ERROR = "MobileRC.certLoadError",
@@ -160,10 +165,11 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
     
     /**
      * SWT eseménypumpáló futtatása.
-     * Ha nincs natív támogatás, nem tesz semmit.
+     * Ha nincs natív támogatás, vagy már fut az eseménypumpálás, nem tesz semmit.
      */
     public static void runNativeEventPump() {
-        if (isNativeSwingAvailable()) { // ha van natív támogatás
+        if (isNativeSwingAvailable() && !nativeEventPumpRunning) { // ha van natív támogatás
+            nativeEventPumpRunning = true;
             NativeInterface.runEventPump(); // SWT eseménypumpáló futtatása
         }
     }
@@ -172,7 +178,7 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
      * Eseménykezelőt ad hozzá a Natív Interfészhez, ha az elérhető.
      */
     public static void addNativeInterfaceListener(NativeInterfaceListener l) {
-        if (nativeSwingAvailable) {
+        if (isNativeSwingAvailable()) {
             NativeInterface.addNativeInterfaceListener(l);
         }
     }

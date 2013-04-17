@@ -15,6 +15,7 @@
         <zipfileset excludes="META-INF/*.MF" src="desktop/BrowserTest/lib/DJNativeSwing-SWT.jar"/>
         <zipfileset excludes="META-INF/*.MF" src="desktop/BrowserTest/lib/jna.jar"/>
         <zipfileset excludes="META-INF/*.MF" src="desktop/BrowserTest/lib/platform.jar"/>
+        <zipfileset excludes="META-INF/*.MF" src="desktop/MacApplication/bin/MacApplication.jar"/>
         <!-- SWT Jars -->
         <fileset dir="./desktop/BrowserTest/lib/swt" includes="swt-*-4.3M5a.jar" />
     </swtjar>

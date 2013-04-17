@@ -33,7 +33,7 @@ public class MacApplication {
     }
     
     /**
-     * @returns the singleton representing this OS X Application
+     * @return the singleton representing this OS X Application
      * or <code>null</code> if the OS is not Mac
      */
     public static MacApplication getApplication() {

@@ -12,13 +12,17 @@ import javax.swing.JMenuBar;
  */
 public class MacApplication {
 
-    private static final MacApplication MAC_APP;
+    private static MacApplication MAC_APP;
 
     private final com.apple.eawt.Application APP = com.apple.eawt.Application.getApplication();
 
     static {
-        if (System.getProperty("os.name").toLowerCase().startsWith("mac")) MAC_APP = new MacApplication();
-        else MAC_APP = null;
+        try {
+            MAC_APP = new MacApplication();
+        }
+        catch (Throwable t) {
+            ;
+        }
     }
 
     /**
@@ -33,20 +37,32 @@ public class MacApplication {
     }
     
     /**
+     * Returns whether using {@link MacApplication#getApplication()} is safe.
+     * @return true if the <code>MacApplication</code> class is supported;
+     * otherwise false
+     */
+    public static boolean isSupported() {
+        return MAC_APP != null;
+    }
+    
+    /**
      * @return the singleton representing this OS X Application
      * or <code>null</code> if the OS is not Mac
+     * @throws UnsupportedOperationException if the class is not supported
+     * @see MacApplication#isSupported()
      */
     public static MacApplication getApplication() {
+        if (!isSupported()) throw new UnsupportedOperationException();
         return MAC_APP;
     }
-
+    
     /**
      * Changes this application's Dock icon to the provided image.
      * If the application is not running on Mac, it does nothing.
      * @since Java for OS X v10.5 - 1.5, Java for OS X v10.5 Update 1 - 1.6
      */
     public static void setDockIcon(Image image) {
-        if (MAC_APP != null) MAC_APP.setDockIconImage(image);
+        if (isSupported()) MAC_APP.setDockIconImage(image);
     }
 
     /**

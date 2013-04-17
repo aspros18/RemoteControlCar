@@ -362,19 +362,22 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
      * Megadja a konfig fájl helyét.
      * Megnézi a munkakönyvtárban (current dir) majd a forráskönyvtárban (ahol a jar van)
      * és ahol előbb megtalálja a fájlt, azt az útvonalat adja meg.
-     * Ha a fájl nem létezik, akkor a munkakönyvtárba mutató fájlt adja vissza,
-     * de Mac-en a "user data" könyvtárba fog mutatni a fájl, mert az jobban illik
-     * a rendszerhez, valamint a "working directory" is a "user data" könyvtár lesz.
+     * Ha a fájl nem létezik, akkor a munkakönyvtárba mutató fájlt adja vissza.
+     * Mac-en mindig a "user data" könyvtárba fog kerülni a konfig fájl, mert az jobban illik
+     * a rendszerhez, valamint a "working directory" is a "user data" könyvtár lesz, így a
+     * konfigban megadott relatív útvonal jó helyre fog mutatni és a naplózás is oda kerül.
      */
     private static File getConfigFile() {
-        File def = null;
         if (OSUtils.isOS(OSUtils.OS.MAC)) {
             boolean use = true;
-            def = new File(R.getUserDataFolderPath(), CFG_NAME);
-            if (!def.isDirectory()) use = def.mkdirs();
-            if (use) Folders.setCurrentDirectory(R.getUserDataFolderPath());
+            File dir = new File(R.getUserDataFolderPath());
+            if (!dir.isDirectory()) use = dir.mkdirs();
+            if (use) {
+                Folders.setCurrentDirectory(R.getUserDataFolderPath());
+                return new File(dir, CFG_NAME);
+            }
         }
-        return Folders.createFile(CFG_NAME, def);
+        return Folders.createFile(CFG_NAME);
     }
     
     /**

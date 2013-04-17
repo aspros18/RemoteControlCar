@@ -35,6 +35,7 @@ import static org.dyndns.fzoli.ui.systemtray.SystemTrayIcon.showMessage;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 import static org.dyndns.fzoli.util.OSUtils.setApplicationName;
 import org.dyndns.fzoli.ui.systemtray.MenuItem;
+import org.dyndns.fzoli.util.MacApplication;
 
 /**
  * A vezérlő indító osztálya.
@@ -503,6 +504,7 @@ public class Main {
         initNativeInterface(); // natív interfész inicializálása a webböngészőhöz és a rendszerikonhoz
         addNativeInterfaceListener(NI_LISTENER); // natív interfész eseménykezelő hozzáadása
         setSystemLookAndFeel();
+        MacApplication.setDockIcon(R.getIconImage());
         setExceptionHandler();
         if (GraphicsEnvironment.isHeadless()) { // ha a grafikus felület nem érhető el
             System.err.println(getString("msg_need_gui") + LS + getString("msg_exit"));

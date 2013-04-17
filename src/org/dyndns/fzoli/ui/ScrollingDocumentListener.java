@@ -18,8 +18,10 @@ import javax.swing.text.JTextComponent;
  */
 public class ScrollingDocumentListener implements DocumentListener {
 
-    public static void apply(JTextComponent textArea, JScrollPane scrollPane) {
-        textArea.getDocument().addDocumentListener(new ScrollingDocumentListener(textArea, scrollPane));
+    public static ScrollingDocumentListener apply(JTextComponent textArea, JScrollPane scrollPane) {
+        ScrollingDocumentListener l;
+        textArea.getDocument().addDocumentListener(l = new ScrollingDocumentListener(textArea, scrollPane));
+        return l;
     }
     
     public static boolean isScrollBarFullyExtended(JScrollBar vScrollBar) {
@@ -43,13 +45,15 @@ public class ScrollingDocumentListener implements DocumentListener {
                 visibleRect.y = component.getHeight() - visibleRect.height;
                 component.scrollRectToVisible(visibleRect);
             }
-            
+
         });
     }
 
     private final JTextComponent TEXT_AREA;
     
     private final JScrollBar VERTICAL_SCROLL_BAR;
+    
+    private boolean enabled = true;
     
     public ScrollingDocumentListener(JTextComponent textArea, JScrollPane scrollPane) {
         // Configure JTextArea to not update the cursor position after
@@ -63,6 +67,14 @@ public class ScrollingDocumentListener implements DocumentListener {
         caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
         TEXT_AREA = textArea;
         VERTICAL_SCROLL_BAR = scrollPane.getVerticalScrollBar();
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
     
     @Override
@@ -81,9 +93,17 @@ public class ScrollingDocumentListener implements DocumentListener {
     }
 
     private void maybeScrollToBottom() {
+        if (!isEnabled()) return;
         boolean scrollBarAtBottom = isScrollBarFullyExtended(VERTICAL_SCROLL_BAR);
-        boolean scrollLock = Toolkit.getDefaultToolkit()
+        boolean scrollLock;
+        try {
+            scrollLock = Toolkit.getDefaultToolkit()
                 .getLockingKeyState(KeyEvent.VK_SCROLL_LOCK);
+        }
+        catch (Exception ex) {
+            // On Mac the getLockingKeyState method is not supported.
+            scrollLock = false;
+        }
         if (scrollBarAtBottom && !scrollLock) {
             scrollToBottom(TEXT_AREA);
         }

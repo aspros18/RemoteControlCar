@@ -387,6 +387,7 @@ public class ChatDialog extends AbstractDialog {
             paneMessages.setViewportBorder(BorderFactory.createEtchedBorder());
             paneMessages.setMinimumSize(minSize);
             paneMessages.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+            
             ScrollingDocumentListener.apply(tpMessages, paneMessages);
             
             final JScrollPane paneSender = new JScrollPane(tpSender);
@@ -471,52 +472,54 @@ public class ChatDialog extends AbstractDialog {
      * @param sys true esetén csak rendszerüzenetet cserél
      */
     private void replace(String from, String to, int start, boolean sys) {
-        try {
-            String s = doc.getText(0, doc.getLength()); // az üzenetek teljes szövege
-            int i = s.indexOf(from, start); // az első előfordulás a cserélendő szöveghez
-            if (i != -1) { // ha van előfordulás
-                if (sys) { // ha rendszerüzenetet kell csak cserélni
-                    int lineStart = 0; // első sor esetén 0 a sor eleje
-                    for (int j = i; j > 0; j--) { // megkeresi a sor elejét
-                        if (s.charAt(j) == '\n') {
-                            lineStart = j + 1; // a sor eleje megtalálva
-                            break;
-                        }
-                    }
-                    int starIndex = lineStart + 11; // a csillag karakter pozíciója
-                    boolean isSys; // megadja, hogy rendszerüzenet-e
-                    try {
-                        isSys = s.charAt(starIndex) == '*'; // elsőként meg kell nézni, csillag karakter van-e a megfelelő helyen
-                        if (isSys) { // ha csillag karakter van
-                            String chk = s.substring(lineStart, starIndex); // a csillag karakter előtti dátum részletnek ...
-                            boolean date = false;
-                            for (Date d : sysDates) { // ... illeszkednie kell a rendszerüzenetek dátumait tartalmazó listához
-                                if (chk.contains(DATE_FORMAT.format(d))) {
-                                    date = true;
-                                    break;
-                                }
+        synchronized (DOC_LOCK) {
+            try {
+                String s = doc.getText(0, doc.getLength()); // az üzenetek teljes szövege
+                int i = s.indexOf(from, start); // az első előfordulás a cserélendő szöveghez
+                if (i != -1) { // ha van előfordulás
+                    if (sys) { // ha rendszerüzenetet kell csak cserélni
+                        int lineStart = 0; // első sor esetén 0 a sor eleje
+                        for (int j = i; j > 0; j--) { // megkeresi a sor elejét
+                            if (s.charAt(j) == '\n') {
+                                lineStart = j + 1; // a sor eleje megtalálva
+                                break;
                             }
-                            isSys &= date; // most már lehet tudni, hogy rendszerüzenet-e az adott üzenet
+                        }
+                        int starIndex = lineStart + 11; // a csillag karakter pozíciója
+                        boolean isSys; // megadja, hogy rendszerüzenet-e
+                        try {
+                            isSys = s.charAt(starIndex) == '*'; // elsőként meg kell nézni, csillag karakter van-e a megfelelő helyen
+                            if (isSys) { // ha csillag karakter van
+                                String chk = s.substring(lineStart, starIndex); // a csillag karakter előtti dátum részletnek ...
+                                boolean date = false;
+                                for (Date d : sysDates) { // ... illeszkednie kell a rendszerüzenetek dátumait tartalmazó listához
+                                    if (chk.contains(DATE_FORMAT.format(d))) {
+                                        date = true;
+                                        break;
+                                    }
+                                }
+                                isSys &= date; // most már lehet tudni, hogy rendszerüzenet-e az adott üzenet
+                            }
+                        }
+                        catch (Exception ex) {
+                            isSys = false; // hiba esetén biztos, hogy nem rendszerüzenet
+                        }
+                        if (!isSys) { // ha a találat nem rendszerüzenet ...
+                            int lineEnd = s.indexOf("\n", lineStart);
+                            if (lineEnd != -1) replace(from, to, lineEnd, sys); // ugrás a következő sorra, ha van és rekurzív hívás
+                            return; // a rekurzív hívás után visszatér a kód, ezért itt ki kell lépni
                         }
                     }
-                    catch (Exception ex) {
-                        isSys = false; // hiba esetén biztos, hogy nem rendszerüzenet
-                    }
-                    if (!isSys) { // ha a találat nem rendszerüzenet ...
-                        int lineEnd = s.indexOf("\n", lineStart);
-                        if (lineEnd != -1) replace(from, to, lineEnd, sys); // ugrás a következő sorra, ha van és rekurzív hívás
-                        return; // a rekurzív hívás után visszatér a kód, ezért itt ki kell lépni
-                    }
+                    // a megtalált sor törölhető, ezért törlés, majd új szöveg beillesztése
+                    doc.remove(i, from.length());
+                    doc.insertString(i, to, doc.getStyle(KEY_REGULAR));
+                    // rekurzív újrahívás, hátha van még cserélni való szöveg
+                    replace(from, to, ++i, sys);
                 }
-                // a megtalált sor törölhető, ezért törlés, majd új szöveg beillesztése
-                doc.remove(i, from.length());
-                doc.insertString(i, to, doc.getStyle(KEY_REGULAR));
-                // rekurzív újrahívás, hátha van még cserélni való szöveg
-                replace(from, to, ++i, sys);
             }
-        }
-        catch (Exception ex) {
-            ;
+            catch (Exception ex) {
+                ;
+            }
         }
     }
     
@@ -554,13 +557,15 @@ public class ChatDialog extends AbstractDialog {
      * Az összes chatüzenetet eltávolítja a felületről.
      */
     public void removeChatMessages() {
-        try {
-            lastSender = null;
-            sysMessages.clear();
-            doc.remove(0, doc.getLength());
-        }
-        catch (BadLocationException ex) {
-            ;
+        synchronized (DOC_LOCK) {
+            try {
+                lastSender = null;
+                sysMessages.clear();
+                doc.remove(0, doc.getLength());
+            }
+            catch (BadLocationException ex) {
+                ;
+            }
         }
     }
     
@@ -701,6 +706,14 @@ public class ChatDialog extends AbstractDialog {
     }
     
     /**
+     * Segédobjektum szálkezeléshez.
+     * Annak elkerülése érdekében, hogy egyszerre több szálban is módosulhasson
+     * a chatüzenetet megjelenítő panel, synchronized blokkba vannak téve a módosításokat
+     * végző metódusok. Az objektumot a synchronized blokk használja.
+     */
+    private final Object DOC_LOCK = new Object();
+    
+    /**
      * Chatüzenetet illetve rendszerüzenetet jelenít meg és a scrollt beállítja.
      * @param date az üzenet elküldésének ideje
      * @param name az üzenet feladója
@@ -708,19 +721,21 @@ public class ChatDialog extends AbstractDialog {
      * @param sysmsg rendszerüzenet-e az üzenet
      */
     private void addMessage(Date date, String name, String message, boolean sysmsg) {
-        try {
-            if (date == null || name == null || message == null) return;
-            boolean me = message.indexOf("/me ") == 0;
-            if (me) message = message.substring(4);
-            me |= sysmsg;
-            boolean startNewline = message.indexOf("\n") == 0; // ha új sorral kezdődik az üzenet, egy újsor jel bent marad
-            doc.insertString(doc.getLength(), (doc.getLength() > 0 ? "\n" : "") + '[' + DATE_FORMAT.format(date) + "] ", doc.getStyle(KEY_DATE));
-            doc.insertString(doc.getLength(), (me ? ("* " + name) : (name.equals(lastSender) ? "..." : (name + ':'))) + ' ', doc.getStyle(sysmsg ? KEY_SYSNAME : isSenderName(name) ? KEY_MYNAME : KEY_NAME));
-            doc.insertString(doc.getLength(), (!me && startNewline ? "\n" : "") + message.trim(), doc.getStyle(KEY_REGULAR));
-            lastSender = me ? "" : name;
-        }
-        catch (Exception ex) {
-            ;
+        synchronized (DOC_LOCK) {
+            try {
+                if (date == null || name == null || message == null) return;
+                boolean me = message.indexOf("/me ") == 0;
+                if (me) message = message.substring(4);
+                me |= sysmsg;
+                boolean startNewline = message.indexOf("\n") == 0; // ha új sorral kezdődik az üzenet, egy újsor jel bent marad
+                doc.insertString(doc.getLength(), (doc.getLength() > 0 ? "\n" : "") + '[' + DATE_FORMAT.format(date) + "] ", doc.getStyle(KEY_DATE));
+                doc.insertString(doc.getLength(), (me ? ("* " + name) : (name.equals(lastSender) ? "..." : (name + ':'))) + ' ', doc.getStyle(sysmsg ? KEY_SYSNAME : isSenderName(name) ? KEY_MYNAME : KEY_NAME));
+                doc.insertString(doc.getLength(), (!me && startNewline ? "\n" : "") + message.trim(), doc.getStyle(KEY_REGULAR));
+                lastSender = me ? "" : name;
+            }
+            catch (Exception ex) {
+                ;
+            }
         }
     }
     

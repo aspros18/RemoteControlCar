@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import static org.dyndns.fzoli.rccar.Main.res;
+import org.dyndns.fzoli.rccar.resource.R;
 import org.imgscalr.Scalr;
 
 /**
@@ -37,7 +38,7 @@ public class AppChooserFrame extends JFrame {
     public AppChooserFrame() throws HeadlessException {
         super(res.getString("app-chooser")); // címsor-szöveg beállítása konstruktor segítségével
         setDefaultCloseOperation(EXIT_ON_CLOSE); // az ablak bezárása esetén kilépés a programból
-        setIconImage(org.dyndns.fzoli.rccar.resource.R.getImage(null, "app-chooser.png")); // címsor-ikon beállítása
+        setIconImage(R.getImage(null, "app-chooser.png")); // címsor-ikon beállítása
         GridBagConstraints c = new GridBagConstraints();
         setLayout(new GridBagLayout()); // elrendezés-menedzser beállítása GBL-ra
         c.insets = new Insets(5, 5, 5, 5); // 5x5 pixel széles margó a komponensek között

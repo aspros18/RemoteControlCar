@@ -17,6 +17,7 @@ import static org.dyndns.fzoli.rccar.SplashScreenLoader.setSplashMessage;
 import org.dyndns.fzoli.rccar.ui.UIUtil;
 import static org.dyndns.fzoli.rccar.ui.UIUtil.initNativeInterface;
 import static org.dyndns.fzoli.rccar.ui.UIUtil.runNativeEventPump;
+import org.dyndns.fzoli.util.MacApplication;
 
 /**
  * A Híd- vagy a vezérlő-alkalmazás elindító osztálya.
@@ -183,8 +184,12 @@ public class Main {
             }
         }
         else { // ha a grafikus felület elérhető
-            setSplashMessage(res.getString("loading")); // jelzés a felhasználónak, hogy alkalmazásválasztás következik
-            setSystemLookAndFeel(); // LAF beállítása
+            // jelzés a felhasználónak, hogy alkalmazásválasztás következik
+            setSplashMessage(res.getString("loading"));
+            // LAF beállítása
+            setSystemLookAndFeel();
+            // Mac OS X-en dock ikon beállítása az alkalmazásválasztó ikonjára
+            MacApplication.setDockIcon(org.dyndns.fzoli.rccar.resource.R.getImage(null, "app-chooser.png"));
             new Thread(new Runnable() {
 
                 @Override

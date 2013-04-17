@@ -82,4 +82,20 @@ public class Folders {
         return createFile(fileName, null);
     }
     
+    /**
+     * Megpróbálja beállítani a munkakönyvtárat a paraméterben megadott útvonalra.
+     * Forrás: http://stackoverflow.com/a/13981910
+     * @param directory_name a könyvtár relatív vagy teljes útvonala
+     * @return true, ha sikerült a beállítás, egyébként false
+     */
+    public static boolean setCurrentDirectory(String directory_name) {
+        boolean result = false;  // Boolean indicating whether directory was set
+        File    directory;       // Desired current working directory
+        directory = new File(directory_name).getAbsoluteFile();
+        if (directory.exists() || directory.mkdirs()) {
+            result = (System.setProperty("user.dir", directory.getAbsolutePath()) != null);
+        }
+        return result;
+    }
+    
 }

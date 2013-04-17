@@ -113,6 +113,25 @@ public class Main {
     }
     
     /**
+     * Ellenőrzi a munkakönyvtárat (current directory).
+     * A JRE indításakor a munkakönyvtár átállítható olyan helyre is, ami nem létezik vagy nem is könyvtár.
+     * A metódus törli a fájlt, ha az nem könyvtár és létrehozza a könyvtárat, ha nem létezik,
+     * így később, amikor használja az alkalmazás a munkakönyvtárat, nem keletkezik kivétel.
+     * Ha nincs jogosultság a könyvtár létrehozására, a metódus nem dob kivételt és lesz ami lesz.
+     * Ezt a metódust a Híd illetve a vezérlő alkalmazás Main osztálya hívja meg a main metódusban.
+     */
+    public static void checkWorkingDirectory() {
+        try {
+            File cd = new File(System.getProperty("user.dir"));
+            if (cd.isFile()) cd.delete();
+            if (!cd.isDirectory()) cd.mkdirs();
+        }
+        catch (Exception ex) {
+            ;
+        }
+    }
+    
+    /**
      * A megadott alkalmazás indítása.
      * @param app az alkalmazás: <code>client</code> vagy <code>server</code>
      * @param args az alkalmazásnak átadandó paraméterek

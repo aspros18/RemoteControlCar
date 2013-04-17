@@ -28,6 +28,7 @@ import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 import static org.dyndns.fzoli.util.OSUtils.setApplicationName;
 import org.dyndns.fzoli.ui.systemtray.MenuItem;
 import static org.dyndns.fzoli.util.MacApplication.setDockIcon;
+import static org.dyndns.fzoli.rccar.Main.checkWorkingDirectory;
 
 /**
  * A Híd indító osztálya.
@@ -354,6 +355,7 @@ public class Main {
     public static void main(final String[] args) {
         setApplicationName("Mobile-RC Server");
         setSplashMessage(getString("please_wait"));
+        checkWorkingDirectory();
         initNativeInterface();
         addNativeInterfaceListener(NI_LISTENER);
         setSystemLookAndFeel();

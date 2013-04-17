@@ -36,6 +36,7 @@ import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 import static org.dyndns.fzoli.util.OSUtils.setApplicationName;
 import org.dyndns.fzoli.ui.systemtray.MenuItem;
 import static org.dyndns.fzoli.util.MacApplication.setDockIcon;
+import static org.dyndns.fzoli.rccar.Main.checkWorkingDirectory;
 
 /**
  * A vezérlő indító osztálya.
@@ -501,6 +502,7 @@ public class Main {
     public static void main(String[] args) {
         setApplicationName("Mobile-RC"); // alkalmazásnév beállítása
         setSplashMessage(getString("please_wait")); // jelzés a felhasználónak, hogy tölt a program
+        checkWorkingDirectory(); // ellenőrzi a 'cd' könyvtárat és létrehozza, ha nem létezik
         initNativeInterface(); // natív interfész inicializálása a webböngészőhöz és a rendszerikonhoz
         addNativeInterfaceListener(NI_LISTENER); // natív interfész eseménykezelő hozzáadása
         setSystemLookAndFeel(); // rendszer LAF beállítása

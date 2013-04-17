@@ -9,11 +9,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Locale;
+import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.resource.MD5Checksum;
 import org.dyndns.fzoli.ui.systemtray.SystemTrayIcon;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon;
 import org.dyndns.fzoli.util.Folders;
-import org.dyndns.fzoli.util.OSUtils;
 
 /**
  * Ideiglenes konfiguráció a memóriában.
@@ -88,7 +88,7 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
     /**
      * Az alkalmazás adattárolásra használt könyvtára.
      */
-    public static final File ROOT = new File(OSUtils.getUserDataFolder("Mobile-RC"));
+    public static final File ROOT = new File(R.getUserDataFolderPath());
     
     /**
      * Az a fájl, amelybe a szerializálás történik.

@@ -45,8 +45,7 @@ public class OSUtils {
      */
     public static String getUserDataFolder(String name) {
         String path;
-        String OS = System.getProperty("os.name").toUpperCase();
-        if (OS.contains("WIN")) {
+        if (isOS(OS.WINDOWS)) {
             try {
                 // az SWT-appkit API-ból mintázott Shell32 hívás
                 // https://github.com/fab1an/appkit/blob/master/src/org/appkit/osdependant/OSUtils.java
@@ -74,10 +73,10 @@ public class OSUtils {
                 path = System.getProperty("user.dir");
             }
         }
-        else if (OS.contains("MAC")) {
+        else if (isOS(OS.MAC)) {
             path = System.getProperty("user.home") + File.separator + "Library" + File.separator + "Application Support";
         }
-        else if (OS.contains("NUX")) {
+        else if (isOS(OS.LINUX)) {
             String cfg = System.getenv("XDG_CONFIG_HOME");
             if (cfg == null || cfg.trim().isEmpty()) cfg = System.getProperty("user.home") + File.separator + ".config";
             path = cfg;
@@ -113,14 +112,37 @@ public class OSUtils {
         }
         
         try {
-            String os = System.getProperty("os.name").toLowerCase();
-            if (!os.startsWith("mac")) return;
+            if (!isOS(OS.MAC)) return;
             System.setProperty("apple.laf.useScreenMenuBar", "true");
             System.setProperty("com.apple.mrj.application.apple.menu.about.name", text);
         }
         catch (Exception ex) {
             ;
         }
+    }
+    
+    /**
+     * Operációsrendszerek felsorolása.
+     */
+    public static enum OS {
+        
+        WINDOWS("win"), LINUX("nux"), MAC("mac");
+        
+        final String NAME;
+        
+        private OS(String name) {
+            NAME = name;
+        }
+        
+    }
+    
+    /**
+     * Megadja, hogy a paraméterben átadott operációsrendszer alatt fut-e az alkalmazás.
+     * @param os a vizsgálandó operációsrendszer
+     */
+    public static boolean isOS(OS os) {
+        if (os == null) return false;
+        return System.getProperty("os.name").toLowerCase().contains(os.NAME.toLowerCase());
     }
     
 }

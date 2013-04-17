@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import org.dyndns.fzoli.ui.LookAndFeelIcon;
+import org.dyndns.fzoli.util.OSUtils;
 
 /**
  * A Híd és a vezérlő közös erőforráskezelő osztálya.
@@ -18,6 +19,13 @@ public class R {
      * Az egyszer már betöltött képek referenciáit tárolja.
      */
     private static final Map<String, BufferedImage> IMAGES = new HashMap<String, BufferedImage>();
+    
+    /**
+     * Megadja a Mobile-RC alkalmazás felhasználói könyvtárának a helyét.
+     */
+    public static String getUserDataFolderPath() {
+        return OSUtils.getUserDataFolder("Mobile-RC");
+    }
     
     /**
      * Fájlnév alapján betölti a képet és ikont ad vissza.

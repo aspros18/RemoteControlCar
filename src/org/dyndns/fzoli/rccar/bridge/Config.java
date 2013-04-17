@@ -13,7 +13,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import org.dyndns.fzoli.rccar.bridge.resource.R;
 import org.dyndns.fzoli.util.Folders;
+import org.dyndns.fzoli.util.OSUtils;
 
 /**
  * A híd konfigurációját tölti be a bridge.conf fájlból.
@@ -50,14 +52,20 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
      */
     private static final String CC = "#";
     
+    /**
+     * A konfig fájl neve.
+     */
     private static final String CFG_NAME = "bridge.conf";
     
     /**
      * A konfig fájl eléréséhez létrehozott objektum.
      */
-    private static final File FILE_CONFIG = Folders.createFile(CFG_NAME);
+    private static final File FILE_CONFIG = getConfigFile();
     
-    public final File FILE;
+    /**
+     * A konfig fájl objektuma.
+     */
+    private final File FILE;
     
     /**
      * Az alapértelmezett fájl tartalma.
@@ -87,6 +95,9 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
         FILE = file;
     }
 
+    /**
+     * A konfig fájl objektuma.
+     */
     public File getFile() {
         return FILE;
     }
@@ -345,6 +356,22 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
             throw new RuntimeException(ex);
         }
         return null;
+    }
+    
+    /**
+     * Megadja a konfig fájl helyét.
+     * Megnézi a munkakönyvtárban (current dir) majd a forráskönyvtárban (ahol a jar van)
+     * és ahol előbb megtalálja a fájlt, azt az útvonalat adja meg.
+     * Ha a fájl nem létezik, akkor a munkakönyvtárba mutató fájlt adja vissza,
+     * de Mac-en a "user data" könyvtárba fog mutatni a fájl, mert az jobban illik rá.
+     */
+    private static File getConfigFile() {
+        File def = null;
+        if (OSUtils.isOS(OSUtils.OS.MAC)) {
+            def = new File(R.getUserDataFolderPath(), CFG_NAME);
+            if (!def.isDirectory()) def.mkdirs();
+        }
+        return Folders.createFile(CFG_NAME, def);
     }
     
     /**

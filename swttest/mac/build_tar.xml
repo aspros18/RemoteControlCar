@@ -3,6 +3,8 @@
 <mkdir dir="./build/jar/UILauncher/Mobile-RC.app/Contents/MacOS/" />
 <copy file="./JavaApplicationStub" 
       todir="./build/jar/UILauncher/Mobile-RC.app/Contents/MacOS/" />
+<copy file="../../src/org/dyndns/fzoli/rccar/resource/splash.gif" 
+      todir="./build/jar/UILauncher/Mobile-RC.app/Contents/Resources/Java/" />
 <tar destfile="./build/jars/Mobile-RC.app.tar">
   <tarfileset dir="./build/jar/UILauncher/" filemode="777" />
   <tarfileset dir="./build/jar/UIApp/" />

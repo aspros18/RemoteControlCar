@@ -9,7 +9,6 @@
             jvmversion="1.5+"
             startOnMainThread="true"
             icon="./controller.icns"
+            splashfile="$JAVAROOT/splash.gif"
             stubfile="./JavaApplicationStub" />
-<!--        workingdirectory="$USER_HOME/Library/Application Support/Mobile-RC" -->
-<!--        splashfile="$JAVAROOT/splash.gif" -->
 </project>

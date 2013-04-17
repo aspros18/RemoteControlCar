@@ -35,7 +35,7 @@ import static org.dyndns.fzoli.ui.systemtray.SystemTrayIcon.showMessage;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 import static org.dyndns.fzoli.util.OSUtils.setApplicationName;
 import org.dyndns.fzoli.ui.systemtray.MenuItem;
-import org.dyndns.fzoli.util.MacApplication;
+import static org.dyndns.fzoli.util.MacApplication.setDockIcon;
 
 /**
  * A vezérlő indító osztálya.
@@ -499,13 +499,13 @@ public class Main {
      * Végül a kliens program elkezdi futását.
      */
     public static void main(String[] args) {
-        setApplicationName("Mobile-RC");
-        setSplashMessage(getString("please_wait"));
+        setApplicationName("Mobile-RC"); // alkalmazásnév beállítása
+        setSplashMessage(getString("please_wait")); // jelzés a felhasználónak, hogy tölt a program
         initNativeInterface(); // natív interfész inicializálása a webböngészőhöz és a rendszerikonhoz
         addNativeInterfaceListener(NI_LISTENER); // natív interfész eseménykezelő hozzáadása
-        setSystemLookAndFeel();
-        MacApplication.setDockIcon(R.getIconImage());
-        setExceptionHandler();
+        setSystemLookAndFeel(); // rendszer LAF beállítása
+        setDockIcon(R.getIconImage()); // Mac OS X-en dock ikon beállítása az alkalmazásválasztó ikonjára
+        setExceptionHandler(); // kivételkezelő átállítása a kivételt megjelenítő dialógusra
         if (GraphicsEnvironment.isHeadless()) { // ha a grafikus felület nem érhető el
             System.err.println(getString("msg_need_gui") + LS + getString("msg_exit"));
             System.exit(1); // hibakóddal lép ki
@@ -561,7 +561,7 @@ public class Main {
             }
 
         });
-        runNativeEventPump();
+        runNativeEventPump(); // natív interfész eseménypumpáló indítása
     }
     
 }

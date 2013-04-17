@@ -27,7 +27,7 @@ import org.dyndns.fzoli.ui.systemtray.SystemTrayIcon;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 import static org.dyndns.fzoli.util.OSUtils.setApplicationName;
 import org.dyndns.fzoli.ui.systemtray.MenuItem;
-import org.dyndns.fzoli.util.MacApplication;
+import static org.dyndns.fzoli.util.MacApplication.setDockIcon;
 
 /**
  * A Híd indító osztálya.
@@ -357,7 +357,7 @@ public class Main {
         initNativeInterface();
         addNativeInterfaceListener(NI_LISTENER);
         setSystemLookAndFeel();
-        MacApplication.setDockIcon(R.getBridgeImage());
+        setDockIcon(R.getBridgeImage());
         setExceptionHandler();
         applyConfig();
         addShutdownHook();

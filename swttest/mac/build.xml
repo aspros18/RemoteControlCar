@@ -6,6 +6,7 @@
             name="Mobile-RC"
             mainclass="org.swtjar.SWTLoader"
             jar="../ui.jar"
+            jvmversion="1.5+"
             startOnMainThread="true"
             icon="./controller.icns"
             stubfile="./JavaApplicationStub" />

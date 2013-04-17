@@ -267,7 +267,7 @@ public abstract class LanguageChooserFrame extends JFrame {
             
         });
         return new JComboBox.KeySelectionManager() {
-
+            
             /**
              * A leütött karaktert hozzáadja a gyorskereső szöveghez,
              * ha back space vagy delete gomb lett lenyomva, a gyorskereső szöveget kiüríti, végül
@@ -278,7 +278,7 @@ public abstract class LanguageChooserFrame extends JFrame {
              */
             @Override
             public int selectionForKey(char aKey, ComboBoxModel aModel) {
-                switch (KeyEvent.getExtendedKeyCodeForChar(aKey)) {
+                switch (getExtendedKeyCodeForChar(aKey)) {
                     case KeyEvent.VK_DELETE:
                         text = "";
                         break;
@@ -299,6 +299,22 @@ public abstract class LanguageChooserFrame extends JFrame {
                 return cb.getSelectedIndex();
             }
 
+            /**
+             * A {@link KeyEvent#getExtendedKeyCodeForChar(int)} metódus,
+             * csak az Oracle JRE-ben található meg.
+             * Oracle JRE alatt az eredeti metódus értékével tér vissza;
+             * Apple JRE alatt vagy más egyéb JRE alatt a
+             * paraméterben átadott érték nem módosul.
+             */
+            private int getExtendedKeyCodeForChar(int c) {
+                try {
+                    return KeyEvent.getExtendedKeyCodeForChar(c);
+                }
+                catch (Throwable t) {
+                    return c;
+                }
+            }
+            
         };
     }
     

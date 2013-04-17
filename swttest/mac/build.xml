@@ -10,5 +10,6 @@
             startOnMainThread="true"
             icon="./controller.icns"
             splashfile="$JAVAROOT/splash.gif"
+            workingdirectory="$USER_HOME/Library/Application Support/Mobile-RC"
             stubfile="./JavaApplicationStub" />
 </project>

@@ -358,6 +358,8 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
         return null;
     }
     
+    private static final String KEY_LOGDIR = "mobilerc.logdir";
+    
     /**
      * Megadja a konfig fájl helyét.
      * Megnézi a munkakönyvtárban (current dir) majd a forráskönyvtárban (ahol a jar van)
@@ -365,7 +367,9 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
      * Ha a fájl nem létezik, akkor a munkakönyvtárba mutató fájlt adja vissza.
      * Mac-en mindig a "user data" könyvtárba fog kerülni a konfig fájl, mert az jobban illik
      * a rendszerhez, valamint a "working directory" is a "user data" könyvtár lesz, így a
-     * konfigban megadott relatív útvonal jó helyre fog mutatni és a naplózás is oda kerül.
+     * konfigban megadott relatív útvonal jó helyre fog mutatni.
+     * Ahhoz, hogy a log4j naplózása is ebbe a könyvtárba kerüljön a JarBundler-ben előre
+     * kell definiálni a "working directory" helyét, mivel ez a beállítás arra nem vonatkozik.
      */
     private static File getConfigFile() {
         if (OSUtils.isOS(OSUtils.OS.MAC)) {

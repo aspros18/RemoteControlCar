@@ -83,6 +83,13 @@ public class Folders {
     }
     
     /**
+     * Megadja a jelenlegi munkakönyvtár helyét.
+     */
+    public static String getCurrentDirectory() {
+        return System.getProperty("user.dir");
+    }
+    
+    /**
      * Megpróbálja beállítani a munkakönyvtárat a paraméterben megadott útvonalra.
      * Forrás: http://stackoverflow.com/a/13981910
      * @param directory_name a könyvtár relatív vagy teljes útvonala

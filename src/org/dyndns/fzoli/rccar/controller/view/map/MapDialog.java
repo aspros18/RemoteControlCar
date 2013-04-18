@@ -55,11 +55,6 @@ import org.imgscalr.Scalr;
 public class MapDialog extends AbstractDialog {
     
     /**
-     * Megadja, hogy a térkép be lett-e zárva.
-     */
-    private boolean disposed = false;
-    
-    /**
      * A térkép pozíciója.
      */
     private Point3D position;
@@ -493,12 +488,14 @@ public class MapDialog extends AbstractDialog {
     /**
      * Megjeleníti vagy elrejti az ablakot.
      * Ha megjelenítést kértek, és nem sikerült leutóbb betölteni a térképet, újratöltés.
+     * Ha az ablak látható és elrejtést kértek, jelzi a konténernek, hogy elrejtődik.
      */
     @Override
     public void setVisible(boolean b) {
         boolean v = isVisible();
         super.setVisible(b);
         if (b && !v) reload();
+        if (!b && v) getControllerWindows().onMapHiding();
     }
 
     /**
@@ -629,12 +626,15 @@ public class MapDialog extends AbstractDialog {
     }
     
     /**
-     * A térkép bezárása.
+     * Frissíti a térkép összes adatát az adatmodel alapján.
+     * @see #refreshArrow()
+     * @see #refreshFade()
+     * @see #refreshPosition()
      */
-    @Override
-    public void dispose() {
-        disposed = true;
-        super.dispose();
+    public void refresh() {
+        refreshArrow();
+        refreshFade();
+        refreshPosition();
     }
     
     /**

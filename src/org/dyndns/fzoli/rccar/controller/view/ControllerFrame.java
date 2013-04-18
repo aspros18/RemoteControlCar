@@ -338,6 +338,7 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
              */
             @Override
             public void windowClosing(WindowEvent e) {
+                if (WINDOWS != null) WINDOWS.onMapHiding();
                 if (getData().isConnected() !=null && !getData().isConnected()) {
                     int answer = OptionPane.showYesNoDialog(ControllerFrame.this, getString("leave_vehicle_msg1") + "\n" + getString("leave_vehicle_msg2") + "\n\n" + getString("leave_vehicle_msg3"), getString("leave_vehicle"));
                     if (answer == 1) return;

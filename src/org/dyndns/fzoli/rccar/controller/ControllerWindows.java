@@ -2,6 +2,7 @@ package org.dyndns.fzoli.rccar.controller;
 
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import java.awt.GraphicsEnvironment;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Window;
 import java.awt.image.BufferedImage;
@@ -15,6 +16,7 @@ import org.dyndns.fzoli.rccar.controller.view.ControllerFrame;
 import org.dyndns.fzoli.rccar.controller.view.RelocalizableWindow;
 import org.dyndns.fzoli.rccar.controller.view.map.MapDialog;
 import org.dyndns.fzoli.rccar.ui.UIUtil;
+import org.dyndns.fzoli.util.OSUtils;
 
 /**
  * A járművel kapcsolatos ablakok konténere.
@@ -64,8 +66,10 @@ public class ControllerWindows implements RelocalizableWindow {
     
     /**
      * Térkép dialógus.
+     * Mac-en a natív ablak eltűnésekor már nem jeleníthető meg újra ugyan az az ablak,
+     * ezért ez nem lehet konstans, mivel mindig más objektum tartozik hozzá.
      */
-    private final MapDialog DIALOG_MAP = new MapDialog(FRAME_MAIN, this, null, UIUtil.isNativeSwingAvailable());
+    private MapDialog DIALOG_MAP = new MapDialog(FRAME_MAIN, this, null, UIUtil.isNativeSwingAvailable());
     
     /**
      * Hézag az ablakok között.
@@ -186,8 +190,30 @@ public class ControllerWindows implements RelocalizableWindow {
      * @param b true esetén megjelenik, egyébként eltűnik
      */
     private static void setVisible(Window w, boolean b) {
-        if (w.isVisible() ^ b) {
+        if (w != null && w.isVisible() ^ b) {
             w.setVisible(b);
+        }
+    }
+    
+    /**
+     * Akkor fut le, amikor a térkép dialógus eltűnik.
+     * Ha Mac-en fut az alkalmazás, új példányt hoz létre a térkép dialógusból.
+     * @see #DIALOG_MAP
+     */
+    public void onMapHiding() {
+        if (OSUtils.isOS(OSUtils.OS.MAC)) {
+            SwingUtilities.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    Point loc = DIALOG_MAP.getLocation(); // az előző ablak pozíciója
+                    DIALOG_MAP.dispose(); // az előző ablak felszabadítása
+                    DIALOG_MAP = new MapDialog(FRAME_MAIN, ControllerWindows.this, null, UIUtil.isNativeSwingAvailable()); // új példány létrehozása
+                    DIALOG_MAP.setLocation(loc); // az új ablak beállítása az előző ablak pozíciójára
+                    DIALOG_MAP.refresh(); // az új ablak adatainak frissítése
+                }
+
+            });
         }
     }
     

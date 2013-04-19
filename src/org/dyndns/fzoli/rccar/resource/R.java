@@ -1,12 +1,14 @@
 package org.dyndns.fzoli.rccar.resource;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import org.dyndns.fzoli.ui.LookAndFeelIcon;
+import org.dyndns.fzoli.util.Folders;
 import org.dyndns.fzoli.util.OSUtils;
 
 /**
@@ -25,6 +27,31 @@ public class R {
      */
     public static String getUserDataFolderPath() {
         return OSUtils.getUserDataFolder("Mobile-RC");
+    }
+    
+    /**
+     * Megadja a konfig fájl helyét.
+     * Megnézi a munkakönyvtárban (current dir) majd a forráskönyvtárban (ahol a jar van)
+     * és ahol előbb megtalálja a fájlt, azt az útvonalat adja meg.
+     * Ha a fájl nem létezik, akkor a munkakönyvtárba mutató fájlt adja vissza.
+     * Mac-en mindig a "user data" könyvtárba fog kerülni a konfig fájl, mert az jobban illik
+     * a rendszerhez, valamint a "working directory" is a "user data" könyvtár lesz, így a
+     * konfigban megadott relatív útvonal jó helyre fog mutatni.
+     * Ahhoz, hogy a log4j naplózása is ebbe a könyvtárba kerüljön a JarBundler-ben előre
+     * kell definiálni a "working directory" helyét, mivel ez a beállítás arra nem vonatkozik.
+     * @param cfgName a konfig fájl neve
+     */
+    public static File getConfigFile(String cfgName) {
+        if (OSUtils.isOS(OSUtils.OS.MAC)) {
+            boolean use = true;
+            File dir = new File(R.getUserDataFolderPath());
+            if (!dir.isDirectory()) use = dir.mkdirs();
+            if (use) {
+                Folders.setCurrentDirectory(R.getUserDataFolderPath());
+                return new File(dir, cfgName);
+            }
+        }
+        return Folders.createFile(cfgName);
     }
     
     /**

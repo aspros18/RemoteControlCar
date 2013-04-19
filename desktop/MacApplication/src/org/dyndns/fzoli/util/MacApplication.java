@@ -64,34 +64,6 @@ public class MacApplication {
     public static void setDockIcon(Image image) {
         if (isSupported()) MAC_APP.setDockIconImage(image);
     }
-
-    /**
-     * Installs the handler which determines if the application should quit.
-     * The handler is passed a one-shot QuitResponse which can cancel or proceed with the quit.
-     * If the application is not running on Mac, it does nothing.
-     * @param quitHandler - the handler that is called when the application is asked to quit
-     * @since Java for OS X v10.6 Update 3, Java for OS X v10.5 Update 8
-     */
-    public static void setExitHandler(Runnable quitHandler) {
-        if (isSupported()) MAC_APP.setQuitHandler(quitHandler);
-    }
-
-    /**
-     * Installs the default exit handler which determines if the application should quit.
-     * The handler is passed a one-shot QuitResponse which runs System.exit(0).
-     * If the application is not running on Mac, it does nothing.
-     * @since Java for OS X v10.6 Update 3, Java for OS X v10.5 Update 8
-     */
-    public static void setDefaultExitHandler() {
-        setExitHandler(new Runnable() {
-
-            @Override
-            public void run() {
-                System.exit(0);
-            }
-            
-        });
-    }
     
     /**
      * Enables this application to be suddenly terminated.
@@ -204,24 +176,6 @@ public class MacApplication {
 
     public void requestToggleFullScreen(Window window) {
         APP.requestToggleFullScreen(window);
-    }
-
-    /**
-     * Installs the handler which determines if the application should quit.
-     * The handler is passed a one-shot QuitResponse which can cancel or proceed with the quit.
-     * @param quitHandler - the handler that is called when the application is asked to quit
-     * @since Java for OS X v10.6 Update 3, Java for OS X v10.5 Update 8
-     */
-    public void setQuitHandler(final Runnable quitHandler) {
-        if (quitHandler == null) APP.setQuitHandler(null);
-        else APP.setQuitHandler(new com.apple.eawt.QuitHandler() {
-
-            @Override
-            public void handleQuitRequestWith(com.apple.eawt.AppEvent.QuitEvent qe, com.apple.eawt.QuitResponse qr) {
-                quitHandler.run();
-            }
-            
-        });
     }
     
     /**

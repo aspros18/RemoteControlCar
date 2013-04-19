@@ -98,7 +98,7 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
     /**
      * Az alapértelmezett konfigurációra mutató fájl.
      */
-    private static final File DEF_FILE = Folders.createFile("controller.ser");
+    private static final File DEF_FILE = R.getConfigFile("controller.ser");
     
     /**
      * Az alapértelmezett konfiguráció.

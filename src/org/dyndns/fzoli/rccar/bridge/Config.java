@@ -15,7 +15,6 @@ import java.util.Locale;
 import java.util.Map;
 import org.dyndns.fzoli.rccar.bridge.resource.R;
 import org.dyndns.fzoli.util.Folders;
-import org.dyndns.fzoli.util.OSUtils;
 
 /**
  * A híd konfigurációját tölti be a bridge.conf fájlból.
@@ -60,7 +59,7 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
     /**
      * A konfig fájl eléréséhez létrehozott objektum.
      */
-    private static final File FILE_CONFIG = getConfigFile();
+    private static final File FILE_CONFIG = R.getConfigFile(CFG_NAME);
     
     /**
      * A konfig fájl objektuma.
@@ -358,31 +357,7 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
         return null;
     }
     
-    private static final String KEY_LOGDIR = "mobilerc.logdir";
     
-    /**
-     * Megadja a konfig fájl helyét.
-     * Megnézi a munkakönyvtárban (current dir) majd a forráskönyvtárban (ahol a jar van)
-     * és ahol előbb megtalálja a fájlt, azt az útvonalat adja meg.
-     * Ha a fájl nem létezik, akkor a munkakönyvtárba mutató fájlt adja vissza.
-     * Mac-en mindig a "user data" könyvtárba fog kerülni a konfig fájl, mert az jobban illik
-     * a rendszerhez, valamint a "working directory" is a "user data" könyvtár lesz, így a
-     * konfigban megadott relatív útvonal jó helyre fog mutatni.
-     * Ahhoz, hogy a log4j naplózása is ebbe a könyvtárba kerüljön a JarBundler-ben előre
-     * kell definiálni a "working directory" helyét, mivel ez a beállítás arra nem vonatkozik.
-     */
-    private static File getConfigFile() {
-        if (OSUtils.isOS(OSUtils.OS.MAC)) {
-            boolean use = true;
-            File dir = new File(R.getUserDataFolderPath());
-            if (!dir.isDirectory()) use = dir.mkdirs();
-            if (use) {
-                Folders.setCurrentDirectory(R.getUserDataFolderPath());
-                return new File(dir, CFG_NAME);
-            }
-        }
-        return Folders.createFile(CFG_NAME);
-    }
     
     /**
      * Útvonal alapján fájl objektumot ad vissza.

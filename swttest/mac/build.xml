@@ -7,7 +7,7 @@
             mainclass="org.swtjar.SWTLoader"
             jar="../ui.jar"
             jvmversion="1.5+"
-            startOnMainThread="true"
+            startOnMainThread="false"
             icon="./controller.icns"
             splashfile="$JAVAROOT/splash.gif"
             workingdirectory="$USER_HOME/Library/Application Support/Mobile-RC"

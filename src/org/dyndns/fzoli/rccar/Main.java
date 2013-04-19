@@ -18,6 +18,7 @@ import org.dyndns.fzoli.rccar.ui.UIUtil;
 import static org.dyndns.fzoli.rccar.ui.UIUtil.initNativeInterface;
 import static org.dyndns.fzoli.rccar.ui.UIUtil.runNativeEventPump;
 import static org.dyndns.fzoli.util.MacApplication.setDockIcon;
+import static org.dyndns.fzoli.util.MacApplication.setDefaultExitHandler;
 
 /**
  * A Híd- vagy a vezérlő-alkalmazás elindító osztálya.
@@ -188,6 +189,8 @@ public class Main {
             setSplashMessage(res.getString("loading"));
             // rendszer LAF beállítása
             setSystemLookAndFeel();
+            // Mac OS X-en a dock ikon menüjében a kilépésre kattintva program leállítása
+            setDefaultExitHandler();
             // Mac OS X-en dock ikon beállítása az alkalmazásválasztó ikonjára
             setDockIcon(org.dyndns.fzoli.rccar.resource.R.getImage(null, "app-chooser.png"));
             new Thread(new Runnable() {

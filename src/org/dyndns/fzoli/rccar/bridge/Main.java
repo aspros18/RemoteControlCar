@@ -33,8 +33,6 @@ import org.dyndns.fzoli.ui.systemtray.MenuItem;
 import org.dyndns.fzoli.util.Folders;
 import static org.dyndns.fzoli.util.MacApplication.setDockIcon;
 import org.dyndns.fzoli.util.OSUtils;
-import org.imgscalr.Scalr;
-import org.imgscalr.Scalr;
 
 /**
  * A Híd indító osztálya.

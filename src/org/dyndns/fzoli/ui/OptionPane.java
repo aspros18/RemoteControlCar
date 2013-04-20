@@ -11,7 +11,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.SwingUtilities;
 import static javax.swing.UIManager.getString;
 import static org.dyndns.fzoli.ui.UIUtil.init;
 

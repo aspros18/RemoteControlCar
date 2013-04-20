@@ -499,6 +499,14 @@ public class MapDialog extends AbstractDialog {
     }
 
     /**
+     * Megadja, hogy a térkép elérhető-e.
+     * @return null, ha még nem tudni; true, ha elérhető; egyébként false
+     */
+    public Boolean isMapEnabled() {
+        return enabled;
+    }
+
+    /**
      * Megadja, hogy az áttünés aktív-e.
      */
     public boolean isFade() {

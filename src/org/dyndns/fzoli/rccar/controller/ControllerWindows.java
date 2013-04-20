@@ -165,7 +165,7 @@ public class ControllerWindows implements RelocalizableWindow {
     }
     
     /**
-     * Az ablakok megjelenítése/eltüntetése.
+     * A dialógus-ablakok megjelenítése/eltüntetése.
      * Csak akkor jelennek meg a dialógusok, ha a főablakon a gombjuk kijelölt.
      * @param b true esetén megjelenik, egyébként eltűnik
      */
@@ -197,18 +197,18 @@ public class ControllerWindows implements RelocalizableWindow {
     
     /**
      * Akkor fut le, amikor a térkép dialógus eltűnik.
-     * Ha Mac-en fut az alkalmazás, új példányt hoz létre a térkép dialógusból.
+     * Ha Mac-en fut az alkalmazás, új példányt hoz létre a térkép dialógusból, de csak akkor, ha van térképtámogatás.
      * @see #DIALOG_MAP
      */
     public void onMapHiding() {
-        if (OSUtils.isOS(OSUtils.OS.MAC)) {
+        if (OSUtils.isOS(OSUtils.OS.MAC) && UIUtil.isNativeSwingAvailable() && (DIALOG_MAP.isMapEnabled() == null || DIALOG_MAP.isMapEnabled())) {
             SwingUtilities.invokeLater(new Runnable() {
 
                 @Override
                 public void run() {
                     Point loc = DIALOG_MAP.getLocation(); // az előző ablak pozíciója
                     DIALOG_MAP.dispose(); // az előző ablak felszabadítása
-                    DIALOG_MAP = new MapDialog(FRAME_MAIN, ControllerWindows.this, null, UIUtil.isNativeSwingAvailable()); // új példány létrehozása
+                    DIALOG_MAP = new MapDialog(FRAME_MAIN, ControllerWindows.this, null, true); // új példány létrehozása
                     DIALOG_MAP.setLocation(loc); // az új ablak beállítása az előző ablak pozíciójára
                     DIALOG_MAP.refresh(); // az új ablak adatainak frissítése
                 }

@@ -114,7 +114,6 @@ public class Main {
             add("java");
             if (OSUtils.isOS(OSUtils.OS.MAC)) {
                 add("-Xdock:name=\"Mobile-RC\"");
-//                add("-Duser.dir=\"" + R.getUserDataFolderPath() + "\"");
                 if (OSUtils.startedOnFirstThread(org.dyndns.fzoli.rccar.Main.class)) {
                     add("-XstartOnFirstThread");
                 }

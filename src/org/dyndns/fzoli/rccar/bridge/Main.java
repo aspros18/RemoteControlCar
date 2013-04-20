@@ -108,6 +108,10 @@ public class Main {
     
     /**
      * A vezérlő program jar-ból való indításának paramétereit tartalmazza.
+     * Mivel Mac-en a grafikus felületről nem indítható ugyan azon alkalmazás többször,
+     * a szervert indítva egyetlen kliens alkalmazás indítására adok lehetőséget a
+     * rendszerikon menüjéből. Ha esetleg grafikus admin klienst is írok egyszer,
+     * ugyan ezzel a módszerrel lehet lesz majd indítani azt is.
      */
     private static final List<String> CTRL_ARGS = new ArrayList<String>() {
         {

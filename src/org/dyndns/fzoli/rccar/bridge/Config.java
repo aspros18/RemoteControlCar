@@ -39,7 +39,8 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
                                KEY_QUIET = "quiet",
                                KEY_HIDDEN = "hidden",
                                KEY_LANG = "lang",
-                               KEY_TIMEOUT = "timeout";
+                               KEY_TIMEOUT = "timeout",
+                               KEY_APP_MENU = "app-menu";
     
     /**
      * Általános rendszerváltozók.
@@ -80,6 +81,7 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
             CC + ' ' + KEY_STRICT + " true " + CC + " ha true, azok a vezérlők, melyek nem szerepelnek a fehérlistában, nem csatlakozhatnak a hídhoz" + LS +
             CC + ' ' + KEY_QUIET + " true " + CC + " ha true, a program indulásakor az összes figyelmeztetés inaktív" + LS +
             CC + ' ' + KEY_HIDDEN + " true " + CC + " ha true, a rendszerikon nem jelenik meg annak ellenére sem, hogy van grafikus felület" + LS +
+            CC + ' ' + KEY_APP_MENU + " true " + CC + " ha true, a rendszerikon menüjéből elérhető egy kliens processt indító opció (alapértelmezetten csak Mac-en látható)" + LS +
             CC + ' ' + KEY_LANG + " en " + CC + " a program nyelvét adja meg";
     
     /**
@@ -126,6 +128,16 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
      */
     public boolean isHidden() {
         return isTrue(KEY_HIDDEN);
+    }
+    
+    /**
+     * A konfigurációs fájl hidden paramétere.
+     * Ha true, akkor a rendszertől függetlenül látható
+     * a rendszerikon menüjében egy kliens processt indító opció.
+     * @return false, ha nincs megadva, és ha a megadott érték "true", akkor true
+     */
+    public boolean isAppMenu() {
+        return isTrue(KEY_APP_MENU);
     }
     
     /**
@@ -274,6 +286,7 @@ public class Config implements org.dyndns.fzoli.rccar.Config {
                "Password length: " + (getPassword() == null ? -1 : getPassword().length) + LS +
                "Strict: " + isStrict() + LS +
                "Hidden: " + isHidden() + LS +
+               "App menu: " + isAppMenu() + LS +
                "Lang: " + getLanguage().getLanguage() + LS +
                "Timeout: " + getTimeout() + LS +
                "Correct? " + isCorrect();

@@ -181,8 +181,8 @@ public class Main {
                 
             });
             
-            // Az alkalmazásindító opció csak Mac-en látható
-            if (OSUtils.isOS(OSUtils.OS.MAC)) {
+            // Az alkalmazásindító opció csak Mac-en látható, de más rendszereken is kérhető a konfigban
+            if (OSUtils.isOS(OSUtils.OS.MAC) || CONFIG.isAppMenu()) {
             
                 // szeparátor hozzáadása a menühöz, alkalmazásindító blokk jön
                 SystemTrayIcon.addMenuSeparator();

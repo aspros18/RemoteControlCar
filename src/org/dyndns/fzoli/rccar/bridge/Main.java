@@ -1,9 +1,12 @@
 package org.dyndns.fzoli.rccar.bridge;
 
 import chrriis.dj.nativeswing.swtimpl.NativeInterfaceAdapter;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.security.KeyStoreException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import javax.net.ssl.SSLServerSocket;
@@ -27,7 +30,11 @@ import org.dyndns.fzoli.ui.systemtray.SystemTrayIcon;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 import static org.dyndns.fzoli.util.OSUtils.setApplicationName;
 import org.dyndns.fzoli.ui.systemtray.MenuItem;
+import org.dyndns.fzoli.util.Folders;
 import static org.dyndns.fzoli.util.MacApplication.setDockIcon;
+import org.dyndns.fzoli.util.OSUtils;
+import org.imgscalr.Scalr;
+import org.imgscalr.Scalr;
 
 /**
  * A Híd indító osztálya.
@@ -71,6 +78,11 @@ public class Main {
     private static MenuItem MI_AUTHOR;
     
     /**
+     * A kliens alkalmazást elindító menüelem, ami inaktív, míg fut a kliens alkalmazás.
+     */
+    private static MenuItem MI_RUN_CONTROLLER;
+    
+    /**
      * A Natív Interfész bezárásakor lefutó eseményfigyelő, ami a rendszerikont újrainicializálja AWT alapokon.
      */
     private static final NativeInterfaceAdapter NI_LISTENER = new NativeInterfaceAdapter() {
@@ -84,6 +96,35 @@ public class Main {
             setSystemTrayIcon();
         }
         
+    };
+    
+    /**
+     * A forrásfájlra mutató objektum.
+     */
+    private static final File SRC_FILE = Folders.getSourceFile();
+    
+    /**
+     * Megadja, hogy jar-ból fut-e az alkalmazás.
+     */
+    private static final boolean IN_JAR = SRC_FILE.getName().endsWith("jar");
+    
+    /**
+     * A vezérlő program jar-ból való indításának paramétereit tartalmazza.
+     */
+    private static final List<String> CTRL_ARGS = new ArrayList<String>() {
+        {
+            add("java");
+            if (OSUtils.isOS(OSUtils.OS.MAC)) {
+                add("-Xdock:name=\"Mobile-RC\"");
+//                add("-Duser.dir=\"" + R.getUserDataFolderPath() + "\"");
+                if (OSUtils.startedOnFirstThread(org.dyndns.fzoli.rccar.Main.class)) {
+                    add("-XstartOnFirstThread");
+                }
+            }
+            add("-jar");
+            add(SRC_FILE.getAbsolutePath());
+            add("client");
+        }
     };
     
     /**
@@ -139,9 +180,47 @@ public class Main {
                 
             });
             
-            // szeparátor hozzáadása a menühöz
+            // szeparátor hozzáadása a menühöz, alkalmazásindító blokk jön
             SystemTrayIcon.addMenuSeparator();
+            
+            // megadja, hogy engedélyezett-e a vezérlő kliens indítása
+            boolean runControllerEnabled = true;
+            if (MI_RUN_CONTROLLER != null) runControllerEnabled = MI_RUN_CONTROLLER.isEnabled();
+            
+            // vezérlő klienst indító menüelem inicializálása
+            MI_RUN_CONTROLLER = SystemTrayIcon.addMenuItem(getString("run_controller"), org.dyndns.fzoli.rccar.controller.resource.R.getSmallIconImage(), new Runnable() {
 
+                @Override
+                public void run() {
+                    if (IN_JAR) {
+                        MI_RUN_CONTROLLER.setEnabled(false); // a program indulása előtt opció letiltása
+                        final ProcessBuilder builder = new ProcessBuilder(CTRL_ARGS); // kliens-process létrehozó létrehozása
+                        new Thread(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                try {
+                                    final Process p = builder.start(); // process indítása
+                                    p.waitFor(); // új szálban várakozik, míg fut a kliens-process (így a GUI továbbra is válaszolni tud az eseményekre)
+                                }
+                                catch (Exception ex) {
+                                    ex.printStackTrace(); // segítség tesztelés idejére
+                                }
+                                MI_RUN_CONTROLLER.setEnabled(true); // ha befejeződött a process, opció engedélyezése, hogy újra el lehessen indítani
+                            }
+
+                        }).start();
+                    }
+                }
+                
+            });
+            
+            // csak akkor van engedélyezve a kliens futtatása, ha jar-ból fut a program és ha volt az előző menu item, engedélyezve volt
+            MI_RUN_CONTROLLER.setEnabled(IN_JAR && runControllerEnabled);
+            
+            // szeparátor hozzáadása a menühöz, alkalmazásbezáró blokk jön
+            SystemTrayIcon.addMenuSeparator();
+            
             // szerző opció hozzáadása
             MI_AUTHOR = SystemTrayIcon.addMenuItem(getString("author"), R.getQuestionImage(), new Runnable() {
 
@@ -271,11 +350,13 @@ public class Main {
                 CONFIG.setPassword(showPasswordInput(R.getBridgeImage(), false, true).getPassword());
                 return createServerSocket(++count);
             }
+            MI_RUN_CONTROLLER.setEnabled(false);
             alert(VAL_ERROR, getString("msg_cert_error"), System.err);
             System.exit(1);
             return null;
         }
         catch(Exception ex) {
+            MI_RUN_CONTROLLER.setEnabled(false);
             alert(VAL_ERROR, getString("msg_port_error") + ": " + CONFIG.getPort() + LS + getString("msg_os") + ": " + ex.getMessage(), System.err);
             System.exit(1);
             return null;

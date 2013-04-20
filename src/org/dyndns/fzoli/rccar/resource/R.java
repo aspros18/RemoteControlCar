@@ -10,6 +10,7 @@ import javax.swing.ImageIcon;
 import org.dyndns.fzoli.ui.LookAndFeelIcon;
 import org.dyndns.fzoli.util.Folders;
 import org.dyndns.fzoli.util.OSUtils;
+import org.imgscalr.Scalr;
 
 /**
  * A Híd és a vezérlő közös erőforráskezelő osztálya.
@@ -21,6 +22,15 @@ public class R {
      * Az egyszer már betöltött képek referenciáit tárolja.
      */
     private static final Map<String, BufferedImage> IMAGES = new HashMap<String, BufferedImage>();
+    
+    /**
+     * A megadott képet a megadott szélességűre méretezi át.
+     * @param img az átméretezendő kép
+     * @param width a szélesség pixelben megadva
+     */
+    public static BufferedImage resize(BufferedImage img, int width) {
+        return Scalr.resize(img, Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_TO_WIDTH, width, Scalr.OP_ANTIALIAS);
+    }
     
     /**
      * Megadja a Mobile-RC alkalmazás felhasználói könyvtárának a helyét.

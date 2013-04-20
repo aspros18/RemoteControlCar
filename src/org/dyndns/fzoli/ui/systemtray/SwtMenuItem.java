@@ -15,6 +15,11 @@ class SwtMenuItem implements MenuItem {
     }
 
     @Override
+    public boolean isEnabled() {
+        return ITEM.isEnabled();
+    }
+
+    @Override
     public void setEnabled(boolean enabled) {
         ITEM.setEnabled(enabled);
     }

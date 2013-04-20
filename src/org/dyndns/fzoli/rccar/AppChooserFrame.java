@@ -14,7 +14,6 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import static org.dyndns.fzoli.rccar.Main.res;
 import org.dyndns.fzoli.rccar.resource.R;
-import org.imgscalr.Scalr;
 
 /**
  * Alkalmazásválasztó ablak.
@@ -54,7 +53,7 @@ public class AppChooserFrame extends JFrame {
         class AppButton extends JButton { // az alkalmazásindító gombok osztálya
             
             public AppButton(String text, BufferedImage imgIcon, final String app) {
-                super(text, new ImageIcon(Scalr.resize(imgIcon, Scalr.Method.ULTRA_QUALITY, Scalr.Mode.AUTOMATIC, 64, Scalr.OP_ANTIALIAS))); // 64x64 méretű kép használata
+                super(text, new ImageIcon(R.resize(imgIcon, 64))); // 64x64 méretű kép használata
                 setHorizontalTextPosition(SwingConstants.CENTER); // a gombfelirat a gomb közepére és ...
                 setVerticalTextPosition(SwingConstants.BOTTOM); // ... a kép alá kerül
                 addActionListener(new ActionListener() {

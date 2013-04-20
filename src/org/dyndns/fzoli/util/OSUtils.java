@@ -8,6 +8,7 @@ import com.sun.jna.win32.W32APITypeMapper;
 import java.awt.Toolkit;
 import java.io.File;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -143,6 +144,32 @@ public class OSUtils {
     public static boolean isOS(OS os) {
         if (os == null) return false;
         return System.getProperty("os.name").toLowerCase().contains(os.NAME.toLowerCase());
+    }
+    
+    /**
+     * Mac rendszeren megadja, hogy az alkalmazás az első szálból lett-e indítva.
+     * Alapötlet: http://stackoverflow.com/a/15229307
+     * @param mainClass az alkalmazást indító osztály, amiben a main metódus van
+     */
+    public static boolean startedOnFirstThread(Class mainClass) {
+        String pid = null;
+        if (mainClass == null) return false;
+        Map<String, String> envs = System.getenv();
+        Iterator<Map.Entry<String, String>> it = envs.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, String> e = it.next();
+            if (e.getKey().startsWith("JAVA_MAIN_CLASS_")) {
+                if (e.getValue().contains(mainClass.getName())) {
+                    pid = e.getKey().substring(16);
+                    break;
+                }
+            }
+        }
+        if (pid != null) {
+            String val = envs.get("JAVA_STARTED_ON_FIRST_THREAD_" + pid);
+            if (val != null && val.equals("1")) return true;
+        }
+        return false;
     }
     
 }

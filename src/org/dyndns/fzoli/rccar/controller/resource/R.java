@@ -19,6 +19,14 @@ public class R extends org.dyndns.fzoli.rccar.resource.R {
     }
     
     /**
+     * A program ikonjának képét adja vissza kicsinyítve menüsorra.
+     * @throws RuntimeException ha a forrás fájl nem található
+     */
+    public static BufferedImage getSmallIconImage() {
+        return resize(getIconImage(), 16);
+    }
+    
+    /**
      * Indikátor animációt készít.
      * @throws RuntimeException ha a forrás fájl nem található
      */

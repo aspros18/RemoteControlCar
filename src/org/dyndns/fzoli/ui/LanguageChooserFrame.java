@@ -198,7 +198,7 @@ public abstract class LanguageChooserFrame extends JFrame {
         // felület inicializálása
         setIconImage(icon);
         setLayout(new GridBagLayout());
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(HIDE_ON_CLOSE);
         GridBagConstraints c = new GridBagConstraints();
         c.weightx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;

@@ -588,7 +588,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
                 int answer = OptionPane.showYesNoDialog(ConfigEditorFrame.this, getString("reconnect_ask"), getString("reconnect"));
                 if (answer == 0) Main.reconnect();
             }
-            dispose();
+            setVisible(false);
         }
         else {
             OptionPane.showWarningDialog(R.getIconImage(), getString("saveError"), getString("warning"));
@@ -605,7 +605,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
         if (!previousConfig.getLanguage().equals(CONFIG.getLanguage())) {
             Main.setLanguage(previousConfig.getLanguage());
         }
-        dispose();
+        setVisible(false);
     }
     
     /**
@@ -680,12 +680,14 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
      * Megjeleníti vagy elrejti az ablakot.
      * Ha megjelenést kértek, előtérbe kerül az ablak.
      * A konfiguráció frissül az ablak megjelenésekor.
+     * Az ablak elrejtése után elindul a kliens, ha elindítható és még nem fut.
      */
     @Override
     public void setVisible(boolean b) {
         if (b && !isVisible()) loadConfig();
         if (b) toFront();
         super.setVisible(b);
+        if (!b) runClient(true);
     }
 
     /**
@@ -737,15 +739,6 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
         return true;
     }
 
-    /**
-     * Bezárja az ablakot és elindítja a programot.
-     */
-    @Override
-    public void dispose() {
-        super.dispose();
-        runClient(true);
-    }
-    
     /**
      * Az ablak bezárásakor ha módosult a konfiguráció és nincs mentve,
      * megkérdi, akarja-e menteni, egyébként biztos, hogy nincs mentés.

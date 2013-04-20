@@ -1,0 +1,19 @@
+zoli@NB-FZoli:~/NetBeansProjects/RemoteControlCar$ pstree | grep java
+     |-bash---java---29*[{java}]     <-- NetBeans
+     |-eclipse---java---11*[{java}]  <-- Eclipse
+     |-java---61*[{java}]            <-- Vuze
+zoli@NB-FZoli:~/NetBeansProjects/RemoteControlCar$ pstree | grep java
+     |-bash---java---29*[{java}]                          <-- NetBeans
+     |-eclipse---java---11*[{java}]                       <-- Eclipse
+     |-gnome-terminal-+-bash---java-+-java---13*[{java}]  <-- konzolból indítva a szerver
+     |                |             `-21*[{java}]         <-- a szerver natív interfésze
+     |-java---61*[{java}]                                 <-- Vuze
+zoli@NB-FZoli:~/NetBeansProjects/RemoteControlCar$ pstree | grep java
+     |-bash---java---29*[{java}]                                 <-- NetBeans
+     |-eclipse---java---11*[{java}]                              <-- Eclipse
+     |-gnome-terminal-+-bash---java-+-java---12*[{java}]         <-- a konzolból indított szerver
+     |                |             |-java-+-java---13*[{java}]  <-- a szerver által indított kliens
+     |                |             |      `-22*[{java}]         <-- a kliens natív interfésze
+     |                |             `-23*[{java}]                <-- a szerver natív interfésze
+     |-java---60*[{java}]                                        <-- Vuze
+

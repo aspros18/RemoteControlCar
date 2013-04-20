@@ -181,45 +181,50 @@ public class Main {
                 
             });
             
-            // szeparátor hozzáadása a menühöz, alkalmazásindító blokk jön
-            SystemTrayIcon.addMenuSeparator();
+            // Az alkalmazásindító opció csak Mac-en látható
+            if (OSUtils.isOS(OSUtils.OS.MAC)) {
             
-            // megadja, hogy engedélyezett-e a vezérlő kliens indítása
-            boolean runControllerEnabled = true;
-            if (MI_RUN_CONTROLLER != null) runControllerEnabled = MI_RUN_CONTROLLER.isEnabled();
-            
-            // vezérlő klienst indító menüelem inicializálása
-            MI_RUN_CONTROLLER = SystemTrayIcon.addMenuItem(getString("run_controller"), org.dyndns.fzoli.rccar.controller.resource.R.getSmallIconImage(), new Runnable() {
+                // szeparátor hozzáadása a menühöz, alkalmazásindító blokk jön
+                SystemTrayIcon.addMenuSeparator();
 
-                @Override
-                public void run() {
-                    if (IN_JAR) {
-                        MI_RUN_CONTROLLER.setEnabled(false); // a program indulása előtt opció letiltása
-                        final ProcessBuilder builder = new ProcessBuilder(CTRL_ARGS); // kliens-process létrehozó létrehozása
-                        new Thread(new Runnable() {
+                // megadja, hogy engedélyezett-e a vezérlő kliens indítása
+                boolean runControllerEnabled = true;
+                if (MI_RUN_CONTROLLER != null) runControllerEnabled = MI_RUN_CONTROLLER.isEnabled();
 
-                            @Override
-                            public void run() {
-                                try {
-                                    final Process p = builder.start(); // process indítása
-                                    p.waitFor(); // új szálban várakozik, míg fut a kliens-process (így a GUI továbbra is válaszolni tud az eseményekre)
+                // vezérlő klienst indító menüelem inicializálása
+                MI_RUN_CONTROLLER = SystemTrayIcon.addMenuItem(getString("run_controller"), org.dyndns.fzoli.rccar.controller.resource.R.getSmallIconImage(), new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (IN_JAR) {
+                            MI_RUN_CONTROLLER.setEnabled(false); // a program indulása előtt opció letiltása
+                            final ProcessBuilder builder = new ProcessBuilder(CTRL_ARGS); // kliens-process létrehozó létrehozása
+                            new Thread(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    try {
+                                        final Process p = builder.start(); // process indítása
+                                        p.waitFor(); // új szálban várakozik, míg fut a kliens-process (így a GUI továbbra is válaszolni tud az eseményekre)
+                                    }
+                                    catch (Exception ex) {
+                                        ex.printStackTrace(); // segítség tesztelés idejére
+                                    }
+                                    MI_RUN_CONTROLLER.setEnabled(true); // ha befejeződött a process, opció engedélyezése, hogy újra el lehessen indítani
                                 }
-                                catch (Exception ex) {
-                                    ex.printStackTrace(); // segítség tesztelés idejére
-                                }
-                                MI_RUN_CONTROLLER.setEnabled(true); // ha befejeződött a process, opció engedélyezése, hogy újra el lehessen indítani
-                            }
 
-                        }).start();
+                            }).start();
+                        }
                     }
-                }
-                
-            });
+
+                });
+
+                // csak akkor van engedélyezve a kliens futtatása, ha jar-ból fut a program, valamint ha volt előző menu item, az is engedélyezve volt
+                MI_RUN_CONTROLLER.setEnabled(IN_JAR && runControllerEnabled);
             
-            // csak akkor van engedélyezve a kliens futtatása, ha jar-ból fut a program és ha volt az előző menu item, engedélyezve volt
-            MI_RUN_CONTROLLER.setEnabled(IN_JAR && runControllerEnabled);
+            }
             
-            // szeparátor hozzáadása a menühöz, alkalmazásbezáró blokk jön
+            // szeparátor hozzáadása a menühöz, alkalmazás-leállító blokk jön
             SystemTrayIcon.addMenuSeparator();
             
             // szerző opció hozzáadása

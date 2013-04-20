@@ -98,8 +98,9 @@ public class Main {
     
     /**
      * A forrásfájlra mutató objektum.
+     * Ha nem sikerült lekérni, a jelenlegi könyvtár, csak hogy ne legyen null.
      */
-    private static final File SRC_FILE = Folders.getSourceFile();
+    private static final File SRC_FILE = Folders.getSourceFile() == null ? new File(".") : Folders.getSourceFile();
     
     /**
      * Megadja, hogy jar-ból fut-e az alkalmazás.
@@ -115,16 +116,21 @@ public class Main {
      */
     private static final List<String> CTRL_ARGS = new ArrayList<String>() {
         {
-            add("java");
-            if (OSUtils.isOS(OSUtils.OS.MAC)) {
-                add("-Xdock:name=\"Mobile-RC\"");
-                if (OSUtils.startedOnFirstThread(org.dyndns.fzoli.rccar.Main.class)) {
+            if (IN_JAR) { // csak akkor indítható a kliens program, ha jar-ból fut a szerver
+                add("java"); // az alkalmazás, amit indít: java
+                if (OSUtils.isOS(OSUtils.OS.MAC)) { // Mac alatt a JarBundler helyettesítése paraméterekkel
+                    // az első szálból indul az alkalmazás
                     add("-XstartOnFirstThread");
+                    // beszédes név megadása a processnek
+                    add("-Xdock:name=Mobile-RC Client");
+                    // feltételezés, hogy a JarBundler által készült alkalmazáskönyvtárból fut a program és az ikon beállítható
+                    // ha az ikon nem található, kezdetben az alapértelmezés látható pár másodpercre, végül a kódból beállítódik
+                    add("-Xdock:icon=" + new File(Folders.getSourceDir().getParentFile(), "controller.icns").getAbsolutePath());
                 }
+                add("-jar"); // közli a Javaval, hogy jar fájlt kell indítania
+                add(SRC_FILE.getAbsolutePath()); // a jar fájl helye
+                add("client"); // paraméter megadása a jar main metódusának, hogy a kliens induljon el
             }
-            add("-jar");
-            add(SRC_FILE.getAbsolutePath());
-            add("client");
         }
     };
     

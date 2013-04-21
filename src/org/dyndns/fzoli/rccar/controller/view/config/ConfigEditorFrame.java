@@ -694,7 +694,13 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     @Override
     public void setVisible(boolean b) {
         if (b && !isVisible()) loadConfig();
-        if (b) toFront();
+        if (b) {
+            toFront();
+        }
+        else {
+            DIALOG_HELP.setVisible(false);
+            BT_HELP.setEnabled(true);
+        }
         super.setVisible(b);
         if (!b) runClient(true);
     }

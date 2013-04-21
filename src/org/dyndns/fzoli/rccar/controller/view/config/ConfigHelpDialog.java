@@ -40,7 +40,7 @@ public class ConfigHelpDialog extends JDialog implements RelocalizableWindow {
     public ConfigHelpDialog(Window owner) {
         super(owner, getString("help")); // szülő és címsor szöveg beállítása
         setDefaultCloseOperation(HIDE_ON_CLOSE); // bezáráskor elrejtődés
-        setModalityType(ModalityType.APPLICATION_MODAL); // modális dialógus
+        setModalityType(ModalityType.MODELESS); // nem modális dialógus
         
         taHelp.setOpaque(true); // ne legyen átlátszó
         taHelp.setBackground(Color.WHITE); // fehér háttérszín

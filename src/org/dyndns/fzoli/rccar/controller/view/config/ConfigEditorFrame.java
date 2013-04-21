@@ -307,8 +307,17 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    BT_HELP.setEnabled(false);
                     DIALOG_HELP.setLocationRelativeTo(ConfigEditorFrame.this);
                     DIALOG_HELP.setVisible(true);
+                }
+                
+            });
+            DIALOG_HELP.addWindowListener(new WindowAdapter() {
+
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    BT_HELP.setEnabled(true);
                 }
                 
             });

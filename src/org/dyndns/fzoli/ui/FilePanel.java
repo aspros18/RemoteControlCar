@@ -70,10 +70,12 @@ public class FilePanel extends JPanel {
      * az utolsó kiválasztott fájl könyvtárából indul a keresés.
      */
     private final ActionListener alSearch = new ActionListener() {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             JFileChooser fc = new JFileChooser();
+            String openText = UIManager.getString("FileChooser.openDialogTitleText");
+            fc.setDialogTitle(openText == null ? "Open" : openText);
             fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
             fc.setAcceptAllFileFilterUsed(fileFilter == null);
             fc.setMultiSelectionEnabled(false);

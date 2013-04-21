@@ -548,11 +548,11 @@ public class Main {
                 };
                 PROGRESS_FRAME = new ConnectionProgressFrame(CALLBACK_EXIT);
                 CONFIG_EDITOR = new ConfigEditorFrame(CONFIG, WL_CFG);
-                SELECTION_FRAME = new HostSelectionFrame(AL_EXIT);
                 if (!CONFIG.isCorrect()) { // ha a tanúsítvány fájlok egyike nem létezik
                     showSettingError(getString("warn_config_error1" + (CONFIG.isDefault() ? 'b' : 'a')) + ' ' + getString("warn_config_error2") + LS + getString("warn_config_error3"));
                     showSettingFrame(true, 1); // kényszerített beállítás és tanúsítvány lapfül előtérbe hozása
                 }
+                SELECTION_FRAME = new HostSelectionFrame(AL_EXIT);
                 CONTROLLER_WINDOWS = new ControllerWindows();
                 if (CONFIG.isCorrect()) { // ha a konfiguráció megfelelő, kliens indítása
                     configAlert(true); // súgó figyelmeztetés, ha kell

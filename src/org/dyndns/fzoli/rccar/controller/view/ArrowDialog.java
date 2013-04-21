@@ -45,6 +45,7 @@ import org.dyndns.fzoli.rccar.controller.ControllerWindows.WindowType;
 import static org.dyndns.fzoli.rccar.controller.Main.getString;
 import org.dyndns.fzoli.rccar.model.Control;
 import org.dyndns.fzoli.ui.RepeatingReleasedEventsFixer;
+import org.dyndns.fzoli.util.OSUtils;
 
 /**
  * A vezérlőpanel rétege.
@@ -767,7 +768,9 @@ abstract class ArrowPanel extends JPanel {
 public class ArrowDialog extends AbstractDialog {
     
     static {
-        RepeatingReleasedEventsFixer.install(); // Linux bill. eseményjelzés javítása
+        if (OSUtils.isOS(OSUtils.OS.LINUX)) {
+            RepeatingReleasedEventsFixer.install(); // Linux bill. eseményjelzés javítása
+        }
     }
     
     private final ArrowPanel ARROW_PANEL = new ArrowPanel(200) {

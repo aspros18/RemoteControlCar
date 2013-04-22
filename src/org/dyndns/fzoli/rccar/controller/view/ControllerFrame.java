@@ -47,6 +47,7 @@ import org.dyndns.fzoli.rccar.model.controller.HostState;
 import org.dyndns.fzoli.ui.LookAndFeelIcon;
 import org.dyndns.fzoli.ui.OptionPane;
 import org.dyndns.fzoli.ui.RoundedPanel;
+import org.dyndns.fzoli.util.OSUtils;
 import org.imgscalr.Scalr;
 
 /**
@@ -335,10 +336,12 @@ public class ControllerFrame extends JFrame implements RelocalizableWindow {
              * járműválasztó ablakot újra.
              * Ha a jármű offline, megkérdi, hogy biztos-e a kilépésben a felhasználó,
              * mivel a kilépés visszavonhatatlan művelet (legalábbis addig, míg offline a jármű).
+             * Mac-en nem teszi fel a kérdést, egyből kilép, mivel a dialógusablakok
+             * nem mindig kerülnek előtérbe és zavaróak.
              */
             @Override
             public void windowClosing(WindowEvent e) {
-                if (getData().isConnected() !=null && !getData().isConnected()) {
+                if (getData().isConnected() != null && !getData().isConnected() && !OSUtils.isOS(OSUtils.OS.MAC)) {
                     int answer = OptionPane.showYesNoDialog(ControllerFrame.this, getString("leave_vehicle_msg1") + "\n" + getString("leave_vehicle_msg2") + "\n\n" + getString("leave_vehicle_msg3"), getString("leave_vehicle"));
                     if (answer == 1) return;
                 }

@@ -73,10 +73,12 @@ public class Main {
          * A program azonnal végetér, ha nincs kiépítve kapcsolat,
          * egyébként megkérdezi a felhasználót, hogy biztos ki akar-e lépni
          * és csak akkor lép ki, ha Igen a válasza.
+         * Mac-en nem teszi fel a kérdést, egyből kilép, mivel a dialógusablakok
+         * nem mindig kerülnek előtérbe és zavaróak.
          */
         @Override
         public void run() {
-            if (CONN.isConnected()) { // ha van kiépített kapcsolat
+            if (CONN.isConnected() && !OSUtils.isOS(OSUtils.OS.MAC)) { // ha van kiépített kapcsolat
                 // megkérdi, biztos-e a kilépésben
                 int opt = OptionPane.showYesNoDialog(SELECTION_FRAME, getString("confirm_exit"), getString("confirmation"));
                 // ha igen, akkor a program kilép
@@ -252,7 +254,7 @@ public class Main {
             SystemTrayIcon.addMenuSeparator();
 
             // szerző opció hozzáadása
-            MI_AUTHOR = SystemTrayIcon.addMenuItem(getString("author"), R.getQuestionImage(), new Runnable() {
+            if (!OSUtils.isOS(OSUtils.OS.MAC)) MI_AUTHOR = SystemTrayIcon.addMenuItem(getString("author"), R.getQuestionImage(), new Runnable() {
 
                 @Override
                 public void run() {

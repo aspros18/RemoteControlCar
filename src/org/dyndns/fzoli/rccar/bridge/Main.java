@@ -30,6 +30,7 @@ import org.dyndns.fzoli.ui.systemtray.SystemTrayIcon;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 import static org.dyndns.fzoli.util.OSUtils.setApplicationName;
 import org.dyndns.fzoli.ui.systemtray.MenuItem;
+import org.dyndns.fzoli.ui.systemtray.MenuItemReference;
 import org.dyndns.fzoli.util.Folders;
 import static org.dyndns.fzoli.util.MacApplication.setDockIcon;
 import org.dyndns.fzoli.util.OSUtils;
@@ -73,7 +74,7 @@ public class Main {
     /**
      * A szerző dialógust megjelenítő menüelem, ami inaktív, míg a dialógus látható.
      */
-    private static MenuItem MI_AUTHOR;
+    private static MenuItem MI_ABOUT;
     
     /**
      * A kliens alkalmazást elindító menüelem, ami inaktív, míg fut a kliens alkalmazás.
@@ -233,15 +234,32 @@ public class Main {
             // szeparátor hozzáadása a menühöz, alkalmazás-leállító blokk jön
             SystemTrayIcon.addMenuSeparator();
             
-            // szerző opció hozzáadása
-            MI_AUTHOR = SystemTrayIcon.addMenuItem(getString("author"), R.getQuestionImage(), new Runnable() {
+            // megadja, hogy engedélyezett-e a névjegy megjelenítése
+            boolean showAboutEnabled = true;
+            if (MI_ABOUT != null) showAboutEnabled = MI_ABOUT.isEnabled();
+            
+            // az aktuális névjegy-megjelenítő opció referenciáját adja meg
+            final MenuItemReference mirAuthor = new MenuItemReference() {
+
+                @Override
+                public synchronized MenuItem getMenuItem() {
+                    return MI_ABOUT;
+                }
+
+            };
+            
+            // névjegy opció hozzáadása
+            MI_ABOUT = SystemTrayIcon.addMenuItem(getString("about"), R.getQuestionImage(), new Runnable() {
 
                 @Override
                 public void run() {
-                    UIUtil.showAuthorDialog(MI_AUTHOR, R.getBridgeImage());
+                    UIUtil.showAuthorDialog(mirAuthor, R.getBridgeImage());
                 }
                 
             });
+            
+            // csak egyetlen névjegy ablak lehet látható egyazon időben
+            MI_ABOUT.setEnabled(showAboutEnabled);
             
             // kilépés opció hozzáadása
             SystemTrayIcon.addMenuItem(getString("exit"), R.getExitImage(), new Runnable() {

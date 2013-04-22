@@ -5,16 +5,19 @@ import chrriis.dj.nativeswing.swtimpl.NativeInterfaceListener;
 import chrriis.dj.nativeswing.swtimpl.components.core.NativeTray;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import javax.swing.JOptionPane;
 import static javax.swing.UIManager.getString;
 import static javax.swing.UIManager.put;
 import org.dyndns.fzoli.ui.FilePanel;
 import org.dyndns.fzoli.ui.OptionPane;
 import org.dyndns.fzoli.ui.systemtray.MenuItem;
+import org.dyndns.fzoli.ui.systemtray.MenuItemReference;
 
 /**
  * Általános UI metódusok, amik kellhetnek több helyen is.
@@ -37,7 +40,8 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
      */
     public static final String KEY_CERT_LOAD_ERROR = "MobileRC.certLoadError",
                                KEY_CERT_ENTER_PASSWORD = "MobileRC.certEnterPassword",
-                               KEY_AUTHOR = "MobileRC.author", KEY_NEPTUN_ID = "MobileRC.neptunId";
+                               KEY_ABOUT = "MobileRC.about", KEY_AUTHOR = "MobileRC.author",
+                               KEY_NEPTUN_ID = "MobileRC.neptunId";
     
     /**
      * Az alapértelmezett szövegek beállítása.
@@ -47,6 +51,7 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
         init(KEY_CERT_ENTER_PASSWORD, "Enter the password of the certification:");
         init(KEY_NEPTUN_ID, "Neptun id");
         init(KEY_AUTHOR, "Author");
+        init(KEY_ABOUT, "About");
     }
     
     /**
@@ -65,7 +70,12 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
                         return lng.getObject(key);
                     }
                     catch (Exception ex) {
-                        return def.getObject(key);
+                        try {
+                            return def.getObject(key);
+                        }
+                        catch (Exception e) {
+                            return null;
+                        }
                     }
                 }
 
@@ -89,6 +99,7 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
      */
     public static ResourceBundle createResource(String baseName, Locale locale, boolean fileChooser) {
         ResourceBundle res = createResource(baseName, locale);
+        put(UIUtil.KEY_ABOUT, res.getString("about"));
         put(UIUtil.KEY_AUTHOR, res.getString("author"));
         put(UIUtil.KEY_NEPTUN_ID, res.getString("neptun_id"));
         put(UIUtil.KEY_CERT_LOAD_ERROR, res.getString("cert_load_error"));
@@ -119,10 +130,28 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
      * @param mi a menüelem, amire kattintva ez a metódus meghívódott
      * @param icon a dialógus ikonja
      */
-    public static void showAuthorDialog(MenuItem mi, Image icon) {
-        mi.setEnabled(false);
-        OptionPane.showMessageDialog(icon, getString(KEY_AUTHOR) + ": Farkas Zoltán\n" + getString(KEY_NEPTUN_ID)+": DZ54IQ", getString(KEY_AUTHOR), JOptionPane.INFORMATION_MESSAGE, true);
-        mi.setEnabled(true);
+    public static void showAuthorDialog(final MenuItemReference mi, BufferedImage icon) {
+        if (GraphicsEnvironment.isHeadless()) return;
+        AboutFrame aboutFrame = new AboutFrame(icon);
+        aboutFrame.addWindowListener(new WindowAdapter() {
+
+            @Override
+            public void windowOpened(WindowEvent e) {
+                mi.getMenuItem().setEnabled(false);
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                mi.getMenuItem().setEnabled(true);
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                mi.getMenuItem().setEnabled(true);
+            }
+            
+        });
+        aboutFrame.setVisible(true);
     }
     
     /**

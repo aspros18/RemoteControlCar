@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Locale;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.resource.MD5Checksum;
@@ -116,6 +117,30 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
     private Config() {
     }
 
+    /**
+     * Megadja, hogy az ideiglenes információk megjelenítésére szükség van-e a program indulásakor.
+     * Jelenleg csak Mac alatt használatos.
+     * @return két naponként tér vissza igazzal
+     */
+    public boolean needInfo() {
+        boolean b = true;
+        try {
+            if (!ROOT.isDirectory()) ROOT.mkdirs();
+            File f = new File(ROOT, "info-state");
+            if (f.isFile()) {
+                b = new Date().getTime() - f.lastModified() >= 172800000;
+            }
+            if (b) {
+                f.delete();
+                f.createNewFile();
+            }
+        }
+        catch (Exception ex) {
+            ;
+        }
+        return b;
+    }
+    
     /**
      * Megadja, hogy a tanúsítványfájlok le lettek-e cserélve,
      * mert a felhasználói beállítások helytelen útvonalra mutatnak.

@@ -36,6 +36,7 @@ import static org.dyndns.fzoli.ui.systemtray.SystemTrayIcon.showMessage;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 import static org.dyndns.fzoli.util.OSUtils.setApplicationName;
 import org.dyndns.fzoli.ui.systemtray.MenuItem;
+import org.dyndns.fzoli.ui.systemtray.MenuItemReference;
 import static org.dyndns.fzoli.util.MacApplication.setDockIcon;
 import org.dyndns.fzoli.util.OSUtils;
 
@@ -183,7 +184,7 @@ public class Main {
      * A szerző dialógust megjelenítő menüelem, ami inaktív,
      * míg a dialógus látható.
      */
-    private static MenuItem MI_AUTHOR;
+    private static MenuItem MI_ABOUT;
     
     /**
      * Újrakapcsolódás menüopció.
@@ -253,15 +254,32 @@ public class Main {
             //szeparátor hozzáadása
             SystemTrayIcon.addMenuSeparator();
 
-            // szerző opció hozzáadása
-            if (!OSUtils.isOS(OSUtils.OS.MAC)) MI_AUTHOR = SystemTrayIcon.addMenuItem(getString("author"), R.getQuestionImage(), new Runnable() {
+            // megadja, hogy engedélyezett-e a névjegy megjelenítése
+            boolean showAboutEnabled = true;
+            if (MI_ABOUT != null) showAboutEnabled = MI_ABOUT.isEnabled();
+
+            // az aktuális névjegy-megjelenítő opció referenciáját adja meg
+            final MenuItemReference mirAuthor = new MenuItemReference() {
+
+                @Override
+                public synchronized MenuItem getMenuItem() {
+                    return MI_ABOUT;
+                }
+
+            };
+
+            // névjegy opció hozzáadása
+            MI_ABOUT = SystemTrayIcon.addMenuItem(getString("about"), R.getQuestionImage(), new Runnable() {
 
                 @Override
                 public void run() {
-                    UIUtil.showAuthorDialog(MI_AUTHOR, R.getIconImage());
+                    UIUtil.showAuthorDialog(mirAuthor, R.getIconImage());
                 }
-                
+
             });
+
+            // csak egyetlen névjegy ablak lehet látható egyazon időben
+            MI_ABOUT.setEnabled(showAboutEnabled);
             
             // kilépés opció hozzáadása
             SystemTrayIcon.addMenuItem(getString("exit"), R.getExitImage(), CALLBACK_EXIT);
@@ -480,10 +498,7 @@ public class Main {
     public static void setLanguage(Locale l) {
         if (CONFIG.getLanguage().equals(l)) return;
         STRINGS = createResource(l);
-        CONFIG_EDITOR.relocalize();
-        PROGRESS_FRAME.relocalize();
-        SELECTION_FRAME.relocalize();
-        CONTROLLER_WINDOWS.relocalize();
+        LanguageChooserFrame.relocalizeWindows();
         setSystemTrayIcon();
         synchronized (CONFIG) {
             CONFIG.setLanguage(l);
@@ -536,9 +551,11 @@ public class Main {
                     System.exit(1);
                 }
                 
-                // előinicializálom az ablakokat, míg a nyitóképernyő fent van,
-                // hogy később ne menjen el ezzel a hasznos idő
-                // a nyelvkiválasztó ablakkal kezdem, mivel a konfig-szerkesztő ablak használja a referenciáját
+                // Előinicializálom az ablakokat, míg a nyitóképernyő fent van,
+                // hogy később ne menjen el ezzel a hasznos idő.
+                // A nyelvkiválasztó ablakkal kezdem, mivel a konfig-szerkesztő
+                // ablak használja a referenciáját.
+                
                 LNG_FRAME = new LanguageChooserFrame(R.getIconImage(), "org.dyndns.fzoli.rccar.l10n", "controller", CONFIG.getLanguage(), Locale.ENGLISH, new Locale("hu")) {
 
                     /**
@@ -552,11 +569,7 @@ public class Main {
                 };
                 PROGRESS_FRAME = new ConnectionProgressFrame(CALLBACK_EXIT);
                 CONFIG_EDITOR = new ConfigEditorFrame(CONFIG, WL_CFG);
-                if (!CONFIG.isCorrect()) { // ha a tanúsítvány fájlok egyike nem létezik
-                    showSettingError(getString("warn_config_error1" + (CONFIG.isDefault() ? 'b' : 'a')) + ' ' + getString("warn_config_error2") + LS + getString("warn_config_error3"));
-                    showSettingFrame(true, 1); // kényszerített beállítás és tanúsítvány lapfül előtérbe hozása
-                }
-                else if (OSUtils.isOS(OSUtils.OS.MAC)) {
+                if (OSUtils.isOS(OSUtils.OS.MAC) && CONFIG.needInfo()) {
                     // Mac alatt az ablakok előtérbe kerülése nem mindig sikerül
                     // Figyelmeztetem a felhasználót, hogy a modális dialógusok blokkolják a felületet
                     // és ha úgy tűnik, nem válaszol a program, az ablakok elmozdításával egy háttérbe
@@ -567,6 +580,10 @@ public class Main {
                             getString("warn_testing4") + LS + LS +
                             getString("warn_testing5"), getString("warn_testing1"),
                             OptionPane.INFORMATION_MESSAGE, true);
+                }
+                if (!CONFIG.isCorrect()) { // ha a tanúsítvány fájlok egyike nem létezik
+                    showSettingError(getString("warn_config_error1" + (CONFIG.isDefault() ? 'b' : 'a')) + ' ' + getString("warn_config_error2") + LS + getString("warn_config_error3"));
+                    showSettingFrame(true, 1); // kényszerített beállítás és tanúsítvány lapfül előtérbe hozása
                 }
                 SELECTION_FRAME = new HostSelectionFrame(AL_EXIT);
                 CONTROLLER_WINDOWS = new ControllerWindows();

@@ -151,13 +151,6 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
             }
             
         });
-        Window win = null;
-        for (Window w : Window.getWindows()) {
-            if (w.isFocused()) win = w;
-        }
-        if (win != null) {
-            aboutFrame.setLocationRelativeTo(win);
-        }
         aboutFrame.setVisible(true);
     }
     

@@ -16,9 +16,10 @@ import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseEvent;
 import chrriis.dj.nativeswing.swtimpl.components.TrayItemMouseListener;
 import chrriis.dj.nativeswing.swtimpl.components.TrayMessageType;
 import chrriis.dj.nativeswing.swtimpl.components.core.NativeTray;
+import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import javax.swing.SwingUtilities;
-import org.dyndns.fzoli.rccar.controller.resource.R;
+import javax.swing.UIManager;
 
 /**
  * System Tray test.
@@ -34,12 +35,12 @@ public class Main {
             @Override
             public void run() {
                 // test images
-                RenderedImage testImage = R.getIconImage();
-                RenderedImage testImage2 = org.dyndns.fzoli.rccar.bridge.resource.R.getBridgeImage();
-                RenderedImage testImage3 = R.getImage("horn.png");
+                BufferedImage testImage1 = SafeIcon.createImage(UIManager.getIcon("FileView.computerIcon"));
+                RenderedImage testImage2 = SafeIcon.createImage(UIManager.getIcon("FileChooser.homeFolderIcon"));
+                RenderedImage testImage3 = SafeIcon.createImage(UIManager.getIcon("FileView.hardDriveIcon"));
                 
-                final JTrayItem item1 = JTray.createTrayItem(testImage, "First");
-                final JTrayItem item2 = JTray.createTrayItem(testImage, "Second");
+                final JTrayItem item1 = JTray.createTrayItem(testImage1, "First");
+                final JTrayItem item2 = JTray.createTrayItem(testImage1, "Second");
                 final JTrayItem item3 = JTray.createTrayItem();
                 
                 // initial property test

@@ -3,6 +3,7 @@ package org.dyndns.fzoli.rccar.controller;
 import chrriis.dj.nativeswing.swtimpl.NativeInterfaceAdapter;
 import org.dyndns.fzoli.rccar.SplashScreenLoader;
 import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -36,6 +37,7 @@ import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
 import static org.dyndns.fzoli.util.OSUtils.setApplicationName;
 import org.dyndns.fzoli.ui.systemtray.MenuItem;
 import static org.dyndns.fzoli.util.MacApplication.setDockIcon;
+import org.dyndns.fzoli.util.OSUtils;
 
 /**
  * A vezérlő indító osztálya.
@@ -552,8 +554,21 @@ public class Main {
                     showSettingError(getString("warn_config_error1" + (CONFIG.isDefault() ? 'b' : 'a')) + ' ' + getString("warn_config_error2") + LS + getString("warn_config_error3"));
                     showSettingFrame(true, 1); // kényszerített beállítás és tanúsítvány lapfül előtérbe hozása
                 }
+                else if (OSUtils.isOS(OSUtils.OS.MAC)) {
+                    // Mac alatt az ablakok előtérbe kerülése nem mindig sikerül
+                    // Figyelmeztetem a felhasználót, hogy a modális dialógusok blokkolják a felületet
+                    // és ha úgy tűnik, nem válaszol a program, az ablakok elmozdításával egy háttérbe
+                    // került modális dialógusablakot találhatnak. A pozícionálási hiba oka ismeretlen...
+                    OptionPane.showMessageDialog(R.getIconImage(),
+                            getString("warn_testing1") + LS + LS +
+                            getString("warn_testing2") + LS + getString("warn_testing3") + LS +
+                            getString("warn_testing4") + LS + LS +
+                            getString("warn_testing5"), getString("warn_testing1"),
+                            OptionPane.INFORMATION_MESSAGE, true);
+                }
                 SELECTION_FRAME = new HostSelectionFrame(AL_EXIT);
                 CONTROLLER_WINDOWS = new ControllerWindows();
+                Toolkit.getDefaultToolkit().sync(); // addig nem indul a kliens, míg a felület készen nem áll
                 if (CONFIG.isCorrect()) { // ha a konfiguráció megfelelő, kliens indítása
                     configAlert(true); // súgó figyelmeztetés, ha kell
                     runClient(false); // és végül a lényeg

@@ -5,6 +5,7 @@ import chrriis.dj.nativeswing.swtimpl.NativeInterfaceListener;
 import chrriis.dj.nativeswing.swtimpl.components.core.NativeTray;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -16,7 +17,6 @@ import static javax.swing.UIManager.getString;
 import static javax.swing.UIManager.put;
 import org.dyndns.fzoli.ui.FilePanel;
 import org.dyndns.fzoli.ui.OptionPane;
-import org.dyndns.fzoli.ui.systemtray.MenuItem;
 import org.dyndns.fzoli.ui.systemtray.MenuItemReference;
 
 /**
@@ -151,6 +151,13 @@ public class UIUtil extends org.dyndns.fzoli.ui.UIUtil {
             }
             
         });
+        Window win = null;
+        for (Window w : Window.getWindows()) {
+            if (w.isFocused()) win = w;
+        }
+        if (win != null) {
+            aboutFrame.setLocationRelativeTo(win);
+        }
         aboutFrame.setVisible(true);
     }
     

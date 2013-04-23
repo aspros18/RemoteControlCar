@@ -16,6 +16,17 @@ import org.dyndns.fzoli.socket.process.Process;
  */
 public abstract class AbstractServerHandler extends AbstractHandler {
 
+    /**
+     * Segédváltozó szálkezeléshez.
+     * Arra kell, hogy biztosítva legyen, hogy egy időben egyszerre
+     * csak egy Process objektum inicializálódik a szerver oldalon.
+     * (A kliens oldalon nem szükséges ennek figyelése.)
+     */
+    private static final Object INIT_LOCK = new Object();
+    
+    /**
+     * Azonosító.
+     */
     private Integer deviceId, connectionId;
     
     /**
@@ -132,48 +143,63 @@ public abstract class AbstractServerHandler extends AbstractHandler {
             // kapcsolatazonosító elkérése a klienstől
             setConnectionId(in.read());
             
-            // inicializálás és eredményközlés a kliensnek
-            runInit(out);
+            // adatfeldolgozó referencia
+            Process proc;
             
-            // eredmény fogadása a klienstől és kivételdobás hiba esetén
-            readStatus(in);
+            // egy időben egyszerre csak egy Process inicializálódhat
+            synchronized (INIT_LOCK) {
             
-            // időtúllépés eredeti állapota kikapcsolva
-            getSocket().setSoTimeout(0);
+                // inicializálás és eredményközlés a kliensnek
+                runInit(out);
+
+                // eredmény fogadása a klienstől és kivételdobás hiba esetén
+                readStatus(in);
+
+                // időtúllépés eredeti állapota kikapcsolva
+                getSocket().setSoTimeout(0);
+
+                // adatfeldolgozó kiválasztása
+                proc = selectProcess();
+
+                if (proc != null) {
+                    // jelzés, hogy kiválasztódott a Process
+                    fireProcessSelected();
+
+                    // adatfeldolgozó hozzáadása a listához
+                    getProcesses().add(proc);
+
+                }
+                else {
+                    // ha nem lett kiválasztva Process, jelzés
+                    onProcessNull();
+                }
             
-            // adatfeldolgozó kiválasztása
-            Process proc = selectProcess();
+            }
             
+            // ha sikerült az adatfeldolgozó létrehozása
             if (proc != null) {
-                // jelzés, hogy kiválasztódott a Process
-                fireProcessSelected();
-
-                // adatfeldolgozó hozzáadása a listához
-                getProcesses().add(proc);
-
                 // adatfeldolgozó futtatása
                 proc.run();
 
                 // adatfeldolgozó eltávolítása a listából
                 getProcesses().remove(proc);
             }
-            else {
-                // ha nem lett kiválasztva Process, jelzés
-                onProcessNull();
-            }
             
             // kapcsolat bezárása
             in.close();
             out.flush();
             out.close();
+            
         }
         catch (Exception ex) {
+            // nem várt hiba esetén socket bezárása...
             try {
                 getSocket().close();
             }
             catch (Exception e) {
                 ;
             }
+            // ... és esemény jelzése
             onException(ex);
         }
     }

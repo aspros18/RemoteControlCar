@@ -542,12 +542,12 @@ public class Main {
                         Config.STORE_FILE.delete(); // és törli, ha sikerült a létrehozás
                     }
                     catch (IOException ex) { // ha nem lehet létrehozni a fájlt: jogosultság gond
-                        showSettingError(getString("msg_need_dir_permission") + LS + getString("msg_exit"));
+                        showSettingError(getString("msg_need_dir_permission") + LS + getString("msg_dir_path") + ": " + Config.ROOT.getAbsolutePath() + LS + getString("msg_exit"));
                         System.exit(1);
                     }
                 }
                 if (Config.STORE_FILE.exists() && (!Config.STORE_FILE.canRead() || !Config.STORE_FILE.canWrite())) {
-                    showSettingError(getString("msg_need_cfg_permission") + LS + getString("msg_exit"));
+                    showSettingError(getString("msg_need_cfg_permission") + LS + getString("msg_file_path") + ": " + Config.STORE_FILE.getAbsolutePath() + LS + getString("msg_exit"));
                     System.exit(1);
                 }
                 

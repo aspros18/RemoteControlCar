@@ -473,7 +473,7 @@ public class Main {
         applyConfig();
         addShutdownHook();
         if (CONFIG.getFile().exists() && !CONFIG.getFile().canRead()) { // ha nincs olvasási jog a konfig fájlon
-            alert(VAL_ERROR, getString("msg_need_permission") + LS + getString("msg_exit"), System.err);
+            alert(VAL_ERROR, getString("msg_need_permission") + LS + getString("msg_file_path") + ": " + CONFIG.getFile().getAbsolutePath() + LS + getString("msg_exit"), System.err);
             System.exit(1); // hibakóddal lép ki
         }
         if (CONFIG.isCorrect()) {
@@ -503,7 +503,7 @@ public class Main {
                     out = System.out;
                     msg.append(getString("msg_conf_created1")).append(LS)
                        .append(getString("msg_conf_created2")).append(LS).append(LS)
-                       .append(getString("msg_conf_created3")).append(':').append(LS).append(CONFIG.getFile());
+                       .append(getString("msg_file_path")).append(':').append(LS).append(CONFIG.getFile());
                 }
                 else {
                     title = VAL_ERROR;
@@ -521,7 +521,7 @@ public class Main {
                 if (CONFIG.getCAFile() == null) msg.append("- ").append(getString("msg_conf_incorrect4")).append('.').append(LS);
                 if (CONFIG.getCertFile() == null) msg.append("- ").append(getString("msg_conf_incorrect5")).append('.').append(LS);
                 if (CONFIG.getKeyFile() == null) msg.append("- ").append(getString("msg_conf_incorrect6")).append('.').append(LS);
-                msg.append(LS).append(getString("msg_conf_created3")).append(':').append(LS).append(CONFIG.getFile());
+                msg.append(LS).append(getString("msg_file_path")).append(':').append(LS).append(CONFIG.getFile());
                 msg.append(LS);
                 alert(VAL_ERROR, msg.toString(), System.err);
                 System.exit(1);

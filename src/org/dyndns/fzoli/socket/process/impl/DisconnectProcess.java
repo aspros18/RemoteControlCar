@@ -171,9 +171,13 @@ abstract class DisconnectProcess extends AbstractSecureProcess {
      */
     protected final void read(InputStream in) throws Exception {
         beforeAnswer(); // olvasás előtti eseménykezelő hívása
-        in.read(); // válasz a másik oldaltól
-        setTimeoutActive(false, null); // 2. időtúllépés inaktiválása, ha kell
-        callAfterAnswer(); // olvasás utáni eseménykezelő hívása
+        if (in.read() != -1) { // válasz a másik oldaltól
+            setTimeoutActive(false, null); // 2. időtúllépés inaktiválása, ha kell
+            callAfterAnswer(); // olvasás utáni eseménykezelő hívása
+        }
+        else {
+            callOnDisconnect(new Exception("Remote host closed the connection"));
+        }
     }
     
     /**

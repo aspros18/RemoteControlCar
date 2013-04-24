@@ -75,7 +75,7 @@ class SecureHandlerUtil {
             try {
                 // ... és ha megegyező eszközazonosítóval és Common Name mezővel rendelkeznek ...
                 if (prc.getDeviceId().equals(h.getDeviceId()) && prc.getRemoteCommonName().equals(h.getRemoteCommonName())) {
-                    prc.getSocket().close(); // ... bezárja a kapcsolatukat
+                    prc.dispose(); // ... bezárja a kapcsolatukat és azonnal törli őket a nyilvántartásból
                 }
             }
             catch (Exception ex) { // ha nem sikerült bezárni a socketet, akkor már zárva volt

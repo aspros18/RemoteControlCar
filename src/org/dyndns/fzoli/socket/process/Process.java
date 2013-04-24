@@ -15,6 +15,11 @@ public interface Process extends Socketter {
     public Handler getHandler();
     
     /**
+     * A Socket bezárása és a Process törlése a nyilvántartásból.
+     */
+    public void dispose();
+    
+    /**
      * Ez a metódus indítja el az adatfeldolgozást.
      */
     @Override

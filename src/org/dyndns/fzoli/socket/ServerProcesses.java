@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.socket;
 
+import java.net.Socket;
 import java.util.List;
 import org.dyndns.fzoli.socket.process.Process;
 import org.dyndns.fzoli.socket.process.SecureProcess;
@@ -60,6 +61,15 @@ public class ServerProcesses extends Processes {
             }
         }
         return null;
+    }
+    
+    /**
+     * Megadja, hogy a szerver oldali listában benne van-e az az adatfeldoglozó,
+     * mely socket kapcsolata megegyezik a megadott socket kapcsolattal.
+     * @param socket a keresendő socket
+     */
+    public static boolean contains(Socket socket) {
+        return contains(getProcesses(), socket);
     }
     
 }

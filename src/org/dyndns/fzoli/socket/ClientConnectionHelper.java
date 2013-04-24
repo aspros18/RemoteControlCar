@@ -252,6 +252,8 @@ public abstract class ClientConnectionHelper {
     
     /**
      * A kapcsolatok bezárása.
+     * A metódus addig nem fejeződik be, míg az összes
+     * kapcsolathoz tartozó adatfeldolgozó le nem áll.
      */
     public void disconnect() {
         cancelled = true;
@@ -262,6 +264,9 @@ public abstract class ClientConnectionHelper {
                 it.remove();
                 try {
                     conn.close();
+                    while (ClientProcesses.contains(conn)) {
+                        Thread.sleep(10);
+                    }
                 }
                 catch (Exception ex) {
                     ;

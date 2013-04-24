@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.socket;
 
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -36,6 +37,20 @@ public class Processes {
             }
             return ls;
         }
+    }
+    
+    /**
+     * Megadja, hogy a listában benne van-e az az adatfeldoglozó,
+     * mely socket kapcsolata megegyezik a megadott socket kapcsolattal.
+     * @param processes a lista, melyben keres
+     * @param socket a keresendő socket
+     */
+    public static boolean contains(List<Process> processes, Socket socket) {
+        for (Process proc : processes) {
+            if (proc == null || proc.getSocket() == null) continue;
+            if (proc.getSocket() == socket) return true;
+        }
+        return false;
     }
     
 }

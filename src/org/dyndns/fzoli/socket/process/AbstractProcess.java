@@ -21,6 +21,20 @@ public abstract class AbstractProcess implements Process {
     }
     
     /**
+     * A Socket bezárása és a Process törlése a nyilvántartásból.
+     */
+    @Override
+    public void dispose() {
+        try {
+            getSocket().close();
+            getHandler().getProcesses().remove(this);
+        }
+        catch (Exception ex) {
+            ;
+        }
+    }
+    
+    /**
      * @return Kapcsolatfeldolgozó, ami létrehozta ezt az adatfeldolgozót.
      */
     @Override

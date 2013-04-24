@@ -8,6 +8,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
+import org.dyndns.fzoli.socket.process.impl.exception.RemoteHostClosedException;
 
 /**
  * Az utód osztályok a másik oldallal kiépített kapcsolatot arra használják, hogy
@@ -176,7 +177,7 @@ abstract class DisconnectProcess extends AbstractSecureProcess {
             callAfterAnswer(); // olvasás utáni eseménykezelő hívása
         }
         else {
-            callOnDisconnect(new Exception("Remote host closed the connection"));
+            callOnDisconnect(new RemoteHostClosedException());
         }
     }
     

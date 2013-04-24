@@ -3,13 +3,14 @@ package org.dyndns.fzoli.rccar.controller.socket;
 import java.io.InvalidClassException;
 import java.io.Serializable;
 import org.dyndns.fzoli.rccar.controller.ControllerModels;
-import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.rccar.controller.view.ChatDialog;
 import org.dyndns.fzoli.rccar.model.Data;
 import org.dyndns.fzoli.rccar.model.PartialData;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.impl.MessageProcess;
-import static org.dyndns.fzoli.ui.UIUtil.alert;
+import static org.dyndns.fzoli.ui.systemtray.SystemTrayIcon.showMessage;
+import static org.dyndns.fzoli.rccar.controller.Main.getString;
+import org.dyndns.fzoli.ui.systemtray.TrayIcon;
 
 /**
  * A vezérlő üzenetküldő és üzenetfogadó osztálya.
@@ -38,8 +39,8 @@ public class ControllerMessageProcess extends MessageProcess {
             throw ex;
         }
         catch (InvalidClassException e) {
-            alert("Hiba!", "A kliens program nem kompatibilis a szerver verziójával.", System.err, R.getIconImage());
-            System.exit(1);
+            showMessage(getString("error"), getString("version_error"), TrayIcon.IconType.ERROR);
+            getHandler().closeProcesses();
         }
         catch (Exception e) {
             ; // a többi hiba nem érdekes

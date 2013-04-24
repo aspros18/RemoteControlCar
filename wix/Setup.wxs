@@ -3,7 +3,7 @@
 
   <!-- A telepítő magyar nyelvű. Az összes GUID a Visual Studio segítségével lett generálva. -->
   <Product Name='Mobile-RC' Id='6ED552EB-F733-47B5-8CA8-4832EEFDB6C3' UpgradeCode='B66E730E-D8D1-4765-AAB5-C58AB523E5D9'
-    Language='1038' Codepage='1250' Version='1.0.2.4' Manufacturer='Farkas Zoltán'>
+    Language='1038' Codepage='1250' Version='1.0.2.5' Manufacturer='Farkas Zoltán'>
 
     <!-- A programot csak rendszergazda jogosultsággal lehet telepíteni és minden felhasználó használhatja. -->
     <Package Id='*' Keywords='Installer' Description="Mobile-RC Installer" Manufacturer='Farkas Zoltán'

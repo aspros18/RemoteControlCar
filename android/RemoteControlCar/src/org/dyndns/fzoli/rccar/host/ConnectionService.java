@@ -393,8 +393,8 @@ public class ConnectionService extends IOIOService {
 	 * Ha a híd nincs még kapcsolódva a hídhoz, meghívja a kapcsolódást úgy,
 	 * hogy a jelenlegi kapcsolatokat lezárja és kapcsolódjon újra.
 	 */
-	private void reconnect() {
-		if (!isBridgeConnected()) connect(true);
+	private synchronized void reconnect() {
+		if (!isBridgeConnected() && !isBridgeConnecting()) connect(true);
 	}
 	
 	/**
@@ -825,6 +825,13 @@ public class ConnectionService extends IOIOService {
 	 */
 	public boolean isBridgeConnected() {
 		return conn != null && conn.isConnected();
+	}
+	
+	/**
+	 * Megadja, hogy a Hídhoz való kapcsolódás folyamatban van-e.
+	 */
+	public boolean isBridgeConnecting() {
+		return conn != null && conn.isConnecting();
 	}
 	
 	/**

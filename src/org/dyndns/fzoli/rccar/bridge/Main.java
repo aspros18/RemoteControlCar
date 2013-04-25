@@ -117,7 +117,15 @@ public class Main {
      */
     private static final List<String> CTRL_ARGS = new ArrayList<String>() {
         {
-            if (IN_JAR) { // csak akkor indítható a kliens program, ha jar-ból fut a szerver
+            final String srcPath = SRC_FILE.getAbsolutePath(); // a forrásfájl pontos helye
+            if (OSUtils.isOS(OSUtils.OS.MAC) && srcPath.contains(".app/Contents/Resources/Java/")) { // ha Mac-en JarBundler-ből fut a szerver
+                add("open"); // akkor open paranccsal megnyitható az alkalmazás
+                add("-n"); // új alkalmazás példányként
+                add(srcPath.substring(0, srcPath.indexOf(".app") + 4)); // az alkalmazáskönyvtár útvonalát megadva
+                add("--args"); // és argumentumként
+                add("client"); // a kliens programot indítva
+            }
+            else if (IN_JAR) { // csak akkor indítható a kliens program, ha jar-ból fut a szerver
                 add("java"); // az alkalmazás, amit indít: java
                 if (OSUtils.isOS(OSUtils.OS.MAC)) { // Mac alatt a JarBundler helyettesítése paraméterekkel
                     // az első szálból indul az alkalmazás
@@ -129,7 +137,7 @@ public class Main {
                     add("-Xdock:icon=" + new File(Folders.getSourceDir().getParentFile(), "controller.icns").getAbsolutePath());
                 }
                 add("-jar"); // közli a Javaval, hogy jar fájlt kell indítania
-                add(SRC_FILE.getAbsolutePath()); // a jar fájl helye
+                add(srcPath); // a jar fájl helye
                 add("client"); // paraméter megadása a jar main metódusának, hogy a kliens induljon el
             }
         }

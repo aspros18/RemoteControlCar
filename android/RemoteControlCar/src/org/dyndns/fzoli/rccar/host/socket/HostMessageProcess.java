@@ -18,6 +18,7 @@ import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.impl.MessageProcess;
 
 import android.content.Context;
+import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -341,9 +342,19 @@ public class HostMessageProcess extends MessageProcess {
 		Date d = new Date();
 		while ((availableDirection && (getHostData().getGravitationalField() == null || getHostData().getMagneticField() == null)) || (getHostData().isVehicleConnected() != null && getHostData().isVehicleConnected() && getHostData().getBatteryLevel() == null)) {
 			sleep(100);
-			if (new Date().getTime() - d.getTime() > 1000) break; // ha valami oknál fogva 1 mp-en belül nem jött meg minden adat, akkor adatküldés
+			if (new Date().getTime() - d.getTime() > 1000) {
+				Log.i(ConnectionService.LOG_TAG, "sensor timeout");
+				break; // ha valami oknál fogva 1 mp-en belül nem jött meg minden adat, akkor adatküldés
+			}
 		}
-		SERVICE.getBinder().sendHostData(this);
+		Float magneticDeclination = null;
+		Location l = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+		if (l != null) {
+			GeomagneticField geomagneticField = new GeomagneticField((float) l.getLatitude(), (float) l.getLongitude(), (float) l.getAltitude(), l.getTime());
+			magneticDeclination = geomagneticField.getDeclination();
+			Log.i(ConnectionService.LOG_TAG, "magnetic declination: " + magneticDeclination);
+		}
+		SERVICE.getBinder().sendHostData(this, magneticDeclination);
 		loaded = true;
 	}
 	

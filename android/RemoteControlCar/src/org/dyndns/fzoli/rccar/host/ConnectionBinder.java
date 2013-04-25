@@ -211,9 +211,12 @@ public class ConnectionBinder extends Binder {
 	
 	/**
 	 * A jármű adatait elküldi a hídnak, ha tudja és eltárolja az üzenetküldő referenciáját.
+	 * Ha van elérhető információ arról, hány fok az eltérés a valós északi irány és a mágneses északi irány között,
+	 * akkor a jármű adatmodeljében frissíti a fokeltérést még a küldés előtt.
 	 */
-	public void sendHostData(HostMessageProcess sender) {
+	public void sendHostData(HostMessageProcess sender, Float magneticDeclination) {
 		if (sender != null) {
+			if (magneticDeclination != null) DATA.setAdditionalDegree(Math.round(SERVICE.getAdditionalDegree() - magneticDeclination));
 			mSender = sender;
 			sender.sendMessage(DATA);
 		}

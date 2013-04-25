@@ -342,9 +342,9 @@ public class HostMessageProcess extends MessageProcess {
 		Date d = new Date();
 		while ((availableDirection && (getHostData().getGravitationalField() == null || getHostData().getMagneticField() == null)) || (getHostData().isVehicleConnected() != null && getHostData().isVehicleConnected() && getHostData().getBatteryLevel() == null)) {
 			sleep(100);
-			if (new Date().getTime() - d.getTime() > 1000) {
+			if (new Date().getTime() - d.getTime() > 5000) {
 				Log.i(ConnectionService.LOG_TAG, "sensor timeout");
-				break; // ha valami oknál fogva 1 mp-en belül nem jött meg minden adat, akkor adatküldés
+				break; // ha valami oknál fogva 5 mp-en belül nem jött meg minden adat, akkor adatküldés
 			}
 		}
 		Float magneticDeclination = null;

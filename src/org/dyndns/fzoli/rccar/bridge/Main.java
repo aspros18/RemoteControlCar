@@ -121,6 +121,7 @@ public class Main {
             if (OSUtils.isOS(OSUtils.OS.MAC) && srcPath.contains(".app/Contents/Resources/Java/")) { // ha Mac-en JarBundler-ből fut a szerver
                 add("open"); // akkor open paranccsal megnyitható az alkalmazás
                 add("-n"); // új alkalmazás példányként
+                add("-W"); // bevárva az alkalmazás befejeződését
                 add(srcPath.substring(0, srcPath.indexOf(".app") + 4)); // az alkalmazáskönyvtár útvonalát megadva
                 add("--args"); // és argumentumként
                 add("client"); // a kliens programot indítva

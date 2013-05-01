@@ -29,7 +29,7 @@ public class R {
      * @param width a szélesség pixelben megadva
      */
     public static BufferedImage resize(BufferedImage img, int width) {
-        return Scalr.resize(img, Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_TO_WIDTH, width, Scalr.OP_ANTIALIAS);
+        return Scalr.resize(img, Scalr.Method.AUTOMATIC, Scalr.Mode.FIT_TO_WIDTH, width, Scalr.THRESHOLD_QUALITY_BALANCED);
     }
     
     /**

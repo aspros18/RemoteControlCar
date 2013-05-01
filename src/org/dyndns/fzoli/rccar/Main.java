@@ -50,25 +50,23 @@ public class Main {
      * Elsőként az aktuális könyvtárban keresi, ha ott nem találja, akkor az alkalmazást tartalmazó könyvtárban keres.
      * Az SWT-jarfájloknak ezen a könyvtáron belül egy <code>lib</code> nevű könyvtárban kell lenniük a következő fájlnevek egyikével:
      * swt-win32.jar; swt-win64.jar; swt-linux32.jar; swt-linux64.jar; swt-osx32.jar; swt-osx64.jar
+     * Ha a fentiek közül egyik fájl sem illik a rendszerhez, akkor egyszerűen az swt.jar nevű fájlt adja vissza, ha az létezik.
      * @return null, ha a fájl nem található; egyébként a platformfüggő jarfájl útvonala
      */
     private static File getSwtJar() {
-        File swtFile = null;
         String osName = System.getProperty("os.name").toLowerCase();
         String swtFileNameArchPart = System.getProperty("os.arch").toLowerCase().contains("64") ? "64" : "32";
         String swtFileNameOsPart = osName.contains("win") ? "win" : osName.contains("mac") ? "osx" : osName.contains("linux") || osName.contains("nix") ? "linux" : null;
-        if (swtFileNameOsPart != null) {
-            String swtFileName = "swt-" + swtFileNameOsPart + swtFileNameArchPart + ".jar";
-            swtFile = new File("lib", swtFileName).getAbsoluteFile();
-            if (!swtFile.exists()) {
-                try {
-                    File srcFile = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-                    swtFile = new File(new File(srcFile.getParentFile(), "lib"), swtFileName);
-                    if (!swtFile.exists()) swtFile = null;
-                }
-                catch (Exception ex) {
-                    swtFile = null;
-                }
+        String swtFileName = swtFileNameOsPart != null ? "swt-" + swtFileNameOsPart + swtFileNameArchPart + ".jar" : "swt.jar";
+        File swtFile = new File("lib", swtFileName).getAbsoluteFile();
+        if (!swtFile.exists()) {
+            try {
+                File srcFile = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+                swtFile = new File(new File(srcFile.getParentFile(), "lib"), swtFileName);
+                if (!swtFile.exists()) swtFile = null;
+            }
+            catch (Exception ex) {
+                swtFile = null;
             }
         }
         return swtFile;

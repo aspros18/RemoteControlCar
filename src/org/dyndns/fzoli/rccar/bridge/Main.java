@@ -172,8 +172,7 @@ public class Main {
         if (CONFIG.isHidden()) return;
         if (SystemTrayIcon.init(!UIUtil.isNativeSwingAvailable()) && SystemTrayIcon.isSupported()) {
             // az ikon beállítása
-            SystemTrayIcon.setIcon(getString("app_name"), R.getBridgeImage());
-            
+            SystemTrayIcon.setIcon(getString("app_name"), R.resize(R.getBridgeImage(), SystemTrayIcon.getIconWidth()));
             // kapcsolatjelzés beállító opció hozzáadása
             SystemTrayIcon.addCheckboxMenuItem(VAL_CONN_LOG, ConnectionAlert.isLogEnabled(), new Runnable() {
 

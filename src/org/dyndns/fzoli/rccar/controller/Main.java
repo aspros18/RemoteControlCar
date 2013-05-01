@@ -221,8 +221,7 @@ public class Main {
     private static void setSystemTrayIcon() {
         if (SystemTrayIcon.init(!UIUtil.isNativeSwingAvailable()) && SystemTrayIcon.isSupported()) {
             // az ikon beállítása
-            SystemTrayIcon.setIcon(getString("app_name"), R.getIconImage());
-            
+            SystemTrayIcon.setIcon(getString("app_name"), R.resize(R.getIconImage(), SystemTrayIcon.getIconWidth()));
             // nyelv választó opció hozzáadása
             String lngText = getString("language");
             if (!lngText.equalsIgnoreCase("language")) lngText += " (language)";

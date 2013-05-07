@@ -46,11 +46,12 @@ public class ClientProcesses extends Processes {
      * @return null, ha nincs találat, egyébként adatfeldolgozó objektum
      */
     public static <T extends Process> T findProcess(int connectionId, Class<T> clazz) {
+        if (clazz == null) return null;
         List<Process> ls = getProcesses();
         for (Process p : ls) {
             if (p.getConnectionId().equals(connectionId)) {
                 try {
-                    if (p.getClass() == clazz) return (T) p;
+                    return clazz.cast(p);
                 }
                 catch (ClassCastException ex) {
                     return null;

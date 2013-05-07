@@ -51,13 +51,14 @@ public class ServerProcesses extends Processes {
      * @return null, ha nincs találat, egyébként adatfeldolgozó objektum
      */
     public static <T extends SecureProcess> T findProcess(String remoteName, int deviceId, int connectionId, Class<T> clazz) {
+        if (clazz == null) return null;
         List<Process> procs = getProcesses();
         for (Process proc : procs) {
             try {
-                if (proc.getClass() == clazz && ((SecureProcess) proc).getHandler().isCertEqual(remoteName, deviceId, connectionId)) return (T) proc;
+                if (((SecureProcess) proc).getHandler().isCertEqual(remoteName, deviceId, connectionId)) return clazz.cast(proc);
             }
             catch (ClassCastException ex) {
-                ;
+                return null;
             }
         }
         return null;

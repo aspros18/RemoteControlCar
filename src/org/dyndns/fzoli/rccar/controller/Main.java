@@ -145,9 +145,14 @@ public class Main {
     private static ResourceBundle STRINGS = createResource(CONFIG.getLanguage());
     
     /**
-     * A híd szerverrel építi ki a kapcsolatot.
+     * A Híd szerverrel építi ki a kapcsolatot.
      */
     private static final ConnectionHelper CONN = new ConnectionHelper(CONFIG);
+    
+    /**
+     * Időzítő a Híd szerverhez való kapcsolódás késleltetéséhez.
+     */
+    private static final Timer TIMER_CONN = new Timer();
     
     /**
      * Ha az értéke true, akkor a program leállítás alatt van.
@@ -433,10 +438,10 @@ public class Main {
      * @param reloadMap legyen-e újratöltve a térkép dialóus
      */
     public static void runClient(boolean delay, final boolean reloadMap) {
-        if (CONN.isConnected()) return;
+        if (connecting || CONN.isConnected()) return;
         connecting = true;
         showConnecting();
-        new Timer().schedule(new TimerTask() {
+        TIMER_CONN.schedule(new TimerTask() {
 
             @Override
             public void run() {

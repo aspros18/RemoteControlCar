@@ -148,6 +148,14 @@ public abstract class ClientConnectionHelper {
     }
     
     /**
+     * Az adott kapcsolatazonosítóval rendelkező kapcsolat létrehozása előtt ezzel a metódussal még megszakítható a kapcsolódás.
+     * @return true, ha a kapcsolódás folytatódhat; egyébként false
+     */
+    protected boolean onCreateConnection(int connectionId) {
+        return true;
+    }
+    
+    /**
      * Kapcsolódik a szerverhez a megadott kapcsolatazonosítóval.
      * A létrehozott socketet eltárolja a listában.
      * Ha az utolsó kapcsolat is kialakult, {@code onConnect} metódus fut le.
@@ -157,6 +165,10 @@ public abstract class ClientConnectionHelper {
      */
     private void runHandler(int connectionId, boolean addListener) {
         try {
+            if (!onCreateConnection(connectionId)) {
+                disconnect();
+                return;
+            }
             SSLSocket conn = createConnection();
             if (conn == null || cancelled) {
                 disconnect();
@@ -188,11 +200,26 @@ public abstract class ClientConnectionHelper {
      * Kapcsolódás a szerverhez.
      * Ha az utolsó kapcsolat is kialakult, {@code onConnect} metódus fut le.
      * Ha bármi hiba történik a kapcsolódások közben, {@code onException} metódus fut le.
-     * Ha a kapcsolódás folyamatban van már, nem csinál semmit.
+     * Ha már van kialakított kapcsolat vagy éppen kapcsolódás folyik, akkor megszakad a kapcsolódás.
      */
     public void connect() {
+        connect(false);
+    }
+    
+    /**
+     * Kapcsolódás a szerverhez.
+     * Ha az utolsó kapcsolat is kialakult, {@code onConnect} metódus fut le.
+     * Ha bármi hiba történik a kapcsolódások közben, {@code onException} metódus fut le.
+     * @param close ha már van kialakított kapcsolat vagy éppen kapcsolódás folyik, akkor -
+     * true esetén a kapcsolódás előtt minden kapcsolatot bezár;
+     * false esetén megszakad a kapcsolódás
+     */
+    public void connect(boolean close) {
         cancelled = false;
-        if (isConnecting() || isConnected()) return;
+        if (isConnecting() || isConnected()) {
+            if (close) disconnect();
+            else return;
+        }
         new Thread(new Runnable() {
 
             @Override

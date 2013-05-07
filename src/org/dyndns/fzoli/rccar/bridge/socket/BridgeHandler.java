@@ -145,17 +145,18 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
      */
     @Override
     protected AbstractSecureProcess selectProcess() {
+        final boolean host = getDeviceId().equals(KEY_DEV_HOST);
         final boolean controller = getDeviceId().equals(KEY_DEV_CONTROLLER);
         switch (getConnectionId()) {
             case KEY_CONN_DISCONNECT:
                 if (controller) return new ControllerSideDisconnectProcess(this);
-                else return new HostSideDisconnectProcess(this);
+                else if (host) return new HostSideDisconnectProcess(this);
             case KEY_CONN_MESSAGE:
                 if (controller) return new ControllerSideMessageProcess(this);
-                else return new HostSideMessageProcess(this);
+                else if (host) return new HostSideMessageProcess(this);
             case KEY_CONN_VIDEO_STREAM:
                 if (controller) return new ControllerSideVideoProcess(this);
-                else return new HostSideVideoProcess(this);
+                else if (host) return new HostSideVideoProcess(this);
         }
         return null;
     }

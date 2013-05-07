@@ -29,15 +29,6 @@ public class SystemTrayIcon {
     }
     
     /**
-     * Megadja a rendszerikon képének ajánlott magasságát, ha az támogatva van.
-     * @return ha az init() már lefutott és van támogatás, az ajánlott képméret; egyébként null
-     */
-    public static Integer getIconWidth() {
-        if (isSupported()) return java.awt.SystemTray.getSystemTray().getTrayIconSize().width;
-        return null;
-    }
-    
-    /**
      * Inicializálás.
      * Ha az SWT elérhető, SWT alapú, egyébként meg AWT alapú rendszerikon jön létre.
      * @return true, ha sikerült az inicializálás, egyébként false
@@ -113,6 +104,15 @@ public class SystemTrayIcon {
      */
     public static boolean isVisible() {
         return isSupported() && icon.isVisible();
+    }
+    
+    /**
+     * Megadja a rendszerikon képének ajánlott magasságát, ha az támogatva van.
+     * @return ha az init() már lefutott és van támogatás, az ajánlott képméret; egyébként 1
+     */
+    public static int getIconWidth() {
+        if (java.awt.SystemTray.isSupported()) return java.awt.SystemTray.getSystemTray().getTrayIconSize().width;
+        return 1;
     }
     
     /**

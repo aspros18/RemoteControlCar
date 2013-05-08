@@ -28,6 +28,7 @@ import javax.swing.UIManager;
 public class Main {
     
     public static void main(String[] args) {
+        final TestFrame f = new TestFrame();
         NativeInterface.getConfiguration().addNativeClassPathReferenceClasses(NativeTray.class);
         NativeInterface.open();
         SwingUtilities.invokeLater(new Runnable() {
@@ -43,15 +44,17 @@ public class Main {
                 final JTrayItem item2 = JTray.createTrayItem(testImage1, "Second");
                 final JTrayItem item3 = JTray.createTrayItem();
                 
+                f.setVisible(true);
+                
                 // initial property test
-                System.out.println("item1 visible: " + item1.isVisible());
-                System.out.println("item3 visible: " + item3.isVisible());
-                System.out.println("item1 tip: " + item1.getTooltip());
+                f.l("item1 visible: " + item1.isVisible());
+                f.l("item3 visible: " + item3.isVisible());
+                f.l("item1 tip: " + item1.getTooltip());
                 
                 // property change test
                 item1.setTooltip("First changed");
-                System.out.println("item1 tip: " + item1.getTooltip());
-                System.out.println("item2 tip: " + item2.getTooltip());
+                f.l("item1 tip: " + item1.getTooltip());
+                f.l("item2 tip: " + item2.getTooltip());
                 item2.setImage(testImage2);
                 
                 // menu init test
@@ -86,7 +89,7 @@ public class Main {
 
                     @Override
                     public void onSelectionChanged(TrayActionEvent<JMenuSelectionItem> e) {
-                        System.out.println((e.getComponent() == menuItem2 ? "check item" : ("radio" + (e.getComponent() == radio1 ? '1' : '2'))) + " has been " + (e.getComponent().isSelected() ? "" : "un") + "selected.");
+                        f.l((e.getComponent() == menuItem2 ? "check item" : ("radio" + (e.getComponent() == radio1 ? '1' : '2'))) + " has been " + (e.getComponent().isSelected() ? "" : "un") + "selected.");
                     }
                     
                 };
@@ -97,7 +100,7 @@ public class Main {
 
                     @Override
                     public void onAction(TrayActionEvent<JMenuItem> e) {
-                        System.out.println(e.getComponent() == subitem1 ? "Subitem works too." : "Yes, it works!");
+                        f.l(e.getComponent() == subitem1 ? "Subitem works too." : "Yes, it works!");
                     }
 
                 };
@@ -107,6 +110,7 @@ public class Main {
 
                     @Override
                     public void onAction(TrayActionEvent<JMenuItem> e) {
+                        f.dispose();
                         JTray.dispose();
                     }
                     
@@ -134,6 +138,7 @@ public class Main {
 
                                 @Override
                                 public void run() {
+                                    f.dispose();
                                     JTray.dispose();
                                 }
 
@@ -159,7 +164,7 @@ public class Main {
             
         });
         NativeInterface.runEventPump();
-        System.out.println("Event pump has finished.");
+        f.l("Event pump has finished.");
     }
 
 }

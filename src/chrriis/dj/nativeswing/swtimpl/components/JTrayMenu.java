@@ -144,7 +144,6 @@ public class JTrayMenu extends JTrayBaseMenu {
     }
     
     /**
-     * {@inheritDoc}
      * This method is used by {@link JTrayContainer} when it is disposed.
      * When the tray container is disposing it disposes and removes every
      * tray object so it's unnecessary to indicate the tray menu removing.

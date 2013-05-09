@@ -15,23 +15,43 @@ import static chrriis.dj.nativeswing.swtimpl.components.JTray.NATIVE_TRAY;
  */
 class JMenuBaseItem extends JTrayObject {
 
+    /**
+     * The menu that is the parent of this tray object.
+     */
     private final JTrayBaseMenu PARENT;
     
+    /**
+     * Constructs a menu item.
+     * @param parent the menu that is the parent of this tray object
+     * @param key the unique key of the tray object
+     */
     JMenuBaseItem(JTrayBaseMenu parent, int key) {
         super(key);
         PARENT = parent;
         getTrayContainer().getMenuItems().add(this);
     }
     
+    /**
+     * Returns the menu that is the parent of this tray object.
+     */
     JTrayBaseMenu getParent() {
         return PARENT;
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean dispose() {
         return dispose(true);
     }
     
+    /**
+     * This method is used by {@link JTrayContainer} when it is disposed.
+     * When the tray container is disposing it disposes and removes every
+     * tray object so it's unnecessary to indicate the menu item removing.
+     * @param outer if false, tray container doesn't remove the item object
+     */
     boolean dispose(boolean outer) {
         if (!super.dispose()) return false;
         NATIVE_TRAY.disposeMenuItem(getKey());
@@ -39,6 +59,9 @@ class JMenuBaseItem extends JTrayObject {
         return true;
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     void checkState() {
         if (PARENT.isDisposed()) throw new IllegalStateException("Parent menu is disposed");

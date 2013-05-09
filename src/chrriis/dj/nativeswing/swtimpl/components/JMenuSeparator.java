@@ -15,7 +15,7 @@ public class JMenuSeparator extends JMenuBaseItem {
 
     /**
      * Constructs a separator line.
-     * @param parent the menu which is the parent of this tray object
+     * @param parent the menu that is the parent of this tray object
      * @param key the unique key of the tray object
      */
     JMenuSeparator(JTrayBaseMenu parent, int key) {

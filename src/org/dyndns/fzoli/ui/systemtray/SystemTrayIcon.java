@@ -108,11 +108,11 @@ public class SystemTrayIcon {
     
     /**
      * Megadja a rendszerikon képének ajánlott magasságát, ha az támogatva van.
-     * @return ha az init() már lefutott és van támogatás, az ajánlott képméret; egyébként 1
+     * @return ha az init() már lefutott és van támogatás, az ajánlott képméret; egyébként 16
      */
     public static int getIconWidth() {
         if (java.awt.SystemTray.isSupported()) return java.awt.SystemTray.getSystemTray().getTrayIconSize().width;
-        return 1;
+        return 16;
     }
     
     /**

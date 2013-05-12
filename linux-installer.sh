@@ -253,12 +253,16 @@ rm -rf $DIR_NAME > /dev/null 2>&1
 rm -rf "$USER_HOME/.config/Mobile-RC" > /dev/null 2>&1
 
 # az asztalon lévő ikonok törlése, hiba figyelmen kívül hagyása
-rm "$DESKTOP_DIR/$BRIDGE_NAME.desktop" > /dev/null 2>&1
-rm "$DESKTOP_DIR/$CONTROLLER_NAME.desktop" > /dev/null 2>&1
+rm -f "$DESKTOP_DIR/$BRIDGE_NAME.desktop" > /dev/null 2>&1
+rm -f "$DESKTOP_DIR/$CONTROLLER_NAME.desktop" > /dev/null 2>&1
 
 # a menüben lévő ikonok törlése, hiba figyelmen kívül hagyása
-rm "$BRIDGE_ICON_FILE" > /dev/null 2>&1
-rm "$CONTROLLER_ICON_FILE" > /dev/null 2>&1
+rm -f "$BRIDGE_ICON_FILE" > /dev/null 2>&1
+rm -f "$CONTROLLER_ICON_FILE" > /dev/null 2>&1
+
+# az ikon-képfájlok törlése
+rm -f "$ICON_PATH/$CONTROLLER_ICON_NAME" > /dev/null 2>&1
+rm -f "$ICON_PATH/$BRIDGE_ICON_NAME" > /dev/null 2>&1
 
 # törlés vége üzenet
 dialog --clear --backtitle "$TITLE" --msgbox "Az eltávolítás végetért." 5 60

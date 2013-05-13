@@ -138,7 +138,7 @@ public final class NativeTray implements INativeTray {
         }
         
     }
-
+    
     private static class CMJ_trayItemOnClick extends JTrayCommandMessage {
 
         public CMJ_trayItemOnClick(double passkey) {
@@ -164,6 +164,27 @@ public final class NativeTray implements INativeTray {
                             
                         });
                     }
+                }
+            }
+            return null;
+        }
+        
+    }
+    
+    private static class CMJ_trayItemMenuDisplayed extends JTrayCommandMessage {
+
+        public CMJ_trayItemMenuDisplayed(double passkey) {
+            super(passkey);
+        }
+
+        @Override
+        public Object run(Object[] args) throws Exception {
+            int key = (Integer) args[0];
+            JTrayItem item = getTrayContainer().getTrayItem(key);
+            if (item != null) {
+                List<Runnable> listeners = item.getMenuDisplayListeners();
+                for (Runnable r : listeners) {
+                    if (r != null) SwingUtilities.invokeLater(r);
                 }
             }
             return null;
@@ -301,7 +322,10 @@ public final class NativeTray implements INativeTray {
                         @Override
                         public void handleEvent(Event event) {
                             NativeTrayMenu nativeMenu = nativeItem.getNativeTrayMenu();
-                            if (nativeMenu != null && nativeMenu.isActive()) nativeMenu.getMenu().setVisible(true);
+                            if (nativeMenu != null && nativeMenu.isActive()) {
+                                nativeMenu.getMenu().setVisible(true);
+                                asyncExec(new CMJ_trayItemMenuDisplayed(PASSKEY), key);
+                            }
                         }
                         
                     });

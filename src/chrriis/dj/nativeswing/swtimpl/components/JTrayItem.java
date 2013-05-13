@@ -42,6 +42,11 @@ public class JTrayItem extends JTrayObject {
     private final List<TrayItemMouseListener> MOUSE_LISTENERS = Collections.synchronizedList(new JTrayListenerList<TrayItemMouseListener>(this));
     
     /**
+     * A list that contains the menu display listeners.
+     */
+    private final List<Runnable> MENU_DISPLAY_LISTENERS = Collections.synchronizedList(new JTrayListenerList<Runnable>(this));
+    
+    /**
      * Constructs a tray item (used by {@link JTray}).
      * @param key the key of the tray item
      * @param tooltip the tooltip text
@@ -82,6 +87,27 @@ public class JTrayItem extends JTrayObject {
      */
     public void removeMouseListener(TrayItemMouseListener l) {
         MOUSE_LISTENERS.remove(l);
+    }
+
+    /**
+     * Returns the list of the menu display listeners.
+     */
+    public List<Runnable> getMenuDisplayListeners() {
+        return MENU_DISPLAY_LISTENERS;
+    }
+    
+    /**
+     * Adds the menu display listener to the tray item.
+     */
+    public void addMenuDisplayListener(Runnable r) {
+        MENU_DISPLAY_LISTENERS.add(r);
+    }
+    
+    /**
+     * Removes the menu display listener from the tray item.
+     */
+    public void removeMenuDisplayListener(Runnable r) {
+        MENU_DISPLAY_LISTENERS.remove(r);
     }
     
     /**

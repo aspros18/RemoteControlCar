@@ -84,6 +84,16 @@ public class Main {
                 submenu2.addMenuSeparator();
                 final JMenuItem subitem2 = submenu2.addMenuItem("Dispose");
                 
+                // menu item display detection test
+                item1.addMenuDisplayListener(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        f.l("menu of item1 has displayed");
+                    }
+                    
+                });
+                
                 // menu item event test
                 MenuItemSelectionListener ml = new MenuItemSelectionListener() {
 

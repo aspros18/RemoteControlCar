@@ -29,24 +29,28 @@ class JTrayListenerList<T> extends ArrayList<T> {
     
     @Override
     public boolean add(T e) {
+        if (e == null) return false;
         checkState();
         return super.add(e);
     }
 
     @Override
     public void add(int index, T element) {
+        if (element == null) return;
         checkState();
         super.add(index, element);
     }
 
     @Override
     public boolean addAll(Collection<? extends T> c) {
+        if (c == null) return false;
         checkState();
         return super.addAll(c);
     }
 
     @Override
     public boolean addAll(int index, Collection<? extends T> c) {
+        if (c == null) return false;
         checkState();
         return super.addAll(index, c);
     }

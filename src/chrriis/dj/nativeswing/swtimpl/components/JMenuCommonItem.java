@@ -20,7 +20,10 @@ class JMenuCommonItem<T> extends JMenuActiveItem<T> {
     
     /**
      * Constructs a menu item.
-     * @see JMenuActiveItem
+     * @param parent the menu that is the parent of this tray object
+     * @param key the unique key of the tray object
+     * @param text the initial label text
+     * @param enabled the initial enabled state
      */
     JMenuCommonItem(JTrayBaseMenu parent, int key, String text, boolean enabled) {
         super(parent, key, text, enabled);

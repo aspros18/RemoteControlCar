@@ -13,6 +13,7 @@ import java.util.Collection;
 /**
  * A list that stores tray listeners.
  * Listeners can not be added to the list if the list's tray object is disposed.
+ * @param <T> type of the listener objects in the list
  * @author Zolt&aacute;n Farkas
  */
 class JTrayListenerList<T> extends ArrayList<T> {

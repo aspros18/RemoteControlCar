@@ -77,6 +77,7 @@ public class JTrayItem extends JTrayObject {
     
     /**
      * Adds the mouse listener to the tray item.
+     * @param l the listener to be added
      */
     public void addMouseListener(TrayItemMouseListener l) {
         MOUSE_LISTENERS.add(l);
@@ -84,6 +85,7 @@ public class JTrayItem extends JTrayObject {
     
     /**
      * Removes the mouse listener from the tray item.
+     * @param l the listener to be removed
      */
     public void removeMouseListener(TrayItemMouseListener l) {
         MOUSE_LISTENERS.remove(l);
@@ -98,6 +100,7 @@ public class JTrayItem extends JTrayObject {
     
     /**
      * Adds the menu display listener to the tray item.
+     * @param r the listener to be added
      */
     public void addMenuDisplayListener(Runnable r) {
         MENU_DISPLAY_LISTENERS.add(r);
@@ -105,6 +108,7 @@ public class JTrayItem extends JTrayObject {
     
     /**
      * Removes the menu display listener from the tray item.
+     * @param r the listener to be removed
      */
     public void removeMenuDisplayListener(Runnable r) {
         MENU_DISPLAY_LISTENERS.remove(r);

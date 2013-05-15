@@ -12,6 +12,7 @@ package chrriis.dj.nativeswing.swtimpl.components;
  * @author Zolt&aacute;n Farkas
  * @see MenuItemActionListener
  * @see MenuItemSelectionListener
+ * @param <T> type of the component on which the event occurred
  */
 public class TrayActionEvent<T> {
     

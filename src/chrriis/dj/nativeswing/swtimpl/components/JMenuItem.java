@@ -11,8 +11,7 @@ import java.util.List;
 
 /**
  * A regular menu item.
- * It has a label text and it can be selected too,
- * it supports images and it has enabled state.
+ * It has a label text, an enabled state, image support and it can be selected.
  * On the other hand it has no selection state and it has no submenu.
  * @author Zolt&aacute;n Farkas
  */

@@ -18,7 +18,7 @@ import java.util.List;
 public class JMenuItem extends JMenuCommonItem<MenuItemActionListener> {
 
     /**
-     * Constructs a menu item.
+     * Constructs a regular menu item.
      * @param parent the menu that is the parent of this tray object
      * @param key the unique key of the tray object
      * @param text the initial label text

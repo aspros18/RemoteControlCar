@@ -1,14 +1,18 @@
 <resources>
+    <string name="app_name">Mobile-RC</string>
     <string name="menu_settings">Beállítások</string>
     <string name="wrong_value">Hibás érték!</string>
     <string name="category_path">Útvonal</string>
     <string name="category_security">Biztonság</string>
+    <string name="category_cam">IP Webcam</string>
     <string name="category_battery">Akkumulátor</string>
     <string name="category_other">Egyéb</string>
     <string name="title_address">Cím</string>
+    <string name="title_port">Port</string>
     <string name="title_ca">Kiállító</string>
     <string name="title_crt">Tanúsítvány</string>
     <string name="title_key">Kulcs</string>
+    <string name="title_cam_port">Port</string>
     <string name="title_cam_user">Felhasználónév</string>
     <string name="title_cam_password">Jelszó</string>
     <string name="title_inspected_stream">Ellenőrzött stream</string>
@@ -38,6 +42,8 @@
     <string name="summary_offline">Hálózati kapcsolat nélküli mód</string>
     <string name="summary_max_voltage">Maximum feszültséghatár</string>
     <string name="summary_min_voltage">Minimum feszültséghatár</string>
+    <string name="text_start">Start</string>
+    <string name="text_stop">Stop</string>
     <string name="err_1">Sikertelen kapcsolódás.</string>
     <string name="err_2">Megszakadt a kapcsolat.</string>
     <string name="err_3">Kapcsolat elutasítva.</string>

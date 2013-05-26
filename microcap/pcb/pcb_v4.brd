@@ -52,12 +52,12 @@
 <layer number="42" name="bRestrict" color="1" fill="10" visible="yes" active="yes"/>
 <layer number="43" name="vRestrict" color="2" fill="10" visible="yes" active="yes"/>
 <layer number="44" name="Drills" color="7" fill="1" visible="no" active="yes"/>
-<layer number="45" name="Holes" color="7" fill="1" visible="no" active="yes"/>
+<layer number="45" name="Holes" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="46" name="Milling" color="3" fill="1" visible="no" active="yes"/>
 <layer number="47" name="Measures" color="7" fill="1" visible="no" active="yes"/>
 <layer number="48" name="Document" color="7" fill="1" visible="no" active="yes"/>
 <layer number="49" name="Reference" color="7" fill="1" visible="no" active="yes"/>
-<layer number="51" name="tDocu" color="7" fill="1" visible="no" active="yes"/>
+<layer number="51" name="tDocu" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="52" name="bDocu" color="7" fill="1" visible="no" active="yes"/>
 <layer number="91" name="Nets" color="2" fill="1" visible="no" active="no"/>
 <layer number="92" name="Busses" color="1" fill="1" visible="no" active="no"/>
@@ -75,6 +75,21 @@
 <circle x="110.49" y="34.29" radius="1.27" width="0.4064" layer="16"/>
 <circle x="85.09" y="34.29" radius="1.27" width="0.4064" layer="16"/>
 <text x="72.39" y="33.02" size="1.778" layer="16" rot="MR0">Made in Hungary by Zoltán Farkas.</text>
+<text x="29.21" y="66.04" size="0.6096" layer="48" rot="MR0">GND</text>
+<text x="29.21" y="69.85" size="0.6096" layer="48" rot="MR0">5 V</text>
+<text x="29.21" y="62.23" size="0.6096" layer="48" rot="MR0">LED</text>
+<hole x="111.76" y="44.45" drill="0.6"/>
+<hole x="83.82" y="57.15" drill="0.6"/>
+<hole x="83.82" y="59.69" drill="0.6"/>
+<hole x="83.82" y="62.23" drill="0.6"/>
+<hole x="83.82" y="64.77" drill="0.6"/>
+<hole x="83.82" y="92.71" drill="0.6"/>
+<hole x="111.76" y="87.63" drill="0.6"/>
+<text x="110.49" y="43.18" size="0.6096" layer="48" rot="MR0">33</text>
+<text x="86.36" y="64.77" size="0.6096" layer="48" rot="MR0">10</text>
+<text x="86.36" y="62.23" size="0.6096" layer="48" rot="MR0">11</text>
+<text x="86.36" y="59.69" size="0.6096" layer="48" rot="MR0">12</text>
+<text x="86.36" y="57.15" size="0.6096" layer="48" rot="MR0">13</text>
 </plain>
 <libraries>
 <library name="transistor">

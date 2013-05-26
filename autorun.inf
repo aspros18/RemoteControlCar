@@ -1,15 +1,13 @@
 [autorun]
-open=Setup.msi
+shellexecute=Setup.msi
 icon=bin\controller.ico
 label=Mobile-RC - Farkas Zoltán
 action=Mobile-RC alkalmazás telepítése
-shell\install=Telepítés
-shell\install\command=Setup.msi
-shell\readme=Dokumentáció megnyitása
-shell\readme\command=start thesis.pdf
-UseAutoPlay=1
+shell\thesis=Dokumentáció megnyitása
+shell\thesis\command=autorun.exe thesis.pdf
 
 [Content]
 MusicFiles=false
 PictureFiles=false
 VideoFiles=false
+

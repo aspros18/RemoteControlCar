@@ -1,5 +1,5 @@
 #!/bin/bash
-# EGYELŐRE CSAK TESZT!
+# Konzolból futtatható telepítő Linux operációs-rendszer alá.
 
 # a felhasználónév megszerzése
 SUSER=${SUDO_USER}
@@ -115,7 +115,7 @@ Szeretné telepíteni a teszt tanúsítványokat?" 12 60
 SAMPLE=$?
 
 # az alap fájl-lista
-FILES=('swttest/ui-outer.jar' 'swttest/client.sh' 'swttest/server.sh' 'desktop/BrowserTest/lib/swt/swt-linux32-4.3M5a.jar' 'desktop/BrowserTest/lib/swt/swt-linux64-4.3M5a.jar')
+FILES=('bin/ui-outer.jar' 'bin/client.sh' 'bin/server.sh' 'desktop/BrowserTest/lib/swt/swt-linux32-4.3M5a.jar' 'desktop/BrowserTest/lib/swt/swt-linux64-4.3M5a.jar')
 FILES_TO=('ui.jar' 'client.sh' 'server.sh' 'lib/swt-linux32.jar' 'lib/swt-linux64.jar')
 
 # ha kellenek a teszt tanúsítványok is, a könyvtár és a konfigok hozzáadása a listához

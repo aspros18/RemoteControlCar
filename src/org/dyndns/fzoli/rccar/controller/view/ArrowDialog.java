@@ -925,7 +925,14 @@ public class ArrowDialog extends AbstractDialog {
     public static void main(String[] args) {
         new ArrowDialog(null, null) {
             {
-                setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+                addWindowListener(new WindowAdapter() {
+
+                    @Override
+                    public void windowClosing(WindowEvent e) {
+                        System.exit(0);
+                    }
+                    
+                });
             }
         }.setVisible(true);
     }

@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.test;
 
 import org.dyndns.fzoli.rccar.controller.resource.R;
+import org.dyndns.fzoli.rccar.ui.UIUtil;
 import org.dyndns.fzoli.ui.systemtray.PopupMenu;
 import org.dyndns.fzoli.ui.systemtray.SystemTray;
 import org.dyndns.fzoli.ui.systemtray.SystemTrayProvider;
@@ -16,7 +17,12 @@ public class SystemTrayTest {
      * Teszt.
      */
     public static void main(String[] args) {
+        UIUtil.initNativeInterface();
         final SystemTray tray = SystemTrayProvider.getSystemTray();
+        if (!tray.isSupported()) {
+            System.out.println("There is no system tray support.");
+            System.exit(0);
+        }
         final TrayIcon icon = tray.addTrayIcon();
         icon.setImage(R.getIconImage());
         icon.setToolTip("Tooltip");
@@ -48,6 +54,7 @@ public class SystemTrayTest {
             }
             
         });
+        UIUtil.runNativeEventPump();
     }
     
 }

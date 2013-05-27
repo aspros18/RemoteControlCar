@@ -1,6 +1,5 @@
 package org.dyndns.fzoli.rccar.controller;
 
-import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -216,7 +215,7 @@ public class ControllerWindows {
      * Teszt.
      */
     public static void main(String[] args) {
-        NativeInterface.open();
+        UIUtil.initNativeInterface();
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
@@ -228,7 +227,7 @@ public class ControllerWindows {
             }
             
         });
-        NativeInterface.runEventPump();
+        UIUtil.runNativeEventPump();
     }
     
 }

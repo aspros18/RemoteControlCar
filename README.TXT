@@ -172,6 +172,8 @@ Ez esetben socketek helyett mondjuk Tomcat webszervert lehetne használni.
 - Az MJPEG stream HTTP POST-tal streamelhető a hídnak - ami a Tomcat webszerver.
 - A vezérlő utasítások JSON-nal objektummá alakíthatók Stringből és objektumból Stringre, és a HTTP tartalom is gond nélkül használható streamelés céljára.
 
+UPDATE: Utólag kiderült, hogy csak a letöltés nem számít bele, és mivel a telefonon a kliens 99%-ban feltöltést bonyolít le, elvetett ötlet.
+
 Továbbfejlesztés
 ----------------
 
@@ -191,6 +193,6 @@ A telefont tartó eszköz lehetőleg védje a telefont a külső támadások ell
 Ha ez meg lett oldva, a kábeleket is jó lenne biztonságosan elvezetni szintén védve és a kapcsolót, ami átkapcsolhat internetes vezérlésről, azt is a kulccsal
 zárt, védett helyen belülre kéne elhelyezni.
 
-Nem ártana egy közös chat funkció se. Nem kellene tárolni az üzeneteket, ebből kifolyólag nem lenne offline üzenetküldés.
-Csak annyi célja lenne, hogy az autót vezérlő felhasználók tudjanak beszélgetni egymással.
+Egy harmadik kliens alkalmazásként lehetne írni egy admin felületet, amivel a belépett felhasználókat lehet menedzselni (priorítás, ban, kick).
+Lehetne egy SSL alapú weboldal is, ahonnan regisztráció után letölthető lenne a kliensekhez használható tanúsítvány.
 

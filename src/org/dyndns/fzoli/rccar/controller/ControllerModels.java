@@ -342,6 +342,16 @@ public class ControllerModels {
         }
 
         /**
+         * Beállítja az aktuális jármű nevét.
+         * A név módosulása után frissül a csetablak címsora.
+         */
+        @Override
+        public void setHostName(String hostName) {
+            super.setHostName(hostName);
+            if (dialogChat != null) dialogChat.setTitle();
+        }
+
+        /**
          * Beállítja, hogy pontosan szabályozható-e a az irány.
          * Az adat módosulása után beállítódik a vezérlő dialógus.
          */

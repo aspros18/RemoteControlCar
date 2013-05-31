@@ -503,7 +503,9 @@ public class MainActivity extends SherlockActivity {
 			ServiceConnection tmp = conn; // a kapcsolat ideignlenes referenciája
 			conn = null; // az osztályváltozó nullázása, hogy újra ne fusson le a metódus és jelzés a GC-nek
 			unbindService(tmp); // kapcsolat megszakítása a szolgáltatással
-			if (stop) stopService(new Intent(this, ConnectionService.class)); // ha kérik, szolgáltatás leállítása
+		}
+		if (stop) { // ha kérik, szolgáltatás leállítása
+			stopService(new Intent(this, ConnectionService.class));
 		}
 	}
 	

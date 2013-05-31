@@ -11,6 +11,7 @@ import android.content.Intent;
  * - android.net.conn.CONNECTIVITY_CHANGE (a hálózati kapcsolat megszünt, a telefon kapcsolódás alatt van vagy kapcsolódott egy hálózathoz)
  * - android.location.PROVIDERS_CHANGED (a GPS szenzor be- vagy ki lett kapcsolva)
  * - android.intent.action.ACTION_SHUTDOWN (az Android oprendszer leáll vagy újraindul)
+ * - org.dyndns.fzoli.rccar.host.SERVICE_DESTROY (az alkalmazás szolgáltatása megszűnik)
  */
 public class ConnectionIntentReceiver extends BroadcastReceiver {
 

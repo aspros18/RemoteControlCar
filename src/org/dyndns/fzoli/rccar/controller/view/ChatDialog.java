@@ -465,6 +465,15 @@ public class ChatDialog extends AbstractDialog {
     }
     
     /**
+     * Beállítja a csetablak címsorának a szövegét.
+     * A "Cset" felirat után kötőjellel elválasztva az aktuális jármű neve kerül beállításra.
+     * Ha nincs kiválasztva jármű, csak a "Cset" felirat kerül beállításra.
+     */
+    public void setTitle() {
+        setTitle(getString("chat") + (getData() == null || getData().getHostName() == null || getData().getHostName().trim().isEmpty() ? "" : " - " + getData().getHostName()));
+    }
+    
+    /**
      * Kicseréli a chatablak szövegeinek egy részét.
      * @param from a szöveg, amit cserélni kell
      * @param to a szöveg, amire cserélni kell
@@ -529,7 +538,7 @@ public class ChatDialog extends AbstractDialog {
      */
     @Override
     public void relocalize() {
-        setTitle(getString("chat"));
+        setTitle();
         LB_CONTROLLERS.setText(getString("controllers"));
         Iterator<Entry<Integer, String>> it = sysMessages.entrySet().iterator();
         Map<Integer, String> newValues = new HashMap<Integer, String>();

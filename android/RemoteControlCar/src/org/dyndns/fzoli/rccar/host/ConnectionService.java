@@ -31,7 +31,6 @@ import android.util.Log;
  * Az alkalmazás háttérben futó szolgáltatása.
  * A hídhoz való hálózati kapcsolódást és a jármű mikrovezérlőjéhez való kapcsolódás a fő feladatköre.
  * A felhasználót értesíti minden fontos eseményről (warning, error). Arról is, hogy a szolgáltatás fut.
- * TODO: kb. 1 óra állandó futás után megszakad a kapcsolat a híddal, de a HostDisconnectProcess.onDisconnect metódus nem fut le.
  * @author zoli
  */
 public class ConnectionService extends IOIOService {
@@ -113,11 +112,12 @@ public class ConnectionService extends IOIOService {
 	/**
 	 * Konstans azonosítók azokhoz a figyelmeztetésekhez, amik nem a kapcsolódás figyelmeztetései.
 	 */
-	private final static int ID_NOTIFY = 0,
-						ID_NOTIFY_CONFIG = 1,
-						ID_NOTIFY_NETWORK = 2,
-						ID_NOTIFY_INST_CAM = 3,
-						ID_NOTIFY_GPS_ENABLE = 4;
+	private final static int ID_FOREGROUND = 0,
+						ID_NOTIFY = 1,
+						ID_NOTIFY_CONFIG = 2,
+						ID_NOTIFY_NETWORK = 3,
+						ID_NOTIFY_INST_CAM = 4,
+						ID_NOTIFY_GPS_ENABLE = 5;
 	
 	/**
 	 * A SharedPreference azon kulcsai, melyek kódban több helyen is használatban vannak.
@@ -156,7 +156,8 @@ public class ConnectionService extends IOIOService {
 						EVT_SDCARD_MOUNTED = Intent.ACTION_MEDIA_MOUNTED,
 						EVT_SHUTDOWN = Intent.ACTION_SHUTDOWN,
 						EVT_APP_INSTALL = Intent.ACTION_PACKAGE_INSTALL,
-						EVT_APP_ADDED = Intent.ACTION_PACKAGE_ADDED;
+						EVT_APP_ADDED = Intent.ACTION_PACKAGE_ADDED,
+						EVT_SERVICE_DESTROY = "org.dyndns.fzoli.rccar.host.SERVICE_DESTROY";
 	
 	/**
 	 * Összeköttetés az Activity és a Service között, amit a jármű mikrovezérlője is használ.
@@ -537,6 +538,7 @@ public class ConnectionService extends IOIOService {
 	 */
 	@Override
 	public void onDestroy() {
+	    sendBroadcast(new Intent(EVT_SERVICE_DESTROY));
 		stop();
 		setFatal(false);
 		setSuspended(true);
@@ -567,6 +569,7 @@ public class ConnectionService extends IOIOService {
 		notification = new Notification(R.drawable.ic_main, getString(R.string.app_name), System.currentTimeMillis());
 		contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
 		notification.flags |= Notification.FLAG_ONGOING_EVENT; // folyamatként jelenik meg
+		startForeground(ID_FOREGROUND, notification); // a service futtatása biztonságban a háttérben (kevés memória esetén nem zárja be az OS)
 	}
 	
 	/**
@@ -609,6 +612,7 @@ public class ConnectionService extends IOIOService {
 	 * A szolgáltatás fő figyelmeztetését távolítja el, és felszabadítja a változókat, hogy a GC memóriát szabadítson fel.
 	 */
 	private void removeNotification() {
+		stopForeground(true);
 		nm.cancel(ID_NOTIFY);
 		nm = null;
 		notification = null;

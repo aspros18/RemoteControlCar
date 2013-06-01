@@ -531,6 +531,8 @@ public class ConnectionService extends IOIOService {
 	
 	/**
 	 * A szolgáltatás leállítása előtt meghívódó metódus.
+	 * - Ha a szolgáltatás leállás nem várt (pl. memóriahiány miatt az OS leállítja),
+	 *   üzenet broadcastolása, hogy a szolgáltatás leáll és újra el kell indítani
 	 * - A mikrovezérlővel megállítja a kommunikációt, hogy legközelebbi induláskor frissüljön
 	 * - Felfüggeszti a szolgáltatást és törli a fatális hiba státuszt.
 	 * - Lekapcsolódik a hídról, ha kell.
@@ -538,7 +540,7 @@ public class ConnectionService extends IOIOService {
 	 */
 	@Override
 	public void onDestroy() {
-	    sendBroadcast(new Intent(EVT_SERVICE_DESTROY));
+		if (!isSuspended() && isStarted(this)) sendBroadcast(new Intent(EVT_SERVICE_DESTROY));
 		stop();
 		setFatal(false);
 		setSuspended(true);

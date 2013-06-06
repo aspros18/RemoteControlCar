@@ -37,13 +37,19 @@ Az alkalmazás a CD-ről az ön felhasználói könyvtárába fog feltelepülni.
 Ha a könyvtár már létezik, akkor telepítés helyett eltávolítás fog lefutni.\n\n
 Kérem, adja meg a használandó könyvtár nevét:" 16 60 "$DIR_NAME" 2> "$TMP_DIR_NAME"
 
+# ha valamiért a dialógus nem jeleníthető meg, tmp könyvtár törlése és kilépés
+if [ $? -ne 0 ] ; then
+    rm -rf $TMP_DIR
+    exit 1
+fi
+
 # a megadott könyvtárnév beolvasása
 DIR_NAME=`cat "$TMP_DIR_NAME"`
 
 # ha kilépésre mentek vagy üres könyvtárnevet adtak meg, script vége
 if [ -z "$DIR_NAME" ] ; then
-  clear
-  exit 0
+    clear
+    exit 0
 fi
 
 # az a könyvtár, ahonnan fut a telepítő

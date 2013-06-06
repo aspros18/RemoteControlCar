@@ -1,6 +1,9 @@
 #!/bin/bash
 # Konzolból futtatható telepítő Linux operációs-rendszer alá.
 
+# Ha a dialog parancs nincs telepítve, kilépés
+hash dialog 2>/dev/null || { echo >&2 "I require 'dialog' but it's not installed.  Aborting."; exit 1; }
+
 # a felhasználónév megszerzése
 SUSER=${SUDO_USER}
 [ -z "$SUSER" ] && SUSER=${USER}

@@ -40,7 +40,8 @@ Kérem, adja meg a használandó könyvtár nevét:" 16 60 "$DIR_NAME" 2> "$TMP_
 # ha valamiért a dialógus nem jeleníthető meg, tmp könyvtár törlése és kilépés
 if [ $? -ne 0 ] ; then
     rm -rf $TMP_DIR
-    exit 1
+    clear
+    exit 0
 fi
 
 # a megadott könyvtárnév beolvasása

@@ -10,7 +10,9 @@ import chrriis.dj.nativeswing.swtimpl.components.WebBrowserEvent;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -18,15 +20,20 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.file.Files;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
@@ -49,7 +56,8 @@ import org.imgscalr.Scalr;
 /**
  * Térkép ablak.
  * Google Map alapú térkép.
- * Natív böngésző segítségével jelenik meg.
+ * Natív böngésző segítségével jelenik meg, de ha a térkép betöltése nem sikerül,
+ * a felhasználó kérésére megjelenik egy Swing alapú iránytű.
  * @author zoli
  */
 public class MapDialog extends AbstractDialog {
@@ -100,6 +108,11 @@ public class MapDialog extends AbstractDialog {
     private static final File COMPASS_FILE = new File(TMP_DIR, "compass.png");
     
     /**
+     * Az ablak méretéhez igazított iránytűt ábrázoló kép.
+     */
+    private static final BufferedImage IMG_COMPASS = Scalr.resize(R.getImage("compass.png"), Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_TO_WIDTH, RADAR_SIZE, Scalr.OP_ANTIALIAS);
+    
+    /**
      * A térképet megjelenítő HTML kód.
      */
     private final String HTML_SOURCE =
@@ -142,6 +155,11 @@ public class MapDialog extends AbstractDialog {
     private final JPanel PANEL_WARN;
     
     /**
+     * Az iránytű módban megjelenő címke, ami az iránytű nyilát jeleníti meg.
+     */
+    private final JLabel LB_ARROW = new JLabel(new ImageIcon(ARROW));
+    
+    /**
      * Figyelmeztető üzenet a sikertelen betöltéshez.
      */
     private final JLabel LB_WARN = new JLabel(getWarningLabelText(), SwingConstants.CENTER);
@@ -155,6 +173,12 @@ public class MapDialog extends AbstractDialog {
      * Betöltés szöveg címkéje.
      */
     private final JLabel LB_LOADING = new JLabel(getString("loading"), SwingConstants.CENTER);
+    
+    /**
+     * Az iránytű módba való váltást elvégző komponenseket tároló lista.
+     * Nyelv módosulás során a címkék felirata frissül.
+     */
+    private final List<JLabel> SWITCHERS = new ArrayList<JLabel>();
     
     /**
      * Megadja, hogy a fade effekt engedélyezve van-e.
@@ -215,7 +239,7 @@ public class MapDialog extends AbstractDialog {
      */
     private static void chkTmpFiles() {
         if (!TMP_DIR.isDirectory()) TMP_DIR.mkdir(); // tmp könyvtár létrehozása, ha nem létezik
-        if (!COMPASS_FILE.isFile()) writeImage(Scalr.resize(R.getImage("compass.png"), Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_TO_WIDTH, RADAR_SIZE, Scalr.OP_ANTIALIAS), COMPASS_FILE); // a tmp könyvtárba menti az iránytű átméretezett képét, ha még nem létezik
+        if (!COMPASS_FILE.isFile()) writeImage(IMG_COMPASS, COMPASS_FILE); // a tmp könyvtárba menti az iránytű átméretezett képét, ha még nem létezik
     }
     
     public MapDialog(ControllerFrame owner, ControllerWindows windows) {
@@ -232,16 +256,50 @@ public class MapDialog extends AbstractDialog {
         setIconImage(IC_MAP.getImage());
         getContentPane().setBackground(Color.WHITE);
         
+        final JLayeredPane compassPane = new JLayeredPane(); // az iránytű módhoz használt többrétegű komponens
+        compassPane.setPreferredSize(new Dimension(RADAR_SIZE, RADAR_SIZE)); // a méret megadása
+        
+        JLabel lbCompass = new JLabel(new ImageIcon(IMG_COMPASS)); // az iránytűt megjelenítő címke
+        compassPane.add(lbCompass, JLayeredPane.DEFAULT_LAYER);
+        lbCompass.setBounds(0, 0, RADAR_SIZE, RADAR_SIZE); // teljes helykitöltéssel
+        
+        final BufferedImage imgClose = Scalr.resize(R.getImage("close-icon.png"), Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_TO_WIDTH, RADAR_SIZE / 10, Scalr.THRESHOLD_QUALITY_BALANCED); // átméretezett bezárás ikon
+        final JLabel lbClose = new JLabel(new ImageIcon(imgClose)); // iránytű mód elhagyása "gomb"
+        compassPane.add(lbClose, JLayeredPane.POPUP_LAYER); // az iránytű kép fölé
+        lbClose.setBounds(RADAR_SIZE - imgClose.getWidth() - 6, 5, imgClose.getWidth(), imgClose.getHeight()); // jobb, felső sarokba 5 x 5 behúzással
+        lbClose.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // hand cursor a bezáráshoz
+        
+        compassPane.add(LB_ARROW, JLayeredPane.DRAG_LAYER); // az iránytű nyila
+        LB_ARROW.setBounds(RADAR_SIZE / 2 - ARROW_SIZE / 2, RADAR_SIZE / 2 - ARROW_SIZE / 2, ARROW_SIZE, ARROW_SIZE); // középen
+        
+        getContentPane().add(compassPane, BorderLayout.EAST); // az iránytű mód komponense jobb oldalra kerül, hogy megjelenve a hibaüzenet panelek ne látszódjanak
+        compassPane.setVisible(false); // kezdetben az iránytű mód inaktív, tehát a panel nem látszódik
+        
         final JLayeredPane mapPane = new JLayeredPane(); // a komponens pontos pozíciójának beállítására használom
         mapPane.setPreferredSize(new Dimension(RADAR_SIZE, RADAR_SIZE)); // a méret megadása
         
+        // az iránytű mód panelje felüldefiniálja az alatta lévő komponens egér-eseményfigyelőjét
+        // és ha a bezárás "gombra" kattintottak, megpróbálja újra betölteni a térképet és eltünteti a swing alapú iránytűt
+        // ez azt eredményezi, hogy újra előjön a betöltést jelző indikátor panel
+        compassPane.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (lbClose.getBounds().contains(e.getPoint())) {
+                    reload();
+                    compassPane.setVisible(false);
+                }
+            }
+            
+        });
+        
         // indikátor jelenik meg, míg a térkép töltődik
-        final JPanel pInd = createPanel(mapPane, LB_LOADING, R.getIndicatorIcon());
+        final JPanel pInd = createPanel(mapPane, compassPane, LB_LOADING, R.getIndicatorIcon(), false, false);
         getContentPane().add(pInd, BorderLayout.SOUTH);
         pInd.setVisible(false);
         
         // figyelmeztető üzenet jelenik meg, ha a térkép betöltése nem sikerült
-        PANEL_WARN = createPanel(mapPane, LB_WARN, R.getErrorIcon());
+        PANEL_WARN = createPanel(mapPane, compassPane, LB_WARN, R.getErrorIcon(), true, true);
         PANEL_WARN.addMouseListener(new MouseAdapter() {
 
             @Override
@@ -254,11 +312,11 @@ public class MapDialog extends AbstractDialog {
         PANEL_WARN.setVisible(false);
         
         // kezdetben úgy tesz, mint ha nem lenne böngésző támogatás
-        final JPanel pPre = createPanel(mapPane, LB_PRE_LOADING, R.getWarningIcon());
+        final JPanel pPre = createPanel(mapPane, compassPane, LB_PRE_LOADING, R.getWarningIcon(), true, false);
         getContentPane().add(pPre, BorderLayout.NORTH); // a figyelmeztető üzenet az ablak felső részére kerül
         
         getContentPane().add(mapPane, BorderLayout.CENTER); // a térkép középre igazítva jelenik meg
-        
+
         if (enabled) {
             JWebBrowser webBrowser;
             try {
@@ -414,23 +472,87 @@ public class MapDialog extends AbstractDialog {
     /**
      * Gyárt egy panelt, amin egy ikon alatt egy címke látható.
      * @param mapPane a komponens, amire kerül a panel
+     * @param compassPane az iránytűt ábrázoló komponens, ami hiba esetén megjelenik a felhasználó kérésére
      * @param lb a címke
      * @param icon az ikon
+     * @param switching true esetén az iránytű módba való váltás engedélyezve van
+     * @param hand true esetén hand cursor, egyébként default cursor
      */
-    private static JPanel createPanel(final JLayeredPane mapPane, final JLabel lb, final Icon icon) {
+    private JPanel createPanel(final JLayeredPane mapPane, final JLayeredPane compassPane, final JLabel lb, final Icon icon, final boolean switching, final boolean hand) {
         return new JPanel() {
             {
+                setCursor(Cursor.getPredefinedCursor(hand ? Cursor.HAND_CURSOR : Cursor.DEFAULT_CURSOR));
                 final JLabel lbIcon = new JLabel(icon);
                 GridBagConstraints c = new GridBagConstraints();
                 setLayout(new GridBagLayout());
                 setPreferredSize(mapPane.getPreferredSize());
                 setOpaque(false);
-                add(lbIcon, c);
                 c.gridy = 1;
+                add(lbIcon, c);
+                c.gridy = 2;
                 c.weightx = 1;
                 c.fill = GridBagConstraints.HORIZONTAL;
                 c.insets = new Insets(5, 5, 5, 5);
                 add(lb, c);
+                if (switching) {
+                    final JLabel lbSwitch = new JLabel(getString("compass_mode"), SwingConstants.CENTER) {
+                        {
+                            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                            setForeground(new Color(20, 160, 20));
+                            addMouseListener(new MouseAdapter() {
+
+                                Font original;
+
+                                @Override
+                                public void mouseEntered(MouseEvent e) {
+                                    original = e.getComponent().getFont();
+                                    Map attributes = original.getAttributes();
+                                    attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+                                    e.getComponent().setFont(original.deriveFont(attributes));
+                                }
+
+                                @Override
+                                public void mouseExited(MouseEvent e) {
+                                    e.getComponent().setFont(original);
+                                }
+
+                                @Override
+                                public void mousePressed(MouseEvent e) {
+                                    compassPane.setVisible(true);
+                                }
+
+                            });
+                        }
+                    };
+                    final JPanel pDummy = new JPanel() {
+
+                        {
+                            setOpaque(false);
+                        }
+
+                        @Override
+                        public Dimension getPreferredSize() {
+                            return lbSwitch.getSize();
+                        }
+                        
+                        @Override
+                        public Dimension getMinimumSize() {
+                            return getPreferredSize();
+                        }
+                        
+                    };
+                    c = new GridBagConstraints();
+                    c.weighty = 1;
+                    c.fill = GridBagConstraints.HORIZONTAL;
+                    c.insets = new Insets(2, 0, 0, 0);
+                    c.anchor = GridBagConstraints.FIRST_LINE_START;
+                    add(pDummy, c);
+                    c.gridy = 3;
+                    c.insets = new Insets(0, 0, 2, 0);
+                    c.anchor = GridBagConstraints.LAST_LINE_START;
+                    add(lbSwitch, c);
+                    SWITCHERS.add(lbSwitch);
+                }
             }
         };
     }
@@ -467,6 +589,9 @@ public class MapDialog extends AbstractDialog {
         LB_WARN.setText(getWarningLabelText());
         if (enabled == null) LB_PRE_LOADING.setText(getPreLoadingLabelText());
         else if (disabled || !enabled) LB_PRE_LOADING.setText(getNoSupportLabelText());
+        for (JLabel switcher : SWITCHERS) {
+            switcher.setText(getString("compass_mode"));
+        }
     }
     
     /**
@@ -556,9 +681,11 @@ public class MapDialog extends AbstractDialog {
      * @param rotation északtól való eltérés, vagy null, ha nincs irány megadva
      */
     public void setArrow(final Double rotation) {
-        if (WEB_BROWSER == null || disposed || disabled) return;
-        chkTmpFiles();
+        if (disposed || disabled) return;
         ARROW.setRotation(rotation); // nyíl frissítése
+        LB_ARROW.repaint(); // swing alapú nyíl újrarajzolása
+        if (WEB_BROWSER == null) return;
+        chkTmpFiles();
         writeImage(ARROW, ARROW_FILE); // png formátumban a nyíl mentése a tmp könyvtárba
         executeJavascript("document.getElementById('arrow').innerHTML = '<img src=\"" + fileToUrl(ARROW_FILE) + "?nocache=" + Math.random() + "\" />';"); // a kép frissítése a böngészőben
     }

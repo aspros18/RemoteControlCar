@@ -161,6 +161,11 @@ public class MapDialog extends AbstractDialog {
     private final JPanel PANEL_PRE;
     
     /**
+     * A töltésjelző panel.
+     */
+    private final JPanel PANEL_IND;
+    
+    /**
      * Az iránytű módban megjelenő címke, ami az iránytű nyilát jeleníti meg.
      */
     private final JLabel LB_ARROW = new JLabel(new ImageIcon(ARROW));
@@ -299,9 +304,9 @@ public class MapDialog extends AbstractDialog {
         mapPane.setPreferredSize(new Dimension(RADAR_SIZE, RADAR_SIZE)); // a méret megadása
         
         // indikátor jelenik meg, míg a térkép töltődik
-        final JPanel pInd = createPanel(mapPane, compassPane, LB_LOADING, R.getIndicatorIcon(), false, false);
-        getContentPane().add(pInd, BorderLayout.SOUTH);
-        pInd.setVisible(false);
+        PANEL_IND = createPanel(mapPane, compassPane, LB_LOADING, R.getIndicatorIcon(), false, false);
+        getContentPane().add(PANEL_IND, BorderLayout.SOUTH);
+        PANEL_IND.setVisible(false);
         
         // figyelmeztető üzenet jelenik meg, ha a térkép betöltése nem sikerült
         PANEL_WARN = createPanel(mapPane, compassPane, LB_WARN, R.getErrorIcon(), true, true);
@@ -419,7 +424,9 @@ public class MapDialog extends AbstractDialog {
                     }
                     if (indApp) { // indikátor megjelenítése, ha még nem látszik
                         indApp = false;
-                        pInd.setVisible(true);
+                        PANEL_IND.setVisible(true);
+                        MapDialog.this.compassMode = false; // extra stabilitás érdekében az iránytű módból kilépés ...
+                        compassPane.setVisible(false); // ... és az iránytű panel elrejtése
                     }
                     repaint(); // egyes rendszereken (Windows) nem minden esetben frissül le a panelcsere
                     if (e.getWebBrowser().getLoadingProgress() == 100) { // ha betöltődött az oldal
@@ -456,7 +463,7 @@ public class MapDialog extends AbstractDialog {
                                         if (new Date().getTime() - startDate.getTime() > 10000) {
                                             test = false; // újratesztelés a legközelebbi betöltéskor
                                             indApp = true; // indikátor megjelenítése a legközelebbi betöltéskor
-                                            pInd.setVisible(false); // indikátor elrejtése ...
+                                            PANEL_IND.setVisible(false); // indikátor elrejtése ...
                                             mapPane.setVisible(false); // ... térkép elrejtése ...
                                             PANEL_WARN.setVisible(true); // ... és figyelmeztető üzenet megjelenítése, mert nem tudott betöltődni a térkép
                                             break; // ha 10 mp alatt nem sikerült inicializálni, feladja és kilép a ciklusból
@@ -468,9 +475,7 @@ public class MapDialog extends AbstractDialog {
                                     }
                                 } while (!test);
                                 if (test) { // ha sikerült a térkép betöltése
-                                    MapDialog.this.compassMode = false; // extra stabilitás érdekében az iránytű módból kilépés ...
-                                    compassPane.setVisible(false); // ... és az iránytű panel elrejtése
-                                    pInd.setVisible(false); // indikátor eltüntetése
+                                    PANEL_IND.setVisible(false); // indikátor eltüntetése
                                     mapPane.setVisible(true); // térkép megjelenítése
                                     // és adatok frissítése, hátha változtak idő közben:
                                     setArrow(ARROW.getRotation());
@@ -644,6 +649,10 @@ public class MapDialog extends AbstractDialog {
 
             @Override
             public void run() {
+                // ha előre lehet tudni, hogy a böngésző működik, az indikátort már most megjelenik
+                // ez azért jó, mert Windows alatt előfordult már, hogy az IE lassan töltött be
+                // és több másodpercen át fehér volt az egész ablak
+                if (preloadRemoved) PANEL_IND.setVisible(true);
                 PANEL_WARN.setVisible(false);
                 WEB_BROWSER.setHTMLContent(HTML_SOURCE);
             }

@@ -194,7 +194,7 @@ public class ControllerWindows {
                 public void run() {
                     Point loc = DIALOG_MAP.getLocation(); // az előző ablak pozíciója
                     DIALOG_MAP.dispose(); // az előző ablak felszabadítása
-                    DIALOG_MAP = new MapDialog(FRAME_MAIN, ControllerWindows.this, null, true); // új példány létrehozása
+                    DIALOG_MAP = new MapDialog(FRAME_MAIN, ControllerWindows.this, null, true, DIALOG_MAP.isCompassMode()); // új példány létrehozása
                     DIALOG_MAP.setLocation(loc); // az új ablak beállítása az előző ablak pozíciójára
                     DIALOG_MAP.refresh(); // az új ablak adatainak frissítése
                 }

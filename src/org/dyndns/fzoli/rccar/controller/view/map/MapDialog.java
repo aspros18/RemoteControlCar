@@ -155,6 +155,12 @@ public class MapDialog extends AbstractDialog {
     private final JPanel PANEL_WARN;
     
     /**
+     * Ha a térkép nem elérhető, ez a panel jelenik meg, amin
+     * jelezve van, hogy a térkép nem érhető el vagy inicializálás van folyamatban.
+     */
+    private final JPanel PANEL_PRE;
+    
+    /**
      * Az iránytű módban megjelenő címke, ami az iránytű nyilát jeleníti meg.
      */
     private final JLabel LB_ARROW = new JLabel(new ImageIcon(ARROW));
@@ -196,6 +202,16 @@ public class MapDialog extends AbstractDialog {
      * Akkor fordulhat elő, ha bezárul a natív interfész valami oknál fogva.
      */
     private boolean disabled = false;
+    
+    /**
+     * Megadja, hogy az ablak iránytű módban van-e.
+     */
+    private boolean compassMode = false;
+    
+    /**
+     * Megadja, hogy az előtöltő üzenet eltűnt-e.
+     */
+    private boolean preloadRemoved = false;
     
     static {
         // az ideiglenes könyvtár létrehozása és feltöltése
@@ -250,7 +266,11 @@ public class MapDialog extends AbstractDialog {
         this(null, windows, callback, true);
     }
     
-    public MapDialog(final ControllerFrame owner, ControllerWindows windows, final MapLoadListener callback, final boolean enabled) {
+    public MapDialog(ControllerFrame owner, ControllerWindows windows, MapLoadListener callback, boolean enabled) {
+        this(owner, windows, callback, enabled, false);
+    }
+    
+    public MapDialog(final ControllerFrame owner, ControllerWindows windows, final MapLoadListener callback, final boolean enabled, final boolean compassMode) {
         super(owner, getString("map"), windows);
         getData().setMapDialog(this);
         setIconImage(IC_MAP.getImage());
@@ -278,21 +298,6 @@ public class MapDialog extends AbstractDialog {
         final JLayeredPane mapPane = new JLayeredPane(); // a komponens pontos pozíciójának beállítására használom
         mapPane.setPreferredSize(new Dimension(RADAR_SIZE, RADAR_SIZE)); // a méret megadása
         
-        // az iránytű mód panelje felüldefiniálja az alatta lévő komponens egér-eseményfigyelőjét
-        // és ha a bezárás "gombra" kattintottak, megpróbálja újra betölteni a térképet és eltünteti a swing alapú iránytűt
-        // ez azt eredményezi, hogy újra előjön a betöltést jelző indikátor panel
-        compassPane.addMouseListener(new MouseAdapter() {
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (lbClose.getBounds().contains(e.getPoint())) {
-                    reload();
-                    compassPane.setVisible(false);
-                }
-            }
-            
-        });
-        
         // indikátor jelenik meg, míg a térkép töltődik
         final JPanel pInd = createPanel(mapPane, compassPane, LB_LOADING, R.getIndicatorIcon(), false, false);
         getContentPane().add(pInd, BorderLayout.SOUTH);
@@ -312,11 +317,28 @@ public class MapDialog extends AbstractDialog {
         PANEL_WARN.setVisible(false);
         
         // kezdetben úgy tesz, mint ha nem lenne böngésző támogatás
-        final JPanel pPre = createPanel(mapPane, compassPane, LB_PRE_LOADING, R.getWarningIcon(), true, false);
-        getContentPane().add(pPre, BorderLayout.NORTH); // a figyelmeztető üzenet az ablak felső részére kerül
+        PANEL_PRE = createPanel(mapPane, compassPane, LB_PRE_LOADING, R.getWarningIcon(), true, false);
+        getContentPane().add(PANEL_PRE, BorderLayout.NORTH); // a figyelmeztető üzenet az ablak felső részére kerül
         
         getContentPane().add(mapPane, BorderLayout.CENTER); // a térkép középre igazítva jelenik meg
 
+        // az iránytű mód panelje felüldefiniálja az alatta lévő komponens egér-eseményfigyelőjét
+        // és ha a bezárás "gombra" kattintottak, megpróbálja újra betölteni a térképet és eltünteti a swing alapú iránytűt
+        // ez azt eredményezi, hogy újra előjön a betöltést jelző indikátor panel
+        compassPane.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (lbClose.getBounds().contains(e.getPoint())) {
+                    if (WEB_BROWSER == null || !preloadRemoved) PANEL_PRE.setVisible(true);
+                    reload(true);
+                    compassPane.setVisible(false);
+                    MapDialog.this.compassMode = false;
+                }
+            }
+            
+        });
+        
         if (enabled) {
             JWebBrowser webBrowser;
             try {
@@ -342,10 +364,16 @@ public class MapDialog extends AbstractDialog {
         }
         
         setResizable(false); // ablak átméretezésének tiltása
-        pPre.setVisible(false); // hibaüzenet elrejtése a pack hívása előtt, hogy ne vegye számításba
+        PANEL_PRE.setVisible(false); // hibaüzenet elrejtése a pack hívása előtt, hogy ne vegye számításba
         pack(); // ablakméret minimalizálása
-        pPre.setVisible(true); // hibaüzenet megjelenítése
+        PANEL_PRE.setVisible(true); // hibaüzenet megjelenítése
         mapPane.setVisible(false); // térkép láthatatlanná tétele, míg nem tölt be
+        
+        if (compassMode) {
+            PANEL_PRE.setVisible(false);
+            compassPane.setVisible(true);
+            this.compassMode = true;
+        }
         
         if (WEB_BROWSER != null) {
             // a natív böngésző lecsupaszítása
@@ -357,8 +385,8 @@ public class MapDialog extends AbstractDialog {
             WEB_BROWSER.setJavascriptEnabled(true);
             WEB_BROWSER.setDefaultPopupMenuRegistered(false);
 
-            // HTML forráskód betöltése
-            WEB_BROWSER.setHTMLContent(HTML_SOURCE);
+            // HTML forráskód betöltése, ha a térképre szükség van
+            if (!compassMode) WEB_BROWSER.setHTMLContent(HTML_SOURCE);
             
             // ha a natív interfészt bezárják, térkép inaktiválása és hiba közlése
             NativeInterface.addNativeInterfaceListener(new NativeInterfaceAdapter() {
@@ -370,8 +398,8 @@ public class MapDialog extends AbstractDialog {
                     relocalize();
                     mapPane.setVisible(false);
                     getContentPane().remove(mapPane);
-                    getContentPane().add(pPre, BorderLayout.CENTER);
-                    pPre.setVisible(true);
+                    getContentPane().add(PANEL_PRE, BorderLayout.CENTER);
+                    PANEL_PRE.setVisible(true);
                 }
                 
             });
@@ -379,7 +407,7 @@ public class MapDialog extends AbstractDialog {
             // várakozás a térkép api betöltésére
             WEB_BROWSER.addWebBrowserListener(new WebBrowserAdapter() {
 
-                private boolean indApp = true, preloadRemoved = false, fired = false;
+                private boolean indApp = true, fired = false;
 
                 private boolean test = false; // teszt annak kiderítésére, hogy betöltődött-e a Google Map
 
@@ -387,7 +415,7 @@ public class MapDialog extends AbstractDialog {
                 public void loadingProgressChanged(final WebBrowserEvent e) {
                     if (!preloadRemoved) { // hibaüzenet eltávolítása és indikátor megjelenítése, mivel van böngésző támogatás
                         preloadRemoved = true;
-                        remove(pPre);
+                        remove(PANEL_PRE);
                     }
                     if (indApp) { // indikátor megjelenítése, ha még nem látszik
                         indApp = false;
@@ -440,6 +468,8 @@ public class MapDialog extends AbstractDialog {
                                     }
                                 } while (!test);
                                 if (test) { // ha sikerült a térkép betöltése
+                                    MapDialog.this.compassMode = false; // extra stabilitás érdekében az iránytű módból kilépés ...
+                                    compassPane.setVisible(false); // ... és az iránytű panel elrejtése
                                     pInd.setVisible(false); // indikátor eltüntetése
                                     mapPane.setVisible(true); // térkép megjelenítése
                                     // és adatok frissítése, hátha változtak idő közben:
@@ -518,7 +548,9 @@ public class MapDialog extends AbstractDialog {
 
                                 @Override
                                 public void mousePressed(MouseEvent e) {
+                                    if (WEB_BROWSER == null || !preloadRemoved) PANEL_PRE.setVisible(false);
                                     compassPane.setVisible(true);
+                                    compassMode = true;
                                 }
 
                             });
@@ -587,8 +619,8 @@ public class MapDialog extends AbstractDialog {
         setTitle(getString("map"));
         LB_LOADING.setText(getString("loading"));
         LB_WARN.setText(getWarningLabelText());
-        if (enabled == null) LB_PRE_LOADING.setText(getPreLoadingLabelText());
-        else if (disabled || !enabled) LB_PRE_LOADING.setText(getNoSupportLabelText());
+        if (WEB_BROWSER != null && !preloadRemoved) LB_PRE_LOADING.setText(getPreLoadingLabelText());
+        else LB_PRE_LOADING.setText(getNoSupportLabelText());
         for (JLabel switcher : SWITCHERS) {
             switcher.setText(getString("compass_mode"));
         }
@@ -598,7 +630,16 @@ public class MapDialog extends AbstractDialog {
      * Hibaüzenet eltüntetése és térkép újratöltése, ha legutóbb nem sikerült betölteni.
      */
     private void reload() {
-        if (!PANEL_WARN.isVisible() || disposed || disabled) return;
+        reload(false);
+    }
+    
+    /**
+     * Hibaüzenet eltüntetése és térkép újratöltése, ha legutóbb nem sikerült betölteni.
+     */
+    private void reload(boolean force) {
+        if (!force && !PANEL_WARN.isVisible()) return;
+        if (disposed || disabled) return;
+        if (WEB_BROWSER == null) return;
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
@@ -619,10 +660,17 @@ public class MapDialog extends AbstractDialog {
     public void setVisible(boolean b) {
         boolean v = isVisible();
         super.setVisible(b);
-        if (b && !v) reload();
+        if (b && !v && !compassMode) reload();
         if (!b && v) getControllerWindows().onMapHiding();
     }
 
+    /**
+     * Megadja, hogy a térkép iránytű módban van-e.
+     */
+    public boolean isCompassMode() {
+        return compassMode;
+    }
+    
     /**
      * Megadja, hogy a térkép elérhető-e.
      * @return null, ha még nem tudni; true, ha elérhető; egyébként false
@@ -819,7 +867,7 @@ public class MapDialog extends AbstractDialog {
             public void run() {
                 
                 final Timer timer = new Timer();
-                final MapDialog map = new MapDialog(new MapLoadListener() {
+                final MapDialog map = new MapDialog(null, null, new MapLoadListener() {
 
                     @Override
                     public void loadFinished(final MapDialog map) {
@@ -840,7 +888,7 @@ public class MapDialog extends AbstractDialog {
                         map.setFade(true);
                     }
                     
-                }, null);
+                }, true, false);
                 
                 map.setVisible(true); // az ablak megjelenítése azonnal tesztelés céljából
                 

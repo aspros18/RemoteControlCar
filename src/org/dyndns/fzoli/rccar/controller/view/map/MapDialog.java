@@ -50,6 +50,7 @@ import org.dyndns.fzoli.rccar.controller.view.AbstractDialog;
 import org.dyndns.fzoli.rccar.controller.view.ControllerFrame;
 import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.controller.HostState;
+import org.dyndns.fzoli.rccar.ui.UIUtil;
 import static org.dyndns.fzoli.util.Folders.delete;
 import org.imgscalr.Scalr;
 
@@ -869,6 +870,7 @@ public class MapDialog extends AbstractDialog {
      * Teszt.
      */
     public static void main(String[] args) {
+        UIUtil.setSystemLookAndFeel();
         NativeInterface.open();
         SwingUtilities.invokeLater(new Runnable() {
             

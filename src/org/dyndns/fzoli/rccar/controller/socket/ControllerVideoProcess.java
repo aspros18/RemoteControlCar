@@ -14,19 +14,27 @@ import org.dyndns.fzoli.socket.handler.SecureHandler;
  */
 public class ControllerVideoProcess extends AbstractVideoProcess {
 
+    /**
+     * Megadja, hogy az MJPEG képkocka éppen beállítás alatt van-e.
+     */
+    private boolean framing = false;
+    
     public ControllerVideoProcess(SecureHandler handler) {
         super(handler);
     }
 
     /**
      * A kiolvasott képkockát megjeleníti a főablakon.
+     * Ha már beállítás alatt van egy képkocka, a metódus nem tesz semmit;
+     * ezzel elkerülve a túlterhelést.
      */
     @Override
     protected void processFrame(MjpegFrame fr) throws Exception {
-        if (fr == null) return;
+        if (framing || fr == null) return;
+        framing = true;
         Image img = MjpegFrameReader.getImage(fr);
-        if (img == null) return;
-        Main.setMjpegFrame((BufferedImage) img);
+        if (img != null) Main.setMjpegFrame((BufferedImage) img);
+        framing = false;
     }
 
     /**

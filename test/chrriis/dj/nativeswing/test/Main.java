@@ -83,6 +83,8 @@ public class Main {
                 submenu2.addMenuItem("Nice submenu", false);
                 submenu2.addMenuSeparator();
                 final JMenuItem subitem2 = submenu2.addMenuItem("Dispose");
+                menu1.addMenuSeparator();
+                final JMenuItem exitItem = menu1.addMenuItem("Exit");
                 
                 // menu item display detection test
                 item1.addMenuDisplayListener(new Runnable() {
@@ -114,17 +116,19 @@ public class Main {
                     }
 
                 };
-                menuItem1.addActionListener(al);
-                subitem1.addActionListener(al);
-                subitem2.addActionListener(new MenuItemActionListener() {
+                MenuItemActionListener dl = new MenuItemActionListener() {
 
                     @Override
                     public void onAction(TrayActionEvent<JMenuItem> e) {
                         f.dispose();
                         JTray.dispose();
                     }
-                    
-                });
+
+                };
+                menuItem1.addActionListener(al);
+                subitem1.addActionListener(al);
+                subitem2.addActionListener(dl);
+                exitItem.addActionListener(dl);
                 
                 // tray item event test
                 TrayItemMouseListener tl = new TrayItemMouseListener() {

@@ -99,7 +99,7 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
             showConnectionStatus(Status.KEYSTORE_ERROR);
         }
         catch (Exception e) {
-            super.onException(e, connectionId);
+            showConnectionStatus(Status.CONNECTION_ERROR);
         }
     }
     

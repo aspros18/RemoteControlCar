@@ -34,6 +34,7 @@ public class ConnectionProgressFrame extends AbstractConnectionProgressFrame imp
     public static enum Status {
         CONNECTING(R.getIndicatorIcon()),
         CONNECTION_ERROR,
+        UNKNOWN_CONNECTION_ERROR,
         DISCONNECTED(R.getWarningIcon()),
         CONNECTION_REFUSED(R.getWarningIcon()),
         UNKNOWN_HOST,

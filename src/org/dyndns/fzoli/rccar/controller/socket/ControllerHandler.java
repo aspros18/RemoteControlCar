@@ -50,7 +50,7 @@ public class ControllerHandler extends AbstractSecureClientHandler implements Co
             showConnectionStatus(Status.DISCONNECTED);
         }
         catch (Exception e) {
-            super.onException(e);
+            showConnectionStatus(Status.UNKNOWN_CONNECTION_ERROR);
         }
     }
     

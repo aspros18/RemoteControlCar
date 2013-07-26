@@ -154,11 +154,12 @@ public class HostMessageProcess extends MessageProcess {
 					else if (mLastLocation != null) {
 						boolean isGPSFix = SystemClock.elapsedRealtime() - mLastLocationMillis < 5000;
 						if (!isGPSFix) {
-							locationManager.requestLocationUpdates(provider, 1000, 10f, locationListener); // helyzetfrissítés újrahívása
+							if (provider != null) locationManager.requestLocationUpdates(provider, 1000, 10f, locationListener); // helyzetfrissítés újrahívása
 							// sendUp2Date(false); // nincs rá szükség, mert a helyzetfrissítőben meghívódik és pontosság alapján dől el
 						}
 						else {
-							sendUp2Date(mLastLocation.getAccuracy() <= FINE_ACCURACY);
+							float acc = mLastLocation.getAccuracy();
+							sendUp2Date(acc != 0.0 && acc <= FINE_ACCURACY);
 						} 
 					}
 					else {
@@ -225,7 +226,8 @@ public class HostMessageProcess extends MessageProcess {
 			Log.i(ConnectionService.LOG_TAG, "speed: " + (location.getSpeed() * 3.6) + " km/h" + "; accuracy: " + location.getAccuracy() + " m");
 			
 			// up2date frissítése és küldése, ha változott
-			sendUp2Date(location.getAccuracy() <= FINE_ACCURACY);
+			float acc = mLastLocation.getAccuracy();
+			sendUp2Date(acc != 0.0 && acc <= FINE_ACCURACY);
 			
 			// sebesség, pozíció elmentése és üzenet küldése a Hídnak
 			getHostData().setSpeed((double) location.getSpeed());
@@ -261,15 +263,19 @@ public class HostMessageProcess extends MessageProcess {
 	};
 	
 	/**
-	 * A szenzorok eseménykezelőit regisztráló szál.
-	 * Azért, hogy a LocationListener regisztrálható legyen, olyan szálban kell a metódust futtatni, mely Looper thread.
-	 * A HandlerThread egy egyszerű Looper Thread implementáció az Android API-ban.
-	 * Amikor a szál megkezdi futását, létrejön a szálhoz a Looper és lefut az onLooperPrepared metódus, melyben a szenzorok
-	 * eseménykezelői regisztrálódnak és ez után a Looper megkezdi futását, ami eredménye, hogy az események célba jutnak.
+	 * A telefon-szenzorok eseménykezelőihez való regisztrálást végzi el.
+	 * Ha a GPS inaktív a szál előkészülésekor, a szál-objektum nem fogja kezelni a GPS-t,
+	 * ezért az engedélyezés után új példányt kell létrehozni és elindítani, az előző példányt meg leállítani.
+	 * @see HostMessageProcess#sensorThread
 	 */
-	private final HandlerThread sensorThread = new HandlerThread("sensor thread", android.os.Process.THREAD_PRIORITY_BACKGROUND) {
+	private class SensorThread extends HandlerThread {
+		
+		public SensorThread() {
+			super("sensor thread", android.os.Process.THREAD_PRIORITY_BACKGROUND);
+		}
 		
 		protected void onLooperPrepared() {
+			Log.i(ConnectionService.LOG_TAG, "sensor thread looper preparing");
 			SERVICE.getVehicle().setCallback(vehicleCallback);
 			if (availableLocation) {
 				locationManager.addGpsStatusListener(gpsStatusListener);
@@ -277,7 +283,7 @@ public class HostMessageProcess extends MessageProcess {
 			    criteria.setCostAllowed(false);
 			    criteria.setAccuracy(Criteria.ACCURACY_FINE);
 			    provider = locationManager.getBestProvider(criteria, true);
-				locationManager.requestLocationUpdates(provider, 1000, 10f, locationListener);
+				if (provider != null) locationManager.requestLocationUpdates(provider, 1000, 10f, locationListener);
 			}
 			if (availableDirection) {
 				Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -287,7 +293,16 @@ public class HostMessageProcess extends MessageProcess {
 			}
 		};
 		
-	};
+	}
+	
+	/**
+	 * A szenzorok eseménykezelőit regisztráló szál.
+	 * Azért, hogy a LocationListener regisztrálható legyen, olyan szálban kell a metódust futtatni, mely Looper thread.
+	 * A HandlerThread egy egyszerű Looper Thread implementáció az Android API-ban.
+	 * Amikor a szál megkezdi futását, létrejön a szálhoz a Looper és lefut az onLooperPrepared metódus, melyben a szenzorok
+	 * eseménykezelői regisztrálódnak és ez után a Looper megkezdi futását, ami eredménye, hogy az események célba jutnak.
+	 */
+	private HandlerThread sensorThread = new SensorThread();
 	
 	/**
 	 * Megadja, hogy a kezdeti szenzoradatok be lettek-e olvasva és el lett-e küldve az adatmodel a szervernek.
@@ -320,6 +335,7 @@ public class HostMessageProcess extends MessageProcess {
 		availableLocation = locationManager.getAllProviders().contains(LocationManager.GPS_PROVIDER);
 		availableDirection = !sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER).isEmpty() && !sensorManager.getSensorList(Sensor.TYPE_GRAVITY).isEmpty();
 		gpsEnabled = SERVICE.isGpsEnabled();
+		sensorThreadReiniting = !gpsEnabled;
 		Log.i(ConnectionService.LOG_TAG, "location supported: " + availableLocation + "; direction supported: " + availableDirection);
 	}
 	
@@ -423,6 +439,37 @@ public class HostMessageProcess extends MessageProcess {
 
 	private HostData getHostData() {
 		return SERVICE.getBinder().getHostData();
+	}
+	
+	/**
+	 * Megadja, hogy újra kell-e inicializálni a szenzor-eseménykezelő szálat.
+	 * Akkor van rá szükség, ha a felhasználó utólag engedélyezi a GPS szenzort.
+	 * Valami oknál fogva a letiltott GPS adapter esetén való esemény regisztráció érvénytelen,
+	 * ezért az engedélyezés után kell a regisztrációt lefuttatni, de a regisztrálást csak a SensorThread kérheti,
+	 * ezért a legegyszerűbb újrainicializálni.
+	 */
+	private boolean sensorThreadReiniting;
+	
+	/**
+	 * Inicializálja a SensorThread osztályt, ha szükség van rá.
+	 * @see #sensorThreadReiniting
+	 */
+	public void initSensorThread() {
+		if (!sensorThreadReiniting) return;
+		sensorThreadReiniting = false;
+		Log.i(ConnectionService.LOG_TAG, "reinit sensor thread");
+		new Thread(new Runnable() {
+				
+			@Override
+			public void run() {
+				if (sensorThread != null) {
+					sensorThread.getLooper().quit();
+				}
+				sensorThread = new SensorThread();
+				sensorThread.start();
+			}
+				
+		}).start();
 	}
 	
 	/**

@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.dyndns.fzoli.rccar.host"
-    android:versionCode="15"
-    android:versionName="1.0.6.15" >
+    android:versionCode="20"
+    android:versionName="1.1.11.20" >
     <uses-sdk
         android:minSdkVersion="7"
         android:targetSdkVersion="17" />

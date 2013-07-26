@@ -342,10 +342,12 @@ public class ConnectionService extends IOIOService {
 	 * Ha a fenti feltételek egyike nem teljesül, akkor elmarad a példányosítás és nem lesz kapcsolódva a szolgáltatás a hídhoz.
 	 */
 	private ConnectionHelper createConnectionHelper() {
+		Log.i(LOG_TAG, "create connection helper");
 		config = createConfig(this);
 		if (isOfflineMode(this) || !config.isCorrect() || !isNetworkAvailableOrForced() || !isAppInstalled(PACKAGE_CAM)) {
 			return null;
 		}
+		if (conn != null) conn.disconnect();
 		return conn = new ConnectionHelper(this);
 	}
 		
@@ -353,9 +355,10 @@ public class ConnectionService extends IOIOService {
 	 * Időzíti az újrakapcsolódást.
 	 * Akkor van rá szükség, ha nem sikerült kapcsolódni a hídhoz vagy megszakadt a kapcsolat.
 	 * A folyamatos kapcsolat érdekében a szolgáltatás addig próbálkozik, míg nem sikerül a kapcsolódás.
+	 * @param reason debug paraméter, amit bent hagytam, mert még jól jöhet
 	 */
-	public void reconnectSchedule() {
-		reconnectSchedule(false);
+	private void reconnectSchedule(String reason) {
+		reconnectSchedule(false, reason);
 	}
 	
 	/**
@@ -365,22 +368,23 @@ public class ConnectionService extends IOIOService {
 	 * Ha az időzített újrakapcsolódás már aktiválva van és azonnali újrakapcsolódást kér a felhasználó,
 	 * az időzített folyamat fut le azonnal, de ha még nincs időzített, akkor egyszerűen meghívódik a reconnect.
 	 * @param now true esetén azonnali újrakapcsolódás, egyébként újrakapcsolódás időzítés
+	 * @param reason debug paraméter, amit bent hagytam, mert még jól jöhet
 	 */
-	private void reconnectSchedule(boolean now) {
+	private void reconnectSchedule(boolean now, final String reason) {
 		if (now) {
 			if (connTask != null) {
 				connTask.cancel();
 				connTask = null;
 				CONN_TIMER.purge();
 			}
-			reconnect();
+			reconnect(reason);
 		}
 		else if (connTask == null) {
 			connTask = new TimerTask() {
 				
 				@Override
 				public void run() {
-					reconnect();
+					reconnect(reason);
 					connTask = null;
 				}
 				
@@ -393,9 +397,11 @@ public class ConnectionService extends IOIOService {
 	 * Újrakapcsolódás a hídhoz.
 	 * Ha a híd nincs még kapcsolódva a hídhoz, meghívja a kapcsolódást úgy,
 	 * hogy a jelenlegi kapcsolatokat lezárja és kapcsolódjon újra.
+	 * @param reason debug paraméter, amit bent hagytam, mert még jól jöhet
 	 */
-	private synchronized void reconnect() {
-		if (!isBridgeConnected() && !isBridgeConnecting()) connect(true);
+	private synchronized void reconnect(String reason) {
+		Log.i(LOG_TAG, "reconnect ASKED; reason: " + reason);
+		if (!isBridgeConnected() && !isBridgeConnecting()) connect(true, reason);
 	}
 	
 	/**
@@ -405,11 +411,12 @@ public class ConnectionService extends IOIOService {
 	 * Ha nem kértek újrakapcsolódást, csak akkor fut le, ha még nincs kapcsolódás segítő.
 	 * Ha a szolgáltatás felfüggesztett vagy nincs elindítva, biztos, hogy nem kapcsolódik.
 	 * @param reconnect true esetén bontja a jelenlegi kapcsolatot és újra kapcsolódik
+	 * @param reason debug paraméter, amit bent hagytam, mert még jól jöhet
 	 */
-	private void connect(boolean reconnect) {
-		Log.i(LOG_TAG, "connect calling");
+	private void connect(boolean reconnect, String reason) {
+		Log.i(LOG_TAG, "connect calling; reconnect: " + reconnect+"; reason: " + reason);
 		if (conn == null || reconnect) { // ha nincs kapcsolódás segítő vagy újra kell kapcsolódni
-			disconnect(false); // jelenlegi kapcsolatok bontása, ha esetleg vannak
+			disconnect(reconnect); // jelenlegi kapcsolatok bontása, ha esetleg vannak
 			if ((isStarted(this) && !isSuspended()) && createConnectionHelper() != null) conn.connect(); // kapcsolódás csak akkor, ha aktív a szolgáltatás
 			else Log.i(LOG_TAG, "connect refused");
 		}
@@ -478,7 +485,7 @@ public class ConnectionService extends IOIOService {
 			setFatal(false); // ha esetleg még nem törlődött volna a fatális hiba státusz, törlés
 			setSuspended(false); // a szolgáltatás aktív (ha esetleg még nem lenne az)
 			initNotification(); // fő értesítés inicializálása
-			connect(true); // kapcsolódás, ha kell újrakapcsolódás
+			connect(true, "onstart"); // kapcsolódás, ha kell újrakapcsolódás
 			updateNotificationText(); // fő értesítés szövegének frissítése
 			setNotificationsVisible(true); // egyéb értesítések megjelenítése, ha van mit
 			createHornPlayer(); // dudahang-lejátszó inicializálása
@@ -500,23 +507,26 @@ public class ConnectionService extends IOIOService {
 			if (event.equals(EVT_CONNECTIVITY_CHANGE)) { // ha a hálózati kapcsolat módosult
 				if (startId != 1) setNetworkNotificationVisible(true); // ha nem első indítás, felhasználó figyelmeztetés frissítése
 				if (!isConnectionForced(this)) { // ha nincs kényszerítve a kapcsolódás ...
-					if (isNetworkAvailable()) connect(true); // és van hálózat, újrakapcsolódás azonnal
+					if (isNetworkAvailable()) reconnect("network available"); // és van hálózat, újrakapcsolódás azonnal
 					else disconnect(true); // egyébként kapcsolat bontása és időzítés törlése
 				}
 			}
 			else if (event.equals(EVT_GPS_SENSOR_CHANGE)) { // ha a GPS elérhetősége változott
-				if (startId != 1) setGpsEnableNotificationVisible(true); // figyelmeztetés módosítása, ha nem első indítás
+				if (startId != 1) {
+					setGpsEnableNotificationVisible(true); // figyelmeztetés módosítása, ha nem első indítás
+					if (isGpsEnabled()) getBinder().initSensorThread();
+				}
 			}
 			else if (event.equals(EVT_APP_ADDED) || event.equals(EVT_APP_INSTALL)) { // ha az alkalmazás települt
 				if (startId != 1) setCamInstallNotificationVisible(true); // figyelmeztetés frissítése, ha nem első indítás
-				connect(false); // és újrakapcsolódás ha még nincs kapcsolódva
+				connect(false, "app installed"); // és újrakapcsolódás ha még nincs kapcsolódva
 			}
 			else if (event.equals(EVT_SDCARD_MOUNTED)) { // ha az sd kártya elérhetővé vált, olvasható a konfiguráció
 				if (startId != 1) setConfigNotificationVisible(true); // figyelmeztetés frissítése, ha nem első indítás
-				connect(false); // újrakapcsolódás, ha még nincs kapcsolat
+				connect(false, "sdcard mounted"); // újrakapcsolódás, ha még nincs kapcsolat
 			}
 			else if (event.equals(EVT_RECONNECT_NOW)) { // azonnali újrakapcsolódás kérésre
-				reconnectSchedule(true); // azt teszi, amire kérik...
+				reconnectSchedule(true, "reconnect now request"); // azt teszi, amire kérik...
 			}
 			else if (event.equals(EVT_SHUTDOWN)) { // a rendszer leállítása esetén
 				shutdown = true; // jelzés, hogy a rendszer leállítás alatt van
@@ -729,7 +739,7 @@ public class ConnectionService extends IOIOService {
 					Log.i(LOG_TAG, "add warn notify " + error);
 					if (id != null) addNotification(id, null, new Intent(this, ConnectionService.class).putExtra(KEY_EVENT, EVT_RECONNECT_NOW), error.getNotificationId(), true, false);
 					// reconnect ütemezés, üzenet megjelenítése eltávolíthatóként, amire kattintva azonnali reconnect fut le
-					reconnectSchedule();
+					reconnectSchedule("notify warning");
 				}
 			}
 		}

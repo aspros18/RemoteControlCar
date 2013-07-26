@@ -89,6 +89,9 @@ public class ConnectionBinder extends Binder {
 		return SERVICE;
 	}
 	
+	/**
+	 * A jármű adataival tér vissza.
+	 */
 	public HostData getHostData() {
 		return DATA;
 	}
@@ -234,6 +237,13 @@ public class ConnectionBinder extends Binder {
 	 */
 	private void sendMessage(Serializable s) {
 		if (mSender != null) mSender.sendMessage(s);
+	}
+	
+	/**
+	 * @see HostMessageProcess#initSensorThread()
+	 */
+	public void initSensorThread() {
+		if (mSender != null) mSender.initSensorThread();
 	}
 	
 	/**

@@ -145,11 +145,18 @@ public abstract class AbstractClientHandler extends AbstractHandler {
                 // adatfeldolgozó hozzáadása a listához
                 getProcesses().add(proc);
 
-                // adatfeldolgozó futtatása
-                proc.run();
-
-                // adatfeldolgozó eltávolítása a listából
-                getProcesses().remove(proc);
+                try {
+                    // adatfeldolgozó futtatása
+                    proc.run();
+                    // adatfeldolgozó eltávolítása a listából
+                    getProcesses().remove(proc);
+                }
+                catch (RuntimeException ex) {
+                    // adatfeldolgozó eltávolítása a listából hiba esetén is
+                    getProcesses().remove(proc);
+                    throw ex;
+                }
+                
             }
             else {
                 // ha nem lett kiválasztva Process, jelzés

@@ -76,7 +76,7 @@ public abstract class AbstractSecureServerHandler extends AbstractServerHandler 
         if (localCommonName.equals(remoteCommonName)) throw new MultipleCertificateException("The client uses the server's name");
         List<SecureProcess> procs = getSecureProcesses();
         for (SecureProcess proc : procs) {
-            if (proc.getHandler().isCertEqual(this)) {
+            if (proc.getHandler().isCertEqual(this) && !proc.getSocket().isClosed()) {
                 throw new MultipleCertificateException("Duplicated certificate");
             }
         }

@@ -178,11 +178,17 @@ public abstract class AbstractServerHandler extends AbstractHandler {
             
             // ha sikerült az adatfeldolgozó létrehozása
             if (proc != null) {
-                // adatfeldolgozó futtatása
-                proc.run();
-
-                // adatfeldolgozó eltávolítása a listából
-                getProcesses().remove(proc);
+                try {
+                    // adatfeldolgozó futtatása
+                    proc.run();
+                    // adatfeldolgozó eltávolítása a listából
+                    getProcesses().remove(proc);
+                }
+                catch (RuntimeException ex) {
+                    // adatfeldolgozó eltávolítása a listából hiba esetén is
+                    getProcesses().remove(proc);
+                    throw ex;
+                }
             }
             
             // kapcsolat bezárása

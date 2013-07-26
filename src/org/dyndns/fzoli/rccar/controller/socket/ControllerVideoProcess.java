@@ -32,8 +32,13 @@ public class ControllerVideoProcess extends AbstractVideoProcess {
     protected void processFrame(MjpegFrame fr) throws Exception {
         if (framing || fr == null) return;
         framing = true;
-        Image img = MjpegFrameReader.getImage(fr);
-        if (img != null) Main.setMjpegFrame((BufferedImage) img);
+        try {
+            Image img = MjpegFrameReader.getImage(fr);
+            if (img != null) Main.setMjpegFrame((BufferedImage) img);
+        }
+        catch (Exception ex) {
+            ;
+        }
         framing = false;
     }
 

@@ -377,14 +377,14 @@ public class ConnectionService extends IOIOService {
 				connTask = null;
 				CONN_TIMER.purge();
 			}
-			reconnect(reason);
+			connect(true, reason);
 		}
 		else if (connTask == null) {
 			connTask = new TimerTask() {
 				
 				@Override
 				public void run() {
-					reconnect(reason);
+					connect(true, reason);
 					connTask = null;
 				}
 				
@@ -394,12 +394,12 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	/**
-	 * Újrakapcsolódás a hídhoz.
+	 * Újrakapcsolódás a hídhoz csak akkor, ha még nincs kapcsolat.
 	 * Ha a híd nincs még kapcsolódva a hídhoz, meghívja a kapcsolódást úgy,
 	 * hogy a jelenlegi kapcsolatokat lezárja és kapcsolódjon újra.
 	 * @param reason debug paraméter, amit bent hagytam, mert még jól jöhet
 	 */
-	private synchronized void reconnect(String reason) {
+	private synchronized void safeReconnect(String reason) {
 		Log.i(LOG_TAG, "reconnect ASKED; reason: " + reason);
 		if (!isBridgeConnected() && !isBridgeConnecting()) connect(true, reason);
 	}
@@ -507,7 +507,7 @@ public class ConnectionService extends IOIOService {
 			if (event.equals(EVT_CONNECTIVITY_CHANGE)) { // ha a hálózati kapcsolat módosult
 				if (startId != 1) setNetworkNotificationVisible(true); // ha nem első indítás, felhasználó figyelmeztetés frissítése
 				if (!isConnectionForced(this)) { // ha nincs kényszerítve a kapcsolódás ...
-					if (isNetworkAvailable()) reconnect("network available"); // és van hálózat, újrakapcsolódás azonnal
+					if (isNetworkAvailable()) safeReconnect("network available"); // és van hálózat, újrakapcsolódás azonnal
 					else disconnect(true); // egyébként kapcsolat bontása és időzítés törlése
 				}
 			}

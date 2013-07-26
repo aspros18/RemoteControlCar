@@ -432,7 +432,8 @@ public class Main {
     /**
      * A program értelme.
      * Kijelzi, hogy elkezdődött a kapcsolódás és kapcsolódik a szerverhez (ha még nem történt meg).
-     * Fél másodperc késleltetés van beállítva, hogy legyen ideje a felhasználónak észlelni a folyamatot.
+     * Fél másodperc késleltetés van beállítva, hogy legyen ideje a felhasználónak észlelni a folyamatot,
+     * és így a szervernek is van ideje bezárni a régi kapcsolatokat és frissíteni az adatokat.
      * Innentől kezdve már a kommunikációtól függ, hogyan folytatódik a program futása.
      * @param delay legyen-e késleltetés
      * @param reloadMap legyen-e újratöltve a térkép dialóus

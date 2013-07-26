@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.rccar.host.socket;
 
+import java.io.FileNotFoundException;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.SocketException;
@@ -117,7 +118,13 @@ public abstract class AbstractHostVideoProcess extends AbstractSecureProcess {
 				if (user != null && !user.equals("")) conn.setRequestProperty("Authorization", authProp); // ha van azonosítás, adat beállítása
 				conn.connect(); // kapcsolódás
 				if (i != 0) { // ellenőrzés csak akkor, ha a ciklusváltozó értéke nem 0
-					conn.getInputStream().read(new byte[5120]); // olvashatóság tesztelése
+					try {
+						conn.getInputStream().read(new byte[5120]); // olvashatóság tesztelése
+					}
+					catch (FileNotFoundException fnfe) {
+						closeIPWebcamConnection(true);
+						throw fnfe;
+					}
 					closeIPWebcamConnection(false); // kapcsolat lezárása, de program futva hagyása
 					i = -1; // az olvasás teszt sikeres volt, a következő ciklus futáskor a változó értéke 0 lesz, hogy ne legyen újra olvasás
 					continue; // következő ciklusra lépés

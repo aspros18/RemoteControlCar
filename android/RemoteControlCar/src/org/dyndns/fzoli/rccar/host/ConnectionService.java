@@ -416,7 +416,7 @@ public class ConnectionService extends IOIOService {
 	private void connect(boolean reconnect, String reason) {
 		Log.i(LOG_TAG, "connect calling; reconnect: " + reconnect+"; reason: " + reason);
 		if (conn == null || reconnect) { // ha nincs kapcsolódás segítő vagy újra kell kapcsolódni
-			disconnect(reconnect); // jelenlegi kapcsolatok bontása, ha esetleg vannak
+			disconnect(reconnect, reason); // jelenlegi kapcsolatok bontása, ha esetleg vannak
 			if ((isStarted(this) && !isSuspended()) && createConnectionHelper() != null) conn.connect(); // kapcsolódás csak akkor, ha aktív a szolgáltatás
 			else Log.i(LOG_TAG, "connect refused");
 		}
@@ -434,8 +434,8 @@ public class ConnectionService extends IOIOService {
 	 * Az Activitynek jelzi azt, hogy nincs kapcsolódás.
 	 * @param stopReconnect true esetén leállítja az időzített újrakapcsolódást is
 	 */
-	private void disconnect(boolean stopReconnect) {
-		Log.i(LOG_TAG, "disconnect calling");
+	private void disconnect(boolean stopReconnect, String reason) {
+		Log.i(LOG_TAG, "disconnect calling; reason: " + reason);
 		if (connTask != null && stopReconnect) { // újrakapcsolódás időzítő inaktiválása
 			connTask.cancel();
 			connTask = null;
@@ -508,7 +508,7 @@ public class ConnectionService extends IOIOService {
 				if (startId != 1) setNetworkNotificationVisible(true); // ha nem első indítás, felhasználó figyelmeztetés frissítése
 				if (!isConnectionForced(this)) { // ha nincs kényszerítve a kapcsolódás ...
 					if (isNetworkAvailable()) safeReconnect("network available"); // és van hálózat, újrakapcsolódás azonnal
-					else disconnect(true); // egyébként kapcsolat bontása és időzítés törlése
+					else disconnect(true, "network unavailable"); // egyébként kapcsolat bontása és időzítés törlése
 				}
 			}
 			else if (event.equals(EVT_GPS_SENSOR_CHANGE)) { // ha a GPS elérhetősége változott
@@ -554,7 +554,7 @@ public class ConnectionService extends IOIOService {
 		stop();
 		setFatal(false);
 		setSuspended(true);
-		disconnect(true);
+		disconnect(true, "on destroy");
 		setNotificationsVisible(false);
 		setConnectionError(null, true);
 		removeNotification();
@@ -733,7 +733,7 @@ public class ConnectionService extends IOIOService {
 					if (id != null) addNotification(id, new Intent(this, MainActivity.class), error.getNotificationId(), false, true);
 					setFatal(true);
 					setSuspended(true); // szolgáltatás felfüggesztése, hogy a kapcsolódás bontása után lévő figyelmeztetés ne jelenjen meg
-					disconnect(true); // kapcsolat bontása, üzenet megjelenítése, amire kattintva a főablak jelenik meg
+					disconnect(true, "notify error"); // kapcsolat bontása, üzenet megjelenítése, amire kattintva a főablak jelenik meg
 				}
 				else {
 					Log.i(LOG_TAG, "add warn notify " + error);

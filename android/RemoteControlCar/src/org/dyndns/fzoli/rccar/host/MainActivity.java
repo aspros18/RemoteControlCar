@@ -376,7 +376,7 @@ public class MainActivity extends SherlockActivity {
 	 * Ha megszakad a kapcsolat a szolgáltatással, magától újrakapcsolódik az Activity.
 	 */
 	private void bindService() {
-		unbindService(); // kísérlet a szolgáltatás leállítására, ha véletlen már van kialakított kapcsolat
+		unbindService(false); // kísérlet a szolgáltatás leválasztására, ha véletlen már van kialakított kapcsolat
 		startService(new Intent(this, ConnectionService.class)); // szolgáltatás elindítása a kapcsolódás előtt
 		conn = new ServiceConnection() {
 			

@@ -41,7 +41,7 @@ public class UninspectedHostVideoProcess extends AbstractHostVideoProcess {
 			Log.i(ConnectionService.LOG_TAG, "video process started");
 			if (openIPWebcamConnection()) {
 				try {
-					int length;
+					int length, reading = 0;
 					byte[] buffer = new byte[2048];
 					InputStream in = conn.getInputStream();
 					OutputStream out = getSocket().getOutputStream();
@@ -51,13 +51,14 @@ public class UninspectedHostVideoProcess extends AbstractHostVideoProcess {
 							continue; // ciklus újrakezdése
 						}
 						if (((length = in.read(buffer)) != -1)) try { // ha sikerült az olvasás és van adat
+							reading++;
 							out.write(buffer, 0, length); // megkísérli a feltöltést
 						}
 						catch (SocketException ex) { // ha nem sikerült az írás
 							throw new SSLException(ex); // híddal való kacsolat hibaként feldolgozás
 						}
-						else { // ha sikerült az olvasás, de nincs adat
-							throw new Exception("IP Webcam error"); // az IP Webcam alkalmazás a hibás
+						else { // ha sikerült az olvasás, de nincs adat, az IP Webcam alkalmazás a hibás; egyébként bezárult az IP Webcam és újrakezdés
+							throw reading < 3 && reading > 0 ? new Exception("IP Webcam error") : new SocketException("IP Webcam connection closed");
 						}
 					}
 				}

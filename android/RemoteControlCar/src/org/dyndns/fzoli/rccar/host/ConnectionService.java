@@ -556,7 +556,7 @@ public class ConnectionService extends IOIOService {
 		setSuspended(true);
 		disconnect("on destroy");
 		setNotificationsVisible(false);
-		setConnectionError(null, true);
+		setConnectionError(null, null, true);
 		removeNotification();
 		releaseHornPlayer();
 		super.onDestroy();
@@ -689,8 +689,8 @@ public class ConnectionService extends IOIOService {
 	 * A hiba alapján cselekedik a metódus. További részletek: {@link ConnectionError}
 	 * @param error a kapcsolat hibája vagy null, ha megszüntek a hibák
 	 */
-	public void onConnectionError(ConnectionError error) {
-		setConnectionError(error, false);
+	public void onConnectionError(ConnectionError error, ConnectionHelper caller) {
+		setConnectionError(error, caller, false);
 	}
 
 	/**
@@ -699,7 +699,11 @@ public class ConnectionService extends IOIOService {
 	 * @param error a kapcsolat hibája vagy null, ha megszüntek a hibák
 	 * @param removeAll ha minden figyelmeztetést el kell távolítani, true
 	 */
-	private void setConnectionError(ConnectionError error, boolean removeAll) {
+	private void setConnectionError(ConnectionError error, ConnectionHelper caller, boolean removeAll) {
+		if (error != null && caller != null && conn != null && caller != conn) {
+			Log.i(LOG_TAG, "old warning has been dropped");
+			return;
+		}
 		updateNotificationText();
 		getBinder().fireConnectionStateChange(false);
 		ConnectionError[] errors = ConnectionError.values();

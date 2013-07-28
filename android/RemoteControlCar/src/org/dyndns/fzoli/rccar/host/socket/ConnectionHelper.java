@@ -75,7 +75,7 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
 	 */
 	@Override
 	protected AbstractSecureClientHandler createHandler(SSLSocket socket, int deviceId, int connectionId) {
-		return new HostHandler(SERVICE, socket, deviceId, connectionId);
+		return new HostHandler(this, SERVICE, socket, deviceId, connectionId);
 	}
 	
 	/**
@@ -119,7 +119,7 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
 		catch (Exception e) {
 			err = ConnectionError.OTHER;
 		}
-		SERVICE.onConnectionError(err);
+		SERVICE.onConnectionError(err, this);
 	}
 	
 	/**

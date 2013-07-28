@@ -30,6 +30,11 @@ public abstract class AbstractHostVideoProcess extends AbstractSecureProcess {
 	protected final ConnectionService SERVICE;
 	
 	/**
+	 * A handler objektumot létrehozó kapcsolódássegítő referenciája.
+	 */
+	protected final ConnectionHelper HELPER;
+	
+	/**
 	 * A kiépített MJPEG stream HTTP kapcsolata.
 	 */
 	protected HttpURLConnection conn;
@@ -39,8 +44,9 @@ public abstract class AbstractHostVideoProcess extends AbstractSecureProcess {
 	 * @param handler Biztonságos kapcsolatfeldolgozó, ami létrehozza ezt az adatfeldolgozót.
 	 * @throws NullPointerException ha handler null
 	 */
-	public AbstractHostVideoProcess(ConnectionService service, SecureHandler handler) {
+	public AbstractHostVideoProcess(ConnectionService service, ConnectionHelper helper, SecureHandler handler) {
 		super(handler);
+		HELPER = helper;
 		SERVICE = service;
 	}
 

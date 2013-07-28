@@ -53,6 +53,11 @@ public class HostMessageProcess extends MessageProcess {
 	private final ConnectionService SERVICE;
 	
 	/**
+	 * A handler objektumot létrehozó kapcsolódássegítő referenciája.
+	 */
+	private final ConnectionHelper HELPER;
+	
+	/**
 	 * Ennyi időközönként küld a kliens adatmódosulásról jelzést.
 	 */
 	private final int REFRESH_INTERVAL;
@@ -326,9 +331,10 @@ public class HostMessageProcess extends MessageProcess {
 	 */
 	private boolean gpsEnabled;
 	
-	public HostMessageProcess(ConnectionService service, SecureHandler handler) {
+	public HostMessageProcess(ConnectionService service, ConnectionHelper helper, SecureHandler handler) {
 		super(handler);
 		SERVICE = service;
+		HELPER = helper;
 		REFRESH_INTERVAL = SERVICE.getConfig().getRefreshInterval();
 		locationManager = (LocationManager) service.getSystemService(Context.LOCATION_SERVICE);
 		sensorManager = (SensorManager)service.getSystemService(Context.SENSOR_SERVICE);
@@ -434,7 +440,7 @@ public class HostMessageProcess extends MessageProcess {
 			err = ConnectionError.OTHER;
 			Log.i(ConnectionService.LOG_TAG, "unknown error", e);
 		}
-		SERVICE.onConnectionError(err);
+		SERVICE.onConnectionError(err, HELPER);
 	}
 
 	private HostData getHostData() {

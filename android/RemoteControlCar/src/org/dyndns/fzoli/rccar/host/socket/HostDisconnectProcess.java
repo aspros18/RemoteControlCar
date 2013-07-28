@@ -16,6 +16,11 @@ public class HostDisconnectProcess extends ClientDisconnectProcess implements Co
 	private final ConnectionService SERVICE;
 	
 	/**
+	 * A handler objektumot létrehozó kapcsolódássegítő referenciája.
+	 */
+	private final ConnectionHelper HELPER;
+	
+	/**
 	 * Az utolsó időtúllépéskori vezérlőjel.
 	 */
 	private int lastX, lastY, xyCounter;
@@ -23,9 +28,10 @@ public class HostDisconnectProcess extends ClientDisconnectProcess implements Co
 	/**
 	 * Hoszt oldali időtúllépés detektáló.
 	 */
-	public HostDisconnectProcess(ConnectionService service, SecureHandler handler) {
+	public HostDisconnectProcess(ConnectionService service, ConnectionHelper helper, SecureHandler handler) {
 		super(handler, DC_TIMEOUT1, DC_TIMEOUT2, DC_DELAY); // 1 és 10 mp időtúllépés, 250 ms sleep
 		SERVICE = service;
+		HELPER = helper;
 	}
 	
 	/**
@@ -35,7 +41,7 @@ public class HostDisconnectProcess extends ClientDisconnectProcess implements Co
 	protected void onConnect() {
 		super.onConnect();
 		Log.i(ConnectionService.LOG_TAG, "connected to the bridge");
-		SERVICE.onConnectionError(null);
+		SERVICE.onConnectionError(null, HELPER);
 	}
 	
 	/**
@@ -67,7 +73,7 @@ public class HostDisconnectProcess extends ClientDisconnectProcess implements Co
 	protected void onDisconnect(Exception ex) {
 		super.onDisconnect(ex);
 		Log.i(ConnectionService.LOG_TAG, "disconnected from the bridge", ex);
-		SERVICE.onConnectionError(ConnectionError.CONNECTION_LOST);
+		SERVICE.onConnectionError(ConnectionError.CONNECTION_LOST, HELPER);
 		SERVICE.getBinder().resetXY();
 	}
 	

@@ -24,8 +24,14 @@ public class HostHandler extends AbstractSecureClientHandler implements Connecti
 	 */
 	private final ConnectionService SERVICE;
 	
-	public HostHandler(ConnectionService service, SSLSocket socket, int deviceId, int connectionId) {
+	/**
+	 * A handler objektumot létrehozó kapcsolódássegítő referenciája.
+	 */
+	private final ConnectionHelper HELPER;
+	
+	public HostHandler(ConnectionHelper helper, ConnectionService service, SSLSocket socket, int deviceId, int connectionId) {
 		super(socket, deviceId, connectionId);
+		HELPER = helper;
 		SERVICE = service;
 	}
 	
@@ -66,7 +72,7 @@ public class HostHandler extends AbstractSecureClientHandler implements Connecti
 		catch (Exception e) {
 			err = ConnectionError.OTHER;
 		}
-		SERVICE.onConnectionError(err);
+		SERVICE.onConnectionError(err, HELPER);
 	}
 	
 	/**
@@ -77,12 +83,12 @@ public class HostHandler extends AbstractSecureClientHandler implements Connecti
 	protected SecureProcess selectProcess() {
 		switch (getConnectionId()) {
         	case KEY_CONN_DISCONNECT:
-        		return new HostDisconnectProcess(SERVICE, this);
+        		return new HostDisconnectProcess(SERVICE, HELPER, this);
         	case KEY_CONN_MESSAGE:
-        		return new HostMessageProcess(SERVICE, this);
+        		return new HostMessageProcess(SERVICE, HELPER, this);
         	case KEY_CONN_VIDEO_STREAM:
-        		if (ConnectionService.isInspectedStream(SERVICE)) return new InspectedHostVideoProcess(SERVICE, this);
-        		else return new UninspectedHostVideoProcess(SERVICE, this);
+        		if (ConnectionService.isInspectedStream(SERVICE)) return new InspectedHostVideoProcess(SERVICE, HELPER, this);
+        		else return new UninspectedHostVideoProcess(SERVICE, HELPER, this);
 		}
 		return null;
 	}

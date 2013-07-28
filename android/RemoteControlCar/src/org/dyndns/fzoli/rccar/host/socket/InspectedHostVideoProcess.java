@@ -31,8 +31,8 @@ public class InspectedHostVideoProcess extends AbstractHostVideoProcess {
 	 * @param handler Biztonságos kapcsolatfeldolgozó, ami létrehozza ezt az adatfeldolgozót.
 	 * @throws NullPointerException ha handler null
 	 */
-	public InspectedHostVideoProcess(ConnectionService service, SecureHandler handler) {
-		super(service, handler);
+	public InspectedHostVideoProcess(ConnectionService service, ConnectionHelper helper, SecureHandler handler) {
+		super(service, helper, handler);
 	}
 
 	/**
@@ -86,18 +86,18 @@ public class InspectedHostVideoProcess extends AbstractHostVideoProcess {
 				}
 				catch (Exception ex) { // ismeretlen hiba történt
 					Log.i(ConnectionService.LOG_TAG, "unknown error", ex);
-					SERVICE.onConnectionError(ConnectionError.OTHER);
+					SERVICE.onConnectionError(ConnectionError.OTHER, HELPER);
 				}
 			}
 			else {
-				SERVICE.onConnectionError(ConnectionError.WEB_IPCAM_UNREACHABLE); // ip webcam fatális hiba hívása
+				SERVICE.onConnectionError(ConnectionError.WEB_IPCAM_UNREACHABLE, HELPER); // ip webcam fatális hiba hívása
 			}
 			Log.i(ConnectionService.LOG_TAG, "video process finished");
 			closeIPWebcamConnection(false); // a kapcsolat bontása, de az IP Webcam futva hagyása
 		}
 		catch (Throwable t) { // egyéb hiba történt
 			Log.i(ConnectionService.LOG_TAG, "not important error", t);
-			SERVICE.onConnectionError(ConnectionError.OTHER);
+			SERVICE.onConnectionError(ConnectionError.OTHER, HELPER);
 		}
 	}
 

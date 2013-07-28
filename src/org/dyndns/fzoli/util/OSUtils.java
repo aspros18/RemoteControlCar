@@ -101,7 +101,7 @@ public class OSUtils {
             awtAppClassNameField.setAccessible(true);
             awtAppClassNameField.set(xToolkit, text);
         }
-        catch (Exception ex) {
+        catch (Throwable t) {
             ;
         }
         

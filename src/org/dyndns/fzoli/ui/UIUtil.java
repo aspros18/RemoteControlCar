@@ -20,7 +20,13 @@ public class UIUtil {
      * Beállítja a kulcshoz tartozó lokalizált szöveget, de csak akkor, ha nincs még beállítva.
      */
     public static void init(String key, String value) {
-        if (UIManager.get(key) == null) UIManager.put(key, value);
+        try {
+            if (UIManager.get(key) == null) UIManager.put(key, value);
+        }
+        catch (Error e) {
+            System.err.println("Could not initialize the GUI. Exiting.");
+            System.exit(1);
+        }
     }
     
     /**

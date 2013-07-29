@@ -417,7 +417,7 @@ public class ConnectionService extends IOIOService {
 	 */
 	private void connect(boolean reconnect, ConnectionHelper helper, String reason) {
 		Log.i(LOG_TAG, "connect calling; reconnect: " + reconnect+"; reason: " + reason);
-		if (conn == null || (reconnect && conn == helper)) { // ha nincs kapcsolódás segítő vagy újra kell kapcsolódni
+		if ((isStarted(this) && !isSuspended()) && conn == null || (reconnect && conn == helper)) { // ha nincs kapcsolódás segítő vagy újra kell kapcsolódni
 			disconnect(reason); // jelenlegi kapcsolatok bontása, ha esetleg vannak
 			if ((isStarted(this) && !isSuspended()) && createConnectionHelper() != null) conn.connect(); // kapcsolódás csak akkor, ha aktív a szolgáltatás
 			else Log.i(LOG_TAG, "connect refused");
@@ -755,6 +755,9 @@ public class ConnectionService extends IOIOService {
 					reconnectSchedule("notify warning");
 				}
 			}
+		}
+		else {
+			disconnect("notify warning during stopped service");
 		}
 	}
 	

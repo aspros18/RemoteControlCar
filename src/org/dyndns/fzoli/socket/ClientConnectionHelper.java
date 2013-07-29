@@ -114,7 +114,7 @@ public abstract class ClientConnectionHelper {
      */
     public boolean isConnecting() {
         removeClosedConnections();
-        return getConnectionsSize() > 0 && getConnectionsSize() < connectionIds.length;
+        return !cancelled && getConnectionsSize() > 0 && getConnectionsSize() < connectionIds.length;
     }
     
     /**
@@ -170,12 +170,12 @@ public abstract class ClientConnectionHelper {
                 return;
             }
             SSLSocket conn = createConnection();
+            synchronized(CONNECTIONS) {
+                if (conn != null) CONNECTIONS.add(conn);
+            }
             if (conn == null || cancelled) {
                 disconnect();
                 return;
-            }
-            synchronized(CONNECTIONS) {
-                CONNECTIONS.add(conn);
             }
             AbstractSecureClientHandler handler = createHandler(conn, deviceId, connectionId);
             if (addListener) handler.addHandlerListener(listener);

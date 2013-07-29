@@ -380,11 +380,12 @@ public class ConnectionService extends IOIOService {
 			connect(true, reason);
 		}
 		else if (connTask == null) {
+			final ConnectionHelper helper = conn;
 			connTask = new TimerTask() {
 				
 				@Override
 				public void run() {
-					connect(true, reason);
+					connect(true, helper, reason);
 					connTask = null;
 				}
 				
@@ -411,15 +412,23 @@ public class ConnectionService extends IOIOService {
 	 * Ha nem kértek újrakapcsolódást, csak akkor fut le, ha még nincs kapcsolódás segítő.
 	 * Ha a szolgáltatás felfüggesztett vagy nincs elindítva, biztos, hogy nem kapcsolódik.
 	 * @param reconnect true esetén bontja a jelenlegi kapcsolatot és újra kapcsolódik
+	 * @param helper a metódus csak akkor fog újrakapcsolódást kezdeni, ha a jelenlegi kapcsolódás segítő kéri
 	 * @param reason debug paraméter, amit bent hagytam, mert még jól jöhet
 	 */
-	private void connect(boolean reconnect, String reason) {
+	private void connect(boolean reconnect, ConnectionHelper helper, String reason) {
 		Log.i(LOG_TAG, "connect calling; reconnect: " + reconnect+"; reason: " + reason);
-		if (conn == null || reconnect) { // ha nincs kapcsolódás segítő vagy újra kell kapcsolódni
+		if (conn == null || (reconnect && conn == helper)) { // ha nincs kapcsolódás segítő vagy újra kell kapcsolódni
 			disconnect(reason); // jelenlegi kapcsolatok bontása, ha esetleg vannak
 			if ((isStarted(this) && !isSuspended()) && createConnectionHelper() != null) conn.connect(); // kapcsolódás csak akkor, ha aktív a szolgáltatás
 			else Log.i(LOG_TAG, "connect refused");
 		}
+	}
+	
+	/**
+	 * @see #connect(boolean, String, ConnectionHelper)
+	 */
+	private void connect(boolean reconnect, String reason) {
+		connect(reconnect, conn, reason);
 	}
 	
 	/**

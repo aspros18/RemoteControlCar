@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.bridge;
 
 import chrriis.dj.nativeswing.swtimpl.NativeInterfaceAdapter;
+import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -334,31 +335,36 @@ public class Main {
     
     /**
      * A szerver elindítása előtt a konzolon beadott paramétereket feldolgozza.
-     * A paraméterek szükségtelenek, ha van grafikus felület a rendszeren.
+     * A paraméterek szükségtelenek, ha van grafikus felület a rendszeren,
+     * ezért GUI támogatás esetén a metódus nem tesz semmit.
      * Ha a -v paraméter meg lett adva, a program ki fogja jelezni a figyelmeztetéseket.
      * Ha a -vv paraméter meg lett adva, a program ki fogja jelezni a figyelmeztetéseket és a kapcsolódásokat is.
      * Ha a -m paraméter meg lett adva, a program nem jelez se figyelmeztetéseket, se kapcsolódásokat.
+     * Ha több mint 1 paraméter lett megadva vagy a megadott paraméter nem egyezik a fenti három egyikével,
+     * az alkalmazás megjeleníti a súgót és végetér a futása.
      */
     private static void readArguments(String[] args) {
-        if (args.length == 1) {
-            if (args[0].equals("-v")) {
-                BridgeHandler.setWarnEnabled(true);
-                ConnectionAlert.setMsgEnabled(false);
+        if (GraphicsEnvironment.isHeadless()) {
+            if (args.length == 1) {
+                if (args[0].equals("-v")) {
+                    BridgeHandler.setWarnEnabled(true);
+                    ConnectionAlert.setMsgEnabled(false);
+                }
+                else if (args[0].equals("-vv")) {
+                    BridgeHandler.setWarnEnabled(true);
+                    ConnectionAlert.setMsgEnabled(true);
+                }
+                else if (args[0].equals("-m")) {
+                    BridgeHandler.setWarnEnabled(false);
+                    ConnectionAlert.setMsgEnabled(false);
+                }
+                else {
+                    showCommandLineHelp();
+                }
             }
-            else if (args[0].equals("-vv")) {
-                BridgeHandler.setWarnEnabled(true);
-                ConnectionAlert.setMsgEnabled(true);
-            }
-            else if (args[0].equals("-m")) {
-                BridgeHandler.setWarnEnabled(false);
-                ConnectionAlert.setMsgEnabled(false);
-            }
-            else {
+            else if (args.length > 0) {
                 showCommandLineHelp();
             }
-        }
-        else if (args.length > 0) {
-            showCommandLineHelp();
         }
     }
     

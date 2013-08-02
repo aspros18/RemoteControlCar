@@ -161,7 +161,7 @@ public class Main {
     private static void applyConfig() {
         if (CONFIG.isQuiet()) {
             BridgeHandler.setWarnEnabled(false);
-            ConnectionAlert.setLogEnabled(false);
+            ConnectionAlert.setMsgEnabled(false);
         }
     }
     
@@ -175,12 +175,12 @@ public class Main {
             // az ikon beállítása
             SystemTrayIcon.setIcon(getString("app_name"), R.resize(R.getBridgeImage(), SystemTrayIcon.getIconWidth()));
             // kapcsolatjelzés beállító opció hozzáadása
-            SystemTrayIcon.addCheckboxMenuItem(VAL_CONN_LOG, ConnectionAlert.isLogEnabled(), new Runnable() {
+            SystemTrayIcon.addCheckboxMenuItem(VAL_CONN_LOG, ConnectionAlert.isMsgEnabled(), new Runnable() {
 
                 @Override
                 public void run() {
                     // naplózás beállítása az ellenkezőjére, mint volt
-                    ConnectionAlert.setLogEnabled(!ConnectionAlert.isLogEnabled());
+                    ConnectionAlert.setMsgEnabled(!ConnectionAlert.isMsgEnabled());
                 }
                 
             });
@@ -297,6 +297,7 @@ public class Main {
             public void run() {
                 if (SERVER_SOCKET != null) try {
                     logInfo(VAL_MESSAGE, getString("log_stop"), false);
+                    UncaughtExceptionHandler.setDisabled(true);
                     SERVER_SOCKET.close();
                 }
                 catch (IOException ex) {
@@ -342,15 +343,15 @@ public class Main {
         if (args.length == 1) {
             if (args[0].equals("-v")) {
                 BridgeHandler.setWarnEnabled(true);
-                ConnectionAlert.setLogEnabled(false);
+                ConnectionAlert.setMsgEnabled(false);
             }
             else if (args[0].equals("-vv")) {
                 BridgeHandler.setWarnEnabled(true);
-                ConnectionAlert.setLogEnabled(true);
+                ConnectionAlert.setMsgEnabled(true);
             }
             else if (args[0].equals("-m")) {
                 BridgeHandler.setWarnEnabled(false);
-                ConnectionAlert.setLogEnabled(false);
+                ConnectionAlert.setMsgEnabled(false);
             }
             else {
                 showCommandLineHelp();

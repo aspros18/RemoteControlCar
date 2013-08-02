@@ -23,7 +23,7 @@ import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 
 /**
  * An input stream with a built-in parser for MjpegFrame data structures.
@@ -42,7 +42,7 @@ import org.apache.log4j.Logger;
  * @author Jason Thrasher
  */
 public class MjpegInputStream extends DataInputStream {
-	private static Logger mLog = Logger.getLogger(MjpegInputStream.class); //logging mechanism
+//	private static Logger mLog = Logger.getLogger(MjpegInputStream.class); //logging mechanism
 	protected int mSequence = 0;
 	protected int mContentLength = -1;
 	protected boolean isContentLengthAvailable = false;
@@ -84,8 +84,8 @@ public class MjpegInputStream extends DataInputStream {
 				mContentLength = MjpegFormat.parseContentLength(header);
 				isContentLengthAvailable = true; //flag for more efficientcy
 			} catch (NumberFormatException nfe) {
-				mLog.warn(
-					"couldn't parse content length from header on first pass");
+//				mLog.warn(
+//					"couldn't parse content length from header on first pass");
 				isContentLengthAvailable = false;
 			}
 		}
@@ -100,8 +100,8 @@ public class MjpegInputStream extends DataInputStream {
 			try {
 				mContentLength = MjpegFormat.parseContentLength(header);
 			} catch (NullPointerException npe) {
-				mLog.warn(
-					"couldn't parse content length, failover to jpeg EOF search");
+//				mLog.warn(
+//					"couldn't parse content length, failover to jpeg EOF search");
 				mContentLength = MjpegFormat.getEndOfSeqeunce(this,
 						JpegFormat.EOF_MARKER); //position of first byte after the jpeg
 			}

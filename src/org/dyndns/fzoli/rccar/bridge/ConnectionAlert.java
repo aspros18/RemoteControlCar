@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.rccar.bridge;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.helpers.LogLog;
 import static org.dyndns.fzoli.rccar.bridge.Main.VAL_CONN_LOG;
 import org.dyndns.fzoli.ui.systemtray.SystemTrayIcon;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon.IconType;
@@ -19,19 +20,28 @@ public class ConnectionAlert {
     /**
      * Logger ahhoz, hogy naplózni lehessen a kommunikációval kapcsolatos eseményeket.
      */
-    private static final Logger logger = Logger.getLogger(ConnectionAlert.class);
+    private static final Logger logger;
+    
+    /**
+     * Inicializálja a naplózáshoz szükséges objektumot.
+     * Az inicializálás közben fellépő kivételek nem jelennek meg a konzolon.
+     */
+    static {
+        LogLog.setQuietMode(true);
+        logger = Logger.getLogger(ConnectionAlert.class);
+    }
     
     /**
      * Megadja, hogy be van-e kapcsolva az üzenetjelzés.
      */
-    public static boolean isLogEnabled() {
+    public static boolean isMsgEnabled() {
         return show;
     }
     
     /**
      * Bekapcsolja vagy kikapcsolja az üzenetjelzést.
      */
-    public static void setLogEnabled(boolean enabled) {
+    public static void setMsgEnabled(boolean enabled) {
         show = enabled;
     }
     

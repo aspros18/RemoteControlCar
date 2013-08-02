@@ -208,6 +208,7 @@ public class Main {
     private static void exit() {
         exiting = true;
         SystemTrayIcon.dispose();
+        UncaughtExceptionHandler.setDisabled(true);
         System.exit(0);
     }
     

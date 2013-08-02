@@ -39,6 +39,11 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
     private static Image icon;
     
     /**
+     * Megadja, hogy inaktív-e a kivételkezelő.
+     */
+    private static boolean disabled = false;
+    
+    /**
      * Az alapértelmezett szövegek beállítása.
      */
     static {
@@ -101,6 +106,15 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
         setIcon(icon);
         apply();
     }
+
+    /**
+     * Beállítja a kivételkezelőt, hogy jelezzen-e kivételt.
+     * @param disabled true esetén nem lesz kivételjelzés
+     * @see #showException(java.lang.Thread, java.lang.Throwable)
+     */
+    public static void setDisabled(boolean disabled) {
+        UncaughtExceptionHandler.disabled = disabled;
+    }
     
     /**
      * Megjeleníti a kivételt egy dialógusablakban.
@@ -141,6 +155,7 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
      * @param ex a nem várt hiba
      */
     public static void showException(final Thread t, final Throwable ex) {
+        if (disabled) return;
         final boolean error = ex instanceof Error;
         if (!GraphicsEnvironment.isHeadless()) {
             if (error || !SystemTrayIcon.isVisible() || isSplashVisible()) {

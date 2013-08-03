@@ -38,13 +38,27 @@ public class SettingActivity extends SherlockPreferenceActivity {
 	/**
 	 * A preferences.xml fájlban megadott id és kulcs párokat tartalmazó felsorolás. 
 	 */
-	private static final SparseArray<String> KEYS = new SparseArray<String>() {
+	private static final SparseArray<KeyProp> KEYS = new SparseArray<KeyProp>() {
 		{
-			put(R.id.file_ca, "ca");
-			put(R.id.file_crt, "crt");
-			put(R.id.file_key, "key");
+			put(R.id.file_ca, new KeyProp("ca", "crt"));
+			put(R.id.file_crt, new KeyProp("crt", "crt"));
+			put(R.id.file_key, new KeyProp("key", "key"));
 		}
 	};
+	
+	/**
+	 * Megadja, hogy az adott kulcshoz milyen fájl-kiterjesztés tartozik.
+	 */
+	private static class KeyProp {
+		
+		final String KEY, EXT;
+		
+		KeyProp(String id, String ext) {
+			KEY = id;
+			EXT = ext;
+		}
+		
+	}
 	
 	/**
 	 * Nem engedi meg, hogy a beírt érték 0 alá vagy 65535 felé menjen, miközben gépel a felhasználó.
@@ -254,20 +268,30 @@ public class SettingActivity extends SherlockPreferenceActivity {
 	 * Ez a metódus fut le, amikor a fájlkereső ablak bezárul.
 	 * Ha volt fájl kiválasztva, akkor a {@code data} változó tartalmazza azt,
 	 * a változás megjelenik az Activity felületén és az új útvonal mentésre kerül.
+	 * Ha a fájl kiterjesztése nem megfelelő, a beállítás nem módosul,
+	 * és a felhasználó figyelmeztetve lesz.
 	 */
 	@Override
 	@SuppressWarnings("deprecation")
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (data != null) {
-			String key = KEYS.get(requestCode);
+			KeyProp prop = KEYS.get(requestCode);
+			String key = prop.KEY;
+			String ext = prop.EXT;
 			String path = getPath(this, data.getData());
-			String old_path = OLD_FILES.get(key);
-			if (path != null && old_path != null && !old_path.equals(path)) {
-				SSLSocketUtil.clearClientCache();
+			String name = new File(path).getName().toLowerCase();
+			if (name.length() > ext.length() + 1 && name.endsWith('.' + ext)) {
+				String old_path = OLD_FILES.get(key);
+				if (path != null && old_path != null && !old_path.equals(path)) {
+					SSLSocketUtil.clearClientCache();
+				}
+				getPreferenceManager().getSharedPreferences().edit().putString(key, path).commit();
+				showFileName(key, path);
 			}
-			getPreferenceManager().getSharedPreferences().edit().putString(key, path).commit();
-			showFileName(key, path);
+			else {
+				showMessage(R.string.wrong_ext);
+			}
 		}
 	}
 	
@@ -288,7 +312,7 @@ public class SettingActivity extends SherlockPreferenceActivity {
 	@SuppressWarnings("deprecation")
 	private void initFilePreferences() {
 		for (int i = 0; i < KEYS.size(); i++) {
-			String key = KEYS.get(KEYS.keyAt(i));
+			String key = KEYS.get(KEYS.keyAt(i)).KEY;
 			String path = getPreferenceManager().getSharedPreferences().getString(key, null);
 			if (path != null) {
 				showFileName(key, path);
@@ -328,7 +352,15 @@ public class SettingActivity extends SherlockPreferenceActivity {
 	 * Figyelmezteti a felhasználót, hogy hibás a bevitt adat.
 	 */
 	private void showWarning() {
-		Toast.makeText(SettingActivity.this, R.string.wrong_value, Toast.LENGTH_SHORT).show();
+		showMessage(R.string.wrong_value);
+	}
+	
+	/**
+	 * Üzenetet jelenít meg a felhasználó számára.
+	 * @param res a szöveg resource-azonosítója
+	 */
+	private void showMessage(int res) {
+		Toast.makeText(SettingActivity.this, res, Toast.LENGTH_SHORT).show();
 	}
 	
 	/**

@@ -2,6 +2,7 @@
     <string name="app_name">Mobile-RC</string>
     <string name="menu_settings">Beállítások</string>
     <string name="wrong_value">Hibás érték!</string>
+    <string name="wrong_ext">Nem megfelelő kiterjesztés!</string>
     <string name="category_path">Útvonal</string>
     <string name="category_security">Biztonság</string>
     <string name="category_cam">IP Webcam</string>

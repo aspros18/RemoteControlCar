@@ -26,6 +26,7 @@
     <string name="title_offline">Offline</string>
     <string name="title_max_voltage">Max Voltage</string>
     <string name="title_min_voltage">Min Voltage</string>
+    <string name="title_keep_adb">Keep ADB</string>
     <string name="summary_address">Edit server address</string>
     <string name="summary_port">Edit server port</string>
     <string name="summary_ca">Search Certificate Authority</string>
@@ -43,6 +44,7 @@
     <string name="summary_offline">Offline mode</string>
     <string name="summary_max_voltage">Maximum voltage-limit</string>
     <string name="summary_min_voltage">Minimum voltage-limit</string>
+    <string name="summary_keep_adb">Keep USB debugging on</string>
     <string name="text_start">Start</string>
     <string name="text_stop">Stop</string>
     <string name="err_1">Connection error.</string>
@@ -54,6 +56,7 @@
     <string name="err_7">Wrong certificate settings.</string>
     <string name="err_8">Wrong certificate password.</string>
     <string name="set_config">Please, set a correct configuration.</string>
+    <string name="set_adb">Please, enable USB debugging.</string>
     <string name="set_network">Please, select a wireless network.</string>
     <string name="set_gps">Please, enable the GPS sensor.</string>
     <string name="install_cam">Please, install the IP Webcam app.</string>

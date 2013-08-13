@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.dyndns.fzoli.rccar.host"
-    android:versionCode="28"
-    android:versionName="1.1.19.28" >
+    android:versionCode="29"
+    android:versionName="1.2.0.29" >
     <uses-sdk
         android:minSdkVersion="7"
         android:targetSdkVersion="17" />
@@ -33,6 +33,9 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_SHUTDOWN" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
             </intent-filter>
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />

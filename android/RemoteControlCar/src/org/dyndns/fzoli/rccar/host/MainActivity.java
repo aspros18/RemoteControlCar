@@ -106,6 +106,7 @@ public class MainActivity extends SherlockActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState); // ős hívása elsőként, hogy az összes metódus használható legyen
 		setContentView(R.layout.activity_main); // felület generálása XML fájlból
+		
 		// a felület komponenseinek referenciáinak megszerzése:
 		btStart = (Button) findViewById(R.id.bt_start); 
 		btStop = (Button) findViewById(R.id.bt_stop);
@@ -308,14 +309,14 @@ public class MainActivity extends SherlockActivity {
 	 */
 	private void setRunning(boolean running, boolean save) {
 		if (running) { // ha futást kértek
-			if (config.isCorrect()) { // és jó a konfig
+			if (config.isCorrect()/* && ConnectionService.isVehicleChannelAvailable(this)*/) { // és jó a konfig (valamint az adb elérhető)
 				refreshStartStop(running, save); // felület és változók frissítése
 				disableButton(btStop, 1000); // a leállítás 1 másodpercre inaktív
 				bindService(); // akkor kapcsolódás a szolgáltatáshoz és elindítása
 			}
 			else {
-				if (!ConnectionService.isStarted(this)) { // ha rossz a konfig és nem fut a szolgáltatás
-					Toast.makeText(this, R.string.set_config, Toast.LENGTH_SHORT).show(); // figyelmeztetés megjelenítése
+				if (!ConnectionService.isStarted(this)) { // ha rossz a konfig (vagy az adb inaktív) és nem fut a szolgáltatás
+					Toast.makeText(this, /*config.isCorrect() ? R.string.set_adb : */R.string.set_config, Toast.LENGTH_SHORT).show(); // figyelmeztetés megjelenítése
 					disableButton(btStart, 2000); // 2 másodperc az Android API-ban definiált rövid üzenet ideje, ennyi időre inaktív a start gomb
 				}
 				else { // ha rossz a konfig és fut a szolgáltatás (pl. valójában jók a beállítások, el is indult a service sikeresen, de aztán az USB háttértárat aktiválták és a telefon nem tudja olvasni az SD-kártyát)

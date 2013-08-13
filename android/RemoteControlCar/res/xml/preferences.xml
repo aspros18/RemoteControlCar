@@ -85,6 +85,11 @@
             android:inputType="numberDecimal"
             android:defaultValue="1.94"
             android:dependency="offline" />
+        <CheckBoxPreference
+            android:key="keep_adb"
+            android:title="@string/title_keep_adb"
+            android:summary="@string/summary_keep_adb"
+            android:defaultValue="false" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/category_other">
         <ListPreference

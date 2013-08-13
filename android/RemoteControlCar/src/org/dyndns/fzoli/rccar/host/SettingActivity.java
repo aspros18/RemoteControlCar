@@ -13,11 +13,13 @@ import org.dyndns.fzoli.socket.SSLSocketUtil;
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.ramdroid.adbtoggle.accesslib.AdbToggleAccess;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -333,6 +335,19 @@ public class SettingActivity extends SherlockPreferenceActivity {
 		initEditTextPreference("cam_password", TW_LOGIN, CL_LOGIN);
 		initEditTextPreference("max_voltage", TW_MAX_BATT, CL_BATT);
 		initEditTextPreference("min_voltage", TW_MIN_BATT, CL_BATT);
+		initAdbPreference();
+	}
+	
+	/**
+	 * Az ADB opciót inicializálja.
+	 * Ha az ADB Toggle telepítve van, csak akkor használható az opció.
+	 */
+	@SuppressWarnings("deprecation")
+	private void initAdbPreference() {
+		CheckBoxPreference adbPref = (CheckBoxPreference) findPreference("keep_adb");
+		final boolean enabled = !ConnectionService.isAdkAvailable() && AdbToggleAccess.isInstalled(this);
+		adbPref.setEnabled(enabled);
+		if (!enabled) adbPref.setChecked(ConnectionService.isAdbEnabled(this));
 	}
 	
 	/**

@@ -4,11 +4,15 @@ import ioio.lib.util.android.IOIOService;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.dyndns.fzoli.rccar.host.socket.ConnectionHelper;
 import org.dyndns.fzoli.rccar.host.vehicle.Vehicle;
 import org.dyndns.fzoli.rccar.host.vehicle.Vehicles;
 import org.dyndns.fzoli.socket.process.SecureProcess;
+
+import com.ramdroid.adbtoggle.accesslib.AdbToggleAccess;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -22,6 +26,7 @@ import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -117,7 +122,8 @@ public class ConnectionService extends IOIOService {
 						ID_NOTIFY_CONFIG = 2,
 						ID_NOTIFY_NETWORK = 3,
 						ID_NOTIFY_INST_CAM = 4,
-						ID_NOTIFY_GPS_ENABLE = 5;
+						ID_NOTIFY_GPS_ENABLE = 5,
+						ID_NOTIFY_ADB_ENABLE = 6;
 	
 	/**
 	 * A SharedPreference azon kulcsai, melyek kódban több helyen is használatban vannak.
@@ -143,7 +149,7 @@ public class ConnectionService extends IOIOService {
 	/**
 	 * A szolgáltatás az eseményeket ezzel a kulccsal várja.
 	 */
-	public final static String KEY_EVENT = "event";
+	public final static String KEY_EVENT = "event", KEY_ORIG = "orig";
 	
 	/**
 	 * A szolgáltatás ezeket az eseményeket fogadja és dolgozza fel.
@@ -151,6 +157,7 @@ public class ConnectionService extends IOIOService {
 	 */
 	@SuppressWarnings("deprecation")
 	public final static String EVT_RECONNECT_NOW = "reconnect now",
+						EVT_POWER_DOWN = Intent.ACTION_POWER_DISCONNECTED,
 						EVT_CONNECTIVITY_CHANGE = ConnectivityManager.CONNECTIVITY_ACTION,
 						EVT_GPS_SENSOR_CHANGE = LocationManager.PROVIDERS_CHANGED_ACTION,
 						EVT_SDCARD_MOUNTED = Intent.ACTION_MEDIA_MOUNTED,
@@ -498,6 +505,7 @@ public class ConnectionService extends IOIOService {
 			updateNotificationText(); // fő értesítés szövegének frissítése
 			setNotificationsVisible(true); // egyéb értesítések megjelenítése, ha van mit
 			createHornPlayer(); // dudahang-lejátszó inicializálása
+			setAdbEnabled(true); // ADB bekapcsolása, ha szükséges
 		}
 	}
 	
@@ -525,6 +533,11 @@ public class ConnectionService extends IOIOService {
 					setGpsEnableNotificationVisible(true); // figyelmeztetés módosítása, ha nem első indítás
 					if (isGpsEnabled()) getBinder().initSensorThread();
 				}
+			}
+			else if (event.equals(EVT_POWER_DOWN)) { // ha az IOIO le lett választva,
+				// az ADB Toggle automatikus módban kikapcsolhatja az ADB-t, ezért vissza kell kapcsolni,
+				// hogy a legközelebbi csatlakozáskor legyen újra kapcsolat az IOIO-val
+				if (startId != 1) setAdbEnabled(true);
 			}
 			else if (event.equals(EVT_APP_ADDED) || event.equals(EVT_APP_INSTALL)) { // ha az alkalmazás települt
 				if (startId != 1) setCamInstallNotificationVisible(true); // figyelmeztetés frissítése, ha nem első indítás
@@ -561,6 +574,7 @@ public class ConnectionService extends IOIOService {
 	public void onDestroy() {
 		if (!isSuspended() && isStarted(this)) sendBroadcast(new Intent(EVT_SERVICE_DESTROY));
 		stop();
+		setAdbEnabled(false);
 		setFatal(false);
 		setSuspended(true);
 		disconnect("on destroy");
@@ -625,6 +639,31 @@ public class ConnectionService extends IOIOService {
 			}
 			catch (Exception ex) {
 				;
+			}
+		}
+	}
+	
+	/**
+	 * Az ADB Toggle alkalmazáshoz biztosít hozzáférést.
+	 * Segítségével be vagy kikapcsolható az USB hibakeresés.
+	 */
+	private static AdbToggleAccess adbToggle;
+	
+	/**
+	 * Engedélyezi vagy tiltja az USB hibakeresést.
+	 * @param enabled true esetén engedélyezés
+	 */
+	private void setAdbEnabled(boolean enabled) {
+		if (!ConnectionService.isAdkAvailable() && AdbToggleAccess.isInstalled(this)) {
+			boolean active = AdbToggleAccess.isEnabled(this);
+			if (adbToggle == null) {
+				adbToggle = new AdbToggleAccess();
+			}
+			if (enabled) {
+				if (!active) adbToggle.enable(this, null);
+			}
+			else {
+				if (active && !isAdbHeld(this)) adbToggle.disable(this, null);
 			}
 		}
 	}
@@ -770,6 +809,7 @@ public class ConnectionService extends IOIOService {
 		setNetworkNotificationVisible(visible);
 		setGpsEnableNotificationVisible(visible);
 		setCamInstallNotificationVisible(visible);
+		setAdbEnableNotificationVisible(visible);
 	}
 	
 	/**
@@ -812,6 +852,15 @@ public class ConnectionService extends IOIOService {
 	private void setGpsEnableNotificationVisible(boolean visible) {
 		if (visible && !isGpsEnabled()) addOnlineNotification(R.string.set_gps, new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), ID_NOTIFY_GPS_ENABLE, false);
 		else removeNotification(ID_NOTIFY_GPS_ENABLE);
+	}
+	
+	/**
+	 * Megjelenít egy figyelmeztetést, ha az ADB nincs bekapcsolva.
+	 * @param visible true esetén megjeleníti a figyelmeztetést, de csak akkor, ha kell és false esetén eltünteti a figyelmeztetést
+	 */
+	private void setAdbEnableNotificationVisible(boolean visible) {
+		if (visible && !isAdkAvailable() && !AdbToggleAccess.isInstalled(this) && !isAdbEnabled(this)) addNotification(R.string.set_adb, new Intent(Settings.ACTION_APPLICATION_SETTINGS), ID_NOTIFY_ADB_ENABLE, true, false);
+		else removeNotification(ID_NOTIFY_ADB_ENABLE);
 	}
 	
 	/**
@@ -961,6 +1010,79 @@ public class ConnectionService extends IOIOService {
 	    return Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
 	}
 	
+	public static boolean isVehicleChannelAvailable(Context context) {
+		boolean adbToggleInstalled = AdbToggleAccess.isInstalled(context);
+		boolean adbEnabled = ConnectionService.isAdbEnabled(context);
+		boolean adkAvailable = ConnectionService.isAdkAvailable();
+		return !(!adkAvailable && !adbEnabled && !adbToggleInstalled);
+	}
+	
+	/**
+	 * Megadja, hogy az Adb engedélyezve van-e.
+	 */
+	@SuppressWarnings("deprecation")
+	public static boolean isAdbEnabled(Context context) {
+		try {
+			return Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.ADB_ENABLED, 0) == 1;
+		}
+		catch (Exception ex) {
+			return false;
+		}
+	}
+	
+	/**
+	 * Megadja, hogy a rendszer a verziószáma alapján támogathatja-e az ADK-t.
+	 */
+	public static boolean isAdkAvailable() {
+		String androidVersion = Build.VERSION.RELEASE;
+		String kernelVersion = System.getProperty("os.version");
+		return chkVer(androidVersion, 2, 3, 4) && chkVer(kernelVersion, 2, 6, 35);
+	}
+	
+    /**
+     * A verziószám ellenőrzéshez felhasznált reguláris kifejezés.
+     */
+    private static final Pattern PT_VER = Pattern.compile("^(\\d)\\.(\\d)\\.?(\\d)?");
+
+    /**
+     * Verziószám ellenőrző.
+     * @param s a vizsgált verziószám (pl. 2.0; 2.1; 2.3.3)
+     * @param v a várt verziószám részekre bontva
+     * @return true, ha a vizsgált verziószám megegyező vagy nagyobb a vártnál
+     */
+    private static boolean chkVer(String s, int... v) {
+        if (s != null && v.length > 0) { // ha érvényesek a paraméterek
+            Matcher m = PT_VER.matcher(s);
+            if (m.find()) { // ha a verzió formátuma megfelelő
+                // ha a 3. szám nem létezik, kettő, egyébként három szám van
+                int cnt = m.group(3) == null ? 2 : 3;
+                // ciklus, amíg van mit összehasonlítani
+                for (int i = 1; i <= cnt && i - 1 < v.length; i++) {
+                    int ver1 = v[i - 1]; // várt szám
+                    int ver2 = Integer.parseInt(m.group(i)); // kapott szám
+                    // ha a kapott szám nagyobb a vártnál, jó a verzió
+                    if (ver2 > ver1) return true;
+                    // ha a vizsgált verziószám hosszabb a kritériuménál
+                    // vagy van még további szám, akkor az egyenlőség megengedve
+                    boolean eq = cnt >= v.length || i < cnt;
+                    // ha a kapott szám nem éri el a vártat, alacsony verzió
+                    if (!(eq ? ver2 >= ver1 : ver2 > ver1)) return false;
+                }
+                // ha az összes szám átment a próbán, jó a verzió
+                return true;
+            }
+        }
+        return false; // érvénytelen paraméter
+    }
+	
+    /**
+	 * Megadja, hogy maradjin-e az ADB bekapcsolva
+	 * @param context a meghívó referenciája Pl. Service, Activity
+	 */
+	private static boolean isAdbHeld(Context context) {
+		return getSharedPreferences(context).getBoolean("keep_adb", false);
+	}
+    
 	/**
 	 * Megadja, hogy legyen-e ellenőrzötten streamelve az MJPEG-folyam.
 	 * @param context a meghívó referenciája Pl. Service, Activity

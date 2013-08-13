@@ -26,6 +26,7 @@
     <string name="title_offline">Offline mód</string>
     <string name="title_max_voltage">Max feszültség</string>
     <string name="title_min_voltage">Min feszültség</string>
+    <string name="title_keep_adb">ADB bekapcsolva marad</string>
     <string name="summary_address">Szerver cím megadása</string>
     <string name="summary_port">Szerver port megadása</string>
     <string name="summary_ca">Certificate Authority tallózása</string>
@@ -43,6 +44,7 @@
     <string name="summary_offline">Hálózati kapcsolat nélküli mód</string>
     <string name="summary_max_voltage">Maximum feszültséghatár</string>
     <string name="summary_min_voltage">Minimum feszültséghatár</string>
+    <string name="summary_keep_adb">USB hibakeresés bekapcsolva hagyása</string>
     <string name="text_start">Start</string>
     <string name="text_stop">Stop</string>
     <string name="err_1">Sikertelen kapcsolódás.</string>
@@ -54,6 +56,7 @@
     <string name="err_7">Helytelen tanúsítvány beállítás.</string>
     <string name="err_8">Helytelen tanúsítvány jelszó.</string>
     <string name="set_config">Kérem, állítsa be jól a konfigurációt.</string>
+    <string name="set_adb">Kérem, engedélyezze\naz USB hibakeresést.</string>
     <string name="set_network">Kérem, válasszon ki egy hálózatot.</string>
     <string name="set_gps">Kérem, engedélyezze a GPS szenzort.</string>
     <string name="install_cam">Telepítse az IP Webcam alkalmazást.</string>

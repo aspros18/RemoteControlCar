@@ -17,6 +17,7 @@ import org.dyndns.fzoli.rccar.model.host.HostData.PointPartialHostData.PointType
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.impl.MessageProcess;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
@@ -45,6 +46,7 @@ import android.util.Log;
  * A program beállítások menüjében beállítható a frissítési időköz adatforgalom takarékosság céljából.
  * A frissítési időköz a telefon szenzoraira és az akkumulátor-szint változásra vonatkozik.
  */
+@SuppressLint("InlinedApi")
 public class HostMessageProcess extends MessageProcess {
 
 	/**
@@ -339,7 +341,7 @@ public class HostMessageProcess extends MessageProcess {
 		locationManager = (LocationManager) service.getSystemService(Context.LOCATION_SERVICE);
 		sensorManager = (SensorManager)service.getSystemService(Context.SENSOR_SERVICE);
 		availableLocation = locationManager.getAllProviders().contains(LocationManager.GPS_PROVIDER);
-		availableDirection = !sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER).isEmpty() && !sensorManager.getSensorList(Sensor.TYPE_GRAVITY).isEmpty();
+		availableDirection = !sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER).isEmpty() && (android.os.Build.VERSION.SDK_INT < 9 || !sensorManager.getSensorList(Sensor.TYPE_GRAVITY).isEmpty());
 		gpsEnabled = SERVICE.isGpsEnabled();
 		sensorThreadReiniting = !gpsEnabled;
 		Log.i(ConnectionService.LOG_TAG, "location supported: " + availableLocation + "; direction supported: " + availableDirection);
@@ -370,7 +372,8 @@ public class HostMessageProcess extends MessageProcess {
 			}
 		}
 		Float magneticDeclination = null;
-		Location l = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+		Location l = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+		if (l == null) l = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 		if (l != null) {
 			GeomagneticField geomagneticField = new GeomagneticField((float) l.getLatitude(), (float) l.getLongitude(), (float) l.getAltitude(), l.getTime());
 			magneticDeclination = geomagneticField.getDeclination();

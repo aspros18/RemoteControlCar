@@ -34,6 +34,11 @@ public class PWMVehicle extends AbstractVehicle {
 	protected int OUT_FREQ = 1000;
 	
 	/**
+	 * PWM százalékos kezdőértéke.
+	 */
+	protected int START = 0;
+	
+	/**
 	 * Konstruktor.
 	 * @param service szolgáltatás a vezérlőjelet tartalmazó objektum referenciájának eléréséhez
 	 */
@@ -84,6 +89,30 @@ public class PWMVehicle extends AbstractVehicle {
 		outBack = ioio_.openPwmOutput(PIN_BACK, OUT_FREQ);
 		outLeft = ioio_.openPwmOutput(PIN_LEFT, OUT_FREQ);
 		outRight = ioio_.openPwmOutput(PIN_RIGHT, OUT_FREQ);
+	}
+	
+	/**
+	 * A START változó alapján kiszámítja az X és Y értékét.
+	 */
+	private int calc(int i) {
+		if (START == 0 || i < 1 || i > 99) return i;
+		return (int) (i * ((100 - START) / 100.0) + START);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getX() {
+		return calc(super.getX());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getY() {
+		return calc(super.getY());
 	}
 	
 	/**

@@ -1,5 +1,8 @@
 Git URL: https://github.com/fzoli/RemoteControlCar
 
+A projektet bemutató videófelvételek a videos könyvtárban találhatók meg.
+A járműről fényképek a photos könyvtárban, képernyőképek a snapshots könyvtárban.
+
 Bevezetés
 ---------
 

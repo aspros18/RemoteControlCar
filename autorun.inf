@@ -5,6 +5,8 @@ label=Mobile-RC - Farkas Zoltán
 action=Mobile-RC alkalmazás telepítése
 shell\thesis=Dokumentáció megnyitása
 shell\thesis\command=autorun.exe thesis.pdf
+shell\video=Bemutató videó megnyitása
+shell\video\command=autorun.exe videos\test1.avi
 
 [Content]
 MusicFiles=false

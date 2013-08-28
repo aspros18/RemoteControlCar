@@ -1,75 +1,75 @@
 1
 00:00:06,000 --> 00:00:15,000
-A hídszerver konfigurációs állománya
-a telepítési könyvtárban található.
+A hÃ­dszerver konfigurÃ¡ciÃ³s Ã¡llomÃ¡nya
+a telepÃ­tÃ©si kÃ¶nyvtÃ¡rban talÃ¡lhatÃ³.
 
 2
 00:00:20,000 --> 00:00:30,000
-Itt adható meg a szerver által
-használt port és tanúsítvány.
+Itt adhatÃ³ meg a szerver Ã¡ltal
+hasznÃ¡lt port Ã©s tanÃºsÃ­tvÃ¡ny.
 
 3
 00:00:36,000 --> 00:00:40,000
-Íme a jelszóval védett teszt-tanúsítványok könyvtára.
+Ãme a jelszÃ³val vÃ©dett teszt-tanÃºsÃ­tvÃ¡nyok kÃ¶nyvtÃ¡ra.
 
 4
 00:00:42,000 --> 00:00:49,000
-Elõbb a hídszerver indul, amihez kapcsolódhat
-a többi alkalmazás.
+ElÅ‘bb a hÃ­dszerver indul, amihez kapcsolÃ³dhat
+a tÃ¶bbi alkalmazÃ¡s.
 
 5
 00:00:50,000 --> 00:01:00,000
-Most már indítható a vezérlõkliens.
+Most mÃ¡r indÃ­thatÃ³ a vezÃ©rlÅ‘kliens.
 
 6
 00:01:10,000 --> 00:01:15,000
-A hídszerver most a helyi gépen fut,
-ezért a cím localhost.
+A hÃ­dszerver most a helyi gÃ©pen fut,
+ezÃ©rt a cÃ­m localhost.
 
 7
 00:01:17,000 --> 00:01:24,000
-A Wi-Fi hálózatot a mobiltelefon biztosítja.
+A Wi-Fi hÃ¡lÃ³zatot a mobiltelefon biztosÃ­tja.
 
 8
 00:01:33,000 --> 00:01:48,000
-A telefonon a szerver címe megegyezik
-a Wi-Fi adapter címével.
+A telefonon a szerver cÃ­me megegyezik
+a Wi-Fi adapter cÃ­mÃ©vel.
 
 9
 00:01:59,000 --> 00:02:05,000
-Sikeres kapcsolódás után a telefon megkezdi
-a kamerakép feltöltését.
+Sikeres kapcsolÃ³dÃ¡s utÃ¡n a telefon megkezdi
+a kamerakÃ©p feltÃ¶ltÃ©sÃ©t.
 
 10
 00:02:06,000 --> 00:02:11,000
-Amint kapcsolódott a jármûkliens a hídhoz,
-a jármûválasztóban megjelenik.
+Amint kapcsolÃ³dott a jÃ¡rmÅ±kliens a hÃ­dhoz,
+a jÃ¡rmÅ±vÃ¡lasztÃ³ban megjelenik.
 
 11
 00:02:12,000 --> 00:02:17,000
-A jármûválasztóban szereplõ név
-a tanúsítványban megadott CN mezõ értéke.
+A jÃ¡rmÅ±vÃ¡lasztÃ³ban szereplÅ‘ nÃ©v
+a tanÃºsÃ­tvÃ¡nyban megadott CN mezÅ‘ Ã©rtÃ©ke.
 
 12
 00:02:18,000 --> 00:02:30,000
-A képen látható a prototípus jármû,
-amivel még nincs összekötve a telefon.
+A kÃ©pen lÃ¡thatÃ³ a prototÃ­pus jÃ¡rmÅ±,
+amivel mÃ©g nincs Ã¶sszekÃ¶tve a telefon.
 
 13
 00:03:03,000 --> 00:03:18,000
-A figyelmeztetés eltûnik és egy LED
-világítani kezd, ha van összeköttetés.
+A figyelmeztetÃ©s eltÅ±nik Ã©s egy LED
+vilÃ¡gÃ­tani kezd, ha van Ã¶sszekÃ¶ttetÃ©s.
 
 14
 00:03:50,000 --> 00:03:58,000
-A vezérlés átvétele után a jármû irányítható.
+A vezÃ©rlÃ©s Ã¡tvÃ©tele utÃ¡n a jÃ¡rmÅ± irÃ¡nyÃ­thatÃ³.
 
 15
 00:04:05,000 --> 00:04:22,000
-Ha a jármûvel megszakad a kapcsolat,
-megjelenik a jármû offline figyelmeztetés.
+Ha a jÃ¡rmÅ±vel megszakad a kapcsolat,
+megjelenik a jÃ¡rmÅ± offline figyelmeztetÃ©s.
 
 16
 00:04:23,000 --> 00:04:30,000
-A kapcsolat helyreálltával a jármû ismét vezérelhetõ.
+A kapcsolat helyreÃ¡lltÃ¡val a jÃ¡rmÅ± ismÃ©t vezÃ©relhetÅ‘.
 

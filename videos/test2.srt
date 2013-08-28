@@ -1,28 +1,28 @@
 1
 00:00:06,000 --> 00:00:11,000
-Ez a videó 2x-es gyorsítású, így az eredeti
-sebesség 0.5-ös lejátszással tekinthetõ meg.
+Ez a videÃ³ 2x-es gyorsÃ­tÃ¡sÃº, Ã­gy az eredeti
+sebessÃ©g 0.5-Ã¶s lejÃ¡tszÃ¡ssal tekinthetÅ‘ meg.
 
 2
 00:00:12,000 --> 00:00:16,000
-Ebben a tesztben a PWM alapú
-sebességvezérlés látható.
+Ebben a tesztben a PWM alapÃº
+sebessÃ©gvezÃ©rlÃ©s lÃ¡thatÃ³.
 
 3
 00:00:17,000 --> 00:00:22,000
-Ez a teszt immáron GNU/Debian alatt készült.
-Este, belsõ térben, ahol nincs GPS jel.
+Ez a teszt immÃ¡ron GNU/Debian alatt kÃ©szÃ¼lt.
+Este, belsÅ‘ tÃ©rben, ahol nincs GPS jel.
 
 4
 00:00:23,000 --> 00:00:28,000
-Az elsõ videóban kissé késett a kamerakép,
-mert a Webkey alkalmazás túlterhelte a rendszert.
+Az elsÅ‘ videÃ³ban kissÃ© kÃ©sett a kamerakÃ©p,
+mert a Webkey alkalmazÃ¡s tÃºlterhelte a rendszert.
 
 5
 00:00:29,000 --> 00:00:34,000
-Ezen a felvételen viszont már nem késik a kamerakép.
+Ezen a felvÃ©telen viszont mÃ¡r nem kÃ©sik a kamerakÃ©p.
 
 6
 00:00:35,000 --> 00:00:40,000
-PWM használatakor a vezérlõ dialógusablakon
-jobb egérgombbal állítható a sebességkorlátozás.
+PWM hasznÃ¡latakor a vezÃ©rlÅ‘ dialÃ³gusablakon
+jobb egÃ©rgombbal Ã¡llÃ­thatÃ³ a sebessÃ©gkorlÃ¡tozÃ¡s.

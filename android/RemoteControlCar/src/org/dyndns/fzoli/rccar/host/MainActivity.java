@@ -6,6 +6,7 @@ import java.util.TimerTask;
 
 import org.dyndns.fzoli.rccar.host.socket.UninspectedHostVideoProcess;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -309,7 +310,7 @@ public class MainActivity extends SherlockActivity {
 	 */
 	private void setRunning(boolean running, boolean save) {
 		if (running) { // ha futást kértek
-			if (config.isCorrect()/* && ConnectionService.isVehicleChannelAvailable(this)*/) { // és jó a konfig (valamint az adb elérhető)
+			if (ConnectionService.isOfflineMode(this) || config.isCorrect()/* && ConnectionService.isVehicleChannelAvailable(this)*/) { // és jó a konfig (valamint az adb elérhető)
 				refreshStartStop(running, save); // felület és változók frissítése
 				disableButton(btStop, 1000); // a leállítás 1 másodpercre inaktív
 				bindService(); // akkor kapcsolódás a szolgáltatáshoz és elindítása
@@ -376,6 +377,7 @@ public class MainActivity extends SherlockActivity {
 	 * A kapcsolat kialakulása után eseménykezelő beállítása a felület naprakészsége érdekében.
 	 * Ha megszakad a kapcsolat a szolgáltatással, magától újrakapcsolódik az Activity.
 	 */
+	@SuppressLint("InlinedApi")
 	private void bindService() {
 		unbindService(false); // kísérlet a szolgáltatás leválasztására, ha véletlen már van kialakított kapcsolat
 		startService(new Intent(this, ConnectionService.class)); // szolgáltatás elindítása a kapcsolódás előtt

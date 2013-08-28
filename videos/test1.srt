@@ -1,0 +1,75 @@
+1
+00:00:06,000 --> 00:00:15,000
+A hídszerver konfigurációs állománya
+a telepítési könyvtárban található.
+
+2
+00:00:20,000 --> 00:00:30,000
+Itt adható meg a szerver által
+használt port és tanúsítvány.
+
+3
+00:00:36,000 --> 00:00:40,000
+Íme a jelszóval védett teszt-tanúsítványok könyvtára.
+
+4
+00:00:42,000 --> 00:00:49,000
+Előbb a hídszerver indul, amihez kapcsolódhat
+a többi alkalmazás.
+
+5
+00:00:50,000 --> 00:01:00,000
+Most már indítható a vezérlőkliens.
+
+6
+00:01:10,000 --> 00:01:15,000
+A hídszerver most a helyi gépen fut,
+ezért a cím localhost.
+
+7
+00:01:17,000 --> 00:01:24,000
+A Wi-Fi hálózatot a mobiltelefon biztosítja.
+
+8
+00:01:33,000 --> 00:01:48,000
+A telefonon a szerver címe megegyezik
+a Wi-Fi adapter címével.
+
+9
+00:01:59,000 --> 00:02:05,000
+Sikeres kapcsolódás után a telefon megkezdi
+a kamerakép feltöltését.
+
+10
+00:02:06,000 --> 00:02:11,000
+Amint kapcsolódott a járműkliens a hídhoz,
+a járműválasztóban megjelenik.
+
+11
+00:02:12,000 --> 00:02:17,000
+A járműválasztóban szereplő név
+a tanúsítványban megadott CN mező értéke.
+
+12
+00:02:18,000 --> 00:02:30,000
+A képen látható a prototípus jármű,
+amivel még nincs összekötve a telefon.
+
+13
+00:03:03,000 --> 00:03:18,000
+A figyelmeztetés eltűnik és egy LED
+világítani kezd, ha van összeköttetés.
+
+14
+00:03:50,000 --> 00:03:58,000
+A vezérlés átvétele után a jármű irányítható.
+
+15
+00:04:05,000 --> 00:04:22,000
+Ha a járművel megszakad a kapcsolat,
+megjelenik a jármű offline figyelmeztetés.
+
+16
+00:04:23,000 --> 00:04:30,000
+A kapcsolat helyreálltával a jármű ismét vezérelhető.
+

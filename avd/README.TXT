@@ -1,12 +1,15 @@
-Mi ez?
+﻿Mi ez?
 ------
 
 Ebben a könyvtárban egy Android virtuálisgép található, melyre telepítve van és be van állítva az alkalmazás.
 
 Linuxon a könyvtár tartalmát a ~/.android/avd könyvtárba lehet másolni és az Eclipse IDE-n belül el lehet indítani a virtuális gépet.
+(A Mobile-RC alkalmazás nem kerül további frissítésre, ezt az adb install -r RemoteControlCar.apk paranccsal lehet megtenni.)
 
 Az Eclipse-re pluginként telepíthető az Android SDK, de elérhető előre konfigurált változat is az Android oldaláról:
 http://developer.android.com/sdk/index.html
+
+Az alkalmazás feltelepíthető már meglévő virtuális gépre, ehhez adok most útmutatást.
 
 A rendszer nyelve:
 ------------------

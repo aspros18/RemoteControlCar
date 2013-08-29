@@ -15,6 +15,9 @@ https://github.com/fzoli/RemoteControlCar/raw/master/linux-installer.bsx
 OS X telepítő:
 https://github.com/fzoli/RemoteControlCar/raw/master/mac-installer.dmg
 
+Android alkalmazás:
+https://github.com/fzoli/RemoteControlCar/raw/master/android/RemoteControlCar/bin/RemoteControlCar.apk
+
 A projektet bemutató videófelvételek a videos könyvtárban találhatók meg.
 A járműről fényképek a photos könyvtárban, képernyőképek a snapshots könyvtárban.
 

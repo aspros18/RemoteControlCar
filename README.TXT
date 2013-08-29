@@ -3,10 +3,17 @@ Git URL: https://github.com/fzoli/RemoteControlCar
 Beszerzés
 ---------
 
-Hordozható kiadás: https://github.com/fzoli/RemoteControlCar/raw/master/bin/rel-portable.zip
-Windows telepítő: https://github.com/fzoli/RemoteControlCar/raw/master/Setup.msi
-Linux telepítő: https://github.com/fzoli/RemoteControlCar/raw/master/linux-installer.bsx
-OS X telepítő: https://github.com/fzoli/RemoteControlCar/raw/master/mac-installer.dmg
+Hordozható kiadás:
+https://github.com/fzoli/RemoteControlCar/raw/master/bin/rel-portable.zip
+
+Windows telepítő:
+https://github.com/fzoli/RemoteControlCar/raw/master/Setup.msi
+
+Linux telepítő:
+https://github.com/fzoli/RemoteControlCar/raw/master/linux-installer.bsx
+
+OS X telepítő:
+https://github.com/fzoli/RemoteControlCar/raw/master/mac-installer.dmg
 
 A projektet bemutató videófelvételek a videos könyvtárban találhatók meg.
 A járműről fényképek a photos könyvtárban, képernyőképek a snapshots könyvtárban.

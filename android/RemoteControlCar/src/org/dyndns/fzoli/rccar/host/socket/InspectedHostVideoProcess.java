@@ -66,7 +66,7 @@ public class InspectedHostVideoProcess extends AbstractHostVideoProcess {
 								// mjpeg stream kapcsolat bontása, run metódus rekurzív hívása és return;
 								if (!getSocket().isClosed()) {
 									closeIPWebcamConnection(false);
-									run();
+									SERVICE.onConnectionError(ConnectionError.WEB_IPCAM_CLOSED, HELPER);
 									return false;
 								}
 							}
@@ -75,7 +75,7 @@ public class InspectedHostVideoProcess extends AbstractHostVideoProcess {
 								// ha a socket nincs lezárva, a feldolgozó kapcsolatának lezárása és új process példányosítása új kapcsolattal
 								if (!getSocket().isClosed()) {
 									closeIPWebcamConnection(false);
-									SERVICE.recreateProcess(InspectedHostVideoProcess.this);
+									SERVICE.onConnectionError(ConnectionError.CONNECTION_LOST, HELPER);
 									return false;
 								}
 							}

@@ -51,10 +51,11 @@
     <string name="err_2">Megszakadt a kapcsolat.</string>
     <string name="err_3">Kapcsolat elutasítva.</string>
     <string name="err_4">Érvénytelen tanúsítvány.</string>
-    <string name="err_5">Az IP Webcam szerver nem érhető el.</string>
-    <string name="err_6">A kliens verziója nem megfelelő.</string>
-    <string name="err_7">Helytelen tanúsítvány beállítás.</string>
-    <string name="err_8">Helytelen tanúsítvány jelszó.</string>
+    <string name="err_5">Az IP Webcam be lett zárva.</string>
+    <string name="err_6">Az IP Webcam szerver nem érhető el.</string>
+    <string name="err_7">A kliens verziója nem megfelelő.</string>
+    <string name="err_8">Helytelen tanúsítvány beállítás.</string>
+    <string name="err_9">Helytelen tanúsítvány jelszó.</string>
     <string name="set_config">Kérem, állítsa be jól a konfigurációt.</string>
     <string name="set_adb">Kérem, engedélyezze\naz USB hibakeresést.</string>
     <string name="set_network">Kérem, válasszon ki egy hálózatot.</string>

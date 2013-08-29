@@ -10,10 +10,10 @@ import java.util.regex.Pattern;
 import org.dyndns.fzoli.rccar.host.socket.ConnectionHelper;
 import org.dyndns.fzoli.rccar.host.vehicle.Vehicle;
 import org.dyndns.fzoli.rccar.host.vehicle.Vehicles;
-import org.dyndns.fzoli.socket.process.SecureProcess;
 
 import com.ramdroid.adbtoggle.accesslib.AdbToggleAccess;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -53,6 +53,7 @@ public class ConnectionService extends IOIOService {
 		CONNECTION_LOST,
 		CONNECTION_REFUSED,
 		INVALID_CERTIFICATE,
+		WEB_IPCAM_CLOSED,
 		WEB_IPCAM_UNREACHABLE(true),
 		WRONG_CLIENT_VERSION(true),
 		WRONG_CERTIFICATE_SETTINGS(true),
@@ -155,6 +156,7 @@ public class ConnectionService extends IOIOService {
 	 * A szolgáltatás ezeket az eseményeket fogadja és dolgozza fel.
 	 * A kód Android 2.1-től egészen a 4-es verzióig működőképes, ezért már elavult eseményeket is használ.
 	 */
+	@SuppressLint("InlinedApi")
 	@SuppressWarnings("deprecation")
 	public final static String EVT_RECONNECT_NOW = "reconnect now",
 						EVT_POWER_DOWN = Intent.ACTION_POWER_DISCONNECTED,
@@ -185,6 +187,11 @@ public class ConnectionService extends IOIOService {
 	 * A hídhoz való kapcsolódást megvalósító objektum.
 	 */
 	private static ConnectionHelper conn;
+	
+	/**
+	 * Megadja, hogy a disconnect metódus lefutott-e.
+	 */
+	private boolean disconnected;
 	
 	/**
 	 * Az Android kapcsolódáskezelője.
@@ -426,8 +433,14 @@ public class ConnectionService extends IOIOService {
 		Log.i(LOG_TAG, "connect calling; reconnect: " + reconnect+"; reason: " + reason);
 		if ((isStarted(this) && !isSuspended()) && conn == null || (reconnect && conn == helper)) { // ha nincs kapcsolódás segítő vagy újra kell kapcsolódni
 			disconnect(reason); // jelenlegi kapcsolatok bontása, ha esetleg vannak
-			if ((isStarted(this) && !isSuspended()) && createConnectionHelper() != null) conn.connect(); // kapcsolódás csak akkor, ha aktív a szolgáltatás
-			else Log.i(LOG_TAG, "connect refused");
+			if ((isStarted(this) && !isSuspended()) && createConnectionHelper() != null) { // kapcsolódás csak akkor, ha aktív a szolgáltatás
+				disconnected = false;
+				removeWarnings(false);
+				conn.connect();
+			}
+			else {
+				Log.i(LOG_TAG, "connect not called");
+			}
 		}
 	}
 	
@@ -438,20 +451,19 @@ public class ConnectionService extends IOIOService {
 		connect(reconnect, conn, reason);
 	}
 	
-	/**
-	 * A megadott kapcsolatfeldolgozó újrapéldányosítása új kapcsolat kialakításával.
-	 */
-	public void recreateProcess(SecureProcess proc) {
-		if (conn != null) conn.recreateProcess(proc);
+	private void disconnect(String reason) {
+		disconnect(reason, true);
 	}
 	
 	/**
 	 * Kapcsolat bontása a híddal.
 	 * Az Activitynek jelzi azt, hogy nincs kapcsolódás.
 	 * @param stopReconnect true esetén leállítja az időzített újrakapcsolódást is
+	 * @param notice true esetén a disconnected logikai érték true-ra állítódik, ami egy jelzés
 	 */
-	private void disconnect(String reason) {
+	private void disconnect(String reason, boolean notice) {
 		Log.i(LOG_TAG, "disconnect calling; reason: " + reason);
+		if (notice) disconnected = true;
 		if (connTask != null) { // újrakapcsolódás időzítő inaktiválása
 			connTask.cancel();
 			connTask = null;
@@ -740,7 +752,17 @@ public class ConnectionService extends IOIOService {
 	public void onConnectionError(ConnectionError error, ConnectionHelper caller) {
 		setConnectionError(error, caller, false);
 	}
-
+	
+	/**
+	 * A ConnectionError-os figyelmeztetéseket tünteti el.
+	 * @param all true esetén a fatális hibákat is törli, nem csak a figyelmeztetéseket
+	 */
+	private void removeWarnings(boolean all) {
+		for (ConnectionError err : ConnectionError.values()) {
+			if (!err.isFatalError() || all) removeNotification(err.getNotificationId());
+		}
+	}
+	
 	/**
 	 * Ha a kapcsolatban bármi hiba történik, vagy a hiba megszűnik, ez a metódus hívódik meg.
 	 * A hiba alapján cselekedik a metódus. További részletek: {@link ConnectionError}
@@ -754,20 +776,20 @@ public class ConnectionService extends IOIOService {
 		}
 		updateNotificationText();
 		getBinder().fireConnectionStateChange(false);
-		ConnectionError[] errors = ConnectionError.values();
+		boolean change = true;
 		if (removeAll) {
 			Log.i(LOG_TAG, "connection msg remove");
 			// service leáll, figyelmeztetések és hibák eltüntetése
-			for (ConnectionError err : errors) {
-				removeNotification(err.getNotificationId());
-			}
+			removeWarnings(true);
 		}
 		else if (isStarted(this) && !isSuspended()) {
 			if (error == null || !error.isFatalError()) {
-				// sikeres kapcsolódás vagy figyelmeztető üzenet, figyelmeztetések eltüntetése
-				Log.i(LOG_TAG, "connection warn remove");
-				for (ConnectionError err : errors) {
-					if (!err.isFatalError()) removeNotification(err.getNotificationId());
+				Log.i(LOG_TAG, "error: " + error + "; disconnected? " + disconnected);
+				change = error == null || (error.isVisible() && !disconnected);
+				if (change) {
+					// sikeres kapcsolódás vagy figyelmeztető üzenet, figyelmeztetések eltüntetése
+					Log.i(LOG_TAG, "connection warn remove");
+					removeWarnings(false);
 				}
 			}
 			if (error != null) {
@@ -789,7 +811,9 @@ public class ConnectionService extends IOIOService {
 				}
 				else {
 					Log.i(LOG_TAG, "add warn notify " + error);
-					if (id != null) addNotification(id, null, new Intent(this, ConnectionService.class).putExtra(KEY_EVENT, EVT_RECONNECT_NOW), error.getNotificationId(), true, false);
+					if (id != null && change) addNotification(id, null, new Intent(this, ConnectionService.class).putExtra(KEY_EVENT, EVT_RECONNECT_NOW), error.getNotificationId(), true, false);
+					// a kapcsolatok bezárása
+					disconnect("notify warning", error != ConnectionError.OTHER);
 					// reconnect ütemezés, üzenet megjelenítése eltávolíthatóként, amire kattintva azonnali reconnect fut le
 					reconnectSchedule("notify warning");
 				}

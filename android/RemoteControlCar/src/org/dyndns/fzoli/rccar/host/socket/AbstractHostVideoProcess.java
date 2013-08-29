@@ -163,6 +163,8 @@ public abstract class AbstractHostVideoProcess extends AbstractSecureProcess {
 			}
 		}
 		
+		closeIPWebcamConnection(true);
+		
 		return false;
 	}
 	

@@ -162,12 +162,12 @@
                 </Directory>
 
                 <!-- A diplomamunka PDF formátumban. -->
-                <Component Id='Manual' Guid='3C67AC75-39CA-4DE9-BDE5-BA52FF59720F'>
-                    <File Id='Manual' Name='thesis.pdf' Source='thesis.pdf' KeyPath='yes'>
+                <!--<Component Id='Manual' Guid='3C67AC75-39CA-4DE9-BDE5-BA52FF59720F'>-->
+                    <!--<File Id='Manual' Name='thesis.pdf' Source='thesis.pdf' KeyPath='yes'>-->
                         <!-- A Start menüből érhető el. -->
-                        <Shortcut Id='startmenuManual' Directory='ProgramMenuDir' Name='Mobile-RC dokumentáció' Icon="thesis.pdf" IconIndex="0" Advertise='yes' />
-                    </File>
-                </Component>
+                        <!--<Shortcut Id='startmenuManual' Directory='ProgramMenuDir' Name='Mobile-RC dokumentáció' Icon="thesis.pdf" IconIndex="0" Advertise='yes' />-->
+                    <!--</File>-->
+                <!--</Component>-->
 
             </Directory>
         </Directory>
@@ -222,9 +222,9 @@
         </Feature>
 
         <!-- A dokumentáció alapértelmezés szerint nincs telepítésre jelölve, mivel a level elég magas. -->
-        <Feature Id='Documentation' Title='Dokumentáció' Description='A diplomamunka PDF formátumban.' Level='1000'>
-            <ComponentRef Id='Manual' />
-        </Feature>
+        <!--<Feature Id='Documentation' Title='Dokumentáció' Description='A diplomamunka PDF formátumban.' Level='1000'>-->
+            <!--<ComponentRef Id='Manual' />-->
+        <!--</Feature>-->
 
     </Feature>
 

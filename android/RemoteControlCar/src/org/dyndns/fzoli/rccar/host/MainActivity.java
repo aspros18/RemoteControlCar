@@ -310,7 +310,7 @@ public class MainActivity extends SherlockActivity {
 	 */
 	private void setRunning(boolean running, boolean save) {
 		if (running) { // ha futást kértek
-			if (ConnectionService.isOfflineMode(this) || config.isCorrect()/* && ConnectionService.isVehicleChannelAvailable(this)*/) { // és jó a konfig (valamint az adb elérhető)
+			if (ConnectionService.isOfflineMode(this) || config.isCorrect()) { // és jó a konfig
 				refreshStartStop(running, save); // felület és változók frissítése
 				disableButton(btStop, 1000); // a leállítás 1 másodpercre inaktív
 				bindService(); // akkor kapcsolódás a szolgáltatáshoz és elindítása

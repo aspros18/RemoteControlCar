@@ -70,7 +70,7 @@ public class HostHandler extends AbstractSecureClientHandler implements Connecti
 			err = ConnectionError.WRONG_CERTIFICATE_SETTINGS;
 		}
 		catch (Exception e) {
-			err = ConnectionError.OTHER;
+			err = ConnectionError.CONNECTION_ERROR;
 		}
 		SERVICE.onConnectionError(err, HELPER);
 	}

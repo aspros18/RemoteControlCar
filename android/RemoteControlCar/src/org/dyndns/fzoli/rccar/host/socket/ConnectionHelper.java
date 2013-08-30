@@ -1,10 +1,5 @@
 package org.dyndns.fzoli.rccar.host.socket;
 
-import java.net.ConnectException;
-import java.net.NoRouteToHostException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.security.KeyStoreException;
 
 import javax.net.ssl.SSLSocket;
@@ -95,21 +90,6 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
 			Log.i(ConnectionService.LOG_TAG, "connection error", ex);
 			throw ex;
 		}
-		catch (ConnectException e) {
-			err = ConnectionError.CONNECTION_ERROR;
-		}
-		catch (NoRouteToHostException e) {
-			err = ConnectionError.CONNECTION_ERROR;
-		}
-		catch (UnknownHostException e) {
-			err = ConnectionError.CONNECTION_ERROR;
-		}
-		catch (SocketTimeoutException e) {
-			err = ConnectionError.CONNECTION_ERROR;
-		}
-		catch (SocketException e) {
-			err = ConnectionError.CONNECTION_ERROR;
-		}
 		catch (NullPointerException e) {
 			err = ConnectionError.WRONG_CERTIFICATE_SETTINGS;
 		}
@@ -117,7 +97,7 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
 			err = ex.getMessage().startsWith("failed to extract") ? ConnectionError.WRONG_CERTIFICATE_PASSWORD : ConnectionError.WRONG_CERTIFICATE_SETTINGS;
 		}
 		catch (Exception e) {
-			err = ConnectionError.OTHER;
+			err = ConnectionError.CONNECTION_ERROR;
 		}
 		SERVICE.onConnectionError(err, this);
 	}

@@ -308,6 +308,15 @@ public class ConnectionService extends IOIOService {
 	 * A kapcsolódáshoz szükséges konfiguráció.
 	 */
 	public Config getConfig() {
+		return getConfig(false);
+	}
+	
+	/**
+	 * A kapcsolódáshoz szükséges konfiguráció.
+	 * @param create true esetén legyártja az objektumot, ha még nem létezik
+	 */
+	private Config getConfig(boolean create) {
+		if (create && config == null) config = createConfig(this); // konfiguráció betöltése
 		return config;
 	}
 	
@@ -357,8 +366,7 @@ public class ConnectionService extends IOIOService {
 	 */
 	private ConnectionHelper createConnectionHelper() {
 		Log.i(LOG_TAG, "create connection helper");
-		config = createConfig(this);
-		if (isOfflineMode(this) || !config.isCorrect() || !isNetworkAvailableOrForced() || !isAppInstalled(PACKAGE_CAM)) {
+		if (isOfflineMode(this) || !getConfig(true).isCorrect() || !isNetworkAvailableOrForced() || !isAppInstalled(PACKAGE_CAM)) {
 			return null;
 		}
 		if (conn != null) conn.disconnect();
@@ -511,13 +519,20 @@ public class ConnectionService extends IOIOService {
 		super.onStart(intent, startId);
 		if (startId == 1) {
 			setFatal(false); // ha esetleg még nem törlődött volna a fatális hiba státusz, törlés
-			setSuspended(false); // a szolgáltatás aktív (ha esetleg még nem lenne az)
-			initNotification(); // fő értesítés inicializálása
-			connect(true, "onstart"); // kapcsolódás, ha kell újrakapcsolódás
-			updateNotificationText(); // fő értesítés szövegének frissítése
-			setNotificationsVisible(true); // egyéb értesítések megjelenítése, ha van mit
-			createHornPlayer(); // dudahang-lejátszó inicializálása
-			setAdbEnabled(true); // ADB bekapcsolása, ha szükséges
+			if (ConnectionService.isOfflineMode(this) || getConfig(true).isCorrect()) { // ha futhat a service
+				setSuspended(false); // a szolgáltatás aktív (ha esetleg még nem lenne az)
+				initNotification(); // fő értesítés inicializálása
+				connect(true, "onstart"); // kapcsolódás, ha kell újrakapcsolódás
+				updateNotificationText(); // fő értesítés szövegének frissítése
+				setNotificationsVisible(true); // egyéb értesítések megjelenítése, ha van mit
+				createHornPlayer(); // dudahang-lejátszó inicializálása
+				setAdbEnabled(true); // ADB bekapcsolása, ha szükséges
+			}
+			else { // ha nem futhat, csak valami oknál fogva elindult
+				setStarted(this, false); // konfigban kikapcsolás
+				setSuspended(false); // felfüggesztés szükségtelen
+				stopSelf(); // service leállítása
+			}
 		}
 	}
 	
@@ -531,7 +546,7 @@ public class ConnectionService extends IOIOService {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStartCommand(intent, flags, startId);
-		if (intent.hasExtra(KEY_EVENT) && !isSuspended()) { // ha van esemény üzenet és nincs felfüggesztve a szolgáltatás
+		if (intent.hasExtra(KEY_EVENT) && !isSuspended() && (getConfig(true).isCorrect() || ConnectionService.isOfflineMode(this))) { // ha van esemény üzenet és nincs felfüggesztve a szolgáltatás (és futhat)
 			String event = intent.getStringExtra(KEY_EVENT); // esemény megszerzése
 			if (event.equals(EVT_CONNECTIVITY_CHANGE)) { // ha a hálózati kapcsolat módosult
 				if (startId != 1) setNetworkNotificationVisible(true); // ha nem első indítás, felhasználó figyelmeztetés frissítése
@@ -842,7 +857,7 @@ public class ConnectionService extends IOIOService {
 	 */
 	private void setConfigNotificationVisible(boolean visible) {
 		if (config == null) return;
-		if (visible && !config.isCorrect()) {
+		if (visible && !getConfig().isCorrect()) {
 			if (isSDCardMounted()) addOnlineNotification(R.string.set_config, new Intent(this, MainActivity.class), ID_NOTIFY_CONFIG, true);
 			else addOnlineNotification(R.string.sdcard_not_mounted, new Intent(Settings.ACTION_MEMORY_CARD_SETTINGS), ID_NOTIFY_CONFIG, false);
 		}

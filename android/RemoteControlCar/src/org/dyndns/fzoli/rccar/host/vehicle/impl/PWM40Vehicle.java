@@ -13,4 +13,9 @@ public class PWM40Vehicle extends PWMVehicle {
 		START = 40;
 	}
 	
+//	@Override
+//	public boolean isFullX() {
+//		return true;
+//	}
+	
 }

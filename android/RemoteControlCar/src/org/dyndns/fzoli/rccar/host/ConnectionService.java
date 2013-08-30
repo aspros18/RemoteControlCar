@@ -2,6 +2,7 @@ package org.dyndns.fzoli.rccar.host;
 
 import ioio.lib.util.android.IOIOService;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Matcher;
@@ -14,6 +15,8 @@ import org.dyndns.fzoli.rccar.host.vehicle.Vehicles;
 import com.ramdroid.adbtoggle.accesslib.AdbToggleAccess;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -124,7 +127,8 @@ public class ConnectionService extends IOIOService {
 						ID_NOTIFY_NETWORK = 3,
 						ID_NOTIFY_INST_CAM = 4,
 						ID_NOTIFY_GPS_ENABLE = 5,
-						ID_NOTIFY_ADB_ENABLE = 6;
+						ID_NOTIFY_ADB_ENABLE = 6,
+						ID_NOTIFY_SET_CONFIG = 7;
 	
 	/**
 	 * A SharedPreference azon kulcsai, melyek kódban több helyen is használatban vannak.
@@ -140,7 +144,7 @@ public class ConnectionService extends IOIOService {
 	 * Ahhoz, hogy az alkalmazást be lehessen hozni, a pontos csomag útvonalára van szükség.
 	 * Szintén kell ahhoz, hogy a program meg tudja állapítani, hogy telepítve van-e az alkalmazás.
 	 */
-	private final static String PACKAGE_CAM = "com.pas.webcam";
+	public final static String PACKAGE_CAM = "com.pas.webcam";
 	
 	/**
 	 * Az Android naplózójához használt teg.
@@ -209,6 +213,11 @@ public class ConnectionService extends IOIOService {
 	private LocationManager lm;
 	
 	/**
+	 * ActivityManager objektum ahhoz, hogy meg lehessen állapítani, fut-e egy adott alkalmazás.
+	 */
+	private ActivityManager activityManager;
+	
+	/**
 	 * Az újrakapcsolódás időzítésére fenntartott időzítő.
 	 * Ha a kapcsolat megszakadt a híddal vagy nem sikerült kapcsolódni rá,
 	 * újra megpróbálja a szolgáltatás a kapcsolódást későbbre időzítve.
@@ -265,6 +274,11 @@ public class ConnectionService extends IOIOService {
 	 * Ha az Android rendszer leállítás alá kerül, akkor true az értéke.
 	 */
 	private static boolean shutdown = false;
+	
+	/**
+	 * Megadja, hogy a kapcsolódás folyamatban van-e éppen.
+	 */
+	private boolean connecting = false;
 	
 	/**
 	 * Megadja, hogy a szolgáltatás fel van-e függesztve.
@@ -367,6 +381,10 @@ public class ConnectionService extends IOIOService {
 	private ConnectionHelper createConnectionHelper() {
 		Log.i(LOG_TAG, "create connection helper");
 		if (isOfflineMode(this) || !getConfig(true).isCorrect() || !isNetworkAvailableOrForced() || !isAppInstalled(PACKAGE_CAM)) {
+			if (isSDCardMounted() && !getConfig(true).isCorrect()) {
+				setFatal(true);
+				addNotification(R.string.set_config, new Intent(this, MainActivity.class), null, ID_NOTIFY_SET_CONFIG, false, true);
+			}
 			return null;
 		}
 		if (conn != null) conn.disconnect();
@@ -459,6 +477,11 @@ public class ConnectionService extends IOIOService {
 		connect(reconnect, conn, reason);
 	}
 	
+	/**
+	 * Kapcsolat bontása a híddal.
+	 * Az Activitynek jelzi azt, hogy nincs kapcsolódás.
+	 * @param stopReconnect true esetén leállítja az időzített újrakapcsolódást is
+	 */
 	private void disconnect(String reason) {
 		disconnect(reason, true);
 	}
@@ -519,20 +542,13 @@ public class ConnectionService extends IOIOService {
 		super.onStart(intent, startId);
 		if (startId == 1) {
 			setFatal(false); // ha esetleg még nem törlődött volna a fatális hiba státusz, törlés
-			if (ConnectionService.isOfflineMode(this) || getConfig(true).isCorrect()) { // ha futhat a service
-				setSuspended(false); // a szolgáltatás aktív (ha esetleg még nem lenne az)
-				initNotification(); // fő értesítés inicializálása
-				connect(true, "onstart"); // kapcsolódás, ha kell újrakapcsolódás
-				updateNotificationText(); // fő értesítés szövegének frissítése
-				setNotificationsVisible(true); // egyéb értesítések megjelenítése, ha van mit
-				createHornPlayer(); // dudahang-lejátszó inicializálása
-				setAdbEnabled(true); // ADB bekapcsolása, ha szükséges
-			}
-			else { // ha nem futhat, csak valami oknál fogva elindult
-				setStarted(this, false); // konfigban kikapcsolás
-				setSuspended(false); // felfüggesztés szükségtelen
-				stopSelf(); // service leállítása
-			}
+			setSuspended(false); // a szolgáltatás aktív (ha esetleg még nem lenne az)
+			initNotification(); // fő értesítés inicializálása
+			connect(true, "onstart"); // kapcsolódás, ha kell újrakapcsolódás
+			updateNotificationText(); // fő értesítés szövegének frissítése
+			setNotificationsVisible(true); // egyéb értesítések megjelenítése, ha van mit
+			createHornPlayer(); // dudahang-lejátszó inicializálása
+			setAdbEnabled(true); // ADB bekapcsolása, ha szükséges
 		}
 	}
 	
@@ -623,6 +639,14 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	/**
+	 * Ha a kapcsolódás megkezdődik vagy befejeződik, felirat frissítése.
+	 */
+	public void onBridgeConnectionStateChanged(boolean connecting) {
+		this.connecting = connecting;
+		updateNotificationText();
+	}
+	
+	/**
 	 * Példányosítja a figyelmeztetés megjelenítéséhez szükséges menedzsert és megjeleníti a szolgáltatás fő figyelmeztetést folyamatként.
 	 */
 	@SuppressWarnings("deprecation")
@@ -653,7 +677,7 @@ public class ConnectionService extends IOIOService {
 	 * Csak akkor módosul a szöveg, ha a szolgáltatás nincs felfüggesztve és fut.
 	 */
 	public void updateNotificationText() {
-		if (!isSuspended() && isStarted(this)) setNotificationText(getString(R.string.vehicle) + ": " + getString(isVehicleConnected() ? R.string.exists : R.string.not_exists) + "; " + (isOfflineMode(this) ? getString(R.string.title_offline) : (getString(R.string.bridge_conn) + ": " + getString(isBridgeConnected() ? R.string.exists : R.string.not_exists))) + '.');
+		if ((!isSuspended() || isFatal()) && isStarted(this)) setNotificationText(getString(R.string.vehicle) + ": " + getString(isVehicleConnected() ? R.string.exists : R.string.not_exists) + "; " + (isOfflineMode(this) ? getString(R.string.title_offline) : (getString(R.string.bridge_conn) + ": " + getString(!connecting ? (isBridgeConnected() ? R.string.exists : R.string.not_exists) : R.string.connecting))) + '.');
 	}
 	
 	/**
@@ -789,8 +813,6 @@ public class ConnectionService extends IOIOService {
 			Log.i(LOG_TAG, "old warning has been dropped");
 			return;
 		}
-		updateNotificationText();
-		getBinder().fireConnectionStateChange(false);
 		boolean change = true;
 		if (removeAll) {
 			Log.i(LOG_TAG, "connection msg remove");
@@ -849,6 +871,9 @@ public class ConnectionService extends IOIOService {
 		setGpsEnableNotificationVisible(visible);
 		setCamInstallNotificationVisible(visible);
 		setAdbEnableNotificationVisible(visible);
+		if (!visible) {
+			removeNotification(ID_NOTIFY_SET_CONFIG);
+		}
 	}
 	
 	/**
@@ -1008,6 +1033,21 @@ public class ConnectionService extends IOIOService {
 	}
 	
 	/**
+	 * Megadja, hogy egy adott alkalmazás fut-e.
+	 * Ez általában akkor igaz, ha van legalább 1 Activity, ami fut előtérben vagy háttérben.
+	 * @param pkg az alkalmazás csomagneve
+	 */
+	public boolean isAppRunning(String packageName) {
+		if (packageName == null) return false;
+		if (activityManager == null) activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+		List<RunningTaskInfo> tasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
+		for (RunningTaskInfo task : tasks) {
+			if (packageName.equalsIgnoreCase(task.baseActivity.getPackageName())) return true;
+		}
+		return false;
+	}
+	
+	/**
 	 * Megmondja, hogy az alkalmazás telepítve van-e a telefonra.
 	 * @param packageName az alkalmazás csomagjának útvonala
 	 */
@@ -1044,11 +1084,14 @@ public class ConnectionService extends IOIOService {
 	/**
 	 * Megadja, hogy az SD-kártya elérhető-e.
 	 */
-	private static boolean isSDCardMounted() {
+	public static boolean isSDCardMounted() {
 		String state = Environment.getExternalStorageState();
 	    return Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
 	}
 	
+	/**
+	 * Megadja, hogy a jármű áramköréhez van-e elérhető csatorna.
+	 */
 	public static boolean isVehicleChannelAvailable(Context context) {
 		boolean adbToggleInstalled = AdbToggleAccess.isInstalled(context);
 		boolean adbEnabled = ConnectionService.isAdbEnabled(context);

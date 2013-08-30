@@ -1082,13 +1082,14 @@ containing a value of this type.
          */
         public static final int abs__shareactionprovider_share_with_application=0x7f0b0009;
         public static final int app_name=0x7f0b000f;
-        public static final int author=0x7f0b0055;
+        public static final int author=0x7f0b0056;
         public static final int bridge_conn=0x7f0b004f;
         public static final int category_battery=0x7f0b0016;
         public static final int category_cam=0x7f0b0015;
         public static final int category_other=0x7f0b0017;
         public static final int category_path=0x7f0b0013;
         public static final int category_security=0x7f0b0014;
+        public static final int connecting=0x7f0b0052;
         public static final int err_1=0x7f0b003f;
         public static final int err_2=0x7f0b0040;
         public static final int err_3=0x7f0b0041;
@@ -1101,10 +1102,10 @@ containing a value of this type.
         public static final int exists=0x7f0b0050;
         public static final int install_cam=0x7f0b004c;
         public static final int menu_settings=0x7f0b0010;
-        public static final int message_connecting=0x7f0b0054;
-        public static final int neptun_id=0x7f0b0056;
+        public static final int message_connecting=0x7f0b0055;
+        public static final int neptun_id=0x7f0b0057;
         public static final int not_exists=0x7f0b0051;
-        public static final int run_in_background=0x7f0b0052;
+        public static final int run_in_background=0x7f0b0053;
         public static final int sdcard_not_mounted=0x7f0b004d;
         public static final int set_adb=0x7f0b0049;
         public static final int set_config=0x7f0b0048;
@@ -1136,7 +1137,7 @@ containing a value of this type.
         public static final int title_cam_password=0x7f0b001f;
         public static final int title_cam_port=0x7f0b001d;
         public static final int title_cam_user=0x7f0b001e;
-        public static final int title_connecting=0x7f0b0053;
+        public static final int title_connecting=0x7f0b0054;
         public static final int title_crt=0x7f0b001b;
         public static final int title_force_connect=0x7f0b0026;
         public static final int title_inspected_stream=0x7f0b0020;

@@ -317,7 +317,7 @@ public class MainActivity extends SherlockActivity {
 			}
 			else {
 				if (!ConnectionService.isStarted(this)) { // ha rossz a konfig (vagy az adb inaktív) és nem fut a szolgáltatás
-					Toast.makeText(this, /*config.isCorrect() ? R.string.set_adb : */R.string.set_config, Toast.LENGTH_SHORT).show(); // figyelmeztetés megjelenítése
+					Toast.makeText(this, ConnectionService.isSDCardMounted() ? R.string.set_config : R.string.sdcard_not_mounted, Toast.LENGTH_SHORT).show(); // figyelmeztetés megjelenítése
 					disableButton(btStart, 2000); // 2 másodperc az Android API-ban definiált rövid üzenet ideje, ennyi időre inaktív a start gomb
 				}
 				else { // ha rossz a konfig és fut a szolgáltatás (pl. valójában jók a beállítások, el is indult a service sikeresen, de aztán az USB háttértárat aktiválták és a telefon nem tudja olvasni az SD-kártyát)

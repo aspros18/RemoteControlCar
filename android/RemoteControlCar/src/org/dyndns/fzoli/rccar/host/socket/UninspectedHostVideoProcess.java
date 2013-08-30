@@ -47,7 +47,11 @@ public class UninspectedHostVideoProcess extends AbstractHostVideoProcess {
 					OutputStream out = getSocket().getOutputStream();
 					while (!getSocket().isClosed()) { // amíg van kapcsolat, MJPEG stream olvasása és feltöltése a hídnak
 						if (!SERVICE.getBinder().getHostData().isStreaming()) { // ha nem kell streamelni
-							sleep(200); // kis várakozás
+							sleep(500); // kis várakozás
+							if (!SERVICE.isAppRunning(ConnectionService.PACKAGE_CAM)) {
+								// kivétel dobás, ha az IP Webcam Activity be lett zárva (a read metódust váltja fel a szünet idejére)
+								throw new SocketException("IP Webcam activity closed");
+							}
 							continue; // ciklus újrakezdése
 						}
 						if (((length = in.read(buffer)) != -1)) try { // ha sikerült az olvasás és van adat

@@ -66,6 +66,7 @@
     <string name="bridge_conn">Bridge connection</string>
     <string name="exists">exists</string>
     <string name="not_exists">not exists</string>
+    <string name="connecting">connecting</string>
     <string name="run_in_background">Run in background</string>
     <string name="title_connecting">Please, wait</string>
     <string name="message_connecting">Connecting to the Bridge&#8230;</string>

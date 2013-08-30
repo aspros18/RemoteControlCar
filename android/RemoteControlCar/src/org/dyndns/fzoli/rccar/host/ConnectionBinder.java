@@ -282,6 +282,7 @@ public class ConnectionBinder extends Binder {
 	 */
 	public void fireConnectionStateChange(boolean connecting) {
 		Log.i(ConnectionService.LOG_TAG, "connecting dialog: " + connecting);
+		SERVICE.onBridgeConnectionStateChanged(connecting);
 		if (mListener != null) {
 			cacheConnecting = null;
 			mListener.onConnectionStateChange(connecting);

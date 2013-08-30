@@ -66,6 +66,7 @@
     <string name="bridge_conn">Híd kapcsolat</string>
     <string name="exists">van</string>
     <string name="not_exists">nincs</string>
+    <string name="connecting">kapcsolódás</string>
     <string name="run_in_background">Futtatás háttérben</string>
     <string name="title_connecting">Kérem, várjon</string>
     <string name="message_connecting">Kapcsolódás a Hídhoz&#8230;</string>

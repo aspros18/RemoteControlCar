@@ -2,6 +2,7 @@ package org.dyndns.fzoli.rccar.host;
 
 import ioio.lib.util.android.IOIOService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -11,8 +12,6 @@ import java.util.regex.Pattern;
 import org.dyndns.fzoli.rccar.host.socket.ConnectionHelper;
 import org.dyndns.fzoli.rccar.host.vehicle.Vehicle;
 import org.dyndns.fzoli.rccar.host.vehicle.Vehicles;
-
-import com.ramdroid.adbtoggle.accesslib.AdbToggleAccess;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
@@ -34,6 +33,8 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
+
+import com.ramdroid.adbtoggle.accesslib.AdbToggleAccess;
 
 /**
  * Az alkalmazás háttérben futó szolgáltatása.
@@ -180,7 +181,7 @@ public class ConnectionService extends IOIOService {
 	/**
 	 * A felhasználó által kiválasztott jármű vezérlője.
 	 */
-	private Vehicle vehicle;
+	private List<Vehicle> vehicles = new ArrayList<Vehicle>();
 	
 	/**
 	 * A hídhoz való kapcsolódáshoz szükséges beállítások.
@@ -339,7 +340,10 @@ public class ConnectionService extends IOIOService {
 	 * @return null, ha még nem lett példányosítva
 	 */
 	public Vehicle getVehicle() {
-		return vehicle;
+		for (Vehicle vehicle : vehicles) {
+			if (vehicle.isConnected()) return vehicle;
+		}
+		return vehicles.get(0);
 	}
 	
 	/**
@@ -365,8 +369,10 @@ public class ConnectionService extends IOIOService {
 	 * További információ: {@link Vehicles}
 	 */
 	@Override
-	public Vehicle createIOIOLooper() {
-		return vehicle = Vehicles.createVehicle(this, Integer.parseInt(getSharedPreferences(this).getString("vehicle", "0")));
+	public Vehicle createIOIOLooper(String connectionType, Object extra) {
+		Vehicle vehicle = Vehicles.createVehicle(this, Integer.parseInt(getSharedPreferences(this).getString("vehicle", "0")));
+		vehicles.add(vehicle);
+		return vehicle;
 	}
 	
 	/**
@@ -962,7 +968,7 @@ public class ConnectionService extends IOIOService {
 	 * Megadja, hogy a járművet irányító mikrovezérlő kapcsolódva van-e a telefonhoz.
 	 */
 	public boolean isVehicleConnected() {
-		return vehicle.isConnected();
+		return getVehicle().isConnected();
 	}
 	
 	/**

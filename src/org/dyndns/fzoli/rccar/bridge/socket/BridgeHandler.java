@@ -3,7 +3,9 @@ package org.dyndns.fzoli.rccar.bridge.socket;
 import java.io.EOFException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocket;
@@ -40,6 +42,17 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
     }
 
     /**
+     * Létrehoz egy listát, melyben azok a kapcsolatazonosítók szerepelnek,
+     * melyek kapcsolatainak kezelésekor keletkező hibák figyelmen kívül lesznek hagyva.
+     */
+    private static List<Integer> createHiddenWarningKeys() {
+        ArrayList<Integer> l = new ArrayList<Integer>();
+        l.add(KEY_CONN_MESSAGE);
+        l.add(KEY_CONN_VIDEO_STREAM);
+        return l;
+    }
+    
+    /**
      * Miután inicializálódtak az adatok, a híd szerver megnézi, hogy a kapcsolódott kliens tanúsítványneve blokkolva van-e,
      * és ha blokkolva van, kivételt dob, tehát a kapcsolatot elutasítja.
      * Ha egy vezérlő kapcsolódott a hídhoz és szigorú (strict) módban fut a program, a kapcsolat akkor is elutasításra kerül,
@@ -51,7 +64,7 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
         if (Permissions.getConfig().isBlocked(getRemoteCommonName())) throw new BlockedCommonNameException();
         if (Main.CONFIG.isStrict() && getDeviceId().equals(KEY_DEV_CONTROLLER) && !Permissions.getConfig().isControllerWhite(getRemoteCommonName())) throw new BlockedCommonNameException();
     }
-
+    
     /**
      * Megadja, hogy a figyelmeztetések megjelenhetnek-e.
      */
@@ -67,6 +80,11 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
     }
     
     /**
+     * Kapcsolatazonosítók, melyek kapcsolataiban keletkező hibák nem érdekesek.
+     */
+    private static final List<Integer> HIDDEN_WARN_KEYS = createHiddenWarningKeys();
+    
+    /**
      * A magyar nyelv magánhangzóit tartalmazza.
      * Arra kell, hogy el lehessen dönteni, a vagy az névelő kerüljön-e a cím elé.
      */
@@ -77,7 +95,7 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
      * @param message a kijelzendő üzenet
      */
     private void showWarning(String message) {
-        if ((getConnectionId() == null || getConnectionId().equals(0)) && getSocket() != null) {
+        if ((getConnectionId() == null || !HIDDEN_WARN_KEYS.contains(getConnectionId())) && getSocket() != null) {
             String name = getSocket().getInetAddress().getHostName();
             String close = getString("warn_addr_prep2");
             logMessage(VAL_WARNING, message + ' ' + getString("warn_addr_prep1" + (Arrays.binarySearch(mgh, name.charAt(0)) >= 0 ? 'b' : 'a')) + ' ' + name + " [" + getSocket().getInetAddress().getHostAddress() + "]" + (close.trim().isEmpty() ? "" : " ") + close + '.', IconType.WARNING, isWarnEnabled());
@@ -135,9 +153,19 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
             showWarning(getString("warn_conn10"), e.getMessage()); // váratlan socket bezárás
         }
         catch (Exception e) {
-            // nem várt hiba jelzése
-            super.onException(e);
+            showWarning(getString("warn_conn11"), e.getMessage()); // nem várt hiba
         }
+    }
+
+    /**
+     * Ha a kiválasztott Process null, fel kell dolgozni.
+     * Jelzi a felhasználónak, hogy ismeretlen kérést kapott a hídszerver, majd
+     * bezárja az összes többi kapcsolatot, ami már létre lett hozva az adott klienssel.
+     */
+    @Override
+    protected void onProcessNull() {
+        showWarning(getString("warn_conn12")); // ismeretlen kérés
+        super.onProcessNull();
     }
     
     /**

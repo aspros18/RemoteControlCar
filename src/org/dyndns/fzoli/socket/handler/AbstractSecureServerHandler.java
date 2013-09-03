@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.socket.handler;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.socket.handler.exception.MultipleCertificateException;
@@ -82,6 +83,21 @@ public abstract class AbstractSecureServerHandler extends AbstractServerHandler 
         }
     }
 
+    /**
+     * Visszatér egy listával, ami tartalmazza az aktuálisan kialakított kapcsolatok azonosítóit.
+     * A szerver oldalon hasznos, ha szükség van az aktuálisan kialakított kapcsolatok sorrendi ellenőrzésére.
+     */
+    protected List<Integer> getActiveConnectionIds() {
+        List<SecureProcess> l = getSecureProcesses();
+        List<Integer> ids = new ArrayList<Integer>();
+        for (SecureProcess p : l) {
+            if (p.getDeviceId() == null || p.getDeviceId() != getDeviceId()) continue;
+            if (!p.getRemoteCommonName().equals(getRemoteCommonName())) continue;
+            ids.add(p.getConnectionId());
+        }
+        return ids;
+    }
+    
     /**
      * Ha kivétel képződik, fel kell dolgozni.
      * @param ex a kivétel

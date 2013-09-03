@@ -7,11 +7,26 @@ package org.dyndns.fzoli.socket.handler.exception;
 public class RemoteHandlerException extends HandlerException {
 
     /**
+     * Tárolja, hogy fontos-e a hiba a naplózás szempontjából.
+     */
+    private final boolean IMPORTANT;
+    
+    /**
+     * Saját kivétel létrehozása saját üzenettel.
+     * Az üzenet tartalma bármi lehet, ami nem a rendben jelzés: {@code HandlerException.VAL_OK}
+     */
+    public RemoteHandlerException(String message, boolean important) {
+        super(message);
+        IMPORTANT = important;
+    }
+    
+    /**
      * Saját kivétel létrehozása saját üzenettel.
      * Az üzenet tartalma bármi lehet, ami nem a rendben jelzés: {@code HandlerException.VAL_OK}
      */
     public RemoteHandlerException(String message) {
         super(message);
+        IMPORTANT = false;
     }
 
     /**
@@ -19,6 +34,7 @@ public class RemoteHandlerException extends HandlerException {
      */
     public RemoteHandlerException(Throwable cause) {
         super(cause);
+        IMPORTANT = false;
     }
 
     /**
@@ -27,6 +43,14 @@ public class RemoteHandlerException extends HandlerException {
      */
     public RemoteHandlerException(String message, Throwable cause) {
         super(message, cause);
+        IMPORTANT = false;
+    }
+
+    /**
+     * Megadja, hogy fontos-e a hiba a naplózás szempontjából.
+     */
+    public boolean isImportant() {
+        return IMPORTANT;
     }
     
 }

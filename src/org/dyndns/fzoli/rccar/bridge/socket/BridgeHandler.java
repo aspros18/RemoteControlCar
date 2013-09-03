@@ -63,6 +63,7 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
         super.init();
         if (Permissions.getConfig().isBlocked(getRemoteCommonName())) throw new BlockedCommonNameException();
         if (Main.CONFIG.isStrict() && getDeviceId().equals(KEY_DEV_CONTROLLER) && !Permissions.getConfig().isControllerWhite(getRemoteCommonName())) throw new BlockedCommonNameException();
+        if (getConnectionId() != KEY_CONN_DISCONNECT && !getActiveConnectionIds().contains(KEY_CONN_DISCONNECT)) throw new RemoteHandlerException("Wrong order", true);
     }
     
     /**
@@ -95,7 +96,25 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
      * @param message a kijelzendő üzenet
      */
     private void showWarning(String message) {
-        if ((getConnectionId() == null || !HIDDEN_WARN_KEYS.contains(getConnectionId())) && getSocket() != null) {
+        showWarning(message, false);
+    }
+    
+    /**
+     * Ha adott klienstől az első kapcsolatfelvétel közben hiba keletkezik, jelzi a felhasználónak.
+     * @param message a kijelzendő üzenet
+     * @param details további részlet az üzenet mellé
+     */
+    private void showWarning(String message, String details) {
+        showWarning(message, details, false);
+    }
+    
+    /**
+     * Ha adott klienstől az első kapcsolatfelvétel közben hiba keletkezik, jelzi a felhasználónak és naplózza a hibát.
+     * @param message a kijelzendő üzenet
+     * @param important megjeleníti a hibát akkor is, ha az nem a disconnect socket
+     */
+    private void showWarning(String message, boolean important) {
+        if ((important || getConnectionId() == null || !HIDDEN_WARN_KEYS.contains(getConnectionId())) && getSocket() != null) {
             String name = getSocket().getInetAddress().getHostName();
             String close = getString("warn_addr_prep2");
             logMessage(VAL_WARNING, message + ' ' + getString("warn_addr_prep1" + (Arrays.binarySearch(mgh, name.charAt(0)) >= 0 ? 'b' : 'a')) + ' ' + name + " [" + getSocket().getInetAddress().getHostAddress() + "]" + (close.trim().isEmpty() ? "" : " ") + close + '.', IconType.WARNING, isWarnEnabled());
@@ -106,10 +125,11 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
      * Ha adott klienstől az első kapcsolatfelvétel közben hiba keletkezik, jelzi a felhasználónak.
      * @param message a kijelzendő üzenet
      * @param details további részlet az üzenet mellé
+     * @param important megjeleníti a hibát akkor is, ha az nem a disconnect socket
      */
-    private void showWarning(String message, String details) {
-        if (details == null || details.isEmpty()) showWarning(message);
-        else showWarning(message + " (" + details + ")");
+    private void showWarning(String message, String details, boolean important) {
+        if (details == null || details.isEmpty()) showWarning(message, important);
+        else showWarning(message + " (" + details + ")", important);
     }
     
     /**
@@ -141,7 +161,7 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
             showWarning(getString("warn_conn6"), e.getMessage()); // SSL hiba
         }
         catch (RemoteHandlerException e) {
-            showWarning(getString("warn_conn7"), e.getMessage()); // távoli hiba
+            showWarning(getString("warn_conn7"), e.getMessage(), e.isImportant()); // távoli hiba
         }
         catch (SocketException e) {
             showWarning(getString("warn_conn8"), e.getMessage()); // socket hiba

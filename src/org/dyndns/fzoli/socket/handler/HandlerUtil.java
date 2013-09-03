@@ -54,6 +54,12 @@ class HandlerUtil {
         oos.flush();
     }
     
+//    private static void sendStatus(OutputStream out, String s) throws IOException {
+//        PrintWriter w = new PrintWriter(out);
+//        w.print(s.replace("\r", "").replace("\n", "") + "\r\n");
+//        w.flush();
+//    }
+    
     /**
      * Megpróbálja az üzenetet fogadni a távoli géptől.
      * Ha a másik oldalon hiba keletkezett, kivételt dob.
@@ -67,5 +73,12 @@ class HandlerUtil {
             throw new RemoteHandlerException(status);
         }
     }
+    
+//    public static void readStatus(InputStream in) throws IOException {
+//        String status = new BufferedReader(new InputStreamReader(in)).readLine();
+//        if (status != null && !status.equals(HandlerException.VAL_OK)) {
+//            throw new RemoteHandlerException(status);
+//        }
+//    }
     
 }

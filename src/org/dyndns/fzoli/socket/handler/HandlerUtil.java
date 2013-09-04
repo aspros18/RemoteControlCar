@@ -75,7 +75,17 @@ class HandlerUtil {
     }
     
 //    public static void readStatus(InputStream in) throws IOException {
-//        String status = new BufferedReader(new InputStreamReader(in)).readLine();
+//        String status = new BufferedReader(new InputStreamReader(in) {
+//
+//            private int count = 0;
+//            
+//            @Override
+//            public int read(char[] cbuf, int offset, int length) throws IOException {
+//                if (count++ > 1000) throw new RemoteHandlerException("long message", true);
+//                return super.read(cbuf, offset, length);
+//            }
+//
+//        }).readLine();
 //        if (status != null && !status.equals(HandlerException.VAL_OK)) {
 //            throw new RemoteHandlerException(status);
 //        }

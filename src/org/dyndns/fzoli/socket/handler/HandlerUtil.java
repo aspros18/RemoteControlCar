@@ -8,6 +8,10 @@ import java.io.OutputStream;
 import org.dyndns.fzoli.socket.handler.exception.HandlerException;
 import org.dyndns.fzoli.socket.handler.exception.RemoteHandlerException;
 
+//import java.io.BufferedReader;
+//import java.io.InputStreamReader;
+//import java.io.PrintWriter;
+
 /**
  * AbstractClientHandler és AbstractServerHandler implementálásához.
  * @author zoli
@@ -81,11 +85,13 @@ class HandlerUtil {
 //            
 //            @Override
 //            public int read(char[] cbuf, int offset, int length) throws IOException {
-//                if (count++ > 1000) throw new RemoteHandlerException("long message", true);
-//                return super.read(cbuf, offset, length);
+//                if (count >= 100) throw new RemoteHandlerException("long message", true);
+//                int bytes = super.read(cbuf, offset, length);
+//                count += bytes;
+//                return bytes;
 //            }
 //
-//        }).readLine();
+//        }, 100).readLine();
 //        if (status != null && !status.equals(HandlerException.VAL_OK)) {
 //            throw new RemoteHandlerException(status);
 //        }

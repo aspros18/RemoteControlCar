@@ -26,7 +26,7 @@ class ServerSocket : private Socket {
         
         ServerSocket(uint16_t port, uint16_t maxNewConn = 10);
         
-        Socket accept();
+//        Socket accept();
         void close();
         bool isClosed();
         void setTimeout(int sec);
@@ -40,6 +40,9 @@ class ServerSocket : private Socket {
         
         void open(uint16_t port, uint16_t maxConn);
         int tcpAccept();
+        
+        virtual int write(const void *buf, int num) const;
+        virtual int read(void *buf, int num) const;
         
 };
 

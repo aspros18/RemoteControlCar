@@ -21,13 +21,13 @@ class Socket {
         
         bool isClosed();
         std::streambuf* getBuffer();
-        virtual void close();
+        virtual void close() = 0;
         void write(int byte);
         int write(const char *text) const;
-        virtual int write(const void *buf, int num) const;
+        virtual int write(const void *buf, int num) const = 0;
         int read();
         void read (std::string& s) const;
-        virtual int read(void *buf, int num) const;
+        virtual int read(void *buf, int num) const = 0;
         virtual void setTimeout(int sec);
         
         const Socket& operator >> (std::string& s) const;

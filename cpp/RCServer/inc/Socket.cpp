@@ -38,11 +38,11 @@ std::streambuf* Socket::getBuffer() {
     return buffer;
 }
 
-void Socket::close() {
-    if (closed) return;
-    closed = true;
-    if (m_sock) ::close(m_sock);
-}
+//void Socket::close() {
+//    if (closed) return;
+//    closed = true;
+//    if (m_sock) ::close(m_sock);
+//}
 
 int Socket::write(const char *text) const {
     return write(text, strlen(text));
@@ -54,12 +54,12 @@ void Socket::write(int byte) {
     write(&byte_char, 1);
 }
 
-int Socket::write(const void *buf, int num) const {
-    int status = ::write(m_sock, buf, num);
-    if (status <= 0)
-        throw SocketException( "Could not write byte" );
-    return status;
-}
+//int Socket::write(const void *buf, int num) const {
+//    int status = ::write(m_sock, buf, num);
+//    if (status <= 0)
+//        throw SocketException( "Could not write byte" );
+//    return status;
+//}
 
 int Socket::read() {
     char buf[1];
@@ -67,11 +67,11 @@ int Socket::read() {
     return status == 0 ? -1 : buf[0];
 }
 
-int Socket::read(void *buf, int num) const {
-    int status = ::recv(m_sock, buf, num, 0);
-    if (status < 0) throw SocketException ( "Could not read from socket." );
-    return status;
-}
+//int Socket::read(void *buf, int num) const {
+//    int status = ::recv(m_sock, buf, num, 0);
+//    if (status < 0) throw SocketException ( "Could not read from socket." );
+//    return status;
+//}
 
 void Socket::read(std::string& s) const {    
     int status, bufsize = 1000;
@@ -85,10 +85,6 @@ void Socket::read(std::string& s) const {
     
     s = ss.str().c_str();
     ss.clear();
-    
-//    Socket* sock = const_cast<Socket*>(this);
-//    std::istream is(sock->getBuffer());
-//    std::getline(is, s);
 }
 
 int Socket::tcpConnect(const char *addr, uint16_t port, int timeout) {
@@ -148,39 +144,3 @@ const Socket& Socket::operator << (const std::string& s) const {
     write(s.c_str());
     return *this;
 }
-
-//static int check_socket_and_wait_for_timeout (int sock_fd, int time, int writing) // 0 - read; 1 - write, 2 - connect
-//{
-//fd_set rset, wset;
-//struct timeval tv = {time, 0};
-//int rc;
-//
-///* Guard against closed socket */
-//if (sock_fd < 0)
-//return -1; /* closed */
-//
-///* Construct the arguments to select */
-//FD_ZERO(&rset);
-//FD_SET(sock_fd, &rset);
-//wset = rset;
-//
-///* See if the socket is ready */
-//switch (writing)
-//{
-//case 0:
-//rc = select(sock_fd+1, &rset, NULL, NULL, &tv);
-//break;
-//case 1:
-//rc = select(sock_fd+1, NULL, &wset, NULL, &tv);
-//break;
-//case 2:
-//rc = select(sock_fd+1, &rset, &wset, NULL, &tv);
-//break;
-//}
-//
-///* Return SOCKET_TIMED_OUT on timeout, SOCKET_OPERATION_OK
-//otherwise
-//(when we are able to write or when there's something to
-//read) */
-//return rc == 0 ? 1/*timeout*/ : 0 /*ok*/;
-//}

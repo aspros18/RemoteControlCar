@@ -48,23 +48,27 @@ int main(int argc, char** argv) {
         while (true) {
             try {
                 SSLSocket c = s->accept();
-                c.setTimeout(0);
-                c << "Hello World!";
+                try {
+                    
+                    c << "Thanks" << "\r\n";
+                    
+                    std::string msg;
+                    c >> msg;
+                    std::cout << msg << "\n";
+                    
+                }
+                catch (SocketException ex) {
+                    std::cerr << "Socket error: " + ex.msg() + "\n";
+                }
                 c.close();
             }
-            catch (CertificateException ex) {
-                std::cerr << "Certificate error: " + ex.msg() + "\n";
-            }
-            catch (SSLSocketException ex) {
-                std::cerr << "SSL error: " + ex.msg() + "\n";
-            }
             catch (SocketException ex) {
-                std::cerr << "Socket error: " + ex.msg() + "\n";
+                std::cerr << "Connection error: " + ex.msg() + "\n";
             }
         }
     }
     catch (SocketException ex) {
-        std::cerr << "Server could not be created.";
+        std::cerr << "Server could not be created.\n";
         return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;

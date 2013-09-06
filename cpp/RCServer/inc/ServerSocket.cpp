@@ -18,10 +18,18 @@ ServerSocket::ServerSocket(uint16_t port, uint16_t maxNewConn) {
     open(port, maxNewConn);
 }
 
-Socket ServerSocket::accept() {
-    Socket s(tcpAccept());
-    return s;
+int ServerSocket::write(const void *buf, int num) const {
+    return -1;
 }
+ 
+int ServerSocket::read(void *buf, int num) const {
+    return -1;
+}
+
+//Socket ServerSocket::accept() {
+//    Socket s(tcpAccept());
+//    return s;
+//}
 
 bool ServerSocket::isClosed() {
     return closed;

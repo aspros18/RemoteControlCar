@@ -19,6 +19,8 @@ class TestHandler : public SSLHandler {
     protected:
         
         SSLSocketter* createProcess();
+        void init();
+        virtual void onException(std::exception &ex);
         
 };
 

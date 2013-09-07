@@ -15,7 +15,8 @@ class SSLSocketter {
     protected:
     
         virtual SSLSocket* getSocket() = 0;
-        
+        virtual int getDeviceId() = 0;
+        virtual int getConnectionId() = 0;
     
 };
 

@@ -91,7 +91,7 @@ public abstract class AbstractClientHandler extends AbstractHandler {
      * @throws IOException ha nem sikerült a fogadás
      * @throws RemoteHandlerException ha a szerver oldalon hiba keletkezett
      */
-    private void readStatus(InputStream in) throws IOException {
+    protected void readStatus(InputStream in) throws IOException {
         HandlerUtil.readStatus(in);
     }
     
@@ -100,7 +100,7 @@ public abstract class AbstractClientHandler extends AbstractHandler {
      * @throws Exception ha inicializálás közben kivétel történt
      * @throws IOException ha nem sikerült a kimenetre írni
      */
-    private void runInit(OutputStream out) throws IOException, Exception {
+    protected void runInit(OutputStream out) throws IOException, Exception {
         HandlerUtil.runInit(this, out);
     }
     

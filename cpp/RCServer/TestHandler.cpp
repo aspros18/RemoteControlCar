@@ -14,3 +14,11 @@ TestHandler::TestHandler(SSLSocket* socket) : SSLHandler(socket) {
 SSLSocketter* TestHandler::createProcess() {
     return new TestProcess(this);
 }
+
+void TestHandler::init() {
+    ;
+}
+
+void TestHandler::onException(std::exception &ex) {
+    ;
+}

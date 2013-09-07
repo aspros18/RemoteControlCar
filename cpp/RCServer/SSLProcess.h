@@ -22,6 +22,8 @@ class SSLProcess : public SSLSocketter {
         
         SSLSocket* getSocket();
         SSLHandler* getHandler();
+        int getDeviceId();
+        int getConnectionId();
         
     private:
         

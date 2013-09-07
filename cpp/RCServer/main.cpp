@@ -29,6 +29,7 @@ void createServerSocket(Config *c) {
     std::string KEYfile = c->getKeyFile();
     char *KEYpass = (char *) c->getPassword().c_str();
     s = new SSLServerSocket(c->getPort(), CAfile.c_str(), CRTfile.c_str(), KEYfile.c_str(), KEYpass);
+    s->setTimeout(3);
     struct sigaction sigIntHandler;
     sigIntHandler.sa_handler = exitHandler;
     sigemptyset(&sigIntHandler.sa_mask);
@@ -45,7 +46,6 @@ int main(int argc, char** argv) {
     }
     try {
         createServerSocket(&c);
-        s->setTimeout(1);
         while (true) {
             try {
                 SSLSocket c = s->accept();

@@ -15,6 +15,14 @@ SSLSocket* SSLProcess::getSocket() {
     return getHandler()->getSocket();
 }
 
+int SSLProcess::getDeviceId() {
+    return getHandler()->getDeviceId();
+}
+
+int SSLProcess::getConnectionId() {
+    return getHandler()->getConnectionId();
+}
+
 SSLHandler* SSLProcess::getHandler() {
     return handler;
 }

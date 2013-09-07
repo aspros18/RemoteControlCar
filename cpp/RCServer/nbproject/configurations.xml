@@ -6,7 +6,12 @@
                    projectFiles="true">
       <itemPath>Config.h</itemPath>
       <itemPath>FileUtils.h</itemPath>
+      <itemPath>SSLHandler.h</itemPath>
+      <itemPath>SSLProcess.h</itemPath>
+      <itemPath>SSLSocketter.h</itemPath>
       <itemPath>StringUtils.h</itemPath>
+      <itemPath>TestHandler.h</itemPath>
+      <itemPath>TestProcess.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -17,7 +22,12 @@
                    projectFiles="true">
       <itemPath>Config.cpp</itemPath>
       <itemPath>FileUtils.cpp</itemPath>
+      <itemPath>SSLHandler.cpp</itemPath>
+      <itemPath>SSLProcess.cpp</itemPath>
+      <itemPath>SSLSocketter.cpp</itemPath>
       <itemPath>StringUtils.cpp</itemPath>
+      <itemPath>TestHandler.cpp</itemPath>
+      <itemPath>TestProcess.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
@@ -61,9 +71,29 @@
       </item>
       <item path="FileUtils.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="SSLHandler.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="SSLHandler.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SSLProcess.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="SSLProcess.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SSLSocketter.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="SSLSocketter.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="StringUtils.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="StringUtils.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="TestHandler.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="TestHandler.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="TestProcess.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="TestProcess.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -105,9 +135,29 @@
       </item>
       <item path="FileUtils.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="SSLHandler.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="SSLHandler.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SSLProcess.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="SSLProcess.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SSLSocketter.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="SSLSocketter.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="StringUtils.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="StringUtils.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="TestHandler.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="TestHandler.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="TestProcess.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="TestProcess.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>

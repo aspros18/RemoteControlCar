@@ -14,6 +14,7 @@
 #include "SSLServerSocket.h"
 #include "CertificateException.h"
 #include "Config.h"
+#include "TestHandler.h"
 
 SSLServerSocket *s = NULL;
 
@@ -36,21 +37,6 @@ void createServerSocket(Config *c) {
     sigaction(SIGTERM, &sigIntHandler, NULL);
 }
 
-void* handle(void* vc) {
-    SSLSocket* c = (SSLSocket*) vc;
-    try {
-        c->write("Thanks\r\n");
-        std::string msg;
-        c->read(msg);
-        std::cout << msg << "\n";
-    }
-    catch (SocketException ex) {
-        std::cerr << "Socket error: " + ex.msg() + "\n";
-    }
-    c->close();
-    pthread_exit(NULL);
-}
-
 int main(int argc, char** argv) {
     Config c("bridge.conf");
     if (!c.isCorrect()) {
@@ -63,11 +49,7 @@ int main(int argc, char** argv) {
         while (true) {
             try {
                 SSLSocket c = s->accept();
-                pthread_t handleThread;
-                if (pthread_create(&handleThread, NULL, handle, &c)) {
-                    std::cerr << "Thread could not be created.\n";
-                    c.close();
-                }
+                TestHandler h(&c);
             }
             catch (SocketException ex) {
                 std::cerr << "Connection error: " + ex.msg() + "\n";

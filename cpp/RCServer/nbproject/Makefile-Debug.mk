@@ -37,7 +37,12 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/Config.o \
 	${OBJECTDIR}/FileUtils.o \
+	${OBJECTDIR}/SSLHandler.o \
+	${OBJECTDIR}/SSLProcess.o \
+	${OBJECTDIR}/SSLSocketter.o \
 	${OBJECTDIR}/StringUtils.o \
+	${OBJECTDIR}/TestHandler.o \
+	${OBJECTDIR}/TestProcess.o \
 	${OBJECTDIR}/main.o
 
 
@@ -75,10 +80,35 @@ ${OBJECTDIR}/FileUtils.o: FileUtils.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -Iinc -MMD -MP -MF $@.d -o ${OBJECTDIR}/FileUtils.o FileUtils.cpp
 
+${OBJECTDIR}/SSLHandler.o: SSLHandler.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -Iinc -MMD -MP -MF $@.d -o ${OBJECTDIR}/SSLHandler.o SSLHandler.cpp
+
+${OBJECTDIR}/SSLProcess.o: SSLProcess.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -Iinc -MMD -MP -MF $@.d -o ${OBJECTDIR}/SSLProcess.o SSLProcess.cpp
+
+${OBJECTDIR}/SSLSocketter.o: SSLSocketter.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -Iinc -MMD -MP -MF $@.d -o ${OBJECTDIR}/SSLSocketter.o SSLSocketter.cpp
+
 ${OBJECTDIR}/StringUtils.o: StringUtils.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -Iinc -MMD -MP -MF $@.d -o ${OBJECTDIR}/StringUtils.o StringUtils.cpp
+
+${OBJECTDIR}/TestHandler.o: TestHandler.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -Iinc -MMD -MP -MF $@.d -o ${OBJECTDIR}/TestHandler.o TestHandler.cpp
+
+${OBJECTDIR}/TestProcess.o: TestProcess.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -Iinc -MMD -MP -MF $@.d -o ${OBJECTDIR}/TestProcess.o TestProcess.cpp
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}

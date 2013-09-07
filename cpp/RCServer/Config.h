@@ -27,6 +27,7 @@ class Config {
         std::string getKeyFile();
         std::string getPassword();
         bool isStrict();
+        bool certVerifyDisabled();
         int getTimeout();
         
     private:

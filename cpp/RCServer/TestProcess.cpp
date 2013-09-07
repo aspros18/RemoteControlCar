@@ -15,14 +15,16 @@ TestProcess::TestProcess(SSLHandler* handler) : SSLProcess(handler) {
 
 void TestProcess::run() {
     SSLSocket* c = getSocket();
+    c->setTimeout(1);
     try {
         std::cout << "device id: " << getConnectionId() << "\n";
+        std::string msg;
+        std::istream in(getSocket()->getBuffer());
+        std::getline(in, msg);
+        std::cout << msg << "\n";
         c->write("Test OK\r\n");
-//        std::string msg;
-//        c->read(msg);
-//        std::cout << msg + "\n";
     }
     catch (SocketException ex) {
-        std::cerr << "Socket error: " + ex.msg() + "\n";
+        std::cerr << "Test Socket error: " + ex.msg() + "\n";
     }
 }

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
@@ -30,11 +31,12 @@ public class RCServerTest {
                     @Override
                     public void run() {
                         try {
-//                            Gson gson = new Gson();
-//                            String json = gson.toJson(new BagOfPrimitives());
-//                            PrintWriter out = new PrintWriter(getSocket().getOutputStream());
+                            getSocket().setSoTimeout(1000);
+                            Gson gson = new Gson();
+                            String json = gson.toJson(new BagOfPrimitives());
                             BufferedReader in = new BufferedReader(new InputStreamReader(getSocket().getInputStream()));
-//                            out.write(json + "\r\n");
+                            OutputStream out = getSocket().getOutputStream();
+                            out.write((json + "\r\n").getBytes());
                             System.out.println(in.readLine());
                         }
                         catch (Exception ex) {

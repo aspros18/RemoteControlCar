@@ -46,9 +46,8 @@ public abstract class RCHandler extends AbstractSecureClientHandler {
     }
 
     private void sendStatus(OutputStream out, String s) throws IOException {
-        PrintWriter w = new PrintWriter(out);
-        w.print(s.replace("\r", "").replace("\n", "") + "\r\n");
-        w.flush();
+        out.write((s.replace("\r", "").replace("\n", "") + "\r\n").getBytes());
+        out.flush();
     }
 
     @Override

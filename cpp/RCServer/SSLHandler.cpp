@@ -42,57 +42,43 @@ void SSLHandler::runInit() {
             getSocket()->write("\r\n");
         }
         catch (SocketException ex) {
-            onException(ex);
+            throw ex;
         }
     }
     catch (std::exception ex) {
-        try {
-            getSocket()->write(ex.what());
-            getSocket()->write("\r\n");
-            onException(ex);
-        }
-        catch (SocketException ex) {
-            onException(ex);
-        }
+        getSocket()->write(ex.what());
+        getSocket()->write("\r\n");
+        throw ex;
     }
     catch (...) {
         std::runtime_error ex("unknown error");
-        try {
-            getSocket()->write(ex.what());
-            getSocket()->write("\r\n");
-            onException(ex);
-        }
-        catch (SocketException e) {
-            onException(e);
-        }
+        getSocket()->write(ex.what());
+        getSocket()->write("\r\n");
+        throw ex;
     }
 }
 
 void SSLHandler::readStatus() {
-    try {
-        std::string status;
-        std::istream in(getSocket()->getBuffer());
-        std::getline(in, status);
-        if (status != VAL_OK) {
-            std::runtime_error ex(status);
-            onException(ex);
-        }
-        else {
-            std::cout << "ok";
-        }
-    }
-    catch (SocketException ex) {
-        onException(ex);
+    std::string status;
+    std::istream in(getSocket()->getBuffer());
+    std::getline(in, status);
+    if (!strcmp(status.c_str(), VAL_OK.c_str())) {
+        throw std::runtime_error(status);
     }
 }
 
 void* SSLHandler::run(void* v) {
     SSLHandler* h = (SSLHandler*) v;
     SSLSocket * s = h->getSocket();
-    h->deviceId = s->read();
-    h->connectionId = s->read();
-    h->runInit();
-    h->readStatus();
+    try {
+        h->deviceId = s->read();
+        h->connectionId = s->read();
+        h->runInit();
+        h->readStatus();
+    }
+    catch (std::runtime_error ex) {
+        h->onException(ex);
+    }
     s->setTimeout(0);
     SSLProcess* p = (SSLProcess*) h->createProcess();
     p->run();

@@ -4,11 +4,19 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>CertificateException.h</itemPath>
       <itemPath>Config.h</itemPath>
       <itemPath>FileUtils.h</itemPath>
       <itemPath>SSLHandler.h</itemPath>
       <itemPath>SSLProcess.h</itemPath>
+      <itemPath>SSLServerSocket.h</itemPath>
+      <itemPath>SSLSocket.h</itemPath>
+      <itemPath>SSLSocketException.h</itemPath>
       <itemPath>SSLSocketter.h</itemPath>
+      <itemPath>ServerSocket.h</itemPath>
+      <itemPath>Socket.h</itemPath>
+      <itemPath>SocketBuffer.h</itemPath>
+      <itemPath>SocketException.h</itemPath>
       <itemPath>StringUtils.h</itemPath>
       <itemPath>TestHandler.h</itemPath>
       <itemPath>TestProcess.h</itemPath>
@@ -20,11 +28,19 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>CertificateException.cpp</itemPath>
       <itemPath>Config.cpp</itemPath>
       <itemPath>FileUtils.cpp</itemPath>
       <itemPath>SSLHandler.cpp</itemPath>
       <itemPath>SSLProcess.cpp</itemPath>
+      <itemPath>SSLServerSocket.cpp</itemPath>
+      <itemPath>SSLSocket.cpp</itemPath>
+      <itemPath>SSLSocketException.cpp</itemPath>
       <itemPath>SSLSocketter.cpp</itemPath>
+      <itemPath>ServerSocket.cpp</itemPath>
+      <itemPath>Socket.cpp</itemPath>
+      <itemPath>SocketBuffer.cpp</itemPath>
+      <itemPath>SocketException.cpp</itemPath>
       <itemPath>StringUtils.cpp</itemPath>
       <itemPath>TestHandler.cpp</itemPath>
       <itemPath>TestProcess.cpp</itemPath>
@@ -52,17 +68,13 @@
       </toolsSet>
       <compileType>
         <ccTool>
-          <incDir>
-            <pElem>inc</pElem>
-          </incDir>
-          <commandLine>-Wall -lpthread -lSSLSocket</commandLine>
+          <commandLine>-Wall -lssl -lcrypto -lpthread</commandLine>
         </ccTool>
-        <linkerTool>
-          <linkerAddLib>
-            <pElem>lib</pElem>
-          </linkerAddLib>
-        </linkerTool>
       </compileType>
+      <item path="CertificateException.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="CertificateException.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="Config.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Config.h" ex="false" tool="3" flavor2="0">
@@ -79,9 +91,37 @@
       </item>
       <item path="SSLProcess.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="SSLServerSocket.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="SSLServerSocket.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SSLSocket.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="SSLSocket.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SSLSocketException.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="SSLSocketException.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="SSLSocketter.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="SSLSocketter.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ServerSocket.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="ServerSocket.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Socket.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Socket.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SocketBuffer.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="SocketBuffer.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SocketException.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="SocketException.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="StringUtils.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -110,10 +150,7 @@
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
-          <incDir>
-            <pElem>inc</pElem>
-          </incDir>
-          <commandLine>-Wall -lpthread -lSSLSocket</commandLine>
+          <commandLine>-Wall -lssl -lcrypto -lpthread</commandLine>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>
@@ -121,12 +158,11 @@
         <asmTool>
           <developmentMode>5</developmentMode>
         </asmTool>
-        <linkerTool>
-          <linkerAddLib>
-            <pElem>lib</pElem>
-          </linkerAddLib>
-        </linkerTool>
       </compileType>
+      <item path="CertificateException.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="CertificateException.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="Config.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Config.h" ex="false" tool="3" flavor2="0">
@@ -143,9 +179,37 @@
       </item>
       <item path="SSLProcess.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="SSLServerSocket.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="SSLServerSocket.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SSLSocket.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="SSLSocket.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SSLSocketException.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="SSLSocketException.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="SSLSocketter.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="SSLSocketter.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ServerSocket.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="ServerSocket.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Socket.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Socket.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SocketBuffer.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="SocketBuffer.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SocketException.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="SocketException.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="StringUtils.cpp" ex="false" tool="1" flavor2="0">
       </item>

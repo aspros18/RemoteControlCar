@@ -35,11 +35,19 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/CertificateException.o \
 	${OBJECTDIR}/Config.o \
 	${OBJECTDIR}/FileUtils.o \
 	${OBJECTDIR}/SSLHandler.o \
 	${OBJECTDIR}/SSLProcess.o \
+	${OBJECTDIR}/SSLServerSocket.o \
+	${OBJECTDIR}/SSLSocket.o \
+	${OBJECTDIR}/SSLSocketException.o \
 	${OBJECTDIR}/SSLSocketter.o \
+	${OBJECTDIR}/ServerSocket.o \
+	${OBJECTDIR}/Socket.o \
+	${OBJECTDIR}/SocketBuffer.o \
+	${OBJECTDIR}/SocketException.o \
 	${OBJECTDIR}/StringUtils.o \
 	${OBJECTDIR}/TestHandler.o \
 	${OBJECTDIR}/TestProcess.o \
@@ -50,8 +58,8 @@ OBJECTFILES= \
 CFLAGS=
 
 # CC Compiler Flags
-CCFLAGS=-Wall -lpthread -lSSLSocket
-CXXFLAGS=-Wall -lpthread -lSSLSocket
+CCFLAGS=-Wall -lssl -lcrypto -lpthread
+CXXFLAGS=-Wall -lssl -lcrypto -lpthread
 
 # Fortran Compiler Flags
 FFLAGS=
@@ -60,7 +68,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=-Llib
+LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -70,50 +78,90 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rcserver: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rcserver ${OBJECTFILES} ${LDLIBSOPTIONS}
 
+${OBJECTDIR}/CertificateException.o: CertificateException.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/CertificateException.o CertificateException.cpp
+
 ${OBJECTDIR}/Config.o: Config.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinc -MMD -MP -MF $@.d -o ${OBJECTDIR}/Config.o Config.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/Config.o Config.cpp
 
 ${OBJECTDIR}/FileUtils.o: FileUtils.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinc -MMD -MP -MF $@.d -o ${OBJECTDIR}/FileUtils.o FileUtils.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/FileUtils.o FileUtils.cpp
 
 ${OBJECTDIR}/SSLHandler.o: SSLHandler.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinc -MMD -MP -MF $@.d -o ${OBJECTDIR}/SSLHandler.o SSLHandler.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/SSLHandler.o SSLHandler.cpp
 
 ${OBJECTDIR}/SSLProcess.o: SSLProcess.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinc -MMD -MP -MF $@.d -o ${OBJECTDIR}/SSLProcess.o SSLProcess.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/SSLProcess.o SSLProcess.cpp
+
+${OBJECTDIR}/SSLServerSocket.o: SSLServerSocket.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/SSLServerSocket.o SSLServerSocket.cpp
+
+${OBJECTDIR}/SSLSocket.o: SSLSocket.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/SSLSocket.o SSLSocket.cpp
+
+${OBJECTDIR}/SSLSocketException.o: SSLSocketException.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/SSLSocketException.o SSLSocketException.cpp
 
 ${OBJECTDIR}/SSLSocketter.o: SSLSocketter.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinc -MMD -MP -MF $@.d -o ${OBJECTDIR}/SSLSocketter.o SSLSocketter.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/SSLSocketter.o SSLSocketter.cpp
+
+${OBJECTDIR}/ServerSocket.o: ServerSocket.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/ServerSocket.o ServerSocket.cpp
+
+${OBJECTDIR}/Socket.o: Socket.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/Socket.o Socket.cpp
+
+${OBJECTDIR}/SocketBuffer.o: SocketBuffer.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/SocketBuffer.o SocketBuffer.cpp
+
+${OBJECTDIR}/SocketException.o: SocketException.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/SocketException.o SocketException.cpp
 
 ${OBJECTDIR}/StringUtils.o: StringUtils.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinc -MMD -MP -MF $@.d -o ${OBJECTDIR}/StringUtils.o StringUtils.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/StringUtils.o StringUtils.cpp
 
 ${OBJECTDIR}/TestHandler.o: TestHandler.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinc -MMD -MP -MF $@.d -o ${OBJECTDIR}/TestHandler.o TestHandler.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/TestHandler.o TestHandler.cpp
 
 ${OBJECTDIR}/TestProcess.o: TestProcess.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinc -MMD -MP -MF $@.d -o ${OBJECTDIR}/TestProcess.o TestProcess.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/TestProcess.o TestProcess.cpp
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Iinc -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
 
 # Subprojects
 .build-subprojects:

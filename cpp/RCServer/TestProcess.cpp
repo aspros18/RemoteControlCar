@@ -18,11 +18,10 @@ void TestProcess::run() {
     c->setTimeout(1);
     try {
         std::cout << "device id: " << getConnectionId() << "\n";
-        std::string msg;
-        std::istream in(getSocket()->getBuffer());
-        std::getline(in, msg);
-        std::cout << msg << "\n";
         c->write("Test OK\r\n");
+        std::string msg;
+        c->read(msg);
+        std::cout << msg << "\n";
     }
     catch (SocketException ex) {
         std::cerr << "Test Socket error: " + ex.msg() + "\n";

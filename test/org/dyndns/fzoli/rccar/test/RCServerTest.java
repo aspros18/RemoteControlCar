@@ -35,7 +35,7 @@ public class RCServerTest {
                             String json = gson.toJson(new BagOfPrimitives());
                             BufferedReader in = new BufferedReader(new InputStreamReader(getSocket().getInputStream()));
                             OutputStream out = getSocket().getOutputStream();
-                            out.write((json + "\r\n").getBytes());
+                            out.write(json.getBytes());
                             System.out.println(in.readLine());
                         }
                         catch (Exception ex) {

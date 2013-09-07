@@ -8,6 +8,8 @@
 #include "TestHandler.h"
 #include "TestProcess.h"
 
+#include <iostream>
+
 TestHandler::TestHandler(SSLSocket* socket) : SSLHandler(socket) {
 }
 
@@ -24,5 +26,5 @@ void TestHandler::onProcessNull() {
 }
 
 void TestHandler::onException(std::exception &ex) {
-    ;
+    std::cerr << "TestHandler::onException<" << ex.what() << ">\n";
 }

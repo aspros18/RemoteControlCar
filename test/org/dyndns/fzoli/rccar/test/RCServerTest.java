@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
+import org.dyndns.fzoli.socket.handler.exception.HandlerException;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
 import org.dyndns.fzoli.socket.process.SecureProcess;
 
@@ -22,6 +23,11 @@ public class RCServerTest {
     public static void main(String[] args) throws Exception {
         SSLSocket socket = SSLSocketUtil.createClientSocket("localhost", 9443, new File("test-certs-passwd/ca.crt"), new File("test-certs-passwd/controller.crt"), new File("test-certs-passwd/controller.key"), "asdfgh".toCharArray(), null);
         AbstractSecureClientHandler handler = new RCHandler(socket, DEVICE_ID) {
+
+//            @Override
+//            protected void init() {
+//                throw new HandlerException("Remote error");
+//            }
             
             @Override
             protected SecureProcess selectProcess() {

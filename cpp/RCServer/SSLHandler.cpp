@@ -8,6 +8,7 @@
 #include "SSLHandler.h"
 #include "SSLProcess.h"
 #include "SocketException.h"
+#include "StringUtils.h"
 
 #include <iostream>
 #include <algorithm>
@@ -66,7 +67,8 @@ void SSLHandler::readStatus() {
     std::string status;
     std::istream in(getSocket()->getBuffer());
     std::getline(in, status);
-    if (!strcmp(status.c_str(), VAL_OK.c_str())) {
+    status = StringUtils::trim(status);
+    if (VAL_OK.compare(status)) {
         throw std::runtime_error(status);
     }
 }

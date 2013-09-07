@@ -36,6 +36,21 @@ void createServerSocket(Config *c) {
     sigaction(SIGTERM, &sigIntHandler, NULL);
 }
 
+void* handle(void* vc) {
+    SSLSocket* c = (SSLSocket*) vc;
+    try {
+        c->write("Thanks\r\n");
+        std::string msg;
+        c->read(msg);
+        std::cout << msg << "\n";
+    }
+    catch (SocketException ex) {
+        std::cerr << "Socket error: " + ex.msg() + "\n";
+    }
+    c->close();
+    pthread_exit(NULL);
+}
+
 int main(int argc, char** argv) {
     Config c("bridge.conf");
     if (!c.isCorrect()) {
@@ -48,19 +63,11 @@ int main(int argc, char** argv) {
         while (true) {
             try {
                 SSLSocket c = s->accept();
-                try {
-                    
-                    c << "Thanks" << "\r\n";
-                    
-                    std::string msg;
-                    c >> msg;
-                    std::cout << msg << "\n";
-                    
+                pthread_t handleThread;
+                if (pthread_create(&handleThread, NULL, handle, &c)) {
+                    std::cerr << "Thread could not be created.\n";
+                    c.close();
                 }
-                catch (SocketException ex) {
-                    std::cerr << "Socket error: " + ex.msg() + "\n";
-                }
-                c.close();
             }
             catch (SocketException ex) {
                 std::cerr << "Connection error: " + ex.msg() + "\n";

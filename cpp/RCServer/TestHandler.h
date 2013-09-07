@@ -20,7 +20,8 @@ class TestHandler : public SSLHandler {
         
         SSLSocketter* createProcess();
         void init();
-        virtual void onException(std::exception &ex);
+        void onException(std::exception &ex);
+        void onProcessNull();
         
 };
 

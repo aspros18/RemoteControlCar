@@ -10,8 +10,12 @@
 #include "SocketException.h"
 
 #include <iostream>
+#include <algorithm>
 
 std::string SSLHandler::VAL_OK = "OK";
+std::vector<SSLSocketter*> SSLHandler::procs;
+pthread_mutex_t SSLHandler::mutexProcs = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t SSLHandler::mutexInit = PTHREAD_MUTEX_INITIALIZER;
 
 SSLHandler::SSLHandler(SSLSocket* socket) : deviceId(-1), connectionId(-1) {
     this->socket = socket;
@@ -67,9 +71,23 @@ void SSLHandler::readStatus() {
     }
 }
 
+void SSLHandler::addProcess(SSLSocketter* p) {
+    pthread_mutex_lock(&mutexProcs);
+    procs.push_back(p);
+    pthread_mutex_unlock(&mutexProcs);
+}
+
+void SSLHandler::removeProcess(SSLSocketter* p) {
+    pthread_mutex_lock(&mutexProcs);
+    std::vector<SSLSocketter*>::iterator position = std::find(procs.begin(), procs.end(), p);
+    if (position != procs.end()) procs.erase(position);
+    pthread_mutex_unlock(&mutexProcs);
+}
+
 void* SSLHandler::run(void* v) {
     SSLHandler* h = (SSLHandler*) v;
     SSLSocket * s = h->getSocket();
+    pthread_mutex_lock(&mutexInit);
     try {
         h->deviceId = s->read();
         h->connectionId = s->read();
@@ -81,7 +99,21 @@ void* SSLHandler::run(void* v) {
     }
     s->setTimeout(0);
     SSLProcess* p = (SSLProcess*) h->createProcess();
-    p->run();
+    if (p != NULL) {
+        addProcess(p);
+        pthread_mutex_unlock(&mutexInit);
+        try {
+            p->run();
+        }
+        catch (std::exception ex) {
+            h->onException(ex);
+        }
+        removeProcess(p);
+    }
+    else {
+        pthread_mutex_unlock(&mutexInit);
+        h->onProcessNull();
+    }
     s->close();
     pthread_exit(NULL);
 }

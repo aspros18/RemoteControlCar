@@ -48,8 +48,8 @@ int main(int argc, char** argv) {
         createServerSocket(&c);
         while (true) {
             try {
-                SSLSocket c = s->accept();
-                TestHandler h(&c);
+                SSLSocket cs = s->accept();
+                new TestHandler(&cs);
             }
             catch (SocketException ex) {
                 std::cerr << "Connection error: " + ex.msg() + "\n";

@@ -19,6 +19,10 @@ void TestHandler::init() {
     ;
 }
 
+void TestHandler::onProcessNull() {
+    ;
+}
+
 void TestHandler::onException(std::exception &ex) {
     ;
 }

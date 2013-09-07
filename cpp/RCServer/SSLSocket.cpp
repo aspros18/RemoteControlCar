@@ -26,7 +26,7 @@ SSLSocket::SSLSocket() {
 }
 
 SSLSocket::~SSLSocket() {
-    unloadSSL();
+    unloadSSL(); // TODO: segfault több szál esetén
 }
 
 SSLSocket::SSLSocket(connection c) {

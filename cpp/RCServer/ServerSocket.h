@@ -26,7 +26,7 @@ class ServerSocket : private Socket {
         
         ServerSocket(uint16_t port, uint16_t maxNewConn = 10);
         
-//        Socket accept();
+//        Socket accept(); // az eredeti terv része
         void close();
         bool isClosed();
         void setTimeout(int sec);
@@ -41,8 +41,8 @@ class ServerSocket : private Socket {
         void open(uint16_t port, uint16_t maxConn);
         int tcpAccept();
         
-        virtual int write(const void *buf, int num) const;
-        virtual int read(void *buf, int num) const;
+        virtual int write(const void *buf, int num) const; // TODO: ez és ...
+        virtual int read(void *buf, int num) const; // ... ez a metódus nem kellene, ha jól működne az eredeti terv
         
 };
 

@@ -23,7 +23,7 @@ void TestProcess::run() {
         c->read(msg);
         std::cout << msg << "\n";
     }
-    catch (SocketException ex) {
+    catch (SocketException &ex) {
         std::cerr << "Test Socket error: " + ex.msg() + "\n";
     }
 }

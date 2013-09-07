@@ -9,6 +9,7 @@
 #include "TestProcess.h"
 
 #include <iostream>
+#include <stdexcept>
 
 TestHandler::TestHandler(SSLSocket* socket) : SSLHandler(socket) {
 }
@@ -18,7 +19,7 @@ SSLSocketter* TestHandler::createProcess() {
 }
 
 void TestHandler::init() {
-    ;
+//    throw std::runtime_error("Remote error");
 }
 
 void TestHandler::onProcessNull() {

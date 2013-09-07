@@ -46,20 +46,20 @@ void SSLHandler::runInit() {
             getSocket()->write(VAL_OK.c_str());
             getSocket()->write("\r\n");
         }
-        catch (SocketException ex) {
-            throw ex;
+        catch (SocketException &ex) {
+            throw;
         }
     }
-    catch (std::exception ex) {
+    catch (std::exception &ex) {
         getSocket()->write(ex.what());
         getSocket()->write("\r\n");
-        throw ex;
+        throw;
     }
     catch (...) {
         std::runtime_error ex("unknown error");
         getSocket()->write(ex.what());
         getSocket()->write("\r\n");
-        throw ex;
+        throw;
     }
 }
 
@@ -96,7 +96,7 @@ void* SSLHandler::run(void* v) {
         h->runInit();
         h->readStatus();
     }
-    catch (std::runtime_error ex) {
+    catch (std::exception &ex) {
         h->onException(ex);
     }
     s->setTimeout(0);
@@ -107,7 +107,7 @@ void* SSLHandler::run(void* v) {
         try {
             p->run();
         }
-        catch (std::exception ex) {
+        catch (std::exception &ex) {
             h->onException(ex);
         }
         removeProcess(p);

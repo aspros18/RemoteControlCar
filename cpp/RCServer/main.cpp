@@ -51,12 +51,12 @@ int main(int argc, char** argv) {
                 SSLSocket cs = s->accept();
                 new TestHandler(&cs);
             }
-            catch (SocketException ex) {
+            catch (SocketException &ex) {
                 std::cerr << "Connection error: " + ex.msg() + "\n";
             }
         }
     }
-    catch (SocketException ex) {
+    catch (SocketException &ex) {
         std::cerr << "Server could not be created.\n";
         return EXIT_FAILURE;
     }

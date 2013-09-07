@@ -48,7 +48,7 @@ int Config::getPort() {
         if (port < 1 || port > 65535) return -1;
         return port;
     }
-    catch (std::invalid_argument ex) {
+    catch (std::invalid_argument &ex) {
         return -1;
     }
 }
@@ -90,7 +90,7 @@ int Config::getTimeout() {
         if (port > 120) port = 120;
         return port;
     }
-    catch (std::invalid_argument ex) {
+    catch (std::invalid_argument &ex) {
         return 10;
     }
 }

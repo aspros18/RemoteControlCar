@@ -5,7 +5,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;

@@ -14,7 +14,7 @@
 #include <algorithm>
 
 std::string SSLHandler::VAL_OK = "OK";
-std::vector<SSLSocketter*> SSLHandler::procs;
+std::vector<SSLSocketter*> SSLHandler::PROCS;
 pthread_mutex_t SSLHandler::mutexProcs = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t SSLHandler::mutexInit = PTHREAD_MUTEX_INITIALIZER;
 
@@ -75,14 +75,14 @@ void SSLHandler::readStatus() {
 
 void SSLHandler::addProcess(SSLSocketter* p) {
     pthread_mutex_lock(&mutexProcs);
-    procs.push_back(p);
+    PROCS.push_back(p);
     pthread_mutex_unlock(&mutexProcs);
 }
 
 void SSLHandler::removeProcess(SSLSocketter* p) {
     pthread_mutex_lock(&mutexProcs);
-    std::vector<SSLSocketter*>::iterator position = std::find(procs.begin(), procs.end(), p);
-    if (position != procs.end()) procs.erase(position);
+    std::vector<SSLSocketter*>::iterator position = std::find(PROCS.begin(), PROCS.end(), p);
+    if (position != PROCS.end()) PROCS.erase(position);
     pthread_mutex_unlock(&mutexProcs);
 }
 

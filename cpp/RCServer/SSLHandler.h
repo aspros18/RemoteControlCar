@@ -22,7 +22,7 @@ public:
     int getDeviceId();
     int getConnectionId();
     
-    static std::vector<SSLSocketter*> procs;
+    static std::vector<SSLSocketter*> PROCS;
     
 protected:
     

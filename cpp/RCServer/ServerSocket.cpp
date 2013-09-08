@@ -18,17 +18,9 @@ ServerSocket::ServerSocket(uint16_t port, uint16_t maxNewConn) {
     open(port, maxNewConn);
 }
 
-int ServerSocket::write(const void *buf, int num) const {
-    return -1;
+Socket* ServerSocket::accept() {
+    return new Socket(tcpAccept());
 }
- 
-int ServerSocket::read(void *buf, int num) const {
-    return -1;
-}
-
-//Socket* ServerSocket::accept() {
-//    return new Socket(tcpAccept());
-//}
 
 bool ServerSocket::isClosed() {
     return closed;
@@ -78,6 +70,6 @@ int ServerSocket::tcpAccept() {
 }
 
 void ServerSocket::setTimeout(int sec) {
-//    Socket::setTimeout(h.socket, sec); // do not need
+//    Socket::setTimeout(h.socket, sec); // do not need because has no effect
     timeout = sec;
 }

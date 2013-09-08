@@ -29,10 +29,10 @@ Socket::Socket(int sock) : closed(false) {
     m_sock = sock;
 }
 
-//Socket::Socket(const char *host, uint16_t port, int timeout) : closed(false) {
-//    buffer = new SocketBuffer(this);
-//    m_sock = tcpConnect(host, port, timeout);
-//}
+Socket::Socket(const char *host, uint16_t port, int timeout) : closed(false) {
+    buffer = new SocketBuffer(this);
+    m_sock = tcpConnect(host, port, timeout);
+}
 
 bool Socket::isClosed() {
     return closed;
@@ -42,11 +42,11 @@ std::streambuf* Socket::getBuffer() {
     return buffer;
 }
 
-//void Socket::close() {
-//    if (closed) return;
-//    closed = true;
-//    if (m_sock) ::close(m_sock);
-//}
+void Socket::close() {
+    if (closed) return;
+    closed = true;
+    if (m_sock) ::close(m_sock);
+}
 
 int Socket::write(const char *text) const {
     return write(text, strlen(text));
@@ -58,12 +58,12 @@ void Socket::write(int byte) {
     write(&byte_char, 1);
 }
 
-//int Socket::write(const void *buf, int num) const {
-//    int status = ::write(m_sock, buf, num);
-//    if (status <= 0)
-//        throw SocketException( "Could not write byte" );
-//    return status;
-//}
+int Socket::write(const void *buf, int num) const {
+    int status = ::write(m_sock, buf, num);
+    if (status <= 0)
+        throw SocketException( "Could not write byte" );
+    return status;
+}
 
 int Socket::read() {
     char buf[1];
@@ -71,11 +71,11 @@ int Socket::read() {
     return status == 0 ? -1 : buf[0];
 }
 
-//int Socket::read(void *buf, int num) const {
-//    int status = ::recv(m_sock, buf, num, 0);
-//    if (status < 0) throw SocketException ( "Could not read from socket." );
-//    return status;
-//}
+int Socket::read(void *buf, int num) const {
+    int status = ::recv(m_sock, buf, num, 0);
+    if (status < 0) throw SocketException ( "Could not read from socket." );
+    return status;
+}
 
 void Socket::read(std::string& s) const {    
     int status, bufsize = 1000;

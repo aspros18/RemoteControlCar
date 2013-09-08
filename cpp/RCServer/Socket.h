@@ -17,17 +17,17 @@ class Socket {
         
         Socket(int sock);
         virtual ~Socket();
-//        Socket(const char *host, uint16_t port, int timeout = 0);
+        Socket(const char *host, uint16_t port, int timeout = 0);
         
         bool isClosed();
         std::streambuf* getBuffer();
-        virtual void close() = 0; // TODO: meg van írva, csak azért abstract, mert nem mindig jó az override; utána kellene járni, miért
+        virtual void close();
         void write(int byte);
         int write(const char *text) const;
-        virtual int write(const void *buf, int num) const = 0; // TODO: ez is meg van írva...
+        virtual int write(const void *buf, int num) const;
         int read();
         void read (std::string& s) const;
-        virtual int read(void *buf, int num) const = 0; // TODO: ez is meg van írva...
+        virtual int read(void *buf, int num) const;
         virtual void setTimeout(int sec);
         
         const Socket& operator >> (std::string& s) const;

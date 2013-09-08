@@ -69,7 +69,7 @@ public class RCServerTest {
     public static void main(String[] args) throws Exception {
         for (int i = 0; i < TEST_COUNT; i ++) {
             new Thread(TEST).start();
-            Thread.sleep(500);
+//            Thread.sleep(1000);
         }
     }
     

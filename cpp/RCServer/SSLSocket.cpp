@@ -94,6 +94,11 @@ SSL_CTX *SSLSocket::sslCreateCtx(bool client, bool verify, const char *CAfile, c
         // Sets the password of the private key
         SSL_CTX_set_default_passwd_cb_userdata(sctx, passwd);
 
+        if (!client) {
+            int s_server_session_id_context = 1;
+            SSL_CTX_set_session_id_context(sctx, (const unsigned char*) &s_server_session_id_context, sizeof(s_server_session_id_context));
+        }
+        
         if (SSL_CTX_load_verify_locations(sctx, CAfile, NULL) == 0) {
             throw CertificateException ( "CA file could not be loaded." );
         }

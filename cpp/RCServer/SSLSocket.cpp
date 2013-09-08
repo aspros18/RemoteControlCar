@@ -112,13 +112,13 @@ SSL_CTX *SSLSocket::sslCreateCtx(bool client, bool verify, const char *CAfile, c
 }
 
 void SSLSocket::sslDestroyCtx(SSL_CTX *sctx) {
-    if (sctx) SSL_CTX_free(sctx);
+    if (sctx != NULL && sctx) SSL_CTX_free(sctx);
 }
 
 void SSLSocket::sslDisconnect(connection c) {
     if (c.socket)
         ::close(c.socket);
-    if (c.sslHandle) {
+    if (c.sslHandle != NULL && c.sslHandle) {
         SSL_shutdown(c.sslHandle);
         SSL_free(c.sslHandle);
     }
@@ -131,17 +131,20 @@ int SSLSocket::sslConnect(const char *addr, uint16_t port, int timeout) {
     
     // Create an SSL struct for the connection
     conn.sslHandle = SSL_new(ctx);
-    if (conn.sslHandle == NULL)
+    if (conn.sslHandle == NULL) {
+        close();
         throw SSLSocketException ( "Could not create SSL object." );
-    
+    }
     // Connect the SSL struct to our connection
-    if (!SSL_set_fd(conn.sslHandle, conn.socket))
+    if (!SSL_set_fd(conn.sslHandle, conn.socket)) {
+        close();
         throw SSLSocketException ( "Could not connect the SSL object to the socket." );
-
+    }
     // Initiate SSL handshake
-    if (SSL_connect(conn.sslHandle) != 1)
+    if (SSL_connect(conn.sslHandle) != 1) {
+        close();
         throw SSLSocketException ( "Error during SSL handshake." );
-    
+    }
     return conn.socket;
 }
 

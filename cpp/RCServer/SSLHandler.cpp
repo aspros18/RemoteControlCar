@@ -89,15 +89,17 @@ void SSLHandler::removeProcess(SSLSocketter* p) {
 void* SSLHandler::run(void* v) {
     SSLHandler* h = (SSLHandler*) v;
     SSLSocket * s = h->getSocket();
-    pthread_mutex_lock(&mutexInit);
     try {
         h->deviceId = s->read();
         h->connectionId = s->read();
+        pthread_mutex_lock(&mutexInit);
         h->runInit();
         h->readStatus();
     }
     catch (std::exception &ex) {
+        pthread_mutex_unlock(&mutexInit);
         h->onException(ex);
+        pthread_exit(NULL);
     }
     s->setTimeout(0);
     SSLProcess* p = (SSLProcess*) h->createProcess();

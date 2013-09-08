@@ -1,16 +1,8 @@
 package org.dyndns.fzoli.socket.handler;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import org.dyndns.fzoli.socket.handler.exception.HandlerException;
 import org.dyndns.fzoli.socket.handler.exception.RemoteHandlerException;
-
-//import java.io.BufferedReader;
-//import java.io.InputStreamReader;
-//import java.io.PrintWriter;
 
 /**
  * AbstractClientHandler és AbstractServerHandler implementálásához.
@@ -23,12 +15,12 @@ class HandlerUtil {
      * @throws Exception ha inicializálás közben kivétel történt
      * @throws IOException ha nem sikerült a kimenetre írni
      */
-    public static void runInit(AbstractHandler handler, OutputStream out) throws IOException, Exception {
+    public static void runInit(AbstractHandler handler, DeviceHandler dh) throws IOException, Exception {
         try {
             // inicializáló metódus futtatása
             handler.init();
             // rendben jelzés küldése a távoli eszköznek
-            sendStatus(out, HandlerException.VAL_OK);
+            dh.sendStatus(HandlerException.VAL_OK);
         }
         catch (IOException ex) {
             // nem sikerült a rendben jelzés küldése, ezért nem próbál üzenetet küldeni
@@ -36,33 +28,17 @@ class HandlerUtil {
         }
         catch (HandlerException ex) {
             // a kivétel üzenetét távoli eszköznek is
-            sendStatus(out, ex.getMessage());
+            dh.sendStatus(ex.getMessage());
             // a kivétel megy tovább, mint ha semmi nem történt volna
             throw ex;
         }
         catch (Exception ex) {
             // olyan kivétel keletkezett, mely nem várt hiba
-            sendStatus(out, "unexpected error");
+            dh.sendStatus("unexpected error");
             // a kivétel megy tovább...
             throw ex;
         }
     }
-    
-    /**
-     * Megpróbálja az üzenetet elküldeni a távoli eszköznek.
-     * @throws IOException ha nem sikerült a küldés
-     */
-    private static void sendStatus(OutputStream out, String s) throws IOException {
-        ObjectOutputStream oos = new ObjectOutputStream(out);
-        oos.writeUTF(s);
-        oos.flush();
-    }
-    
-//    private static void sendStatus(OutputStream out, String s) throws IOException {
-//        PrintWriter w = new PrintWriter(out);
-//        w.print(s.replace("\r", "").replace("\n", "") + "\r\n");
-//        w.flush();
-//    }
     
     /**
      * Megpróbálja az üzenetet fogadni a távoli géptől.
@@ -70,31 +46,14 @@ class HandlerUtil {
      * @throws IOException ha nem sikerült a fogadás
      * @throws RemoteHandlerException ha a másik oldalon hiba keletkezett
      */
-    public static void readStatus(InputStream in) throws IOException {
-        ObjectInputStream oin = new ObjectInputStream(in);
-        String status = oin.readUTF();
-        if (!status.equals(HandlerException.VAL_OK)) {
+    public static void readStatus(DeviceHandler dh) throws IOException {
+        String status = dh.readStatus();
+        if (status == null) {
+            throw new RemoteHandlerException("unknown error");
+        }
+        else if (!status.equals(HandlerException.VAL_OK)) {
             throw new RemoteHandlerException(status);
         }
     }
-    
-//    public static void readStatus(InputStream in) throws IOException {
-//        String status = new BufferedReader(new InputStreamReader(in) {
-//
-//            private int count = 0;
-//            
-//            @Override
-//            public int read(char[] cbuf, int offset, int length) throws IOException {
-//                if (count >= 100) throw new RemoteHandlerException("long message", true);
-//                int bytes = super.read(cbuf, offset, length);
-//                count += bytes;
-//                return bytes;
-//            }
-//
-//        }, 100).readLine();
-//        if (status != null && !status.equals(HandlerException.VAL_OK)) {
-//            throw new RemoteHandlerException(status);
-//        }
-//    }
     
 }

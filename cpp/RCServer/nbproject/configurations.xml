@@ -25,6 +25,16 @@
                    displayName="Rapid JSON"
                    projectFiles="true"
                    kind="ROOT">
+      <itemPath>rapidjson/document.h</itemPath>
+      <itemPath>rapidjson/filestream.h</itemPath>
+      <itemPath>rapidjson/internal/pow10.h</itemPath>
+      <itemPath>rapidjson/prettywriter.h</itemPath>
+      <itemPath>rapidjson/rapidjson.h</itemPath>
+      <itemPath>rapidjson/reader.h</itemPath>
+      <itemPath>rapidjson/internal/stack.h</itemPath>
+      <itemPath>rapidjson/internal/strfunc.h</itemPath>
+      <itemPath>rapidjson/stringbuffer.h</itemPath>
+      <itemPath>rapidjson/writer.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -49,17 +59,7 @@
       <itemPath>StringUtils.cpp</itemPath>
       <itemPath>TestHandler.cpp</itemPath>
       <itemPath>TestProcess.cpp</itemPath>
-      <itemPath>rapidjson/document.h</itemPath>
-      <itemPath>rapidjson/filestream.h</itemPath>
       <itemPath>main.cpp</itemPath>
-      <itemPath>rapidjson/internal/pow10.h</itemPath>
-      <itemPath>rapidjson/prettywriter.h</itemPath>
-      <itemPath>rapidjson/rapidjson.h</itemPath>
-      <itemPath>rapidjson/reader.h</itemPath>
-      <itemPath>rapidjson/internal/stack.h</itemPath>
-      <itemPath>rapidjson/internal/strfunc.h</itemPath>
-      <itemPath>rapidjson/stringbuffer.h</itemPath>
-      <itemPath>rapidjson/writer.h</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"

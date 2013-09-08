@@ -107,8 +107,8 @@ public abstract class AbstractServerHandler extends AbstractHandler {
      * @throws IOException ha nem sikerült a fogadás
      * @throws RemoteHandlerException ha a kliens oldalon hiba keletkezett
      */
-    private void readStatus(InputStream in) throws IOException {
-        HandlerUtil.readStatus(in);
+    private void readStatus(DeviceHandler dh) throws IOException {
+        HandlerUtil.readStatus(dh);
     }
     
     /**
@@ -116,8 +116,8 @@ public abstract class AbstractServerHandler extends AbstractHandler {
      * @throws Exception ha inicializálás közben kivétel történt
      * @throws IOException ha nem sikerült a kimenetre írni
      */
-    private void runInit(OutputStream out) throws IOException, Exception {
-        HandlerUtil.runInit(this, out);
+    private void runInit(DeviceHandler dh) throws IOException, Exception {
+        HandlerUtil.runInit(this, dh);
     }
     
     /**
@@ -143,6 +143,10 @@ public abstract class AbstractServerHandler extends AbstractHandler {
             // kapcsolatazonosító elkérése a klienstől
             setConnectionId(in.read());
             
+            // létrehozza az eszközazonosító alapján a kapcsolatkialakító metódusokat definiáló objektumot
+            DeviceHandler dh = createDeviceHandler(in, out);
+            if (dh == null) throw new NullHandlerException();
+            
             // adatfeldolgozó referencia
             Process proc;
             
@@ -150,10 +154,10 @@ public abstract class AbstractServerHandler extends AbstractHandler {
             synchronized (INIT_LOCK) {
             
                 // inicializálás és eredményközlés a kliensnek
-                runInit(out);
+                runInit(dh);
 
                 // eredmény fogadása a klienstől és kivételdobás hiba esetén
-                readStatus(in);
+                readStatus(dh);
 
                 // időtúllépés eredeti állapota kikapcsolva
                 getSocket().setSoTimeout(0);

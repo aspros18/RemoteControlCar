@@ -91,8 +91,8 @@ public abstract class AbstractClientHandler extends AbstractHandler {
      * @throws IOException ha nem sikerült a fogadás
      * @throws RemoteHandlerException ha a szerver oldalon hiba keletkezett
      */
-    protected void readStatus(InputStream in) throws IOException {
-        HandlerUtil.readStatus(in);
+    private void readStatus(DeviceHandler dh) throws IOException {
+        HandlerUtil.readStatus(dh);
     }
     
     /**
@@ -100,8 +100,8 @@ public abstract class AbstractClientHandler extends AbstractHandler {
      * @throws Exception ha inicializálás közben kivétel történt
      * @throws IOException ha nem sikerült a kimenetre írni
      */
-    protected void runInit(OutputStream out) throws IOException, Exception {
-        HandlerUtil.runInit(this, out);
+    private void runInit(DeviceHandler dh) throws IOException, Exception {
+        HandlerUtil.runInit(this, dh);
     }
     
     /**
@@ -118,6 +118,10 @@ public abstract class AbstractClientHandler extends AbstractHandler {
             InputStream in = getSocket().getInputStream();
             OutputStream out = getSocket().getOutputStream();
             
+            // létrehozza az eszközazonosító alapján a kapcsolatkialakító metódusokat definiáló objektumot
+            DeviceHandler dh = createDeviceHandler(in, out);
+            if (dh == null) throw new NullHandlerException();
+            
             // maximum 3 másodperc van a két bájt küldésére és az inicializálásra
             getSocket().setSoTimeout(3000);
             
@@ -127,10 +131,10 @@ public abstract class AbstractClientHandler extends AbstractHandler {
             out.write(getConnectionId());
             
             // eredmény fogadása a szervertől és kivételdobás hiba esetén
-            readStatus(in);
+            readStatus(dh);
             
             // inicializálás és eredményközlés a szervernek
-            runInit(out);
+            runInit(dh);
             
             // időtúllépés eredeti állapota kikapcsolva
             getSocket().setSoTimeout(0);

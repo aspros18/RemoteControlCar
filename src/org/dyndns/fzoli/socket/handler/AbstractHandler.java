@@ -1,5 +1,7 @@
 package org.dyndns.fzoli.socket.handler;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,6 +60,16 @@ public abstract class AbstractHandler implements Handler {
      * A metódus csak akkor hívható meg, amikor már ismert a kapcsolatazonosító és eszközazonosító,
      */
     protected abstract Process selectProcess();
+    
+    /**
+     * Létrehoz egy kapcsolatinicializáló segéded, ami a státuszüzenet küldését és fogadását intézi.
+     * Alapértelmezés szerint {@link ObjectStreamDeviceHandler} objektum jön létre.
+     * @return egy kapcsolatinicializáló segéd
+     * @see DeviceHandler
+     */
+    protected DeviceHandler createDeviceHandler(InputStream in, OutputStream out) {
+        return new ObjectStreamDeviceHandler(in, out);
+    }
     
     /**
      * Miután az eszközazonosító és a kapcsolatazonosító közlése megtörtént,

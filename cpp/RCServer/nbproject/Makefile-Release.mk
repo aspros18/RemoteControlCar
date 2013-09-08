@@ -37,6 +37,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/CertificateException.o \
 	${OBJECTDIR}/Config.o \
+	${OBJECTDIR}/DisconnectProcess.o \
 	${OBJECTDIR}/FileUtils.o \
 	${OBJECTDIR}/SSLHandler.o \
 	${OBJECTDIR}/SSLProcess.o \
@@ -51,6 +52,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/StringUtils.o \
 	${OBJECTDIR}/TestHandler.o \
 	${OBJECTDIR}/TestProcess.o \
+	${OBJECTDIR}/Timer.o \
 	${OBJECTDIR}/main.o
 
 
@@ -87,6 +89,11 @@ ${OBJECTDIR}/Config.o: Config.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/Config.o Config.cpp
+
+${OBJECTDIR}/DisconnectProcess.o: DisconnectProcess.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/DisconnectProcess.o DisconnectProcess.cpp
 
 ${OBJECTDIR}/FileUtils.o: FileUtils.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -157,6 +164,11 @@ ${OBJECTDIR}/TestProcess.o: TestProcess.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/TestProcess.o TestProcess.cpp
+
+${OBJECTDIR}/Timer.o: Timer.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/Timer.o Timer.cpp
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}

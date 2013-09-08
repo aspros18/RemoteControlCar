@@ -62,6 +62,7 @@ bool SSLHandler::equals(SSLHandler* h1, SSLHandler* h2) {
 }
 
 void SSLHandler::runInit() {
+    bool w = true;
     try {
         init();
         try {
@@ -69,12 +70,15 @@ void SSLHandler::runInit() {
             getSocket()->write("\r\n");
         }
         catch (SocketException &ex) {
+            w = false;
             throw;
         }
     }
     catch (std::exception &ex) {
-        getSocket()->write(ex.what());
-        getSocket()->write("\r\n");
+        if (w) {
+            getSocket()->write(ex.what());
+            getSocket()->write("\r\n");
+        }
         throw;
     }
     catch (...) {

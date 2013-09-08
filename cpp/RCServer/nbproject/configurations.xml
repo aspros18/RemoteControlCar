@@ -21,10 +21,7 @@
       <itemPath>TestHandler.h</itemPath>
       <itemPath>TestProcess.h</itemPath>
     </logicalFolder>
-    <logicalFolder name="f1"
-                   displayName="Rapid JSON"
-                   projectFiles="true"
-                   kind="ROOT">
+    <logicalFolder name="f1" displayName="Rapid JSON" projectFiles="true">
       <itemPath>rapidjson/document.h</itemPath>
       <itemPath>rapidjson/filestream.h</itemPath>
       <itemPath>rapidjson/internal/pow10.h</itemPath>

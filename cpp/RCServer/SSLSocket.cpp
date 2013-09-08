@@ -26,6 +26,8 @@ SSLSocket::SSLSocket() {
 }
 
 SSLSocket::~SSLSocket() {
+    if (clientName != NULL) delete [] clientName;
+    if (serverName != NULL) delete [] serverName;
     unloadSSL(); // TODO: segfault több szál esetén
 }
 
@@ -149,6 +151,7 @@ char *SSLSocket::getCommonName(X509 *cert) {
     char  *subjectCn = new char[256];
     subjectName = X509_get_subject_name(cert);
     if (X509_NAME_get_text_by_NID(subjectName, NID_commonName, subjectCn, 256) != -1) return subjectCn;
+    delete [] subjectCn;
     throw CertificateException( "Could not get common name." );
 }
 

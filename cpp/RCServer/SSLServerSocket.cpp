@@ -59,10 +59,9 @@ SSLSocket::connection SSLServerSocket::sslAccept() {
     return c;
 }
 
-SSLSocket SSLServerSocket::accept() {
+SSLSocket* SSLServerSocket::accept() {
     connection c = sslAccept();
-    SSLSocket s = SSLSocket(c);
-    return s;
+    return new SSLSocket(c);
 }
 
 void SSLServerSocket::setTimeout(int sec) {

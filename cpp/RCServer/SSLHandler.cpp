@@ -24,6 +24,7 @@ SSLHandler::SSLHandler(SSLSocket* socket) : deviceId(-1), connectionId(-1) {
     if (pthread_create(&handleThread, NULL,  run, this)) {
         std::cerr << "SSLHandler thread could not be created.\n";
         socket->close();
+        delete socket;
     }
 }
 
@@ -113,11 +114,14 @@ void* SSLHandler::run(void* v) {
             h->onException(ex);
         }
         removeProcess(p);
+        delete p;
     }
     else {
         pthread_mutex_unlock(&mutexInit);
         h->onProcessNull();
     }
     s->close();
+    delete h;
+    delete s;
     pthread_exit(NULL);
 }

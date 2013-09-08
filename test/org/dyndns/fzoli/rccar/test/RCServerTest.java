@@ -18,43 +18,59 @@ import org.dyndns.fzoli.socket.process.SecureProcess;
  */
 public class RCServerTest {
     
-    private static final int CONN_ID = 5;
+    private static final int CONN_ID = 5, TEST_COUNT = 1;
+    
+    private static final Runnable TEST = new Runnable() {
+
+        @Override
+        public void run() {
+            try {
+                SSLSocket socket = SSLSocketUtil.createClientSocket("localhost", 9443, new File("test-certs-passwd/ca.crt"), new File("test-certs-passwd/controller.crt"), new File("test-certs-passwd/controller.key"), "asdfgh".toCharArray(), null);
+                AbstractSecureClientHandler handler = new RCHandler(socket, CONN_ID) {
+
+        //            @Override
+        //            protected void init() {
+        //                throw new HandlerException("Remote error");
+        //            }
+
+                    @Override
+                    protected SecureProcess selectProcess() {
+                        return new AbstractSecureProcess(this) {
+
+                            @Override
+                            public void run() {
+                                try {
+                                    getSocket().setSoTimeout(1000);
+                                    System.out.println("conn id: " + getConnectionId());
+                                    Gson gson = new Gson();
+                                    String json = gson.toJson(new BagOfPrimitives());
+                                    BufferedReader in = new BufferedReader(new InputStreamReader(getSocket().getInputStream()));
+                                    OutputStream out = getSocket().getOutputStream();
+                                    out.write(json.getBytes());
+                                    System.out.println(in.readLine());
+                                }
+                                catch (Exception ex) {
+                                    ;
+                                }
+                            }
+
+                        };
+                    }
+
+                };
+                handler.run();
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    };
     
     public static void main(String[] args) throws Exception {
-        SSLSocket socket = SSLSocketUtil.createClientSocket("localhost", 9443, new File("test-certs-passwd/ca.crt"), new File("test-certs-passwd/controller.crt"), new File("test-certs-passwd/controller.key"), "asdfgh".toCharArray(), null);
-        AbstractSecureClientHandler handler = new RCHandler(socket, CONN_ID) {
-
-//            @Override
-//            protected void init() {
-//                throw new HandlerException("Remote error");
-//            }
-            
-            @Override
-            protected SecureProcess selectProcess() {
-                return new AbstractSecureProcess(this) {
-                    
-                    @Override
-                    public void run() {
-                        try {
-                            getSocket().setSoTimeout(1000);
-                            System.out.println("conn id: " + getConnectionId());
-                            Gson gson = new Gson();
-                            String json = gson.toJson(new BagOfPrimitives());
-                            BufferedReader in = new BufferedReader(new InputStreamReader(getSocket().getInputStream()));
-                            OutputStream out = getSocket().getOutputStream();
-                            out.write(json.getBytes());
-                            System.out.println(in.readLine());
-                        }
-                        catch (Exception ex) {
-                            ;
-                        }
-                    }
-                    
-                };
-            }
-            
-        };
-        handler.run();
+        for (int i = 0; i < TEST_COUNT; i ++) {
+            new Thread(TEST).start();
+            Thread.sleep(500);
+        }
     }
     
 }

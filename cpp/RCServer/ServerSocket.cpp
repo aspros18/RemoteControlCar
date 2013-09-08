@@ -26,9 +26,8 @@ int ServerSocket::read(void *buf, int num) const {
     return -1;
 }
 
-//Socket ServerSocket::accept() {
-//    Socket s(tcpAccept());
-//    return s;
+//Socket* ServerSocket::accept() {
+//    return new Socket(tcpAccept());
 //}
 
 bool ServerSocket::isClosed() {

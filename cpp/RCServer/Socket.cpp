@@ -20,15 +20,19 @@ Socket::Socket() : closed(false) {
     m_sock = 0;
 }
 
+Socket::~Socket() {
+    if (buffer != NULL) delete buffer;
+}
+
 Socket::Socket(int sock) : closed(false) {
     buffer = new SocketBuffer(this);
     m_sock = sock;
 }
 
-Socket::Socket(const char *host, uint16_t port, int timeout) : closed(false) {
-    buffer = new SocketBuffer(this);
-    m_sock = tcpConnect(host, port, timeout);
-}
+//Socket::Socket(const char *host, uint16_t port, int timeout) : closed(false) {
+//    buffer = new SocketBuffer(this);
+//    m_sock = tcpConnect(host, port, timeout);
+//}
 
 bool Socket::isClosed() {
     return closed;

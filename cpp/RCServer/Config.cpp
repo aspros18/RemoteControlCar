@@ -82,11 +82,6 @@ bool Config::isStrict() {
     return StringUtils::to_bool(val);
 }
 
-bool Config::certVerifyDisabled() {
-    std::string val = values["ca_verify_off"];
-    return StringUtils::to_bool(val);
-}
-
 int Config::getTimeout() {
     std::string val = values["timeout"];
     try {

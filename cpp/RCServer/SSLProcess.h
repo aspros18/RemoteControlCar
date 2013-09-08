@@ -17,9 +17,6 @@ class SSLProcess : public SSLSocketter {
         SSLProcess(SSLHandler* handler);
         
         virtual void run() = 0;
-        
-    protected:
-        
         SSLSocket* getSocket();
         SSLHandler* getHandler();
         int getDeviceId();

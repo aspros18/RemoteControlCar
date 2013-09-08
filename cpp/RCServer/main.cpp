@@ -20,7 +20,6 @@ SSLServerSocket *s = NULL;
 
 void exitHandler(int signal){
     if (s != NULL) s->close();
-    exit(0);
 }
 
 void createServerSocket(Config *c) {
@@ -28,7 +27,7 @@ void createServerSocket(Config *c) {
     std::string CRTfile = c->getCertFile();
     std::string KEYfile = c->getKeyFile();
     char *KEYpass = (char *) c->getPassword().c_str();
-    s = new SSLServerSocket(c->getPort(), CAfile.c_str(), CRTfile.c_str(), KEYfile.c_str(), KEYpass, !c->certVerifyDisabled());
+    s = new SSLServerSocket(c->getPort(), CAfile.c_str(), CRTfile.c_str(), KEYfile.c_str(), KEYpass);
     s->setTimeout(3);
     struct sigaction sigIntHandler;
     sigIntHandler.sa_handler = exitHandler;
@@ -46,11 +45,12 @@ int main(int argc, char** argv) {
     }
     try {
         createServerSocket(&c);
-        while (true) {
+        while (!s->isClosed()) {
             try {
                 new TestHandler(s->accept());
             }
             catch (SocketException &ex) {
+                if (s->isClosed()) return EXIT_SUCCESS;
                 std::cerr << "Connection error: " + ex.msg() + "\n";
             }
         }

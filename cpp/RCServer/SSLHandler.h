@@ -27,9 +27,10 @@ public:
 protected:
     
     virtual SSLSocketter* createProcess() = 0;
-    virtual void init() = 0;
+    virtual void init();
     virtual void onException(std::exception &ex) = 0;
     virtual void onProcessNull() = 0;
+    static bool equals(SSLHandler* h1, SSLHandler* h2);
     
 private:
     

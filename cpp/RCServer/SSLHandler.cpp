@@ -40,6 +40,27 @@ int SSLHandler::getConnectionId() {
     return connectionId;
 }
 
+void SSLHandler::init() {
+    std::string serverName(getSocket()->getServerName());
+    std::string clientName(getSocket()->getClientName());
+    if (!serverName.compare(clientName)) {
+        throw std::runtime_error("The client uses the server's name");
+    }
+    for(std::vector<SSLSocketter*>::size_type i = 0; i != PROCS.size(); i++) {
+        SSLProcess *p = (SSLProcess*) PROCS[i];
+        if (p->getSocket()->isClosed()) continue;
+        if (equals(this, p->getHandler())) {
+            throw std::runtime_error("Duplicated certificate");
+        }
+    }
+}
+
+bool SSLHandler::equals(SSLHandler* h1, SSLHandler* h2) {
+    std::string name1(h1->getSocket()->getClientName());
+    std::string name2(h2->getSocket()->getClientName());
+    return !name1.compare(name2) && h1->getDeviceId() == h2->getDeviceId() && h1->getConnectionId() == h2->getConnectionId();
+}
+
 void SSLHandler::runInit() {
     try {
         init();

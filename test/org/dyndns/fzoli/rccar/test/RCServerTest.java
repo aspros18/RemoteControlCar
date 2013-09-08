@@ -18,11 +18,11 @@ import org.dyndns.fzoli.socket.process.SecureProcess;
  */
 public class RCServerTest {
     
-    private static final int DEVICE_ID = 5;
+    private static final int CONN_ID = 5;
     
     public static void main(String[] args) throws Exception {
         SSLSocket socket = SSLSocketUtil.createClientSocket("localhost", 9443, new File("test-certs-passwd/ca.crt"), new File("test-certs-passwd/controller.crt"), new File("test-certs-passwd/controller.key"), "asdfgh".toCharArray(), null);
-        AbstractSecureClientHandler handler = new RCHandler(socket, DEVICE_ID) {
+        AbstractSecureClientHandler handler = new RCHandler(socket, CONN_ID) {
 
 //            @Override
 //            protected void init() {
@@ -37,6 +37,7 @@ public class RCServerTest {
                     public void run() {
                         try {
                             getSocket().setSoTimeout(1000);
+                            System.out.println("conn id: " + getConnectionId());
                             Gson gson = new Gson();
                             String json = gson.toJson(new BagOfPrimitives());
                             BufferedReader in = new BufferedReader(new InputStreamReader(getSocket().getInputStream()));

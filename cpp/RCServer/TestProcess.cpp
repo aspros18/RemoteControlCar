@@ -17,7 +17,7 @@ void TestProcess::run() {
     SSLSocket* c = getSocket();
     c->setTimeout(1);
     try {
-        std::cout << "device id: " << getConnectionId() << "\n";
+        std::cout << "conn id: " << getConnectionId() << "\n";
         c->write("Test OK\r\n");
         std::string msg;
         c->read(msg);

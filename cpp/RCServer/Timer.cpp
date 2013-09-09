@@ -11,9 +11,10 @@
 
 pthread_mutex_t Timer::mutexStart = PTHREAD_MUTEX_INITIALIZER;
 
-Timer::Timer(long delay, long period) {
+Timer::Timer(long delay, long period, bool runOnce) {
     this->delay = delay;
     this->period = period;
+    this->runOnce = runOnce;
     this->running = false;
 }
 
@@ -34,7 +35,7 @@ bool Timer::start() {
 }
 
 void Timer::stop() {
-    
+    running = false;
 }
 
 void* Timer::run(void* v) {
@@ -42,6 +43,7 @@ void* Timer::run(void* v) {
     usleep(t->delay);
     while (t->running) {
         t->tick();
+        if (t->runOnce) break;
         usleep(t->period);
     }
     pthread_exit(NULL);

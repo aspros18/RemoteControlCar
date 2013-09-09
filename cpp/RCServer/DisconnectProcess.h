@@ -19,21 +19,24 @@ class DisconnectProcess : public SSLProcess {
         virtual ~DisconnectProcess();
         
         void run();
+        void callOnDisconnect(std::exception* ex);
         
     protected:
         
-//        virtual void onConnect() = 0;
-//        virtual void beforeAnswer() = 0;
-//        virtual void afterAnswer() = 0;
-//        virtual void onTimeout() = 0;
-//        virtual void afterTimeout() = 0;
-//        virtual void onDisconnect() = 0;
+        virtual void onConnect();
+        virtual void beforeAnswer();
+        virtual void afterAnswer();
+        virtual void onTimeout();
+        virtual void afterTimeout();
+        virtual void onDisconnect(std::exception* ex);
         
     private:
             
         Timer* timer;
         long waitTime;
         bool disconnected, timeout;
+        
+        void setTimeoutActive(bool b, std::exception* ex);
 
 };
 

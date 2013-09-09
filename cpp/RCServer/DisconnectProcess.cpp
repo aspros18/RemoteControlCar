@@ -17,15 +17,22 @@ class DisconnectTimer : public Timer {
     private:
         
         DisconnectProcess* dp;
+        std::exception* lastError;
         
     public:
         
-        DisconnectTimer(DisconnectProcess* proc, long timeout2) : Timer(0, timeout2) {
+        DisconnectTimer(DisconnectProcess* proc, long timeout2) : Timer(timeout2, 0, true) {
             dp = proc;
+            lastError = NULL;
+        }
+        
+        void start(std::exception* ex) {
+            lastError = ex;
+            Timer::start();
         }
         
         void tick() {
-            
+            dp->callOnDisconnect(lastError);
         }
         
 };
@@ -40,8 +47,36 @@ DisconnectProcess::~DisconnectProcess() {
     delete timer;
 }
 
+void DisconnectProcess::onConnect() {
+}
+
+void DisconnectProcess::beforeAnswer() {
+}
+
+void DisconnectProcess::afterAnswer() {
+}
+
+void DisconnectProcess::onTimeout() {
+}
+
+void DisconnectProcess::afterTimeout() {
+}
+
+void DisconnectProcess::onDisconnect(std::exception* ex) {
+}
+
+void DisconnectProcess::setTimeoutActive(bool b, std::exception* ex) {
+    DisconnectTimer* dt = (DisconnectTimer*) timer;
+    if (b) dt->start(ex);
+    else dt->stop();
+}
+
+void DisconnectProcess::callOnDisconnect(std::exception* ex) {
+    
+}
+
 void DisconnectProcess::run() {
-//    onConnect();
+    onConnect();
     try {
         while(!getSocket()->isClosed()) {
             try {
@@ -50,8 +85,7 @@ void DisconnectProcess::run() {
                     std::cout << "read ok\n";
                 }
                 else {
-                    std::cout << "stream end\n";
-                    getSocket()->close();
+                    throw std::runtime_error("socket closed");
                 }
             }
             catch (SocketException &ex) {
@@ -60,9 +94,7 @@ void DisconnectProcess::run() {
                         std::cerr << "read error - maybe timeout\n";
                         break;
                     case SocketException::write:
-                        getSocket()->close();
-                        std::cerr << "write error - socket closed\n";
-                        break;
+                        throw std::runtime_error("socket closed");
                     default:
                         throw;
                 }
@@ -71,6 +103,7 @@ void DisconnectProcess::run() {
         }
     }
     catch (std::exception &ex) {
+        std::cout << "disconnect\n";
         std::cerr << ex.what() << "\n";
     }
 }

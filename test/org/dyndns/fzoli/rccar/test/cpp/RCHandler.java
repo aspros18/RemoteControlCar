@@ -24,6 +24,7 @@ public class RCHandler extends AbstractSecureClientHandler {
 
     @Override
     protected void init() {
+        super.init();
 //        throw new HandlerException("Remote error");
     }
 

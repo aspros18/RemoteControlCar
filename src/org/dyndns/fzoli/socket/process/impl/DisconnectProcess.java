@@ -124,6 +124,18 @@ abstract class DisconnectProcess extends AbstractSecureProcess {
     protected void onDisconnect(Exception ex) {
         getHandler().closeProcesses();
     }
+
+    /**
+     * A kapcsolat bezárása előtt az időzítő leállítása, hogy a Handler szál végetérhessen.
+     */
+    @Override
+    public void dispose() {
+        if (timer != null) {
+            timer.cancel();
+            timer.purge();
+        }
+        super.dispose();
+    }
     
     /**
      * A socket bementének olvasására be lehet állítani időtúllépést.

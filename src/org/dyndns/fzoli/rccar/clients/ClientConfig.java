@@ -14,4 +14,11 @@ public interface ClientConfig extends Config {
      */
     public String getAddress();
     
+    /**
+     * Megadja, hogy nyers szöveg alapú legyen-e a kommunikáció.
+     * Ha a CA-fájl könyvtárában létezik egy {@code pure.txt} nevű fájl, akkor igazzal tér vissza.
+     * @return true esetén {@code Object(I/O)Stream} helyett nyers szöveg és JSON lesz használva.
+     */
+    public boolean isPure();
+    
 }

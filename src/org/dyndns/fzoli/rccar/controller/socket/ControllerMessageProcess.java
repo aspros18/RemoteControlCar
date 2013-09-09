@@ -3,13 +3,15 @@ package org.dyndns.fzoli.rccar.controller.socket;
 import java.io.InvalidClassException;
 import java.io.Serializable;
 import org.dyndns.fzoli.rccar.controller.ControllerModels;
+import static org.dyndns.fzoli.rccar.controller.Main.getString;
 import org.dyndns.fzoli.rccar.controller.view.ChatDialog;
 import org.dyndns.fzoli.rccar.model.Data;
 import org.dyndns.fzoli.rccar.model.PartialData;
+import org.dyndns.fzoli.rccar.socket.CommunicationMethodChooser;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.impl.MessageProcess;
+import org.dyndns.fzoli.socket.stream.StreamMethod;
 import static org.dyndns.fzoli.ui.systemtray.SystemTrayIcon.showMessage;
-import static org.dyndns.fzoli.rccar.controller.Main.getString;
 import org.dyndns.fzoli.ui.systemtray.TrayIcon;
 
 /**
@@ -22,6 +24,14 @@ public class ControllerMessageProcess extends MessageProcess {
         super(handler);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected StreamMethod createStreamMethod(Integer deviceId) {
+        return CommunicationMethodChooser.createStreamMethod(deviceId);
+    }
+    
     /**
      * Ha a kapcsolat létrejött, a chatablakban a saját felhasználónév beállítása.
      */

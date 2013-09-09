@@ -10,6 +10,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Locale;
+import org.dyndns.fzoli.rccar.clients.ClientConfigUtil;
 import org.dyndns.fzoli.rccar.controller.resource.R;
 import org.dyndns.fzoli.resource.MD5Checksum;
 import org.dyndns.fzoli.ui.systemtray.SystemTrayIcon;
@@ -484,6 +485,14 @@ public class Config implements Serializable , org.dyndns.fzoli.rccar.clients.Cli
     @Override
     public boolean isCorrect() {
         return isFileExists();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isPure() {
+        return ClientConfigUtil.isPure(this);
     }
     
 }

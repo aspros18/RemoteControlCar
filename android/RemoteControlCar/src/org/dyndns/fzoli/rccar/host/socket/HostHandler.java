@@ -1,5 +1,7 @@
 package org.dyndns.fzoli.rccar.host.socket;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.security.KeyStoreException;
@@ -11,7 +13,9 @@ import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import org.dyndns.fzoli.rccar.host.ConnectionService;
 import org.dyndns.fzoli.rccar.host.ConnectionService.ConnectionError;
+import org.dyndns.fzoli.rccar.socket.CommunicationMethodChooser;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
+import org.dyndns.fzoli.socket.handler.DeviceHandler;
 import org.dyndns.fzoli.socket.handler.exception.RemoteHandlerException;
 import org.dyndns.fzoli.socket.process.SecureProcess;
 
@@ -33,6 +37,11 @@ public class HostHandler extends AbstractSecureClientHandler implements Connecti
 		super(socket, deviceId, connectionId);
 		HELPER = helper;
 		SERVICE = service;
+	}
+	
+	@Override
+	protected DeviceHandler createDeviceHandler(InputStream in, OutputStream out) {
+		return CommunicationMethodChooser.createDeviceHandler(getDeviceId(), in, out);
 	}
 	
 	/**

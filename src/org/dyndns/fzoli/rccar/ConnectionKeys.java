@@ -17,6 +17,16 @@ public interface ConnectionKeys {
     int KEY_DEV_CONTROLLER = 1;
     
     /**
+     * Az autót vezérlő telefon eszközazonosítója, több programnyelvhez.
+     */
+    int KEY_DEV_PURE_HOST = 2;
+    
+    /**
+     * Az autót irányító számítógép eszközazonosítója, több programnyelvhez.
+     */
+    int KEY_DEV_PURE_CONTROLLER = 3;
+    
+    /**
      * A kapcsolat megszakadását detektáló szál kapcsolatazonosítója.
      */
     int KEY_CONN_DISCONNECT = 0;

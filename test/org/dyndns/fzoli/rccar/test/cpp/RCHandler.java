@@ -19,7 +19,7 @@ import org.dyndns.fzoli.socket.process.SecureProcess;
 public class RCHandler extends AbstractSecureClientHandler {
 
     public RCHandler(SSLSocket socket, int connectionId) {
-        super(socket, ConnectionKeys.KEY_DEV_CONTROLLER, connectionId);
+        super(socket, ConnectionKeys.KEY_DEV_PURE_CONTROLLER, connectionId);
     }
 
     @Override

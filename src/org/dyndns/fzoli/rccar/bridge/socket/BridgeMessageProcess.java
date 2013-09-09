@@ -3,8 +3,10 @@ package org.dyndns.fzoli.rccar.bridge.socket;
 import java.io.InvalidClassException;
 import org.dyndns.fzoli.rccar.bridge.ConnectionAlert;
 import static org.dyndns.fzoli.rccar.bridge.Main.getString;
+import org.dyndns.fzoli.rccar.socket.CommunicationMethodChooser;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.impl.MessageProcess;
+import org.dyndns.fzoli.socket.stream.StreamMethod;
 
 /**
  * A híd oldalán mindegyik üzenetfeldolgozó alapja.
@@ -19,6 +21,14 @@ abstract class BridgeMessageProcess extends MessageProcess {
      */
     public BridgeMessageProcess(SecureHandler handler) {
         super(handler);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected StreamMethod createStreamMethod(Integer deviceId) {
+        return CommunicationMethodChooser.createStreamMethod(deviceId);
     }
 
     /**

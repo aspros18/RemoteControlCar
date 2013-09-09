@@ -2,6 +2,8 @@ package org.dyndns.fzoli.rccar.host;
 
 import java.io.File;
 
+import org.dyndns.fzoli.rccar.clients.ClientConfigUtil;
+
 import android.content.SharedPreferences;
 import android.os.Environment;
 
@@ -32,6 +34,11 @@ public class Config implements org.dyndns.fzoli.rccar.clients.ClientConfig {
 	@Override
 	public boolean isCorrect() {
 		return getCAFile() != null && getCertFile() != null && getKeyFile() != null;
+	}
+	
+	@Override
+	public boolean isPure() {
+		return ClientConfigUtil.isPure(this);
 	}
 	
 	/**

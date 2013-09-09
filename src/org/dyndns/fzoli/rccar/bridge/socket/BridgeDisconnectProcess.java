@@ -38,7 +38,7 @@ abstract class BridgeDisconnectProcess extends ServerDisconnectProcess implement
      * Jelez a felhasználónak, kapcsolódást illetve lekapcsolódást, ha kérik.
      */
     private void log(boolean connect) {
-        char c = getDeviceId() == KEY_DEV_CONTROLLER ? 'a' : 'b';
+        char c = getDeviceId() == KEY_DEV_CONTROLLER || getDeviceId() == KEY_DEV_PURE_CONTROLLER ? 'a' : 'b';
         String s1 = getString("log_conn1" + c);
         String s2 = getString("log_conn2" + c);
         boolean e1 = s1.trim().isEmpty();

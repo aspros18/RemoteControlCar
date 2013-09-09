@@ -1,6 +1,8 @@
 package org.dyndns.fzoli.rccar.bridge.socket;
 
 import java.io.EOFException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
@@ -15,7 +17,9 @@ import org.dyndns.fzoli.rccar.bridge.Main;
 import static org.dyndns.fzoli.rccar.bridge.Main.VAL_WARNING;
 import static org.dyndns.fzoli.rccar.bridge.Main.getString;
 import org.dyndns.fzoli.rccar.bridge.config.Permissions;
+import org.dyndns.fzoli.rccar.socket.CommunicationMethodChooser;
 import org.dyndns.fzoli.socket.handler.AbstractSecureServerHandler;
+import org.dyndns.fzoli.socket.handler.DeviceHandler;
 import org.dyndns.fzoli.socket.handler.exception.MultipleCertificateException;
 import org.dyndns.fzoli.socket.handler.exception.RemoteHandlerException;
 import org.dyndns.fzoli.socket.handler.exception.SecureHandlerException;
@@ -42,6 +46,14 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected DeviceHandler createDeviceHandler(InputStream in, OutputStream out) {
+        return CommunicationMethodChooser.createDeviceHandler(getDeviceId(), in, out);
+    }
+
+    /**
      * Létrehoz egy listát, melyben azok a kapcsolatazonosítók szerepelnek,
      * melyek kapcsolatainak kezelésekor keletkező hibák figyelmen kívül lesznek hagyva.
      */
@@ -62,7 +74,7 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
     protected void init() {
         super.init();
         if (Permissions.getConfig().isBlocked(getRemoteCommonName())) throw new BlockedCommonNameException();
-        if (Main.CONFIG.isStrict() && getDeviceId().equals(KEY_DEV_CONTROLLER) && !Permissions.getConfig().isControllerWhite(getRemoteCommonName())) throw new BlockedCommonNameException();
+        if (Main.CONFIG.isStrict() && (getDeviceId().equals(KEY_DEV_CONTROLLER) || getDeviceId().equals(KEY_DEV_PURE_CONTROLLER)) && !Permissions.getConfig().isControllerWhite(getRemoteCommonName())) throw new BlockedCommonNameException();
         if (getConnectionId() != KEY_CONN_DISCONNECT && !getActiveConnectionIds().contains(KEY_CONN_DISCONNECT)) throw new RemoteHandlerException("Wrong order", true);
     }
     
@@ -193,8 +205,8 @@ public class BridgeHandler extends AbstractSecureServerHandler implements Connec
      */
     @Override
     protected AbstractSecureProcess selectProcess() {
-        final boolean host = getDeviceId().equals(KEY_DEV_HOST);
-        final boolean controller = getDeviceId().equals(KEY_DEV_CONTROLLER);
+        final boolean host = getDeviceId().equals(KEY_DEV_HOST) || getDeviceId().equals(KEY_DEV_PURE_HOST);
+        final boolean controller = getDeviceId().equals(KEY_DEV_CONTROLLER) || getDeviceId().equals(KEY_DEV_PURE_CONTROLLER);
         switch (getConnectionId()) {
             case KEY_CONN_DISCONNECT:
                 if (controller) return new ControllerSideDisconnectProcess(this);

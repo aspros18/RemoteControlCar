@@ -1,15 +1,15 @@
 package org.dyndns.fzoli.socket.process.impl;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Vector;
-import org.dyndns.fzoli.socket.compress.CompressedBlockInputStream;
-import org.dyndns.fzoli.socket.compress.CompressedBlockOutputStream;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
+import org.dyndns.fzoli.socket.stream.ObjectStreamMethod;
+import org.dyndns.fzoli.socket.stream.StreamMethod;
 
 /**
  * Üzenetváltásra használandó szál.
@@ -52,20 +52,20 @@ public abstract class MessageProcess extends AbstractSecureProcess {
 
         // the object output stream.
         // should be set before our thread is started.
-        private ObjectOutputStream objectOutput;
+        private ObjectOutput objectOutput;
 
-        public ObjectOutputStream getObjectOutput() {
+        public ObjectOutput getObjectOutput() {
             return objectOutput;
         }
 
         public SimpleWorker() {
         }
 
-        public SimpleWorker(ObjectOutputStream objectOutput) {
+        public SimpleWorker(ObjectOutput objectOutput) {
             this.objectOutput = objectOutput;
         }
 
-        public void setObjectOutput(ObjectOutputStream objectOutput) {
+        public void setObjectOutput(ObjectOutput objectOutput) {
             this.objectOutput = objectOutput;
         }
 
@@ -220,6 +220,16 @@ public abstract class MessageProcess extends AbstractSecureProcess {
     }
     
     /**
+     * ObjectInput és ObjectOutput folyamokat inicializáló metódus
+     * kiválasztása és létrehozása az eszközazonosító alapján.
+     * @param deviceId az eszközazonosító
+     * @return alapértelmezés szerint {@link ObjectStreamMethod}
+     */
+    protected StreamMethod createStreamMethod(Integer deviceId) {
+        return new ObjectStreamMethod();
+    }
+    
+    /**
      * Inicializálás.
      * - Üzenetküldő szál létrehozása és indítása.
      * - Várakozás üzenetre a másik oldaltól, míg él a kapcsolat.
@@ -227,8 +237,10 @@ public abstract class MessageProcess extends AbstractSecureProcess {
     @Override
     public void run() {
         try {
-            //ObjectOutputStream létrehozása és átadása az üzenetküldést intéző szálnak
-            worker = new SimpleWorker(new ObjectOutputStream(new CompressedBlockOutputStream(getSocket().getOutputStream(), 2000))) {
+            // az ObjectInput és ObjectOutput folyamokat létrehozó metódus létrehozása
+            final StreamMethod method = createStreamMethod(getDeviceId());
+            //ObjectOutput stream létrehozása és átadása az üzenetküldést intéző szálnak
+            worker = new SimpleWorker(method.createObjectOutput(getSocket().getOutputStream())) {
 
                 @Override
                 protected void onException(Exception ex) {
@@ -240,8 +252,8 @@ public abstract class MessageProcess extends AbstractSecureProcess {
             worker.start(); // dolgozó indítása
             running = true; // az üzenetküldő elindult
             onStart(); // jelzés az utód osztályoknak, hogy lehet üzenni
-            // ObjectInputStream létrehozása, ...
-            final ObjectInputStream in = new ObjectInputStream(new CompressedBlockInputStream(getSocket().getInputStream()));
+            // ObjectInput stream létrehozása, ...
+            final ObjectInput in = method.createObjectInput(getSocket().getInputStream());
             while (!getSocket().isClosed()) { // ... és várakozás üzenetre amíg él a kapcsolat
                 Object o = in.readObject();
                 if (o instanceof Serializable) onMessage((Serializable) o); // megkapott üzenet feldolgozása

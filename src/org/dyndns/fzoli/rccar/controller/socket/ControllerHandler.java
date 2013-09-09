@@ -1,6 +1,8 @@
 package org.dyndns.fzoli.rccar.controller.socket;
 
 import java.io.EOFException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import javax.net.ssl.SSLHandshakeException;
@@ -8,7 +10,9 @@ import javax.net.ssl.SSLSocket;
 import org.dyndns.fzoli.rccar.ConnectionKeys;
 import static org.dyndns.fzoli.rccar.controller.Main.showConnectionStatus;
 import org.dyndns.fzoli.rccar.controller.view.ConnectionProgressFrame.Status;
+import org.dyndns.fzoli.rccar.socket.CommunicationMethodChooser;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
+import org.dyndns.fzoli.socket.handler.DeviceHandler;
 import org.dyndns.fzoli.socket.handler.exception.RemoteHandlerException;
 import org.dyndns.fzoli.socket.process.SecureProcess;
 
@@ -25,6 +29,14 @@ public class ControllerHandler extends AbstractSecureClientHandler implements Co
         super(socket, deviceId, connectionId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected DeviceHandler createDeviceHandler(InputStream in, OutputStream out) {
+        return CommunicationMethodChooser.createDeviceHandler(getDeviceId(), in, out);
+    }
+    
     /**
      * A kapcsolatkezelő ablak figyelmezteti a felhasználót, hogy kivétel keletkezett.
      * A keletkezett kivételnek megfelelően változik a kapcsolatkezelő ablak üzenete.

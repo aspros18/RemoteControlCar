@@ -27,7 +27,7 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
      * Konstruktor.
      */
     public ConnectionHelper(ClientConfig config) {
-        super(config, KEY_DEV_CONTROLLER, new int[] {KEY_CONN_DISCONNECT, KEY_CONN_MESSAGE, KEY_CONN_VIDEO_STREAM});
+        super(config, config.isPure() ? KEY_DEV_PURE_CONTROLLER : KEY_DEV_CONTROLLER, new int[] {KEY_CONN_DISCONNECT, KEY_CONN_MESSAGE, KEY_CONN_VIDEO_STREAM});
     }
 
     /**

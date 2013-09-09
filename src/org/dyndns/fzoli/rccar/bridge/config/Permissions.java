@@ -80,7 +80,7 @@ public final class Permissions {
             if (proc.getConnectionId() != ConnectionKeys.KEY_CONN_DISCONNECT) continue;
             String name = proc.getRemoteCommonName(); // a kliens neve
             if (!previous.isBlocked(name) && getConfig().isBlocked(name)) proc.getHandler().closeProcesses(); // ha nem volt tiltva eddig, de most már tiltva van, akkor kapcsolatok bezárása a klienssel
-            if (!Main.CONFIG.isStrict() || !proc.getDeviceId().equals(ConnectionKeys.KEY_DEV_CONTROLLER)) continue; // ha nem vezérlőé a kapcsolat vagy nem aktív a szigorú mód, tovább a következő kapcsolatra
+            if (!Main.CONFIG.isStrict() || !(proc.getDeviceId().equals(ConnectionKeys.KEY_DEV_CONTROLLER) || proc.getDeviceId().equals(ConnectionKeys.KEY_DEV_PURE_CONTROLLER))) continue; // ha nem vezérlőé a kapcsolat vagy nem aktív a szigorú mód, tovább a következő kapcsolatra
             if (!Permissions.getConfig().isControllerWhite(name)) proc.getHandler().closeProcesses(); // ha már nem szerepel a fehér listában a vezérlő neve, akkor kapcsolatok bezárása a klienssel
         }
         

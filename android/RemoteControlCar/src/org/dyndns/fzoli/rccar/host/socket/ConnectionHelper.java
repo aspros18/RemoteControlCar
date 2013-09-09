@@ -28,7 +28,7 @@ public class ConnectionHelper extends AbstractConnectionHelper implements Connec
 	 * @param service a szolgáltatás referenciája
 	 */
 	public ConnectionHelper(ConnectionService service) {
-		super(service.getConfig(), KEY_DEV_HOST, new int[] {KEY_CONN_DISCONNECT, KEY_CONN_MESSAGE, KEY_CONN_VIDEO_STREAM});
+		super(service.getConfig(), service.getConfig().isPure() ? KEY_DEV_PURE_HOST : KEY_DEV_HOST, new int[] {KEY_CONN_DISCONNECT, KEY_CONN_MESSAGE, KEY_CONN_VIDEO_STREAM});
 		SERVICE = service;
 	}
 	

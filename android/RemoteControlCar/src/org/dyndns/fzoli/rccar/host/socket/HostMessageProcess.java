@@ -14,8 +14,10 @@ import org.dyndns.fzoli.rccar.model.Point3D;
 import org.dyndns.fzoli.rccar.model.host.HostData;
 import org.dyndns.fzoli.rccar.model.host.HostData.PointPartialHostData.PointData;
 import org.dyndns.fzoli.rccar.model.host.HostData.PointPartialHostData.PointType;
+import org.dyndns.fzoli.rccar.socket.CommunicationMethodChooser;
 import org.dyndns.fzoli.socket.handler.SecureHandler;
 import org.dyndns.fzoli.socket.process.impl.MessageProcess;
+import org.dyndns.fzoli.socket.stream.StreamMethod;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -345,6 +347,11 @@ public class HostMessageProcess extends MessageProcess {
 		gpsEnabled = SERVICE.isGpsEnabled();
 		sensorThreadReiniting = !gpsEnabled;
 		Log.i(ConnectionService.LOG_TAG, "location supported: " + availableLocation + "; direction supported: " + availableDirection);
+	}
+	
+	@Override
+	protected StreamMethod createStreamMethod(Integer deviceId) {
+		return CommunicationMethodChooser.createStreamMethod(deviceId);
 	}
 	
 	/**

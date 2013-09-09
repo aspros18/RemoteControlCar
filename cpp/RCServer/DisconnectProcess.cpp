@@ -6,6 +6,9 @@
  */
 
 #include "DisconnectProcess.h"
+#include "SocketException.h"
+
+#include <iostream>
 
 // TODO: befejezni az osztályt
 
@@ -29,8 +32,8 @@ class DisconnectTimer : public Timer {
 
 DisconnectProcess::DisconnectProcess(SSLHandler* handler, long timeout1, long timeout2, long waitTime) : SSLProcess(handler) {
     timer = new DisconnectTimer(this, timeout2);
+    getSocket()->setTimeout(timeout1 / 1000);
     this->waitTime = waitTime;
-    getSocket()->setTimeout(timeout1);
 }
 
 DisconnectProcess::~DisconnectProcess() {
@@ -38,17 +41,36 @@ DisconnectProcess::~DisconnectProcess() {
 }
 
 void DisconnectProcess::run() {
-    onConnect();
+//    onConnect();
     try {
         while(!getSocket()->isClosed()) {
-            getSocket()->write(1);
-            if (getSocket()->read() != -1) {
-                
+            try {
+                getSocket()->write(1);
+                if (getSocket()->read() != -1) {
+                    std::cout << "read ok\n";
+                }
+                else {
+                    std::cout << "stream end\n";
+                    getSocket()->close();
+                }
+            }
+            catch (SocketException &ex) {
+                switch (ex.cause()) {
+                    case SocketException::read:
+                        std::cerr << "read error - maybe timeout\n";
+                        break;
+                    case SocketException::write:
+                        getSocket()->close();
+                        std::cerr << "write error - socket closed\n";
+                        break;
+                    default:
+                        throw;
+                }
             }
             usleep(waitTime);
         }
     }
     catch (std::exception &ex) {
-        
+        std::cerr << ex.what() << "\n";
     }
 }

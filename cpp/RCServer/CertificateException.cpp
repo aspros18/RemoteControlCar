@@ -7,6 +7,6 @@
 
 #include "CertificateException.h"
 
-CertificateException::CertificateException(std::string msg="") : SSLSocketException(msg) {
+CertificateException::CertificateException(const std::string& msg, Cert cert) : SSLSocketException(msg) {
     ;
 }

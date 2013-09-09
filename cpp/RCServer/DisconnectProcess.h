@@ -22,12 +22,12 @@ class DisconnectProcess : public SSLProcess {
         
     protected:
         
-        virtual void onConnect() = 0;
-        virtual void beforeAnswer() = 0;
-        virtual void afterAnswer() = 0;
-        virtual void onTimeout() = 0;
-        virtual void afterTimeout() = 0;
-        virtual void onDisconnect() = 0;
+//        virtual void onConnect() = 0;
+//        virtual void beforeAnswer() = 0;
+//        virtual void afterAnswer() = 0;
+//        virtual void onTimeout() = 0;
+//        virtual void afterTimeout() = 0;
+//        virtual void onDisconnect() = 0;
         
     private:
             

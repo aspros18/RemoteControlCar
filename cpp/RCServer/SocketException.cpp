@@ -7,11 +7,15 @@
 
 #include "SocketException.h"
 
-SocketException::SocketException(std::string msg="") : std::runtime_error(msg) {
-    ;
+SocketException::SocketException(const std::string& msg, Cause cause) : std::runtime_error(msg) {
+    c = cause;
 }
 
 std::string SocketException::msg() {
   std::string desc(what());
   return desc;
+}
+
+SocketException::Cause SocketException::cause() {
+    return c;
 }

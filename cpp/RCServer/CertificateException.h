@@ -14,7 +14,11 @@ class CertificateException : public SSLSocketException {
 
   public:
 
-    CertificateException(std::string msg);
+    enum Cert {
+        ca, crt, key, other
+    };
+    
+    CertificateException(const std::string& msg, Cert cert=other);
 
 };
 

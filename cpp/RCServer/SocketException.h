@@ -15,10 +15,19 @@ class SocketException : public std::runtime_error {
     
   public:
 
-    SocketException(std::string msg);
-  
+    enum Cause {
+        init, conn_error, conn_timeout, read, write, other
+    };
+      
+    SocketException(const std::string& msg, Cause cause=other);
+    
     std::string msg();
-  
+    Cause cause();
+    
+  private:
+      
+    Cause c;
+    
 };
 
 #endif	/* SOCKETEXCEPTION_H */

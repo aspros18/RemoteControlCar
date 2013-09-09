@@ -14,7 +14,7 @@ class SSLSocketException : public SocketException {
 
   public:
 
-    SSLSocketException(std::string msg);
+    SSLSocketException(const std::string& msg, Cause cause=other);
 
 };
 

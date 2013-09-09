@@ -100,16 +100,16 @@ SSL_CTX *SSLSocket::sslCreateCtx(bool client, bool verify, const char *CAfile, c
         }
         
         if (SSL_CTX_load_verify_locations(sctx, CAfile, NULL) == 0) {
-            throw CertificateException ( "CA file could not be loaded." );
+            throw CertificateException ( "CA file could not be loaded.", CertificateException::ca );
         }
 
         if (SSL_CTX_use_certificate_file(sctx, CRTfile, SSL_FILETYPE_PEM) == 0) {
             ERR_print_errors_fp(stderr);
-            throw CertificateException ( "CRT file could not be loaded." );
+            throw CertificateException ( "CRT file could not be loaded.", CertificateException::crt );
         }
 
         if (SSL_CTX_use_PrivateKey_file(sctx, KEYfile, SSL_FILETYPE_PEM) == 0) {
-            throw CertificateException ( "KEY file could not be loaded." );
+            throw CertificateException ( "KEY file could not be loaded.", CertificateException::key );
         }
     }
     
@@ -172,12 +172,12 @@ void SSLSocket::close() {
 
 int SSLSocket::write(const void *buf, int num) const {
     int status = SSL_write(conn.sslHandle, buf, num);
-    if (status <= 0) throw SSLSocketException( "Could not write byte" );
+    if (status <= 0) throw SSLSocketException( "Could not write byte", SSLSocketException::write );
     return status;
 }
 
 int SSLSocket::read(void *buf, int num) const {
     int status = SSL_read(conn.sslHandle, buf, num);
-    if (status < 0) throw SSLSocketException ( "Could not read from socket." );
+    if (status < 0) throw SSLSocketException ( "Could not read from socket.", SSLSocketException::read );
     return status;
 }

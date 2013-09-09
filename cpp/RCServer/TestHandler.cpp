@@ -7,6 +7,7 @@
 
 #include "TestHandler.h"
 #include "TestProcess.h"
+#include "DisconnectProcess.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -15,7 +16,12 @@ TestHandler::TestHandler(SSLSocket* socket) : SSLHandler(socket) {
 }
 
 SSLSocketter* TestHandler::createProcess() {
-    return new TestProcess(this);
+    switch (getConnectionId()) {
+        case 5:
+            return new TestProcess(this);
+        default:
+            return new DisconnectProcess(this, 1000, 10000, 250);
+    }
 }
 
 void TestHandler::init() {

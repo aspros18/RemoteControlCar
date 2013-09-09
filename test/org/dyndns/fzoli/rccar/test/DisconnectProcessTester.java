@@ -12,13 +12,18 @@ public class DisconnectProcessTester {
 
     private Date lastDate;
     private long max = 0, sum = 0, count = 0;
-    private boolean timeout = false;
+    private boolean timeout = false, disconnected = false;
     private final Date startDate = new Date();
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("[mm:ss] ");
 
+    public void onDisconnect() {
+        disconnected = true;
+        System.out.println("Disconnect!");
+    }
+    
     public void onTimeout() {
         timeout = true;
-        System.out.println("Timeout!");
+        System.out.println(disconnected ? "Already disconnected" : "Timeout!");
     }
     
     public void beforeAnswer() {

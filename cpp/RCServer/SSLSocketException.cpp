@@ -7,6 +7,6 @@
 
 #include "SSLSocketException.h"
 
-SSLSocketException::SSLSocketException(std::string msg="") : SocketException(msg) {
+SSLSocketException::SSLSocketException(const std::string& msg, Cause cause) : SocketException(msg, cause) {
     ;
 }

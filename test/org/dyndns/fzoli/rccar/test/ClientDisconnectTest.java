@@ -15,7 +15,6 @@ import org.dyndns.fzoli.socket.ClientConnectionHelper;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
 import org.dyndns.fzoli.socket.handler.AbstractSecureClientHandler;
 import org.dyndns.fzoli.socket.process.AbstractSecureProcess;
-import org.dyndns.fzoli.socket.process.impl.ClientDisconnectProcess;
 
 /**
  * Teszt elindító kapcsolatmegszakadás detektálására kliens oldalon.
@@ -42,15 +41,7 @@ public class ClientDisconnectTest implements ConnectionKeys {
         protected AbstractSecureProcess selectProcess() {
             switch (getConnectionId()) {
                 case KEY_CONN_DISCONNECT:
-                    return new ClientDisconnectProcess(this, 1000, 10000, 250) {
-                        
-                        @Override
-                        public void onDisconnect(Exception ex) {
-                            System.out.println("SERVER DISCONNECT");
-                            super.onDisconnect(ex);
-                        }
-                        
-                    };
+                    return new ClientTestDisconnectProcess(this, 1000, 10000, 250);
                 case KEY_CONN_DUMMY:
                     return new DummyProcess(this);
             }

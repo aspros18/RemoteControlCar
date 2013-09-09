@@ -53,7 +53,7 @@ int Socket::write(const char *text) const {
 }
 
 void Socket::write(int byte) {
-    if (byte < 0 || byte > 255) throw SocketException( "Byte out of range" );
+    if (byte < 0 || byte > 255) throw std::invalid_argument( "Byte out of range" );
     char unsigned byte_char = byte;
     write(&byte_char, 1);
 }
@@ -61,7 +61,7 @@ void Socket::write(int byte) {
 int Socket::write(const void *buf, int num) const {
     int status = ::write(m_sock, buf, num);
     if (status <= 0)
-        throw SocketException( "Could not write byte" );
+        throw SocketException( "Could not write byte", SocketException::write );
     return status;
 }
 
@@ -73,7 +73,7 @@ int Socket::read() {
 
 int Socket::read(void *buf, int num) const {
     int status = ::recv(m_sock, buf, num, 0);
-    if (status < 0) throw SocketException ( "Could not read from socket." );
+    if (status < 0) throw SocketException ( "Could not read from socket.", SocketException::read );
     return status;
 }
 
@@ -95,7 +95,7 @@ int Socket::tcpConnect(const char *addr, uint16_t port, int timeout) {
     struct hostent *host = gethostbyname(addr);
     int handle = socket(AF_INET, SOCK_STREAM, 0);
     if (handle == -1) {
-        throw SocketException ( "Could not create socket." );
+        throw SocketException ( "Could not create socket.", SocketException::init );
     }
     
     struct sockaddr_in server;
@@ -118,11 +118,11 @@ int Socket::tcpConnect(const char *addr, uint16_t port, int timeout) {
     if (timeout <= 0 || (ret > 0 && FD_ISSET(handle, &writefds))) {
         int err; socklen_t size = sizeof(err);
         if ((connect(handle, (struct sockaddr *) &server, sizeof (struct sockaddr)) == -1) || getsockopt(handle, SOL_SOCKET, SO_ERROR, &err, &size) != 0) {
-            throw SocketException ( "Could not connect to the server." );
+            throw SocketException ( "Could not connect to the server.", SocketException::conn_error );
         }
     }
     else {
-        throw SocketException ( "Connect timeout error" );
+        throw SocketException ( "Connect timeout error", SocketException::conn_timeout );
     }
     
     return handle;

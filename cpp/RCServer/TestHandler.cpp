@@ -20,7 +20,7 @@ SSLSocketter* TestHandler::createProcess() {
         case 5:
             return new TestProcess(this);
         default:
-            return new DisconnectProcess(this, 1000, 10000, 250);
+            return new DisconnectProcess(this, 1, 10, 250);
     }
 }
 

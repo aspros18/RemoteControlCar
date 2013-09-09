@@ -17,7 +17,7 @@ public class RCServerTest {
         @Override
         public void run() {
             try {
-                SSLSocket socket = SSLSocketUtil.createClientSocket("fzoli.dyndns.org", 9443, new File("test-certs-passwd/ca.crt"), new File("test-certs-passwd/controller.crt"), new File("test-certs-passwd/controller.key"), "asdfgh".toCharArray(), null);
+                SSLSocket socket = SSLSocketUtil.createClientSocket("localhost", 9443, new File("test-certs-passwd/ca.crt"), new File("test-certs-passwd/controller.crt"), new File("test-certs-passwd/controller.key"), "asdfgh".toCharArray(), null);
                 RCHandler handler = new RCHandler(socket, CONN_ID);
                 handler.run();
             }

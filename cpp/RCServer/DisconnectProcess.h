@@ -15,7 +15,7 @@ class DisconnectProcess : public SSLProcess {
     
     public:
         
-        DisconnectProcess(SSLHandler* handler, long timeout1, long timeout2, long waitTime);
+        DisconnectProcess(SSLHandler* handler, unsigned int timeout1Sec, unsigned int timeout2Sec, unsigned int waitTimeMs);
         virtual ~DisconnectProcess();
         
         void run();
@@ -26,17 +26,19 @@ class DisconnectProcess : public SSLProcess {
         virtual void onConnect();
         virtual void beforeAnswer();
         virtual void afterAnswer();
-        virtual void onTimeout();
         virtual void afterTimeout();
+        virtual void onTimeout(std::exception* ex);
         virtual void onDisconnect(std::exception* ex);
         
     private:
             
         Timer* timer;
-        long waitTime;
+        unsigned int waitTime;
         bool disconnected, timeout;
         
         void setTimeoutActive(bool b, std::exception* ex);
+        void callOnTimeout(std::exception* ex);
+        void callAfterAnswer();
 
 };
 

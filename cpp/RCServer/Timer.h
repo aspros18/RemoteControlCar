@@ -14,7 +14,7 @@ class Timer {
     
     public:
         
-        Timer(long delay, long period, bool runOnce=false);
+        Timer(unsigned int delay, unsigned int period, bool runOnce=false);
         
         bool start();
         void stop();
@@ -23,7 +23,7 @@ class Timer {
     private:
         
         bool runOnce, running;
-        long delay, period;
+        unsigned int delay, period;
         static pthread_mutex_t mutexStart;
         
         static void* run(void*);

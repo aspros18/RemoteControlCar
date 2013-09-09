@@ -10,8 +10,6 @@
 
 #include <iostream>
 
-// TODO: befejezni az osztályt
-
 class DisconnectTimer : public Timer {
     
     private:
@@ -21,7 +19,7 @@ class DisconnectTimer : public Timer {
         
     public:
         
-        DisconnectTimer(DisconnectProcess* proc, long timeout2) : Timer(timeout2, 0, true) {
+        DisconnectTimer(DisconnectProcess* proc, unsigned int timeout2) : Timer(timeout2, 0, true) {
             dp = proc;
             lastError = NULL;
         }
@@ -37,10 +35,11 @@ class DisconnectTimer : public Timer {
         
 };
 
-DisconnectProcess::DisconnectProcess(SSLHandler* handler, long timeout1, long timeout2, long waitTime) : SSLProcess(handler) {
-    timer = new DisconnectTimer(this, timeout2);
-    getSocket()->setTimeout(timeout1 / 1000);
-    this->waitTime = waitTime;
+DisconnectProcess::DisconnectProcess(SSLHandler* handler, unsigned int timeout1Sec, unsigned int timeout2Sec, unsigned int waitTimeMs) : SSLProcess(handler) {
+    disconnected = false;
+    timer = new DisconnectTimer(this, timeout2Sec);
+    getSocket()->setTimeout(timeout1Sec);
+    this->waitTime = waitTimeMs;
 }
 
 DisconnectProcess::~DisconnectProcess() {
@@ -48,21 +47,27 @@ DisconnectProcess::~DisconnectProcess() {
 }
 
 void DisconnectProcess::onConnect() {
+    std::cout << "connected\n";
 }
 
 void DisconnectProcess::beforeAnswer() {
+    ;
 }
 
 void DisconnectProcess::afterAnswer() {
-}
-
-void DisconnectProcess::onTimeout() {
+    std::cout << "answer\n";
 }
 
 void DisconnectProcess::afterTimeout() {
+    std::cout << "timeout over\n";
+}
+
+void DisconnectProcess::onTimeout(std::exception* ex) {
+    std::cout << "timeout\n";
 }
 
 void DisconnectProcess::onDisconnect(std::exception* ex) {
+    std::cout << "disconnected\n";
 }
 
 void DisconnectProcess::setTimeoutActive(bool b, std::exception* ex) {
@@ -72,17 +77,35 @@ void DisconnectProcess::setTimeoutActive(bool b, std::exception* ex) {
 }
 
 void DisconnectProcess::callOnDisconnect(std::exception* ex) {
-    
+    if (!disconnected) {
+        disconnected = true;
+        onDisconnect(ex);
+    }
+}
+
+void DisconnectProcess::callOnTimeout(std::exception* ex) {
+    timeout = true;
+    if (!disconnected) onTimeout(ex);
+}
+
+void DisconnectProcess::callAfterAnswer() {
+    if (timeout) {
+        timeout = false;
+        afterTimeout();
+    }
+    afterAnswer();
 }
 
 void DisconnectProcess::run() {
     onConnect();
     try {
-        while(!getSocket()->isClosed()) {
+        while(!getSocket()->isClosed() && !disconnected) {
             try {
                 getSocket()->write(1);
+                beforeAnswer();
                 if (getSocket()->read() != -1) {
-                    std::cout << "read ok\n";
+                    setTimeoutActive(false, NULL);
+                    callAfterAnswer();
                 }
                 else {
                     throw std::runtime_error("socket closed");
@@ -91,7 +114,8 @@ void DisconnectProcess::run() {
             catch (SocketException &ex) {
                 switch (ex.cause()) {
                     case SocketException::read:
-                        std::cerr << "read error - maybe timeout\n";
+                        setTimeoutActive(true, &ex);
+                        callOnTimeout(&ex);
                         break;
                     case SocketException::write:
                         throw std::runtime_error("socket closed");
@@ -103,7 +127,6 @@ void DisconnectProcess::run() {
         }
     }
     catch (std::exception &ex) {
-        std::cout << "disconnect\n";
-        std::cerr << ex.what() << "\n";
+        callOnDisconnect(&ex);
     }
 }

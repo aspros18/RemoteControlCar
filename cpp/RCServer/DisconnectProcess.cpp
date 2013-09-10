@@ -37,6 +37,7 @@ class DisconnectTimer : public Timer {
 
 DisconnectProcess::DisconnectProcess(SSLHandler* handler, unsigned int timeout1Sec, unsigned int timeout2Sec, unsigned int waitTimeMs) : SSLProcess(handler) {
     disconnected = false;
+    timeout = false;
     timer = new DisconnectTimer(this, timeout2Sec);
     getSocket()->setTimeout(timeout1Sec);
     this->waitTime = waitTimeMs;

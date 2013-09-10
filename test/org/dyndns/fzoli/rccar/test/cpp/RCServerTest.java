@@ -2,6 +2,7 @@ package org.dyndns.fzoli.rccar.test.cpp;
 
 import java.io.File;
 import javax.net.ssl.SSLSocket;
+import org.dyndns.fzoli.rccar.ConnectionKeys;
 import org.dyndns.fzoli.socket.SSLSocketUtil;
 
 /**
@@ -10,7 +11,7 @@ import org.dyndns.fzoli.socket.SSLSocketUtil;
  */
 public class RCServerTest {
     
-    private static final int CONN_ID = 1, TEST_COUNT = 1;
+    private static final int CONN_ID = ConnectionKeys.KEY_CONN_DISCONNECT, TEST_COUNT = 1;
     
     private static final Runnable TEST = new Runnable() {
 

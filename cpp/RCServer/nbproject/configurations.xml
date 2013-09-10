@@ -70,6 +70,7 @@
         <itemPath>Timer.cpp</itemPath>
       </logicalFolder>
       <itemPath>Config.cpp</itemPath>
+      <itemPath>ConnectionKeys.h</itemPath>
       <itemPath>TestHandler.cpp</itemPath>
       <itemPath>TestProcess.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
@@ -106,6 +107,8 @@
       <item path="Config.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Config.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ConnectionKeys.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="DisconnectProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -222,6 +225,8 @@
       <item path="Config.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Config.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ConnectionKeys.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="DisconnectProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>

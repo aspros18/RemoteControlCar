@@ -8,28 +8,35 @@
 #include "TestHandler.h"
 #include "TestProcess.h"
 #include "DisconnectProcess.h"
+#include "ConnectionKeys.h"
 
 #include <iostream>
 #include <stdexcept>
+
+using namespace ConnectionKeys;
 
 TestHandler::TestHandler(SSLSocket* socket) : SSLHandler(socket) {
 }
 
 SSLSocketter* TestHandler::createProcess() {
     switch (getConnectionId()) {
-        case 5:
+        case KEY_CONN_DUMMY:
             return new TestProcess(this);
+        case KEY_CONN_DISCONNECT:
+            return new DisconnectProcess(this, DC_TIMEOUT1, DC_TIMEOUT2, DC_DELAY);
         default:
-            return new DisconnectProcess(this, 1, 10, 250);
+            return NULL;
     }
 }
 
 void TestHandler::init() {
-//    throw std::runtime_error("Remote error");
+    if (getDeviceId() == KEY_DEV_CONTROLLER || getDeviceId() == KEY_DEV_HOST) {
+        throw std::runtime_error("Unsupported client");
+    }
 }
 
 void TestHandler::onProcessNull() {
-    ;
+    std::cerr << "unknown request\n";
 }
 
 void TestHandler::onException(std::exception &ex) {

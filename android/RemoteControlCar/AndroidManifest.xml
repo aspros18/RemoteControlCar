@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.dyndns.fzoli.rccar.host"
-    android:versionCode="38"
-    android:versionName="1.4.0.38" >
+    android:versionCode="39"
+    android:versionName="1.4.0.39" >
     <uses-sdk
         android:minSdkVersion="7"
         android:targetSdkVersion="18" />

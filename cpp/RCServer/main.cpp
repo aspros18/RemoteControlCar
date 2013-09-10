@@ -29,12 +29,12 @@ void createServerSocket(Config *c) {
     char *KEYpass = (char *) c->getPassword().c_str();
     s = new SSLServerSocket(c->getPort(), CAfile.c_str(), CRTfile.c_str(), KEYfile.c_str(), KEYpass);
     s->setTimeout(3);
-    struct sigaction sigIntHandler;
-    sigIntHandler.sa_handler = exitHandler;
-    sigemptyset(&sigIntHandler.sa_mask);
-    sigIntHandler.sa_flags = 0;
-    sigaction(SIGINT, &sigIntHandler, NULL);
-    sigaction(SIGTERM, &sigIntHandler, NULL);
+    struct sigaction sigHandler;
+    sigHandler.sa_handler = exitHandler;
+    sigemptyset(&sigHandler.sa_mask);
+    sigHandler.sa_flags = 0;
+    sigaction(SIGINT, &sigHandler, NULL);
+    sigaction(SIGTERM, &sigHandler, NULL);
 }
 
 int main(int argc, char** argv) {

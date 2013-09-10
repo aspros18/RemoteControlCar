@@ -64,11 +64,11 @@ void DisconnectProcess::afterTimeout() {
 }
 
 void DisconnectProcess::onTimeout(std::exception* ex) {
-    std::cout << "timeout\n";
+    std::cout << "timeout: " << ex->what() << "\n";
 }
 
 void DisconnectProcess::onDisconnect(std::exception* ex) {
-    std::cout << "disconnected\n";
+    std::cout << "disconnected: " << ex->what() << "\n";
 }
 
 void DisconnectProcess::setTimeoutActive(bool b, std::exception* ex) {
@@ -80,6 +80,7 @@ void DisconnectProcess::setTimeoutActive(bool b, std::exception* ex) {
 void DisconnectProcess::callOnDisconnect(std::exception* ex) {
     if (!disconnected) {
         disconnected = true;
+        setTimeoutActive(false, NULL);
         onDisconnect(ex);
     }
 }
@@ -98,8 +99,8 @@ void DisconnectProcess::callAfterAnswer() {
 }
 
 void DisconnectProcess::run() {
-    onConnect();
     try {
+        onConnect();
         while(!getSocket()->isClosed() && !disconnected) {
             try {
                 getSocket()->write(1);
@@ -128,6 +129,10 @@ void DisconnectProcess::run() {
         }
     }
     catch (std::exception &ex) {
+        callOnDisconnect(&ex);
+    }
+    catch (...) {
+        std::runtime_error ex("unknown error");
         callOnDisconnect(&ex);
     }
 }

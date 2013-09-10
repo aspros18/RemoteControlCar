@@ -349,6 +349,14 @@ public class HostMessageProcess extends MessageProcess {
 		Log.i(ConnectionService.LOG_TAG, "location supported: " + availableLocation + "; direction supported: " + availableDirection);
 	}
 	
+	/**
+     * ObjectInput és ObjectOutput folyamokat inicializáló metódus
+     * kiválasztása és létrehozása az eszközazonosító alapján.
+     * Szöveg alapú kommunikáció esetén JSON formátumban kerülnek küldésre az objektumok,
+     * egyébként a Java ObjectInputStream és ObjectOutputStream használatával.
+     * @param deviceId az eszközazonosító
+     * @return egy {@link StreamMethod}
+     */
 	@Override
 	protected StreamMethod createStreamMethod(Integer deviceId) {
 		return CommunicationMethodChooser.createStreamMethod(deviceId);

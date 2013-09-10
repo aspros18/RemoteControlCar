@@ -39,6 +39,12 @@ public class HostHandler extends AbstractSecureClientHandler implements Connecti
 		SERVICE = service;
 	}
 	
+	/**
+     * Létrehoz egy kapcsolatinicializáló segédet, ami a státuszüzenet küldését és fogadását intézi.
+     * Szöveg alapú kommunikáció esetén nyers szövegként kerül küldésre a szöveg újsorjellel a végén,
+     * egyébként a Java ObjectInputStream és ObjectOutputStream használatával.
+     * @return egy kapcsolatinicializáló segéd
+     */
 	@Override
 	protected DeviceHandler createDeviceHandler(InputStream in, OutputStream out) {
 		return CommunicationMethodChooser.createDeviceHandler(getDeviceId(), in, out);

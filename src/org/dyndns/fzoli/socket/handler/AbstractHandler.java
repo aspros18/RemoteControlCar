@@ -62,7 +62,7 @@ public abstract class AbstractHandler implements Handler {
     protected abstract Process selectProcess();
     
     /**
-     * Létrehoz egy kapcsolatinicializáló segéded, ami a státuszüzenet küldését és fogadását intézi.
+     * Létrehoz egy kapcsolatinicializáló segédet, ami a státuszüzenet küldését és fogadását intézi.
      * Alapértelmezés szerint {@link ObjectStreamDeviceHandler} objektum jön létre.
      * @return egy kapcsolatinicializáló segéd
      * @see DeviceHandler

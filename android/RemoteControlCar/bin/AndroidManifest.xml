@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.dyndns.fzoli.rccar.host"
-    android:versionCode="37"
-    android:versionName="1.3.2.37" >
+    android:versionCode="38"
+    android:versionName="1.4.0.38" >
     <uses-sdk
         android:minSdkVersion="7"
         android:targetSdkVersion="18" />
@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <application
         android:icon="@drawable/ic_launcher"

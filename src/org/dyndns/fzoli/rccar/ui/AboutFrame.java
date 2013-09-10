@@ -18,9 +18,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import org.dyndns.fzoli.rccar.resource.R;
 import static javax.swing.UIManager.getString;
 import org.dyndns.fzoli.rccar.controller.view.RelocalizableWindow;
+import org.dyndns.fzoli.rccar.resource.R;
 
 /**
  * Az alkalmazás névjegye.
@@ -36,7 +36,7 @@ public class AboutFrame extends JFrame implements RelocalizableWindow {
     /**
      * Az aktuális verziószám.
      */
-    private static final String VERSION = "1.1.20.29";
+    private static final String VERSION = "1.4.0.30";
     
     /**
      * A program logóját, nevét és verzióját megjelenítő panel.

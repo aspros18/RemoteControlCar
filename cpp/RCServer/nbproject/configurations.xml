@@ -38,6 +38,7 @@
         <itemPath>Timer.h</itemPath>
       </logicalFolder>
       <itemPath>Config.h</itemPath>
+      <itemPath>ConnectionKeys.h</itemPath>
       <itemPath>TestHandler.h</itemPath>
       <itemPath>TestProcess.h</itemPath>
     </logicalFolder>
@@ -70,7 +71,6 @@
         <itemPath>Timer.cpp</itemPath>
       </logicalFolder>
       <itemPath>Config.cpp</itemPath>
-      <itemPath>ConnectionKeys.h</itemPath>
       <itemPath>TestHandler.cpp</itemPath>
       <itemPath>TestProcess.cpp</itemPath>
       <itemPath>main.cpp</itemPath>

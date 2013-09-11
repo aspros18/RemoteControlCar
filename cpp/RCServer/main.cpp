@@ -16,6 +16,8 @@
 #include "Config.h"
 #include "TestHandler.h"
 
+#include <sstream>
+
 SSLServerSocket *s = NULL;
 
 void exitHandler(int signal){
@@ -37,7 +39,95 @@ void createServerSocket(Config *c) {
     sigaction(SIGTERM, &sigHandler, NULL);
 }
 
+char* findBoundary(std::string &bstr, char* buffer, long int maxlen) {
+    long int len = std::min<long int>(strlen(buffer), maxlen) - bstr.length();
+    long int ind = -1;
+    for (long int i = 0; i < len; i++) {
+        if (buffer[i] == '\n') {
+            if (ind == -1) {
+                ind = i;
+                continue;
+            }
+            char* buf = buffer + ind + 1;
+            unsigned int len = i - ind;
+            if (len == bstr.length()) {
+                std::string fl(buf, len);
+                if (fl.find(bstr) == 0) {
+                    return buf;
+                }
+            }
+            ind = i;
+        }
+    }
+    return NULL;
+}
+
 int main(int argc, char** argv) {
+//    std::string bstr("--BoundaryString\n");
+//    char* buffer = (char*) "fbdfkjsfáé\nldűp\n--BoundaryString\ndsááűőödsdsddsdsdsd";
+//    char* bsbuf = findBoundary(bstr, buffer, 1000);
+//    if (bsbuf) std::cout << bsbuf;
+//    exit(0);
+//    
+    ServerSocket sss(8008);
+    Socket* cs = sss.accept();
+    std::ostream out(cs->getBuffer());
+    
+    Socket ss("gw-fzoli", 9000);
+    ss.write("GET /\r\n\r\n");
+    
+    std::string l; // line
+    std::string bs; // boundary string
+    std::ostringstream h; // header
+    std::istream in(ss.getBuffer());
+    
+    while (in.good()) {
+        std::getline(in, l);
+        h << l << std::endl;
+        if (bs.empty() && l.find("Content-Type") == 0) {
+            bs = l.substr(l.find("boundary=") + 9);
+        }
+        else if (!bs.empty()) {
+            if (l == bs) break;
+        }
+    }
+    
+    out << h.str();
+    
+    int i = 0;
+    std::string f;
+    while (out.good() && in.good()) {
+        l = "";
+        std::getline(in, l);
+        f = f + l + "\n";
+        if (l == bs) {
+            if (i % 2 != 0) {
+                out << f;
+            }
+            f = "";
+            i++;
+        }
+    }
+    
+    exit(0);
+    
+//    
+//    long int bufsize = 1000, rlen;
+//    char* buffer = new char[bufsize];
+//    
+//    while (in.good()) {
+//        
+//        rlen = in.readsome(buffer, bufsize);
+//        if (rlen <= 0) break;
+//        char* buf = findBoundary(bs, buffer, rlen);
+//        if (buf) std::cout << "ok" << std::endl;
+////        else std::cout << rlen << std::endl;
+////        std::cout.write(buffer, rlen);
+//    }
+//    
+//    delete[] buffer;
+//    exit(0);
+    
     Config c("bridge.conf");
     if (!c.isCorrect()) {
         std::cerr << "Incorrect config file.\n";

@@ -39,7 +39,57 @@ void createServerSocket(Config *c) {
     sigaction(SIGTERM, &sigHandler, NULL);
 }
 
+void writeWhileGood(Socket* ss, Socket* cs, std::string& bs) {
+//    int i = 0;
+    std::string f, l;
+    std::istream in(ss->getBuffer());
+    std::ostream out(cs->getBuffer());
+    while (out.good() && in.good()) {
+        l = "";
+        std::getline(in, l);
+        f = f + l + "\n";
+        if (l == bs) {
+//            if (i % 2 != 0) {
+                out << f;
+//            }
+            f = "";
+//            i++;
+        }
+    }
+}
+
 int main(int argc, char** argv) {
+    
+    ServerSocket sss(8008);
+    Socket* cs = sss.accept();
+    std::ostream out(cs->getBuffer());
+    
+    Socket ss("gw-fzoli", 9000);
+    ss.write("GET /\r\n\r\n");
+    
+    std::string l; // line
+    std::string bs; // boundary string
+    std::ostringstream h; // header
+    std::istream in(ss.getBuffer());
+    while (in.good()) {
+        std::getline(in, l);
+        h << l << std::endl;
+        if (bs.empty() && l.find("Content-Type") == 0) {
+            bs = l.substr(l.find("boundary=") + 9);
+        }
+        else if (!bs.empty()) {
+            if (l == bs) break;
+        }
+    }
+    
+    out << h.str();
+    
+    while (!cs->isClosed()) {
+        writeWhileGood(&ss, cs, bs);
+    }
+    
+    exit(0);
+    
     Config c("bridge.conf");
     if (!c.isCorrect()) {
         std::cerr << "Incorrect config file.\n";

@@ -18,7 +18,7 @@
 
 SSLServerSocket *s = NULL;
 
-void exitHandler(int signal){
+void exitHandler(int signal) {
     if (s != NULL) s->close();
 }
 

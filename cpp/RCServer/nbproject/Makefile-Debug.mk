@@ -39,6 +39,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/Config.o \
 	${OBJECTDIR}/DisconnectProcess.o \
 	${OBJECTDIR}/FileUtils.o \
+	${OBJECTDIR}/JpegLoader.o \
+	${OBJECTDIR}/JpegStore.o \
 	${OBJECTDIR}/SSLHandler.o \
 	${OBJECTDIR}/SSLProcess.o \
 	${OBJECTDIR}/SSLServerSocket.o \
@@ -99,6 +101,16 @@ ${OBJECTDIR}/FileUtils.o: FileUtils.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/FileUtils.o FileUtils.cpp
+
+${OBJECTDIR}/JpegLoader.o: JpegLoader.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/JpegLoader.o JpegLoader.cpp
+
+${OBJECTDIR}/JpegStore.o: JpegStore.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/JpegStore.o JpegStore.cpp
 
 ${OBJECTDIR}/SSLHandler.o: SSLHandler.cpp 
 	${MKDIR} -p ${OBJECTDIR}

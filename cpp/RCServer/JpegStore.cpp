@@ -40,7 +40,7 @@ std::string JpegStore::getHeader(std::string key) {
     return get(true, key);
 }
 
-std::string JpegStore::getData(std::string key) {
+std::string JpegStore::getFrame(std::string key) {
     return get(false, key);
 }
 
@@ -48,6 +48,6 @@ void JpegStore::setHeader(std::string key, std::string data) {
     set(true, key, data);
 }
 
-void JpegStore::setData(std::string key, std::string data) {
+void JpegStore::setFrame(std::string key, std::string data) {
     set(false, key, data);
 }

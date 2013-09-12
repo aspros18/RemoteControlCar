@@ -6,10 +6,13 @@
                    projectFiles="true">
       <logicalFolder name="f4" displayName="Handler" projectFiles="true">
         <itemPath>DisconnectProcess.h</itemPath>
-        <itemPath>JpegStore.h</itemPath>
         <itemPath>SSLHandler.h</itemPath>
         <itemPath>SSLProcess.h</itemPath>
         <itemPath>SSLSocketter.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f5" displayName="Mjpeg" projectFiles="true">
+        <itemPath>JpegStore.h</itemPath>
+        <itemPath>JpegStreamer.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="Rapid JSON" projectFiles="true">
         <itemPath>rapidjson/document.h</itemPath>
@@ -52,12 +55,13 @@
                    projectFiles="true">
       <logicalFolder name="f3" displayName="Handler" projectFiles="true">
         <itemPath>DisconnectProcess.cpp</itemPath>
-        <itemPath>JpegLoader.cpp</itemPath>
-        <itemPath>JpegLoader.h</itemPath>
-        <itemPath>JpegStore.cpp</itemPath>
         <itemPath>SSLHandler.cpp</itemPath>
         <itemPath>SSLProcess.cpp</itemPath>
         <itemPath>SSLSocketter.cpp</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f4" displayName="Mjpeg" projectFiles="true">
+        <itemPath>JpegStore.cpp</itemPath>
+        <itemPath>JpegStreamer.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="Socket" projectFiles="true">
         <itemPath>CertificateException.cpp</itemPath>
@@ -122,13 +126,13 @@
       </item>
       <item path="FileUtils.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="JpegLoader.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="JpegLoader.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="JpegStore.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="JpegStore.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="JpegStreamer.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="JpegStreamer.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SSLHandler.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -248,13 +252,13 @@
       </item>
       <item path="FileUtils.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="JpegLoader.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="JpegLoader.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="JpegStore.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="JpegStore.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="JpegStreamer.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="JpegStreamer.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SSLHandler.cpp" ex="false" tool="1" flavor2="0">
       </item>

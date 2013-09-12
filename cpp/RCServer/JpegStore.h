@@ -17,9 +17,9 @@ class JpegStore {
     public:
         
         static std::string getHeader(std::string key);
-        static std::string getData(std::string key);
+        static std::string getFrame(std::string key);
         static void setHeader(std::string key, std::string data);
-        static void setData(std::string key, std::string data);
+        static void setFrame(std::string key, std::string data);
         
     private:
         

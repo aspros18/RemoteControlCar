@@ -39,8 +39,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/Config.o \
 	${OBJECTDIR}/DisconnectProcess.o \
 	${OBJECTDIR}/FileUtils.o \
-	${OBJECTDIR}/JpegLoader.o \
 	${OBJECTDIR}/JpegStore.o \
+	${OBJECTDIR}/JpegStreamer.o \
 	${OBJECTDIR}/SSLHandler.o \
 	${OBJECTDIR}/SSLProcess.o \
 	${OBJECTDIR}/SSLServerSocket.o \
@@ -102,15 +102,15 @@ ${OBJECTDIR}/FileUtils.o: FileUtils.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/FileUtils.o FileUtils.cpp
 
-${OBJECTDIR}/JpegLoader.o: JpegLoader.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/JpegLoader.o JpegLoader.cpp
-
 ${OBJECTDIR}/JpegStore.o: JpegStore.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/JpegStore.o JpegStore.cpp
+
+${OBJECTDIR}/JpegStreamer.o: JpegStreamer.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/JpegStreamer.o JpegStreamer.cpp
 
 ${OBJECTDIR}/SSLHandler.o: SSLHandler.cpp 
 	${MKDIR} -p ${OBJECTDIR}

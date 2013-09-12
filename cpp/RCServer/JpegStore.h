@@ -10,7 +10,17 @@
 
 #include <string>
 #include <map>
+#include <vector>
 #include <pthread.h>
+
+class JpegListener {
+    public:
+        JpegListener(std::string key="");
+        virtual void onChanged(std::string data, bool frame) = 0;
+        virtual std::string getKey();
+    private:
+        std::string key;
+};
 
 class JpegStore {
 
@@ -20,6 +30,8 @@ class JpegStore {
         static std::string getFrame(std::string key);
         static void setHeader(std::string key, std::string data);
         static void setFrame(std::string key, std::string data);
+        static void addListener(JpegListener* l);
+        static void removeListener(JpegListener* l);
         
     private:
         
@@ -30,12 +42,16 @@ class JpegStore {
         
         static std::string get(bool header, std::string key);
         static void set(bool header, std::string key, std::string data);
+        static void fireListeners(std::string key, std::string data, bool frame);
         
-        static pthread_mutex_t mutexData, mutexHeader;
+        static pthread_mutex_t mutexData, mutexHeader, mutexListener;
         
         typedef std::pair<std::string, JpegFrame*> JpegPair;
         typedef std::map<std::string, JpegFrame*> JpegMap;
+        typedef std::vector<JpegListener*> ListenerVector;
+        
         static JpegMap frames;
+        static ListenerVector listeners;
 
 };
 

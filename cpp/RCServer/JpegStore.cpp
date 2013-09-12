@@ -7,9 +7,42 @@
 
 #include "JpegStore.h"
 
+#include <algorithm>
+
 JpegStore::JpegMap JpegStore::frames;
+JpegStore::ListenerVector JpegStore::listeners;
+pthread_mutex_t JpegStore::mutexListener = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t JpegStore::mutexHeader = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t JpegStore::mutexData = PTHREAD_MUTEX_INITIALIZER;
+
+void JpegStore::addListener(JpegListener* l) {
+    pthread_mutex_lock(&mutexListener);
+    listeners.push_back(l);
+    std::string key = l->getKey();
+    std::string h = getHeader(key);
+    std::string f = getFrame(key);
+    pthread_mutex_unlock(&mutexListener);
+    if (!h.empty()) l->onChanged(h, false);
+    if (!f.empty()) l->onChanged(f, true);
+}
+
+void JpegStore::removeListener(JpegListener* l) {
+    pthread_mutex_lock(&mutexListener);
+    ListenerVector::iterator position = std::find(listeners.begin(), listeners.end(), l);
+    if (position != listeners.end()) listeners.erase(position);
+    pthread_mutex_unlock(&mutexListener);
+}
+
+void JpegStore::fireListeners(std::string key, std::string data, bool frame) {
+    pthread_mutex_lock(&mutexListener);
+    for(ListenerVector::size_type i = 0; i != listeners.size(); i++) {
+        JpegListener* l = listeners[i];
+        if (l->getKey() == key) {
+            l->onChanged(data, frame);
+        }
+    }
+    pthread_mutex_unlock(&mutexListener);
+}
 
 std::string JpegStore::get(bool header, std::string key) {
     pthread_mutex_t* m = header ? &mutexHeader : &mutexData;
@@ -28,12 +61,12 @@ void JpegStore::set(bool header, std::string key, std::string data) {
     JpegFrame* fr = frames[key];
     if (!fr) {
         fr = new JpegFrame();
-        JpegPair pair(key, fr);
-        frames.insert(pair);
+        frames[key] = fr;
     }
     if (header) fr->header = data;
     else fr->data = data;
     pthread_mutex_unlock(m);
+    fireListeners(key, data, !header);
 }
 
 std::string JpegStore::getHeader(std::string key) {
@@ -50,4 +83,12 @@ void JpegStore::setHeader(std::string key, std::string data) {
 
 void JpegStore::setFrame(std::string key, std::string data) {
     set(false, key, data);
+}
+
+JpegListener::JpegListener(std::string key) {
+    this->key = key;
+}
+        
+std::string JpegListener::getKey() {
+    return key;
 }

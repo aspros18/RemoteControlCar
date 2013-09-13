@@ -21,7 +21,6 @@ public:
     SSLSocket* getSocket();
     int getDeviceId();
     int getConnectionId();
-    virtual void onException(std::exception &ex) = 0;
     
     static std::vector<SSLSocketter*> PROCS;
     
@@ -30,6 +29,7 @@ protected:
     virtual SSLSocketter* createProcess() = 0;
     virtual void init();
     virtual void onProcessNull() = 0;
+    virtual void onException(std::exception &ex) = 0;
     static bool equals(SSLHandler* h1, SSLHandler* h2);
     
 private:

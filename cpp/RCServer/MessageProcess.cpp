@@ -34,7 +34,7 @@ class SimpleWorker {
             if (pthread_create(&workerThread, NULL,  run, this)) {
                 started = false;
                 std::runtime_error ex("Worker thread could not be started.");
-                if (proc) proc->getHandler()->onException(ex);
+                if (proc) proc->onException(ex);
             }
         }
         
@@ -82,6 +82,10 @@ void MessageProcess::onStart() {
 }
 
 void MessageProcess::onStop() {
+    ;
+}
+
+void MessageProcess::onException(std::exception& ex) {
     ;
 }
 

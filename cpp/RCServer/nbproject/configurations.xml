@@ -11,8 +11,10 @@
         <itemPath>SSLSocketter.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f5" displayName="Mjpeg" projectFiles="true">
+        <itemPath>JpegListener.h</itemPath>
         <itemPath>JpegStore.h</itemPath>
         <itemPath>JpegStreamer.h</itemPath>
+        <itemPath>SocketJpegListener.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="Rapid JSON" projectFiles="true">
         <itemPath>rapidjson/document.h</itemPath>
@@ -60,8 +62,10 @@
         <itemPath>SSLSocketter.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f4" displayName="Mjpeg" projectFiles="true">
+        <itemPath>JpegListener.cpp</itemPath>
         <itemPath>JpegStore.cpp</itemPath>
         <itemPath>JpegStreamer.cpp</itemPath>
+        <itemPath>SocketJpegListener.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="Socket" projectFiles="true">
         <itemPath>CertificateException.cpp</itemPath>
@@ -126,6 +130,10 @@
       </item>
       <item path="FileUtils.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="JpegListener.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="JpegListener.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="JpegStore.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="JpegStore.h" ex="false" tool="3" flavor2="0">
@@ -173,6 +181,10 @@
       <item path="SocketException.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="SocketException.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SocketJpegListener.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="SocketJpegListener.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="StringUtils.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -252,6 +264,10 @@
       </item>
       <item path="FileUtils.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="JpegListener.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="JpegListener.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="JpegStore.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="JpegStore.h" ex="false" tool="3" flavor2="0">
@@ -299,6 +315,10 @@
       <item path="SocketException.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="SocketException.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SocketJpegListener.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="SocketJpegListener.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="StringUtils.cpp" ex="false" tool="1" flavor2="0">
       </item>

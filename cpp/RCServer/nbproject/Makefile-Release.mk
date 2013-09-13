@@ -39,6 +39,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/Config.o \
 	${OBJECTDIR}/DisconnectProcess.o \
 	${OBJECTDIR}/FileUtils.o \
+	${OBJECTDIR}/JpegListener.o \
 	${OBJECTDIR}/JpegStore.o \
 	${OBJECTDIR}/JpegStreamer.o \
 	${OBJECTDIR}/SSLHandler.o \
@@ -51,6 +52,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/Socket.o \
 	${OBJECTDIR}/SocketBuffer.o \
 	${OBJECTDIR}/SocketException.o \
+	${OBJECTDIR}/SocketJpegListener.o \
 	${OBJECTDIR}/StringUtils.o \
 	${OBJECTDIR}/TestHandler.o \
 	${OBJECTDIR}/TestProcess.o \
@@ -101,6 +103,11 @@ ${OBJECTDIR}/FileUtils.o: FileUtils.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/FileUtils.o FileUtils.cpp
+
+${OBJECTDIR}/JpegListener.o: JpegListener.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/JpegListener.o JpegListener.cpp
 
 ${OBJECTDIR}/JpegStore.o: JpegStore.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -161,6 +168,11 @@ ${OBJECTDIR}/SocketException.o: SocketException.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/SocketException.o SocketException.cpp
+
+${OBJECTDIR}/SocketJpegListener.o: SocketJpegListener.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/SocketJpegListener.o SocketJpegListener.cpp
 
 ${OBJECTDIR}/StringUtils.o: StringUtils.cpp 
 	${MKDIR} -p ${OBJECTDIR}

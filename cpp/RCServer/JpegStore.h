@@ -13,14 +13,7 @@
 #include <vector>
 #include <pthread.h>
 
-class JpegListener {
-    public:
-        JpegListener(std::string key="");
-        virtual void onChanged(std::string data, bool frame) = 0;
-        virtual std::string getKey();
-    private:
-        std::string key;
-};
+#include "JpegListener.h"
 
 class JpegStore {
 

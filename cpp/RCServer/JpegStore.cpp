@@ -85,11 +85,3 @@ void JpegStore::setHeader(std::string key, std::string data) {
 void JpegStore::setFrame(std::string key, std::string data) {
     set(false, key, data);
 }
-
-JpegListener::JpegListener(std::string key) {
-    this->key = key;
-}
-        
-std::string JpegListener::getKey() {
-    return key;
-}

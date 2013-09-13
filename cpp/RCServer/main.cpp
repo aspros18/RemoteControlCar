@@ -16,9 +16,6 @@
 #include "Config.h"
 #include "TestHandler.h"
 
-#include "JpegStreamer.h"
-#include "SocketJpegListener.h"
-
 SSLServerSocket *s = NULL;
 
 void exitHandler(int signal) {
@@ -40,30 +37,7 @@ void createServerSocket(Config *c) {
     sigaction(SIGTERM, &sigHandler, NULL);
 }
 
-void* runStream(void* v) {
-    Socket* sock = (Socket*) v;
-    JpegStreamer streamer("testkey");
-    streamer.start(sock);
-    pthread_exit(NULL);
-}
-
 int main(int argc, char** argv) {
-    
-    pthread_t handleThread;
-    Socket sock("gw-fzoli", 9000);
-    if (pthread_create(&handleThread, NULL,  runStream, &sock)) {
-        std::cerr << "Thread could not be created.\n";
-        sock.close();
-        exit (1);
-    }
-    ServerSocket ss(8008);
-    while (!ss.isClosed()) {
-        Socket* cs = ss.accept();
-        new SocketJpegListener(cs, "testkey");
-    }
-    pthread_join(handleThread, NULL);
-    exit(0);
-    
     Config c("bridge.conf");
     if (!c.isCorrect()) {
         std::cerr << "Incorrect config file.\n";

@@ -111,7 +111,7 @@
       </toolsSet>
       <compileType>
         <ccTool>
-          <commandLine>-Wall -lssl -lcrypto -lpthread</commandLine>
+          <commandLine>-Wall -std=c++0x -lssl -lcrypto -lpthread</commandLine>
         </ccTool>
       </compileType>
       <item path="CertificateException.cpp" ex="false" tool="1" flavor2="0">

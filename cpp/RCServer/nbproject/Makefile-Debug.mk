@@ -65,8 +65,8 @@ OBJECTFILES= \
 CFLAGS=
 
 # CC Compiler Flags
-CCFLAGS=-Wall -lssl -lcrypto -lpthread
-CXXFLAGS=-Wall -lssl -lcrypto -lpthread
+CCFLAGS=-Wall -std=c++0x -lssl -lcrypto -lpthread
+CXXFLAGS=-Wall -std=c++0x -lssl -lcrypto -lpthread
 
 # Fortran Compiler Flags
 FFLAGS=

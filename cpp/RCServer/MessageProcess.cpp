@@ -21,7 +21,7 @@ class SimpleWorker {
         
         void submit(std::string msg) {
             pthread_mutex_lock(&mutex);
-            v.push_back(msg);
+            queue.push_back(msg);
             pthread_mutex_unlock(&mutex);
         }
         
@@ -49,16 +49,22 @@ class SimpleWorker {
     private:
         
         bool started;
-        std::vector<std::string> v;
+        std::vector<std::string> queue;
         pthread_mutex_t mutex;
         
         static void* run(void* v) {
             SimpleWorker* w = (SimpleWorker*) v;
-            pthread_mutex_lock(&w->mutex);
             while (w->started) {
-                // TODO
+                pthread_mutex_lock(&w->mutex);
+                if (w->queue.size() == 0) {
+                    sleep(20);
+                    continue;
+                }
+                std::string msg = w->queue.at(0);
+                w->queue.erase(w->queue.begin());
+                // TODO: send msg, notify thread
+                pthread_mutex_unlock(&w->mutex);
             }
-            pthread_mutex_unlock(&w->mutex);
             pthread_exit(NULL);
         }
         

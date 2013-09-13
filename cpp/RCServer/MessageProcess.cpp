@@ -15,13 +15,14 @@ class SimpleWorker {
     
     public:
         
-        SimpleWorker() : mutex(PTHREAD_MUTEX_INITIALIZER) {
+        SimpleWorker() : mutex(PTHREAD_MUTEX_INITIALIZER), cv(PTHREAD_COND_INITIALIZER) {
             started = false;
         }
         
-        void submit(std::string msg) {
+        void submit(std::string msg, bool wait) {
             pthread_mutex_lock(&mutex);
             queue.push_back(msg);
+            if (wait) pthread_cond_wait(&cv, &mutex);
             pthread_mutex_unlock(&mutex);
         }
         
@@ -51,6 +52,7 @@ class SimpleWorker {
         bool started;
         std::vector<std::string> queue;
         pthread_mutex_t mutex;
+        pthread_cond_t cv;
         
         static void* run(void* v) {
             SimpleWorker* w = (SimpleWorker*) v;
@@ -62,7 +64,8 @@ class SimpleWorker {
                 }
                 std::string msg = w->queue.at(0);
                 w->queue.erase(w->queue.begin());
-                // TODO: send msg, notify thread
+                // TODO: send msg
+                pthread_cond_signal(&w->cv);
                 pthread_mutex_unlock(&w->mutex);
             }
             pthread_exit(NULL);

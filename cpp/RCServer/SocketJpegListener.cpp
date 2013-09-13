@@ -9,12 +9,18 @@
 
 #include "JpegStore.h"
 
-#include <iostream>
+#include <unistd.h>
 
 SocketJpegListener::SocketJpegListener(Socket* cs, std::string key) : JpegListener(key) {
     s = cs;
     headerWrited = false;
     JpegStore::addListener(this);
+}
+
+void SocketJpegListener::wait() {
+    while (!s->isClosed()) {
+        usleep(10);
+    }
 }
 
 void SocketJpegListener::onChanged(std::string data, bool frame) {

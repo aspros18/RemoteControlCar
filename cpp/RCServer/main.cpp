@@ -17,7 +17,6 @@
 #include "TestHandler.h"
 
 #include "JpegStreamer.h"
-#include "JpegStore.h"
 #include "SocketJpegListener.h"
 
 SSLServerSocket *s = NULL;

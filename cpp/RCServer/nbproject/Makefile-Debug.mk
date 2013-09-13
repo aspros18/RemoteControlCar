@@ -42,6 +42,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/JpegListener.o \
 	${OBJECTDIR}/JpegStore.o \
 	${OBJECTDIR}/JpegStreamer.o \
+	${OBJECTDIR}/MessageProcess.o \
 	${OBJECTDIR}/SSLHandler.o \
 	${OBJECTDIR}/SSLProcess.o \
 	${OBJECTDIR}/SSLServerSocket.o \
@@ -118,6 +119,11 @@ ${OBJECTDIR}/JpegStreamer.o: JpegStreamer.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/JpegStreamer.o JpegStreamer.cpp
+
+${OBJECTDIR}/MessageProcess.o: MessageProcess.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/MessageProcess.o MessageProcess.cpp
 
 ${OBJECTDIR}/SSLHandler.o: SSLHandler.cpp 
 	${MKDIR} -p ${OBJECTDIR}

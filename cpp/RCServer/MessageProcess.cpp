@@ -15,8 +15,9 @@ class SimpleWorker {
     
     public:
         
-        SimpleWorker() : mutex(PTHREAD_MUTEX_INITIALIZER), cv(PTHREAD_COND_INITIALIZER) {
+        SimpleWorker(MessageProcess* p) : mutex(PTHREAD_MUTEX_INITIALIZER), cv(PTHREAD_COND_INITIALIZER) {
             started = false;
+            proc = p;
         }
         
         void submit(std::string msg, bool wait) {
@@ -33,18 +34,12 @@ class SimpleWorker {
             if (pthread_create(&workerThread, NULL,  run, this)) {
                 started = false;
                 std::runtime_error ex("Worker thread could not be started.");
-                onException(&ex);
+                if (proc) proc->getHandler()->onException(ex);
             }
         }
         
         void stop() {
             started = false;
-        }
-        
-    protected:
-        
-        virtual void onException(std::exception* ex) {
-            ;
         }
         
     private:
@@ -53,6 +48,7 @@ class SimpleWorker {
         std::vector<std::string> queue;
         pthread_mutex_t mutex;
         pthread_cond_t cv;
+        MessageProcess* proc;
         
         static void* run(void* v) {
             SimpleWorker* w = (SimpleWorker*) v;
@@ -74,7 +70,11 @@ class SimpleWorker {
 };
 
 MessageProcess::MessageProcess(SSLHandler* handler) : SSLProcess(handler) {
-    worker = new SimpleWorker();
+    worker = new SimpleWorker(this);
+}
+
+MessageProcess::~MessageProcess() {
+    delete worker;
 }
 
 void MessageProcess::onStart() {
@@ -85,12 +85,14 @@ void MessageProcess::onStop() {
     ;
 }
 
-void MessageProcess::onMessage(void* msg) {
+void MessageProcess::onMessage(std::string msg) {
     ;
 }
 
-void MessageProcess::sendMessage(void* msg, bool wait) {
-    
+void MessageProcess::sendMessage(std::string msg, bool wait) {
+    if (!msg.empty() && !getSocket()->isClosed()) {
+        worker->submit(msg, wait);
+    }
 }
 
 void MessageProcess::run() {

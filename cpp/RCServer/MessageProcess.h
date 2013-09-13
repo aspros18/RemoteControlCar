@@ -17,14 +17,15 @@ class MessageProcess : public SSLProcess {
     public:
         
         MessageProcess(SSLHandler* handler);
+        virtual ~MessageProcess();
         
-        void sendMessage(void* msg, bool wait=true);
+        void sendMessage(std::string msg, bool wait=true);
         void run();
         
     protected:
         
         virtual void onStart();
-        virtual void onMessage(void* msg);
+        virtual void onMessage(std::string msg);
         virtual void onStop();
         
     private:

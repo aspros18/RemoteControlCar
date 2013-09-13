@@ -7,6 +7,7 @@
 
 #include "MessageProcess.h"
 
+#include <unistd.h>
 #include <vector>
 #include <pthread.h>
 #include <stdexcept>
@@ -55,7 +56,7 @@ class SimpleWorker {
             while (w->started) {
                 pthread_mutex_lock(&w->mutex);
                 if (w->queue.size() == 0) {
-                    sleep(20);
+                    usleep(20);
                     continue;
                 }
                 std::string msg = w->queue.at(0);
@@ -100,5 +101,11 @@ void MessageProcess::sendMessage(std::string msg, bool wait) {
 }
 
 void MessageProcess::run() {
-    
+    worker->start();
+    onStart();
+    while (!getSocket()->isClosed()) {
+        getSocket()->read(); // TODO: receive msg
+    }
+    onStop();
+    worker->stop();
 }

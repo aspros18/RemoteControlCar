@@ -35,6 +35,8 @@ public class RCHandler extends AbstractSecureClientHandler implements Connection
                 return new RCTestProcess(this);
             case KEY_CONN_DISCONNECT:
                 return new ClientTestDisconnectProcess(this, 1000, 10000, 250);
+            case KEY_CONN_MESSAGE:
+                return new RCMessageProcess(this);
             default:
                 return null;
         }

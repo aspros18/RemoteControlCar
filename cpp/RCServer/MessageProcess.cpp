@@ -11,6 +11,7 @@
 #include <vector>
 #include <pthread.h>
 #include <stdexcept>
+#include <iostream>
 
 class SimpleWorker {
     
@@ -53,15 +54,17 @@ class SimpleWorker {
         
         static void* run(void* v) {
             SimpleWorker* w = (SimpleWorker*) v;
+            std::ostream out(w->proc->getSocket()->getBuffer());
             while (w->started) {
                 pthread_mutex_lock(&w->mutex);
                 if (w->queue.size() == 0) {
+                    pthread_mutex_unlock(&w->mutex);
                     usleep(20);
                     continue;
                 }
                 std::string msg = w->queue.at(0);
                 w->queue.erase(w->queue.begin());
-                // TODO: send msg
+                out << msg;
                 pthread_cond_signal(&w->cv);
                 pthread_mutex_unlock(&w->mutex);
             }
@@ -79,7 +82,8 @@ MessageProcess::~MessageProcess() {
 }
 
 void MessageProcess::onStart() {
-    ;
+    sendMessage("java.lang.String\r\n");
+    sendMessage("\"test\"\r\n\r\n");
 }
 
 void MessageProcess::onStop() {
@@ -91,7 +95,7 @@ void MessageProcess::onException(std::exception& ex) {
 }
 
 void MessageProcess::onMessage(std::string msg) {
-    ;
+    std::cout << msg << std::endl;
 }
 
 void MessageProcess::sendMessage(std::string msg, bool wait) {
@@ -103,8 +107,11 @@ void MessageProcess::sendMessage(std::string msg, bool wait) {
 void MessageProcess::run() {
     worker->start();
     onStart();
+    std::string line;
+    std::istream in(getSocket()->getBuffer());
     while (!getSocket()->isClosed()) {
-        getSocket()->read(); // TODO: receive msg
+        std::getline(in, line);
+        onMessage(line);
     }
     onStop();
     worker->stop();

@@ -7,8 +7,12 @@
 
 #include "MessageProcess.h"
 
+class SimpleWorker {
+    
+};
+
 MessageProcess::MessageProcess(SSLHandler* handler) : SSLProcess(handler) {
-    ;
+    worker = new SimpleWorker();
 }
 
 void MessageProcess::onStart() {

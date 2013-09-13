@@ -10,6 +10,8 @@
 
 #include "SSLProcess.h"
 
+class SimpleWorker;
+
 class MessageProcess : public SSLProcess {
     
     public:
@@ -24,6 +26,10 @@ class MessageProcess : public SSLProcess {
         virtual void onStart();
         virtual void onMessage(void* msg);
         virtual void onStop();
+        
+    private:
+        
+        SimpleWorker* worker;
         
 };
 

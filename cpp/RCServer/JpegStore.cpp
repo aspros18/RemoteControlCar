@@ -35,13 +35,14 @@ void JpegStore::removeListener(JpegListener* l) {
 
 void JpegStore::fireListeners(std::string key, std::string data, bool frame) {
     pthread_mutex_lock(&mutexListener);
-    for(ListenerVector::size_type i = 0; i != listeners.size(); i++) {
-        JpegListener* l = listeners[i];
+    ListenerVector v(listeners);
+    pthread_mutex_unlock(&mutexListener);
+    for(ListenerVector::size_type i = 0; i != v.size(); i++) {
+        JpegListener* l = v[i];
         if (l->getKey() == key) {
             l->onChanged(data, frame);
         }
     }
-    pthread_mutex_unlock(&mutexListener);
 }
 
 std::string JpegStore::get(bool header, std::string key) {

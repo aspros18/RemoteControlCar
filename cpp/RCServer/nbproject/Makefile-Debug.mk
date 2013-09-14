@@ -43,7 +43,6 @@ OBJECTFILES= \
 	${OBJECTDIR}/JpegStore.o \
 	${OBJECTDIR}/JpegStreamer.o \
 	${OBJECTDIR}/Message.o \
-	${OBJECTDIR}/MessageFactory.o \
 	${OBJECTDIR}/MessageProcess.o \
 	${OBJECTDIR}/SSLHandler.o \
 	${OBJECTDIR}/SSLProcess.o \
@@ -128,11 +127,6 @@ ${OBJECTDIR}/Message.o: Message.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/Message.o Message.cpp
-
-${OBJECTDIR}/MessageFactory.o: MessageFactory.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/MessageFactory.o MessageFactory.cpp
 
 ${OBJECTDIR}/MessageProcess.o: MessageProcess.cpp 
 	${MKDIR} -p ${OBJECTDIR}

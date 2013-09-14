@@ -8,7 +8,6 @@
         <itemPath>DisconnectProcess.h</itemPath>
         <itemPath>Message.cpp</itemPath>
         <itemPath>Message.h</itemPath>
-        <itemPath>MessageFactory.cpp</itemPath>
         <itemPath>MessageFactory.h</itemPath>
         <itemPath>MessageProcess.h</itemPath>
         <itemPath>SSLHandler.h</itemPath>
@@ -155,8 +154,6 @@
       <item path="Message.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Message.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="MessageFactory.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="MessageFactory.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -309,8 +306,6 @@
       <item path="Message.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Message.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="MessageFactory.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="MessageFactory.h" ex="false" tool="3" flavor2="0">
       </item>

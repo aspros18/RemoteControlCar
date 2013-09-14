@@ -9,7 +9,6 @@
 #define	TESTMESSAGE_H
 
 #include "Message.h"
-#include "MessageFactory.h"
 
 class TestMessage : public Message {
 public:

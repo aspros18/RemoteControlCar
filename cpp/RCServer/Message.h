@@ -31,15 +31,15 @@ struct MessageFactory {
     public:
         
         static Message* createInstance(std::string const& s) {
-            msg_map::iterator it = getMap().find(s);
-            if (it == getMap().end()) return NULL;
+            msg_map::iterator it = getMap()->find(s);
+            if (it == getMap()->end()) return NULL;
             return it->second();
         }
         
     protected:
         
-        static msg_map getMap() {
-            return map;
+        static msg_map* getMap() {
+            return &map;
         }
 
     private:
@@ -52,7 +52,7 @@ template<typename T>
 struct MessageRegister : MessageFactory {
     
     MessageRegister(std::string const& s) {
-        getMap().insert(std::make_pair(s, &createT<T>));
+        getMap()->insert(std::make_pair(s, &createT<T>));
     }
     
 };

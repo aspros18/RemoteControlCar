@@ -42,6 +42,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/JpegListener.o \
 	${OBJECTDIR}/JpegStore.o \
 	${OBJECTDIR}/JpegStreamer.o \
+	${OBJECTDIR}/Message.o \
+	${OBJECTDIR}/MessageFactory.o \
 	${OBJECTDIR}/MessageProcess.o \
 	${OBJECTDIR}/SSLHandler.o \
 	${OBJECTDIR}/SSLProcess.o \
@@ -56,6 +58,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/SocketJpegListener.o \
 	${OBJECTDIR}/StringUtils.o \
 	${OBJECTDIR}/TestHandler.o \
+	${OBJECTDIR}/TestMessage.o \
+	${OBJECTDIR}/TestMessage2.o \
 	${OBJECTDIR}/TestProcess.o \
 	${OBJECTDIR}/Timer.o \
 	${OBJECTDIR}/main.o
@@ -119,6 +123,16 @@ ${OBJECTDIR}/JpegStreamer.o: JpegStreamer.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/JpegStreamer.o JpegStreamer.cpp
+
+${OBJECTDIR}/Message.o: Message.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/Message.o Message.cpp
+
+${OBJECTDIR}/MessageFactory.o: MessageFactory.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/MessageFactory.o MessageFactory.cpp
 
 ${OBJECTDIR}/MessageProcess.o: MessageProcess.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -189,6 +203,16 @@ ${OBJECTDIR}/TestHandler.o: TestHandler.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/TestHandler.o TestHandler.cpp
+
+${OBJECTDIR}/TestMessage.o: TestMessage.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/TestMessage.o TestMessage.cpp
+
+${OBJECTDIR}/TestMessage2.o: TestMessage2.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/TestMessage2.o TestMessage2.cpp
 
 ${OBJECTDIR}/TestProcess.o: TestProcess.cpp 
 	${MKDIR} -p ${OBJECTDIR}

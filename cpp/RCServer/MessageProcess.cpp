@@ -97,7 +97,7 @@ void MessageProcess::onException(std::exception& ex) {
 }
 
 void MessageProcess::onMessage(Message* msg) {
-    ;
+    delete msg;
 }
 
 void MessageProcess::sendMessage(Message* msg, bool wait) {
@@ -118,7 +118,7 @@ void MessageProcess::run() {
         do {
             std::getline(in, line);
             line = StringUtils::trim(line);
-            lines << line;;
+            lines << line;
         }
         while (!line.empty());
         Message* msg = MessageFactory::createInstance(name);

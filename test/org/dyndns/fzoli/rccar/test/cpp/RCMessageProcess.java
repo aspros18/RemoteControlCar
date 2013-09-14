@@ -29,6 +29,7 @@ public class RCMessageProcess extends MessageProcess {
     @Override
     protected void onMessage(Serializable msg) {
         System.out.println(msg);
+        System.exit(0);
     }
     
 }

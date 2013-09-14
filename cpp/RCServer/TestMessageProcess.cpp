@@ -21,4 +21,5 @@ void TestMessageProcess::onStart() {
 
 void TestMessageProcess::onMessage(Message* msg) {
     std::cout << msg->serialize() << std::endl;
+    delete msg;
 }

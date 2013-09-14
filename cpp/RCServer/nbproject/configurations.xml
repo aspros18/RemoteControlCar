@@ -6,9 +6,7 @@
                    projectFiles="true">
       <logicalFolder name="f4" displayName="Handler" projectFiles="true">
         <itemPath>DisconnectProcess.h</itemPath>
-        <itemPath>Message.cpp</itemPath>
         <itemPath>Message.h</itemPath>
-        <itemPath>MessageFactory.h</itemPath>
         <itemPath>MessageProcess.h</itemPath>
         <itemPath>SSLHandler.h</itemPath>
         <itemPath>SSLProcess.h</itemPath>
@@ -50,9 +48,7 @@
       <itemPath>Config.h</itemPath>
       <itemPath>ConnectionKeys.h</itemPath>
       <itemPath>TestHandler.h</itemPath>
-      <itemPath>TestMessage.cpp</itemPath>
       <itemPath>TestMessage.h</itemPath>
-      <itemPath>TestMessage2.cpp</itemPath>
       <itemPath>TestMessage2.h</itemPath>
       <itemPath>TestProcess.h</itemPath>
     </logicalFolder>
@@ -65,6 +61,7 @@
                    projectFiles="true">
       <logicalFolder name="f3" displayName="Handler" projectFiles="true">
         <itemPath>DisconnectProcess.cpp</itemPath>
+        <itemPath>Message.cpp</itemPath>
         <itemPath>MessageProcess.cpp</itemPath>
         <itemPath>SSLHandler.cpp</itemPath>
         <itemPath>SSLProcess.cpp</itemPath>
@@ -93,6 +90,8 @@
       </logicalFolder>
       <itemPath>Config.cpp</itemPath>
       <itemPath>TestHandler.cpp</itemPath>
+      <itemPath>TestMessage.cpp</itemPath>
+      <itemPath>TestMessage2.cpp</itemPath>
       <itemPath>TestProcess.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
     </logicalFolder>
@@ -154,8 +153,6 @@
       <item path="Message.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Message.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="MessageFactory.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="MessageProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -306,8 +303,6 @@
       <item path="Message.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Message.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="MessageFactory.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="MessageProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>

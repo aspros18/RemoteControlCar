@@ -16,7 +16,7 @@ public:
     void deserialize(std::string json);
 private:
     REGISTER_DEC_TYPE(TestMessage2);
-    std::string text;
+    int number;
 };
 
 #endif	/* TESTMESSAGE2_H */

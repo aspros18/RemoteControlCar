@@ -16,6 +16,8 @@
 #include "Config.h"
 #include "TestHandler.h"
 
+#include "Message.h"
+
 SSLServerSocket *s = NULL;
 
 void exitHandler(int signal) {
@@ -38,6 +40,19 @@ void createServerSocket(Config *c) {
 }
 
 int main(int argc, char** argv) {
+    
+    Message* msg = MessageFactory::createInstance("java.lang.Integer");
+    if (msg) {
+        msg->deserialize("5");
+        std::cout << msg->serialize() << std::endl;
+    }
+    msg = MessageFactory::createInstance("java.lang.String");
+    if (msg) {
+        msg->deserialize("\"test message\"");
+        std::cout << msg->serialize() << std::endl;
+    }
+    exit(0);
+    
     Config c("bridge.conf");
     if (!c.isCorrect()) {
         std::cerr << "Incorrect config file.\n";

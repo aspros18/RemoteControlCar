@@ -7,12 +7,18 @@
 
 #include "TestMessage2.h"
 
-REGISTER_DEF_TYPE(TestMessage2, "java.lang.String");
+#include "StringUtils.h"
+
+#include <sstream>
+
+REGISTER_DEF_TYPE(TestMessage2, java.lang.Integer);
 
 std::string TestMessage2::serialize() {
-    return "\"" + text + "\"";
+    std::ostringstream convert;
+    convert << number;
+    return convert.str();
 }
 
 void TestMessage2::deserialize(std::string json) {
-    text = json.substr(1, json.length() - 2);
+    number = StringUtils::to_int(json.c_str());
 }

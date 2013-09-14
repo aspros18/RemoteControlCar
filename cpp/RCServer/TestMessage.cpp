@@ -7,7 +7,7 @@
 
 #include "TestMessage.h"
 
-REGISTER_DEF_TYPE(TestMessage, "java.lang.String");
+REGISTER_DEF_TYPE(TestMessage, java.lang.String);
 
 std::string TestMessage::serialize() {
     return "\"" + text + "\"";

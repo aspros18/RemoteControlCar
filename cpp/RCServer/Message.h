@@ -44,6 +44,7 @@ struct MessageFactory {
                 Message* tmp = i->second();
                 if (tmp->getClassName() == msg->getClassName()) {
                     s = i->first;
+                    delete tmp;
                     break;
                 }
                 delete tmp;

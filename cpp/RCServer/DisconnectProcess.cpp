@@ -8,8 +8,6 @@
 #include "DisconnectProcess.h"
 #include "SocketException.h"
 
-#include <iostream>
-
 class DisconnectTimer : public Timer {
     
     private:
@@ -48,7 +46,7 @@ DisconnectProcess::~DisconnectProcess() {
 }
 
 void DisconnectProcess::onConnect() {
-    std::cout << "connected\n";
+    ;
 }
 
 void DisconnectProcess::beforeAnswer() {
@@ -56,19 +54,19 @@ void DisconnectProcess::beforeAnswer() {
 }
 
 void DisconnectProcess::afterAnswer() {
-    std::cout << "answer\n";
+    ;
 }
 
 void DisconnectProcess::afterTimeout() {
-    std::cout << "timeout over\n";
+    ;
 }
 
 void DisconnectProcess::onTimeout(std::exception* ex) {
-    std::cout << "timeout: " << ex->what() << "\n";
+    ;
 }
 
 void DisconnectProcess::onDisconnect(std::exception* ex) {
-    std::cout << "disconnected: " << ex->what() << "\n";
+    ;
 }
 
 void DisconnectProcess::setTimeoutActive(bool b, std::exception* ex) {

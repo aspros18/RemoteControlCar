@@ -23,7 +23,7 @@ public class RCMessageProcess extends MessageProcess {
 
     @Override
     protected void onStart() {
-        sendMessage("test");
+        sendMessage("Hello C");
     }
 
     @Override

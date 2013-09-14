@@ -9,6 +9,7 @@
 #define	MESSAGEPROCESS_H
 
 #include "SSLProcess.h"
+#include "Message.h"
 
 class SimpleWorker;
 
@@ -19,14 +20,14 @@ class MessageProcess : public SSLProcess {
         MessageProcess(SSLHandler* handler);
         virtual ~MessageProcess();
         
-        void sendMessage(std::string msg, bool wait=true);
+        void sendMessage(Message* msg, bool wait=true);
         virtual void onException(std::exception& ex);
         void run();
         
     protected:
         
         virtual void onStart();
-        virtual void onMessage(std::string msg);
+        virtual void onMessage(Message* msg);
         virtual void onStop();
         
     private:

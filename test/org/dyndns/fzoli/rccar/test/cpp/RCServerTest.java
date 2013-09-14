@@ -11,7 +11,7 @@ import org.dyndns.fzoli.socket.SSLSocketUtil;
  */
 public class RCServerTest {
     
-    private static final int CONN_ID = ConnectionKeys.KEY_CONN_DISCONNECT, TEST_COUNT = 1;
+    private static final int CONN_ID = ConnectionKeys.KEY_CONN_MESSAGE, TEST_COUNT = 1;
     
     private static final Runnable TEST = new Runnable() {
 

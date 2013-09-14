@@ -9,6 +9,14 @@
 
 REGISTER_DEF_TYPE(TestMessage, java.lang.String);
 
+TestMessage::TestMessage() {
+    ;
+}
+
+TestMessage::TestMessage(std::string s) {
+    text = s;
+}
+
 std::string TestMessage::serialize() {
     return "\"" + text + "\"";
 }

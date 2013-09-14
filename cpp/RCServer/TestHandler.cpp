@@ -7,9 +7,9 @@
 
 #include "TestHandler.h"
 #include "TestProcess.h"
-#include "DisconnectProcess.h"
+#include "TestDisconnectProcess.h"
+#include "TestMessageProcess.h"
 #include "ConnectionKeys.h"
-#include "MessageProcess.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -24,9 +24,9 @@ SSLSocketter* TestHandler::createProcess() {
         case KEY_CONN_DUMMY:
             return new TestProcess(this);
         case KEY_CONN_DISCONNECT:
-            return new DisconnectProcess(this, DC_TIMEOUT1, DC_TIMEOUT2, DC_DELAY);
+            return new TestDisconnectProcess(this);
         case KEY_CONN_MESSAGE:
-            return new MessageProcess(this);
+            return new TestMessageProcess(this);
         default:
             return NULL;
     }

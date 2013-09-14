@@ -12,11 +12,18 @@
 
 class TestMessage : public Message {
 public:
+    
+    TestMessage();
+    TestMessage(std::string s);
+    
     std::string serialize();
     void deserialize(std::string json);
+    
 private:
+    
     REGISTER_DEC_TYPE(TestMessage);
     std::string text;
+    
 };
 
 #endif	/* TESTMESSAGE_H */

@@ -56,9 +56,11 @@ OBJECTFILES= \
 	${OBJECTDIR}/SocketException.o \
 	${OBJECTDIR}/SocketJpegListener.o \
 	${OBJECTDIR}/StringUtils.o \
+	${OBJECTDIR}/TestDisconnectProcess.o \
 	${OBJECTDIR}/TestHandler.o \
 	${OBJECTDIR}/TestMessage.o \
 	${OBJECTDIR}/TestMessage2.o \
+	${OBJECTDIR}/TestMessageProcess.o \
 	${OBJECTDIR}/TestProcess.o \
 	${OBJECTDIR}/Timer.o \
 	${OBJECTDIR}/main.o
@@ -193,6 +195,11 @@ ${OBJECTDIR}/StringUtils.o: StringUtils.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/StringUtils.o StringUtils.cpp
 
+${OBJECTDIR}/TestDisconnectProcess.o: TestDisconnectProcess.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/TestDisconnectProcess.o TestDisconnectProcess.cpp
+
 ${OBJECTDIR}/TestHandler.o: TestHandler.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -207,6 +214,11 @@ ${OBJECTDIR}/TestMessage2.o: TestMessage2.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/TestMessage2.o TestMessage2.cpp
+
+${OBJECTDIR}/TestMessageProcess.o: TestMessageProcess.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/TestMessageProcess.o TestMessageProcess.cpp
 
 ${OBJECTDIR}/TestProcess.o: TestProcess.cpp 
 	${MKDIR} -p ${OBJECTDIR}

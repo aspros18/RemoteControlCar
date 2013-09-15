@@ -164,7 +164,7 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     /**
      * IP címre és hosztnévre és egyéb egyedi címekre is egész jól használható reguláris kifejezés.
      */
-    private static final Pattern PT_ADDRESS = Pattern.compile("^[a-z\\d]{1}[\\w\\.\\d]{0,18}[a-z\\d]{1}$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern PT_ADDRESS = Pattern.compile("^[a-z\\d]{1}[\\w\\.\\-\\d]{0,18}[a-z\\d]{1}$", Pattern.CASE_INSENSITIVE);
     
     /**
      * Port validálására használt reguláris kifejezés.
@@ -646,9 +646,9 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
             @Override
             public Object stringToValue(String string) throws ParseException {
                 // egynél több pont nincs megengedve
-                if (string.contains("..")) throw new ParseException("double dot", 0);
+                if (string.contains("..") || string.contains("--")) throw new ParseException("double dot", 0);
                 // ha a szöveg pontra végződik vagy rövidebb két karakternél, az eredeti szöveg kerül a helyére a szerkesztés befejezésekor
-                if (string.length() < 2 || string.endsWith(".")) return CONFIG.getAddress();
+                if (string.length() < 2 || string.endsWith(".") || string.endsWith("-")) return CONFIG.getAddress();
                 return ((String)super.stringToValue(string)).toLowerCase(); // a szerkesztés befejezésekor minden karaktert kicsire cserél
             }
             

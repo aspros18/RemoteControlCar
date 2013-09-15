@@ -643,10 +643,14 @@ public class ConfigEditorFrame extends FrontFrame implements RelocalizableWindow
     private AbstractFormatter createAddressFormatter() {
         RegexPatternFormatter fmAddress = new RegexPatternFormatter(PT_ADDRESS) {
 
+            private final String[] WRONG_STRINGS = {"..", "--", "-.", ".-"};
+            
             @Override
             public Object stringToValue(String string) throws ParseException {
-                // egynél több pont nincs megengedve
-                if (string.contains("..") || string.contains("--")) throw new ParseException("double dot", 0);
+                // egynél több pont vagy kötőjel ill. kombinációjuk nincs megengedve
+                for (String ws : WRONG_STRINGS) {
+                    if (string.contains(ws)) throw new ParseException("wrong string", 0);
+                }
                 // ha a szöveg pontra végződik vagy rövidebb két karakternél, az eredeti szöveg kerül a helyére a szerkesztés befejezésekor
                 if (string.length() < 2 || string.endsWith(".") || string.endsWith("-")) return CONFIG.getAddress();
                 return ((String)super.stringToValue(string)).toLowerCase(); // a szerkesztés befejezésekor minden karaktert kicsire cserél

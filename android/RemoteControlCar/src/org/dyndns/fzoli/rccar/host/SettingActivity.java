@@ -102,7 +102,7 @@ public class SettingActivity extends SherlockPreferenceActivity {
 	/**
 	 * A cím ellenőrzésére használt regex.
 	 */
-	private static final Pattern PT_ADDRESS = Pattern.compile("^[a-z\\d]{1}[\\w\\.\\d]{0,18}[a-z\\d]{1}$", Pattern.CASE_INSENSITIVE);
+	private static final Pattern PT_ADDRESS = Pattern.compile("^[a-z\\d]{1}[\\w\\.\\-\\d]{0,18}[a-z\\d]{1}$", Pattern.CASE_INSENSITIVE);
 	
 	/**
 	 * A felhasználónév és jelszó ellenőrzésére használt regex.
@@ -174,7 +174,7 @@ public class SettingActivity extends SherlockPreferenceActivity {
 
 		@Override
 		protected boolean skipValidate(String text) {
-			return text.length() < 2 || text.endsWith(".");
+			return text.length() < 2 || ((text.endsWith(".") || text.endsWith("-")) && !text.endsWith("..") && !text.endsWith("--") && !text.endsWith("-.") && !text.endsWith(".-"));
 		}
 
 		@Override

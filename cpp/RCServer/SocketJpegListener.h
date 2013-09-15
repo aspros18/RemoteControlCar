@@ -18,7 +18,8 @@ class SocketJpegListener : public JpegListener {
     public:
         
         SocketJpegListener(Socket* cs, std::string key="");
-        void onChanged(std::string data, bool frame);
+        virtual ~SocketJpegListener();
+        bool onChanged(std::string data, bool frame);
         void wait();
         
     private:

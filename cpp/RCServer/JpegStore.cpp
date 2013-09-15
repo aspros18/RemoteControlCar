@@ -15,19 +15,39 @@ pthread_mutex_t JpegStore::mutexListener = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t JpegStore::mutexHeader = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t JpegStore::mutexData = PTHREAD_MUTEX_INITIALIZER;
 
+class IsListenerRemovable {
+
+    public:
+    
+        IsListenerRemovable(std::string key, std::string data, bool frame): _data(data), _key(key), _frame(frame) {
+            ;
+        }
+
+        bool operator()(JpegListener* l) const {
+            return l->getKey() == _key && !l->onChanged(_data, _frame);
+        }
+
+    private:
+        
+        std::string _data, _key;
+        bool _frame;
+        
+};
+
 void JpegStore::addListener(JpegListener* l) {
     std::string key = l->getKey();
     std::string h = getHeader(key);
     std::string f = getFrame(key);
     pthread_mutex_lock(&mutexListener);
-    listeners.push_back(l);
+    bool b = true;
     if (!h.empty()) {
-        l->onChanged(h, false);
-        if (!f.empty()) {
-            l->onChanged(f, true);
-            l->onChanged(f, true);
+        b &= l->onChanged(h, false);
+        if (b && !f.empty()) {
+            b &= l->onChanged(f, true);
+            if (b) b &= l->onChanged(f, true);
         }
     }
+    if (b) listeners.push_back(l);
     pthread_mutex_unlock(&mutexListener);
 }
 
@@ -40,14 +60,8 @@ void JpegStore::removeListener(JpegListener* l) {
 
 void JpegStore::fireListeners(std::string key, std::string data, bool frame) {
     pthread_mutex_lock(&mutexListener);
-    ListenerVector v(listeners);
+    listeners.erase(std::remove_if(listeners.begin(), listeners.end(), IsListenerRemovable(key, data, frame)), listeners.end());
     pthread_mutex_unlock(&mutexListener);
-    for(ListenerVector::size_type i = 0; i != v.size(); i++) {
-        JpegListener* l = v[i];
-        if (l->getKey() == key) {
-            l->onChanged(data, frame);
-        }
-    }
 }
 
 std::string JpegStore::get(bool header, std::string key) {

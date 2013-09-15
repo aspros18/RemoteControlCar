@@ -16,14 +16,19 @@ pthread_mutex_t JpegStore::mutexHeader = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t JpegStore::mutexData = PTHREAD_MUTEX_INITIALIZER;
 
 void JpegStore::addListener(JpegListener* l) {
-    pthread_mutex_lock(&mutexListener);
-    listeners.push_back(l);
     std::string key = l->getKey();
     std::string h = getHeader(key);
     std::string f = getFrame(key);
+    pthread_mutex_lock(&mutexListener);
+    listeners.push_back(l);
+    if (!h.empty()) {
+        l->onChanged(h, false);
+        if (!f.empty()) {
+            l->onChanged(f, true);
+            l->onChanged(f, true);
+        }
+    }
     pthread_mutex_unlock(&mutexListener);
-    if (!h.empty()) l->onChanged(h, false);
-    if (!f.empty()) l->onChanged(f, true);
 }
 
 void JpegStore::removeListener(JpegListener* l) {

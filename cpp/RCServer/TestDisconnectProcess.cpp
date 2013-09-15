@@ -20,10 +20,6 @@ void TestDisconnectProcess::onConnect() {
     std::cout << "connected\n";
 }
 
-void TestDisconnectProcess::afterAnswer() {
-    std::cout << "answer\n";
-}
-
 void TestDisconnectProcess::afterTimeout() {
     std::cout << "timeout over\n";
 }

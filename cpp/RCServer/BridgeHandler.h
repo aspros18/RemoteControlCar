@@ -10,11 +10,11 @@
 
 #include "SSLHandler.h"
 
-class TestHandler : public SSLHandler {
+class BridgeHandler : public SSLHandler {
     
     public:
         
-        TestHandler(SSLSocket* socket);
+        BridgeHandler(SSLSocket* socket);
         
     protected:
         
@@ -23,7 +23,10 @@ class TestHandler : public SSLHandler {
         void onException(std::exception &ex);
         void onProcessNull();
         
+    private:
+        
+        bool isController();
+        
 };
 
 #endif	/* TESTHANDLER_H */
-

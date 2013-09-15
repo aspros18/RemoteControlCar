@@ -14,7 +14,7 @@
 #include "SSLServerSocket.h"
 #include "CertificateException.h"
 #include "Config.h"
-#include "TestHandler.h"
+#include "BridgeHandler.h"
 
 SSLServerSocket *s = NULL;
 
@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
         createServerSocket(&c);
         while (!s->isClosed()) {
             try {
-                new TestHandler(s->accept());
+                new BridgeHandler(s->accept());
             }
             catch (SocketException &ex) {
                 if (s->isClosed()) return EXIT_SUCCESS;

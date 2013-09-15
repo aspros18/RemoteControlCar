@@ -31,10 +31,16 @@ void JpegStreamer::readHeader() {
     while (in.good()) {
         std::getline(in, l);
         h << l << std::endl;
-        if (bs.empty() && l.find("Content-Type") == 0) {
-            bs = l.substr(l.find("boundary=") + 9);
+        if (bs.empty()) {
+            if (l.find("Content-Type") == 0) {
+                bs = l.substr(l.find("boundary=") + 9);
+            }
+            else if (l.find("--") == 0) {
+                bs = l;
+                break;
+            }
         }
-        else if (!bs.empty()) {
+        else {
             if (l == bs) break;
         }
     }

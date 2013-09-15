@@ -18,7 +18,6 @@ public:
     TestDisconnectProcess(SSLHandler* handler);
     
     void onConnect();
-    void afterAnswer();
     void afterTimeout();
     void onTimeout(std::exception* ex);
     void onDisconnect(std::exception* ex);

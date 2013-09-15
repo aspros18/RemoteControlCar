@@ -35,10 +35,14 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/BridgeHandler.o \
 	${OBJECTDIR}/CertificateException.o \
 	${OBJECTDIR}/Config.o \
+	${OBJECTDIR}/ControllerSideVideoProcess.o \
 	${OBJECTDIR}/DisconnectProcess.o \
 	${OBJECTDIR}/FileUtils.o \
+	${OBJECTDIR}/HostSideMessageProcess.o \
+	${OBJECTDIR}/HostSideVideoProcess.o \
 	${OBJECTDIR}/JpegListener.o \
 	${OBJECTDIR}/JpegStore.o \
 	${OBJECTDIR}/JpegStreamer.o \
@@ -57,7 +61,6 @@ OBJECTFILES= \
 	${OBJECTDIR}/SocketJpegListener.o \
 	${OBJECTDIR}/StringUtils.o \
 	${OBJECTDIR}/TestDisconnectProcess.o \
-	${OBJECTDIR}/TestHandler.o \
 	${OBJECTDIR}/TestMessage.o \
 	${OBJECTDIR}/TestMessage2.o \
 	${OBJECTDIR}/TestMessageProcess.o \
@@ -90,6 +93,11 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rcserver: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rcserver ${OBJECTFILES} ${LDLIBSOPTIONS}
 
+${OBJECTDIR}/BridgeHandler.o: BridgeHandler.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/BridgeHandler.o BridgeHandler.cpp
+
 ${OBJECTDIR}/CertificateException.o: CertificateException.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -100,6 +108,11 @@ ${OBJECTDIR}/Config.o: Config.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/Config.o Config.cpp
 
+${OBJECTDIR}/ControllerSideVideoProcess.o: ControllerSideVideoProcess.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/ControllerSideVideoProcess.o ControllerSideVideoProcess.cpp
+
 ${OBJECTDIR}/DisconnectProcess.o: DisconnectProcess.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -109,6 +122,16 @@ ${OBJECTDIR}/FileUtils.o: FileUtils.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/FileUtils.o FileUtils.cpp
+
+${OBJECTDIR}/HostSideMessageProcess.o: HostSideMessageProcess.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/HostSideMessageProcess.o HostSideMessageProcess.cpp
+
+${OBJECTDIR}/HostSideVideoProcess.o: HostSideVideoProcess.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/HostSideVideoProcess.o HostSideVideoProcess.cpp
 
 ${OBJECTDIR}/JpegListener.o: JpegListener.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -199,11 +222,6 @@ ${OBJECTDIR}/TestDisconnectProcess.o: TestDisconnectProcess.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/TestDisconnectProcess.o TestDisconnectProcess.cpp
-
-${OBJECTDIR}/TestHandler.o: TestHandler.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/TestHandler.o TestHandler.cpp
 
 ${OBJECTDIR}/TestMessage.o: TestMessage.cpp 
 	${MKDIR} -p ${OBJECTDIR}

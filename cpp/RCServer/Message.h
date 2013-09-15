@@ -55,12 +55,13 @@ struct MessageFactory {
     protected:
         
         static msg_map* getMap() {
-            return &map;
+            if (!map) map = new msg_map;
+            return map;
         }
 
     private:
         
-        static msg_map map;
+        static msg_map* map;
         
 };
 

@@ -7,4 +7,4 @@
 
 #include "Message.h"
 
-MessageFactory::msg_map MessageFactory::map;
+MessageFactory::msg_map *MessageFactory::map;

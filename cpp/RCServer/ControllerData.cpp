@@ -7,10 +7,65 @@
 
 #include "ControllerData.h"
 
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
+
 REGISTER_DEF_TYPE(ControllerData, org.dyndns.fzoli.rccar.model.controller.ControllerData);
 
 std::string ControllerData::serialize() {
-    return "{\"hostName\":\"host\",\"hostState\":{\"AZIMUTH\":105},\"hostUnderTimeout\":false,\"vehicleConnected\":false,\"controlling\":false,\"wantControl\":false,\"viewOnly\":false,\"connected\":true,\"CHAT_MESSAGES\":[],\"CONTROLLERS\":[{\"NAME\":\"controller\",\"lastModified\":\"Sep 15, 2013 10:21:50 AM\",\"controlling\":false,\"wantControl\":false}],\"fullX\":false,\"fullY\":false,\"up2date\":false,\"control\":{\"mX\":0,\"mY\":0}}";
+    rapidjson::StringBuffer strbuff;
+    rapidjson::Writer<rapidjson::StringBuffer> writer(strbuff);
+    writer.StartObject();
+    writer.String("hostName");
+    writer.String("host");
+    writer.String("hostState");
+    writer.StartObject();
+    writer.String("AZIMUTH");
+    writer.Int(105);
+    writer.EndObject();
+    writer.String("hostUnderTimeout");
+    writer.Bool(false);
+    writer.String("vehicleConnected");
+    writer.Bool(false);
+    writer.String("controlling");
+    writer.Bool(false);
+    writer.String("wantControl");
+    writer.Bool(false);
+    writer.String("viewOnly");
+    writer.Bool(true);
+    writer.String("connected");
+    writer.Bool(true);
+    writer.String("CHAT_MESSAGES");
+    writer.StartArray();
+    writer.EndArray();
+    writer.String("CONTROLLERS");
+    writer.StartArray();
+    writer.StartObject();
+    writer.String("NAME");
+    writer.String("controller");
+    writer.String("lastModified");
+    writer.String("Sep 15, 2013 10:21:50 AM");
+    writer.String("controlling");
+    writer.Bool(false);
+    writer.String("wantControl");
+    writer.Bool(false);
+    writer.EndObject();
+    writer.EndArray();
+    writer.String("fullX");
+    writer.Bool(false);
+    writer.String("fullY");
+    writer.Bool(false);
+    writer.String("up2date");
+    writer.Bool(false);
+    writer.String("control");
+    writer.StartObject();
+    writer.String("mX");
+    writer.Int(0);
+    writer.String("mY");
+    writer.Int(0);
+    writer.EndObject();
+    writer.EndObject();
+    return strbuff.GetString();
 }
 
 void ControllerData::deserialize(std::string json) {

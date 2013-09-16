@@ -14,17 +14,21 @@
 SocketJpegListener::SocketJpegListener(Socket* cs, std::string key) : JpegListener(key) {
     s = cs;
     headerWrited = false;
-    JpegStore::addListener(this);
+//    JpegStore::addListener(this);
 }
 
 SocketJpegListener::~SocketJpegListener() {
-    JpegStore::removeListener(this);
+//    JpegStore::removeListener(this);
 }
 
 void SocketJpegListener::wait() {
-    while (!s->isClosed()) {
+    while (waitHandler() && !s->isClosed()) {
         usleep(10);
     }
+}
+
+bool SocketJpegListener::waitHandler() {
+    return true;
 }
 
 bool SocketJpegListener::onChanged(std::string data, bool frame) {

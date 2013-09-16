@@ -20,7 +20,7 @@ class MessageProcess : public SSLProcess {
         MessageProcess(SSLHandler* handler);
         virtual ~MessageProcess();
         
-        void sendMessage(Message* msg, bool wait=true);
+        void sendMessage(Message* msg);
         virtual void onException(std::exception& ex);
         void run();
         

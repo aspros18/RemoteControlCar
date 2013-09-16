@@ -21,16 +21,18 @@ public:
     SSLSocket* getSocket();
     int getDeviceId();
     int getConnectionId();
+    static void closeProcesses(SSLHandler* h);
+    virtual void onException(std::exception &ex);
     
-    static std::vector<SSLSocketter*> PROCS;
+    typedef std::vector<SSLSocketter*> ProcessVector;
+    static ProcessVector PROCS;
     
 protected:
     
     virtual SSLSocketter* createProcess() = 0;
     virtual void init();
     virtual void onProcessNull() = 0;
-    virtual void onException(std::exception &ex) = 0;
-    static bool equals(SSLHandler* h1, SSLHandler* h2);
+    static bool equals(SSLHandler* h1, SSLHandler* h2, bool chkConnId = true);
     
 private:
     

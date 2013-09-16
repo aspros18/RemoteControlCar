@@ -19,7 +19,7 @@
 int SSLSocket::count = 0;
 pthread_mutex_t SSLSocket::mutexCount = PTHREAD_MUTEX_INITIALIZER;
 
-SSLSocket::SSLSocket() {
+SSLSocket::SSLSocket() : mutexClose(PTHREAD_MUTEX_INITIALIZER) {
     loadSSL();
     clientName = NULL;
     serverName = NULL;
@@ -28,10 +28,10 @@ SSLSocket::SSLSocket() {
 SSLSocket::~SSLSocket() {
     if (clientName != NULL) delete [] clientName;
     if (serverName != NULL) delete [] serverName;
-    unloadSSL(); // TODO: segfault több szál esetén
+    unloadSSL();
 }
 
-SSLSocket::SSLSocket(connection c) {
+SSLSocket::SSLSocket(connection c) : mutexClose(PTHREAD_MUTEX_INITIALIZER) {
     loadSSL();
     ctx = NULL;
     m_sock = c.socket;
@@ -42,7 +42,7 @@ SSLSocket::SSLSocket(connection c) {
     serverName = getCommonName(SSL_get_certificate(conn.sslHandle));
 }
 
-SSLSocket::SSLSocket(const char *host, uint16_t port, const char *CAfile, const char *CRTfile, const char *KEYfile, void *passwd, int timeout, bool verify) {
+SSLSocket::SSLSocket(const char *host, uint16_t port, const char *CAfile, const char *CRTfile, const char *KEYfile, void *passwd, int timeout, bool verify) : mutexClose(PTHREAD_MUTEX_INITIALIZER) {
     loadSSL();
     ctx = sslCreateCtx(true, verify, CAfile, CRTfile, KEYfile, passwd);
     m_sock = sslConnect(host, port, timeout);
@@ -164,20 +164,33 @@ char *SSLSocket::getCommonName(X509 *cert) {
 }
 
 void SSLSocket::close() {
-    if (closed) return;
+    pthread_mutex_lock(&mutexClose);
+    if (closed) {
+        pthread_mutex_unlock(&mutexClose);
+        return;
+    }
     closed = true;
     sslDisconnect(conn);
     sslDestroyCtx(ctx);
+    pthread_mutex_unlock(&mutexClose);
 }
 
 int SSLSocket::write(const void *buf, int num) const {
-    int status = SSL_write(conn.sslHandle, buf, num);
+    pthread_mutex_t* m = const_cast<pthread_mutex_t*>(&mutexClose);
+    pthread_mutex_lock(m);
+    int status = -1;
+    if (!closed) status = SSL_write(conn.sslHandle, buf, num);
+    pthread_mutex_unlock(m);
     if (status <= 0) throw SSLSocketException( "Could not write byte", SSLSocketException::write );
     return status;
 }
 
 int SSLSocket::read(void *buf, int num) const {
-    int status = SSL_read(conn.sslHandle, buf, num);
+    pthread_mutex_t* m = const_cast<pthread_mutex_t*>(&mutexClose);
+    pthread_mutex_lock(m);
+    int status = -1;
+    if (!closed) status = SSL_read(conn.sslHandle, buf, num);
+    pthread_mutex_unlock(m);
     if (status < 0) throw SSLSocketException ( "Could not read from socket.", SSLSocketException::read );
     return status;
 }

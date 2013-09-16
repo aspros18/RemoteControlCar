@@ -21,6 +21,7 @@ class SocketJpegListener : public JpegListener {
         virtual ~SocketJpegListener();
         bool onChanged(std::string data, bool frame);
         void wait();
+        virtual bool waitHandler();
         
     private:
         

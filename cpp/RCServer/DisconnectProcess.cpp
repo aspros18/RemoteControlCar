@@ -66,7 +66,7 @@ void DisconnectProcess::onTimeout(std::exception* ex) {
 }
 
 void DisconnectProcess::onDisconnect(std::exception* ex) {
-    ;
+    SSLHandler::closeProcesses(getHandler());
 }
 
 void DisconnectProcess::setTimeoutActive(bool b, std::exception* ex) {

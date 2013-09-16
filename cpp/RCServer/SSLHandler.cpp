@@ -14,7 +14,7 @@
 #include <algorithm>
 
 std::string SSLHandler::VAL_OK = "OK";
-std::vector<SSLSocketter*> SSLHandler::PROCS;
+SSLHandler::ProcessVector SSLHandler::PROCS;
 pthread_mutex_t SSLHandler::mutexProcs = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t SSLHandler::mutexInit = PTHREAD_MUTEX_INITIALIZER;
 
@@ -46,7 +46,7 @@ void SSLHandler::init() {
     if (!serverName.compare(clientName)) {
         throw std::runtime_error("The client uses the server's name");
     }
-    for(std::vector<SSLSocketter*>::size_type i = 0; i != PROCS.size(); i++) {
+    for(ProcessVector::size_type i = 0; i != PROCS.size(); i++) {
         SSLProcess *p = (SSLProcess*) PROCS[i];
         if (p->getSocket()->isClosed()) continue;
         if (equals(this, p->getHandler())) {
@@ -55,10 +55,10 @@ void SSLHandler::init() {
     }
 }
 
-bool SSLHandler::equals(SSLHandler* h1, SSLHandler* h2) {
+bool SSLHandler::equals(SSLHandler* h1, SSLHandler* h2, bool chkConnId) {
     std::string name1(h1->getSocket()->getClientName());
     std::string name2(h2->getSocket()->getClientName());
-    return !name1.compare(name2) && h1->getDeviceId() == h2->getDeviceId() && h1->getConnectionId() == h2->getConnectionId();
+    return !name1.compare(name2) && h1->getDeviceId() == h2->getDeviceId() && (!chkConnId || h1->getConnectionId() == h2->getConnectionId());
 }
 
 void SSLHandler::runInit() {
@@ -107,9 +107,26 @@ void SSLHandler::addProcess(SSLSocketter* p) {
 
 void SSLHandler::removeProcess(SSLSocketter* p) {
     pthread_mutex_lock(&mutexProcs);
-    std::vector<SSLSocketter*>::iterator position = std::find(PROCS.begin(), PROCS.end(), p);
+    ProcessVector::iterator position = std::find(PROCS.begin(), PROCS.end(), p);
     if (position != PROCS.end()) PROCS.erase(position);
     pthread_mutex_unlock(&mutexProcs);
+}
+
+void SSLHandler::closeProcesses(SSLHandler* h) {
+    pthread_mutex_lock(&mutexInit);
+    pthread_mutex_lock(&mutexProcs);
+    for(ProcessVector::size_type i = 0; i != PROCS.size(); i++) {
+        SSLProcess *p = (SSLProcess*) PROCS[i];
+        if (equals(p->getHandler(), h, false)) {
+            p->getSocket()->close();
+        }
+    }
+    pthread_mutex_unlock(&mutexProcs);
+    pthread_mutex_unlock(&mutexInit);
+}
+
+void SSLHandler::onException(std::exception &ex) {
+    ;
 }
 
 void* SSLHandler::run(void* v) {

@@ -29,4 +29,5 @@ void ControllerSideVideoProcess::run() {
     ControllerSideVideoListener l(getSocket());
     JpegStore::addListener(&l);
     l.wait();
+    JpegStore::removeListener(&l);
 }

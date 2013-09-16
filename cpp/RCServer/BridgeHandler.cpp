@@ -55,5 +55,5 @@ void BridgeHandler::onProcessNull() {
 }
 
 void BridgeHandler::onException(std::exception &ex) {
-    std::cerr << "TestHandler::onException<" << ex.what() << ">\n";
+    std::cerr << "BridgeHandler::onException<" << ex.what() << "> " << getConnectionId() << std::endl;
 }

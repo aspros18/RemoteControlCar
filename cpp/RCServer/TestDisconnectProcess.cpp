@@ -30,4 +30,5 @@ void TestDisconnectProcess::onTimeout(std::exception* ex) {
 
 void TestDisconnectProcess::onDisconnect(std::exception* ex) {
     std::cout << "disconnected: " << ex->what() << "\n";
+    DisconnectProcess::onDisconnect(ex);
 }

@@ -14,7 +14,7 @@
 #include <sstream>
 
 #include "StringUtils.h"
-
+#include <iostream>
 class SimpleWorker {
     
     public:
@@ -24,10 +24,12 @@ class SimpleWorker {
             proc = p;
         }
         
-        void submit(Message* msg, bool wait) {
+        void submit(Message* msg) {
             pthread_mutex_lock(&mutex);
-            queue.push_back(msg);
-            if (wait) pthread_cond_wait(&cv, &mutex);
+            if (started) {
+                queue.push_back(msg);
+                pthread_cond_wait(&cv, &mutex);
+            }
             pthread_mutex_unlock(&mutex);
         }
         
@@ -46,6 +48,10 @@ class SimpleWorker {
             started = false;
         }
         
+        bool running() {
+            return started;
+        }
+        
     private:
         
         bool started;
@@ -57,7 +63,7 @@ class SimpleWorker {
         static void* run(void* v) {
             SimpleWorker* w = (SimpleWorker*) v;
             std::ostream out(w->proc->getSocket()->getBuffer());
-            while (w->started) {
+            while (w->started && out.good()) {
                 pthread_mutex_lock(&w->mutex);
                 if (w->queue.size() == 0) {
                     pthread_mutex_unlock(&w->mutex);
@@ -66,11 +72,18 @@ class SimpleWorker {
                 }
                 Message* msg = w->queue.at(0);
                 w->queue.erase(w->queue.begin());
-                out << MessageFactory::getInstanceName(msg) << "\r\n";
-                out << msg->serialize() << "\r\n\r\n";
+                std::string name = MessageFactory::getInstanceName(msg);
+                if (!name.empty()) {
+                    out << name << "\r\n";
+                    out << msg->serialize() << "\r\n\r\n";
+                }
                 pthread_cond_signal(&w->cv);
                 pthread_mutex_unlock(&w->mutex);
             }
+            w->started = false;
+            pthread_mutex_lock(&w->mutex);
+            pthread_cond_broadcast(&w->cv);
+            pthread_mutex_unlock(&w->mutex);
             pthread_exit(NULL);
         }
         
@@ -93,16 +106,16 @@ void MessageProcess::onStop() {
 }
 
 void MessageProcess::onException(std::exception& ex) {
-    ;
+    getHandler()->onException(ex);
 }
 
 void MessageProcess::onMessage(Message* msg) {
     delete msg;
 }
 
-void MessageProcess::sendMessage(Message* msg, bool wait) {
+void MessageProcess::sendMessage(Message* msg) {
     if (msg && !getSocket()->isClosed()) {
-        worker->submit(msg, wait);
+        worker->submit(msg);
     }
 }
 
@@ -111,7 +124,7 @@ void MessageProcess::run() {
     onStart();
     std::string line;
     std::istream in(getSocket()->getBuffer());
-    while (!getSocket()->isClosed()) {
+    while (worker->running() && !getSocket()->isClosed() && in.good()) {
         std::getline(in, line);
         std::string name = StringUtils::trim(line);
         std::ostringstream lines;
@@ -120,12 +133,16 @@ void MessageProcess::run() {
             line = StringUtils::trim(line);
             lines << line;
         }
-        while (!line.empty());
+        while (!line.empty() && in.good());
         Message* msg = MessageFactory::createInstance(name);
-        if (msg) {
+        if (msg && in.good()) {
             msg->deserialize(lines.str());
             onMessage(msg);
         }
+    }
+    if (!getSocket()->isClosed()) {
+        std::runtime_error ex(std::string(worker->running() ? "Input" : "Output") + " stream closed.");
+        onException(ex);
     }
     onStop();
     worker->stop();

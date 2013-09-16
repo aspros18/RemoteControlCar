@@ -44,6 +44,7 @@ class SSLSocket : public Socket {
         char *clientName, *serverName;
         static int count;
         static pthread_mutex_t mutexCount;
+        pthread_mutex_t mutexClose;
         
         static void loadSSL();
         static void unloadSSL();

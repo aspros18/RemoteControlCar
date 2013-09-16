@@ -38,6 +38,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/BridgeHandler.o \
 	${OBJECTDIR}/CertificateException.o \
 	${OBJECTDIR}/Config.o \
+	${OBJECTDIR}/ControllerData.o \
 	${OBJECTDIR}/ControllerSideVideoProcess.o \
 	${OBJECTDIR}/DisconnectProcess.o \
 	${OBJECTDIR}/FileUtils.o \
@@ -107,6 +108,11 @@ ${OBJECTDIR}/Config.o: Config.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/Config.o Config.cpp
+
+${OBJECTDIR}/ControllerData.o: ControllerData.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/ControllerData.o ControllerData.cpp
 
 ${OBJECTDIR}/ControllerSideVideoProcess.o: ControllerSideVideoProcess.cpp 
 	${MKDIR} -p ${OBJECTDIR}

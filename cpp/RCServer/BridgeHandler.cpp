@@ -47,6 +47,7 @@ void BridgeHandler::init() {
     if (getDeviceId() == KEY_DEV_CONTROLLER || getDeviceId() == KEY_DEV_HOST) {
         throw std::runtime_error("Unsupported client");
     }
+    SSLHandler::init();
 }
 
 void BridgeHandler::onProcessNull() {

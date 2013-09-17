@@ -24,11 +24,17 @@ class BatteryPartialBaseData  : public PartialData<D, int> {
         }
         
         void serialize(Message::Writer& w) {
-            // TODO
+            w.StartObject();
+            w.String("data");
+            w.Int(BatteryPartialBaseData<D>::data);
+            w.EndObject();
         }
         
         void deserialize(Message::Document& d) {
-            // TODO
+            if (d.IsObject() && d.HasMember("data")) {
+                Message::Value& v = d["data"];
+                if (v.IsInt()) BatteryPartialBaseData<D>::data = v.GetInt();
+            }
         }
         
 };

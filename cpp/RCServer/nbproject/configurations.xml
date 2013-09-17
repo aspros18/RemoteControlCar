@@ -17,6 +17,7 @@
         <itemPath>Control.h</itemPath>
         <itemPath>Data.h</itemPath>
         <itemPath>HostState.h</itemPath>
+        <itemPath>PartialBaseData.h</itemPath>
         <itemPath>Point3D.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f5" displayName="Mjpeg" projectFiles="true">
@@ -52,6 +53,7 @@
         <itemPath>StringUtils.h</itemPath>
         <itemPath>Timer.h</itemPath>
       </logicalFolder>
+      <itemPath>BatteryPartialControllerData.h</itemPath>
       <itemPath>BridgeHandler.h</itemPath>
       <itemPath>Config.h</itemPath>
       <itemPath>ConnectionKeys.h</itemPath>
@@ -98,6 +100,7 @@
         <itemPath>StringUtils.cpp</itemPath>
         <itemPath>Timer.cpp</itemPath>
       </logicalFolder>
+      <itemPath>BatteryPartialControllerData.cpp</itemPath>
       <itemPath>BridgeHandler.cpp</itemPath>
       <itemPath>Config.cpp</itemPath>
       <itemPath>ControllerData.cpp</itemPath>
@@ -134,6 +137,10 @@
         </ccTool>
       </compileType>
       <item path="BaseData.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="BatteryPartialControllerData.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="BatteryPartialControllerData.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="BridgeHandler.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -202,6 +209,8 @@
       <item path="MessageProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="MessageProcess.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="PartialBaseData.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Point3D.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -307,6 +316,10 @@
       </compileType>
       <item path="BaseData.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="BatteryPartialControllerData.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="BatteryPartialControllerData.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="BridgeHandler.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="BridgeHandler.h" ex="false" tool="3" flavor2="0">
@@ -374,6 +387,8 @@
       <item path="MessageProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="MessageProcess.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="PartialBaseData.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Point3D.h" ex="false" tool="3" flavor2="0">
       </item>

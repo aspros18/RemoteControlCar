@@ -28,6 +28,9 @@ class PartialData : public Data<D> {
     
     public:
         
+        PartialData() {
+        }
+        
         PartialData(T dat) {
             data = dat;
         }

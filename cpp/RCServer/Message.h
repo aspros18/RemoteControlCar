@@ -20,6 +20,8 @@ class Message {
     public:
         
         typedef rapidjson::Document Document;
+        typedef rapidjson::Value Value;
+        
         typedef rapidjson::StringBuffer Buffer;
         typedef rapidjson::Writer<Buffer> Writer;
         

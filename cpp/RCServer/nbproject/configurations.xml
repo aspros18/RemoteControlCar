@@ -12,6 +12,12 @@
         <itemPath>SSLProcess.h</itemPath>
         <itemPath>SSLSocketter.h</itemPath>
       </logicalFolder>
+      <logicalFolder name="f6" displayName="Messages" projectFiles="true">
+        <itemPath>BaseData.h</itemPath>
+        <itemPath>Control.h</itemPath>
+        <itemPath>Data.h</itemPath>
+        <itemPath>Point3D.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="f5" displayName="Mjpeg" projectFiles="true">
         <itemPath>JpegListener.h</itemPath>
         <itemPath>JpegStore.h</itemPath>
@@ -51,7 +57,6 @@
       <itemPath>ControllerData.h</itemPath>
       <itemPath>ControllerSideMessageProcess.h</itemPath>
       <itemPath>ControllerSideVideoProcess.h</itemPath>
-      <itemPath>Data.h</itemPath>
       <itemPath>HostSideMessageProcess.h</itemPath>
       <itemPath>HostSideVideoProcess.h</itemPath>
       <itemPath>TestDisconnectProcess.h</itemPath>
@@ -95,11 +100,11 @@
       <itemPath>BridgeHandler.cpp</itemPath>
       <itemPath>Config.cpp</itemPath>
       <itemPath>ControllerData.cpp</itemPath>
+      <itemPath>ControllerSideMessageProcess.cpp</itemPath>
       <itemPath>ControllerSideVideoProcess.cpp</itemPath>
       <itemPath>HostSideMessageProcess.cpp</itemPath>
       <itemPath>HostSideVideoProcess.cpp</itemPath>
       <itemPath>TestDisconnectProcess.cpp</itemPath>
-      <itemPath>TestMessageProcess.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
@@ -127,6 +132,8 @@
           <commandLine>-Wall -std=c++0x -lssl -lcrypto -lpthread</commandLine>
         </ccTool>
       </compileType>
+      <item path="BaseData.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="BridgeHandler.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="BridgeHandler.h" ex="false" tool="3" flavor2="0">
@@ -141,9 +148,13 @@
       </item>
       <item path="ConnectionKeys.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Control.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="ControllerData.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="ControllerData.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ControllerSideMessageProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="ControllerSideMessageProcess.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -188,6 +199,8 @@
       <item path="MessageProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="MessageProcess.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Point3D.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SSLHandler.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -240,8 +253,6 @@
       <item path="TestDisconnectProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="TestDisconnectProcess.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="TestMessageProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Timer.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -291,6 +302,8 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
+      <item path="BaseData.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="BridgeHandler.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="BridgeHandler.h" ex="false" tool="3" flavor2="0">
@@ -305,9 +318,13 @@
       </item>
       <item path="ConnectionKeys.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Control.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="ControllerData.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="ControllerData.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ControllerSideMessageProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="ControllerSideMessageProcess.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -352,6 +369,8 @@
       <item path="MessageProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="MessageProcess.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Point3D.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SSLHandler.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -404,8 +423,6 @@
       <item path="TestDisconnectProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="TestDisconnectProcess.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="TestMessageProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Timer.cpp" ex="false" tool="1" flavor2="0">
       </item>

@@ -8,14 +8,16 @@
 #ifndef CONTROLLERDATA_H
 #define	CONTROLLERDATA_H
 
-#include "Data.h"
+#include "BaseData.h"
 
-class ControllerData : public Data<ControllerData> {
+class ControllerData : public BaseData<ControllerData> {
     
     public:
         
-        void serialize(Writer& writer);
-        void deserialize(Document& d);
+        ControllerData();
+        
+        void serialize(Message::Writer& writer);
+        void deserialize(Message::Document& d);
         void update(ControllerData* data);
         
     private:

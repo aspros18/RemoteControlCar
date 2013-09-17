@@ -9,7 +9,11 @@
 
 REGISTER_DEF_TYPE(ControllerData, org.dyndns.fzoli.rccar.model.controller.ControllerData);
 
-void ControllerData::serialize(Writer& writer) {
+ControllerData::ControllerData() {
+    ;
+}
+
+void ControllerData::serialize(Message::Writer& writer) {
     writer.StartObject();
     writer.String("hostName");
     writer.String("host");
@@ -62,10 +66,10 @@ void ControllerData::serialize(Writer& writer) {
     writer.EndObject();
 }
 
-void ControllerData::deserialize(Document& d) {
-    
+void ControllerData::deserialize(Message::Document& d) {
+    BaseData<ControllerData>::deserialize(d);
 }
 
 void ControllerData::update(ControllerData* data) {
-    
+    BaseData<ControllerData>::update(data);
 }

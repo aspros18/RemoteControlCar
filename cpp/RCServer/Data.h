@@ -19,10 +19,6 @@ class Data : public Message {
             ;
         }
         
-        Data(D* data) {
-            if (data) update(data);
-        }
-        
         virtual void update(D* data) = 0;
         
 };

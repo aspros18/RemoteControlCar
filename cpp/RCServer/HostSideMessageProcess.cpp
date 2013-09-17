@@ -6,15 +6,14 @@
  */
 
 #include "HostSideMessageProcess.h"
-
-#include <iostream>
+#include "BooleanPartialHostData.h"
 
 HostSideMessageProcess::HostSideMessageProcess(SSLHandler* handler) : MessageProcess(handler) {
 }
 
 void HostSideMessageProcess::onStart() {
-    std::ostream out(getSocket()->getBuffer());
-    out << "org.dyndns.fzoli.rccar.model.host.HostData$BooleanPartialHostData\r\n{\"type\":\"STREAMING\",\"data\":true}\r\n\r\n";
+    BooleanPartialHostData d(true, BooleanPartialHostData::STREAMING);
+    sendMessage(&d);
 }
 
 void HostSideMessageProcess::onMessage(Message* msg) {

@@ -36,6 +36,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/BatteryPartialControllerData.o \
+	${OBJECTDIR}/BooleanPartialHostData.o \
 	${OBJECTDIR}/BridgeHandler.o \
 	${OBJECTDIR}/CertificateException.o \
 	${OBJECTDIR}/Config.o \
@@ -45,6 +46,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/ControllerSideVideoProcess.o \
 	${OBJECTDIR}/DisconnectProcess.o \
 	${OBJECTDIR}/FileUtils.o \
+	${OBJECTDIR}/HostData.o \
 	${OBJECTDIR}/HostSideMessageProcess.o \
 	${OBJECTDIR}/HostSideVideoProcess.o \
 	${OBJECTDIR}/JpegListener.o \
@@ -98,6 +100,11 @@ ${OBJECTDIR}/BatteryPartialControllerData.o: BatteryPartialControllerData.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/BatteryPartialControllerData.o BatteryPartialControllerData.cpp
 
+${OBJECTDIR}/BooleanPartialHostData.o: BooleanPartialHostData.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/BooleanPartialHostData.o BooleanPartialHostData.cpp
+
 ${OBJECTDIR}/BridgeHandler.o: BridgeHandler.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -142,6 +149,11 @@ ${OBJECTDIR}/FileUtils.o: FileUtils.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/FileUtils.o FileUtils.cpp
+
+${OBJECTDIR}/HostData.o: HostData.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/HostData.o HostData.cpp
 
 ${OBJECTDIR}/HostSideMessageProcess.o: HostSideMessageProcess.cpp 
 	${MKDIR} -p ${OBJECTDIR}

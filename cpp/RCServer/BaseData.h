@@ -121,4 +121,3 @@ class BaseData : public Data<D> {
 };
 
 #endif	/* BASEDATA_H */
-

@@ -16,6 +16,7 @@
         <itemPath>BaseData.h</itemPath>
         <itemPath>Control.h</itemPath>
         <itemPath>Data.h</itemPath>
+        <itemPath>HostState.h</itemPath>
         <itemPath>Point3D.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f5" displayName="Mjpeg" projectFiles="true">
@@ -179,6 +180,8 @@
       <item path="HostSideVideoProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="HostSideVideoProcess.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="HostState.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="JpegListener.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -349,6 +352,8 @@
       <item path="HostSideVideoProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="HostSideVideoProcess.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="HostState.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="JpegListener.cpp" ex="false" tool="1" flavor2="0">
       </item>

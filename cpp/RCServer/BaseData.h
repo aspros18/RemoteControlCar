@@ -18,6 +18,10 @@ class BaseData : public Data<D> {
         
         BaseData() : Data<D>() {
             batteryLevel = -1;
+            // test values:
+            up2date = false;
+            fullX = true;
+            fullY = true;
         }
         
         void serialize(Message::Writer& w) {
@@ -54,6 +58,9 @@ class BaseData : public Data<D> {
             if (d.HasMember("batteryLevel")) {
                 Message::Value& v = d["batteryLevel"];
                 if (v.IsInt()) batteryLevel = v.GetInt();
+            }
+            else {
+                batteryLevel = -1;
             }
         }
         

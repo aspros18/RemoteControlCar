@@ -15,7 +15,8 @@ class Control {
     public:
         
         Control() {
-            ;
+            mX = 0;
+            mY = 0;
         }
         
         Control(int x, int y) {

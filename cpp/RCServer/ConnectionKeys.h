@@ -19,7 +19,6 @@ namespace ConnectionKeys {
     const int KEY_CONN_DISCONNECT = 0;
     const int KEY_CONN_MESSAGE = 1;
     const int KEY_CONN_VIDEO_STREAM = 2;
-    const int KEY_CONN_DUMMY = 3;
     
     const unsigned int DC_TIMEOUT1 = 1;
     const unsigned int DC_TIMEOUT2 = 10;

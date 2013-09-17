@@ -14,7 +14,7 @@
 #include <sstream>
 
 #include "StringUtils.h"
-#include <iostream>
+
 class SimpleWorker {
     
     public:
@@ -74,8 +74,11 @@ class SimpleWorker {
                 w->queue.erase(w->queue.begin());
                 std::string name = MessageFactory::getInstanceName(msg);
                 if (!name.empty()) {
+                    Message::Buffer b;
+                    Message::Writer w(b);
+                    msg->serialize(w);
                     out << name << "\r\n";
-                    out << msg->serialize() << "\r\n\r\n";
+                    out << b.GetString() << "\r\n\r\n";
                 }
                 pthread_cond_signal(&w->cv);
                 pthread_mutex_unlock(&w->mutex);
@@ -136,8 +139,17 @@ void MessageProcess::run() {
         while (!line.empty() && in.good());
         Message* msg = MessageFactory::createInstance(name);
         if (msg && in.good()) {
-            msg->deserialize(lines.str());
-            onMessage(msg);
+            Message::Document d;
+            if (d.Parse<0>(lines.str().c_str()).HasParseError()) {
+                delete msg;
+            }
+            else {
+                msg->deserialize(d);
+                onMessage(msg);
+            }
+        }
+        else if (msg) {
+            delete msg;
         }
     }
     if (!getSocket()->isClosed()) {

@@ -7,14 +7,9 @@
 
 #include "ControllerData.h"
 
-#include "rapidjson/writer.h"
-#include "rapidjson/stringbuffer.h"
-
 REGISTER_DEF_TYPE(ControllerData, org.dyndns.fzoli.rccar.model.controller.ControllerData);
 
-std::string ControllerData::serialize() {
-    rapidjson::StringBuffer strbuff;
-    rapidjson::Writer<rapidjson::StringBuffer> writer(strbuff);
+void ControllerData::serialize(Writer& writer) {
     writer.StartObject();
     writer.String("hostName");
     writer.String("host");
@@ -65,10 +60,9 @@ std::string ControllerData::serialize() {
     writer.Int(0);
     writer.EndObject();
     writer.EndObject();
-    return strbuff.GetString();
 }
 
-void ControllerData::deserialize(std::string json) {
+void ControllerData::deserialize(Document& d) {
     
 }
 

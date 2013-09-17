@@ -11,12 +11,20 @@
 #include <string>
 #include <map>
 
+#include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
+
 class Message {
     
     public:
         
-        virtual std::string serialize() = 0;
-        virtual void deserialize(std::string json) = 0;
+        typedef rapidjson::Document Document;
+        typedef rapidjson::StringBuffer Buffer;
+        typedef rapidjson::Writer<Buffer> Writer;
+        
+        virtual void serialize(Writer& w) = 0;
+        virtual void deserialize(Document& d) = 0;
         
         virtual std::string getClassName() = 0;
         

@@ -6,9 +6,8 @@
  */
 
 #include "BridgeHandler.h"
-#include "TestProcess.h"
 #include "TestDisconnectProcess.h"
-#include "TestMessageProcess.h"
+#include "ControllerSideMessageProcess.h"
 #include "ConnectionKeys.h"
 #include "ControllerSideVideoProcess.h"
 #include "HostSideVideoProcess.h"
@@ -24,12 +23,10 @@ BridgeHandler::BridgeHandler(SSLSocket* socket) : SSLHandler(socket) {
 
 SSLSocketter* BridgeHandler::createProcess() {
     switch (getConnectionId()) {
-        case KEY_CONN_DUMMY:
-            return new TestProcess(this);
         case KEY_CONN_DISCONNECT:
             return new TestDisconnectProcess(this);
         case KEY_CONN_MESSAGE:
-            if (isController()) return new TestMessageProcess(this);
+            if (isController()) return new ControllerSideMessageProcess(this);
             else return new HostSideMessageProcess(this);
         case KEY_CONN_VIDEO_STREAM:
             if (isController()) return new ControllerSideVideoProcess(this);

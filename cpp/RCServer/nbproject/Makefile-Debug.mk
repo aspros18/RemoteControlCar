@@ -39,6 +39,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/CertificateException.o \
 	${OBJECTDIR}/Config.o \
 	${OBJECTDIR}/ControllerData.o \
+	${OBJECTDIR}/ControllerSideMessageProcess.o \
 	${OBJECTDIR}/ControllerSideVideoProcess.o \
 	${OBJECTDIR}/DisconnectProcess.o \
 	${OBJECTDIR}/FileUtils.o \
@@ -62,10 +63,6 @@ OBJECTFILES= \
 	${OBJECTDIR}/SocketJpegListener.o \
 	${OBJECTDIR}/StringUtils.o \
 	${OBJECTDIR}/TestDisconnectProcess.o \
-	${OBJECTDIR}/TestMessage.o \
-	${OBJECTDIR}/TestMessage2.o \
-	${OBJECTDIR}/TestMessageProcess.o \
-	${OBJECTDIR}/TestProcess.o \
 	${OBJECTDIR}/Timer.o \
 	${OBJECTDIR}/main.o
 
@@ -113,6 +110,11 @@ ${OBJECTDIR}/ControllerData.o: ControllerData.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/ControllerData.o ControllerData.cpp
+
+${OBJECTDIR}/ControllerSideMessageProcess.o: ControllerSideMessageProcess.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/ControllerSideMessageProcess.o ControllerSideMessageProcess.cpp
 
 ${OBJECTDIR}/ControllerSideVideoProcess.o: ControllerSideVideoProcess.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -228,26 +230,6 @@ ${OBJECTDIR}/TestDisconnectProcess.o: TestDisconnectProcess.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/TestDisconnectProcess.o TestDisconnectProcess.cpp
-
-${OBJECTDIR}/TestMessage.o: TestMessage.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/TestMessage.o TestMessage.cpp
-
-${OBJECTDIR}/TestMessage2.o: TestMessage2.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/TestMessage2.o TestMessage2.cpp
-
-${OBJECTDIR}/TestMessageProcess.o: TestMessageProcess.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/TestMessageProcess.o TestMessageProcess.cpp
-
-${OBJECTDIR}/TestProcess.o: TestProcess.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/TestProcess.o TestProcess.cpp
 
 ${OBJECTDIR}/Timer.o: Timer.cpp 
 	${MKDIR} -p ${OBJECTDIR}

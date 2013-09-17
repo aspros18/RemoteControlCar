@@ -49,15 +49,12 @@
       <itemPath>Config.h</itemPath>
       <itemPath>ConnectionKeys.h</itemPath>
       <itemPath>ControllerData.h</itemPath>
+      <itemPath>ControllerSideMessageProcess.h</itemPath>
       <itemPath>ControllerSideVideoProcess.h</itemPath>
       <itemPath>Data.h</itemPath>
       <itemPath>HostSideMessageProcess.h</itemPath>
       <itemPath>HostSideVideoProcess.h</itemPath>
       <itemPath>TestDisconnectProcess.h</itemPath>
-      <itemPath>TestMessage.h</itemPath>
-      <itemPath>TestMessage2.h</itemPath>
-      <itemPath>TestMessageProcess.h</itemPath>
-      <itemPath>TestProcess.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -102,10 +99,7 @@
       <itemPath>HostSideMessageProcess.cpp</itemPath>
       <itemPath>HostSideVideoProcess.cpp</itemPath>
       <itemPath>TestDisconnectProcess.cpp</itemPath>
-      <itemPath>TestMessage.cpp</itemPath>
-      <itemPath>TestMessage2.cpp</itemPath>
       <itemPath>TestMessageProcess.cpp</itemPath>
-      <itemPath>TestProcess.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
@@ -150,6 +144,8 @@
       <item path="ControllerData.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="ControllerData.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ControllerSideMessageProcess.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ControllerSideVideoProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -245,21 +241,7 @@
       </item>
       <item path="TestDisconnectProcess.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="TestMessage.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="TestMessage.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="TestMessage2.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="TestMessage2.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="TestMessageProcess.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="TestMessageProcess.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="TestProcess.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="TestProcess.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Timer.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -327,6 +309,8 @@
       </item>
       <item path="ControllerData.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="ControllerSideMessageProcess.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="ControllerSideVideoProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="ControllerSideVideoProcess.h" ex="false" tool="3" flavor2="0">
@@ -421,21 +405,7 @@
       </item>
       <item path="TestDisconnectProcess.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="TestMessage.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="TestMessage.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="TestMessage2.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="TestMessage2.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="TestMessageProcess.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="TestMessageProcess.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="TestProcess.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="TestProcess.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Timer.cpp" ex="false" tool="1" flavor2="0">
       </item>

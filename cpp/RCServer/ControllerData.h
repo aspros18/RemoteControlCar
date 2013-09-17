@@ -1,12 +1,12 @@
 /* 
- * File:   TestData.h
+ * File:   ControllerData.h
  * Author: zoli
  *
  * Created on 2013. szeptember 16., 19:30
  */
 
-#ifndef TESTDATA_H
-#define	TESTDATA_H
+#ifndef CONTROLLERDATA_H
+#define	CONTROLLERDATA_H
 
 #include "Data.h"
 
@@ -14,8 +14,8 @@ class ControllerData : public Data<ControllerData> {
     
     public:
         
-        std::string serialize();
-        void deserialize(std::string json);
+        void serialize(Writer& writer);
+        void deserialize(Document& d);
         void update(ControllerData* data);
         
     private:
@@ -24,4 +24,4 @@ class ControllerData : public Data<ControllerData> {
         
 };
 
-#endif	/* TESTDATA_H */
+#endif	/* CONTROLLERDATA_H */

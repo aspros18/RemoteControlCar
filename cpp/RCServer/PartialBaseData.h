@@ -9,6 +9,7 @@
 #define	PARTIALBASEDATA_H
 
 #include "Data.h"
+#include "Control.h"
 
 template<class D>
 class BatteryPartialBaseData  : public PartialData<D, int> {
@@ -34,6 +35,34 @@ class BatteryPartialBaseData  : public PartialData<D, int> {
             if (d.IsObject() && d.HasMember("data")) {
                 Message::Value& v = d["data"];
                 if (v.IsInt()) BatteryPartialBaseData<D>::data = v.GetInt();
+            }
+        }
+        
+};
+
+template<class D>
+class ControlPartialBaseData  : public PartialData<D, Control> {
+    
+    public:
+        
+        ControlPartialBaseData() : PartialData<D, Control>() {}
+        
+        ControlPartialBaseData(Control dat) : PartialData<D, Control>(dat) {}
+        
+        void apply(D* dat) {
+            dat->setControl(ControlPartialBaseData<D>::data);
+        }
+        
+        void serialize(Message::Writer& w) {
+            w.StartObject();
+            w.String("data");
+            ControlPartialBaseData<D>::data.serialize(w);
+            w.EndObject();
+        }
+        
+        void deserialize(Message::Document& d) {
+            if (d.IsObject() && d.HasMember("data")) {
+                ControlPartialBaseData<D>::data.deserialize(d["data"]);
             }
         }
         

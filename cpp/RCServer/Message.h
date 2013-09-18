@@ -38,6 +38,8 @@ class UnknownMessage : public Message {
     
     public:
         
+        UnknownMessage() {}
+        
         UnknownMessage(std::string name, std::string def) {
             className = StringUtils::trim(name);
             definition = StringUtils::trim(def);
@@ -46,11 +48,11 @@ class UnknownMessage : public Message {
         void serialize(Writer& w) {}
         void deserialize(Document& d) {}
         
-        std::string getClassName() {
+        virtual std::string getClassName() {
             return className;
         }
         
-        std::string getDefinition() {
+        virtual std::string getDefinition() {
             return definition;
         }
         

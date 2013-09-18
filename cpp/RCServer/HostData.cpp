@@ -122,7 +122,106 @@ void HostData::deserialize(Message::Document& d) {
         BaseData<HostData>::deserialize(d);
     }
 }
+
+double HostData::getSpeed() {
+    return speed;
+}
         
+int HostData::getAdditionalDegree() {
+    return additionalDegree;
+}
+
+bool HostData::isStreaming() {
+    return streaming;
+}
+
+bool HostData::isVehicleConnected() {
+    return vehicleConnected;
+}
+
+bool HostData::isPointChanging() {
+    return pointChanging;
+}
+
+Point3D HostData::getGpsPosition() {
+    return gpsPosition;
+}
+
+Point3D HostData::getGravitationalField() {
+    return gravitationalField;
+}
+
+Point3D HostData::getMagneticField() {
+    return magneticField;
+}
+
+Point3D HostData::getPreviousGpsPosition() {
+    return previousGpsPosition;
+}
+
+Point3D HostData::getPreviousGravitationalField() {
+    return previousGravitationalField;
+}
+
+Point3D HostData::getPreviousMagneticField() {
+    return previousMagneticField;
+}
+
+void HostData::setSpeed(double d) {
+    speed = d;
+}
+
+void HostData::setAdditionalDegree(int i) {
+    additionalDegree = i;
+}
+
+void HostData::setStreaming(bool b) {
+    streaming = b;
+}
+
+void HostData::setVehicleConnected(bool b) {
+    vehicleConnected = b;
+}
+
+void HostData::setPointChanging(bool b) {
+    pointChanging = b;
+}
+
+void HostData::setGpsPosition(Point3D p) {
+    gpsPosition = p;
+}
+
+void HostData::setGravitationalField(Point3D p) {
+    gravitationalField = p;
+}
+
+void HostData::setMagneticField(Point3D p) {
+    magneticField = p;
+}
+
+void HostData::setPreviousGpsPosition(Point3D p) {
+    previousGpsPosition = p;
+}
+
+void HostData::setPreviousGravitationalField(Point3D p) {
+    previousGravitationalField = p;
+}
+
+void HostData::setPreviousMagneticField(Point3D p) {
+    previousMagneticField = p;
+}
+
 void HostData::update(HostData* data) {
+    setSpeed(data->getSpeed());
+    setStreaming(data->isStreaming());
+    setVehicleConnected(data->isVehicleConnected());
+    setPointChanging(data->isPointChanging());
+    setAdditionalDegree(data->getAdditionalDegree());
+    setGpsPosition(data->getGpsPosition());
+    setGravitationalField(data->getGravitationalField());
+    setMagneticField(data->getMagneticField());
+    setPreviousGpsPosition(data->getPreviousGpsPosition());
+    setPreviousGravitationalField(data->getPreviousGravitationalField());
+    setPreviousMagneticField(data->getPreviousMagneticField());
     BaseData<HostData>::update(data);
 }

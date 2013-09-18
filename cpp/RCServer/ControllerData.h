@@ -22,23 +22,23 @@ class ControllerData : public BaseData<ControllerData> {
         void update(ControllerData* data);
         
         std::string getHostName();
-        void setHostName(std::string name);
+        virtual void setHostName(std::string name);
         HostState getHostState();
-        void setHostState(HostState state);
+        virtual void setHostState(HostState state);
         long getTimeout();
-        void setTimeout(long timeout);
+        virtual void setTimeout(long timeout);
         bool isHostUnderTimeout();
-        void setHostUnderTimeout(bool b);
+        virtual void setHostUnderTimeout(bool b);
         bool isVehicleConnected();
-        void setVehicleConnected(bool b);
+        virtual void setVehicleConnected(bool b);
         bool isControlling();
-        void setControlling(bool b);
+        virtual void setControlling(bool b);
         bool isWantControl();
-        void setWantControl(bool b);
+        virtual void setWantControl(bool b);
         bool isViewOnly();
-        void setViewOnly(bool b);
+        virtual void setViewOnly(bool b);
         bool isConnected();
-        void setConnected(bool b);
+        virtual void setConnected(bool b);
         
     private:
         

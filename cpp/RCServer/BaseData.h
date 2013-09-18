@@ -76,7 +76,7 @@ class BaseData : public Data<D> {
             return control;
         }
         
-        void setControl(Control& c) {
+        virtual void setControl(Control& c) {
             control = c;
         }
         
@@ -84,7 +84,7 @@ class BaseData : public Data<D> {
             return batteryLevel;
         }
         
-        void setBatteryLevel(int l) {
+        virtual void setBatteryLevel(int l) {
             batteryLevel = l;
         }
         
@@ -92,7 +92,7 @@ class BaseData : public Data<D> {
             return fullX;
         }
         
-        void setFullX(bool b) {
+        virtual void setFullX(bool b) {
             fullX = b;
         }
         
@@ -100,7 +100,7 @@ class BaseData : public Data<D> {
             return fullY;
         }
         
-        void setFullY(bool b) {
+        virtual void setFullY(bool b) {
             fullY = b;
         }
         
@@ -108,7 +108,7 @@ class BaseData : public Data<D> {
             return up2date;
         }
         
-        void setUp2Date(bool b) {
+        virtual void setUp2Date(bool b) {
             up2date = b;
         }
         

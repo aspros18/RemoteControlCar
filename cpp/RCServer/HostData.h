@@ -21,6 +21,29 @@ class HostData : public BaseData<HostData> {
         void deserialize(Message::Document& d);
         void update(HostData* data);
         
+        double getSpeed();
+        virtual void setSpeed(double d);
+        int getAdditionalDegree();
+        virtual void setAdditionalDegree(int i);
+        bool isStreaming();
+        virtual void setStreaming(bool b);
+        bool isVehicleConnected();
+        virtual void setVehicleConnected(bool b);
+        bool isPointChanging();
+        virtual void setPointChanging(bool b);
+        Point3D getGpsPosition();
+        virtual void setGpsPosition(Point3D p);
+        Point3D getGravitationalField();
+        virtual void setGravitationalField(Point3D p);
+        Point3D getMagneticField();
+        virtual void setMagneticField(Point3D p);
+        Point3D getPreviousGpsPosition();
+        virtual void setPreviousGpsPosition(Point3D p);
+        Point3D getPreviousGravitationalField();
+        virtual void setPreviousGravitationalField(Point3D p);
+        Point3D getPreviousMagneticField();
+        virtual void setPreviousMagneticField(Point3D p);
+        
     private:
             
         REGISTER_DEC_TYPE(HostData);

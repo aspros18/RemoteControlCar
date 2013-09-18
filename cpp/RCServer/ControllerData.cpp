@@ -171,15 +171,14 @@ void ControllerData::deserialize(Message::Document& d) {
 }
 
 void ControllerData::update(ControllerData* data) {
-    setHostName(data->hostName);
-    setHostState(data->hostState);
-    setTimeout(data->timeout);
-    setHostUnderTimeout(data->hostUnderTimeout);
-    setConnected(data->connected);
-    setControlling(data->controlling);
-    setHostUnderTimeout(data->hostUnderTimeout);
-    setVehicleConnected(data->vehicleConnected);
-    setViewOnly(data->viewOnly);
-    setWantControl(data->wantControl);
+    setHostName(data->getHostName());
+    setHostState(data->getHostState());
+    setTimeout(data->getTimeout());
+    setHostUnderTimeout(data->isHostUnderTimeout());
+    setConnected(data->isConnected());
+    setControlling(data->isControlling());
+    setVehicleConnected(data->isVehicleConnected());
+    setViewOnly(data->isViewOnly());
+    setWantControl(data->isWantControl());
     BaseData<ControllerData>::update(data);
 }

@@ -65,6 +65,7 @@
       <itemPath>HostData.h</itemPath>
       <itemPath>HostSideMessageProcess.h</itemPath>
       <itemPath>HostSideVideoProcess.h</itemPath>
+      <itemPath>PointPartialHostData.h</itemPath>
       <itemPath>TestDisconnectProcess.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -114,6 +115,7 @@
       <itemPath>HostData.cpp</itemPath>
       <itemPath>HostSideMessageProcess.cpp</itemPath>
       <itemPath>HostSideVideoProcess.cpp</itemPath>
+      <itemPath>PointPartialHostData.cpp</itemPath>
       <itemPath>TestDisconnectProcess.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
     </logicalFolder>
@@ -231,6 +233,10 @@
       <item path="PartialBaseData.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Point3D.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="PointPartialHostData.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="PointPartialHostData.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SSLHandler.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -421,6 +427,10 @@
       <item path="PartialBaseData.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Point3D.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="PointPartialHostData.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="PointPartialHostData.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SSLHandler.cpp" ex="false" tool="1" flavor2="0">
       </item>

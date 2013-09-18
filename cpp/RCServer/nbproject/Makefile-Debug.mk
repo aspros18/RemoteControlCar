@@ -54,6 +54,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/JpegStreamer.o \
 	${OBJECTDIR}/Message.o \
 	${OBJECTDIR}/MessageProcess.o \
+	${OBJECTDIR}/PointPartialHostData.o \
 	${OBJECTDIR}/SSLHandler.o \
 	${OBJECTDIR}/SSLProcess.o \
 	${OBJECTDIR}/SSLServerSocket.o \
@@ -189,6 +190,11 @@ ${OBJECTDIR}/MessageProcess.o: MessageProcess.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/MessageProcess.o MessageProcess.cpp
+
+${OBJECTDIR}/PointPartialHostData.o: PointPartialHostData.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/PointPartialHostData.o PointPartialHostData.cpp
 
 ${OBJECTDIR}/SSLHandler.o: SSLHandler.cpp 
 	${MKDIR} -p ${OBJECTDIR}

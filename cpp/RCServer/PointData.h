@@ -59,7 +59,7 @@ class PointData {
         
         static PointType toType(const char* s) {
             std::string ss(s);
-            for (int i = 0; i < 8; i++) {
+            for (int i = 0; i < 3; i++) {
                 std::string si(PointTypeStrings[i]);
                 if (ss == si) return (PointType) i;
             }

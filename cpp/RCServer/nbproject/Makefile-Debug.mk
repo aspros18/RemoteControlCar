@@ -51,6 +51,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/FileUtils.o \
 	${OBJECTDIR}/HostData.o \
 	${OBJECTDIR}/HostList.o \
+	${OBJECTDIR}/HostNamePartialControllerData.o \
 	${OBJECTDIR}/HostSideMessageProcess.o \
 	${OBJECTDIR}/HostSideVideoProcess.o \
 	${OBJECTDIR}/JpegListener.o \
@@ -58,6 +59,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/JpegStreamer.o \
 	${OBJECTDIR}/Message.o \
 	${OBJECTDIR}/MessageProcess.o \
+	${OBJECTDIR}/PartialHostList.o \
 	${OBJECTDIR}/PointPartialHostData.o \
 	${OBJECTDIR}/SSLHandler.o \
 	${OBJECTDIR}/SSLProcess.o \
@@ -181,6 +183,11 @@ ${OBJECTDIR}/HostList.o: HostList.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/HostList.o HostList.cpp
 
+${OBJECTDIR}/HostNamePartialControllerData.o: HostNamePartialControllerData.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/HostNamePartialControllerData.o HostNamePartialControllerData.cpp
+
 ${OBJECTDIR}/HostSideMessageProcess.o: HostSideMessageProcess.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -215,6 +222,11 @@ ${OBJECTDIR}/MessageProcess.o: MessageProcess.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/MessageProcess.o MessageProcess.cpp
+
+${OBJECTDIR}/PartialHostList.o: PartialHostList.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/PartialHostList.o PartialHostList.cpp
 
 ${OBJECTDIR}/PointPartialHostData.o: PointPartialHostData.cpp 
 	${MKDIR} -p ${OBJECTDIR}

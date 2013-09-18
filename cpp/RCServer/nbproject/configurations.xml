@@ -54,6 +54,7 @@
         <itemPath>Timer.h</itemPath>
       </logicalFolder>
       <itemPath>BatteryPartialControllerData.h</itemPath>
+      <itemPath>BatteryPartialHostData.h</itemPath>
       <itemPath>BooleanPartialHostData.h</itemPath>
       <itemPath>BridgeHandler.h</itemPath>
       <itemPath>Config.h</itemPath>
@@ -105,6 +106,7 @@
         <itemPath>Timer.cpp</itemPath>
       </logicalFolder>
       <itemPath>BatteryPartialControllerData.cpp</itemPath>
+      <itemPath>BatteryPartialHostData.cpp</itemPath>
       <itemPath>BooleanPartialHostData.cpp</itemPath>
       <itemPath>BridgeHandler.cpp</itemPath>
       <itemPath>Config.cpp</itemPath>
@@ -149,6 +151,10 @@
       <item path="BatteryPartialControllerData.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="BatteryPartialControllerData.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="BatteryPartialHostData.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="BatteryPartialHostData.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="BooleanPartialHostData.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -343,6 +349,10 @@
       <item path="BatteryPartialControllerData.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="BatteryPartialControllerData.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="BatteryPartialHostData.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="BatteryPartialHostData.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="BooleanPartialHostData.cpp" ex="false" tool="1" flavor2="0">
       </item>

@@ -36,6 +36,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/BatteryPartialControllerData.o \
+	${OBJECTDIR}/BatteryPartialHostData.o \
 	${OBJECTDIR}/BooleanPartialHostData.o \
 	${OBJECTDIR}/BridgeHandler.o \
 	${OBJECTDIR}/CertificateException.o \
@@ -100,6 +101,11 @@ ${OBJECTDIR}/BatteryPartialControllerData.o: BatteryPartialControllerData.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/BatteryPartialControllerData.o BatteryPartialControllerData.cpp
+
+${OBJECTDIR}/BatteryPartialHostData.o: BatteryPartialHostData.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/BatteryPartialHostData.o BatteryPartialHostData.cpp
 
 ${OBJECTDIR}/BooleanPartialHostData.o: BooleanPartialHostData.cpp 
 	${MKDIR} -p ${OBJECTDIR}

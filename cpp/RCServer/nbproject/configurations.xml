@@ -19,6 +19,7 @@
         <itemPath>HostState.h</itemPath>
         <itemPath>PartialBaseData.h</itemPath>
         <itemPath>Point3D.h</itemPath>
+        <itemPath>PointData.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f5" displayName="Mjpeg" projectFiles="true">
         <itemPath>JpegListener.h</itemPath>
@@ -55,7 +56,6 @@
       </logicalFolder>
       <itemPath>BatteryPartialControllerData.h</itemPath>
       <itemPath>BatteryPartialHostData.h</itemPath>
-      <itemPath>BooleanPartialControllerData.cpp</itemPath>
       <itemPath>BooleanPartialControllerData.h</itemPath>
       <itemPath>BooleanPartialHostData.h</itemPath>
       <itemPath>BridgeHandler.h</itemPath>
@@ -109,6 +109,7 @@
       </logicalFolder>
       <itemPath>BatteryPartialControllerData.cpp</itemPath>
       <itemPath>BatteryPartialHostData.cpp</itemPath>
+      <itemPath>BooleanPartialControllerData.cpp</itemPath>
       <itemPath>BooleanPartialHostData.cpp</itemPath>
       <itemPath>BridgeHandler.cpp</itemPath>
       <itemPath>Config.cpp</itemPath>
@@ -245,6 +246,8 @@
       <item path="PartialBaseData.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Point3D.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="PointData.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="PointPartialHostData.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -447,6 +450,8 @@
       <item path="PartialBaseData.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Point3D.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="PointData.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="PointPartialHostData.cpp" ex="false" tool="1" flavor2="0">
       </item>

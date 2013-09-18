@@ -10,7 +10,6 @@
 
 #include "Data.h"
 #include "Control.h"
-#include "Point3D.h"
 
 template<class D>
 class BatteryPartialBaseData  : public PartialData<D, int> {
@@ -138,64 +137,5 @@ class BooleanPartialBaseData : public PartialData<D, bool> {
 };
 
 template <class D> const char* BooleanPartialBaseData<D>::BoolTypeStrings[] = { "STREAMING", "VEHICLE_CONNECTED", "UP_2_DATE", "CONNECTED", "HOST_UNDER_TIMEOUT", "CONTROLLING", "WANT_CONTROLL", "VIEW_ONLY" };
-
-template <class D>
-class PointPartialBaseData : public PartialData<D, Point3D> {
-    
-    public:
-        
-        enum PointType { GPS_POSITION, GRAVITATIONAL_FIELD, MAGNETIC_FIELD };
-        
-        PointPartialBaseData() : PartialData<D, Point3D>() {}
-        
-        PointPartialBaseData(Point3D dat, PointType type) : PartialData<D, Point3D>(dat) {
-            PointPartialBaseData<D>::type = type;
-        }
-        
-        void serialize(Message::Writer& w) {
-            w.StartObject();
-            w.String("data");
-            PointPartialBaseData<D>::data.serialize(w);
-            w.String("type");
-            w.String(PointPartialBaseData<D>::toString(PointPartialBaseData<D>::type));
-            w.EndObject();
-        }
-        
-        void deserialize(Message::Document& d) {
-            if (d.IsObject()) {
-                if (d.HasMember("data")) {
-                    PointPartialBaseData<D>::data.deserialize(d["data"]);
-                }
-                if (d.HasMember("type")) {
-                    Message::Value& v = d["type"];
-                    if (v.IsString()) PointPartialBaseData<D>::type = PointPartialBaseData<D>::toType(v.GetString());
-                }
-            }
-        }
-        
-    protected:
-        
-        PointType type;
-        
-    private:
-        
-        static const char* PointTypeStrings[];
-        
-        static const char* toString(PointType t) {
-            return PointTypeStrings[(int) t];
-        }
-        
-        static PointType toType(const char* s) {
-            std::string ss(s);
-            for (int i = 0; i < 8; i++) {
-                std::string si(PointTypeStrings[i]);
-                if (ss == si) return (PointType) i;
-            }
-            return GPS_POSITION;
-        }
-        
-};
-
-template <class D> const char* PointPartialBaseData<D>::PointTypeStrings[] = { "GPS_POSITION", "GRAVITATIONAL_FIELD", "MAGNETIC_FIELD" };
 
 #endif	/* PARTIALBASEDATA_H */

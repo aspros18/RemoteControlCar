@@ -8,17 +8,22 @@
 #ifndef POINTPARTIALHOSTDATA_H
 #define	POINTPARTIALHOSTDATA_H
 
-#include "PartialBaseData.h"
 #include "HostData.h"
+#include "PointData.h"
+#include "Data.h"
 
-class PointPartialHostData : public PointPartialBaseData<HostData> {
+#include <vector>
+
+class PointPartialHostData : public PartialData<HostData, std::vector<PointData<HostData>>> {
     
     public:
         
         PointPartialHostData();
         
-        PointPartialHostData(Point3D dat, PointType type);
+        void serialize(Message::Writer& w);
+        void deserialize(Message::Document& d);
         
+        void add(PointData<HostData> pd);
         void apply(HostData* data);
         
     private:

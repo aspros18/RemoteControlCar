@@ -21,6 +21,7 @@ class Message {
         
         typedef rapidjson::Document Document;
         typedef rapidjson::Value Value;
+        typedef rapidjson::SizeType SizeType;
         
         typedef rapidjson::StringBuffer Buffer;
         typedef rapidjson::Writer<Buffer> Writer;

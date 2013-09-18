@@ -5,6 +5,14 @@
                    displayName="Header Files"
                    projectFiles="true">
       <logicalFolder name="f4" displayName="Handler" projectFiles="true">
+        <logicalFolder name="f1" displayName="Impl" projectFiles="true">
+          <itemPath>BridgeHandler.h</itemPath>
+          <itemPath>ControllerSideMessageProcess.h</itemPath>
+          <itemPath>ControllerSideVideoProcess.h</itemPath>
+          <itemPath>HostSideMessageProcess.h</itemPath>
+          <itemPath>HostSideVideoProcess.h</itemPath>
+          <itemPath>TestDisconnectProcess.h</itemPath>
+        </logicalFolder>
         <itemPath>DisconnectProcess.h</itemPath>
         <itemPath>Message.h</itemPath>
         <itemPath>MessageProcess.h</itemPath>
@@ -13,6 +21,16 @@
         <itemPath>SSLSocketter.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f6" displayName="Messages" projectFiles="true">
+        <logicalFolder name="f1" displayName="Impl" projectFiles="true">
+          <itemPath>BatteryPartialControllerData.h</itemPath>
+          <itemPath>BatteryPartialHostData.h</itemPath>
+          <itemPath>BooleanPartialControllerData.h</itemPath>
+          <itemPath>BooleanPartialHostData.h</itemPath>
+          <itemPath>ControlPartialControllerData.h</itemPath>
+          <itemPath>ControllerData.h</itemPath>
+          <itemPath>HostData.h</itemPath>
+          <itemPath>PointPartialHostData.h</itemPath>
+        </logicalFolder>
         <itemPath>BaseData.h</itemPath>
         <itemPath>Control.h</itemPath>
         <itemPath>Data.h</itemPath>
@@ -54,22 +72,8 @@
         <itemPath>StringUtils.h</itemPath>
         <itemPath>Timer.h</itemPath>
       </logicalFolder>
-      <itemPath>BatteryPartialControllerData.h</itemPath>
-      <itemPath>BatteryPartialHostData.h</itemPath>
-      <itemPath>BooleanPartialControllerData.h</itemPath>
-      <itemPath>BooleanPartialHostData.h</itemPath>
-      <itemPath>BridgeHandler.h</itemPath>
       <itemPath>Config.h</itemPath>
       <itemPath>ConnectionKeys.h</itemPath>
-      <itemPath>ControlPartialControllerData.h</itemPath>
-      <itemPath>ControllerData.h</itemPath>
-      <itemPath>ControllerSideMessageProcess.h</itemPath>
-      <itemPath>ControllerSideVideoProcess.h</itemPath>
-      <itemPath>HostData.h</itemPath>
-      <itemPath>HostSideMessageProcess.h</itemPath>
-      <itemPath>HostSideVideoProcess.h</itemPath>
-      <itemPath>PointPartialHostData.h</itemPath>
-      <itemPath>TestDisconnectProcess.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -79,12 +83,32 @@
                    displayName="Source Files"
                    projectFiles="true">
       <logicalFolder name="f3" displayName="Handler" projectFiles="true">
+        <logicalFolder name="f1" displayName="Impl" projectFiles="true">
+          <itemPath>BridgeHandler.cpp</itemPath>
+          <itemPath>ControllerSideMessageProcess.cpp</itemPath>
+          <itemPath>ControllerSideVideoProcess.cpp</itemPath>
+          <itemPath>HostSideMessageProcess.cpp</itemPath>
+          <itemPath>HostSideVideoProcess.cpp</itemPath>
+          <itemPath>TestDisconnectProcess.cpp</itemPath>
+        </logicalFolder>
         <itemPath>DisconnectProcess.cpp</itemPath>
         <itemPath>Message.cpp</itemPath>
         <itemPath>MessageProcess.cpp</itemPath>
         <itemPath>SSLHandler.cpp</itemPath>
         <itemPath>SSLProcess.cpp</itemPath>
         <itemPath>SSLSocketter.cpp</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f5" displayName="Messages" projectFiles="true">
+        <logicalFolder name="f1" displayName="Impl" projectFiles="true">
+          <itemPath>BatteryPartialControllerData.cpp</itemPath>
+          <itemPath>BatteryPartialHostData.cpp</itemPath>
+          <itemPath>BooleanPartialControllerData.cpp</itemPath>
+          <itemPath>BooleanPartialHostData.cpp</itemPath>
+          <itemPath>ControlPartialControllerData.cpp</itemPath>
+          <itemPath>ControllerData.cpp</itemPath>
+          <itemPath>HostData.cpp</itemPath>
+          <itemPath>PointPartialHostData.cpp</itemPath>
+        </logicalFolder>
       </logicalFolder>
       <logicalFolder name="f4" displayName="Mjpeg" projectFiles="true">
         <itemPath>JpegListener.cpp</itemPath>
@@ -107,21 +131,7 @@
         <itemPath>StringUtils.cpp</itemPath>
         <itemPath>Timer.cpp</itemPath>
       </logicalFolder>
-      <itemPath>BatteryPartialControllerData.cpp</itemPath>
-      <itemPath>BatteryPartialHostData.cpp</itemPath>
-      <itemPath>BooleanPartialControllerData.cpp</itemPath>
-      <itemPath>BooleanPartialHostData.cpp</itemPath>
-      <itemPath>BridgeHandler.cpp</itemPath>
       <itemPath>Config.cpp</itemPath>
-      <itemPath>ControlPartialControllerData.cpp</itemPath>
-      <itemPath>ControllerData.cpp</itemPath>
-      <itemPath>ControllerSideMessageProcess.cpp</itemPath>
-      <itemPath>ControllerSideVideoProcess.cpp</itemPath>
-      <itemPath>HostData.cpp</itemPath>
-      <itemPath>HostSideMessageProcess.cpp</itemPath>
-      <itemPath>HostSideVideoProcess.cpp</itemPath>
-      <itemPath>PointPartialHostData.cpp</itemPath>
-      <itemPath>TestDisconnectProcess.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"

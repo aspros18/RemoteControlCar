@@ -9,6 +9,7 @@
 #define	HOSTDATA_H
 
 #include "BaseData.h"
+#include "Point3D.h"
 
 class HostData : public BaseData<HostData> {
     
@@ -23,6 +24,11 @@ class HostData : public BaseData<HostData> {
     private:
             
         REGISTER_DEC_TYPE(HostData);
+        
+        double speed;
+        int additionalDegree;
+        bool streaming, vehicleConnected, pointChanging;
+        Point3D gpsPosition, gravitationalField, magneticField, previousGpsPosition, previousMagneticField, previousGravitationalField;
         
 };
 

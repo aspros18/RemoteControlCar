@@ -31,11 +31,11 @@ class HostState {
                 w.String("LOCATION");
                 LOCATION.serialize(w);
             }
-            if (SPEED > 0) {
+            if (SPEED > -1) {
                 w.String("SPEED");
                 w.Double(SPEED);
             }
-            if (AZIMUTH > 0) {
+            if (AZIMUTH > -1) {
                 w.String("AZIMUTH");
                 w.Int(AZIMUTH);
             }

@@ -33,7 +33,7 @@ class BaseData : public Data<D> {
             w.Bool(fullX);
             w.String("fullY");
             w.Bool(fullY);
-            if (batteryLevel > 0) {
+            if (batteryLevel > -1) {
                 w.String("batteryLevel");
                 w.Int(batteryLevel);
             }

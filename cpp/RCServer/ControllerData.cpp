@@ -112,6 +112,10 @@ void ControllerData::serialize(Message::Writer& w) {
     w.Bool(viewOnly);
     w.String("connected");
     w.Bool(connected);
+    if (timeout > -1) {
+        w.String("timeout");
+        w.Int64(timeout);
+    }
     w.String("CHAT_MESSAGES");
     w.StartArray();
     w.EndArray();
@@ -160,19 +164,22 @@ void ControllerData::deserialize(Message::Document& d) {
             Message::Value& v = d["timeout"];
             if (v.IsNumber()) timeout = v.GetInt64();
         }
+        else {
+            timeout = -1;
+        }
     }
 }
 
 void ControllerData::update(ControllerData* data) {
-    hostName = data->hostName;
-    hostState = data->hostState;
-    timeout = data->timeout;
-    hostUnderTimeout = data->hostUnderTimeout;
-    connected = data->connected;
-    controlling = data->controlling;
-    hostUnderTimeout = data->hostUnderTimeout;
-    vehicleConnected = data->vehicleConnected;
-    viewOnly = data->viewOnly;
-    wantControl = data->wantControl;
+    setHostName(data->hostName);
+    setHostState(data->hostState);
+    setTimeout(data->timeout);
+    setHostUnderTimeout(data->hostUnderTimeout);
+    setConnected(data->connected);
+    setControlling(data->controlling);
+    setHostUnderTimeout(data->hostUnderTimeout);
+    setVehicleConnected(data->vehicleConnected);
+    setViewOnly(data->viewOnly);
+    setWantControl(data->wantControl);
     BaseData<ControllerData>::update(data);
 }

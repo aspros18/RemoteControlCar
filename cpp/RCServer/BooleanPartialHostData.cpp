@@ -17,6 +17,15 @@ BooleanPartialHostData::BooleanPartialHostData(bool dat, BoolType type) : Boolea
     ;
 }
 
-void BooleanPartialHostData::apply(HostData* data) {
-    BooleanPartialBaseData<HostData>::apply(data);
+void BooleanPartialHostData::apply(HostData* d) {
+    switch (type) {
+        case STREAMING:
+            d->setStreaming(data);
+            break;
+        case VEHICLE_CONNECTED:
+            d->setVehicleConnected(data);
+            break;
+        default:
+            BooleanPartialBaseData<HostData>::apply(d);
+    }
 }

@@ -44,6 +44,20 @@ void PointPartialHostData::deserialize(Message::Document& d) {
     }
 }
 
-void PointPartialHostData::apply(HostData* data) {
-    ;
+void PointPartialHostData::apply(HostData* d) {
+    d->setPointChanging(true);
+    for (std::vector<PointData<HostData>>::iterator it = data.begin(); it != data.end(); it++) {
+        if (it + 1 == data.end()) d->setPointChanging(false);
+        PointData<HostData> pd = *it;
+        switch (pd.type) {
+            case PointData<HostData>::GPS_POSITION:
+                d->setGpsPosition(pd.point);
+                break;
+            case PointData<HostData>::GRAVITATIONAL_FIELD:
+                d->setGravitationalField(pd.point);
+                break;
+            case PointData<HostData>::MAGNETIC_FIELD:
+                d->setMagneticField(pd.point);
+        }
+    }
 }

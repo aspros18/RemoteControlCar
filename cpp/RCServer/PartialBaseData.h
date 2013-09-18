@@ -82,6 +82,16 @@ class BooleanPartialBaseData : public PartialData<D, bool> {
             BooleanPartialBaseData<D>::type = type;
         }
         
+        void apply(D* dat) {
+            switch (BooleanPartialBaseData<D>::type) {
+                case UP_2_DATE:
+                    dat->setUp2Date(BooleanPartialBaseData<D>::data);
+                    break;
+                default:
+                    break;
+            }
+        }
+        
         void serialize(Message::Writer& w) {
             w.StartObject();
             w.String("data");

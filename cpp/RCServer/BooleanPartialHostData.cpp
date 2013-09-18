@@ -18,5 +18,5 @@ BooleanPartialHostData::BooleanPartialHostData(bool dat, BoolType type) : Boolea
 }
 
 void BooleanPartialHostData::apply(HostData* data) {
-    ;
+    BooleanPartialBaseData<HostData>::apply(data);
 }

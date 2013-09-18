@@ -50,6 +50,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/DisconnectProcess.o \
 	${OBJECTDIR}/FileUtils.o \
 	${OBJECTDIR}/HostData.o \
+	${OBJECTDIR}/HostList.o \
 	${OBJECTDIR}/HostSideMessageProcess.o \
 	${OBJECTDIR}/HostSideVideoProcess.o \
 	${OBJECTDIR}/JpegListener.o \
@@ -174,6 +175,11 @@ ${OBJECTDIR}/HostData.o: HostData.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/HostData.o HostData.cpp
+
+${OBJECTDIR}/HostList.o: HostList.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/HostList.o HostList.cpp
 
 ${OBJECTDIR}/HostSideMessageProcess.o: HostSideMessageProcess.cpp 
 	${MKDIR} -p ${OBJECTDIR}

@@ -31,6 +31,7 @@
           <itemPath>ControlPartialHostData.h</itemPath>
           <itemPath>ControllerData.h</itemPath>
           <itemPath>HostData.h</itemPath>
+          <itemPath>HostList.h</itemPath>
           <itemPath>PointPartialHostData.h</itemPath>
           <itemPath>SpeedPartialHostData.h</itemPath>
         </logicalFolder>
@@ -111,6 +112,7 @@
           <itemPath>ControlPartialHostData.cpp</itemPath>
           <itemPath>ControllerData.cpp</itemPath>
           <itemPath>HostData.cpp</itemPath>
+          <itemPath>HostList.cpp</itemPath>
           <itemPath>PointPartialHostData.cpp</itemPath>
           <itemPath>SpeedPartialHostData.cpp</itemPath>
         </logicalFolder>
@@ -233,6 +235,10 @@
       <item path="HostData.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="HostData.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="HostList.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="HostList.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="HostSideMessageProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -447,6 +453,10 @@
       <item path="HostData.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="HostData.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="HostList.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="HostList.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="HostSideMessageProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>

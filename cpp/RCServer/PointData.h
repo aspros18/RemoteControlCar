@@ -23,6 +23,7 @@ class PointData {
         void serialize(Message::Writer& w) {
             w.StartObject();
             if (PointData<D>::point.isExists()) {
+                w.String("point");
                 PointData<D>::point.serialize(w);
             }
             w.String("type");

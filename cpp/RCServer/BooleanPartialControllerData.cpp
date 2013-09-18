@@ -7,7 +7,7 @@
 
 #include "BooleanPartialControllerData.h"
 
-REGISTER_DEF_TYPE(BooleanPartialControllerData, org.dyndns.fzoli.rccar.model.controller.ControllerData$BooleanPartialControllerData);
+REGISTER_DEF_TYPE(BooleanPartialControllerData, org.dyndns.fzoli.rccar.model.controller.ControllerData$BoolenPartialControllerData);
 
 BooleanPartialControllerData::BooleanPartialControllerData() : BooleanPartialBaseData<ControllerData>() {
     ;

@@ -27,9 +27,11 @@
           <itemPath>BooleanPartialControllerData.h</itemPath>
           <itemPath>BooleanPartialHostData.h</itemPath>
           <itemPath>ControlPartialControllerData.h</itemPath>
+          <itemPath>ControlPartialHostData.h</itemPath>
           <itemPath>ControllerData.h</itemPath>
           <itemPath>HostData.h</itemPath>
           <itemPath>PointPartialHostData.h</itemPath>
+          <itemPath>SpeedPartialHostData.h</itemPath>
         </logicalFolder>
         <itemPath>BaseData.h</itemPath>
         <itemPath>Control.h</itemPath>
@@ -105,9 +107,11 @@
           <itemPath>BooleanPartialControllerData.cpp</itemPath>
           <itemPath>BooleanPartialHostData.cpp</itemPath>
           <itemPath>ControlPartialControllerData.cpp</itemPath>
+          <itemPath>ControlPartialHostData.cpp</itemPath>
           <itemPath>ControllerData.cpp</itemPath>
           <itemPath>HostData.cpp</itemPath>
           <itemPath>PointPartialHostData.cpp</itemPath>
+          <itemPath>SpeedPartialHostData.cpp</itemPath>
         </logicalFolder>
       </logicalFolder>
       <logicalFolder name="f4" displayName="Mjpeg" projectFiles="true">
@@ -196,6 +200,10 @@
       <item path="ControlPartialControllerData.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="ControlPartialControllerData.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ControlPartialHostData.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="ControlPartialHostData.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ControllerData.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -306,6 +314,10 @@
       <item path="SocketJpegListener.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="SocketJpegListener.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SpeedPartialHostData.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="SpeedPartialHostData.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="StringUtils.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -401,6 +413,10 @@
       </item>
       <item path="ControlPartialControllerData.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="ControlPartialHostData.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="ControlPartialHostData.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="ControllerData.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="ControllerData.h" ex="false" tool="3" flavor2="0">
@@ -510,6 +526,10 @@
       <item path="SocketJpegListener.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="SocketJpegListener.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SpeedPartialHostData.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="SpeedPartialHostData.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="StringUtils.cpp" ex="false" tool="1" flavor2="0">
       </item>

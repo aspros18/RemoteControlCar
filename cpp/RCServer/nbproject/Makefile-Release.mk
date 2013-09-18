@@ -43,6 +43,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/CertificateException.o \
 	${OBJECTDIR}/Config.o \
 	${OBJECTDIR}/ControlPartialControllerData.o \
+	${OBJECTDIR}/ControlPartialHostData.o \
 	${OBJECTDIR}/ControllerData.o \
 	${OBJECTDIR}/ControllerSideMessageProcess.o \
 	${OBJECTDIR}/ControllerSideVideoProcess.o \
@@ -68,6 +69,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/SocketBuffer.o \
 	${OBJECTDIR}/SocketException.o \
 	${OBJECTDIR}/SocketJpegListener.o \
+	${OBJECTDIR}/SpeedPartialHostData.o \
 	${OBJECTDIR}/StringUtils.o \
 	${OBJECTDIR}/TestDisconnectProcess.o \
 	${OBJECTDIR}/Timer.o \
@@ -137,6 +139,11 @@ ${OBJECTDIR}/ControlPartialControllerData.o: ControlPartialControllerData.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/ControlPartialControllerData.o ControlPartialControllerData.cpp
+
+${OBJECTDIR}/ControlPartialHostData.o: ControlPartialHostData.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/ControlPartialHostData.o ControlPartialHostData.cpp
 
 ${OBJECTDIR}/ControllerData.o: ControllerData.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -262,6 +269,11 @@ ${OBJECTDIR}/SocketJpegListener.o: SocketJpegListener.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/SocketJpegListener.o SocketJpegListener.cpp
+
+${OBJECTDIR}/SpeedPartialHostData.o: SpeedPartialHostData.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/SpeedPartialHostData.o SpeedPartialHostData.cpp
 
 ${OBJECTDIR}/StringUtils.o: StringUtils.cpp 
 	${MKDIR} -p ${OBJECTDIR}

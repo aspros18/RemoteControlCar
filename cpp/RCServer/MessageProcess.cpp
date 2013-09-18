@@ -72,13 +72,25 @@ class SimpleWorker {
                 }
                 Message* msg = w->queue.at(0);
                 w->queue.erase(w->queue.begin());
-                std::string name = MessageFactory::getInstanceName(msg);
-                if (!name.empty()) {
-                    Message::Buffer b;
-                    Message::Writer w(b);
-                    msg->serialize(w);
-                    out << name << "\r\n";
-                    out << b.GetString() << "\r\n\r\n";
+                UnknownMessage* umsg = dynamic_cast<UnknownMessage*>(msg);
+                if (umsg) {
+                    if (!umsg->getClassName().empty() && !umsg->getDefinition().empty()) {
+                        out << umsg->getClassName() << "\r\n";
+                        out << umsg->getDefinition() << "\r\n\r\n";
+                    }
+                }
+                else {
+                    std::string name = MessageFactory::getInstanceName(msg);
+                    if (!name.empty()) {
+                        Message::Buffer b;
+                        Message::Writer w(b);
+                        msg->serialize(w);
+                        std::string def = std::string(b.GetString());
+                        if (!def.empty()) {
+                            out << name << "\r\n";
+                            out << def << "\r\n\r\n";
+                        }
+                    }
                 }
                 pthread_cond_signal(&w->cv);
                 pthread_mutex_unlock(&w->mutex);
@@ -116,6 +128,10 @@ void MessageProcess::onMessage(Message* msg) {
     delete msg;
 }
 
+void MessageProcess::onUnknownMessage(UnknownMessage* msg) {
+    delete msg;
+}
+
 void MessageProcess::sendMessage(Message* msg) {
     if (msg && !getSocket()->isClosed()) {
         worker->submit(msg);
@@ -148,8 +164,14 @@ void MessageProcess::run() {
                 onMessage(msg);
             }
         }
-        else if (msg) {
-            delete msg;
+        else {
+            if (msg) {
+                delete msg;
+            }
+            if (in.good() && !msg) {
+                UnknownMessage* msg = new UnknownMessage(name, lines.str());
+                onUnknownMessage(msg);
+            }
         }
     }
     if (!getSocket()->isClosed()) {

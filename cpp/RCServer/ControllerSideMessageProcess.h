@@ -14,8 +14,8 @@ class ControllerSideMessageProcess : public MessageProcess {
 public:
     ControllerSideMessageProcess(SSLHandler* handler);
     void onMessage(Message* m);
+    void onUnknownMessage(UnknownMessage* m);
     void onStart();
 };
 
 #endif	/* CONTROLLERSIDEMESSAGEPROCESS_H */
-

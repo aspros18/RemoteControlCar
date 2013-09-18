@@ -14,8 +14,8 @@ class HostSideMessageProcess : public MessageProcess {
 public:
     HostSideMessageProcess(SSLHandler* handler);
     void onMessage(Message* m);
+    void onUnknownMessage(UnknownMessage* m);
     void onStart();
 };
 
 #endif	/* HOSTSIDEMESSAGEPROCESS_H */
-

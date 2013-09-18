@@ -14,6 +14,7 @@
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
+#include "StringUtils.h"
 
 class Message {
     
@@ -30,6 +31,32 @@ class Message {
         virtual void deserialize(Document& d) = 0;
         
         virtual std::string getClassName() = 0;
+        
+};
+
+class UnknownMessage : public Message {
+    
+    public:
+        
+        UnknownMessage(std::string name, std::string def) {
+            className = StringUtils::trim(name);
+            definition = StringUtils::trim(def);
+        }
+        
+        void serialize(Writer& w) {}
+        void deserialize(Document& d) {}
+        
+        std::string getClassName() {
+            return className;
+        }
+        
+        std::string getDefinition() {
+            return definition;
+        }
+        
+    private:
+        
+        std::string className, definition;
         
 };
 

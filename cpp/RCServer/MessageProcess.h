@@ -28,6 +28,7 @@ class MessageProcess : public SSLProcess {
         
         virtual void onStart();
         virtual void onMessage(Message* msg);
+        virtual void onUnknownMessage(UnknownMessage* msg);
         virtual void onStop();
         
     private:

@@ -8,6 +8,8 @@
 #include "ControllerSideMessageProcess.h"
 #include "ControllerData.h"
 
+#include <iostream>
+
 ControllerSideMessageProcess::ControllerSideMessageProcess(SSLHandler* handler) : MessageProcess(handler) {
     ;
 }
@@ -18,5 +20,10 @@ void ControllerSideMessageProcess::onStart() {
 }
 
 void ControllerSideMessageProcess::onMessage(Message* msg) {
+    delete msg;
+}
+
+void ControllerSideMessageProcess::onUnknownMessage(UnknownMessage* msg) {
+    std::cout << "Unknown controller message: " << msg->getClassName() << " - " << msg->getDefinition() << std::endl;
     delete msg;
 }

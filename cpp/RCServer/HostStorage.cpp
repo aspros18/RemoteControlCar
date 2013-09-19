@@ -6,6 +6,8 @@
  */
 
 #include "HostStorage.h"
+#include "ControlPartialHostData.h"
+#include "BooleanPartialHostData.h"
 
 #include <algorithm>
 
@@ -15,6 +17,18 @@ HostStorageSupport::HostStorageSupport(HostStorage* hs) {
 
 HostStorageSender::HostStorageSender(HostStorage* hs) : HostStorageSupport(hs) {
     ;
+}
+
+void HostStorageSender::setStreaming(bool b) {
+    BooleanPartialHostData bd(b, BooleanPartialHostData::STREAMING);
+    storage->sendMessage(&bd);
+    storage->getHostData().setStreaming(b);
+}
+
+void HostStorageSender::setControl(Control c) {
+    ControlPartialHostData cd(c);
+    storage->sendMessage(&cd);
+    storage->getHostData().setControl(c);
 }
 
 HostStorageReceiver::HostStorageReceiver(HostStorage* hs) : HostStorageSupport(hs) {

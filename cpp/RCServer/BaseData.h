@@ -76,7 +76,7 @@ class BaseData : public Data<D> {
             return control;
         }
         
-        virtual void setControl(Control& c) {
+        virtual void setControl(Control c) {
             control = c;
         }
         

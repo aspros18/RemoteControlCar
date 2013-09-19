@@ -61,6 +61,9 @@ class HostStorageSender : public HostStorageSupport {
         
         HostStorageSender(HostStorage* hs);
         
+        void setStreaming(bool b);
+        void setControl(Control c);
+        
 };
 
 class HostStorageReceiver : public HostStorageSupport {

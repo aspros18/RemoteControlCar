@@ -27,7 +27,7 @@ void HostList::addHost(std::string s) {
 
 void HostList::removeHost(std::string s) {
     pthread_mutex_lock(&mutexHosts);
-    HostList::HostVector::iterator position = std::find(hosts.begin(), hosts.end(), s);
+    HostVector::iterator position = std::find(hosts.begin(), hosts.end(), s);
     if (position != hosts.end()) hosts.erase(position);
     pthread_mutex_unlock(&mutexHosts);
 }

@@ -10,10 +10,14 @@
 
 #include "Storage.h"
 #include "HostData.h"
+#include "ControllerData.h"
 
 class HostStorage : public Storage<HostData> {
     
     public:
+        
+        typedef Storage<ControllerData> ControllerStorageType;
+        typedef std::vector<ControllerStorageType*> ControllerVector;
         
         HostStorage(MessageProcess* p);
         virtual ~HostStorage();
@@ -22,11 +26,20 @@ class HostStorage : public Storage<HostData> {
         HostData* getReceiver();
         HostData& getHostData();
         
+        void addController(ControllerStorageType*);
+        void removeController(ControllerStorageType*);
+        
+        void sendMessage(Message* msg);
+        void broadcastMessage(Message* msg);
+        
     private:
         
         HostData hostData;
         HostData* sender;
         HostData* receiver;
+        ControllerStorageType* owner;
+        ControllerVector controllers;
+        pthread_mutex_t mutexControllers;
         
 };
 

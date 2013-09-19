@@ -7,8 +7,6 @@
 
 #include "PartialHostList.h"
 
-#include <algorithm>
-
 REGISTER_DEF_TYPE(PartialHostList, org.dyndns.fzoli.rccar.model.controller.HostList$PartialHostList);
 const char* PartialHostList::ChangeTypeStrings[] = { "ADD", "REMOVE" };
 
@@ -45,11 +43,9 @@ void PartialHostList::deserialize(Document& d) {
 void PartialHostList::apply(HostList* d) {
     switch (type) {
         case ADD:
-            d->getHosts().push_back(data);
+            d->addHost(data);
             break;
         case REMOVE:
-            HostList::HostVector v = d->getHosts();
-            HostList::HostVector::iterator position = std::find(v.begin(), v.end(), data);
-            if (position != v.end()) v.erase(position);
+            d->removeHost(data);
     }
 }

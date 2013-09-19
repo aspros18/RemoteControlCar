@@ -25,11 +25,14 @@ class HostList : public Data<HostList> {
         void deserialize(Document& d);
         
         HostVector& getHosts();
+        void addHost(std::string s);
+        void removeHost(std::string s);
         
     private:
         
         REGISTER_DEC_TYPE(HostList);
         HostVector hosts;
+        pthread_mutex_t mutexHosts;
         
 };
 

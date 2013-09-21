@@ -74,6 +74,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/SocketException.o \
 	${OBJECTDIR}/SocketJpegListener.o \
 	${OBJECTDIR}/SpeedPartialHostData.o \
+	${OBJECTDIR}/StorageList.o \
 	${OBJECTDIR}/StringUtils.o \
 	${OBJECTDIR}/TestDisconnectProcess.o \
 	${OBJECTDIR}/Timer.o \
@@ -298,6 +299,11 @@ ${OBJECTDIR}/SpeedPartialHostData.o: SpeedPartialHostData.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/SpeedPartialHostData.o SpeedPartialHostData.cpp
+
+${OBJECTDIR}/StorageList.o: StorageList.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/StorageList.o StorageList.cpp
 
 ${OBJECTDIR}/StringUtils.o: StringUtils.cpp 
 	${MKDIR} -p ${OBJECTDIR}

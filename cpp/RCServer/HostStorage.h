@@ -40,6 +40,9 @@ class HostStorage : public Storage<HostData> {
         ControllerStorageType* owner;
         ControllerVector controllers;
         pthread_mutex_t mutexControllers;
+        bool connected;
+        bool underTimeout;
+        int controlCount;
         
 };
 

@@ -36,3 +36,7 @@ ControllerData* ControllerStorage::getSender() {
 ControllerData* ControllerStorage::getReceiver() {
     return receiver;
 }
+
+Storage<HostData>* ControllerStorage::getHostStorage() {
+    return NULL;
+}

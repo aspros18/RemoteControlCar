@@ -12,6 +12,14 @@
 StorageList::HostStorageVector StorageList::hosts;
 StorageList::ControllerStorageVector StorageList::controllers;
 
+StorageList::HostStorageVector& StorageList::getHostStorages() {
+    return hosts;
+}
+
+StorageList::ControllerStorageVector& StorageList::getControllerStorages() {
+    return controllers;
+}
+
 StorageList::HostStorageType* StorageList::findHostStorageByName(std::string name) {
     for (HostStorageVector::iterator it = hosts.begin(); it != hosts.end(); it++) {
         HostStorageType* s = *it;

@@ -10,6 +10,7 @@
 
 #include "Storage.h"
 #include "ControllerData.h"
+#include "HostData.h"
 
 class ControllerStorage : public Storage<ControllerData> {
     
@@ -20,6 +21,8 @@ class ControllerStorage : public Storage<ControllerData> {
         
         ControllerData* getSender();
         ControllerData* getReceiver();
+        
+        Storage<HostData>* getHostStorage();
         
     private:
         

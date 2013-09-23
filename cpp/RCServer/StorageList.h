@@ -29,6 +29,9 @@ public:
     static HostStorageType* createHostStorage(MessageProcess* p, HostData* d);
     static HostList createHostList(std::string controllerName);
     
+    static HostStorageVector& getHostStorages();
+    static ControllerStorageVector& getControllerStorages();
+    
 private:
     
     static HostStorageVector hosts;

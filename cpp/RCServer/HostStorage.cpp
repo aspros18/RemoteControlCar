@@ -8,6 +8,8 @@
 #include "HostStorage.h"
 #include "ControlPartialHostData.h"
 #include "BooleanPartialHostData.h"
+#include "StorageList.h"
+#include "ControllerStorage.h"
 
 #include <algorithm>
 
@@ -92,6 +94,13 @@ void HostStorage::sendMessage(Message* msg) {
 
 void HostStorage::broadcastMessage(Message* msg) {
     pthread_mutex_lock(&mutexControllers);
-    // TODO
+    StorageList::ControllerStorageVector l = StorageList::getControllerStorages();
+    for (StorageList::ControllerStorageVector::iterator it = l.begin(); it != l.end(); it++) {
+        ControllerStorage* cs = (ControllerStorage*) *it;
+        HostStorage* hs = (HostStorage*) cs->getHostStorage();
+        if (hs && this == hs) {
+            cs->getMessageProcess()->sendMessage(msg);
+        }
+    }
     pthread_mutex_unlock(&mutexControllers);
 }

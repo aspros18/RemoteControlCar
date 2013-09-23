@@ -22,6 +22,7 @@ ControllerStorageReceiver::ControllerStorageReceiver(ControllerStorage* cs) : Co
 ControllerStorage::ControllerStorage(MessageProcess* p) : Storage<ControllerData>(p) {
     sender = new ControllerStorageSender(this);
     receiver = new ControllerStorageReceiver(this);
+    hostStorage = NULL;
 }
 
 ControllerStorage::~ControllerStorage() {
@@ -38,10 +39,11 @@ ControllerData* ControllerStorage::getReceiver() {
 }
 
 Storage<HostData>* ControllerStorage::getHostStorage() {
-    return NULL;
+    return hostStorage;
 }
 
 HostState ControllerStorage::createHostState(Storage<HostData>* hs) {
     HostState s;
+    // TODO
     return s;
 }

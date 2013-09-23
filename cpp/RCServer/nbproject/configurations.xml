@@ -33,9 +33,7 @@
           <itemPath>HostData.h</itemPath>
           <itemPath>HostList.h</itemPath>
           <itemPath>HostNamePartialControllerData.h</itemPath>
-          <itemPath>HostStatePartialControllerData.cpp</itemPath>
           <itemPath>HostStatePartialControllerData.h</itemPath>
-          <itemPath>OfflineChangeablePartialControllerData.cpp</itemPath>
           <itemPath>OfflineChangeablePartialControllerData.h</itemPath>
           <itemPath>PartialHostList.h</itemPath>
           <itemPath>PointPartialHostData.h</itemPath>
@@ -124,6 +122,8 @@
           <itemPath>HostData.cpp</itemPath>
           <itemPath>HostList.cpp</itemPath>
           <itemPath>HostNamePartialControllerData.cpp</itemPath>
+          <itemPath>HostStatePartialControllerData.cpp</itemPath>
+          <itemPath>OfflineChangeablePartialControllerData.cpp</itemPath>
           <itemPath>PartialHostList.cpp</itemPath>
           <itemPath>PointPartialHostData.cpp</itemPath>
           <itemPath>SpeedPartialHostData.cpp</itemPath>

@@ -30,6 +30,7 @@ class ControllerStorage : public Storage<ControllerData> {
         
         ControllerData* sender;
         ControllerData* receiver;
+        Storage<HostData>* hostStorage;
         
 };
 

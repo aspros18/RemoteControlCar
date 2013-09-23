@@ -32,6 +32,9 @@ class HostStorage : public Storage<HostData> {
         void sendMessage(Message* msg);
         void broadcastMessage(Message* msg);
         
+        bool isConnected();
+        bool isUnderTimeout();
+        
     private:
         
         HostData hostData;

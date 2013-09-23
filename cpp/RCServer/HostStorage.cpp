@@ -45,6 +45,14 @@ HostStorage::~HostStorage() {
     delete receiver;
 }
 
+bool HostStorage::isConnected() {
+    return connected;
+}
+
+bool HostStorage::isUnderTimeout() {
+    return underTimeout;
+}
+
 HostData& HostStorage::getHostData() {
     return hostData;
 }

@@ -47,6 +47,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/ControllerData.o \
 	${OBJECTDIR}/ControllerSideMessageProcess.o \
 	${OBJECTDIR}/ControllerSideVideoProcess.o \
+	${OBJECTDIR}/ControllerStorage.o \
 	${OBJECTDIR}/DisconnectProcess.o \
 	${OBJECTDIR}/FileUtils.o \
 	${OBJECTDIR}/HostData.o \
@@ -164,6 +165,11 @@ ${OBJECTDIR}/ControllerSideVideoProcess.o: ControllerSideVideoProcess.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/ControllerSideVideoProcess.o ControllerSideVideoProcess.cpp
+
+${OBJECTDIR}/ControllerStorage.o: ControllerStorage.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/ControllerStorage.o ControllerStorage.cpp
 
 ${OBJECTDIR}/DisconnectProcess.o: DisconnectProcess.cpp 
 	${MKDIR} -p ${OBJECTDIR}

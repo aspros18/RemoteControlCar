@@ -6,6 +6,14 @@
     </data>
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/home/zoli/NetBeansProjects/RemoteControlCar/cpp/RCServer/Storage.h</file>
+            <file>file:/home/zoli/NetBeansProjects/RemoteControlCar/cpp/RCServer/HostList.cpp</file>
+            <file>file:/home/zoli/NetBeansProjects/RemoteControlCar/cpp/RCServer/StorageList.h</file>
+            <file>file:/home/zoli/NetBeansProjects/RemoteControlCar/cpp/RCServer/ControllerData.h</file>
+            <file>file:/home/zoli/NetBeansProjects/RemoteControlCar/cpp/RCServer/HostStorage.h</file>
+            <file>file:/home/zoli/NetBeansProjects/RemoteControlCar/cpp/RCServer/HostStorage.cpp</file>
+            <file>file:/home/zoli/NetBeansProjects/RemoteControlCar/cpp/RCServer/StorageList.cpp</file>
+        </group>
     </open-files>
 </project-private>

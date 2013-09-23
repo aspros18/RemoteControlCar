@@ -7,6 +7,7 @@
 
 #include "StorageList.h"
 #include "HostStorage.h"
+#include "ControllerStorage.h"
 
 StorageList::HostStorageVector StorageList::hosts;
 StorageList::ControllerStorageVector StorageList::controllers;
@@ -30,8 +31,8 @@ StorageList::ControllerStorageType* StorageList::findControllerStorageByName(std
 StorageList::ControllerStorageType* StorageList::createControllerStorage(MessageProcess* p) {
     ControllerStorageType* s = findControllerStorageByName(p->getSocket()->getClientName());
     if (s == NULL) {
-//        s = new ControllerStorage(p); // TODO
-//        controllers.push_back(s);
+        s = new ControllerStorage(p);
+        controllers.push_back(s);
     }
     else {
         s->setMessageProcess(p);
@@ -58,9 +59,9 @@ HostList StorageList::createHostList(std::string controllerName) {
     HostList::HostVector ls = l.getHosts();
     for (HostStorageVector::iterator it = hosts.begin(); it != hosts.end(); it++) {
         HostStorage* s = (HostStorage*) *it;
-//        if (s->isConnected()) {
-//            ls.push_back(s->getName());
-//        }
+        if (s->isConnected()) {
+            ls.push_back(s->getName());
+        }
     }
     return l;
 }

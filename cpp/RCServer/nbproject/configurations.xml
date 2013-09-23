@@ -80,8 +80,10 @@
       </logicalFolder>
       <itemPath>Config.h</itemPath>
       <itemPath>ConnectionKeys.h</itemPath>
+      <itemPath>ControllerStorage.h</itemPath>
       <itemPath>HostStorage.h</itemPath>
       <itemPath>Storage.h</itemPath>
+      <itemPath>StorageList.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -145,9 +147,9 @@
         <itemPath>Timer.cpp</itemPath>
       </logicalFolder>
       <itemPath>Config.cpp</itemPath>
+      <itemPath>ControllerStorage.cpp</itemPath>
       <itemPath>HostStorage.cpp</itemPath>
       <itemPath>StorageList.cpp</itemPath>
-      <itemPath>StorageList.h</itemPath>
       <itemPath>main.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
@@ -230,6 +232,10 @@
       <item path="ControllerSideVideoProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="ControllerSideVideoProcess.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ControllerStorage.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="ControllerStorage.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Data.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -466,6 +472,10 @@
       <item path="ControllerSideVideoProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="ControllerSideVideoProcess.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ControllerStorage.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="ControllerStorage.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Data.h" ex="false" tool="3" flavor2="0">
       </item>

@@ -10,6 +10,9 @@
 #include "BooleanPartialHostData.h"
 #include "StorageList.h"
 #include "ControllerStorage.h"
+#include "BooleanPartialControllerData.h"
+#include "BatteryPartialControllerData.h"
+#include "ControlPartialControllerData.h"
 
 #include <algorithm>
 
@@ -37,6 +40,56 @@ HostStorageReceiver::HostStorageReceiver(HostStorage* hs) : HostStorageSupport(h
     ;
 }
 
+void HostStorageReceiver::setSpeed(double d) {
+    storage->getHostData().setSpeed(d);
+}
+
+void HostStorageReceiver::setControl(Control c) {
+    storage->getHostData().setControl(c);
+    ControlPartialControllerData d(c);
+    storage->broadcastMessage(&d);
+}
+
+void HostStorageReceiver::setVehicleConnected(bool b) {
+    storage->getHostData().setVehicleConnected(b);
+    BooleanPartialControllerData d(b, BooleanPartialControllerData::VEHICLE_CONNECTED);
+    storage->broadcastMessage(&d);
+}
+
+void HostStorageReceiver::setUp2Date(bool b) {
+    storage->getHostData().setUp2Date(b);
+    BooleanPartialControllerData d(b, BooleanPartialControllerData::UP_2_DATE);
+    storage->broadcastMessage(&d);
+}
+
+void HostStorageReceiver::setBatteryLevel(int l) {
+    storage->getHostData().setBatteryLevel(l);
+    BatteryPartialControllerData d(l);
+    storage->broadcastMessage(&d);
+}
+
+void HostStorageReceiver::setGpsPosition(Point3D p) {
+    storage->getHostData().setGpsPosition(p);
+    broadcastHostState();
+}
+
+void HostStorageReceiver::setGravitationalField(Point3D p) {
+    storage->getHostData().setGravitationalField(p);
+    broadcastHostState();
+}
+
+void HostStorageReceiver::setMagneticField(Point3D p) {
+    storage->getHostData().setMagneticField(p);
+    broadcastHostState();
+}
+
+void HostStorageReceiver::broadcastHostState() {
+    if (!storage->getHostData().isPointChanging()) {
+//        storage->broadcastMessage(?);
+//        broadcastMessage(new ControllerData.HostStatePartialControllerData(ControllerStorage.createHostState(HostStorage.this)));
+    }
+}
+
 HostStorage::HostStorage(MessageProcess* p) : Storage<HostData>(p), mutexControllers(PTHREAD_MUTEX_INITIALIZER) {
     sender = new HostStorageSender(this);
     receiver = new HostStorageReceiver(this);
@@ -53,6 +106,16 @@ bool HostStorage::isConnected() {
 
 bool HostStorage::isUnderTimeout() {
     return underTimeout;
+}
+
+void HostStorage::setUnderTimeout(bool b) {
+    underTimeout = b;
+    BooleanPartialControllerData d(b, BooleanPartialControllerData::HOST_UNDER_TIMEOUT);
+    broadcastMessage(&d);
+}
+
+void HostStorage::setConnected(bool b) {
+    connected = b;
 }
 
 HostData& HostStorage::getHostData() {

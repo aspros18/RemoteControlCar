@@ -34,6 +34,8 @@ class HostStorage : public Storage<HostData> {
         
         bool isConnected();
         bool isUnderTimeout();
+        void setUnderTimeout(bool b);
+        void setConnected(bool b);
         
     private:
         
@@ -77,6 +79,19 @@ class HostStorageReceiver : public HostStorageSupport {
     public:
         
         HostStorageReceiver(HostStorage* hs);
+        
+        void setSpeed(double d);
+        void setControl(Control c);
+        void setVehicleConnected(bool b);
+        void setUp2Date(bool b);
+        void setBatteryLevel(int l);
+        void setGpsPosition(Point3D p);
+        void setGravitationalField(Point3D p);
+        void setMagneticField(Point3D p);
+        
+    private:
+        
+        void broadcastHostState();
         
 };
 

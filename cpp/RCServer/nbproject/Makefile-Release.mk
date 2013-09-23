@@ -55,6 +55,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/HostNamePartialControllerData.o \
 	${OBJECTDIR}/HostSideMessageProcess.o \
 	${OBJECTDIR}/HostSideVideoProcess.o \
+	${OBJECTDIR}/HostStatePartialControllerData.o \
 	${OBJECTDIR}/HostStorage.o \
 	${OBJECTDIR}/JpegListener.o \
 	${OBJECTDIR}/JpegStore.o \
@@ -205,6 +206,11 @@ ${OBJECTDIR}/HostSideVideoProcess.o: HostSideVideoProcess.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/HostSideVideoProcess.o HostSideVideoProcess.cpp
+
+${OBJECTDIR}/HostStatePartialControllerData.o: HostStatePartialControllerData.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/HostStatePartialControllerData.o HostStatePartialControllerData.cpp
 
 ${OBJECTDIR}/HostStorage.o: HostStorage.cpp 
 	${MKDIR} -p ${OBJECTDIR}

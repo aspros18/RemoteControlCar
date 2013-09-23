@@ -40,3 +40,8 @@ ControllerData* ControllerStorage::getReceiver() {
 Storage<HostData>* ControllerStorage::getHostStorage() {
     return NULL;
 }
+
+HostState ControllerStorage::createHostState(Storage<HostData>* hs) {
+    HostState s;
+    return s;
+}

@@ -24,6 +24,8 @@ class ControllerStorage : public Storage<ControllerData> {
         
         Storage<HostData>* getHostStorage();
         
+        static HostState createHostState(Storage<HostData>* hs);
+        
     private:
         
         ControllerData* sender;

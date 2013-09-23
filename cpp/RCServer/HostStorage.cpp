@@ -13,6 +13,7 @@
 #include "BooleanPartialControllerData.h"
 #include "BatteryPartialControllerData.h"
 #include "ControlPartialControllerData.h"
+#include "HostStatePartialControllerData.h"
 
 #include <algorithm>
 
@@ -85,8 +86,8 @@ void HostStorageReceiver::setMagneticField(Point3D p) {
 
 void HostStorageReceiver::broadcastHostState() {
     if (!storage->getHostData().isPointChanging()) {
-//        storage->broadcastMessage(?);
-//        broadcastMessage(new ControllerData.HostStatePartialControllerData(ControllerStorage.createHostState(HostStorage.this)));
+        HostStatePartialControllerData d(ControllerStorage::createHostState(storage));
+        storage->broadcastMessage(&d);
     }
 }
 

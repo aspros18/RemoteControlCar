@@ -62,6 +62,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/JpegStreamer.o \
 	${OBJECTDIR}/Message.o \
 	${OBJECTDIR}/MessageProcess.o \
+	${OBJECTDIR}/OfflineChangeablePartialControllerData.o \
 	${OBJECTDIR}/PartialHostList.o \
 	${OBJECTDIR}/PointPartialHostData.o \
 	${OBJECTDIR}/SSLHandler.o \
@@ -241,6 +242,11 @@ ${OBJECTDIR}/MessageProcess.o: MessageProcess.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/MessageProcess.o MessageProcess.cpp
+
+${OBJECTDIR}/OfflineChangeablePartialControllerData.o: OfflineChangeablePartialControllerData.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/OfflineChangeablePartialControllerData.o OfflineChangeablePartialControllerData.cpp
 
 ${OBJECTDIR}/PartialHostList.o: PartialHostList.cpp 
 	${MKDIR} -p ${OBJECTDIR}

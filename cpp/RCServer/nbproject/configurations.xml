@@ -35,6 +35,8 @@
           <itemPath>HostNamePartialControllerData.h</itemPath>
           <itemPath>HostStatePartialControllerData.cpp</itemPath>
           <itemPath>HostStatePartialControllerData.h</itemPath>
+          <itemPath>OfflineChangeablePartialControllerData.cpp</itemPath>
+          <itemPath>OfflineChangeablePartialControllerData.h</itemPath>
           <itemPath>PartialHostList.h</itemPath>
           <itemPath>PointPartialHostData.h</itemPath>
           <itemPath>SpeedPartialHostData.h</itemPath>
@@ -299,6 +301,16 @@
       </item>
       <item path="MessageProcess.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="OfflineChangeablePartialControllerData.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="OfflineChangeablePartialControllerData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="PartialBaseData.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="PartialHostList.cpp" ex="false" tool="1" flavor2="0">
@@ -542,6 +554,16 @@
       <item path="MessageProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="MessageProcess.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="OfflineChangeablePartialControllerData.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="OfflineChangeablePartialControllerData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="PartialBaseData.h" ex="false" tool="3" flavor2="0">
       </item>

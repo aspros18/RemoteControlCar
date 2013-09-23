@@ -59,7 +59,6 @@ SSLSocket::connection SSLServerSocket::sslAccept() {
     // Initiate SSL handshake
     if (SSL_accept(c.sslHandle) != 1) {
         sslDisconnect(c);
-        // TODO: ERR_print_errors_fp(stderr) -> 4091:error:140D9115:SSL routines:SSL_GET_PREV_SESSION:session id context uninitialized:ssl_sess.c:413:
         throw SSLSocketException ( "Error during SSL handshake." );
     }
     

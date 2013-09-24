@@ -6,12 +6,13 @@
  */
 
 #include "BridgeHandler.h"
-#include "TestDisconnectProcess.h"
+#include "ControllerSideDisconnectProcess.h"
 #include "ControllerSideMessageProcess.h"
 #include "ConnectionKeys.h"
 #include "ControllerSideVideoProcess.h"
 #include "HostSideVideoProcess.h"
 #include "HostSideMessageProcess.h"
+#include "HostSideDisconnectProcess.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -19,12 +20,14 @@
 using namespace ConnectionKeys;
 
 BridgeHandler::BridgeHandler(SSLSocket* socket) : SSLHandler(socket) {
+    ;
 }
 
 SSLSocketter* BridgeHandler::createProcess() {
     switch (getConnectionId()) {
         case KEY_CONN_DISCONNECT:
-            return new TestDisconnectProcess(this);
+            if (isController()) return new ControllerSideDisconnectProcess(this);
+            else return new HostSideDisconnectProcess(this);
         case KEY_CONN_MESSAGE:
             if (isController()) return new ControllerSideMessageProcess(this);
             else return new HostSideMessageProcess(this);

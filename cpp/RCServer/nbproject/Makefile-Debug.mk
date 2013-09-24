@@ -45,6 +45,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/ControlPartialControllerData.o \
 	${OBJECTDIR}/ControlPartialHostData.o \
 	${OBJECTDIR}/ControllerData.o \
+	${OBJECTDIR}/ControllerSideDisconnectProcess.o \
 	${OBJECTDIR}/ControllerSideMessageProcess.o \
 	${OBJECTDIR}/ControllerSideVideoProcess.o \
 	${OBJECTDIR}/ControllerStorage.o \
@@ -53,6 +54,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/HostData.o \
 	${OBJECTDIR}/HostList.o \
 	${OBJECTDIR}/HostNamePartialControllerData.o \
+	${OBJECTDIR}/HostSideDisconnectProcess.o \
 	${OBJECTDIR}/HostSideMessageProcess.o \
 	${OBJECTDIR}/HostSideVideoProcess.o \
 	${OBJECTDIR}/HostStatePartialControllerData.o \
@@ -79,7 +81,6 @@ OBJECTFILES= \
 	${OBJECTDIR}/SpeedPartialHostData.o \
 	${OBJECTDIR}/StorageList.o \
 	${OBJECTDIR}/StringUtils.o \
-	${OBJECTDIR}/TestDisconnectProcess.o \
 	${OBJECTDIR}/Timer.o \
 	${OBJECTDIR}/main.o
 
@@ -158,6 +159,11 @@ ${OBJECTDIR}/ControllerData.o: ControllerData.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/ControllerData.o ControllerData.cpp
 
+${OBJECTDIR}/ControllerSideDisconnectProcess.o: ControllerSideDisconnectProcess.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/ControllerSideDisconnectProcess.o ControllerSideDisconnectProcess.cpp
+
 ${OBJECTDIR}/ControllerSideMessageProcess.o: ControllerSideMessageProcess.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -197,6 +203,11 @@ ${OBJECTDIR}/HostNamePartialControllerData.o: HostNamePartialControllerData.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/HostNamePartialControllerData.o HostNamePartialControllerData.cpp
+
+${OBJECTDIR}/HostSideDisconnectProcess.o: HostSideDisconnectProcess.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/HostSideDisconnectProcess.o HostSideDisconnectProcess.cpp
 
 ${OBJECTDIR}/HostSideMessageProcess.o: HostSideMessageProcess.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -327,11 +338,6 @@ ${OBJECTDIR}/StringUtils.o: StringUtils.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/StringUtils.o StringUtils.cpp
-
-${OBJECTDIR}/TestDisconnectProcess.o: TestDisconnectProcess.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/TestDisconnectProcess.o TestDisconnectProcess.cpp
 
 ${OBJECTDIR}/Timer.o: Timer.cpp 
 	${MKDIR} -p ${OBJECTDIR}

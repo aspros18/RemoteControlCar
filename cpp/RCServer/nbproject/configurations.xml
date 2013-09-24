@@ -8,11 +8,12 @@
         <logicalFolder name="f1" displayName="Impl" projectFiles="true">
           <itemPath>BridgeHandler.h</itemPath>
           <itemPath>Command.h</itemPath>
+          <itemPath>ControllerSideDisconnectProcess.h</itemPath>
           <itemPath>ControllerSideMessageProcess.h</itemPath>
           <itemPath>ControllerSideVideoProcess.h</itemPath>
+          <itemPath>HostSideDisconnectProcess.h</itemPath>
           <itemPath>HostSideMessageProcess.h</itemPath>
           <itemPath>HostSideVideoProcess.h</itemPath>
-          <itemPath>TestDisconnectProcess.h</itemPath>
         </logicalFolder>
         <itemPath>DisconnectProcess.h</itemPath>
         <itemPath>Message.h</itemPath>
@@ -99,6 +100,7 @@
           <itemPath>BridgeHandler.cpp</itemPath>
           <itemPath>ControllerSideMessageProcess.cpp</itemPath>
           <itemPath>ControllerSideVideoProcess.cpp</itemPath>
+          <itemPath>HostSideDisconnectProcess.cpp</itemPath>
           <itemPath>HostSideMessageProcess.cpp</itemPath>
           <itemPath>HostSideVideoProcess.cpp</itemPath>
           <itemPath>TestDisconnectProcess.cpp</itemPath>
@@ -229,6 +231,8 @@
       </item>
       <item path="ControllerData.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="ControllerSideDisconnectProcess.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="ControllerSideMessageProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="ControllerSideMessageProcess.h" ex="false" tool="3" flavor2="0">
@@ -262,6 +266,10 @@
       <item path="HostNamePartialControllerData.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="HostNamePartialControllerData.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="HostSideDisconnectProcess.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="HostSideDisconnectProcess.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="HostSideMessageProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -384,8 +392,6 @@
       <item path="StringUtils.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="TestDisconnectProcess.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="TestDisconnectProcess.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Timer.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -483,6 +489,8 @@
       </item>
       <item path="ControllerData.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="ControllerSideDisconnectProcess.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="ControllerSideMessageProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="ControllerSideMessageProcess.h" ex="false" tool="3" flavor2="0">
@@ -516,6 +524,10 @@
       <item path="HostNamePartialControllerData.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="HostNamePartialControllerData.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="HostSideDisconnectProcess.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="HostSideDisconnectProcess.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="HostSideMessageProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -638,8 +650,6 @@
       <item path="StringUtils.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="TestDisconnectProcess.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="TestDisconnectProcess.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Timer.cpp" ex="false" tool="1" flavor2="0">
       </item>

@@ -9,6 +9,7 @@
 #define	HOSTSIDEDISCONNECTPROCESS_H
 
 #include "DisconnectProcess.h"
+#include "HostStorage.h"
 
 class HostSideDisconnectProcess : public DisconnectProcess {
     
@@ -19,6 +20,13 @@ class HostSideDisconnectProcess : public DisconnectProcess {
         void afterTimeout();
         void onTimeout(std::exception* ex);
         void onDisconnect(std::exception* ex);
+        
+    private:
+        
+        HostStorage* storage;
+        
+        HostStorage* getHostStorage();
+        void setTimeout(bool b);
         
 };
 

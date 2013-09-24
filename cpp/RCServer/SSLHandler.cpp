@@ -125,6 +125,10 @@ void SSLHandler::closeProcesses(SSLHandler* h) {
     pthread_mutex_unlock(&mutexInit);
 }
 
+void SSLHandler::closeProcesses() {
+    SSLHandler::closeProcesses(this);
+}
+
 void SSLHandler::onException(std::exception &ex) {
     ;
 }

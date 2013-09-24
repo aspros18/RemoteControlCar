@@ -7,10 +7,37 @@
 
 #include "HostSideMessageProcess.h"
 #include "BooleanPartialHostData.h"
+#include "Timer.h"
 
 #include <iostream>
 
+class HSMPTimer : public Timer {
+    
+    public:
+        
+        HSMPTimer(HostSideMessageProcess* p) : Timer(60, 0, true) {
+            proc = p;
+        }
+        
+        void tick() {
+            if (!proc->storage) {
+                proc->getHandler()->closeProcesses();
+            }
+        }
+        
+    private:
+        
+        HostSideMessageProcess* proc;
+        
+};
+
 HostSideMessageProcess::HostSideMessageProcess(SSLHandler* handler) : MessageProcess(handler) {
+    timer = new HSMPTimer(this);
+    storage = NULL;
+}
+
+HostSideMessageProcess::~HostSideMessageProcess() {
+    delete timer;
 }
 
 void HostSideMessageProcess::onStart() {

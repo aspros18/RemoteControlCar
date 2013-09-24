@@ -21,6 +21,7 @@ public:
     SSLSocket* getSocket();
     int getDeviceId();
     int getConnectionId();
+    void closeProcesses();
     static void closeProcesses(SSLHandler* h);
     virtual void onException(std::exception &ex);
     

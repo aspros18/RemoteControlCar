@@ -23,6 +23,9 @@ class ControllerStorage : public Storage<ControllerData> {
         ControllerData* getReceiver();
         
         Storage<HostData>* getHostStorage();
+        void setHostStorage(Storage<HostData>* s);
+        void broadcastMessage(Message* msgc, Message* msgh, bool skipMe);
+        ControllerData createControllerData();
         
         static HostState createHostState(Storage<HostData>* hs);
         
@@ -52,6 +55,9 @@ class ControllerStorageSender : public ControllerStorageSupport {
         
         ControllerStorageSender(ControllerStorage* cs);
         
+        void setControlling(bool b);
+        void setWantControl(bool b);
+        
 };
 
 class ControllerStorageReceiver : public ControllerStorageSupport {
@@ -59,6 +65,15 @@ class ControllerStorageReceiver : public ControllerStorageSupport {
     public:
         
         ControllerStorageReceiver(ControllerStorage* cs);
+        
+        void setControl(Control c);
+        void setHostName(std::string name);
+        void setWantControl(bool b);
+        
+    private:
+        
+        void setControl(Control c, bool force);
+        void setWantControl(bool b, bool fire);
         
 };
 

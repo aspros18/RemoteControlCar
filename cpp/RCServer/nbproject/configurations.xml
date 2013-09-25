@@ -98,12 +98,12 @@
       <logicalFolder name="f3" displayName="Handler" projectFiles="true">
         <logicalFolder name="f1" displayName="Impl" projectFiles="true">
           <itemPath>BridgeHandler.cpp</itemPath>
+          <itemPath>ControllerSideDisconnectProcess.cpp</itemPath>
           <itemPath>ControllerSideMessageProcess.cpp</itemPath>
           <itemPath>ControllerSideVideoProcess.cpp</itemPath>
           <itemPath>HostSideDisconnectProcess.cpp</itemPath>
           <itemPath>HostSideMessageProcess.cpp</itemPath>
           <itemPath>HostSideVideoProcess.cpp</itemPath>
-          <itemPath>TestDisconnectProcess.cpp</itemPath>
         </logicalFolder>
         <itemPath>DisconnectProcess.cpp</itemPath>
         <itemPath>Message.cpp</itemPath>
@@ -231,6 +231,8 @@
       </item>
       <item path="ControllerData.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="ControllerSideDisconnectProcess.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="ControllerSideDisconnectProcess.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ControllerSideMessageProcess.cpp" ex="false" tool="1" flavor2="0">
@@ -309,15 +311,9 @@
       </item>
       <item path="MessageProcess.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="OfflineChangeablePartialControllerData.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
+      <item path="OfflineChangeablePartialControllerData.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="OfflineChangeablePartialControllerData.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
+      <item path="OfflineChangeablePartialControllerData.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="PartialBaseData.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -390,8 +386,6 @@
       <item path="StringUtils.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="StringUtils.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="TestDisconnectProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Timer.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -489,6 +483,8 @@
       </item>
       <item path="ControllerData.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="ControllerSideDisconnectProcess.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="ControllerSideDisconnectProcess.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ControllerSideMessageProcess.cpp" ex="false" tool="1" flavor2="0">
@@ -567,15 +563,9 @@
       </item>
       <item path="MessageProcess.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="OfflineChangeablePartialControllerData.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
+      <item path="OfflineChangeablePartialControllerData.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="OfflineChangeablePartialControllerData.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
+      <item path="OfflineChangeablePartialControllerData.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="PartialBaseData.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -648,8 +638,6 @@
       <item path="StringUtils.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="StringUtils.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="TestDisconnectProcess.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Timer.cpp" ex="false" tool="1" flavor2="0">
       </item>

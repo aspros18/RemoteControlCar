@@ -24,6 +24,14 @@ class Control {
             mY = y;
         }
         
+        int getX() {
+            return mX;
+        }
+        
+        int getY() {
+            return mY;
+        }
+        
         void serialize(Message::Writer& w) {
             w.StartObject();
             w.String("mX");

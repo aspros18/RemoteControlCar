@@ -143,8 +143,16 @@ public class ControllerStorage extends Storage<ControllerData> {
          */
         @Override
         public void setControl(Control control) {
+            setControl(control, false);
+        }
+
+        /**
+         * Beállítja a vezérlőjelet, ha a kérő jogosult a vezérlésre és vezérli is a járművet, majd vezérlőjel küldése a klienseknek.
+         * Ha a force paraméter igaz, nincs jogosultságellenőrzés.
+         */
+        public void setControl(Control control, boolean force) {
             HostStorage hs = getHostStorage();
-            if (hs != null && control != null && hs.getHostData().isVehicleConnected() != null && !ControllerStorage.this.isViewOnly() && hs.getHostData().isVehicleConnected() && hs.getOwner() == ControllerStorage.this) { // ha van rá jogosultság és irányítható a jármű
+            if (hs != null && control != null && hs.getHostData().isVehicleConnected() != null && hs.getHostData().isVehicleConnected() && (force || (!ControllerStorage.this.isViewOnly() && hs.getOwner() == ControllerStorage.this))) { // ha van rá jogosultság és irányítható a jármű
                 hs.incControlCount(); // counter inkrementálása, hogy detektálni lehessen több szál esetén, hogy módosult-e a vezérlőjel
                 hs.getHostData().setControl(control); // vezérlőjel beállítása
                 HostData.ControlPartialHostData msgh = new HostData.ControlPartialHostData(control); // vezérlőjelet tartalmazó üzenet létrehozása a jármű számára
@@ -152,7 +160,7 @@ public class ControllerStorage extends Storage<ControllerData> {
                 broadcastMessage(msgc, msgh, true); // üzenet elküldése a vezérlőknek és a járműnek, de a vezérlőjelet küldő vezérlő kihagyásával
             }
         }
-
+        
         /**
          * Beállítja a járműválasztóban kiválasztott járművet a munkamenethez vagy kilép a járműből.
          * Jármű választásakor ha a vezérlő jogosult a jármű használatához, beállítódik a jármű munkamenete és a kliens megkapja a jármű összes adatát.
@@ -260,7 +268,7 @@ public class ControllerStorage extends Storage<ControllerData> {
             }
             
             Control c = getHostStorage().getHostData().getControl(); // a jármű vezérlőjelének lekérése, és ...
-            if (c != null && (c.getX() != 0 || c.getY() != 0)) setControl(new Control(0, 0)); // ... ha nem alapállapotban áll, alapállapotba helyezés
+            if (c != null && (c.getX() != 0 || c.getY() != 0)) setControl(new Control(0, 0), true); // ... ha nem alapállapotban áll, alapállapotba helyezés
             
             if (oldOwner != null) { // ha van régi irányító:
                 getHostStorage().getOwners().remove(oldOwner); // eltávolítás az irányítók listájából

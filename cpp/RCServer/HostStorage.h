@@ -26,6 +26,7 @@ class HostStorage : public Storage<HostData> {
         HostData* getReceiver();
         HostData& getHostData();
         ControllerVector& getControllers();
+        ControllerStorageType* getOwner();
         
         void addController(ControllerStorageType*);
         void removeController(ControllerStorageType*);
@@ -37,6 +38,8 @@ class HostStorage : public Storage<HostData> {
         bool isUnderTimeout();
         void setUnderTimeout(bool b);
         void setConnected(bool b);
+        void incControlCount();
+        int getControlCount();
         
     private:
         

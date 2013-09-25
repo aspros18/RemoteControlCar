@@ -119,6 +119,18 @@ void HostStorage::setConnected(bool b) {
     connected = b;
 }
 
+void HostStorage::incControlCount() {
+    controlCount++;
+}
+
+int HostStorage::getControlCount() {
+    return controlCount;
+}
+
+HostStorage::ControllerStorageType* HostStorage::getOwner() {
+    return owner;
+}
+
 HostStorage::ControllerVector& HostStorage::getControllers() {
     return controllers;
 }

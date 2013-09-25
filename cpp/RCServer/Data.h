@@ -20,6 +20,7 @@ class Data : public Message {
         }
         
         virtual void update(D* data) = 0;
+        virtual void update(Message* data) = 0;
         
 };
 
@@ -41,6 +42,10 @@ class PartialData : public Data<D> {
             apply(data);
         }
     
+        void update(Message* data) {
+            ;
+        }
+        
     protected:
         
         T data;

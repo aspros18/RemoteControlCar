@@ -25,6 +25,7 @@ class HostSideMessageProcess : public MessageProcess {
         void onMessage(Message* m);
         void onUnknownMessage(UnknownMessage* m);
         void onStart();
+        void onStop();
         
     private:
         

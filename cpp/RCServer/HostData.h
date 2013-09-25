@@ -20,6 +20,7 @@ class HostData : public BaseData<HostData> {
         void serialize(Message::Writer& writer);
         void deserialize(Message::Document& d);
         void update(HostData* data);
+        void update(Message* msg);
         
         double getSpeed();
         virtual void setSpeed(double d);

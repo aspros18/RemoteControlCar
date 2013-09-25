@@ -20,6 +20,7 @@ class ControllerData : public BaseData<ControllerData> {
         void serialize(Message::Writer& writer);
         void deserialize(Message::Document& d);
         void update(ControllerData* data);
+        void update(Message* msg);
         
         std::string getHostName();
         virtual void setHostName(std::string name);

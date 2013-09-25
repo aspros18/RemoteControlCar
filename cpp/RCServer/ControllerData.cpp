@@ -6,6 +6,12 @@
  */
 
 #include "ControllerData.h"
+#include "BatteryPartialControllerData.h"
+#include "BooleanPartialControllerData.h"
+#include "ControlPartialControllerData.h"
+#include "HostNamePartialControllerData.h"
+#include "HostStatePartialControllerData.h"
+#include "OfflineChangeablePartialControllerData.h"
 
 REGISTER_DEF_TYPE(ControllerData, org.dyndns.fzoli.rccar.model.controller.ControllerData);
 
@@ -168,6 +174,21 @@ void ControllerData::deserialize(Message::Document& d) {
             timeout = -1;
         }
     }
+}
+
+void ControllerData::update(Message* msg) {
+    BatteryPartialControllerData* bapd = dynamic_cast<BatteryPartialControllerData*>(msg);
+    BooleanPartialControllerData* bopd = dynamic_cast<BooleanPartialControllerData*>(msg);
+    ControlPartialControllerData* copd = dynamic_cast<ControlPartialControllerData*>(msg);
+    HostNamePartialControllerData* hnpd = dynamic_cast<HostNamePartialControllerData*>(msg);
+    HostStatePartialControllerData* hspd = dynamic_cast<HostStatePartialControllerData*>(msg);
+    OfflineChangeablePartialControllerData* ocpd = dynamic_cast<OfflineChangeablePartialControllerData*>(msg);
+    if (bapd) bapd->apply(this);
+    if (bopd) bopd->apply(this);
+    if (copd) copd->apply(this);
+    if (hnpd) hnpd->apply(this);
+    if (hspd) hspd->apply(this);
+    if (ocpd) ocpd->apply(this);
 }
 
 void ControllerData::update(ControllerData* data) {

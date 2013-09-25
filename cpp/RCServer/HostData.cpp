@@ -6,6 +6,11 @@
  */
 
 #include "HostData.h"
+#include "BatteryPartialHostData.h"
+#include "BooleanPartialHostData.h"
+#include "ControlPartialHostData.h"
+#include "PointPartialHostData.h"
+#include "SpeedPartialHostData.h"
 
 REGISTER_DEF_TYPE(HostData, org.dyndns.fzoli.rccar.model.host.HostData);
 
@@ -209,6 +214,19 @@ void HostData::setPreviousGravitationalField(Point3D p) {
 
 void HostData::setPreviousMagneticField(Point3D p) {
     previousMagneticField = p;
+}
+
+void HostData::update(Message* msg) {
+    BatteryPartialHostData* bapd = dynamic_cast<BatteryPartialHostData*>(msg);
+    BooleanPartialHostData* bopd = dynamic_cast<BooleanPartialHostData*>(msg);
+    ControlPartialHostData* copd = dynamic_cast<ControlPartialHostData*>(msg);
+    PointPartialHostData* popd = dynamic_cast<PointPartialHostData*>(msg);
+    SpeedPartialHostData* sppd = dynamic_cast<SpeedPartialHostData*>(msg);
+    if (bapd) bapd->apply(this);
+    if (bopd) bapd->apply(this);
+    if (copd) copd->apply(this);
+    if (popd) popd->apply(this);
+    if (sppd) sppd->apply(this);
 }
 
 void HostData::update(HostData* data) {

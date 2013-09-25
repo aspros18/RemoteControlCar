@@ -6,6 +6,7 @@
  */
 
 #include "HostList.h"
+#include "PartialHostList.h"
 
 #include <algorithm>
 
@@ -30,6 +31,11 @@ void HostList::removeHost(std::string s) {
     HostVector::iterator position = std::find(hosts.begin(), hosts.end(), s);
     if (position != hosts.end()) hosts.erase(position);
     pthread_mutex_unlock(&mutexHosts);
+}
+
+void HostList::update(Message* msg) {
+    PartialHostList* pl = dynamic_cast<PartialHostList*>(msg);
+    if (pl) pl->apply(this);
 }
 
 void HostList::update(HostList* data) {

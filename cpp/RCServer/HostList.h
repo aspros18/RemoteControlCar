@@ -20,6 +20,7 @@ class HostList : public Data<HostList> {
         HostList();
         
         void update(HostList* data);
+        void update(Message* msg);
         
         void serialize(Writer& w);
         void deserialize(Document& d);

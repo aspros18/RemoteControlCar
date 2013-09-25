@@ -67,11 +67,22 @@ void HostSideMessageProcess::sendConnectionMessage(bool connected) {
 }
 
 void HostSideMessageProcess::onStart() {
-    BooleanPartialHostData d(true, BooleanPartialHostData::STREAMING);
-    sendMessage(&d);
+    timer->start();
+}
+
+void HostSideMessageProcess::onStop() {
+    sendConnectionMessage(false);
 }
 
 void HostSideMessageProcess::onMessage(Message* msg) {
+    HostData* hd = dynamic_cast<HostData*>(msg);
+    if (hd) {
+        storage = (HostStorage*) StorageList::createHostStorage(this, hd);
+        sendConnectionMessage(true);
+    }
+    else {
+        if (storage) storage->getReceiver()->update(msg);
+    }
     delete msg;
 }
 

@@ -119,6 +119,10 @@ void HostStorage::setConnected(bool b) {
     connected = b;
 }
 
+HostStorage::ControllerVector& HostStorage::getControllers() {
+    return controllers;
+}
+
 HostData& HostStorage::getHostData() {
     return hostData;
 }

@@ -25,6 +25,7 @@ class HostStorage : public Storage<HostData> {
         HostData* getSender();
         HostData* getReceiver();
         HostData& getHostData();
+        ControllerVector& getControllers();
         
         void addController(ControllerStorageType*);
         void removeController(ControllerStorageType*);

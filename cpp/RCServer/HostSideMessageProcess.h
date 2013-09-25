@@ -31,6 +31,8 @@ class HostSideMessageProcess : public MessageProcess {
         Timer* timer;
         HostStorage* storage;
         
+        void sendConnectionMessage(bool connected);
+        
 };
 
 #endif	/* HOSTSIDEMESSAGEPROCESS_H */

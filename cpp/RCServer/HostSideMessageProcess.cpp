@@ -8,6 +8,11 @@
 #include "HostSideMessageProcess.h"
 #include "BooleanPartialHostData.h"
 #include "Timer.h"
+#include "PartialHostList.h"
+#include "BooleanPartialControllerData.h"
+#include "OfflineChangeablePartialControllerData.h"
+#include "StorageList.h"
+#include "ControllerStorage.h"
 
 #include <iostream>
 
@@ -38,6 +43,27 @@ HostSideMessageProcess::HostSideMessageProcess(SSLHandler* handler) : MessagePro
 
 HostSideMessageProcess::~HostSideMessageProcess() {
     delete timer;
+}
+
+void HostSideMessageProcess::sendConnectionMessage(bool connected) {
+    if (storage == NULL) return;
+    if (connected) storage->getSender()->setStreaming(!storage->getControllers().empty());
+    storage->setConnected(connected);
+    PartialHostList msgLs(getSocket()->getClientName(), connected ? PartialHostList::ADD : PartialHostList::REMOVE);
+    BooleanPartialControllerData msgConn(connected, BooleanPartialControllerData::CONNECTED);
+    OfflineChangeableDatas offDat(storage->getHostData().isFullX(), storage->getHostData().isFullY(), storage->getHostData().isVehicleConnected(), storage->getHostData().isUp2Date(), ControllerStorage::createHostState(storage));
+    OfflineChangeablePartialControllerData msgOffDat(offDat);
+    StorageList::ControllerStorageVector controllers = StorageList::getControllerStorages();
+    for (StorageList::ControllerStorageVector::iterator it = controllers.begin(); it != controllers.end(); it++) {
+        ControllerStorage* cs = (ControllerStorage*) *it;
+        if (cs->getHostStorage() == NULL) {
+            cs->getMessageProcess()->sendMessage(&msgLs);
+        }
+        if (cs->getHostStorage() == storage) {
+            cs->getMessageProcess()->sendMessage(&msgOffDat);
+            cs->getMessageProcess()->sendMessage(&msgConn);
+        }
+    }
 }
 
 void HostSideMessageProcess::onStart() {

@@ -154,9 +154,24 @@ HostState ControllerStorage::createHostState(Storage<HostData>* hs) {
 }
 
 ControllerData ControllerStorage::createControllerData() {
-    ControllerData dat;
-    // TODO
-    return dat;
+    HostStorage* s = (HostStorage*) getHostStorage();
+    if (!s) return ControllerData();
+    ControllerData d;
+    d.setHostState(createHostState(s));
+    d.setHostName(s->getName());
+    d.setViewOnly(false);
+    d.setConnected(s->isConnected());
+    d.setControlling(s->getOwner() == this);
+    d.setWantControl(false);
+    d.setBatteryLevel(s->getHostData().getBatteryLevel());
+    d.setVehicleConnected(s->getHostData().isVehicleConnected());
+    d.setHostUnderTimeout(s->isUnderTimeout());
+    d.setControl(s->getHostData().getControl());
+    d.setFullX(s->getHostData().isFullX());
+    d.setFullY(s->getHostData().isFullY());
+    d.setUp2Date(s->getHostData().isUp2Date());
+    d.setTimeout(-1);
+    return d;
 }
 
 void ControllerStorage::broadcastMessage(Message* msgc, Message* msgh, bool skipMe) {

@@ -64,11 +64,10 @@ StorageList::HostStorageType* StorageList::createHostStorage(MessageProcess* p, 
 
 HostList StorageList::createHostList(std::string controllerName) {
     HostList l;
-    HostList::HostVector ls = l.getHosts();
     for (HostStorageVector::iterator it = hosts.begin(); it != hosts.end(); it++) {
         HostStorage* s = (HostStorage*) *it;
         if (s->isConnected()) {
-            ls.push_back(s->getName());
+            l.addHost(s->getName());
         }
     }
     return l;

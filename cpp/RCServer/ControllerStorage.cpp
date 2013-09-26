@@ -96,7 +96,7 @@ void ControllerStorageReceiver::setWantControl(bool wantControl, bool fire) {
 ControllerStorage::ControllerStorage(MessageProcess* p) : Storage<ControllerData>(p) {
     sender = new ControllerStorageSender(this);
     receiver = new ControllerStorageReceiver(this);
-    hostStorage = NULL;
+    disconnectedHost = hostStorage = NULL;
 }
 
 ControllerStorage::~ControllerStorage() {
@@ -117,13 +117,40 @@ Storage<HostData>* ControllerStorage::getHostStorage() {
 }
 
 void ControllerStorage::setHostStorage(Storage<HostData>* s) {
+    HostStorage* oldStorage = (HostStorage*) hostStorage;
+    HostStorage* newStorage = (HostStorage*) s;
+    if (oldStorage) oldStorage->removeController(this);
+    if (newStorage) newStorage->addController(this);
     hostStorage = s;
 }
 
+bool ControllerStorage::hasDisconnectedHost() {
+    return disconnectedHost;
+}
+
+void ControllerStorage::storeDisconnectedHost() {
+    disconnectedHost = getHostStorage();
+}
+
+void ControllerStorage::restoreDisconnectedHost() {
+    if (disconnectedHost) {
+        setHostStorage(disconnectedHost);
+        disconnectedHost = NULL;
+    }
+}
+
+void ControllerStorage::onCommand(Command* cmd) {
+    if (getHostStorage() && ((HostStorage*) getHostStorage())->getOwner() == this) {
+        getHostStorage()->getMessageProcess()->sendMessage(cmd);
+    }
+}
+
 HostState ControllerStorage::createHostState(Storage<HostData>* hs) {
-    HostState s;
-    // TODO
-    return s;
+    if (hs) {
+        HostData d = ((HostStorage*) hs)->getHostData();
+        return HostState(d.getGpsPosition(), d.getSpeed() == -1 ? -1 : d.getSpeed() * 3.6, -1);
+    }
+    return HostState();
 }
 
 ControllerData ControllerStorage::createControllerData() {

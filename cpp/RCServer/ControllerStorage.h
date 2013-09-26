@@ -8,6 +8,7 @@
 #ifndef CONTROLLERSTORAGE_H
 #define	CONTROLLERSTORAGE_H
 
+#include "Command.h"
 #include "Storage.h"
 #include "ControllerData.h"
 #include "HostData.h"
@@ -21,9 +22,13 @@ class ControllerStorage : public Storage<ControllerData> {
         
         ControllerData* getSender();
         ControllerData* getReceiver();
+        void onCommand(Command* cmd);
         
         Storage<HostData>* getHostStorage();
         void setHostStorage(Storage<HostData>* s);
+        bool hasDisconnectedHost();
+        void storeDisconnectedHost();
+        void restoreDisconnectedHost();
         void broadcastMessage(Message* msgc, Message* msgh, bool skipMe);
         ControllerData createControllerData();
         
@@ -33,7 +38,7 @@ class ControllerStorage : public Storage<ControllerData> {
         
         ControllerData* sender;
         ControllerData* receiver;
-        Storage<HostData>* hostStorage;
+        Storage<HostData> *hostStorage, *disconnectedHost;
         
 };
 

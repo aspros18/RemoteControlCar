@@ -25,11 +25,15 @@ class Command : public UnknownMessage {
         }
         
         static bool isCommand(UnknownMessage* msg) {
-            return msg->getClassName() == Command::name;
+            return msg->getClassName() == _className();
+        }
+        
+        static std::string _className() {
+            return "org.dyndns.fzoli.rccar.model.Command";
         }
         
         std::string getClassName() {
-            return Command::name;
+            return _className();
         }
         
         std::string getDefinition() {
@@ -45,10 +49,7 @@ class Command : public UnknownMessage {
     private:
         
         std::string def;
-        static std::string name;
         
 };
-
-std::string Command::name = "org.dyndns.fzoli.rccar.model.Command";
 
 #endif	/* COMMAND_H */

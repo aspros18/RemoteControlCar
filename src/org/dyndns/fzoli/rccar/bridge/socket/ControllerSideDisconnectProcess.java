@@ -60,8 +60,9 @@ public class ControllerSideDisconnectProcess extends BridgeDisconnectProcess {
      */
     @Override
     protected void afterTimeout() throws Exception {
-        if (prevControl != null && prevCount != null && prevCount.equals(getControllerStorage().getHostStorage().getControlCount())) {
-            getControllerStorage().getReceiver().setControl(prevControl);
+        ControllerStorage cs = getControllerStorage();
+        if (cs != null && cs.getHostStorage() != null && prevControl != null && prevCount != null && prevCount.equals(cs.getHostStorage().getControlCount())) {
+            cs.getReceiver().setControl(prevControl);
         }
         super.afterTimeout();
     }

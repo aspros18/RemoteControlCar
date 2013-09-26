@@ -23,9 +23,12 @@ class SocketJpegListener : public JpegListener {
         void wait();
         virtual bool waitHandler();
         
+    protected:
+            
+        Socket* s;
+        
     private:
         
-        Socket* s;
         bool headerWrited;
         
 };

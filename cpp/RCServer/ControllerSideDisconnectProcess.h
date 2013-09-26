@@ -9,6 +9,7 @@
 #define	CONTROLLERSIDEDISCONNECTPROCESS_H
 
 #include "DisconnectProcess.h"
+#include "ControllerStorage.h"
 
 class ControllerSideDisconnectProcess : public DisconnectProcess {
     
@@ -19,7 +20,15 @@ class ControllerSideDisconnectProcess : public DisconnectProcess {
         void afterTimeout();
         void onTimeout(std::exception* ex);
         void onDisconnect(std::exception* ex);
-    
+        
+    private:
+        
+        int prevCount;
+        Control prevControl;
+        ControllerStorage* storage;
+        
+        ControllerStorage* getControllerStorage();
+        
 };
 
 #endif	/* CONTROLLERSIDEDISCONNECTPROCESS_H */

@@ -7,23 +7,39 @@
 
 #include "ControllerSideMessageProcess.h"
 #include "ControllerData.h"
+#include "StorageList.h"
 
 #include <iostream>
 
 ControllerSideMessageProcess::ControllerSideMessageProcess(SSLHandler* handler) : MessageProcess(handler) {
-    ;
+    storage = NULL;
 }
 
 void ControllerSideMessageProcess::onStart() {
-    ControllerData testData;
-    sendMessage(&testData);
+    storage = (ControllerStorage*) StorageList::createControllerStorage(this);
+    if (!storage->hasDisconnectedHost()) {
+        HostList msg = StorageList::createHostList(getSocket()->getClientName());
+        sendMessage(&msg);
+    }
+    else {
+        storage->restoreDisconnectedHost();
+        ControllerData msg = storage->createControllerData();
+        sendMessage(&msg);
+    }
 }
 
-void ControllerSideMessageProcess::onMessage(Message* msg) {
+void ControllerSideMessageProcess::onMessage(Message* msg) {        
+    if (storage) storage->getReceiver()->update(msg);
     delete msg;
 }
 
 void ControllerSideMessageProcess::onUnknownMessage(UnknownMessage* msg) {
-    std::cout << "Unknown controller message: " << msg->getClassName() << " - " << msg->getDefinition() << std::endl;
+    if (Command::isCommand(msg)) {
+        Command cmd(msg);
+        if (storage) storage->onCommand(&cmd);
+    }
+    else {
+        std::cout << "Unknown controller message: " << msg->getClassName() << " - " << msg->getDefinition() << std::endl;
+    }
     delete msg;
 }

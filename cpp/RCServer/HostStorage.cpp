@@ -94,6 +94,7 @@ void HostStorageReceiver::broadcastHostState() {
 HostStorage::HostStorage(MessageProcess* p) : Storage<HostData>(p), mutexControllers(PTHREAD_MUTEX_INITIALIZER) {
     sender = new HostStorageSender(this);
     receiver = new HostStorageReceiver(this);
+    owner = NULL;
 }
 
 HostStorage::~HostStorage() {

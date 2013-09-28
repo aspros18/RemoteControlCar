@@ -132,6 +132,10 @@ HostStorage::ControllerStorageType* HostStorage::getOwner() {
     return owner;
 }
 
+void HostStorage::setOwner(ControllerStorageType* cs) {
+    owner = cs;
+}
+
 HostStorage::ControllerVector& HostStorage::getControllers() {
     return controllers;
 }

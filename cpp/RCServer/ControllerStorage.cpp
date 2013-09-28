@@ -73,19 +73,21 @@ void ControllerStorageReceiver::setWantControl(bool b) {
 }
 
 void ControllerStorageReceiver::setWantControl(bool wantControl, bool fire) {
-    if (storage->getHostStorage() == NULL) return;
-    ControllerStorage* oldOwner = (ControllerStorage*) ((HostStorage*) storage->getHostStorage())->getOwner();
+    HostStorage* hs = (HostStorage*) storage->getHostStorage();
+    if (hs == NULL) return;
+    ControllerStorage* oldOwner = (ControllerStorage*) hs->getOwner();
     if (wantControl && oldOwner && oldOwner == storage) return;
     if (!wantControl && oldOwner && oldOwner != storage) {
         storage->getSender()->setWantControl(false);
         return;
     }
     ControllerStorage* newOwner = wantControl ? storage : NULL;
-    Control c = ((HostStorage*) storage->getHostStorage())->getHostData().getControl();
+    Control c = hs->getHostData().getControl();
     if (c.getX() != 0 || c.getY() != 0) setControl(Control(0, 0), true);
+    hs->setOwner(newOwner);
     if (oldOwner && fire) {
-            oldOwner->getSender()->setControlling(false);
-            oldOwner->getSender()->setWantControl(false);
+        oldOwner->getSender()->setControlling(false);
+        oldOwner->getSender()->setWantControl(false);
     }
     if (newOwner) {
         newOwner->getSender()->setControlling(true);

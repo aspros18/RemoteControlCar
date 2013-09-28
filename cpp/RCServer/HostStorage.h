@@ -27,6 +27,7 @@ class HostStorage : public Storage<HostData> {
         HostData& getHostData();
         ControllerVector& getControllers();
         ControllerStorageType* getOwner();
+        void setOwner(ControllerStorageType*);
         
         void addController(ControllerStorageType*);
         void removeController(ControllerStorageType*);

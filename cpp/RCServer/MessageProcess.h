@@ -17,11 +17,12 @@ class MessageProcess : public SSLProcess {
     
     public:
         
-        MessageProcess(SSLHandler* handler);
+        MessageProcess(SSLHandler* handler, bool delMsg = false);
         virtual ~MessageProcess();
         
-        void sendMessage(Message* msg);
+        void sendMessage(Message* msg, bool wait = true);
         virtual void onException(std::exception& ex);
+        virtual void onMessageSent(Message* msg);
         void run();
         
     protected:
@@ -34,6 +35,7 @@ class MessageProcess : public SSLProcess {
     private:
         
         SimpleWorker* worker;
+        bool deleteMsg;
         
 };
 

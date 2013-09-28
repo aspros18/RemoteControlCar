@@ -24,11 +24,11 @@ class SimpleWorker {
             proc = p;
         }
         
-        void submit(Message* msg) {
+        void submit(Message* msg, bool wait) {
             pthread_mutex_lock(&mutex);
             if (started) {
                 queue.push_back(msg);
-                pthread_cond_wait(&cv, &mutex);
+                if (wait) pthread_cond_wait(&cv, &mutex);
             }
             pthread_mutex_unlock(&mutex);
         }
@@ -94,6 +94,7 @@ class SimpleWorker {
                 }
                 pthread_cond_signal(&w->cv);
                 pthread_mutex_unlock(&w->mutex);
+                w->proc->onMessageSent(msg);
             }
             w->started = false;
             pthread_mutex_lock(&w->mutex);
@@ -104,8 +105,9 @@ class SimpleWorker {
         
 };
 
-MessageProcess::MessageProcess(SSLHandler* handler) : SSLProcess(handler) {
+MessageProcess::MessageProcess(SSLHandler* handler, bool delMsg) : SSLProcess(handler) {
     worker = new SimpleWorker(this);
+    deleteMsg = delMsg;
 }
 
 MessageProcess::~MessageProcess() {
@@ -132,9 +134,13 @@ void MessageProcess::onUnknownMessage(UnknownMessage* msg) {
     delete msg;
 }
 
-void MessageProcess::sendMessage(Message* msg) {
+void MessageProcess::onMessageSent(Message* msg) {
+    if (deleteMsg) delete msg;
+}
+
+void MessageProcess::sendMessage(Message* msg, bool wait) {
     if (msg && !getSocket()->isClosed()) {
-        worker->submit(msg);
+        worker->submit(msg, wait);
     }
 }
 

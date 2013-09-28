@@ -223,7 +223,7 @@ void HostData::update(Message* msg) {
     PointPartialHostData* popd = dynamic_cast<PointPartialHostData*>(msg);
     SpeedPartialHostData* sppd = dynamic_cast<SpeedPartialHostData*>(msg);
     if (bapd) bapd->apply(this);
-    if (bopd) bapd->apply(this);
+    if (bopd) bopd->apply(this);
     if (copd) copd->apply(this);
     if (popd) popd->apply(this);
     if (sppd) sppd->apply(this);

@@ -21,6 +21,7 @@ pthread_mutex_t SSLSocket::mutexCount = PTHREAD_MUTEX_INITIALIZER;
 
 SSLSocket::SSLSocket() : mutexClose(PTHREAD_MUTEX_INITIALIZER) {
     loadSSL();
+    reading = false;
     clientName = NULL;
     serverName = NULL;
 }
@@ -34,6 +35,7 @@ SSLSocket::~SSLSocket() {
 SSLSocket::SSLSocket(connection c) : mutexClose(PTHREAD_MUTEX_INITIALIZER) {
     loadSSL();
     ctx = NULL;
+    reading = false;
     m_sock = c.socket;
     conn.socket = c.socket;
     conn.sslHandle = c.sslHandle;
@@ -44,6 +46,7 @@ SSLSocket::SSLSocket(connection c) : mutexClose(PTHREAD_MUTEX_INITIALIZER) {
 
 SSLSocket::SSLSocket(const char *host, uint16_t port, const char *CAfile, const char *CRTfile, const char *KEYfile, void *passwd, int timeout, bool verify) : mutexClose(PTHREAD_MUTEX_INITIALIZER) {
     loadSSL();
+    reading = false;
     ctx = sslCreateCtx(true, verify, CAfile, CRTfile, KEYfile, passwd);
     m_sock = sslConnect(host, port, timeout);
     buffer = new SocketBuffer(this);
@@ -120,12 +123,15 @@ void SSLSocket::sslDestroyCtx(SSL_CTX *sctx) {
     if (sctx != NULL && sctx) SSL_CTX_free(sctx);
 }
 
-void SSLSocket::sslDisconnect(connection c) {
-    if (c.socket)
+void SSLSocket::sslDisconnect(SSLSocket* s, connection c) {
+    if (c.socket) {
         ::close(c.socket);
-    if (c.sslHandle != NULL && c.sslHandle) {
+        c.socket = 0;
+    }
+    if (c.sslHandle && !s->reading) {
         SSL_shutdown(c.sslHandle);
         SSL_free(c.sslHandle);
+        c.sslHandle = NULL;
     }
 }
 
@@ -170,7 +176,7 @@ void SSLSocket::close() {
         return;
     }
     closed = true;
-    sslDisconnect(conn);
+    sslDisconnect(this, conn);
     sslDestroyCtx(ctx);
     pthread_mutex_unlock(&mutexClose);
 }
@@ -187,7 +193,15 @@ int SSLSocket::write(const void *buf, int num) const {
 
 int SSLSocket::read(void *buf, int num) const {
     int status = -1;
+    pthread_mutex_t* m = const_cast<pthread_mutex_t*>(&mutexClose);
+    bool* rng = const_cast<bool*>(&reading);
+    pthread_mutex_lock(m);
+    *rng = true;
+    pthread_mutex_unlock(m);
     if (!closed) status = SSL_read(conn.sslHandle, buf, num);
+    pthread_mutex_lock(m);
+    *rng = false;
+    pthread_mutex_unlock(m);
     if (status < 0) throw SSLSocketException ( "Could not read from socket.", SSLSocketException::read );
     return status;
 }

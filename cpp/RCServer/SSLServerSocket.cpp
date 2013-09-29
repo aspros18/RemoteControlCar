@@ -46,19 +46,19 @@ SSLSocket::connection SSLServerSocket::sslAccept() {
     // Create an SSL struct for the connection
     c.sslHandle = SSL_new(ctx);
     if (c.sslHandle == NULL) {
-        sslDisconnect(c);
+        sslDisconnect(this, c);
         throw SSLSocketException ( "Could not create SSL object." );
     }
     
     // Connect the SSL struct to our connection
     if (!SSL_set_fd(c.sslHandle, c.socket)) {
-        sslDisconnect(c);
+        sslDisconnect(this, c);
         throw SSLSocketException ( "Could not connect the SSL object to the socket." );
     }
     
     // Initiate SSL handshake
     if (SSL_accept(c.sslHandle) != 1) {
-        sslDisconnect(c);
+        sslDisconnect(this, c);
         throw SSLSocketException ( "Error during SSL handshake." );
     }
     

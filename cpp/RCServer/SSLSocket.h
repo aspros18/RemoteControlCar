@@ -40,6 +40,7 @@ class SSLSocket : public Socket {
         
     private:
         
+        bool reading;
         connection conn;
         char *clientName, *serverName;
         static int count;
@@ -59,7 +60,7 @@ class SSLSocket : public Socket {
         
         static SSL_CTX *sslCreateCtx(bool client, bool verify, const char *CAfile, const char *CRTfile, const char *KEYfile, void *passwd);
         static void sslDestroyCtx(SSL_CTX *sctx);
-        static void sslDisconnect(connection c);
+        static void sslDisconnect(SSLSocket* s, connection c);
         
 };
 

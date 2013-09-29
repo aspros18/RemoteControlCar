@@ -175,22 +175,19 @@ void SSLSocket::close() {
     pthread_mutex_unlock(&mutexClose);
 }
 
-int SSLSocket::write(const void *buf, int num) const { // TODO: mutex_lock bugfix
-//    pthread_mutex_t* m = const_cast<pthread_mutex_t*>(&mutexClose);
-//    pthread_mutex_lock(m);
+int SSLSocket::write(const void *buf, int num) const {
+    pthread_mutex_t* m = const_cast<pthread_mutex_t*>(&mutexClose);
+    pthread_mutex_lock(m);
     int status = -1;
     if (!closed) status = SSL_write(conn.sslHandle, buf, num);
-//    pthread_mutex_unlock(m);
+    pthread_mutex_unlock(m);
     if (status <= 0) throw SSLSocketException( "Could not write byte", SSLSocketException::write );
     return status;
 }
 
 int SSLSocket::read(void *buf, int num) const {
-    pthread_mutex_t* m = const_cast<pthread_mutex_t*>(&mutexClose);
-    pthread_mutex_lock(m);
     int status = -1;
     if (!closed) status = SSL_read(conn.sslHandle, buf, num);
-    pthread_mutex_unlock(m);
     if (status < 0) throw SSLSocketException ( "Could not read from socket.", SSLSocketException::read );
     return status;
 }

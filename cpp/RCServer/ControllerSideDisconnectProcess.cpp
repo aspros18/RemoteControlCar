@@ -43,11 +43,11 @@ void ControllerSideDisconnectProcess::onTimeout(std::exception* ex) {
 }
 
 void ControllerSideDisconnectProcess::onDisconnect(std::exception* ex) {
+    StorageList::freezeControllerStorage(this);
     ControllerStorage* cs = getControllerStorage();
     if (cs && cs->getHostStorage()) {
         cs->storeDisconnectedHost();
         cs->setHostStorage(NULL);
-    }    
+    }
     DisconnectProcess::onDisconnect(ex);
-    StorageList::freezeControllerStorage(this);
 }

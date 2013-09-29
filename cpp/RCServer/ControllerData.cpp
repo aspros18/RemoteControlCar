@@ -17,13 +17,12 @@ REGISTER_DEF_TYPE(ControllerData, org.dyndns.fzoli.rccar.model.controller.Contro
 
 ControllerData::ControllerData() {
     timeout = -1;
-    // test values:
-    hostName = "host";
-    hostUnderTimeout = false;
-    connected = true;
     controlling = false;
     hostUnderTimeout = false;
     vehicleConnected = false;
+    // test values:
+    hostName = "host";
+    connected = true;
     viewOnly = true;
     wantControl = false;
 }

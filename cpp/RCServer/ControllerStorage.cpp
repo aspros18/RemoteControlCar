@@ -167,7 +167,7 @@ ControllerData ControllerStorage::createControllerData() {
     d.setWantControl(false);
     d.setBatteryLevel(s->getHostData().getBatteryLevel());
     d.setVehicleConnected(s->getHostData().isVehicleConnected());
-    d.setHostUnderTimeout(s->isUnderTimeout());
+    d.setHostUnderTimeout(false);
     d.setControl(s->getHostData().getControl());
     d.setFullX(s->getHostData().isFullX());
     d.setFullY(s->getHostData().isFullY());

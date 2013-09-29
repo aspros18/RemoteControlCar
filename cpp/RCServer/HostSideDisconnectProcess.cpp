@@ -36,4 +36,5 @@ void HostSideDisconnectProcess::onTimeout(std::exception* ex) {
 void HostSideDisconnectProcess::onDisconnect(std::exception* ex) {
     DisconnectProcess::onDisconnect(ex);
     setTimeout(false);
+    StorageList::freezeHostStorage(this);
 }

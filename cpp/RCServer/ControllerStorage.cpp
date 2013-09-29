@@ -24,12 +24,12 @@ ControllerStorageSender::ControllerStorageSender(ControllerStorage* cs) : Contro
 
 void ControllerStorageSender::setControlling(bool b) {
     BooleanPartialControllerData d(b, BooleanPartialControllerData::CONTROLLING);
-    storage->getMessageProcess()->sendMessage(&d);
+    storage->sendMessage(&d);
 }
 
 void ControllerStorageSender::setWantControl(bool b) {
     BooleanPartialControllerData d(b, BooleanPartialControllerData::WANT_CONTROLL);
-    storage->getMessageProcess()->sendMessage(&d);
+    storage->sendMessage(&d);
 }
 
 ControllerStorageReceiver::ControllerStorageReceiver(ControllerStorage* cs) : ControllerStorageSupport(cs) {
@@ -57,14 +57,14 @@ void ControllerStorageReceiver::setHostName(std::string hostName) {
         HostStorage* store = (HostStorage*) StorageList::findHostStorageByName(hostName);
         storage->setHostStorage(store);
         ControllerData dat = storage->createControllerData();
-        storage->getMessageProcess()->sendMessage(&dat);
+        storage->sendMessage(&dat);
     }
     if (hostName.empty()) {
         if (storage->getHostStorage() && storage == ((HostStorage*)storage->getHostStorage())->getOwner()) {
             setWantControl(false, false);
         }
         storage->setHostStorage(NULL);
-        storage->getMessageProcess()->sendMessage(&ls);
+        storage->sendMessage(&ls);
     }
 }
 
@@ -143,7 +143,7 @@ void ControllerStorage::restoreDisconnectedHost() {
 
 void ControllerStorage::onCommand(Command* cmd) {
     if (getHostStorage() && ((HostStorage*) getHostStorage())->getOwner() == this) {
-        getHostStorage()->getMessageProcess()->sendMessage(cmd);
+        getHostStorage()->sendMessage(cmd);
     }
 }
 
@@ -183,10 +183,10 @@ void ControllerStorage::broadcastMessage(Message* msgc, Message* msgh, bool skip
         for (StorageList::ControllerStorageVector::iterator it = l.begin(); it != l.end(); it++) {
             ControllerStorage* cs = (ControllerStorage*) *it;
             if (skipMe && cs == this) continue;
-            if (hs == cs->getHostStorage()) cs->getMessageProcess()->sendMessage(msgc);
+            if (hs == cs->getHostStorage()) cs->sendMessage(msgc);
         }
     }
     if (msgh && hs) {
-        hs->getMessageProcess()->sendMessage(msgh);
+        hs->sendMessage(msgh);
     }
 }

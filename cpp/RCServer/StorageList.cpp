@@ -36,6 +36,16 @@ StorageList::ControllerStorageType* StorageList::findControllerStorageByName(std
     return NULL;
 }
 
+void StorageList::freezeControllerStorage(SSLProcess* p) {
+    ControllerStorageType* s = findControllerStorageByName(p->getSocket()->getClientName());
+    if (s) s->setMessageProcess(NULL);
+}
+
+void StorageList::freezeHostStorage(SSLProcess* p) {
+    HostStorageType* s = findHostStorageByName(p->getSocket()->getClientName());
+    if (s) s->setMessageProcess(NULL);
+}
+
 StorageList::ControllerStorageType* StorageList::createControllerStorage(MessageProcess* p) {
     ControllerStorageType* s = findControllerStorageByName(p->getSocket()->getClientName());
     if (s == NULL) {

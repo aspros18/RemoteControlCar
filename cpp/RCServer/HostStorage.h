@@ -32,7 +32,6 @@ class HostStorage : public Storage<HostData> {
         void addController(ControllerStorageType*);
         void removeController(ControllerStorageType*);
         
-        void sendMessage(Message* msg);
         void broadcastMessage(Message* msg);
         
         bool isConnected();

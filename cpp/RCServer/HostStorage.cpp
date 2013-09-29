@@ -173,10 +173,6 @@ void HostStorage::removeController(ControllerStorageType* cs) {
     if (last) getSender()->setStreaming(false);
 }
 
-void HostStorage::sendMessage(Message* msg) {
-    getMessageProcess()->sendMessage(msg);
-}
-
 void HostStorage::broadcastMessage(Message* msg) {
     pthread_mutex_lock(&mutexControllers);
     StorageList::ControllerStorageVector l = StorageList::getControllerStorages();

@@ -28,6 +28,10 @@ class Storage {
             msgProc = p;
         }
         
+        void sendMessage(Message* msg) {
+            if (getMessageProcess()) getMessageProcess()->sendMessage(msg);
+        }
+        
         std::string getName() {
             return name;
         }

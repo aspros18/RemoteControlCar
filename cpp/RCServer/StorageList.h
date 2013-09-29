@@ -27,6 +27,8 @@ public:
     static ControllerStorageType* findControllerStorageByName(std::string name);
     static ControllerStorageType* createControllerStorage(MessageProcess* p);
     static HostStorageType* createHostStorage(MessageProcess* p, HostData* d);
+    static void freezeControllerStorage(SSLProcess* p);
+    static void freezeHostStorage(SSLProcess* p);
     static HostList createHostList(std::string controllerName);
     
     static HostStorageVector& getHostStorages();

@@ -20,10 +20,6 @@ class Storage {
             name = p->getSocket()->getClientName();
         }
         
-        MessageProcess* getMessageProcess() {
-            return msgProc;
-        }
-        
         void setMessageProcess(MessageProcess* p) {
             msgProc = p;
         }
@@ -40,6 +36,10 @@ class Storage {
         virtual T* getReceiver() = 0;
         
     private:
+        
+        MessageProcess* getMessageProcess() {
+            return msgProc;
+        }
         
         std::string name;
         MessageProcess* msgProc;

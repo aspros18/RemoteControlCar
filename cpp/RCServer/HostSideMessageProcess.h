@@ -12,11 +12,11 @@
 #include "Timer.h"
 #include "HostStorage.h"
 
-class HSMPTimer;
+//class HSMPTimer;
 
 class HostSideMessageProcess : public MessageProcess {
     
-    friend class HSMPTimer;
+//    friend class HSMPTimer;
     
     public:
         
@@ -29,7 +29,7 @@ class HostSideMessageProcess : public MessageProcess {
         
     private:
         
-        Timer* timer;
+//        Timer* timer;
         HostStorage* storage;
         
         void sendConnectionMessage(bool connected);

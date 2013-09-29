@@ -180,7 +180,7 @@ void HostStorage::broadcastMessage(Message* msg) {
         ControllerStorage* cs = (ControllerStorage*) *it;
         HostStorage* hs = (HostStorage*) cs->getHostStorage();
         if (hs && this == hs) {
-            cs->getMessageProcess()->sendMessage(msg);
+            cs->sendMessage(msg);
         }
     }
     pthread_mutex_unlock(&mutexControllers);

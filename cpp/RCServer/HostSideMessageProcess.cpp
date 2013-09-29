@@ -16,33 +16,33 @@
 
 #include <iostream>
 
-class HSMPTimer : public Timer {
-    
-    public:
-        
-        HSMPTimer(HostSideMessageProcess* p) : Timer(60, 0, true) {
-            proc = p;
-        }
-        
-        void tick() {
-            if (!proc->storage) {
-                proc->getHandler()->closeProcesses();
-            }
-        }
-        
-    private:
-        
-        HostSideMessageProcess* proc;
-        
-};
+//class HSMPTimer : public Timer {
+//    
+//    public:
+//        
+//        HSMPTimer(HostSideMessageProcess* p) : Timer(60, 0, true) {
+//            proc = p;
+//        }
+//        
+//        void tick() {
+//            if (!proc->storage) {
+//                proc->getHandler()->closeProcesses();
+//            }
+//        }
+//        
+//    private:
+//        
+//        HostSideMessageProcess* proc;
+//        
+//};
 
 HostSideMessageProcess::HostSideMessageProcess(SSLHandler* handler) : MessageProcess(handler) {
-    timer = new HSMPTimer(this);
+//    timer = new HSMPTimer(this);
     storage = NULL;
 }
 
 HostSideMessageProcess::~HostSideMessageProcess() {
-    delete timer;
+//    delete timer;
 }
 
 void HostSideMessageProcess::sendConnectionMessage(bool connected) {
@@ -57,17 +57,17 @@ void HostSideMessageProcess::sendConnectionMessage(bool connected) {
     for (StorageList::ControllerStorageVector::iterator it = controllers.begin(); it != controllers.end(); it++) {
         ControllerStorage* cs = (ControllerStorage*) *it;
         if (cs->getHostStorage() == NULL) {
-            cs->getMessageProcess()->sendMessage(&msgLs);
+            cs->sendMessage(&msgLs);
         }
         if (cs->getHostStorage() == storage) {
-            cs->getMessageProcess()->sendMessage(&msgOffDat);
-            cs->getMessageProcess()->sendMessage(&msgConn);
+            cs->sendMessage(&msgOffDat);
+            cs->sendMessage(&msgConn);
         }
     }
 }
 
 void HostSideMessageProcess::onStart() {
-    timer->start();
+//    timer->start();
 }
 
 void HostSideMessageProcess::onStop() {

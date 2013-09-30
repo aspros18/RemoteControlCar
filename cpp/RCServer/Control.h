@@ -45,11 +45,11 @@ class Control {
             if (v.IsObject()) {
                 if (v.HasMember("mX")) {
                     Message::Value& x = v["mX"];
-                    if (x.IsInt()) mX = x.GetInt();
+                    if (x.IsInt()) mX = x.GetInt64();
                 }
                 if (v.HasMember("mY")) {
                     Message::Value& y = v["mY"];
-                    if (y.IsInt()) mY = y.GetInt();
+                    if (y.IsInt()) mY = y.GetInt64();
                 }
             }
         }

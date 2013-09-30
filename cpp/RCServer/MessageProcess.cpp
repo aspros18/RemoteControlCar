@@ -19,9 +19,15 @@ class SimpleWorker {
     
     public:
         
-        SimpleWorker(MessageProcess* p) : mutex(PTHREAD_MUTEX_INITIALIZER), cv(PTHREAD_COND_INITIALIZER) {
+        SimpleWorker(MessageProcess* p) : mutex(PTHREAD_MUTEX_INITIALIZER)/*, mutexDestroy(PTHREAD_MUTEX_INITIALIZER)*/, cv(PTHREAD_COND_INITIALIZER) {
             started = false;
             proc = p;
+        }
+        
+        virtual ~SimpleWorker() {
+//            stop();
+//            pthread_mutex_lock(&mutexDestroy);
+//            pthread_mutex_unlock(&mutexDestroy);
         }
         
         void submit(Message* msg, bool wait) {
@@ -56,12 +62,13 @@ class SimpleWorker {
         
         bool started;
         std::vector<Message*> queue;
-        pthread_mutex_t mutex;
+        pthread_mutex_t mutex/*, mutexDestroy*/;
         pthread_cond_t cv;
         MessageProcess* proc;
         
         static void* run(void* v) {
             SimpleWorker* w = (SimpleWorker*) v;
+//            pthread_mutex_lock(&w->mutexDestroy);
             std::ostream out(w->proc->getSocket()->getBuffer());
             while (w->started && out.good()) {
                 pthread_mutex_lock(&w->mutex);
@@ -100,6 +107,7 @@ class SimpleWorker {
             pthread_mutex_lock(&w->mutex);
             pthread_cond_broadcast(&w->cv);
             pthread_mutex_unlock(&w->mutex);
+//            pthread_mutex_unlock(&w->mutexDestroy);
             pthread_exit(NULL);
         }
         

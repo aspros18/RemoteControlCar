@@ -34,7 +34,7 @@ class BatteryPartialBaseData  : public PartialData<D, int> {
         void deserialize(Message::Document& d) {
             if (d.IsObject() && d.HasMember("data")) {
                 Message::Value& v = d["data"];
-                if (v.IsInt()) BatteryPartialBaseData<D>::data = v.GetInt();
+                if (v.IsInt()) BatteryPartialBaseData<D>::data = v.GetInt64();
             }
         }
         

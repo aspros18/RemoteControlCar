@@ -15,6 +15,7 @@ class Timer {
     public:
         
         Timer(unsigned int delay, unsigned int period, bool runOnce=false);
+        virtual ~Timer();
         
         bool start();
         void stop();
@@ -24,6 +25,7 @@ class Timer {
         
         bool runOnce, running;
         unsigned int delay, period;
+        pthread_mutex_t mutexDestroy;
         static pthread_mutex_t mutexStart;
         
         static void* run(void*);

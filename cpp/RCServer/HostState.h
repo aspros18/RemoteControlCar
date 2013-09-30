@@ -59,7 +59,7 @@ class HostState {
                 }
                 if (v.HasMember("AZIMUTH")) {
                     Message::Value& val = v["AZIMUTH"];
-                    if (val.IsInt()) AZIMUTH = val.GetInt();
+                    if (val.IsInt()) AZIMUTH = val.GetInt64();
                 }
                 else {
                     AZIMUTH = -1;

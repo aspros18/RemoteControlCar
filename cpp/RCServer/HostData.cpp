@@ -82,7 +82,7 @@ void HostData::deserialize(Message::Document& d) {
         }
         if (d.HasMember("additionalDegree")) {
             Message::Value& v = d["additionalDegree"];
-            if (v.IsInt()) additionalDegree = v.GetInt();
+            if (v.IsInt()) additionalDegree = v.GetInt64();
         }
         if (d.HasMember("speed")) {
             Message::Value& v = d["speed"];

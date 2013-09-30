@@ -57,7 +57,7 @@ class BaseData : public Data<D> {
             }
             if (d.HasMember("batteryLevel")) {
                 Message::Value& v = d["batteryLevel"];
-                if (v.IsInt()) batteryLevel = v.GetInt();
+                if (v.IsInt()) batteryLevel = v.GetInt64();
             }
             else {
                 batteryLevel = -1;

@@ -11,11 +11,17 @@
 
 pthread_mutex_t Timer::mutexStart = PTHREAD_MUTEX_INITIALIZER;
 
-Timer::Timer(unsigned int delay, unsigned int period, bool runOnce) {
+Timer::Timer(unsigned int delay, unsigned int period, bool runOnce) : mutexDestroy(PTHREAD_MUTEX_INITIALIZER) {
     this->delay = delay;
     this->period = period;
     this->runOnce = runOnce;
     this->running = false;
+}
+
+Timer::~Timer() {
+    stop();
+    pthread_mutex_lock(&mutexDestroy);
+    pthread_mutex_unlock(&mutexDestroy);
 }
 
 bool Timer::start() {
@@ -40,11 +46,18 @@ void Timer::stop() {
 
 void* Timer::run(void* v) {
     Timer* t = (Timer*) v;
-    sleep(t->delay);
-    while (t->running) {
-        t->tick();
-        if (t->runOnce) break;
-        sleep(t->period);
+    pthread_mutex_lock(&t->mutexDestroy);
+    try {
+        sleep(t->delay);
+        while (t->running) {
+            t->tick();
+            if (t->runOnce) break;
+            sleep(t->period);
+        }
     }
+    catch (...) {
+        t->stop();
+    }
+    pthread_mutex_unlock(&t->mutexDestroy);
     pthread_exit(NULL);
 }

@@ -19,7 +19,8 @@ Android alkalmazás:
 https://github.com/fzoli/RemoteControlCar/raw/master/android/RemoteControlCar/bin/RemoteControlCar.apk
 
 A projektet bemutató videófelvételek a videos könyvtárban találhatók meg.
-A járműről fényképek a photos könyvtárban, képernyőképek a snapshots könyvtárban.
+A járműről fényképek a photos könyvtárban, képernyőképek a snapshots
+könyvtárban. A szakdolgozat digitális változata: thesis.pdf
 
 Bevezetés
 ---------
@@ -216,4 +217,7 @@ zárt, védett helyen belülre kéne elhelyezni.
 
 Egy harmadik kliens alkalmazásként lehetne írni egy admin felületet, amivel a belépett felhasználókat lehet menedzselni (priorítás, ban, kick).
 Lehetne egy SSL alapú weboldal is, ahonnan regisztráció után letölthető lenne a kliensekhez használható tanúsítvány.
+
+Repülőmodel átalakítása, vezérlés kibővítése a 3. dimenzióval (fel/le emelkedés).
+Időjárásadatok begyűjtésére is használható lenne.
 

@@ -5,7 +5,6 @@ import chrriis.dj.nativeswing.swtimpl.NativeInterfaceListener;
 import chrriis.dj.nativeswing.swtimpl.components.core.NativeTray;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
-import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;

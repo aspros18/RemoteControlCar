@@ -13,7 +13,7 @@ import org.dyndns.fzoli.socket.process.SecureProcess;
  */
 public abstract class AbstractSecureServerHandler extends AbstractServerHandler implements SecureHandler {
 
-    private String localCommonName, remoteCommonName;
+    private String localCommonName, remoteCommonName, localFullName, remoteFullName;
     
     /**
      * A szerver oldali biztonságos kapcsolatkezelő konstruktora.
@@ -66,7 +66,7 @@ public abstract class AbstractSecureServerHandler extends AbstractServerHandler 
     }
 
     /**
-     * Megszerzi a helyi és távoli tanúsítvány Common Name mezőjét és ellenőrzi a tanúsítványt.
+     * Megszerzi a helyi és távoli tanúsítvány Common Name és Name mezőjét és ellenőrzi a tanúsítványt.
      * @throws SecureHandlerException ha nem megbízható vagy hibás bármelyik tanúsítvány
      * @throws MultipleCertificateException ha ugyan azzal a tanúsítvánnyal több kliens is kapcsolódik
      */
@@ -81,6 +81,8 @@ public abstract class AbstractSecureServerHandler extends AbstractServerHandler 
                 throw new MultipleCertificateException("Duplicated certificate");
             }
         }
+        localFullName = SecureHandlerUtil.getLocalFullName(getSocket());
+        remoteFullName = SecureHandlerUtil.getRemoteFullName(getSocket());
     }
 
     /**
@@ -158,6 +160,22 @@ public abstract class AbstractSecureServerHandler extends AbstractServerHandler 
     @Override
     public String getRemoteCommonName() {
         return remoteCommonName;
+    }
+    
+    /**
+     * A titkosított kommunikáció ezen oldalán álló kliens tanúsítványának Name mezőjét adja vissza.
+     */
+    @Override
+    public String getLocalFullName() {
+        return localFullName;
+    }
+
+    /**
+     * A titkosított kommunikáció másik oldalán álló szerver tanúsítványának Name mezőjét adja vissza.
+     */
+    @Override
+    public String getRemoteFullName() {
+        return remoteFullName;
     }
     
 }

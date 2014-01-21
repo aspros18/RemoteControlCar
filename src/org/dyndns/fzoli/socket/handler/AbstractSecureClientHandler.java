@@ -11,7 +11,7 @@ import org.dyndns.fzoli.socket.process.SecureProcess;
  */
 public abstract class AbstractSecureClientHandler extends AbstractClientHandler implements SecureHandler {
 
-    private String localCommonName, remoteCommonName;
+    private String localCommonName, remoteCommonName, localFullName, remoteFullName;
     
     /**
      * A kliens oldali biztonságos kapcsolatkezelő konstruktora.
@@ -66,13 +66,15 @@ public abstract class AbstractSecureClientHandler extends AbstractClientHandler 
     }
     
     /**
-     * Megszerzi a helyi és távoli tanúsítvány Common Name mezőjét.
+     * Megszerzi a helyi és távoli tanúsítvány Common Name és Name mezőjét.
      * @throws SecureHandlerException ha nem megbízható vagy hibás bármelyik tanúsítvány
      */
     @Override
     protected void init() {
         localCommonName = SecureHandlerUtil.getLocalCommonName(getSocket());
         remoteCommonName = SecureHandlerUtil.getRemoteCommonName(getSocket());
+        localFullName = SecureHandlerUtil.getLocalFullName(getSocket());
+        remoteFullName = SecureHandlerUtil.getRemoteFullName(getSocket());
     }
 
     /**
@@ -135,6 +137,22 @@ public abstract class AbstractSecureClientHandler extends AbstractClientHandler 
     @Override
     public String getRemoteCommonName() {
         return remoteCommonName;
+    }
+
+    /**
+     * A titkosított kommunikáció ezen oldalán álló kliens tanúsítványának Name mezőjét adja vissza.
+     */
+    @Override
+    public String getLocalFullName() {
+        return localFullName;
+    }
+
+    /**
+     * A titkosított kommunikáció másik oldalán álló szerver tanúsítványának Name mezőjét adja vissza.
+     */
+    @Override
+    public String getRemoteFullName() {
+        return remoteFullName;
     }
     
 }

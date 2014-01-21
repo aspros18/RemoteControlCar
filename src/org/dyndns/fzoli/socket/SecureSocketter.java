@@ -24,4 +24,14 @@ public interface SecureSocketter extends Socketter {
      */
     public String getRemoteCommonName();
     
+    /**
+     * A titkosított kommunikáció ezen oldalán álló gép tanúsítványának Name mezőjét adja vissza.
+     */
+    public String getLocalFullName();
+    
+    /**
+     * A titkosított kommunikáció másik oldalán álló gép tanúsítványának Name mezőjét adja vissza.
+     */
+    public String getRemoteFullName();
+    
 }

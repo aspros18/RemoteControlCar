@@ -49,5 +49,21 @@ public abstract class AbstractSecureProcess extends AbstractProcess implements S
     public String getRemoteCommonName() {
         return getHandler().getRemoteCommonName();
     }
+
+    /**
+     * A titkosított kommunikáció ezen oldalán álló gép tanúsítványának Name mezőjét adja vissza.
+     */
+    @Override
+    public String getLocalFullName() {
+        return getHandler().getLocalFullName();
+    }
+
+    /**
+     * A titkosított kommunikáció másik oldalán álló gép tanúsítványának Name mezőjét adja vissza.
+     */
+    @Override
+    public String getRemoteFullName() {
+        return getHandler().getRemoteFullName();
+    }
     
 }

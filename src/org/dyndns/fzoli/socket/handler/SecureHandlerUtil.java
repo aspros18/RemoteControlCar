@@ -1,13 +1,20 @@
 package org.dyndns.fzoli.socket.handler;
 
+import java.io.ByteArrayInputStream;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSocket;
+import javax.security.auth.x500.X500Principal;
 import javax.security.cert.CertificateException;
-import javax.security.cert.X509Certificate;
 import org.dyndns.fzoli.socket.Processes;
 import org.dyndns.fzoli.socket.handler.exception.SecureHandlerException;
 import org.dyndns.fzoli.socket.process.Process;
@@ -122,6 +129,50 @@ class SecureHandlerUtil {
     }
     
     /**
+     * A titkosított kommunikáció ezen oldalán álló gép tanúsítványának Name mezőjét adja vissza.
+     * @throws SecureHandlerException ha a tanúsítvány hibás
+     * @return ha definiálva van, akkor a teljes név; egyébként az általános név
+     */
+    public static String getLocalFullName(SSLSocket socket) {
+        return getFullName(socket, false);
+    }
+    
+    /**
+     * A titkosított kommunikáció másik oldalán álló gép tanúsítványának Name mezőjét adja vissza.
+     * @throws SecureHandlerException ha nem megbízható a kapcsolat vagy a tanúsítvány hibás
+     * @return ha definiálva van, akkor a teljes név; egyébként az általános név
+     */
+    public static String getRemoteFullName(SSLSocket socket) {
+        return getFullName(socket, true);
+    }
+    
+    /**
+     * A titkosított kommunikáció egyik tanúsítványának Name mezőjét adja vissza.
+     * @param remote ha true, akkor a távoli oldalon álló gép, egyébként a helyi gép tanúsítványával dolgozik
+     * @throws SecureHandlerException ha nem megbízható a kapcsolat vagy a tanúsítvány hibás
+     * @return ha definiálva van, akkor a teljes név; egyébként az általános név
+     */
+    private static String getFullName(SSLSocket socket, boolean remote) {
+        try {
+            checkSession(socket);
+            CDNMap props = getCertificateSubjectDNMap(remote ? socket.getSession().getPeerCertificates()[0] : socket.getSession().getLocalCertificates()[0]);
+            if (props == null) return remote ? getRemoteCommonName(socket) : getLocalCommonName(socket);
+            String name = props.get(CDNMap.NAME);
+            if (name == null || name.isEmpty()) return remote ? getRemoteCommonName(socket) : getLocalCommonName(socket);
+            return name;
+        }
+        catch (SSLPeerUnverifiedException ex) {
+            throw new SecureHandlerException(ex);
+        }
+        catch (CertificateException ex) {
+            throw new SecureHandlerException(ex);
+        }
+        catch (CertificateEncodingException ex) {
+            throw new SecureHandlerException(ex);
+        }
+    }
+    
+    /**
      * Az SSLSocket munkamenetének ellenőrzése.
      * @throws SecureHandlerException ha a munkamenet nem érvényes
      */
@@ -135,20 +186,106 @@ class SecureHandlerUtil {
      * @throws CertificateEncodingException ha a tanúsítvány nem X509 szabvány szerint kódolt
      */
     private static String getCommonName(Certificate cert) throws CertificateException, CertificateEncodingException {
-        String certdata = getPrincipal(cert);
-        int cnstart = certdata.indexOf("CN=") + 3; // "CN=" résztől ...
-        int cnstop = certdata.indexOf(',', cnstart); // ... a vesszőig ...
-        if (cnstop == -1) cnstop = certdata.length(); // ... vagy ha nincs vessző, a végéig ...
-        return certdata.substring(cnstart, cnstop); // ... kérem a string tartalmát, ami a tanúsítványban szereplő Common Name (CN)
+        String certdata = getCertificateSubjectDN(cert); // RFC2253 formátumú adatok megszerzése
+        CDNMap props = getCertificateSubjectDNMap(certdata); // megpróbálja értelmezni a tanúsítvány adatait
+        if (props != null) { // ha sikerült legenerálni a tanúsítvány tulajdonságait, akkor ...
+            return props.get(CDNMap.COMMON_NAME); // ... a CN tulajdonsággal tér vissza
+        }
+        else { // ha nem sikerült értelmezni a stringet, akkor ...
+            int cnstart = certdata.indexOf("CN=") + 3; // "CN=" résztől ...
+            int cnstop = certdata.indexOf(',', cnstart); // ... a vesszőig ...
+            if (cnstop == -1) cnstop = certdata.length(); // ... vagy ha nincs vessző, a végéig ...
+            return certdata.substring(cnstart, cnstop); // ... kérem a string tartalmát, ami a tanúsítványban szereplő Common Name (CN)
+        }
     }
     
     /**
-     * A tanúsítvány alapadatait adja vissza.
+     * A tanúsítványok tulajdonságainak tárolására használt oszály.
+     */
+    public static class CDNMap extends HashMap<String, String> {
+
+        /**
+         * A CDNMap egyik kulcsa.
+         */
+        public static final String
+                COUNTRY_CODE = "C",
+                STATE_NAME = "ST",
+                LOCALITY_NAME = "L",
+                ORGANIZATION_NAME = "O",
+                ORGANIZATION_UNIT_NAME = "OU",
+                COMMON_NAME = "CN",
+                NAME = "Name",
+                EMAIL_ADDR = "Email";
+        
+    }
+    
+    /**
+     * Egy felsorolás ami tartalmazza a gyakran használt X.500 tulajdonságok azonosítóit és azok jelentését a CDNMap konstans-kulcsainak megfelelően.
+     * A {@link #getCertificateSubjectDNMap(java.security.cert.Certificate)} metódus használja fel.
+     * @see CDNMap
+     */
+    private static Map<String, String> OIDS = new HashMap<String, String>() {
+        
+        {
+            put("2.5.4.41", CDNMap.NAME);
+            put("1.2.840.113549.1.9.1", CDNMap.EMAIL_ADDR);
+        }
+        
+    };
+    
+    /**
+     * A tanúsítvány alapadatait adja vissza UTF-8 kódolással.
+     * @param cert a tanúsítvány, aminek az adatait szeretnénk megkapni
+     * @throws CertificateException ha a tanúsítvány nem X509 szabvány szerint kódolt
+     * @throws CertificateEncodingException ha a tanúsítvány nem X509 szabvány szerint kódolt
+     * @return egy CDNMap objektum, ami tartalmazza a tanúsítvány összes tulajdonságát, vagy null, ha hiba történt a feldolgozásban
+     */
+    private static CDNMap getCertificateSubjectDNMap(Certificate cert) throws CertificateException, CertificateEncodingException {
+        return getCertificateSubjectDNMap(getCertificateSubjectDN(cert));
+    }
+    
+    /**
+     * A tanúsítvány alapadatait adja vissza UTF-8 kódolással.
+     * @param dn RFC2253 kódolású szöveges formátum, ami a tanúsítvány adatait tartalmazza
+     * @throws CertificateException ha a tanúsítvány nem X509 szabvány szerint kódolt
+     * @throws CertificateEncodingException ha a tanúsítvány nem X509 szabvány szerint kódolt
+     * @return egy CDNMap objektum, ami tartalmazza a tanúsítvány összes tulajdonságát, vagy null, ha hiba történt a feldolgozásban
+     */
+    private static CDNMap getCertificateSubjectDNMap(String dn) throws CertificateException, CertificateEncodingException {
+        try {
+            LdapName ldapDN = new LdapName(dn);
+            CDNMap map = new CDNMap();
+            for (Rdn rdn : ldapDN.getRdns()) {
+                String t = rdn.getType();
+                Object o = rdn.getValue();
+                String v = o instanceof byte[] ? new String((byte[]) o, "utf8").trim() : o.toString();
+                if (OIDS.containsKey(t)) t = OIDS.get(t);
+                map.put(t, v);
+            }
+            return map;
+        }
+        catch (Exception ex) {
+            return null;
+        }
+    }
+    
+    /**
+     * A tanúsítvány alapadatait adja vissza RFC2253 kódolású szöveges formátumban.
+     * @param cert a tanúsítvány, aminek az adatait szeretnénk megkapni
      * @throws CertificateException ha a tanúsítvány nem X509 szabvány szerint kódolt
      * @throws CertificateEncodingException ha a tanúsítvány nem X509 szabvány szerint kódolt
      */
-    private static String getPrincipal(Certificate cert) throws CertificateException, CertificateEncodingException {
-        return X509Certificate.getInstance(cert.getEncoded()).getSubjectDN().getName();
+    private static String getCertificateSubjectDN(Certificate cert) throws CertificateException, CertificateEncodingException {
+        try {
+            X509Certificate crt;
+            if (cert instanceof X509Certificate) crt = (X509Certificate) cert;
+            else crt = (X509Certificate) CertificateFactory.getInstance("X.509").generateCertificate(new ByteArrayInputStream(cert.getEncoded()));
+            X500Principal pr = crt.getSubjectX500Principal();
+            return pr.getName(X500Principal.RFC2253);
+        }
+        catch (Exception ex) {
+            return javax.security.cert.X509Certificate.getInstance(cert.getEncoded()).getSubjectDN().getName();
+        }
     }
     
 }

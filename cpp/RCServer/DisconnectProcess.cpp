@@ -5,6 +5,8 @@
  * Created on 2013. szeptember 8., 23:46
  */
 
+#include <unistd.h>
+
 #include "DisconnectProcess.h"
 #include "SocketException.h"
 

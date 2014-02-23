@@ -11,6 +11,10 @@ SSLProcess::SSLProcess(SSLHandler* handler) {
     this->handler = handler;
 }
 
+SSLProcess::~SSLProcess() {
+
+}
+
 SSLSocket* SSLProcess::getSocket() {
     return getHandler()->getSocket();
 }

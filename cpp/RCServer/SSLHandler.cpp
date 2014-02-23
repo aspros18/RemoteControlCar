@@ -28,6 +28,10 @@ SSLHandler::SSLHandler(SSLSocket* socket) : deviceId(-1), connectionId(-1) {
     }
 }
 
+SSLHandler::~SSLHandler() {
+
+}
+
 SSLSocket* SSLHandler::getSocket() {
     return socket;
 }

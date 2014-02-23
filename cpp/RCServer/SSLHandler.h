@@ -17,6 +17,7 @@ class SSLHandler : public SSLSocketter {
 public:
     
     SSLHandler(SSLSocket* socket);
+    virtual ~SSLHandler();
     
     SSLSocket* getSocket();
     int getDeviceId();

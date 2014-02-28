@@ -32,6 +32,8 @@ class Message {
         
         virtual std::string getClassName() = 0;
         
+        virtual ~Message();
+        
 };
 
 class UnknownMessage : public Message {

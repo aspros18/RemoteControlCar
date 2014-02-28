@@ -8,3 +8,7 @@
 #include "Message.h"
 
 MessageFactory::msg_map *MessageFactory::map;
+
+Message::~Message() {
+
+}

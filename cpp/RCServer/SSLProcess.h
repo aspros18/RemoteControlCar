@@ -15,6 +15,7 @@ class SSLProcess : public SSLSocketter {
     public:
         
         SSLProcess(SSLHandler* handler);
+        virtual ~SSLProcess();
         
         virtual void run() = 0;
         SSLSocket* getSocket();
